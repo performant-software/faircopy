@@ -1,4 +1,4 @@
-Overview
+FairCopy
 ====
 
 The TEI Guidelines encode editorial practice into a digital format. However, adoption of TEI is limited because of the technical skill it requires to read and write it. FairCopy is a word processor that can natively read and write TEI encoded texts.
