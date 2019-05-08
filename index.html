@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <link rel="stylesheet" type="text/css" href="./editor.css" >
+  </head>
+  <body>
+ 
+  <div id=editor style="margin-bottom: 23px"></div>
+
+  <div style="display: none" id="content">
+    <h3>Hello ProseMirror</h3>
+
+    <p>This is editable text. You can focus it and start typing.</p>
+
+    <p>To apply styling, you can select a piece of text and manipulate
+    its styling from the menu. The basic schema
+    supports <em>emphasis</em>, <strong>strong
+    text</strong>, <a href="http://marijnhaverbeke.nl/blog">links</a>, <code>code
+    font</code>, and .</p>
+
+    <p>Block-level structure can be manipulated with key bindings (try
+    ctrl-shift-2 to create a level 2 heading, or enter in an empty
+    textblock to exit the parent block), or through the menu.</p>
+
+    <p>Try using the “list” item in the menu to wrap this paragraph in
+    a numbered list.</p>
+  </div>
+
+     <!-- All of the Node.js APIs are available in this renderer process. -->
+     We are using Node.js <script>document.write(process.versions.node)</script>,
+     Chromium <script>document.write(process.versions.chrome)</script>,
+     and Electron <script>document.write(process.versions.electron)</script>.
+ 
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+    </script>
+  </body>
+</html>
