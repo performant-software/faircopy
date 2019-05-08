@@ -1,20 +1,20 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "Faircopy",
+  "version": "0.0.1",
+  "description": "(The first of many) small sharp tools for digital scholarship in the humanities",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/performant-software/faircopy",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
+    "TEI",
+    "Editor",
+    "Digital Humanities",
     "demo"
   ],
-  "author": "GitHub",
+  "author": "Performant Software",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^5.0.0"
