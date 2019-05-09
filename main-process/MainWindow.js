@@ -24,11 +24,8 @@ class MainWindow {
         // Emitted when the window is closed.
         this.window.on('closed', this.onClose )
 
-        let cwd = process.cwd()
-
-
         // and load the index.html of the app.
-        let path = ( debugMode ) ? '../../../../../../../index.html' : 'index.html'
+        const path = ( debugMode ) ? '../../../../../../../index.html' : 'index.html'
         this.window.loadFile(path)
 
         // Open the DevTools.
