@@ -36,7 +36,9 @@ class MainWindow {
         dialog.showOpenDialog( {
             properties: [ 'openFile', 'openDirectory']
         }, (files) => {
-            files
+          if( files && files.length > 0 ) {
+            this.window.webContents.send('fileOpened', files[0])
+          }
         })
     }
 
