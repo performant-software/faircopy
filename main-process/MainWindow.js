@@ -14,8 +14,8 @@ class MainWindow {
         Menu.setApplicationMenu(menu)
         // Create the browser window.
         this.window = new BrowserWindow({
-            width: 800,
-            height: 600,
+            width: 1440,
+            height: 900,
             webPreferences: {
                 nodeIntegration: true
             }
@@ -32,7 +32,7 @@ class MainWindow {
         this.window.loadFile(path)
 
         // Open the DevTools.
-        this.window.webContents.openDevTools()
+        if( debugMode ) this.window.webContents.openDevTools({ mode: 'bottom'} )
     }
 
     openFileMenu = () => {
