@@ -11,7 +11,8 @@ onMainWindowClose = () => {
 }
 
 function createWindow () {
-  mainWindow = new MainWindow(app, onMainWindowClose)
+  let debugMode = ( process.argv[3] === 'debug' )
+  mainWindow = new MainWindow(app, debugMode, onMainWindowClose)
 }
 
 // This method will be called when Electron has finished

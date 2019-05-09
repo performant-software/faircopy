@@ -4,7 +4,7 @@ const isMac = true
 
 class MainWindow {
 
-    constructor(app, onClose) {
+    constructor(app, debugMode, onClose) {
         
         this.app = app
         this.onClose = onClose
@@ -24,14 +24,18 @@ class MainWindow {
         // Emitted when the window is closed.
         this.window.on('closed', this.onClose )
 
+        let cwd = process.cwd()
+
+
         // and load the index.html of the app.
-        this.window.loadFile('../../../../../../../index.html')
+        let path = ( debugMode ) ? '../../../../../../../index.html' : 'index.html'
+        this.window.loadFile(path)
 
         // Open the DevTools.
         this.window.webContents.openDevTools()
     }
 
-    openFileMenu() {
+    openFileMenu = () => {
         dialog.showOpenDialog( {
             properties: [ 'openFile', 'openDirectory']
         }, (files) => {
@@ -62,7 +66,8 @@ class MainWindow {
             submenu: [
               { 
                 label: 'Open',
-                click () { this.openFileMenu() }
+                accelerator: 'CommandOrControl+O',
+                click: this.openFileMenu
               },
               { role: 'close' }
             ]

@@ -14,6 +14,7 @@
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
             },
             "program": "${workspaceRoot}/main.js",
+            "args": ["debug"],
             "protocol": "inspector",
         }
     ]
