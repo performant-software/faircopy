@@ -15,7 +15,9 @@ class EditorWindow {
             marks: schema.spec.marks
         })
 
-        const doc = DOMParser.fromSchema(this.documentSchema).parse(document.querySelector("#content"))
+        const div = document.createElement('DIV')
+        div.innerHTML = ""
+        const doc = DOMParser.fromSchema(this.documentSchema).parse(div)
 
         this.editorState = EditorState.create({
             doc,
