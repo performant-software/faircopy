@@ -80,7 +80,13 @@ class EditorWindow {
         const domFragment = domSerializer.serializeFragment(state.doc.content)
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
-        console.log(div.innerHTML) 
+        const fileContents = div.innerHTML
+        console.log(fileContents) 
+        fs.writeFileSync(saveFilePath, fileContents, (err) => {
+            if (err) {
+                console.log(err)
+            } 
+        })
         this.filePath = saveFilePath
         this.setTitle(saveFilePath)
     }
