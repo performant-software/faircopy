@@ -1,4 +1,4 @@
-const { BrowserWindow, dialog, Menu } = require('electron')
+const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 
 const isMac = true
 
@@ -28,18 +28,34 @@ class MainWindow {
         const path = ( debugMode ) ? '../../../../../../../index.html' : 'index.html'
         this.window.loadFile(path)
 
+        ipcMain.on('openSaveFileDialog', this.saveFileMenu)
+
         // Open the DevTools.
         if( debugMode ) this.window.webContents.openDevTools({ mode: 'bottom'} )
     }
 
     openFileMenu = () => {
         dialog.showOpenDialog( {
-            properties: [ 'openFile', 'openDirectory']
+            properties: [ 'openFile' ]
         }, (files) => {
           if( files && files.length > 0 ) {
             this.window.webContents.send('fileOpened', files[0])
           }
         })
+    }
+
+    saveFileMenu = () => {
+      dialog.showSaveDialog( {
+          properties: [ 'openFile', 'createDirectory' ]
+      }, (files) => {
+        if( files && files.length > 0 ) {
+          this.window.webContents.send('fileSaved', files)
+        }
+      })   
+    }
+
+    requestSave = () => {
+      this.window.webContents.send('requestSave')
     }
 
     mainMenuTemplate() {
@@ -67,6 +83,11 @@ class MainWindow {
                 label: 'Open',
                 accelerator: 'CommandOrControl+O',
                 click: this.openFileMenu
+              },
+              { 
+                label: 'Save',
+                accelerator: 'CommandOrControl+S',
+                click: this.requestSave
               },
               { role: 'close' }
             ]
