@@ -1,11 +1,15 @@
 const {EditorState, AllSelection} = require("prosemirror-state")
 const {EditorView} = require("prosemirror-view")
 const {Schema, DOMParser, DOMSerializer} = require("prosemirror-model")
-const {schema} = require("prosemirror-schema-basic")
+const { keymap } = require("prosemirror-keymap")
+const { undo, redo } = require("prosemirror-history")
 const {addListNodes} = require("prosemirror-schema-list")
 const {exampleSetup} = require("prosemirror-example-setup")
+
 const {ipcRenderer} = require("electron")
 const fs = require('fs')
+
+const {schema} = require("./EditorSchema")
 
 class EditorWindow {
 
@@ -22,12 +26,11 @@ class EditorWindow {
         const div = document.createElement('DIV')
         div.innerHTML = ""
         const doc = DOMParser.fromSchema(this.documentSchema).parse(div)
+          
+        let plugins = exampleSetup({schema: this.documentSchema, menuBar: false})
+        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
+        const startState = EditorState.create({ doc, plugins })
 
-        const startState = EditorState.create({
-            doc,
-            plugins: exampleSetup({schema: this.documentSchema})
-        })
-            
         this.editorView = new EditorView(document.querySelector("#editor"), {
             state: startState
         }) 
