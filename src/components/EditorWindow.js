@@ -1,15 +1,15 @@
-const {EditorState, AllSelection} = require("prosemirror-state")
-const {EditorView} = require("prosemirror-view")
-const {Schema, DOMParser, DOMSerializer} = require("prosemirror-model")
-const { keymap } = require("prosemirror-keymap")
-const { undo, redo } = require("prosemirror-history")
-const {addListNodes} = require("prosemirror-schema-list")
-const {exampleSetup} = require("prosemirror-example-setup")
+import {EditorState, AllSelection} from "prosemirror-state"
+import {EditorView} from "prosemirror-view"
+import {Schema, DOMParser, DOMSerializer} from "prosemirror-model"
+import { keymap } from "prosemirror-keymap"
+import { undo, redo } from "prosemirror-history"
+import {addListNodes} from "prosemirror-schema-list"
+import {exampleSetup} from "prosemirror-example-setup"
 
-const {ipcRenderer} = require("electron")
-const fs = require('fs')
+import {schema} from "./EditorSchema"
 
-const {schema} = require("./EditorSchema")
+const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
+const fs = window.nodeAppDependencies.fs
 
 class EditorWindow {
 
@@ -44,7 +44,7 @@ class EditorWindow {
     setTitle( filePath ) {
         let title
         if( filePath ) {
-            const filename = filePath.replace(/^.*[\\\/]/, '')
+            const filename = filePath.replace(/^.*[\\/]/, '')
             title = `${filename} - Faircopy`    
         } else {
             title = "Untitled Document - Faircopy"
@@ -95,6 +95,4 @@ class EditorWindow {
     }
 }
 
-exports.EditorWindow = EditorWindow
-
-
+export default EditorWindow

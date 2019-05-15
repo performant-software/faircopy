@@ -25,8 +25,9 @@ class MainWindow {
         this.window.on('closed', this.onClose )
 
         // and load the index.html of the app.
-        const path = ( debugMode ) ? '../../../../../../../index.html' : 'index.html'
-        this.window.loadFile(path)
+        const path = ( debugMode ) ? 'http://localhost:3000' : 'index.html'
+        // this.window.loadFile(path)
+        this.window.loadURL(path)
 
         ipcMain.on('openSaveFileDialog', this.saveFileMenu)
 

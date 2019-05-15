@@ -1,4 +1,4 @@
-const {Schema} = require("prosemirror-model")
+import {Schema} from "prosemirror-model"
 
 const pDOM = ["p", 0], blockquoteDOM = ["blockquote", 0], hrDOM = ["hr"],
       preDOM = ["pre", ["code", 0]], brDOM = ["br"]
@@ -7,7 +7,7 @@ const fontSizeRegEx = /font-size: (.*);/
 
 // :: Object
 // [Specs](#model.NodeSpec) for the nodes defined in this schema.
-const nodes = exports.nodes = {
+export const nodes = {
   // :: NodeSpec The top level document node.
   doc: {
     content: "block+"
@@ -108,7 +108,7 @@ const nodes = exports.nodes = {
 const emDOM = ["em", 0], strongDOM = ["strong", 0], codeDOM = ["code", 0]
 
 // :: Object [Specs](#model.MarkSpec) for the marks in the schema.
-const marks = exports.marks = {
+export const marks = {
   // :: MarkSpec A link. Has `href` and `title` attributes. `title`
   // defaults to the empty string. Rendered and parsed as an `<a>`
   // element.
@@ -187,4 +187,4 @@ const marks = exports.marks = {
 //
 // To reuse elements from this schema, extend or read from its
 // `spec.nodes` and `spec.marks` [properties](#model.Schema.spec).
-exports.schema = new Schema({nodes, marks})
+export const schema = new Schema({nodes, marks})

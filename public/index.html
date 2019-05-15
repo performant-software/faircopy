@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    
+    
+  <head>
+    <meta charset="UTF-8">
+    <title>FairCopy</title>
+  </head>
+  <body>
+    <script>
+        // Make Node modules available to ReactJS App
+        window.nodeAppDependencies = {
+          ipcRenderer: require("electron"),
+          fs: require('fs')
+        }
+    </script>
+    <div id='root'></div>
+  </body>
+</html>
