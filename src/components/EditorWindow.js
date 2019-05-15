@@ -1,4 +1,6 @@
-import {EditorState, AllSelection} from "prosemirror-state"
+import React, { Component } from 'react';
+
+import {EditorState, TextSelection, AllSelection} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 import {Schema, DOMParser, DOMSerializer} from "prosemirror-model"
 import { keymap } from "prosemirror-keymap"
@@ -7,38 +9,55 @@ import {addListNodes} from "prosemirror-schema-list"
 import {exampleSetup} from "prosemirror-example-setup"
 
 import {schema} from "./EditorSchema"
+import ProseMirrorComponent from "./ProseMirrorComponent"
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 const fs = window.nodeAppDependencies.fs
 
-class EditorWindow {
+class EditorWindow extends Component {
 
     constructor() {
+        super()
 
-        this.filePath = null
+        this.state = {
+            filePath: null,
+            editorView: null
+        }
+    }
+
+    componentDidMount() {
         this.setTitle(null)
 
-        this.documentSchema = new Schema({
+        // Receive open and save file events from the main process
+        ipcRenderer.on('fileOpened', (event, filePath) => this.openFile(filePath))
+        ipcRenderer.on('requestSave', () => this.requestSave())        
+        ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))        
+    }
+
+    createEditorView = (element) => {
+
+        if( this.state.editorView ) return;
+        
+        const documentSchema = new Schema({
             nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
             marks: schema.spec.marks
         })
 
         const div = document.createElement('DIV')
         div.innerHTML = ""
-        const doc = DOMParser.fromSchema(this.documentSchema).parse(div)
+        const doc = DOMParser.fromSchema(documentSchema).parse(div)
           
-        let plugins = exampleSetup({schema: this.documentSchema, menuBar: false})
+        let plugins = exampleSetup({schema: documentSchema, menuBar: false})
         plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
-        const startState = EditorState.create({ doc, plugins })
-
-        this.editorView = new EditorView(document.querySelector("#editor"), {
-            state: startState
-        }) 
-
-        // Receive open and save file events from the main process
-        ipcRenderer.on('fileOpened', (event, filePath) => this.openFile(filePath))
-        ipcRenderer.on('requestSave', (event, filePath) => this.requestSave())        
-        ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))        
+        const editorInitalState = EditorState.create({ 
+            doc, plugins,
+            selection: TextSelection.create(doc, 0)
+        })
+        const editorView = new EditorView( 
+            element, 
+            { state: editorInitalState }
+        )
+        this.setState({ ...this.state, editorView, documentSchema })
     }
 
     setTitle( filePath ) {
@@ -54,33 +73,37 @@ class EditorWindow {
     }
 
     openFile( filePath ) {
-        const state = this.editorView.state
+        const { documentSchema, editorView } = this.state
+        const editorState = editorView.state
+        
         const text = fs.readFileSync(filePath, "utf8")
-
         const div = document.createElement('DIV')
         div.innerHTML = text
-        const docNode = DOMParser.fromSchema(this.documentSchema).parse(div)
-        const allSelection = new AllSelection(state.doc)
+        const docNode = DOMParser.fromSchema(documentSchema).parse(div)
+        const allSelection = new AllSelection(editorState.doc)
 
-        const transaction = state.tr.setSelection(allSelection).replaceSelectionWith(docNode)
-        this.editorView.updateState( state.apply(transaction) )
+        const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
+        editorView.updateState( editorState.apply(transaction) )
         
-        this.filePath = filePath
         this.setTitle(filePath)
+        this.setState( { ...this.state, filePath })
     }
 
     requestSave() {
-        if( this.filePath === null ) {
+        const { filePath } = this.state
+        if( filePath === null ) {
             ipcRenderer.send( 'openSaveFileDialog' )
         } else {
-            this.save(this.filePath)
+            this.save(filePath)
         }
     }
 
     save(saveFilePath) {
-        const state = this.editorView.state
-        const domSerializer = DOMSerializer.fromSchema( this.documentSchema )
-        const domFragment = domSerializer.serializeFragment(state.doc.content)
+        const { documentSchema, editorView } = this.state
+        const editorState = editorView.state
+
+        const domSerializer = DOMSerializer.fromSchema( documentSchema )
+        const domFragment = domSerializer.serializeFragment(editorState.doc.content)
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
         const fileContents = div.innerHTML
@@ -92,6 +115,15 @@ class EditorWindow {
         })
         this.filePath = saveFilePath
         this.setTitle(saveFilePath)
+    }
+
+    render() {      
+        return (
+            <ProseMirrorComponent
+                editorView={this.state.editorView}
+                createEditorView={this.createEditorView}
+            />
+        );
     }
 }
 

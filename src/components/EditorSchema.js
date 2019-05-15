@@ -3,7 +3,7 @@ import {Schema} from "prosemirror-model"
 const pDOM = ["p", 0], blockquoteDOM = ["blockquote", 0], hrDOM = ["hr"],
       preDOM = ["pre", ["code", 0]], brDOM = ["br"]
 
-const fontSizeRegEx = /font-size: (.*);/
+// const fontSizeRegEx = /font-size: (.*);/
 
 // :: Object
 // [Specs](#model.NodeSpec) for the nodes defined in this schema.

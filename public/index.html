@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
-    
-    
   <head>
     <meta charset="UTF-8">
+    <link rel=stylesheet href="css/editor.css">
     <title>FairCopy</title>
   </head>
   <body>
     <script>
         // Make Node modules available to ReactJS App
         window.nodeAppDependencies = {
+          process: process,
           ipcRenderer: require("electron"),
           fs: require('fs')
         }

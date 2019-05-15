@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import EditorWindow from './EditorWindow'
 
-class App extends Component {
+const process = window.nodeAppDependencies.process
+
+export default class App extends Component {
 
   componentDidMount() {
-    this.editorWindow = new EditorWindow()
+    console.log( `FairCopy v0.0.1`)
+    console.log( `Node.js ${process.versions.node}`)
+    console.log( `Chromium ${process.versions.chrome}`)
+    console.log( `and Electron ${process.versions.electron}`)
   }
-
+  
   render() {
-    const style = { marginBottom: 23 }
     return (
-      <div id='editor' style={style}></div>
+      <div>
+        <EditorWindow></EditorWindow>
+      </div>
     );  
   }
 }
-
-export default App;
