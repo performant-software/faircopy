@@ -4,7 +4,7 @@
   "description": "(The first of many) small sharp tools for digital scholarship in the humanities",
   "main": "main.js",
   "scripts": {
-    "electon": "electron .",
+    "electron": "electron main.js",
     "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -19,7 +19,8 @@
     "demo"
   ],
   "author": "Performant Software Solutions LLC",
-  "license": "CC0-1.0",
+  "homepage": ".",
+  "license": "UNLICENSED",
   "devDependencies": {
     "electron": "^5.0.0"
   },
