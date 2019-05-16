@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "(The first of many) small sharp tools for digital scholarship in the humanities",
   "main": "main.js",
+  "private": true,
   "scripts": {
     "start": "electron main.js",
     "start-dev": "BROWSER=none react-scripts start",
