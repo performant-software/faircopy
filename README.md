@@ -12,7 +12,7 @@ FairCopy is desktop software that works with or without an Internet connection o
 Developer Environment
 -----------
 
-To run Faircopy in development mode, install the necessary dependencies using `yarn` and then `yarn start-dev`. This will start the create react app server on port 3000. To run the electron main process on VS Code, a debug configuration has been created for the project. Run the debugger an this will allow you to work in the electron environment. Create React App will hot reload into Electron's browser as you work. 
+To run Faircopy in development mode, install the necessary dependencies using `yarn` and then `yarn start-dev`. This will start the create react app server on port 3000. To run the electron main process on VS Code, a debug configuration has been created for the project. Run the debugger and this will allow you to work in the electron environment. Create React App will hot reload into Electron's browser as you work. 
 
 To build the React application for packaging, run:
 
