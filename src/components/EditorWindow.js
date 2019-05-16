@@ -8,6 +8,9 @@ import { undo, redo } from "prosemirror-history"
 import {addListNodes} from "prosemirror-schema-list"
 import {exampleSetup} from "prosemirror-example-setup"
 
+import { Toolbar, IconButton } from '@material-ui/core'
+import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
+
 import {schema} from "./EditorSchema"
 import ProseMirrorComponent from "./ProseMirrorComponent"
 
@@ -117,12 +120,31 @@ class EditorWindow extends Component {
         this.setTitle(saveFilePath)
     }
 
+    renderToolbar() {
+        return (
+            <Toolbar style={{ background: '#ccc', minHeight: '55px' }}>
+                <IconButton tooltip='Bold selected text.'>
+                    <FormatBold />
+                </IconButton>
+                <IconButton tooltip='Italicize selected text.'>
+                    <FormatItalic />
+                </IconButton>
+                <IconButton tooltip='Underline selected text.'>
+                    <FormatUnderlined />
+                </IconButton>
+            </Toolbar>
+        )
+    }
+
     render() {      
         return (
-            <ProseMirrorComponent
-                editorView={this.state.editorView}
-                createEditorView={this.createEditorView}
-            />
+            <div>
+                { this.renderToolbar() }
+                <ProseMirrorComponent
+                    editorView={this.state.editorView}
+                    createEditorView={this.createEditorView}
+                />
+            </div>
         );
     }
 }
