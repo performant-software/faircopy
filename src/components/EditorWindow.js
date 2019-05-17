@@ -78,13 +78,13 @@ class EditorWindow extends Component {
     openFile( filePath ) {
         const { documentSchema, editorView } = this.state
         const editorState = editorView.state
-        
+
         const text = fs.readFileSync(filePath, "utf8")
         const div = document.createElement('DIV')
         div.innerHTML = text
         const docNode = DOMParser.fromSchema(documentSchema).parse(div)
-        const allSelection = new AllSelection(editorState.doc)
 
+        const allSelection = new AllSelection(editorState.doc)
         const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
         editorView.updateState( editorState.apply(transaction) )
         
@@ -118,6 +118,14 @@ class EditorWindow extends Component {
         })
         this.filePath = saveFilePath
         this.setTitle(saveFilePath)
+    }
+
+
+    onBulletList() {
+        const bulletListNodeType = this.state.documentSchema.nodes.bullet_list;
+        const editorState = this.getEditorState();
+        const cmd = wrapInList( bulletListNodeType );
+        cmd( editorState, this.state.editorView.dispatch );
     }
 
     renderToolbar() {
