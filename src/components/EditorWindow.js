@@ -122,7 +122,7 @@ class EditorWindow extends Component {
 
     renderToolbar() {
         return (
-            <Toolbar style={{ background: '#ccc', minHeight: '55px' }}>
+            <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
                 <IconButton tooltip='Bold selected text.'>
                     <FormatBold />
                 </IconButton>
@@ -145,7 +145,7 @@ class EditorWindow extends Component {
                     createEditorView={this.createEditorView}
                 />
             </div>
-        );
+        )
     }
 }
 
