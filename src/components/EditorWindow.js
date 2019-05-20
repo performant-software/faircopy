@@ -2,17 +2,19 @@ import React, { Component } from 'react';
 
 import {EditorState, TextSelection, AllSelection} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
-import {Schema, DOMParser, DOMSerializer} from "prosemirror-model"
+import {DOMParser, DOMSerializer} from "prosemirror-model"
 import { keymap } from "prosemirror-keymap"
 import { undo, redo } from "prosemirror-history"
-import {addListNodes} from "prosemirror-schema-list"
+// import {addListNodes} from "prosemirror-schema-list"
 import {exampleSetup} from "prosemirror-example-setup"
 
 import { Toolbar, IconButton } from '@material-ui/core'
 import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
 
-import {schema} from "./EditorSchema"
+// import {schema} from "./EditorSchema"
 import ProseMirrorComponent from "./ProseMirrorComponent"
+import TEIParser from '../parse/TEIParser';
+import { SimpleSchema } from './SimpleSchema';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 const fs = window.nodeAppDependencies.fs
@@ -40,11 +42,13 @@ class EditorWindow extends Component {
     createEditorView = (element) => {
 
         if( this.state.editorView ) return;
+
+        const documentSchema = SimpleSchema
         
-        const documentSchema = new Schema({
-            nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
-            marks: schema.spec.marks
-        })
+        // const documentSchema = new Schema({
+        //     nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
+        //     marks: schema.spec.marks
+        // })
 
         const div = document.createElement('DIV')
         div.innerHTML = ""
@@ -78,6 +82,9 @@ class EditorWindow extends Component {
     openFile( filePath ) {
         const { documentSchema, editorView } = this.state
         const editorState = editorView.state
+
+        const teiParser = new TEIParser()
+        teiParser.load(filePath)
 
         const text = fs.readFileSync(filePath, "utf8")
         const div = document.createElement('DIV')
@@ -122,10 +129,11 @@ class EditorWindow extends Component {
 
 
     onBulletList() {
-        const bulletListNodeType = this.state.documentSchema.nodes.bullet_list;
-        const editorState = this.getEditorState();
-        const cmd = wrapInList( bulletListNodeType );
-        cmd( editorState, this.state.editorView.dispatch );
+        // TODO
+        // const bulletListNodeType = this.state.documentSchema.nodes.bullet_list;
+        // const editorState = this.getEditorState();
+        // const cmd = wrapInList( bulletListNodeType );
+        // cmd( editorState, this.state.editorView.dispatch );
     }
 
     renderToolbar() {
