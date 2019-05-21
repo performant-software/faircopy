@@ -43,6 +43,9 @@ class EditorWindow extends Component {
 
         if( this.state.editorView ) return;
 
+        // should load the document that
+        // was provided by props
+
         const documentSchema = SimpleSchema
         
         // const documentSchema = new Schema({

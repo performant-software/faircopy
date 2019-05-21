@@ -13,6 +13,7 @@ export default class App extends Component {
   }
   
   render() {
+    // provide blank document to start
     return (
       <div>
         <EditorWindow></EditorWindow>

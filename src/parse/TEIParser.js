@@ -41,6 +41,10 @@ export default class TEIParser {
         this.xmlSchema = new Schema({ nodes, marks })
     }
 
+    createView(element) {
+        // TODO creates a editor view for this document
+    }
+
     load( filePath ) {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();
@@ -48,7 +52,39 @@ export default class TEIParser {
         const xmlDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(xmlDom)
 
         // Convert from XML Schema to Simple Schema
+        // in memory, there are three objects:
+        // xml prosemirror doc
+        // editor view (which holds editor state)
+        // db of all element attribute data
         
+        // changing element attribute data does 
+        // not mutate the docs, just stored in db state
+        // db state managed by redux?
+        
+        // redux keeps a list of open editors
+        // editors do not share state unless
+        // they are being mutually edited
+
+        // this module should really be the TEI document
+
+        // for every element, must define how to go 
+        // from xml to html and back
+
+        // xml and html have exact same char streams
+        // with element structures that can be
+        // crosswalked all html have id of the 
+        // corresponding xml
+        // all attrib data is stored in db and 
+        // shared by both
+
+        // seperate module for parsing ODD file
+        // configures the editor to provide
+        // the tags supported by the schema
+        // also embeds the technical documentation
+        // in the correct language
+
+        
+
 
         return null;
     }
