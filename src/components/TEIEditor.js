@@ -48,23 +48,23 @@ class TEIEditor extends Component {
     }
 
     openFile( filePath ) {
-        const { documentSchema, editorView } = this.state
-        const editorState = editorView.state
+        // const { documentSchema, editorView } = this.state
+        // const editorState = editorView.state
 
         const teiParser = new TEIDocument()
         teiParser.load(filePath)
 
-        const text = fs.readFileSync(filePath, "utf8")
-        const div = document.createElement('DIV')
-        div.innerHTML = text
-        const docNode = DOMParser.fromSchema(documentSchema).parse(div)
+        // const text = fs.readFileSync(filePath, "utf8")
+        // const div = document.createElement('DIV')
+        // div.innerHTML = text
+        // const docNode = DOMParser.fromSchema(documentSchema).parse(div)
 
-        const allSelection = new AllSelection(editorState.doc)
-        const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
-        editorView.updateState( editorState.apply(transaction) )
+        // const allSelection = new AllSelection(editorState.doc)
+        // const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
+        // editorView.updateState( editorState.apply(transaction) )
         
         this.setTitle(filePath)
-        this.setState( { ...this.state, filePath })
+        // this.setState( { ...this.state, filePath })
     }
 
     requestSave() {

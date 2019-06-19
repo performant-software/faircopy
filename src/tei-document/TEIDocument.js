@@ -77,7 +77,10 @@ export default class TEIDocument {
         const xmlDom = parser.parseFromString(text, "text/xml");
         const xmlDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(xmlDom)
 
-        // Convert from XML Schema to Simple Schema
+        // TODO Convert from XML Schema to Simple Schema
+        
+
+
         // in memory, there are three objects:
         // xml prosemirror doc
         // editor view (which holds editor state)
