@@ -1,5 +1,6 @@
 const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 
+// TODO detect PC
 const isMac = true
 
 class MainWindow {

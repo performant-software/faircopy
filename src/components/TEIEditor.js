@@ -1,34 +1,22 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 
-import {EditorState, TextSelection, AllSelection} from "prosemirror-state"
-import {EditorView} from "prosemirror-view"
+import { AllSelection} from "prosemirror-state"
 import {DOMParser, DOMSerializer} from "prosemirror-model"
-import { keymap } from "prosemirror-keymap"
-import { undo, redo } from "prosemirror-history"
 // import {addListNodes} from "prosemirror-schema-list"
-import {exampleSetup} from "prosemirror-example-setup"
 
 import { Toolbar, IconButton } from '@material-ui/core'
 import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
 
 // import {schema} from "./EditorSchema"
 import ProseMirrorComponent from "./ProseMirrorComponent"
-import TEIParser from '../parse/TEIParser';
-import { SimpleSchema } from './SimpleSchema';
+import TEIDocument from '../tei-document/TEIDocument';
+import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 const fs = window.nodeAppDependencies.fs
 
-class EditorWindow extends Component {
-
-    constructor() {
-        super()
-
-        this.state = {
-            filePath: null,
-            editorView: null
-        }
-    }
+class TEIEditor extends Component {
 
     componentDidMount() {
         this.setTitle(null)
@@ -40,34 +28,11 @@ class EditorWindow extends Component {
     }
 
     createEditorView = (element) => {
-
-        if( this.state.editorView ) return;
-
-        // should load the document that
-        // was provided by props
-
-        const documentSchema = SimpleSchema
-        
-        // const documentSchema = new Schema({
-        //     nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
-        //     marks: schema.spec.marks
-        // })
-
-        const div = document.createElement('DIV')
-        div.innerHTML = ""
-        const doc = DOMParser.fromSchema(documentSchema).parse(div)
-          
-        let plugins = exampleSetup({schema: documentSchema, menuBar: false})
-        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
-        const editorInitalState = EditorState.create({ 
-            doc, plugins,
-            selection: TextSelection.create(doc, 0)
-        })
-        const editorView = new EditorView( 
-            element, 
-            { state: editorInitalState }
-        )
-        this.setState({ ...this.state, editorView, documentSchema })
+        const { teiDocument, editorView } = this.props.teiEditor
+        if( editorView ) return;
+        const nextEditorView = teiDocument.createView(element)
+        dispatchAction( this.props, 'TEIEditorState.setEditorView', nextEditorView )
+        return nextEditorView
     }
 
     setTitle( filePath ) {
@@ -86,7 +51,7 @@ class EditorWindow extends Component {
         const { documentSchema, editorView } = this.state
         const editorState = editorView.state
 
-        const teiParser = new TEIParser()
+        const teiParser = new TEIDocument()
         teiParser.load(filePath)
 
         const text = fs.readFileSync(filePath, "utf8")
@@ -155,12 +120,15 @@ class EditorWindow extends Component {
         )
     }
 
-    render() {      
+    render() {    
+        const { teiDocument, editorView } = this.props.teiEditor
+        if( !teiDocument ) return null
+
         return (
             <div>
                 { this.renderToolbar() }
                 <ProseMirrorComponent
-                    editorView={this.state.editorView}
+                    editorView={editorView}
                     createEditorView={this.createEditorView}
                 />
             </div>
@@ -168,4 +136,10 @@ class EditorWindow extends Component {
     }
 }
 
-export default EditorWindow
+function mapStateToProps(state) {
+	return {
+        teiEditor: state.teiEditor,
+    };
+}
+
+export default connect(mapStateToProps)(TEIEditor);

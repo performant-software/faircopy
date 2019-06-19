@@ -1,8 +1,14 @@
 import {Schema, DOMParser as PMDOMParser } from "prosemirror-model"
+import { SimpleSchema } from './SimpleSchema';
+import {exampleSetup} from "prosemirror-example-setup"
+import { keymap } from "prosemirror-keymap"
+import { undo, redo } from "prosemirror-history"
+import {EditorState, TextSelection} from "prosemirror-state"
+import {EditorView} from "prosemirror-view"
 
 const fs = window.nodeAppDependencies.fs
 
-export default class TEIParser {
+export default class TEIDocument {
 
     constructor() {
 
@@ -36,15 +42,35 @@ export default class TEIParser {
 
         const marks = {}
 
-
-
         this.xmlSchema = new Schema({ nodes, marks })
     }
 
     createView(element) {
-        // TODO creates a editor view for this document
+        const documentSchema = SimpleSchema
+        
+        // const documentSchema = new Schema({
+        //     nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
+        //     marks: schema.spec.marks
+        // })
+
+        const div = document.createElement('DIV')
+        div.innerHTML = ""
+        const doc = PMDOMParser.fromSchema(documentSchema).parse(div)
+          
+        let plugins = exampleSetup({schema: documentSchema, menuBar: false})
+        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
+        const editorInitalState = EditorState.create({ 
+            doc, plugins,
+            selection: TextSelection.create(doc, 0)
+        })
+        const editorView = new EditorView( 
+            element, 
+            { state: editorInitalState }
+        )
+        return editorView
     }
 
+    // this should really be happening in the constructor
     load( filePath ) {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();
@@ -82,9 +108,6 @@ export default class TEIParser {
         // the tags supported by the schema
         // also embeds the technical documentation
         // in the correct language
-
-        
-
 
         return null;
     }
