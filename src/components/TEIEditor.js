@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 
+import { DOMParser as PMDOMParser } from "prosemirror-model"
 import { AllSelection} from "prosemirror-state"
-import {DOMParser, DOMSerializer} from "prosemirror-model"
-// import {addListNodes} from "prosemirror-schema-list"
+import {exampleSetup} from "prosemirror-example-setup"
+import { keymap } from "prosemirror-keymap"
+import { undo, redo } from "prosemirror-history"
+import {EditorState, TextSelection} from "prosemirror-state"
+import {EditorView} from "prosemirror-view"
 
 import { Toolbar, IconButton } from '@material-ui/core'
 import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
 
 // import {schema} from "./EditorSchema"
 import ProseMirrorComponent from "./ProseMirrorComponent"
-import TEIDocument from '../tei-document/TEIDocument';
 import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
-const fs = window.nodeAppDependencies.fs
 
 class TEIEditor extends Component {
 
@@ -30,7 +32,21 @@ class TEIEditor extends Component {
     createEditorView = (element) => {
         const { teiDocument, editorView } = this.props.teiEditor
         if( editorView ) return;
-        const nextEditorView = teiDocument.createView(element)
+
+        const div = document.createElement('DIV')
+        div.innerHTML = ""
+        const doc = PMDOMParser.fromSchema(teiDocument.xmlSchema).parse(div)
+          
+        let plugins = exampleSetup({schema: teiDocument.xmlSchema, menuBar: false})
+        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
+        const editorInitalState = EditorState.create({ 
+            doc, plugins,
+            selection: TextSelection.create(doc, 0)
+        })
+        const nextEditorView = new EditorView( 
+            element, 
+            { state: editorInitalState }
+        )
         dispatchAction( this.props, 'TEIEditorState.setEditorView', nextEditorView )
         return nextEditorView
     }
@@ -48,23 +64,16 @@ class TEIEditor extends Component {
     }
 
     openFile( filePath ) {
-        // const { documentSchema, editorView } = this.state
-        // const editorState = editorView.state
+        const { teiDocument, editorView } = this.props.teiEditor
+        const editorState = editorView.state
+        const docNode = teiDocument.load(filePath)
 
-        const teiParser = new TEIDocument()
-        teiParser.load(filePath)
-
-        // const text = fs.readFileSync(filePath, "utf8")
-        // const div = document.createElement('DIV')
-        // div.innerHTML = text
-        // const docNode = DOMParser.fromSchema(documentSchema).parse(div)
-
-        // const allSelection = new AllSelection(editorState.doc)
-        // const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
-        // editorView.updateState( editorState.apply(transaction) )
+        const allSelection = new AllSelection(editorState.doc)
+        const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
+        editorView.updateState( editorState.apply(transaction) )
         
         this.setTitle(filePath)
-        // this.setState( { ...this.state, filePath })
+        this.setState( { ...this.state, filePath })
     }
 
     requestSave() {
@@ -77,24 +86,11 @@ class TEIEditor extends Component {
     }
 
     save(saveFilePath) {
-        const { documentSchema, editorView } = this.state
-        const editorState = editorView.state
-
-        const domSerializer = DOMSerializer.fromSchema( documentSchema )
-        const domFragment = domSerializer.serializeFragment(editorState.doc.content)
-        var div = document.createElement('div')
-        div.appendChild( domFragment.cloneNode(true) )
-        const fileContents = div.innerHTML
-        console.log(fileContents) 
-        fs.writeFileSync(saveFilePath, fileContents, (err) => {
-            if (err) {
-                console.log(err)
-            } 
-        })
+        const { teiDocument, editorView } = this.props.teiEditor
+        teiDocument.save( editorView, saveFilePath )
         this.filePath = saveFilePath
         this.setTitle(saveFilePath)
     }
-
 
     onBulletList() {
         // TODO
