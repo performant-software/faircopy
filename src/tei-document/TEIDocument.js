@@ -24,16 +24,16 @@ export default class TEIDocument {
                 group: "inline"
             },
             lineGroup: {
-                content: "inline*",
+                content: "line+",
                 group: "block",
                 parseDOM: [{tag: "lg"}],
                 toDOM: this.lgToDOM
             },
             line: {
                 content: "inline*",
-                group: "block",
+                group: "linegroup",
                 parseDOM: [{tag: "l"}],
-                toDOM() { return ["li", 0] }
+                toDOM() { return ["tei-l", 0] }
             },
         }
 
@@ -46,7 +46,7 @@ export default class TEIDocument {
         if( this.teiMode ) {
             return ["lg", 0]
         } else {
-            return ["ul", 0]
+            return ["tei-lg", 0]
         }
     }
 
@@ -83,6 +83,7 @@ export default class TEIDocument {
                 console.log(err)
             } 
         })
+        this.teiMode = false
     }
 
 }
