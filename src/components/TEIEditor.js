@@ -12,8 +12,8 @@ import {EditorView} from "prosemirror-view"
 import { Toolbar, IconButton } from '@material-ui/core'
 import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
 
-// import {schema} from "./EditorSchema"
 import ProseMirrorComponent from "./ProseMirrorComponent"
+import EditorGutter from "./EditorGutter"
 import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
@@ -92,13 +92,13 @@ class TEIEditor extends Component {
         this.setTitle(saveFilePath)
     }
 
-    onBulletList() {
+    // onBulletList() {
         // TODO
         // const bulletListNodeType = this.state.documentSchema.nodes.bullet_list;
         // const editorState = this.getEditorState();
         // const cmd = wrapInList( bulletListNodeType );
         // cmd( editorState, this.state.editorView.dispatch );
-    }
+    // }
 
     renderToolbar() {
         return (
@@ -123,6 +123,7 @@ class TEIEditor extends Component {
         return (
             <div>
                 { this.renderToolbar() }
+                <EditorGutter></EditorGutter>
                 <ProseMirrorComponent
                     editorView={editorView}
                     createEditorView={this.createEditorView}
