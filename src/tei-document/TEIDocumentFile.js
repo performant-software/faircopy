@@ -3,7 +3,7 @@ import {DOMSerializer} from "prosemirror-model"
 
 const fs = window.nodeAppDependencies.fs
 
-export default class TEIDocument {
+export default class TEIDocumentFile {
 
     constructor() {
 
@@ -48,6 +48,12 @@ export default class TEIDocument {
         } else {
             return ["tei-lg", 0]
         }
+    }
+
+    blankDocument(documentDOM) {
+        const div = documentDOM.createElement('DIV')
+        div.innerHTML = ""
+        return PMDOMParser.fromSchema(this.xmlSchema).parse(div)
     }
 
     // this should really be happening in the constructor

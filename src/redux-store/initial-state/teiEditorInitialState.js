@@ -1,5 +1,5 @@
 export default {
-    filePath: null,
-    teiDocument: null,
-    editorView: null
+    // filePath: null,
+    // teiDocument: null,
+    // editorView: null
 }	

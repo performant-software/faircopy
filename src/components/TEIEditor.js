@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+// import {connect} from 'react-redux';
 
-import { DOMParser as PMDOMParser } from "prosemirror-model"
 import { AllSelection} from "prosemirror-state"
 import {exampleSetup} from "prosemirror-example-setup"
 import { keymap } from "prosemirror-keymap"
@@ -12,13 +11,23 @@ import {EditorView} from "prosemirror-view"
 import { Toolbar, IconButton } from '@material-ui/core'
 import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
 
+import TEIDocumentFile from "../tei-document/TEIDocumentFile"
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
-import { dispatchAction } from '../redux-store/ReduxStore';
+// import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
-class TEIEditor extends Component {
+export default class TEIEditor extends Component {
+
+    constructor() {
+        super()
+        this.state = {
+            filePath: null,
+            teiDocumentFile: new TEIDocumentFile(),
+            editorView: null
+        }	
+    }
 
     componentDidMount() {
         this.setTitle(null)
@@ -30,14 +39,11 @@ class TEIEditor extends Component {
     }
 
     createEditorView = (element) => {
-        const { teiDocument, editorView } = this.props.teiEditor
+        const { teiDocumentFile, editorView } = this.state
         if( editorView ) return;
 
-        const div = document.createElement('DIV')
-        div.innerHTML = ""
-        const doc = PMDOMParser.fromSchema(teiDocument.xmlSchema).parse(div)
-          
-        let plugins = exampleSetup({schema: teiDocument.xmlSchema, menuBar: false})
+        const doc = teiDocumentFile.blankDocument(document)   
+        let plugins = exampleSetup({schema: teiDocumentFile.xmlSchema, menuBar: false})
         plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
         const editorInitalState = EditorState.create({ 
             doc, plugins,
@@ -47,7 +53,7 @@ class TEIEditor extends Component {
             element, 
             { state: editorInitalState }
         )
-        dispatchAction( this.props, 'TEIEditorState.setEditorView', nextEditorView )
+        this.setState( { ...this.state, editorView: nextEditorView })
         return nextEditorView
     }
 
@@ -64,9 +70,9 @@ class TEIEditor extends Component {
     }
 
     openFile( filePath ) {
-        const { teiDocument, editorView } = this.props.teiEditor
+        const { teiDocumentFile, editorView } = this.props.teiEditor
         const editorState = editorView.state
-        const docNode = teiDocument.load(filePath)
+        const docNode = teiDocumentFile.load(filePath)
 
         const allSelection = new AllSelection(editorState.doc)
         const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
@@ -86,8 +92,8 @@ class TEIEditor extends Component {
     }
 
     save(saveFilePath) {
-        const { teiDocument, editorView } = this.props.teiEditor
-        teiDocument.save( editorView, saveFilePath )
+        const { teiDocumentFile, editorView } = this.props.teiEditor
+        teiDocumentFile.save( editorView, saveFilePath )
         this.filePath = saveFilePath
         this.setTitle(saveFilePath)
     }
@@ -117,8 +123,7 @@ class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editorView } = this.props.teiEditor
-        if( !teiDocument ) return null
+        const { editorView } = this.state
 
         return (
             <div>
@@ -133,10 +138,12 @@ class TEIEditor extends Component {
     }
 }
 
-function mapStateToProps(state) {
-	return {
-        teiEditor: state.teiEditor,
-    };
-}
+// Don't need Redux yet
 
-export default connect(mapStateToProps)(TEIEditor);
+// function mapStateToProps(state) {
+// 	return {
+//         teiEditor: state.teiEditor,
+//     };
+// }
+
+// export default connect(mapStateToProps)(TEIEditor);

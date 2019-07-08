@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
 
-class EditorGutter extends Component {
+export default class EditorGutter extends Component {
 
     // TODO create a paragraph marker for each paragraph in the 
     // document and calculate the height based on the size 
@@ -15,11 +14,3 @@ class EditorGutter extends Component {
         ) 
     }
 }
-
-function mapStateToProps(state) {
-	return {
-        teiEditor: state.teiEditor,
-    };
-}
-
-export default connect(mapStateToProps)(EditorGutter);
