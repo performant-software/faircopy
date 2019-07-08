@@ -25,7 +25,8 @@ export default class TEIEditor extends Component {
         this.state = {
             filePath: null,
             teiDocumentFile: new TEIDocumentFile(),
-            editorView: null
+            editorView: null,
+            editorState: null
         }	
     }
 
@@ -51,10 +52,22 @@ export default class TEIEditor extends Component {
         })
         const nextEditorView = new EditorView( 
             element, 
-            { state: editorInitalState }
+            { 
+                dispatchTransaction: this.dispatchTransaction,
+                state: editorInitalState 
+            }
         )
         this.setState( { ...this.state, editorView: nextEditorView })
         return nextEditorView
+    }
+
+    dispatchTransaction = (transaction) => {
+        const { editorView } = this.state 
+        const editorState = editorView.state
+        const nextEditorState = editorState.apply(transaction)
+        editorView.updateState(nextEditorState)
+        this.setState({...this.state, editorState: nextEditorState })
+        console.log(JSON.stringify(nextEditorState.toJSON()))
     }
 
     setTitle( filePath ) {
@@ -128,7 +141,7 @@ export default class TEIEditor extends Component {
         return (
             <div>
                 { this.renderToolbar() }
-                <EditorGutter></EditorGutter>
+                <EditorGutter editorView={editorView}></EditorGutter>
                 <ProseMirrorComponent
                     editorView={editorView}
                     createEditorView={this.createEditorView}
