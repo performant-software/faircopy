@@ -3,8 +3,9 @@
 }
 
 .EditorGutter .paragraph-marker {
-    background: green;
+    background: #ccc;
+    border: 1px solid grey;
     position: absolute;
     height: 50px;
-    width: 15px;
+    width: 12px;
 }

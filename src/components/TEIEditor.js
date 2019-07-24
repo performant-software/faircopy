@@ -8,8 +8,7 @@ import { undo, redo } from "prosemirror-history"
 import {EditorState, TextSelection} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 
-import { Toolbar, IconButton } from '@material-ui/core'
-import {FormatBold, FormatItalic, FormatUnderlined} from '@material-ui/icons';
+import { Toolbar, Button } from '@material-ui/core'
 
 import TEIDocumentFile from "../tei-document/TEIDocumentFile"
 import ProseMirrorComponent from "./ProseMirrorComponent"
@@ -26,7 +25,8 @@ export default class TEIEditor extends Component {
             filePath: null,
             teiDocumentFile: new TEIDocumentFile(),
             editorView: null,
-            editorState: null
+            editorState: null,
+            editMode: 'P'
         }	
     }
 
@@ -119,18 +119,28 @@ export default class TEIEditor extends Component {
         // cmd( editorState, this.state.editorView.dispatch );
     // }
 
+    onProseMode = () => {
+        this.setState({ ...this.state, editMode: 'P'})
+    }
+
+    onVerseMode = () => {
+        this.setState({ ...this.state, editMode: 'V'})
+    }
+
+    onDramaMode = () => {
+        this.setState({ ...this.state, editMode: 'D'})        
+    }
+
     renderToolbar() {
+        const {editMode} = this.state
+        const pVariant = editMode === 'P' ? 'contained' : ''
+        const vVariant = editMode === 'V' ? 'contained' : ''
+        const dVariant = editMode === 'D' ? 'contained' : ''
         return (
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                <IconButton tooltip='Bold selected text.'>
-                    <FormatBold />
-                </IconButton>
-                <IconButton tooltip='Italicize selected text.'>
-                    <FormatItalic />
-                </IconButton>
-                <IconButton tooltip='Underline selected text.'>
-                    <FormatUnderlined />
-                </IconButton>
+                <Button onClick={this.onProseMode} variant={pVariant} tooltip='Prose Mode'>P</Button>
+                <Button onClick={this.onVerseMode} variant={vVariant} tooltip='Verse Mode'>V</Button>
+                <Button onClick={this.onDramaMode} variant={dVariant} ooltip='Drama Mode'>D</Button>
             </Toolbar>
         )
     }

@@ -1,3 +1,7 @@
+.ProseMirrorComponent {
+  min-width: calc( 100% - 20px);
+}
+
 .ProseMirror {
     position: relative;
     height: 700px;
