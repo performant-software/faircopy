@@ -1,10 +1,10 @@
 .EditorGutter {
-    float: left;
-    margin-right: 10px;
+    margin-right: 20px;
 }
 
 .EditorGutter .paragraph-marker {
     background: green;
-    height: 200px;
+    position: absolute;
+    height: 50px;
     width: 15px;
 }

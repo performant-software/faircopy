@@ -23,6 +23,12 @@ export default class TEIDocumentFile {
             text: {
                 group: "inline"
             },
+            paragraph: {
+                content: "inline*",
+                group: "block",
+                parseDOM: [{tag: "p"}],
+                toDOM() { return ["tei-p", 0] }          
+            },
             lineGroup: {
                 content: "line+",
                 group: "block",

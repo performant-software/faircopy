@@ -24,6 +24,6 @@ export default class ProseMirrorComponent extends Component {
   render() {
     // Render just an empty div which is then used as a container for an
     // EditorView instance.
-    return <div ref={this.props.createEditorView}  />;
+    return <div className='ProseMirrorComponment' ref={this.props.createEditorView}  />;
   }
 }

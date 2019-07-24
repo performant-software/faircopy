@@ -51,13 +51,13 @@ export default class TEIEditor extends Component {
             selection: TextSelection.create(doc, 0)
         })
         const nextEditorView = new EditorView( 
-            element, 
+            element,    
             { 
                 dispatchTransaction: this.dispatchTransaction,
                 state: editorInitalState 
             }
         )
-        this.setState( { ...this.state, editorView: nextEditorView })
+        this.setState( { ...this.state, editorView: nextEditorView, editorState: editorInitalState })
         return nextEditorView
     }
 
@@ -139,13 +139,17 @@ export default class TEIEditor extends Component {
         const { editorView } = this.state
 
         return (
-            <div>
-                { this.renderToolbar() }
-                <EditorGutter editorView={editorView}></EditorGutter>
-                <ProseMirrorComponent
-                    editorView={editorView}
-                    createEditorView={this.createEditorView}
-                />
+            <div className='TEIEditor'> 
+                <div className='header'>
+                    { this.renderToolbar() }
+                </div>
+                <div className='body'>
+                    <EditorGutter editorView={editorView}></EditorGutter>
+                    <ProseMirrorComponent
+                        editorView={editorView}
+                        createEditorView={this.createEditorView}
+                    />
+                </div>    
             </div>
         )
     }
