@@ -1,5 +1,6 @@
 .EditorGutter {
-    margin-right: 20px;
+    margin-right: 16px;
+    overflow: hidden;
 }
 
 .EditorGutter .paragraph-marker {
@@ -7,5 +8,5 @@
     border: 1px solid grey;
     position: absolute;
     height: 50px;
-    width: 12px;
+    width: 6px;
 }

@@ -2,4 +2,8 @@
 
 .TEIEditor .body {
     display: flex;
+    height: calc( 100% - 60px );
+    overflow-y: scroll;
+    position: fixed;
+    min-width: calc( 100% - 12px);
 }

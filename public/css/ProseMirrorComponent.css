@@ -2,13 +2,11 @@
   min-width: calc( 100% - 30px);
   height: 100%;
   left: 30px;
-  overflow-y: scroll;
-  position: fixed;
+  margin-right: 30px;
 }
 
 .ProseMirror {
     position: relative;
-    height: 700px;
     word-wrap: break-word;
     white-space: pre-wrap;
     -webkit-font-variant-ligatures: none;

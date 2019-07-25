@@ -59,10 +59,10 @@ export default class TEIEditor extends Component {
         )
 
         // dispatch a blank transaction to cause a refresh of the dependent views on scroll
-        element.addEventListener("scroll", () => {
-            const tr = this.state.editorState.tr
-            this.dispatchTransaction(tr)
-        })
+        // element.addEventListener("scroll", () => {
+        //     const tr = this.state.editorState.tr
+        //     this.dispatchTransaction(tr)
+        // })
 
         this.setState( { ...this.state, editorView: nextEditorView, editorState: editorInitalState })
         return nextEditorView
