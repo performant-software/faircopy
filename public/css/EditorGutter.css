@@ -3,9 +3,15 @@
     overflow: hidden;
 }
 
-.EditorGutter .paragraph-marker {
-    background: rgb(133, 133, 248);
+.EditorGutter .marker {
     position: absolute;
-    height: 50px;
     width: 6px;
+}
+
+.EditorGutter .marker.paragraph {
+    background: rgb(133, 133, 248);
+}
+
+.EditorGutter .marker.lineGroup {
+    background: rgb(133, 248, 148);
 }
