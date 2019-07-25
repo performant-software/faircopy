@@ -1,5 +1,9 @@
 import {Schema, DOMParser as PMDOMParser } from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
+import {EditorState, TextSelection} from "prosemirror-state"
+import {exampleSetup} from "prosemirror-example-setup"
+import { keymap } from "prosemirror-keymap"
+import { undo, redo } from "prosemirror-history"
 
 const fs = window.nodeAppDependencies.fs
 
@@ -37,7 +41,7 @@ export default class TEIDocumentFile {
             },
             line: {
                 content: "inline*",
-                group: "linegroup",
+                group: "line",
                 parseDOM: [{tag: "l"}],
                 toDOM() { return ["tei-l", 0] }
             },
@@ -56,10 +60,16 @@ export default class TEIDocumentFile {
         }
     }
 
-    blankDocument(documentDOM) {
+    editorInitialState(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
-        return PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        let plugins = exampleSetup({schema: this.xmlSchema, menuBar: false})
+        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
+        return EditorState.create({ 
+            doc, plugins,
+            selection: TextSelection.create(doc, 0)
+        })
     }
 
     // this should really be happening in the constructor

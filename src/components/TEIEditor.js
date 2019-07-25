@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 // import {connect} from 'react-redux';
 
-import { AllSelection, Transaction } from "prosemirror-state"
-import {exampleSetup} from "prosemirror-example-setup"
-import { keymap } from "prosemirror-keymap"
-import { undo, redo } from "prosemirror-history"
-import {EditorState, TextSelection} from "prosemirror-state"
+import { AllSelection } from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 
 import { Toolbar, Button } from '@material-ui/core'
@@ -42,6 +38,7 @@ export default class TEIEditor extends Component {
     }
 
     onWindowResize = () => {
+        // dispatch a blank transaction to force a display update of the subcomponents
         const tr = this.state.editorState.tr
         this.dispatchTransaction(tr)
     }
@@ -50,18 +47,12 @@ export default class TEIEditor extends Component {
         const { teiDocumentFile, editorView } = this.state
         if( editorView ) return;
 
-        const doc = teiDocumentFile.blankDocument(document)   
-        let plugins = exampleSetup({schema: teiDocumentFile.xmlSchema, menuBar: false})
-        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
-        const editorInitalState = EditorState.create({ 
-            doc, plugins,
-            selection: TextSelection.create(doc, 0)
-        })
+        const editorInitalState = teiDocumentFile.editorInitialState(document) 
         const nextEditorView = new EditorView( 
             element,    
             { 
                 dispatchTransaction: this.dispatchTransaction,
-                state: editorInitalState 
+                state: editorInitalState
             }
         )
 
