@@ -36,7 +36,14 @@ export default class TEIEditor extends Component {
         // Receive open and save file events from the main process
         ipcRenderer.on('fileOpened', (event, filePath) => this.openFile(filePath))
         ipcRenderer.on('requestSave', () => this.requestSave())        
-        ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))        
+        ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
+        
+        window.addEventListener("resize", this.onWindowResize)
+    }
+
+    onWindowResize = () => {
+        const tr = this.state.editorState.tr
+        this.dispatchTransaction(tr)
     }
 
     createEditorView = (element) => {
@@ -58,12 +65,6 @@ export default class TEIEditor extends Component {
             }
         )
 
-        // dispatch a blank transaction to cause a refresh of the dependent views on scroll
-        // element.addEventListener("scroll", () => {
-        //     const tr = this.state.editorState.tr
-        //     this.dispatchTransaction(tr)
-        // })
-
         this.setState( { ...this.state, editorView: nextEditorView, editorState: editorInitalState })
         return nextEditorView
     }
@@ -74,7 +75,7 @@ export default class TEIEditor extends Component {
         const nextEditorState = editorState.apply(transaction)
         editorView.updateState(nextEditorState)
         this.setState({...this.state, editorState: nextEditorState })
-        console.log(JSON.stringify(nextEditorState.toJSON()))
+        // console.log(JSON.stringify(nextEditorState.toJSON()))
     }
 
     setTitle( filePath ) {
@@ -154,19 +155,23 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { editorView } = this.state
+        const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
             <div className='TEIEditor'> 
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
-                <div className='body'>
-                    <EditorGutter editorView={editorView}></EditorGutter>
+                <div ref={(el) => this.el = el } className='body'>
+                    <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
                     <ProseMirrorComponent
                         editorView={editorView}
                         createEditorView={this.createEditorView}
                     />
                 </div>    
+                {/* <div className='status-bar'>
+                    <p>Current Mode:</p>
+                </div> */}
             </div>
         )
     }
