@@ -1,9 +1,15 @@
 import {Schema, DOMParser as PMDOMParser } from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
 import {EditorState, TextSelection} from "prosemirror-state"
-import {exampleSetup} from "prosemirror-example-setup"
-import { keymap } from "prosemirror-keymap"
-import { undo, redo } from "prosemirror-history"
+import {keymap} from "prosemirror-keymap"
+import {history, undo, redo} from "prosemirror-history"
+import {baseKeymap} from "prosemirror-commands"
+import {Plugin} from "prosemirror-state"
+import {dropCursor} from "prosemirror-dropcursor"
+import {gapCursor} from "prosemirror-gapcursor"
+
+import {buildKeymap} from "./keymap"
+import {buildInputRules} from "./inputrules"
 
 const fs = window.nodeAppDependencies.fs
 
@@ -64,12 +70,29 @@ export default class TEIDocumentFile {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
         const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
-        let plugins = exampleSetup({schema: this.xmlSchema, menuBar: false})
-        plugins.push( keymap({"Mod-z": undo, "Mod-y": redo}) )
+        const plugins = this.pluginSetup()
+        const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
-            doc, plugins,
-            selection: TextSelection.create(doc, 0)
+            doc, plugins, selection 
         })
+    }
+
+    pluginSetup() {
+        let plugins = [
+            buildInputRules(this.xmlSchema),
+            keymap(buildKeymap(this.xmlSchema)),
+            keymap(baseKeymap),
+            dropCursor(),
+            gapCursor(),
+            keymap({"Mod-z": undo, "Mod-y": redo}),
+            history()
+        ]
+      
+        return plugins.concat(new Plugin({
+            props: {
+                attributes: {class: "ProseMirror-example-setup-style"}
+            }
+        }))
     }
 
     // this should really be happening in the constructor
