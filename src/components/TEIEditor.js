@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import {connect} from 'react-redux';
 
-import { AllSelection} from "prosemirror-state"
+import { AllSelection, Transaction } from "prosemirror-state"
 import {exampleSetup} from "prosemirror-example-setup"
 import { keymap } from "prosemirror-keymap"
 import { undo, redo } from "prosemirror-history"
@@ -57,6 +57,13 @@ export default class TEIEditor extends Component {
                 state: editorInitalState 
             }
         )
+
+        // dispatch a blank transaction to cause a refresh of the dependent views on scroll
+        element.addEventListener("scroll", () => {
+            const tr = this.state.editorState.tr
+            this.dispatchTransaction(tr)
+        })
+
         this.setState( { ...this.state, editorView: nextEditorView, editorState: editorInitalState })
         return nextEditorView
     }
@@ -133,9 +140,9 @@ export default class TEIEditor extends Component {
 
     renderToolbar() {
         const {editMode} = this.state
-        const pVariant = editMode === 'P' ? 'contained' : ''
-        const vVariant = editMode === 'V' ? 'contained' : ''
-        const dVariant = editMode === 'D' ? 'contained' : ''
+        const pVariant = editMode === 'P' ? 'contained' : 'text'
+        const vVariant = editMode === 'V' ? 'contained' : 'text'
+        const dVariant = editMode === 'D' ? 'contained' : 'text'
         return (
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
                 <Button onClick={this.onProseMode} variant={pVariant} tooltip='Prose Mode'>P</Button>
