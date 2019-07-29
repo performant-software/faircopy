@@ -8,3 +8,16 @@ FairCopy is a word processor for the humanities scholar. It can encode prose, dr
 FairCopy can conform to the encoding needs of a particular project and is fully functional ODD processor. Once the user has chosen an ODD schema, FairCopy can use it to read and write XML that is valid in that schema. Users can even specify their own project specific tags via ODD.
 
 FairCopy is desktop software that works with or without an Internet connection on Mac and PC.
+
+Developer Environment
+-----------
+
+To run Faircopy in development mode, install the necessary dependencies using `yarn` and then `yarn start-dev`. This will start the create react app server on port 3000. To run the electron main process on VS Code, a debug configuration has been created for the project. Run the debugger and this will allow you to work in the electron environment. Create React App will hot reload into Electron's browser as you work. 
+
+To build the React application for packaging, run:
+
+`yarn build`
+
+To run the built React app:
+
+`yarn start`

@@ -1,0 +1,17 @@
+.EditorGutter {
+    margin-right: 16px;
+    overflow: hidden;
+}
+
+.EditorGutter .marker {
+    position: absolute;
+    width: 6px;
+}
+
+.EditorGutter .marker.paragraph {
+    background: rgb(133, 133, 248);
+}
+
+.EditorGutter .marker.lineGroup {
+    background: rgb(133, 248, 148);
+}
