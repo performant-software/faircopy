@@ -1022,7 +1022,7 @@ tei-musicNotation:before {
 }
 /* n */
 tei-name {
-  /* Empty Rule Set */
+  color: blue;
 }
 tei-nameLink {
   /* Empty Rule Set */

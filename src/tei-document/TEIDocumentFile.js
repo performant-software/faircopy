@@ -16,14 +16,6 @@ const fs = window.nodeAppDependencies.fs
 export default class TEIDocumentFile {
 
     constructor() {
-
-        /* <lg type="stanza">
-                <l>Piping down the valleys wild, </l>
-                <l>Piping songs of pleasant glee, </l>
-                <l>On a cloud I saw a child, </l>
-                <l>And he laughing said to me: </l>
-            </lg> */
-
         this.teiMode = false
 
         const nodes = {
@@ -50,10 +42,29 @@ export default class TEIDocumentFile {
                 group: "line",
                 parseDOM: [{tag: "l"}],
                 toDOM() { return ["tei-l", 0] }
-            },
+            }
         }
 
-        const marks = {}
+        const marks = {
+            name: {
+                attrs: {
+                    type: {}    
+                },
+                parseDOM: [
+                    {
+                        tag: "name",
+                        getAttrs(dom) {
+                            return {type: dom.getAttribute("type")}
+                        }
+                    }
+                ],
+                toDOM(node) { 
+                    let {type} = node.attrs; 
+                    debugger
+                    return ["tei-name", {type}, 0] 
+                }
+            }
+        }
 
         this.xmlSchema = new Schema({ nodes, marks })
     }
@@ -109,13 +120,15 @@ export default class TEIDocumentFile {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();
         const xmlDom = parser.parseFromString(text, "text/xml");
-        const xmlDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(xmlDom)
-        return xmlDoc
-        
+        const bodyEl = xmlDom.getElementsByTagName('body')[0]
+        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(bodyEl)
+        const plugins = this.pluginSetup()
+        const selection = TextSelection.create(doc, 0)
+        return EditorState.create({ 
+            doc, plugins, selection 
+        })
+
         // TODO db of attributes managed by this object
-
-        // for every element, define serializer for HTML and XML
-
         // seperate module for parsing ODD file
         // configures the editor to provide
         // the tags supported by the schema

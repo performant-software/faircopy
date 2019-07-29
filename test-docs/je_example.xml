@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+	<teiHeader>
+		<fileDesc>
+	 		<titleStmt>
+				<title>demo</title>
+	 		</titleStmt>
+	 		<publicationStmt>
+				<publisher/>
+				<pubPlace/>
+				<date/>
+				<authority/>
+			   <availability>
+			      <p/> 
+				</availability>
+		   </publicationStmt>
+	 		<sourceDesc>
+	 	      <p/>
+	 		</sourceDesc>
+		</fileDesc>
+	</teiHeader>
+ <text>
+	<body><p><pb facs="221497b0-a9a4-4d4c-8a64-b0a83ef5aa73"/>the libraries. Like some other events in every age befalling states everywhere, including America, the <ref target="#ref_30470">Great Mutiny</ref><note xml:id="ref_30470">note test</note> was of such character that national pride along with views of policy would fain shade it off into the historical background. Such events can not be ignored, but there is a considerable way of historically treating them. If a well-constituted individual refrains from blazoning aught amiss or calamitous in his <name type="person">family</name>; a <name type="place">nation</name> in the like circumstance may without reproach be equally discreet.<pb facs="0b5e7f66-b692-453d-9712-22c09c18280a"/>Though after parleyings 
+between Government and the ring-leaders, 
+and concessions by the former as to some 
+<del hand="#HM">inemtestable</del> <add hand="#HM">glaring</add> abuses, the first <del hand="#HM">utter</del>
+uprising <add hand="#HM">- that at Spithead -</add> with great difficulty <del hand="#HM">was</del>
+put down, or <del hand="#HM">pacified</del> matters <add hand="#HM">for a time</add> pacified; 
+yet <add hand="#HM">at the Nore</add> the unforeseen renewal of 
+insurrection <del hand="#HM"><add hand="#HM">and</add></del> on a yet larger scale,<pb facs="b3228b71-ee3c-4991-9d7c-a493152ca642"/>and emphasized in the conferences that 
+ensued by demands deemed by the authorities 
+not only inadmissible but <add hand="#HM">aggressively</add> insolent, <del hand="#HM">evinced </del><add hand="#HM">indicated</add> - 
+if the Red Flag did not sufficiently do so, 
+signify it - 
+what was the spirit animating the men. 
+Final suppression, however, there was; 
+but only made possible perhaps by 
+<add hand="#HM">the <del hand="#HM">steady</del> <add hand="#HM">unswerving</add> loyalty of the marine corps</add>
+a voluntary resumption of loyalty among 
+influential sections of the crews. <del hand="#HM"><add hand="#HM">Insert</add></del>
+To some extent the Nore Mutiny may be 
+regarded as <del hand="#HM">somewhat</del> analgous to the</p></body>
+ </text>
+</TEI>

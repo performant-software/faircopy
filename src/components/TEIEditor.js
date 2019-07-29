@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 // import {connect} from 'react-redux';
 
-import { AllSelection } from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 
 import { Toolbar, Button } from '@material-ui/core'
@@ -82,16 +81,15 @@ export default class TEIEditor extends Component {
     }
 
     openFile( filePath ) {
-        const { teiDocumentFile, editorView } = this.props.teiEditor
-        const editorState = editorView.state
-        const docNode = teiDocumentFile.load(filePath)
-
-        const allSelection = new AllSelection(editorState.doc)
-        const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
-        editorView.updateState( editorState.apply(transaction) )
-        
-        this.setTitle(filePath)
-        this.setState( { ...this.state, filePath })
+        const { teiDocumentFile, editorView } = this.state
+        const newEditorState = teiDocumentFile.load(filePath)
+        if( newEditorState ) {
+            editorView.updateState( newEditorState )        
+            this.setTitle(filePath)
+            this.setState( { ...this.state, editorState: newEditorState, filePath })    
+        } else {
+            console.log(`Unable to load file: ${filePath}`)
+        }
     }
 
     requestSave() {
@@ -138,8 +136,8 @@ export default class TEIEditor extends Component {
         return (
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
                 <Button onClick={this.onProseMode} variant={pVariant} tooltip='Prose Mode'>P</Button>
-                <Button onClick={this.onVerseMode} variant={vVariant} tooltip='Verse Mode'>V</Button>
-                <Button onClick={this.onDramaMode} variant={dVariant} ooltip='Drama Mode'>D</Button>
+                <Button disabled onClick={this.onVerseMode} variant={vVariant} tooltip='Verse Mode'>V</Button>
+                <Button disabled onClick={this.onDramaMode} variant={dVariant} ooltip='Drama Mode'>D</Button>
             </Toolbar>
         )
     }
