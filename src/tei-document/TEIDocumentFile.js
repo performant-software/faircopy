@@ -77,11 +77,20 @@ export default class TEIDocumentFile {
         })
     }
 
+    // TODO separate module?
+    fairCopyKeyMap() {
+        // "Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
+        // the function of the enter key is dependent upon the current editor mode
+        // need to understand how this presently works and then develop a scheme
+        // to interrupt and put the correct node type in there depending on the circumstance
+        return baseKeymap
+    }
+
     pluginSetup() {
         let plugins = [
             buildInputRules(this.xmlSchema),
             keymap(buildKeymap(this.xmlSchema)),
-            keymap(baseKeymap),
+            keymap(this.fairCopyKeyMap()),
             dropCursor(),
             gapCursor(),
             keymap({"Mod-z": undo, "Mod-y": redo}),
