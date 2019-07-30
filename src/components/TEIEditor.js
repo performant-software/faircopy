@@ -102,9 +102,9 @@ export default class TEIEditor extends Component {
     }
 
     save(saveFilePath) {
-        const { teiDocumentFile, editorView } = this.props.teiEditor
+        const { teiDocumentFile, editorView } = this.state
         teiDocumentFile.save( editorView, saveFilePath )
-        this.filePath = saveFilePath
+        this.setState( { ...this.state, filePath: saveFilePath })
         this.setTitle(saveFilePath)
     }
 

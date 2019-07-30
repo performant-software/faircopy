@@ -28,25 +28,25 @@ export default class TEIDocumentFile {
                 content: "inline*",
                 group: "block",
                 parseDOM: [{tag: "p"}],
-                toDOM() { return ["tei-p", 0] }          
+                toDOM: () => this.teiMode ? ["p",0] : ["tei-p",0]        
             },
             pb: {
                 inline: true,
                 group: "inline",
                 parseDOM: [{tag: "pb"}],
-                toDOM() { return ["tei-pb", ' '] }          
+                toDOM: () => this.teiMode ? ["pb"] : ["tei-pb", " "]     
             },
             line: {
                 content: "inline*",
                 group: "line",
                 parseDOM: [{tag: "l"}],
-                toDOM() { return ["tei-l", 0] }
+                toDOM: () => this.teiMode ? ["l",0] : ["tei-l", 0]
             },
             lineGroup: {
                 content: "line+",
                 group: "block",
                 parseDOM: [{tag: "lg"}],
-                toDOM: this.lgToDOM
+                toDOM: () => this.teiMode ? ["lg",0] : ["tei-lg", 0]
             },
             text: {
                 group: "inline"
@@ -60,9 +60,7 @@ export default class TEIDocumentFile {
                         tag: "add"
                     } 
                 ],
-                toDOM(node) { 
-                    return ["tei-add", 0] 
-                }
+                toDOM: () => this.teiMode ? ["add",0] : ["tei-add",0]        
             },
             del: {
                 parseDOM: [
@@ -70,9 +68,7 @@ export default class TEIDocumentFile {
                         tag: "del"
                     }
                 ],
-                toDOM(node) { 
-                    return ["tei-del", 0] 
-                }
+                toDOM: () => this.teiMode ? ["del",0] : ["tei-del",0]  
             },
             name: {
                 attrs: {
@@ -86,9 +82,9 @@ export default class TEIDocumentFile {
                         }
                     }
                 ],
-                toDOM(node) { 
+                toDOM: (node) => { 
                     let {type} = node.attrs; 
-                    return ["tei-name", {type}, 0] 
+                    return this.teiMode ? ["name", {type}, 0]  : ["tei-name", {type}, 0]   
                 }
             },
             note: {
@@ -103,9 +99,9 @@ export default class TEIDocumentFile {
                         }
                     }
                 ],
-                toDOM(node) { 
+                toDOM: (node) => { 
                     let {id} = node.attrs; 
-                    return ["tei-note", {id}, 0] 
+                    return this.teiMode ? ["note", {id}, 0]  : ["tei-note", {id}, 0] 
                 }
             },            
             ref: {
@@ -114,21 +110,11 @@ export default class TEIDocumentFile {
                         tag: "ref"
                     } 
                 ],
-                toDOM(node) { 
-                    return ["tei-ref", 0] 
-                }
+                toDOM: () => this.teiMode ? ["ref",0] : ["tei-ref",0] 
             }
         }
 
         this.xmlSchema = new Schema({ nodes, marks })
-    }
-
-    lgToDOM = () => {
-        if( this.teiMode ) {
-            return ["lg", 0]
-        } else {
-            return ["tei-lg", 0]
-        }
     }
 
     editorInitialState(documentDOM) {
