@@ -80,6 +80,13 @@ tei-add[place=inline]:after {
 tei-add[place=below] {
   vertical-align: sub;
 }
+tei-add {
+  color: blue;
+}
+tei-del {
+  color: red;
+  text-decoration: line-through;
+}
 tei-addName {
   /* Empty Rule Set */
 }
@@ -1143,14 +1150,7 @@ tei-pause {
   /* Empty Rule Set*/
 }
 tei-pb {
-  /*
-  display: block;
-  width: 100%;
-  text-align: right;
-  color: gray;
-  margin: 2em 0 2em 0;
-  font-size: 11pt;
-  */
+  background: green;
 }
 /*
 tei-pb:before {

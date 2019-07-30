@@ -18,12 +18,11 @@ export default class TEIDocumentFile {
     constructor() {
         this.teiMode = false
 
+        // <ref target="#ref_30470">Great Mutiny</ref><note xml:id="ref_30470">note test</note> 
+
         const nodes = {
             doc: {
                 content: "block+"
-            },
-            text: {
-                group: "inline"
             },
             paragraph: {
                 content: "inline*",
@@ -31,21 +30,50 @@ export default class TEIDocumentFile {
                 parseDOM: [{tag: "p"}],
                 toDOM() { return ["tei-p", 0] }          
             },
-            lineGroup: {
-                content: "line+",
-                group: "block",
-                parseDOM: [{tag: "lg"}],
-                toDOM: this.lgToDOM
+            pb: {
+                inline: true,
+                group: "inline",
+                parseDOM: [{tag: "pb"}],
+                toDOM() { return ["tei-pb", ' '] }          
             },
             line: {
                 content: "inline*",
                 group: "line",
                 parseDOM: [{tag: "l"}],
                 toDOM() { return ["tei-l", 0] }
-            }
+            },
+            lineGroup: {
+                content: "line+",
+                group: "block",
+                parseDOM: [{tag: "lg"}],
+                toDOM: this.lgToDOM
+            },
+            text: {
+                group: "inline"
+            },
         }
 
         const marks = {
+            add: {
+                parseDOM: [
+                    {
+                        tag: "add"
+                    } 
+                ],
+                toDOM(node) { 
+                    return ["tei-add", 0] 
+                }
+            },
+            del: {
+                parseDOM: [
+                    {
+                        tag: "del"
+                    }
+                ],
+                toDOM(node) { 
+                    return ["tei-del", 0] 
+                }
+            },
             name: {
                 attrs: {
                     type: {}    
@@ -60,8 +88,34 @@ export default class TEIDocumentFile {
                 ],
                 toDOM(node) { 
                     let {type} = node.attrs; 
-                    debugger
                     return ["tei-name", {type}, 0] 
+                }
+            },
+            note: {
+                attrs: {
+                    id: {}    
+                },
+                parseDOM: [
+                    {
+                        tag: "note",
+                        getAttrs(dom) {
+                            return {id: dom.getAttribute("xml:id")}
+                        }
+                    }
+                ],
+                toDOM(node) { 
+                    let {id} = node.attrs; 
+                    return ["tei-note", {id}, 0] 
+                }
+            },            
+            ref: {
+                parseDOM: [
+                    {
+                        tag: "ref"
+                    } 
+                ],
+                toDOM(node) { 
+                    return ["tei-ref", 0] 
                 }
             }
         }
@@ -78,14 +132,15 @@ export default class TEIDocumentFile {
     }
 
     editorInitialState(documentDOM) {
-        const div = documentDOM.createElement('DIV')
-        div.innerHTML = ""
-        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
-        const plugins = this.pluginSetup()
-        const selection = TextSelection.create(doc, 0)
-        return EditorState.create({ 
-            doc, plugins, selection 
-        })
+        return this.load('test-docs/je_example.xml')
+        // const div = documentDOM.createElement('DIV')
+        // div.innerHTML = ""
+        // const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        // const plugins = this.pluginSetup()
+        // const selection = TextSelection.create(doc, 0)
+        // return EditorState.create({ 
+        //     doc, plugins, selection 
+        // })
     }
 
     // TODO separate module?
@@ -137,6 +192,8 @@ export default class TEIDocumentFile {
     }
 
     save(editorView, saveFilePath) {
+        // Override save file for testing
+        saveFilePath = 'test-docs/je_example_out.xml'
         const editorState = editorView.state
         this.teiMode = true
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
