@@ -160,8 +160,8 @@ export default class TEIDocumentFile {
     load( filePath ) {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();
-        const xmlDom = parser.parseFromString(text, "text/xml");
-        const bodyEl = xmlDom.getElementsByTagName('body')[0]
+        this.xmlDom = parser.parseFromString(text, "text/xml");
+        const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(bodyEl)
         const plugins = this.pluginSetup()
         const selection = TextSelection.create(doc, 0)
@@ -180,14 +180,20 @@ export default class TEIDocumentFile {
     save(editorView, saveFilePath) {
         // Override save file for testing
         saveFilePath = 'test-docs/je_example_out.xml'
+
         const editorState = editorView.state
         this.teiMode = true
+
+        // take the body of the document from prosemirror and reunite it with 
+        // the rest of the xml document, then serialize to string
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(editorState.doc.content)
+        const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
-        const fileContents = div.innerHTML
-        console.log(fileContents) 
+        bodyEl.innerHTML = div.innerHTML
+        const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
+
         fs.writeFileSync(saveFilePath, fileContents, (err) => {
             if (err) {
                 console.log(err)

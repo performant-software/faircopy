@@ -2,3 +2,4 @@
 /node_modules
 yarn-error.log
 /build
+test-docs/je_example_out.xml
