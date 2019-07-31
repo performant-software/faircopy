@@ -8,6 +8,7 @@ import { Toolbar, Button } from '@material-ui/core'
 import TEIDocumentFile from "../tei-document/TEIDocumentFile"
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
+import ParameterDrawer from './ParameterDrawer';
 // import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
@@ -158,9 +159,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                {/* <div className='status-bar'>
-                    <p>Current Mode:</p>
-                </div> */}
+                <ParameterDrawer></ParameterDrawer>
             </div>
         )
     }
