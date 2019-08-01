@@ -17,6 +17,7 @@ export default class TEIDocumentFile {
 
     constructor() {
         this.teiMode = false
+        this.subDocuments = {}
 
         // <ref target="#ref_30470">Great Mutiny</ref><note xml:id="ref_30470">note test</note> 
 
@@ -48,6 +49,28 @@ export default class TEIDocumentFile {
                 parseDOM: [{tag: "lg"}],
                 toDOM: () => this.teiMode ? ["lg",0] : ["tei-lg", 0]
             },
+            note: {
+                inline: true,
+                group: "inline",
+                attrs: {
+                    id: {}    
+                },
+                parseDOM: [
+                    {
+                        tag: "note",
+                        getAttrs: (domNode) => {
+                            const noteID = domNode.getAttribute("xml:id")
+                            this.subDocuments[noteID] = domNode
+                            return {id: noteID}
+                        },
+                    }
+                ],
+                toDOM: (node) => { 
+                    let {id} = node.attrs; 
+                    const subDocument = this.subDocuments[id] 
+                    return this.teiMode ? subDocument  : ["tei-note", " "] 
+                }
+            },   
             text: {
                 group: "inline"
             },
@@ -82,28 +105,11 @@ export default class TEIDocumentFile {
                         }
                     }
                 ],
-                toDOM: (node) => { 
-                    let {type} = node.attrs; 
+                toDOM: (mark) => { 
+                    let {type} = mark.attrs; 
                     return this.teiMode ? ["name", {type}, 0]  : ["tei-name", {type}, 0]   
                 }
-            },
-            note: {
-                attrs: {
-                    id: {}    
-                },
-                parseDOM: [
-                    {
-                        tag: "note",
-                        getAttrs(dom) {
-                            return {id: dom.getAttribute("xml:id")}
-                        }
-                    }
-                ],
-                toDOM: (node) => { 
-                    let {id} = node.attrs; 
-                    return this.teiMode ? ["note", {id}, 0]  : ["tei-note", {id}, 0] 
-                }
-            },            
+            },         
             ref: {
                 parseDOM: [
                     {
