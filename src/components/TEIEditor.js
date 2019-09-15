@@ -118,6 +118,7 @@ export default class TEIEditor extends Component {
     // }
 
     onProseMode = () => {
+        const testWindow = window.open('http://localhost:3000'); 
         this.setState({ ...this.state, editMode: 'P'})
     }
 

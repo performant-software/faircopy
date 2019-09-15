@@ -1047,7 +1047,8 @@ tei-normalization {
   /* Empty Rule Set */
 }
 tei-note {
-  background: blue;
+  color: blue;
+  cursor: pointer;
 }
 tei-notesStmt {
   /* do we want to box each individual <note> if they're in a <notesStmt>? */

@@ -19,8 +19,6 @@ export default class TEIDocumentFile {
         this.teiMode = false
         this.subDocuments = {}
 
-        // <ref target="#ref_30470">Great Mutiny</ref><note xml:id="ref_30470">note test</note> 
-
         const nodes = {
             doc: {
                 content: "block+"
@@ -60,6 +58,7 @@ export default class TEIDocumentFile {
                         tag: "note",
                         getAttrs: (domNode) => {
                             const noteID = domNode.getAttribute("xml:id")
+                            // TODO subdocuments need to be assigned internal unique IDs
                             this.subDocuments[noteID] = domNode
                             return {id: noteID}
                         },
@@ -68,7 +67,7 @@ export default class TEIDocumentFile {
                 toDOM: (node) => { 
                     let {id} = node.attrs; 
                     const subDocument = this.subDocuments[id] 
-                    return this.teiMode ? subDocument  : ["tei-note", " "] 
+                    return this.teiMode ? subDocument  : ["tei-note", "†"] 
                 }
             },   
             text: {
