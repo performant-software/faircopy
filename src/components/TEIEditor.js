@@ -6,6 +6,8 @@ import {EditorView} from "prosemirror-view"
 import { Toolbar, Button } from '@material-ui/core'
 
 import TEIDocumentFile from "../tei-document/TEIDocumentFile"
+import { addMark } from "../tei-document/commands"
+
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer';
@@ -21,8 +23,7 @@ export default class TEIEditor extends Component {
             filePath: null,
             teiDocumentFile: new TEIDocumentFile(),
             editorView: null,
-            editorState: null,
-            editMode: 'P'
+            editorState: null
         }	
     }
 
@@ -109,37 +110,25 @@ export default class TEIEditor extends Component {
         this.setTitle(saveFilePath)
     }
 
-    // onBulletList() {
-        // TODO
-        // const bulletListNodeType = this.state.documentSchema.nodes.bullet_list;
-        // const editorState = this.getEditorState();
-        // const cmd = wrapInList( bulletListNodeType );
-        // cmd( editorState, this.state.editorView.dispatch );
-    // }
-
-    onProseMode = () => {
-        const testWindow = window.open('http://localhost:3000'); 
-        this.setState({ ...this.state, editMode: 'P'})
+    onRef = () => {
+        const {editorState, teiDocumentFile, editorView} = this.state 
+        const markType = teiDocumentFile.xmlSchema.marks.ref
+        const cmd = addMark( markType );
+        cmd( editorState, editorView.dispatch );    
     }
 
-    onVerseMode = () => {
-        this.setState({ ...this.state, editMode: 'V'})
-    }
-
-    onDramaMode = () => {
-        this.setState({ ...this.state, editMode: 'D'})        
+    onDel = () => {
+        const {editorState, teiDocumentFile, editorView} = this.state 
+        const markType = teiDocumentFile.xmlSchema.marks.del
+        const cmd = addMark( markType );
+        cmd( editorState, editorView.dispatch );    
     }
 
     renderToolbar() {
-        const {editMode} = this.state
-        const pVariant = editMode === 'P' ? 'contained' : 'text'
-        const vVariant = editMode === 'V' ? 'contained' : 'text'
-        const dVariant = editMode === 'D' ? 'contained' : 'text'
         return (
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                <Button onClick={this.onProseMode} variant={pVariant} tooltip='Prose Mode'>P</Button>
-                <Button disabled onClick={this.onVerseMode} variant={vVariant} tooltip='Verse Mode'>V</Button>
-                <Button disabled onClick={this.onDramaMode} variant={dVariant} ooltip='Drama Mode'>D</Button>
+                <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
+                <Button onClick={this.onDel} variant='text' tooltip='Add Del Element'>del</Button>
             </Toolbar>
         )
     }
