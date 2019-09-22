@@ -23,7 +23,8 @@ export default class TEIEditor extends Component {
             filePath: null,
             teiDocumentFile: new TEIDocumentFile(),
             editorView: null,
-            editorState: null
+            editorState: null,
+            selection: null
         }	
     }
 
@@ -65,8 +66,9 @@ export default class TEIEditor extends Component {
         const { editorView } = this.state 
         const editorState = editorView.state
         const nextEditorState = editorState.apply(transaction)
+        const selection = nextEditorState.selection
         editorView.updateState(nextEditorState)
-        this.setState({...this.state, editorState: nextEditorState })
+        this.setState({...this.state, selection, editorState: nextEditorState })
         // console.log(JSON.stringify(nextEditorState.toJSON()))
     }
 
@@ -134,7 +136,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { editorView } = this.state
+        const { editorView, selection } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -149,7 +151,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                <ParameterDrawer></ParameterDrawer>
+                <ParameterDrawer selection={selection}></ParameterDrawer>
             </div>
         )
     }

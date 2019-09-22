@@ -10,6 +10,16 @@ export default class ParameterDrawer extends Component {
     // header provides descriptive text of the tag.. color coded highlight? 
 
     render() {   
+        const {selection} = this.props 
+
+        let markType = 'NONE', nodeType = 'NONE'
+        if( selection ) {
+            const { $anchor } = selection
+            const marks = $anchor.marks()
+            markType = marks.length > 0 ? marks[0].type.name : 'NONE'   
+            nodeType = selection.node ? selection.node.type.name : $anchor.parent.type.name
+        }
+
         return (
             <Drawer                  
                 className='ParameterDrawer'  
@@ -17,7 +27,7 @@ export default class ParameterDrawer extends Component {
                 anchor="bottom"
                 open={true}
             >
-                <div>CONTENTS OF DRAWER</div>
+                <div>Current Mark: {markType} Current Node: {nodeType}</div>
 
             </Drawer>
         ) 
