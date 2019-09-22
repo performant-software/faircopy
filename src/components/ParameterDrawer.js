@@ -32,7 +32,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement() {
-        const {selection} = this.props 
+        const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
         let element
         if( selection ) {
