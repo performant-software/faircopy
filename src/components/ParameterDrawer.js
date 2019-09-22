@@ -3,12 +3,23 @@ import { Drawer, TextField } from '@material-ui/core'
 
 export default class ParameterDrawer extends Component {
 
-    renderAtrributes(attrs) {
-
-        // the keys become field labels
-        // changes to data here fires off a transaction
+    renderAttributes(element) {
+        const {attrs} = element
         const keys = Object.keys(attrs)
 
+        const changeHandler = ( key ) => {
+            return (e) => {
+                const {dispatch, editorState} = this.props
+                const {tr, selection} = editorState
+                const {value} = e.target
+                const {pos} = selection.$anchor
+                let newAttrs = { ...element.attrs }
+                newAttrs[key] = value
+                tr.setNodeMarkup(pos, undefined, newAttrs)
+                dispatch(tr)
+            }
+        }
+    
         if( keys.length === 0 ) {
             return (
                 <div className='drawerBody'>
@@ -24,7 +35,7 @@ export default class ParameterDrawer extends Component {
                         id={`attr-${key}`}
                         label={key}
                         value={attr}
-                        // onChange={handleChange('name')}
+                        onChange={changeHandler(element, key)}
                     />
                 </div>
             )
@@ -56,7 +67,7 @@ export default class ParameterDrawer extends Component {
                    <div className='drawerHeader'>
                         {element.type.name} - Documentation for this element.                    
                     </div>
-                    { this.renderAtrributes(element.attrs) }
+                    { this.renderAttributes(element) }
                 </div>
             )    
         }

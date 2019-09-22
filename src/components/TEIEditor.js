@@ -113,6 +113,7 @@ export default class TEIEditor extends Component {
     onRef = () => {
         const {editorState, teiDocumentFile, editorView} = this.state 
         const markType = teiDocumentFile.xmlSchema.marks.ref
+        // TODO refactor with system addMark()
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
@@ -135,6 +136,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { editorView, editorState } = this.state
+        const dispatch = (editorView) ? editorView.dispatch : null
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -149,7 +151,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                <ParameterDrawer editorState={editorState}></ParameterDrawer>
+                <ParameterDrawer editorState={editorState} dispatch={dispatch}></ParameterDrawer>
             </div>
         )
     }
