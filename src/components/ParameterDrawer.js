@@ -1,19 +1,45 @@
 import React, { Component } from 'react';
-import { Drawer } from '@material-ui/core'
+import { Drawer, TextField } from '@material-ui/core'
 
 export default class ParameterDrawer extends Component {
 
+    renderAtrributes(attrs) {
+
+        // the keys become field labels
+        // changes to data here fires off a transaction
+        const keys = Object.keys(attrs)
+
+        if( keys.length === 0 ) {
+            return (
+                <div className='drawerBody'>
+                    This element has no attributes.
+                </div>    
+            )
+        } else {
+            const key = keys[0]
+            const attr = attrs[key]
+            return (
+                <div className='drawerBody'>
+                    <TextField
+                        id={`attr-${key}`}
+                        label={key}
+                        value={attr}
+                        // onChange={handleChange('name')}
+                    />
+                </div>
+            )
+        }        
+    }
 
     renderElement() {
         const {selection} = this.props 
 
-        let mark, node, element
+        let element
         if( selection ) {
             const { $anchor } = selection
             const marks = $anchor.marks()
-            mark = marks.length > 0 ? marks[0] : null   
-            node = selection.node ? selection.node : $anchor.parent
-            element = (selection.node) ? node : (mark) ? mark : node
+            let mark = marks.length > 0 ? marks[0] : null   
+            element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
         }
 
         if( !element ) {
@@ -30,17 +56,14 @@ export default class ParameterDrawer extends Component {
                    <div className='drawerHeader'>
                         {element.type.name} - Documentation for this element.                    
                     </div>
-                    <div className='drawerBody'>
-                        Atrribute Data
-                    </div>    
+                    { this.renderAtrributes(element.attrs) }
                 </div>
             )    
         }
     }
 
     render() {   
-        // TODO
-        // When activated, drawer pulls out and focus is given to the first field
+        // TODO When activated, drawer pulls out and focus is given to the first field
         // may be minimized
 
         return (

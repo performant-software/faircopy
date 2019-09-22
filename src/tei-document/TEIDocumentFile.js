@@ -111,7 +111,7 @@ export default class TEIDocumentFile {
             },         
             ref: {
                 attrs: {
-                    ref: { default: 'TEST' }
+                    target: { default: '' }
                 },
                 parseDOM: [
                     {
