@@ -1,25 +1,36 @@
 import React, { Component } from 'react';
 import { Drawer, TextField } from '@material-ui/core'
+import { Node } from "prosemirror-model"
 
 export default class ParameterDrawer extends Component {
+
+
+    changeAttributeHandler = ( element, attributeKey ) => {
+        const {attrs} = element
+
+        return (e) => {
+            const {dispatch, editorState} = this.props
+            const {tr, selection} = editorState
+            const {value} = e.target
+            const {pos} = selection.$anchor
+            let newAttrs = { ...attrs }
+            newAttrs[attributeKey] = value
+            if( element instanceof Node ) {
+                tr.setNodeMarkup(pos, undefined, newAttrs)
+                dispatch(tr)
+            } else {
+                // use pos to ..???
+                // const nextMark = mark( element.type, newAttrs )
+                // tr.removeMark(from,to,element)
+                // tr.addMark(from,to,nextMark)
+            }
+        }
+    }
 
     renderAttributes(element) {
         const {attrs} = element
         const keys = Object.keys(attrs)
 
-        const changeHandler = ( key ) => {
-            return (e) => {
-                const {dispatch, editorState} = this.props
-                const {tr, selection} = editorState
-                const {value} = e.target
-                const {pos} = selection.$anchor
-                let newAttrs = { ...element.attrs }
-                newAttrs[key] = value
-                tr.setNodeMarkup(pos, undefined, newAttrs)
-                dispatch(tr)
-            }
-        }
-    
         if( keys.length === 0 ) {
             return (
                 <div className='drawerBody'>
@@ -35,7 +46,7 @@ export default class ParameterDrawer extends Component {
                         id={`attr-${key}`}
                         label={key}
                         value={attr}
-                        onChange={changeHandler(element, key)}
+                        onChange={this.changeAttributeHandler(element,key)}
                     />
                 </div>
             )
