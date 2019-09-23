@@ -62,12 +62,13 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { editorView } = this.state 
-        const editorState = editorView.state
-        const nextEditorState = editorState.apply(transaction)
-        editorView.updateState(nextEditorState)
-        this.setState({...this.state, editorState: nextEditorState })
-        // console.log(JSON.stringify(nextEditorState.toJSON()))
+        const { editorView, editorState } = this.state 
+        if( editorView ) {
+            const nextEditorState = editorState.apply(transaction)
+            editorView.updateState(nextEditorState)
+            this.setState({...this.state, editorState: nextEditorState })    
+            // console.log(JSON.stringify(nextEditorState.toJSON()))
+        }
     }
 
     setTitle( filePath ) {
@@ -113,7 +114,6 @@ export default class TEIEditor extends Component {
     onRef = () => {
         const {editorState, teiDocumentFile, editorView} = this.state 
         const markType = teiDocumentFile.xmlSchema.marks.ref
-        // TODO refactor with system addMark()
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
@@ -136,7 +136,6 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { editorView, editorState } = this.state
-        const dispatch = (editorView) ? editorView.dispatch : null
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -151,7 +150,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                <ParameterDrawer editorState={editorState} dispatch={dispatch}></ParameterDrawer>
+                <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
     }

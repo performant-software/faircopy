@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
 import { Drawer, TextField } from '@material-ui/core'
 import { Node } from "prosemirror-model"
+import { NodeSelection } from "prosemirror-state"
 
 export default class ParameterDrawer extends Component {
 
+    constructor() {
+        super()
+    }
 
     changeAttributeHandler = ( element, attributeKey ) => {
-        const {attrs} = element
-
         return (e) => {
             const {dispatch, editorState} = this.props
             const {tr, selection} = editorState
             const {value} = e.target
             const {pos} = selection.$anchor
-            let newAttrs = { ...attrs }
+            let newAttrs = { ...element.attrs }
             newAttrs[attributeKey] = value
             if( element instanceof Node ) {
                 tr.setNodeMarkup(pos, undefined, newAttrs)
+                tr.setSelection( NodeSelection.create(tr.doc, pos) )
                 dispatch(tr)
             } else {
                 // use pos to ..???
@@ -87,7 +90,6 @@ export default class ParameterDrawer extends Component {
     render() {   
         // TODO When activated, drawer pulls out and focus is given to the first field
         // may be minimized
-
         return (
             <Drawer                  
                 className='ParameterDrawer'  
