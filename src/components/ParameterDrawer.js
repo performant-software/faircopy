@@ -5,10 +5,6 @@ import { NodeSelection } from "prosemirror-state"
 
 export default class ParameterDrawer extends Component {
 
-    constructor() {
-        super()
-    }
-
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
             const {dispatch, editorState} = this.props
