@@ -82,15 +82,18 @@ export default class TEIDocumentFile {
                         tag: "add"
                     } 
                 ],
-                toDOM: () => this.teiMode ? ["add",0] : ["tei-add",0]        
+                toDOM: (mark) => this.teiMode ? ["add",mark.attrs,0] : ["tei-add",0]        
             },
             del: {
+                attrs: {
+                    resp: { default: '' }    
+                },
                 parseDOM: [
                     {
                         tag: "del"
                     }
                 ],
-                toDOM: () => this.teiMode ? ["del",0] : ["tei-del",0]  
+                toDOM: (mark) => this.teiMode ? ["del",mark.attrs,0] : ["tei-del",0]  
             },
             name: {
                 attrs: {
@@ -104,10 +107,7 @@ export default class TEIDocumentFile {
                         }
                     }
                 ],
-                toDOM: (mark) => { 
-                    let {type} = mark.attrs; 
-                    return this.teiMode ? ["name", {type}, 0]  : ["tei-name", {type}, 0]   
-                }
+                toDOM: (mark) => this.teiMode ? ["name",mark.attrs,0]  : ["tei-name",0]   
             },         
             ref: {
                 attrs: {
@@ -118,7 +118,7 @@ export default class TEIDocumentFile {
                         tag: "ref"
                     } 
                 ],
-                toDOM: () => this.teiMode ? ["ref",0] : ["tei-ref",0] 
+                toDOM: (mark) => this.teiMode ? ["ref",mark.attrs,0] : ["tei-ref",0] 
             }
         }
 
