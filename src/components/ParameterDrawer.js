@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Drawer, TextField } from '@material-ui/core'
 import { Node } from "prosemirror-model"
-import { NodeSelection } from "prosemirror-state"
+import { NodeSelection, TextSelection } from "prosemirror-state"
 
 export default class ParameterDrawer extends Component {
 
@@ -10,19 +10,26 @@ export default class ParameterDrawer extends Component {
             const {dispatch, editorState} = this.props
             const {tr, selection} = editorState
             const {value} = e.target
-            const {pos} = selection.$anchor
+            const {$anchor} = selection
+            const {pos} = $anchor
             let newAttrs = { ...element.attrs }
             newAttrs[attributeKey] = value
             if( element instanceof Node ) {
                 tr.setNodeMarkup(pos, undefined, newAttrs)
                 tr.setSelection( NodeSelection.create(tr.doc, pos) )
-                dispatch(tr)
-            } else {
-                // use pos to ..???
-                // const nextMark = mark( element.type, newAttrs )
-                // tr.removeMark(from,to,element)
-                // tr.addMark(from,to,nextMark)
+            } else {            
+                $anchor.parent.descendants( (node) => {
+                    const {marks} = node
+                    if( marks.includes(element) ) {
+                        const nextMark = element.type.create( newAttrs )
+                        const from = pos - $anchor.textOffset
+                        const to = from + node.textContent.length
+                        tr.removeMark(from,to,element)
+                        tr.addMark(from,to,nextMark)
+                    }
+                })
             }
+            dispatch(tr)
         }
     }
 
