@@ -33,6 +33,33 @@ export default class ParameterDrawer extends Component {
         }
     }
 
+    focusHandler = (el, element) => {
+        if( !el ) return;
+        
+        const onFocus = () => {
+            const {dispatch, editorState} = this.props
+            const {tr, selection} = editorState
+            const {$anchor} = selection
+            const {pos} = $anchor
+            if( element instanceof Node ) {            
+                tr.setSelection( NodeSelection.create(tr.doc, pos) )
+            } else {
+                $anchor.parent.descendants( (node) => {
+                    const {marks} = node
+                    if( marks.includes(element) ) {
+                        console.log("mark founds")
+                        const from = pos - $anchor.textOffset + 1
+                        const to = from + node.textContent.length
+                        tr.setSelection( TextSelection.create(tr.doc, from, to) )
+                    }
+                })
+            }
+            dispatch(tr)
+        }
+
+        el.addEventListener('focus', onFocus)
+    } 
+
     renderAttributes(element) {
         const {attrs} = element
         const keys = Object.keys(attrs)
@@ -50,6 +77,7 @@ export default class ParameterDrawer extends Component {
                 <div className='drawerBody'>
                     <TextField
                         id={`attr-${key}`}
+                        // inputRef={ (el) => { this.focusHandler(el,element) } }
                         label={key}
                         value={attr}
                         onChange={this.changeAttributeHandler(element,key)}
