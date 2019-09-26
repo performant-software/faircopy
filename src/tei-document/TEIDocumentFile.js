@@ -16,6 +16,8 @@ const fs = window.nodeAppDependencies.fs
 export default class TEIDocumentFile {
 
     constructor() {
+        this.subDocCounter = 0
+        this.subDocPrefix = 'subdoc-'
         this.teiMode = false
         this.subDocuments = {}
 
@@ -51,23 +53,26 @@ export default class TEIDocumentFile {
                 inline: true,
                 group: "inline",
                 attrs: {
-                    id: {}    
+                    id: {},
+                    subDocID: {}
                 },
                 parseDOM: [
                     {
                         tag: "note",
                         getAttrs: (domNode) => {
+                            const subDocID = this.parseSubDocument(domNode)
                             const noteID = domNode.getAttribute("xml:id")
-                            // TODO subdocuments need to be assigned internal unique IDs
-                            this.subDocuments[noteID] = domNode
-                            return {id: noteID}
+                            return {id: noteID, subDocID }
                         },
                     }
                 ],
                 toDOM: (node) => { 
-                    let {id} = node.attrs; 
-                    const subDocument = this.subDocuments[id] 
-                    return this.teiMode ? subDocument  : ["tei-note", "†"] 
+                    let {subDocID} = node.attrs; 
+                    if( this.teiMode ) {
+                        return this.serializeSubDocument(subDocID)
+                    } else {
+                        return ["tei-note", "†"] 
+                    }
                 }
             },   
             text: {
@@ -144,6 +149,22 @@ export default class TEIDocumentFile {
         // need to understand how this presently works and then develop a scheme
         // to interrupt and put the correct node type in there depending on the circumstance
         return baseKeymap
+    }
+
+    parseSubDocument(node) {
+        const subDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(node)
+        const subDocID = `${this.subDocPrefix}${this.subDocCounter++}`
+        this.subDocuments[subDocID] = subDoc
+        return subDocID
+    }
+
+    serializeSubDocument(subDocID) {
+        const subDoc = this.subDocuments[subDocID]
+        const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
+        const domFragment = domSerializer.serializeFragment(subDoc.content)
+        let note = document.createElement('note')
+        note.appendChild( domFragment.cloneNode(true) )
+        return note
     }
 
     pluginSetup() {

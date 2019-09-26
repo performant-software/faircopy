@@ -1,24 +1,25 @@
 // Modules to control application life and create native browser window
 const { app } = require('electron')
-const { MainWindow } = require('./main-process/MainWindow')
+const { ApplicationWindowManager } = require('./main-process/ApplicationWindowManager')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let appWindowManager
 
 onMainWindowClose = () => {
-  mainWindow = null
+  appWindowManager = null
 }
 
-function createWindow () {
+function createApplicationWindowManager () {
   let debugMode = ( process.argv[3] === 'debug' )
-  mainWindow = new MainWindow(app, debugMode, onMainWindowClose)
+  appWindowManager = new ApplicationWindowManager(app, debugMode, onMainWindowClose)
+  appWindowManager.createTEIEditorWindow(null)
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createApplicationWindowManager)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -31,5 +32,5 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow()
+  if (appWindowManager === null) createApplicationWindowManager()
 })

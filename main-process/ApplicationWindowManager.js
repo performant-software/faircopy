@@ -3,18 +3,57 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 // TODO detect PC
 const isMac = true
 
-class MainWindow {
+class ApplicationWindowManager {
 
     constructor(app, debugMode, onClose) {
-        
+        this.mainWindow = null
+        this.noteWindows = {}
         this.app = app
         this.onClose = onClose
-
+        this.debugMode = debugMode
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)
-        Menu.setApplicationMenu(menu)
-        // Create the browser window.
-        this.window = new BrowserWindow({
+        Menu.setApplicationMenu(menu)     
+        ipcMain.on('openSaveFileDialog', this.saveFileMenu)
+        ipcMain.on('createNoteEditowWindow', this.createNoteEditorWindow)
+    }
+
+    createTEIEditorWindow(targetFile) {
+
+      // Create the browser window.
+      const browserWindow = new BrowserWindow({
+        width: 1440,
+        height: 900,
+        webPreferences: {
+            nodeIntegration: true
+        }
+      })
+
+      // Emitted when the window is closed.
+      browserWindow.on('closed', this.onClose )
+
+      // and load the index.html of the app.
+      if( this.debugMode ) {
+        browserWindow.loadURL('http://localhost:3000')
+      } else {
+        browserWindow.loadFile('../../../../../../../build/index.html')
+      }
+
+      // Open the DevTools.
+      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+
+      // TODO send message indicating the target file
+
+      // For now, there is only one document window
+      this.mainWindow = browserWindow
+    }
+
+    createNoteEditorWindow = (noteID) => {
+
+        // TODO open a window for the note editor, send it a message to open a note
+
+        // Create the browser window
+        const browserWindow = new BrowserWindow({
             width: 1440,
             height: 900,
             webPreferences: {
@@ -22,20 +61,20 @@ class MainWindow {
             }
         })
 
-        // Emitted when the window is closed.
-        this.window.on('closed', this.onClose )
-
         // and load the index.html of the app.
-        if( debugMode ) {
-          this.window.loadURL('http://localhost:3000')
+        if( this.debugMode ) {
+            browserWindow.loadURL('http://localhost:3000')
         } else {
-          this.window.loadFile('../../../../../../../build/index.html')
+            browserWindow.loadFile('../../../../../../../build/index.html')
         }
 
-        ipcMain.on('openSaveFileDialog', this.saveFileMenu)
+        // Open the DevTools
+        if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
 
-        // Open the DevTools.
-        if( debugMode ) this.window.webContents.openDevTools({ mode: 'bottom'} )
+        // TODO send message indicating the target note
+
+        // For now, there is only one document window
+        this.noteWindows[noteID] = browserWindow
     }
 
     openFileMenu = () => {
@@ -43,7 +82,7 @@ class MainWindow {
             properties: [ 'openFile' ]
         }, (files) => {
           if( files && files.length > 0 ) {
-            this.window.webContents.send('fileOpened', files[0])
+            this.mainWindow.webContents.send('fileOpened', files[0])
           }
         })
     }
@@ -53,13 +92,13 @@ class MainWindow {
           properties: [ 'openFile', 'createDirectory' ]
       }, (files) => {
         if( files && files.length > 0 ) {
-          this.window.webContents.send('fileSaved', files)
+          this.mainWindow.webContents.send('fileSaved', files)
         }
       })   
     }
 
     requestSave = () => {
-      this.window.webContents.send('requestSave')
+      this.mainWindow.webContents.send('requestSave')
     }
 
     mainMenuTemplate() {
@@ -169,4 +208,4 @@ class MainWindow {
     }
 }
 
-exports.MainWindow = MainWindow
+exports.ApplicationWindowManager = ApplicationWindowManager

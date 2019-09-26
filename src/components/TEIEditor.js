@@ -53,7 +53,8 @@ export default class TEIEditor extends Component {
             element,    
             { 
                 dispatchTransaction: this.dispatchTransaction,
-                state: editorInitalState
+                state: editorInitalState,
+                handleClickOn: this.handleClickOn
             }
         )
 
@@ -68,6 +69,14 @@ export default class TEIEditor extends Component {
             editorView.updateState(nextEditorState)
             this.setState({...this.state, editorState: nextEditorState })    
             // console.log(JSON.stringify(nextEditorState.toJSON()))
+        }
+    }
+
+    handleClickOn = (view,pos,node,nodePos,event,direct) => {
+        if( direct && node.type.name === 'note' ) {
+            const {subDocID} = node.attrs
+            const subDoc = this.state.teiDocumentFile.subDocuments[subDocID]
+            // create a TEI Editor for this sub doc
         }
     }
 
