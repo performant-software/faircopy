@@ -77,7 +77,10 @@ export default class TEIEditor extends Component {
             const {subDocID} = node.attrs
             const subDoc = this.state.teiDocumentFile.subDocuments[subDocID]
             // create a TEI Editor for this sub doc
+            ipcRenderer.send( 'createNoteEditorWindow' )
         }
+
+        // TODO resolve ref links here too
     }
 
     setTitle( filePath ) {

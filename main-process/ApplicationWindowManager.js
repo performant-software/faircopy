@@ -15,7 +15,7 @@ class ApplicationWindowManager {
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)     
         ipcMain.on('openSaveFileDialog', this.saveFileMenu)
-        ipcMain.on('createNoteEditowWindow', this.createNoteEditorWindow)
+        ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     }
 
     createTEIEditorWindow(targetFile) {
@@ -49,6 +49,8 @@ class ApplicationWindowManager {
     }
 
     createNoteEditorWindow = (noteID) => {
+
+        // TODO check if a window is already open for this note, if it is, set focus on that window
 
         // TODO open a window for the note editor, send it a message to open a note
 
