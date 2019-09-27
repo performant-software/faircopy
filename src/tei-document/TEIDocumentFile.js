@@ -20,7 +20,6 @@ export default class TEIDocumentFile {
         // TODO add a timestamp to the prefix
         this.subDocPrefix = 'subdoc-'
         this.teiMode = false
-        this.subDocuments = {}
 
         const nodes = {
             doc: {
@@ -154,12 +153,13 @@ export default class TEIDocumentFile {
     parseSubDocument(node) {
         const subDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(node)
         const subDocID = `${this.subDocPrefix}${this.subDocCounter++}`
-        this.subDocuments[subDocID] = subDoc
+        localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
         return subDocID
     }
 
-    serializeSubDocument(subDocID) {
-        const subDoc = this.subDocuments[subDocID]
+    serializeSubDocument(noteID) {
+        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
+        const subDoc = this.xmlSchema.nodeFromJSON(noteJSON);
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(subDoc.content)
         let note = document.createElement('note')

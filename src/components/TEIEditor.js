@@ -76,14 +76,16 @@ export default class TEIEditor extends Component {
     }
 
     handleClickOn = (view,pos,node,nodePos,event,direct) => {
-        if( direct && node.type.name === 'note' ) {
+        const nodeType = node.type.name
+        if( direct && nodeType === 'note' ) {
             const {subDocID} = node.attrs
-            const subDoc = this.state.teiDocumentFile.subDocuments[subDocID]
-            localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
             ipcRenderer.send( 'createNoteEditorWindow', subDocID )
         }
-
-        // TODO resolve ref links here too
+        else if( nodeType === 'ref' ) {
+            const {target} = node.attrs
+            // check if target matches a subdoc, if it does open note editor
+            ipcRenderer.send( 'createNoteEditorWindow', target )
+        }
     }
 
     setTitle( filePath ) {
@@ -128,8 +130,13 @@ export default class TEIEditor extends Component {
         }
     }
 
-    requestSave() {
-        const { filePath } = this.state
+    requestSave = () => {
+        const { filePath, noteID } = this.state
+
+        if( noteID ) {
+            this.saveNote(noteID)
+            return
+        }
         if( filePath === null ) {
             ipcRenderer.send( 'openSaveFileDialog' )
         } else {
@@ -142,6 +149,11 @@ export default class TEIEditor extends Component {
         teiDocumentFile.save( editorView, saveFilePath )
         this.setState( { ...this.state, filePath: saveFilePath })
         this.setTitle(saveFilePath)
+    }
+
+    saveNote( noteID ) {
+        const { doc } = this.state.editorState
+        localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
     }
 
     onRef = () => {
@@ -163,6 +175,7 @@ export default class TEIEditor extends Component {
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
                 <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
                 <Button onClick={this.onDel} variant='text' tooltip='Add Del Element'>del</Button>
+                <Button onClick={this.requestSave} variant='text' tooltip='Save document'>Save</Button>
             </Toolbar>
         )
     }
