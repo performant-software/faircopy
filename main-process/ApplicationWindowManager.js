@@ -75,10 +75,7 @@ class ApplicationWindowManager {
       } else {
           browserWindow.loadFile('../../../../../../../build/index.html').then(loadNote)
       }
-
-      // Open the DevTools
-      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
-
+      
       // For now, there is only one document window
       this.noteWindows[noteID] = browserWindow
     }
