@@ -51,9 +51,12 @@ class ApplicationWindowManager {
 
     createNoteEditorWindow = (event, noteID) => {
 
-      // TODO check if a window is already open for this note, if it is, set focus on that window
-
-      // TODO open a window for the note editor, send it a message to open a note
+      if( this.noteWindows[noteID] ) {
+        this.noteWindows[noteID].focus()
+        console.log("Window already open for note.")
+        // TODO set focus on this windo
+        return
+      }
 
       // Create the browser window
       const browserWindow = new BrowserWindow({
@@ -63,6 +66,11 @@ class ApplicationWindowManager {
               nodeIntegration: true
           }
       })
+
+      // Emitted when the note window is closed.
+      browserWindow.on('closed', () => {
+        this.noteWindows[noteID] = null
+      } )
 
       const loadNote = () => {
         // send message indicating the target note
@@ -75,7 +83,10 @@ class ApplicationWindowManager {
       } else {
           browserWindow.loadFile('../../../../../../../build/index.html').then(loadNote)
       }
-      
+
+      // Open the DevTools.
+      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+
       // For now, there is only one document window
       this.noteWindows[noteID] = browserWindow
     }

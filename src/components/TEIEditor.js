@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import {connect} from 'react-redux';
 
 import {EditorView} from "prosemirror-view"
+import {EditorState, TextSelection} from "prosemirror-state"
 
 import { Toolbar, Button } from '@material-ui/core'
 
@@ -21,6 +22,7 @@ export default class TEIEditor extends Component {
         super()
         this.state = {
             filePath: null,
+            noteID: null,
             teiDocumentFile: new TEIDocumentFile(),
             editorView: null,
             editorState: null
@@ -77,8 +79,7 @@ export default class TEIEditor extends Component {
         if( direct && node.type.name === 'note' ) {
             const {subDocID} = node.attrs
             const subDoc = this.state.teiDocumentFile.subDocuments[subDocID]
-            // create a TEI Editor for this sub doc
-            localStorage.setItem(subDocID, "TEST DATA");
+            localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
             ipcRenderer.send( 'createNoteEditorWindow', subDocID )
         }
 
@@ -89,9 +90,9 @@ export default class TEIEditor extends Component {
         let title
         if( filePath ) {
             const filename = filePath.replace(/^.*[\\/]/, '')
-            title = `${filename} - Faircopy`    
+            title = `${filename}`    
         } else {
-            title = "Untitled Document - Faircopy"
+            title = "Untitled Document"
         }
         var titleEl = document.getElementsByTagName("TITLE")[0]
         titleEl.innerHTML = title
@@ -110,8 +111,21 @@ export default class TEIEditor extends Component {
     }
 
     openNote( noteID ) {
-        const test = localStorage.getItem(noteID);
-        console.log(`got this note: ${test}`)
+        const { teiDocumentFile, editorView } = this.state
+        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
+        const doc = teiDocumentFile.xmlSchema.nodeFromJSON(noteJSON);
+        const newEditorState = EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, 0),
+            plugins: teiDocumentFile.pluginSetup()
+        })
+        if( newEditorState ) {
+            editorView.updateState( newEditorState )        
+            this.setTitle(`Note ${noteID}`)
+            this.setState( { ...this.state, editorState: newEditorState, noteID })    
+        } else {
+            console.log(`Unable to load note: ${noteID}`)
+        }
     }
 
     requestSave() {
