@@ -18,7 +18,7 @@ class ApplicationWindowManager {
         ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     }
 
-    createTEIEditorWindow(targetFile) {
+    async createTEIEditorWindow(targetFile) {
 
       // Create the browser window.
       const browserWindow = new BrowserWindow({
@@ -34,49 +34,53 @@ class ApplicationWindowManager {
 
       // and load the index.html of the app.
       if( this.debugMode ) {
-        browserWindow.loadURL('http://localhost:3000')
+        await browserWindow.loadURL('http://localhost:3000')
       } else {
-        browserWindow.loadFile('../../../../../../../build/index.html')
+        await browserWindow.loadFile('../../../../../../../build/index.html')
       }
 
       // Open the DevTools.
       if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
 
-      // TODO send message indicating the target file
+      // send message indicating the target file
+      browserWindow.webContents.send('fileOpened', targetFile )
 
       // For now, there is only one document window
       this.mainWindow = browserWindow
     }
 
-    createNoteEditorWindow = (noteID) => {
+    createNoteEditorWindow = (event, noteID) => {
 
-        // TODO check if a window is already open for this note, if it is, set focus on that window
+      // TODO check if a window is already open for this note, if it is, set focus on that window
 
-        // TODO open a window for the note editor, send it a message to open a note
+      // TODO open a window for the note editor, send it a message to open a note
 
-        // Create the browser window
-        const browserWindow = new BrowserWindow({
-            width: 1440,
-            height: 900,
-            webPreferences: {
-                nodeIntegration: true
-            }
-        })
+      // Create the browser window
+      const browserWindow = new BrowserWindow({
+          width: 700,
+          height: 500,
+          webPreferences: {
+              nodeIntegration: true
+          }
+      })
 
-        // and load the index.html of the app.
-        if( this.debugMode ) {
-            browserWindow.loadURL('http://localhost:3000')
-        } else {
-            browserWindow.loadFile('../../../../../../../build/index.html')
-        }
+      const loadNote = () => {
+        // send message indicating the target note
+        browserWindow.webContents.send('noteOpened', noteID)
+      }
 
-        // Open the DevTools
-        if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+      // and load the index.html of the app.
+      if( this.debugMode ) {
+          browserWindow.loadURL('http://localhost:3000').then(loadNote)
+      } else {
+          browserWindow.loadFile('../../../../../../../build/index.html').then(loadNote)
+      }
 
-        // TODO send message indicating the target note
+      // Open the DevTools
+      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
 
-        // For now, there is only one document window
-        this.noteWindows[noteID] = browserWindow
+      // For now, there is only one document window
+      this.noteWindows[noteID] = browserWindow
     }
 
     openFileMenu = () => {

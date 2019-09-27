@@ -34,7 +34,8 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileOpened', (event, filePath) => this.openFile(filePath))
         ipcRenderer.on('requestSave', () => this.requestSave())        
         ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
-        
+        ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
+
         window.addEventListener("resize", this.onWindowResize)
     }
 
@@ -77,7 +78,8 @@ export default class TEIEditor extends Component {
             const {subDocID} = node.attrs
             const subDoc = this.state.teiDocumentFile.subDocuments[subDocID]
             // create a TEI Editor for this sub doc
-            ipcRenderer.send( 'createNoteEditorWindow' )
+            localStorage.setItem(subDocID, "TEST DATA");
+            ipcRenderer.send( 'createNoteEditorWindow', subDocID )
         }
 
         // TODO resolve ref links here too
@@ -105,6 +107,11 @@ export default class TEIEditor extends Component {
         } else {
             console.log(`Unable to load file: ${filePath}`)
         }
+    }
+
+    openNote( noteID ) {
+        const test = localStorage.getItem(noteID);
+        console.log(`got this note: ${test}`)
     }
 
     requestSave() {

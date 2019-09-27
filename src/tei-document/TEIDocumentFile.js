@@ -132,15 +132,14 @@ export default class TEIDocumentFile {
     }
 
     editorInitialState(documentDOM) {
-        return this.load('test-docs/je_example.xml')
-        // const div = documentDOM.createElement('DIV')
-        // div.innerHTML = ""
-        // const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
-        // const plugins = this.pluginSetup()
-        // const selection = TextSelection.create(doc, 0)
-        // return EditorState.create({ 
-        //     doc, plugins, selection 
-        // })
+        const div = documentDOM.createElement('DIV')
+        div.innerHTML = ""
+        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        const plugins = this.pluginSetup()
+        const selection = TextSelection.create(doc, 0)
+        return EditorState.create({ 
+            doc, plugins, selection 
+        })
     }
 
     // TODO separate module?

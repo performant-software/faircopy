@@ -15,6 +15,8 @@ export default class FairCopyWindow extends Component {
     console.log( `Chromium ${process.versions.chrome}`)
     console.log( `and Electron ${process.versions.electron}`)
   }
+
+  // can be sent either a note or a document
   
   render() {
     return (
