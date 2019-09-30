@@ -181,7 +181,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { editorView, editorState } = this.state
+        const { editorView, editorState, teiDocumentFile } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -196,7 +196,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
+                <ParameterDrawer teiDocumentFile={teiDocumentFile} editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
     }

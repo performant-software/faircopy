@@ -131,9 +131,7 @@ export default class TEIDocumentFile {
     }
 
     editorInitialState(documentDOM) {
-        const div = documentDOM.createElement('DIV')
-        div.innerHTML = ""
-        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        const doc = this.createEmptyDocument(documentDOM)
         const plugins = this.pluginSetup()
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
@@ -150,9 +148,27 @@ export default class TEIDocumentFile {
         return baseKeymap
     }
 
+    createEmptyDocument(documentDOM) {
+        const div = documentDOM.createElement('DIV')
+        div.innerHTML = ""
+        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        return doc
+    }
+
+    issueSubDocumentID() {
+        return `${this.subDocPrefix}${this.subDocCounter++}`
+    }
+
+    createSubDocument(documentDOM) {
+        const subDoc = this.createEmptyDocument(documentDOM)
+        const subDocID = this.issueSubDocumentID()
+        localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
+        return subDocID
+    }
+
     parseSubDocument(node) {
         const subDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(node)
-        const subDocID = `${this.subDocPrefix}${this.subDocCounter++}`
+        const subDocID = this.issueSubDocumentID()
         localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
         return subDocID
     }
@@ -185,7 +201,6 @@ export default class TEIDocumentFile {
         }))
     }
 
-    // this should really be happening in the constructor
     load( filePath ) {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();

@@ -2,34 +2,41 @@ import React, { Component } from 'react';
 import { Drawer, TextField } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 import { NodeSelection, TextSelection } from "prosemirror-state"
+import { Button } from '@material-ui/core'
+
+const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 export default class ParameterDrawer extends Component {
 
+    changeAttribute( element, attributeKey, value ) {
+        const {dispatch, editorState} = this.props
+        const {tr, selection} = editorState
+        const {$anchor} = selection
+        const {pos} = $anchor
+        let newAttrs = { ...element.attrs }
+        newAttrs[attributeKey] = value
+        if( element instanceof Node ) {
+            tr.setNodeMarkup(pos, undefined, newAttrs)
+            tr.setSelection( NodeSelection.create(tr.doc, pos) )
+        } else {            
+            $anchor.parent.descendants( (node) => {
+                const {marks} = node
+                if( marks.includes(element) ) {
+                    const nextMark = element.type.create( newAttrs )
+                    const from = pos - $anchor.textOffset
+                    const to = from + node.textContent.length
+                    tr.removeMark(from,to,element)
+                    tr.addMark(from,to,nextMark)
+                }
+            })
+        }
+        dispatch(tr)
+    }
+
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
-            const {dispatch, editorState} = this.props
-            const {tr, selection} = editorState
             const {value} = e.target
-            const {$anchor} = selection
-            const {pos} = $anchor
-            let newAttrs = { ...element.attrs }
-            newAttrs[attributeKey] = value
-            if( element instanceof Node ) {
-                tr.setNodeMarkup(pos, undefined, newAttrs)
-                tr.setSelection( NodeSelection.create(tr.doc, pos) )
-            } else {            
-                $anchor.parent.descendants( (node) => {
-                    const {marks} = node
-                    if( marks.includes(element) ) {
-                        const nextMark = element.type.create( newAttrs )
-                        const from = pos - $anchor.textOffset
-                        const to = from + node.textContent.length
-                        tr.removeMark(from,to,element)
-                        tr.addMark(from,to,nextMark)
-                    }
-                })
-            }
-            dispatch(tr)
+            this.changeAttribute( element, attributeKey, value )
         }
     }
 
@@ -82,9 +89,42 @@ export default class ParameterDrawer extends Component {
                         value={attr}
                         onChange={this.changeAttributeHandler(element,key)}
                     />
+                    { this.renderNoteButton(element) }
                 </div>
             )
         }        
+    }
+
+    renderNoteButton( element ) {
+        const {teiDocumentFile} = this.props
+
+        if( element.type.name !== 'ref' ) {
+            return null
+        }
+
+        const target = element.attrs['target']
+        
+        if( localStorage.getItem(target) ) {
+            const editNote = (e) => {
+                // open subdoc for editing
+                ipcRenderer.send( 'createNoteEditorWindow', target )
+            }
+    
+            return (
+                <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
+            )        
+
+        } else {
+            const newNote = (e) => {
+                const subDocID = teiDocumentFile.createSubDocument(document)
+                this.changeAttribute( element, 'target', subDocID )
+                ipcRenderer.send( 'createNoteEditorWindow', subDocID )
+            }
+    
+            return (
+                <Button onClick={newNote} variant='contained' tooltip='New Note'>New Note</Button>
+            )        
+        }
     }
 
     renderElement() {
