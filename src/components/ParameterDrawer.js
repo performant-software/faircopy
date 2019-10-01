@@ -4,68 +4,22 @@ import { Node } from "prosemirror-model"
 import { NodeSelection, TextSelection } from "prosemirror-state"
 import { Button } from '@material-ui/core'
 
+import { changeAttribute } from "../tei-document/commands"
+
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 export default class ParameterDrawer extends Component {
 
-    changeAttribute( element, attributeKey, value ) {
-        const {dispatch, editorState} = this.props
-        const {tr, selection} = editorState
-        const {$anchor} = selection
-        const {pos} = $anchor
-        let newAttrs = { ...element.attrs }
-        newAttrs[attributeKey] = value
-        if( element instanceof Node ) {
-            tr.setNodeMarkup(pos, undefined, newAttrs)
-            tr.setSelection( NodeSelection.create(tr.doc, pos) )
-        } else {            
-            $anchor.parent.descendants( (node) => {
-                const {marks} = node
-                if( marks.includes(element) ) {
-                    const nextMark = element.type.create( newAttrs )
-                    const from = pos - $anchor.textOffset
-                    const to = from + node.textContent.length
-                    tr.removeMark(from,to,element)
-                    tr.addMark(from,to,nextMark)
-                }
-            })
-        }
-        dispatch(tr)
-    }
-
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
-            const {value} = e.target
-            this.changeAttribute( element, attributeKey, value )
-        }
-    }
-
-    focusHandler = (el, element) => {
-        if( !el ) return;
-        
-        const onFocus = () => {
             const {dispatch, editorState} = this.props
-            const {tr, selection} = editorState
-            const {$anchor} = selection
-            const {pos} = $anchor
-            if( element instanceof Node ) {            
-                tr.setSelection( NodeSelection.create(tr.doc, pos) )
-            } else {
-                $anchor.parent.descendants( (node) => {
-                    const {marks} = node
-                    if( marks.includes(element) ) {
-                        console.log("mark founds")
-                        const from = pos - $anchor.textOffset + 1
-                        const to = from + node.textContent.length
-                        tr.setSelection( TextSelection.create(tr.doc, from, to) )
-                    }
-                })
-            }
+            const { $anchor } = editorState.selection
+            let {tr} = editorState
+        const {value} = e.target
+            tr = changeAttribute( element, attributeKey, value, $anchor, tr )
             dispatch(tr)
         }
-
-        el.addEventListener('focus', onFocus)
-    } 
+    }
 
     renderAttributes(element) {
         const {attrs} = element
@@ -84,7 +38,6 @@ export default class ParameterDrawer extends Component {
                 <div className='drawerBody'>
                     <TextField
                         id={`attr-${key}`}
-                        // inputRef={ (el) => { this.focusHandler(el,element) } }
                         label={key}
                         value={attr}
                         onChange={this.changeAttributeHandler(element,key)}
@@ -98,6 +51,7 @@ export default class ParameterDrawer extends Component {
     renderNoteButton( element ) {
         const {teiDocumentFile} = this.props
 
+        // must be a ref mark
         if( element.type.name !== 'ref' ) {
             return null
         }
@@ -105,8 +59,7 @@ export default class ParameterDrawer extends Component {
         const target = element.attrs['target']
         
         if( localStorage.getItem(target) ) {
-            const editNote = (e) => {
-                // open subdoc for editing
+            const editNote = () => {
                 ipcRenderer.send( 'createNoteEditorWindow', target )
             }
     
@@ -115,9 +68,13 @@ export default class ParameterDrawer extends Component {
             )        
 
         } else {
-            const newNote = (e) => {
+            const newNote = () => {
+                const {dispatch, editorState} = this.props
+                const { $anchor } = editorState.selection
+                let {tr} = editorState
                 const subDocID = teiDocumentFile.createSubDocument(document)
-                this.changeAttribute( element, 'target', subDocID )
+                tr = changeAttribute( element, 'target', subDocID, $anchor, tr )
+                dispatch(tr)
                 ipcRenderer.send( 'createNoteEditorWindow', subDocID )
             }
     

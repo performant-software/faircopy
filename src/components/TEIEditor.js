@@ -77,14 +77,23 @@ export default class TEIEditor extends Component {
 
     handleClickOn = (view,pos,node,nodePos,event,direct) => {
         const nodeType = node.type.name
-        if( direct && nodeType === 'note' ) {
+        if( !direct ) return;
+
+        if( nodeType === 'note' ) {
             const {subDocID} = node.attrs
             ipcRenderer.send( 'createNoteEditorWindow', subDocID )
         }
-        else if( nodeType === 'ref' ) {
-            const {target} = node.attrs
-            // check if target matches a subdoc, if it does open note editor
-            ipcRenderer.send( 'createNoteEditorWindow', target )
+        else { 
+            const { doc } = this.state.editorState
+            const $pos = doc.resolve(pos)
+            const marks = $pos.marks()
+            const mark = (marks.length > 0) ? marks[0] : null
+            if( mark ) {
+                const {target} = mark.attrs
+                if( target ) {
+                    ipcRenderer.send( 'createNoteEditorWindow', target )
+                }    
+            }
         }
     }
 

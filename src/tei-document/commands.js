@@ -1,3 +1,4 @@
+import { NodeSelection } from "prosemirror-state"
 
 function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {
@@ -58,4 +59,26 @@ export function removeMark(markType) {
         }
         return true
     }
+}
+
+export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
+    const {pos} = $anchor
+    let newAttrs = { ...element.attrs }
+    newAttrs[attributeKey] = value
+    if( element instanceof Node ) {
+        tr.setNodeMarkup(pos, undefined, newAttrs)
+        tr.setSelection( NodeSelection.create(tr.doc, pos) )
+    } else {            
+        $anchor.parent.descendants( (node) => {
+            const {marks} = node
+            if( marks.includes(element) ) {
+                const nextMark = element.type.create( newAttrs )
+                const from = pos - $anchor.textOffset
+                const to = from + node.textContent.length
+                tr.removeMark(from,to,element)
+                tr.addMark(from,to,nextMark)
+            }
+        })
+    }
+    return tr
 }
