@@ -4,7 +4,7 @@ export default class ThumbnailMargin extends Component {
 
     render() {   
         return (
-            <div id="thumbnail-margin">
+            <div id="ThumbnailMargin">
                 <img className="facs-thumbnail" alt="test" src='img/leaf.png'></img>
             </div>
         )     

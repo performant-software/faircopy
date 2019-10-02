@@ -219,8 +219,8 @@ export default class TEIEditor extends Component {
                         editorView={editorView}
                         createEditorView={this.createEditorView}
                     />
+                    <ThumbnailMargin></ThumbnailMargin>
                 </div>    
-                <ThumbnailMargin></ThumbnailMargin>
                 <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
