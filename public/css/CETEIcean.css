@@ -80,6 +80,13 @@ tei-add[place=inline]:after {
 tei-add[place=below] {
   vertical-align: sub;
 }
+tei-add {
+  color: blue;
+}
+tei-del {
+  color: red;
+  text-decoration: line-through;
+}
 tei-addName {
   /* Empty Rule Set */
 }
@@ -1022,7 +1029,7 @@ tei-musicNotation:before {
 }
 /* n */
 tei-name {
-  /* Empty Rule Set */
+  color: blue;
 }
 tei-nameLink {
   /* Empty Rule Set */
@@ -1040,25 +1047,8 @@ tei-normalization {
   /* Empty Rule Set */
 }
 tei-note {
-  /*
-  display: block;
-  margin: 1.5em auto 1.5em auto;
-  padding: .5em 1.5em 1.5em 1.5em;
-  border: 1px solid black;
-  border-radius: 15px;
-  width: 325px;
-  position: relative;
-  border: 1px solid #aaaaaa;
-  background: #fafafa;
-  /* reset text-indent for note with <l> ancestors. */
-  /*
-  text-indent: 0;
-  font-size: 85%;
-  text-align: justify;
-  -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
-  */
+  color: blue;
+  cursor: pointer;
 }
 tei-notesStmt {
   /* do we want to box each individual <note> if they're in a <notesStmt>? */
@@ -1143,14 +1133,7 @@ tei-pause {
   /* Empty Rule Set*/
 }
 tei-pb {
-  /*
-  display: block;
-  width: 100%;
-  text-align: right;
-  color: gray;
-  margin: 2em 0 2em 0;
-  font-size: 11pt;
-  */
+  background: green;
 }
 /*
 tei-pb:before {

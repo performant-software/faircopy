@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 // import {connect} from 'react-redux';
 
-import { AllSelection } from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
+import {EditorState, TextSelection} from "prosemirror-state"
 
 import { Toolbar, Button } from '@material-ui/core'
 
 import TEIDocumentFile from "../tei-document/TEIDocumentFile"
+import { addMark } from "../tei-document/commands"
+
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
+import ParameterDrawer from './ParameterDrawer';
 // import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
@@ -19,10 +22,10 @@ export default class TEIEditor extends Component {
         super()
         this.state = {
             filePath: null,
+            noteID: null,
             teiDocumentFile: new TEIDocumentFile(),
             editorView: null,
-            editorState: null,
-            editMode: 'P'
+            editorState: null
         }	
     }
 
@@ -33,7 +36,8 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileOpened', (event, filePath) => this.openFile(filePath))
         ipcRenderer.on('requestSave', () => this.requestSave())        
         ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
-        
+        ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
+
         window.addEventListener("resize", this.onWindowResize)
     }
 
@@ -52,7 +56,8 @@ export default class TEIEditor extends Component {
             element,    
             { 
                 dispatchTransaction: this.dispatchTransaction,
-                state: editorInitalState
+                state: editorInitalState,
+                handleClickOn: this.handleClickOn
             }
         )
 
@@ -61,41 +66,88 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { editorView } = this.state 
-        const editorState = editorView.state
-        const nextEditorState = editorState.apply(transaction)
-        editorView.updateState(nextEditorState)
-        this.setState({...this.state, editorState: nextEditorState })
-        // console.log(JSON.stringify(nextEditorState.toJSON()))
+        const { editorView, editorState } = this.state 
+        if( editorView ) {
+            const nextEditorState = editorState.apply(transaction)
+            editorView.updateState(nextEditorState)
+            this.setState({...this.state, editorState: nextEditorState })    
+            // console.log(JSON.stringify(nextEditorState.toJSON()))
+        }
+    }
+
+    handleClickOn = (view,pos,node,nodePos,event,direct) => {
+        const nodeType = node.type.name
+        if( !direct ) return;
+
+        if( nodeType === 'note' ) {
+            const {id} = node.attrs
+            ipcRenderer.send( 'createNoteEditorWindow', id )
+        }
+        else { 
+            const { doc } = this.state.editorState
+            const $pos = doc.resolve(pos)
+            const marks = $pos.marks()
+            for( let mark of marks ) {
+                if( mark.type.name === 'ref' ) {
+                    const {target} = mark.attrs
+                    if( target && target[0] === '#') {
+                        ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
+                        return
+                    }        
+                }
+            }
+        }
     }
 
     setTitle( filePath ) {
         let title
         if( filePath ) {
             const filename = filePath.replace(/^.*[\\/]/, '')
-            title = `${filename} - Faircopy`    
+            title = `${filename}`    
         } else {
-            title = "Untitled Document - Faircopy"
+            title = "Untitled Document"
         }
         var titleEl = document.getElementsByTagName("TITLE")[0]
         titleEl.innerHTML = title
     }
 
     openFile( filePath ) {
-        const { teiDocumentFile, editorView } = this.props.teiEditor
-        const editorState = editorView.state
-        const docNode = teiDocumentFile.load(filePath)
-
-        const allSelection = new AllSelection(editorState.doc)
-        const transaction = editorState.tr.setSelection(allSelection).replaceSelectionWith(docNode)
-        editorView.updateState( editorState.apply(transaction) )
-        
-        this.setTitle(filePath)
-        this.setState( { ...this.state, filePath })
+        const { teiDocumentFile, editorView } = this.state
+        const newEditorState = teiDocumentFile.load(filePath)
+        if( newEditorState ) {
+            editorView.updateState( newEditorState )        
+            this.setTitle(filePath)
+            this.setState( { ...this.state, editorState: newEditorState, filePath })    
+        } else {
+            console.log(`Unable to load file: ${filePath}`)
+        }
     }
 
-    requestSave() {
-        const { filePath } = this.state
+    openNote( noteID ) {
+        const { teiDocumentFile, editorView } = this.state
+        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
+        const doc = teiDocumentFile.xmlSchema.nodeFromJSON(noteJSON);
+        const newEditorState = EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, 0),
+            plugins: teiDocumentFile.pluginSetup()
+        })
+        if( newEditorState ) {
+            editorView.updateState( newEditorState )        
+            this.setTitle(`Note ${noteID}`)
+            this.setState( { ...this.state, editorState: newEditorState, noteID })    
+        } else {
+            console.log(`Unable to load note: ${noteID}`)
+        }
+    }
+
+    requestSave = () => {
+        const { filePath, noteID } = this.state
+
+        if( noteID ) {
+            this.saveNote(noteID)
+            return
+        }
         if( filePath === null ) {
             ipcRenderer.send( 'openSaveFileDialog' )
         } else {
@@ -104,48 +156,55 @@ export default class TEIEditor extends Component {
     }
 
     save(saveFilePath) {
-        const { teiDocumentFile, editorView } = this.props.teiEditor
+        const { teiDocumentFile, editorView } = this.state
         teiDocumentFile.save( editorView, saveFilePath )
-        this.filePath = saveFilePath
+        this.setState( { ...this.state, filePath: saveFilePath })
         this.setTitle(saveFilePath)
     }
 
-    // onBulletList() {
-        // TODO
-        // const bulletListNodeType = this.state.documentSchema.nodes.bullet_list;
-        // const editorState = this.getEditorState();
-        // const cmd = wrapInList( bulletListNodeType );
-        // cmd( editorState, this.state.editorView.dispatch );
-    // }
-
-    onProseMode = () => {
-        this.setState({ ...this.state, editMode: 'P'})
+    saveNote( noteID ) {
+        const { doc } = this.state.editorState
+        localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
     }
 
-    onVerseMode = () => {
-        this.setState({ ...this.state, editMode: 'V'})
+    onRef = () => {
+        const {editorState, teiDocumentFile, editorView} = this.state 
+        const markType = teiDocumentFile.xmlSchema.marks.ref
+        const cmd = addMark( markType );
+        cmd( editorState, editorView.dispatch );    
     }
 
-    onDramaMode = () => {
-        this.setState({ ...this.state, editMode: 'D'})        
+    onDel = () => {
+        const {editorState, teiDocumentFile, editorView} = this.state 
+        const markType = teiDocumentFile.xmlSchema.marks.del
+        const cmd = addMark( markType );
+        cmd( editorState, editorView.dispatch );    
+    }
+
+    onNote = () => {
+        const { editorState, teiDocumentFile } = this.state
+        const { $anchor } = editorState.selection
+        const { tr } = editorState
+        const subDocID = teiDocumentFile.createSubDocument(document)
+        const noteNode = editorState.schema.node('note', { id: subDocID })
+        tr.insert($anchor.pos, noteNode) 
+        this.dispatchTransaction(tr)
+        ipcRenderer.send( 'createNoteEditorWindow', subDocID )
     }
 
     renderToolbar() {
-        const {editMode} = this.state
-        const pVariant = editMode === 'P' ? 'contained' : 'text'
-        const vVariant = editMode === 'V' ? 'contained' : 'text'
-        const dVariant = editMode === 'D' ? 'contained' : 'text'
         return (
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                <Button onClick={this.onProseMode} variant={pVariant} tooltip='Prose Mode'>P</Button>
-                <Button onClick={this.onVerseMode} variant={vVariant} tooltip='Verse Mode'>V</Button>
-                <Button onClick={this.onDramaMode} variant={dVariant} ooltip='Drama Mode'>D</Button>
+                <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
+                <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
+                <Button onClick={this.onDel} variant='text' tooltip='Add Del Element'>del</Button>
+                <Button onClick={this.requestSave} variant='text' tooltip='Save document'>Save</Button>
             </Toolbar>
         )
     }
 
     render() {    
-        const { editorView } = this.state
+        const { editorView, editorState } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -160,9 +219,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                {/* <div className='status-bar'>
-                    <p>Current Mode:</p>
-                </div> */}
+                <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
     }

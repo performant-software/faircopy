@@ -13,7 +13,7 @@ return wrappingInputRule(/^\s*>\s$/, nodeType)
 // followed by a dot at the start of a textblock into an ordered list.
 export function orderedListRule(nodeType) {
 return wrappingInputRule(/^(\d+)\.\s$/, nodeType, match => ({order: +match[1]}),
-                       (match, node) => node.childCount + node.attrs.order == +match[1])
+                       (match, node) => node.childCount + node.attrs.order === +match[1])
 }
 
 // : (NodeType) → InputRule
@@ -46,10 +46,10 @@ return textblockTypeInputRule(new RegExp("^(#{1," + maxLevel + "})\\s$"),
 // code blocks, and heading.
 export function buildInputRules(schema) {
 let rules = smartQuotes.concat(ellipsis, emDash), type
-if (type = schema.nodes.blockquote) rules.push(blockQuoteRule(type))
-if (type = schema.nodes.ordered_list) rules.push(orderedListRule(type))
-if (type = schema.nodes.bullet_list) rules.push(bulletListRule(type))
-if (type = schema.nodes.code_block) rules.push(codeBlockRule(type))
-if (type = schema.nodes.heading) rules.push(headingRule(type, 6))
+if ((type = schema.nodes.blockquote)) rules.push(blockQuoteRule(type))
+if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type))
+if ((type = schema.nodes.bullet_list)) rules.push(bulletListRule(type))
+if ((type = schema.nodes.code_block)) rules.push(codeBlockRule(type))
+if ((type = schema.nodes.heading)) rules.push(headingRule(type, 6))
 return inputRules({rules})
 }

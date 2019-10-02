@@ -16,60 +16,124 @@ const fs = window.nodeAppDependencies.fs
 export default class TEIDocumentFile {
 
     constructor() {
-
-        /* <lg type="stanza">
-                <l>Piping down the valleys wild, </l>
-                <l>Piping songs of pleasant glee, </l>
-                <l>On a cloud I saw a child, </l>
-                <l>And he laughing said to me: </l>
-            </lg> */
-
+        this.subDocCounter = 0
+        // TODO add a timestamp to the prefix
+        this.subDocPrefix = 'subdoc-'
         this.teiMode = false
 
         const nodes = {
             doc: {
                 content: "block+"
             },
-            text: {
-                group: "inline"
-            },
             paragraph: {
                 content: "inline*",
                 group: "block",
                 parseDOM: [{tag: "p"}],
-                toDOM() { return ["tei-p", 0] }          
+                toDOM: () => this.teiMode ? ["p",0] : ["tei-p",0]        
             },
-            lineGroup: {
-                content: "line+",
-                group: "block",
-                parseDOM: [{tag: "lg"}],
-                toDOM: this.lgToDOM
+            pb: {
+                inline: true,
+                group: "inline",
+                parseDOM: [{tag: "pb"}],
+                toDOM: () => this.teiMode ? ["pb"] : ["tei-pb", " "]     
             },
             line: {
                 content: "inline*",
                 group: "line",
                 parseDOM: [{tag: "l"}],
-                toDOM() { return ["tei-l", 0] }
+                toDOM: () => this.teiMode ? ["l",0] : ["tei-l", 0]
+            },
+            lineGroup: {
+                content: "line+",
+                group: "block",
+                parseDOM: [{tag: "lg"}],
+                toDOM: () => this.teiMode ? ["lg",0] : ["tei-lg", 0]
+            },
+            note: {
+                inline: true,
+                group: "inline",
+                attrs: {
+                    id: {}
+                },
+                parseDOM: [
+                    {
+                        tag: "note",
+                        getAttrs: (domNode) => {
+                            const noteID = domNode.getAttribute("xml:id")
+                            this.parseSubDocument(domNode, noteID)
+                            return { id: noteID }
+                        },
+                    }
+                ],
+                toDOM: (node) => { 
+                    let {subDocID} = node.attrs; 
+                    if( this.teiMode ) {
+                        return this.serializeSubDocument(subDocID)
+                    } else {
+                        return ["tei-note", "†"] 
+                    }
+                }
+            },   
+            text: {
+                group: "inline"
             },
         }
 
-        const marks = {}
+        const marks = {
+            add: {
+                parseDOM: [
+                    {
+                        tag: "add"
+                    } 
+                ],
+                toDOM: (mark) => this.teiMode ? ["add",mark.attrs,0] : ["tei-add",0]        
+            },
+            del: {
+                attrs: {
+                    resp: { default: '' }    
+                },
+                parseDOM: [
+                    {
+                        tag: "del"
+                    }
+                ],
+                toDOM: (mark) => this.teiMode ? ["del",mark.attrs,0] : ["tei-del",0]  
+            },
+            name: {
+                attrs: {
+                    type: {}    
+                },
+                parseDOM: [
+                    {
+                        tag: "name",
+                        getAttrs(dom) {
+                            return {type: dom.getAttribute("type")}
+                        }
+                    }
+                ],
+                toDOM: (mark) => this.teiMode ? ["name",mark.attrs,0]  : ["tei-name",0]   
+            },         
+            ref: {
+                attrs: {
+                    target: { default: '' }
+                },
+                parseDOM: [
+                    {
+                        tag: "ref",
+                        getAttrs(dom) {
+                            return {target: dom.getAttribute("target")}
+                        }
+                    } 
+                ],
+                toDOM: (mark) => this.teiMode ? ["ref",mark.attrs,0] : ["tei-ref",0] 
+            }
+        }
 
         this.xmlSchema = new Schema({ nodes, marks })
     }
 
-    lgToDOM = () => {
-        if( this.teiMode ) {
-            return ["lg", 0]
-        } else {
-            return ["tei-lg", 0]
-        }
-    }
-
     editorInitialState(documentDOM) {
-        const div = documentDOM.createElement('DIV')
-        div.innerHTML = ""
-        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        const doc = this.createEmptyDocument(documentDOM)
         const plugins = this.pluginSetup()
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
@@ -84,6 +148,39 @@ export default class TEIDocumentFile {
         // need to understand how this presently works and then develop a scheme
         // to interrupt and put the correct node type in there depending on the circumstance
         return baseKeymap
+    }
+
+    createEmptyDocument(documentDOM) {
+        const div = documentDOM.createElement('DIV')
+        div.innerHTML = ""
+        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        return doc
+    }
+
+    issueSubDocumentID() {
+        return `${this.subDocPrefix}${this.subDocCounter++}`
+    }
+
+    createSubDocument(documentDOM) {
+        const subDoc = this.createEmptyDocument(documentDOM)
+        const subDocID = this.issueSubDocumentID()
+        localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
+        return subDocID
+    }
+
+    parseSubDocument(node, noteID) {
+        const subDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(node)
+        localStorage.setItem(noteID, JSON.stringify(subDoc.toJSON()));
+    }
+
+    serializeSubDocument(noteID) {
+        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
+        const subDoc = this.xmlSchema.nodeFromJSON(noteJSON);
+        const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
+        const domFragment = domSerializer.serializeFragment(subDoc.content)
+        let note = document.createElement('note')
+        note.appendChild( domFragment.cloneNode(true) )
+        return note
     }
 
     pluginSetup() {
@@ -104,18 +201,19 @@ export default class TEIDocumentFile {
         }))
     }
 
-    // this should really be happening in the constructor
     load( filePath ) {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();
-        const xmlDom = parser.parseFromString(text, "text/xml");
-        const xmlDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(xmlDom)
-        return xmlDoc
-        
+        this.xmlDom = parser.parseFromString(text, "text/xml");
+        const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
+        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(bodyEl)
+        const plugins = this.pluginSetup()
+        const selection = TextSelection.create(doc, 0)
+        return EditorState.create({ 
+            doc, plugins, selection 
+        })
+
         // TODO db of attributes managed by this object
-
-        // for every element, define serializer for HTML and XML
-
         // seperate module for parsing ODD file
         // configures the editor to provide
         // the tags supported by the schema
@@ -124,14 +222,22 @@ export default class TEIDocumentFile {
     }
 
     save(editorView, saveFilePath) {
+        // Override save file for testing
+        saveFilePath = 'test-docs/je_example_out.xml'
+
         const editorState = editorView.state
         this.teiMode = true
+
+        // take the body of the document from prosemirror and reunite it with 
+        // the rest of the xml document, then serialize to string
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(editorState.doc.content)
+        const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
-        const fileContents = div.innerHTML
-        console.log(fileContents) 
+        bodyEl.innerHTML = div.innerHTML
+        const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
+
         fs.writeFileSync(saveFilePath, fileContents, (err) => {
             if (err) {
                 console.log(err)

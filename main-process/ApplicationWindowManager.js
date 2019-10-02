@@ -3,39 +3,90 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 // TODO detect PC
 const isMac = true
 
-class MainWindow {
+class ApplicationWindowManager {
 
     constructor(app, debugMode, onClose) {
-        
+        this.mainWindow = null
+        this.noteWindows = {}
         this.app = app
         this.onClose = onClose
-
+        this.debugMode = debugMode
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)
-        Menu.setApplicationMenu(menu)
-        // Create the browser window.
-        this.window = new BrowserWindow({
-            width: 1440,
-            height: 900,
-            webPreferences: {
-                nodeIntegration: true
-            }
-        })
-
-        // Emitted when the window is closed.
-        this.window.on('closed', this.onClose )
-
-        // and load the index.html of the app.
-        if( debugMode ) {
-          this.window.loadURL('http://localhost:3000')
-        } else {
-          this.window.loadFile('../../../../../../../build/index.html')
-        }
-
+        Menu.setApplicationMenu(menu)     
         ipcMain.on('openSaveFileDialog', this.saveFileMenu)
+        ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
+    }
 
-        // Open the DevTools.
-        if( debugMode ) this.window.webContents.openDevTools({ mode: 'bottom'} )
+    async createTEIEditorWindow(targetFile) {
+
+      // Create the browser window.
+      const browserWindow = new BrowserWindow({
+        width: 1440,
+        height: 900,
+        webPreferences: {
+            nodeIntegration: true
+        }
+      })
+
+      // Emitted when the window is closed.
+      browserWindow.on('closed', this.onClose )
+
+      // and load the index.html of the app.
+      if( this.debugMode ) {
+        await browserWindow.loadURL('http://localhost:3000')
+      } else {
+        await browserWindow.loadFile('../../../../../../../build/index.html')
+      }
+
+      // Open the DevTools.
+      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+
+      // send message indicating the target file
+      browserWindow.webContents.send('fileOpened', targetFile )
+
+      // For now, there is only one document window
+      this.mainWindow = browserWindow
+    }
+
+    createNoteEditorWindow = (event, noteID) => {
+
+      if( this.noteWindows[noteID] ) {
+        this.noteWindows[noteID].focus()
+        console.log("Window already open for note.")
+        // TODO set focus on this windo
+        return
+      }
+
+      // Create the browser window
+      const browserWindow = new BrowserWindow({
+          width: 700,
+          height: 500,
+          frame: false,
+          webPreferences: {
+              nodeIntegration: true
+          }
+      })
+
+      // Emitted when the note window is closed.
+      browserWindow.on('closed', () => {
+        this.noteWindows[noteID] = null
+      } )
+
+      const loadNote = () => {
+        // send message indicating the target note
+        browserWindow.webContents.send('noteOpened', noteID)
+      }
+
+      // and load the index.html of the app.
+      if( this.debugMode ) {
+          browserWindow.loadURL('http://localhost:3000').then(loadNote)
+      } else {
+          browserWindow.loadFile('../../../../../../../build/index.html').then(loadNote)
+      }
+
+      // For now, there is only one document window
+      this.noteWindows[noteID] = browserWindow
     }
 
     openFileMenu = () => {
@@ -43,7 +94,7 @@ class MainWindow {
             properties: [ 'openFile' ]
         }, (files) => {
           if( files && files.length > 0 ) {
-            this.window.webContents.send('fileOpened', files[0])
+            this.mainWindow.webContents.send('fileOpened', files[0])
           }
         })
     }
@@ -53,13 +104,13 @@ class MainWindow {
           properties: [ 'openFile', 'createDirectory' ]
       }, (files) => {
         if( files && files.length > 0 ) {
-          this.window.webContents.send('fileSaved', files)
+          this.mainWindow.webContents.send('fileSaved', files)
         }
       })   
     }
 
     requestSave = () => {
-      this.window.webContents.send('requestSave')
+      this.mainWindow.webContents.send('requestSave')
     }
 
     mainMenuTemplate() {
@@ -169,4 +220,4 @@ class MainWindow {
     }
 }
 
-exports.MainWindow = MainWindow
+exports.ApplicationWindowManager = ApplicationWindowManager
