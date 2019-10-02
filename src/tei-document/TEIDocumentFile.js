@@ -17,8 +17,7 @@ export default class TEIDocumentFile {
 
     constructor() {
         this.subDocCounter = 0
-        // TODO add a timestamp to the prefix
-        this.subDocPrefix = 'subdoc-'
+        this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
 
         const nodes = {
@@ -66,9 +65,15 @@ export default class TEIDocumentFile {
                     }
                 ],
                 toDOM: (node) => { 
+<<<<<<< HEAD
                     let {subDocID} = node.attrs; 
                     if( this.teiMode ) {
                         return this.serializeSubDocument(subDocID)
+=======
+                    let {id} = node.attrs; 
+                    if( this.teiMode ) {
+                        return this.serializeSubDocument(id)
+>>>>>>> nl/notes
                     } else {
                         return ["tei-note", "†"] 
                     }
@@ -179,6 +184,10 @@ export default class TEIDocumentFile {
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(subDoc.content)
         let note = document.createElement('note')
+<<<<<<< HEAD
+=======
+        note.setAttribute('xml:id', noteID)
+>>>>>>> nl/notes
         note.appendChild( domFragment.cloneNode(true) )
         return note
     }

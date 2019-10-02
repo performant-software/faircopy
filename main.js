@@ -13,9 +13,15 @@ onMainWindowClose = () => {
 function createApplicationWindowManager () {
   let debugMode = ( process.argv[3] === 'debug' )
   appWindowManager = new ApplicationWindowManager(app, debugMode, onMainWindowClose)
-  appWindowManager.createTEIEditorWindow('test-docs/je_example.xml').then(() => {
-    console.log("TEI Editor Ready")   
-  })
+  if( debugMode ) {
+    appWindowManager.createTEIEditorWindow('test-docs/je_example.xml').then(() => {
+      console.log("TEI Editor Ready - Loading example text.")   
+    })
+  } else {
+    appWindowManager.createTEIEditorWindow().then(() => {
+      console.log("TEI Editor Ready")   
+    })
+  }
 }
 
 // This method will be called when Electron has finished
