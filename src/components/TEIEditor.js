@@ -80,19 +80,21 @@ export default class TEIEditor extends Component {
         if( !direct ) return;
 
         if( nodeType === 'note' ) {
-            const {subDocID} = node.attrs
-            ipcRenderer.send( 'createNoteEditorWindow', subDocID )
+            const {id} = node.attrs
+            ipcRenderer.send( 'createNoteEditorWindow', id )
         }
         else { 
             const { doc } = this.state.editorState
             const $pos = doc.resolve(pos)
             const marks = $pos.marks()
-            const mark = (marks.length > 0) ? marks[0] : null
-            if( mark ) {
-                const {target} = mark.attrs
-                if( target ) {
-                    ipcRenderer.send( 'createNoteEditorWindow', target )
-                }    
+            for( let mark of marks ) {
+                if( mark.type.name === 'ref' ) {
+                    const {target} = mark.attrs
+                    if( target && target[0] === '#') {
+                        ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
+                        return
+                    }        
+                }
             }
         }
     }
@@ -179,10 +181,22 @@ export default class TEIEditor extends Component {
         cmd( editorState, editorView.dispatch );    
     }
 
+    onNote = () => {
+        const { editorState, teiDocumentFile } = this.state
+        const { $anchor } = editorState.selection
+        const { tr } = editorState
+        const subDocID = teiDocumentFile.createSubDocument(document)
+        const noteNode = editorState.schema.node('note', { id: subDocID })
+        tr.insert($anchor.pos, noteNode) 
+        this.dispatchTransaction(tr)
+        ipcRenderer.send( 'createNoteEditorWindow', subDocID )
+    }
+
     renderToolbar() {
         return (
             <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
                 <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
+                <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
                 <Button onClick={this.onDel} variant='text' tooltip='Add Del Element'>del</Button>
                 <Button onClick={this.requestSave} variant='text' tooltip='Save document'>Save</Button>
             </Toolbar>
@@ -190,7 +204,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { editorView, editorState, teiDocumentFile } = this.state
+        const { editorView, editorState } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -205,7 +219,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
-                <ParameterDrawer teiDocumentFile={teiDocumentFile} editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
+                <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
     }

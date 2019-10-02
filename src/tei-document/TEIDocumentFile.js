@@ -53,16 +53,15 @@ export default class TEIDocumentFile {
                 inline: true,
                 group: "inline",
                 attrs: {
-                    id: {},
-                    subDocID: {}
+                    id: {}
                 },
                 parseDOM: [
                     {
                         tag: "note",
                         getAttrs: (domNode) => {
-                            const subDocID = this.parseSubDocument(domNode)
                             const noteID = domNode.getAttribute("xml:id")
-                            return {id: noteID, subDocID }
+                            this.parseSubDocument(domNode, noteID)
+                            return { id: noteID }
                         },
                     }
                 ],
@@ -120,7 +119,10 @@ export default class TEIDocumentFile {
                 },
                 parseDOM: [
                     {
-                        tag: "ref"
+                        tag: "ref",
+                        getAttrs(dom) {
+                            return {target: dom.getAttribute("target")}
+                        }
                     } 
                 ],
                 toDOM: (mark) => this.teiMode ? ["ref",mark.attrs,0] : ["tei-ref",0] 
@@ -166,11 +168,9 @@ export default class TEIDocumentFile {
         return subDocID
     }
 
-    parseSubDocument(node) {
+    parseSubDocument(node, noteID) {
         const subDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(node)
-        const subDocID = this.issueSubDocumentID()
-        localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
-        return subDocID
+        localStorage.setItem(noteID, JSON.stringify(subDoc.toJSON()));
     }
 
     serializeSubDocument(noteID) {

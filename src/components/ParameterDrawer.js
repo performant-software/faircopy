@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Drawer, TextField } from '@material-ui/core'
-import { Node } from "prosemirror-model"
-import { NodeSelection, TextSelection } from "prosemirror-state"
 import { Button } from '@material-ui/core'
 
 import { changeAttribute } from "../tei-document/commands"
@@ -42,14 +40,12 @@ export default class ParameterDrawer extends Component {
                         value={attr}
                         onChange={this.changeAttributeHandler(element,key)}
                     />
-                    { this.renderNoteButton(element) }
                 </div>
             )
         }        
     }
 
     renderNoteButton( element ) {
-        const {teiDocumentFile} = this.props
 
         // must be a ref mark
         if( element.type.name !== 'ref' ) {
@@ -67,20 +63,6 @@ export default class ParameterDrawer extends Component {
                 <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
             )        
 
-        } else {
-            const newNote = () => {
-                const {dispatch, editorState} = this.props
-                const { $anchor } = editorState.selection
-                let {tr} = editorState
-                const subDocID = teiDocumentFile.createSubDocument(document)
-                tr = changeAttribute( element, 'target', subDocID, $anchor, tr )
-                dispatch(tr)
-                ipcRenderer.send( 'createNoteEditorWindow', subDocID )
-            }
-    
-            return (
-                <Button onClick={newNote} variant='contained' tooltip='New Note'>New Note</Button>
-            )        
         }
     }
 
