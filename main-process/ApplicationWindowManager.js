@@ -35,26 +35,15 @@ class ApplicationWindowManager {
       // and load the index.html of the app.
       if( this.debugMode ) {
         await browserWindow.loadURL('http://localhost:3000')
-<<<<<<< HEAD:main-process/ApplicationWindowManager.js
-=======
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
->>>>>>> nl/notes:main-process/ApplicationWindowManager.js
       } else {
         await browserWindow.loadFile('../../../../../../../build/index.html')
       }
 
-<<<<<<< HEAD:main-process/ApplicationWindowManager.js
-      // Open the DevTools.
-      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
-
-      // send message indicating the target file
-      browserWindow.webContents.send('fileOpened', targetFile )
-=======
       // send message indicating the target file
       if( targetFile ) {
         browserWindow.webContents.send('fileOpened', targetFile )
       }
->>>>>>> nl/notes:main-process/ApplicationWindowManager.js
 
       // For now, there is only one document window
       this.mainWindow = browserWindow
