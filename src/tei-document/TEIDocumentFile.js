@@ -18,7 +18,7 @@ export default class TEIDocumentFile {
     constructor() {
         this.subDocCounter = 0
         // TODO add a timestamp to the prefix
-        this.subDocPrefix = 'subdoc-'
+        this.subDocPrefix = 'note-'
         this.teiMode = false
 
         const nodes = {
