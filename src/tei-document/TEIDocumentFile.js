@@ -66,9 +66,9 @@ export default class TEIDocumentFile {
                     }
                 ],
                 toDOM: (node) => { 
-                    let {subDocID} = node.attrs; 
+                    let {id} = node.attrs; 
                     if( this.teiMode ) {
-                        return this.serializeSubDocument(subDocID)
+                        return this.serializeSubDocument(id)
                     } else {
                         return ["tei-note", "†"] 
                     }
@@ -179,6 +179,7 @@ export default class TEIDocumentFile {
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(subDoc.content)
         let note = document.createElement('note')
+        note.setAttribute('xml:id', noteID)
         note.appendChild( domFragment.cloneNode(true) )
         return note
     }
