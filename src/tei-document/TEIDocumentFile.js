@@ -178,10 +178,7 @@ export default class TEIDocumentFile {
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(subDoc.content)
         let note = document.createElement('note')
-<<<<<<< HEAD
-=======
         note.setAttribute('xml:id', noteID)
->>>>>>> nl/notes
         note.appendChild( domFragment.cloneNode(true) )
         return note
     }
