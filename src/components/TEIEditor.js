@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import {EditorView} from "prosemirror-view"
 import {EditorState, TextSelection} from "prosemirror-state"
 
-import { Toolbar, Button } from '@material-ui/core'
+import { Toolbar, Button, IconButton } from '@material-ui/core'
+import SaveIcon from '@material-ui/icons/Save';
 
 import TEIDocumentFile from "../tei-document/TEIDocumentFile"
 import { addMark } from "../tei-document/commands"
@@ -195,12 +196,18 @@ export default class TEIEditor extends Component {
 
     renderToolbar() {
         return (
-            <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
-                <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
-                <Button onClick={this.onDel} variant='text' tooltip='Add Del Element'>del</Button>
-                <Button onClick={this.requestSave} variant='text' tooltip='Save document'>Save</Button>
-            </Toolbar>
+            <div>
+                <IconButton className='save-button' onClick={this.requestSave} variant='text' tooltip='Save document'><SaveIcon /></IconButton>
+                <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
+                    <Button  tooltip='Add Ref Element'>hi</Button>
+                    <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
+                    <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
+                    <Button  tooltip='Add Ref Element'>pb</Button>
+                    <Button tooltip='Add Ref Element'>name</Button>
+                    <Button tooltip='Add Ref Element'>date</Button>
+                    <Button tooltip='Add Ref Element'>placeName</Button>
+                </Toolbar>
+            </div>
         )
     }
 
