@@ -6,6 +6,7 @@ import {EditorState, TextSelection} from "prosemirror-state"
 
 import { Toolbar, Button, IconButton } from '@material-ui/core'
 import SaveIcon from '@material-ui/icons/Save';
+import CloseIcon from '@material-ui/icons/Close';
 
 import TEIDocumentFile from "../tei-document/TEIDocumentFile"
 import { addMark } from "../tei-document/commands"
@@ -143,13 +144,19 @@ export default class TEIEditor extends Component {
         }
     }
 
-    requestSave = () => {
-        const { filePath, noteID } = this.state
+    saveAndCloseNote = () => {
+        const { noteID } = this.state
+        const { doc } = this.state.editorState
 
         if( noteID ) {
-            this.saveNote(noteID)
-            return
+            localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
+            ipcRenderer.send( 'closeNoteWindow', noteID )
         }
+    }
+
+    requestSave = () => {
+        const { filePath } = this.state
+
         if( filePath === null ) {
             ipcRenderer.send( 'openSaveFileDialog' )
         } else {
@@ -162,11 +169,6 @@ export default class TEIEditor extends Component {
         teiDocumentFile.save( editorView, saveFilePath )
         this.setState( { ...this.state, filePath: saveFilePath })
         this.setTitle(saveFilePath)
-    }
-
-    saveNote( noteID ) {
-        const { doc } = this.state.editorState
-        localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
     }
 
     onRef = () => {
@@ -194,11 +196,37 @@ export default class TEIEditor extends Component {
         ipcRenderer.send( 'createNoteEditorWindow', subDocID )
     }
 
+    renderSaveButton() {
+        const { noteID } = this.state
+
+        if( noteID ) {
+            return (
+               <IconButton 
+                   className='save-button' 
+                   onClick={this.saveAndCloseNote} 
+                   variant='text' 
+                   tooltip='Close note'>
+                       <CloseIcon />
+               </IconButton>
+            )
+       } else {
+           return (
+               <IconButton 
+                   className='save-button' 
+                   onClick={this.requestSave} 
+                   variant='text' 
+                   tooltip='Save document'>
+                       <SaveIcon />
+               </IconButton>
+            )
+       }
+    }
+
     renderToolbar() {
         return (
             <div>
-                <IconButton className='save-button' onClick={this.requestSave} variant='text' tooltip='Save document'><SaveIcon /></IconButton>
-                <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
+                { this.renderSaveButton() }
+                <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
                     <Button  tooltip='Add Ref Element'>hi</Button>
                     <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
                     <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
