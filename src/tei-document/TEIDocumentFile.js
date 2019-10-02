@@ -24,7 +24,7 @@ export default class TEIDocumentFile {
             doc: {
                 content: "block+"
             },
-            paragraph: {
+            p: {
                 content: "inline*",
                 group: "block",
                 parseDOM: [{tag: "p"}],
