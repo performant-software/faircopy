@@ -65,15 +65,9 @@ export default class TEIDocumentFile {
                     }
                 ],
                 toDOM: (node) => { 
-<<<<<<< HEAD
-                    let {subDocID} = node.attrs; 
-                    if( this.teiMode ) {
-                        return this.serializeSubDocument(subDocID)
-=======
                     let {id} = node.attrs; 
                     if( this.teiMode ) {
                         return this.serializeSubDocument(id)
->>>>>>> nl/notes
                     } else {
                         return ["tei-note", "†"] 
                     }
