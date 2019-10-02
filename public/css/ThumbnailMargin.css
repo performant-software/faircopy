@@ -1,0 +1,9 @@
+#thumbnail-margin {
+    margin-top: 20px;
+}
+
+.facs-thumbnail {
+    float: right;
+    margin-right: 50px;
+    width: 120px;
+}

@@ -11,7 +11,8 @@ import { addMark } from "../tei-document/commands"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
-import ParameterDrawer from './ParameterDrawer';
+import ParameterDrawer from './ParameterDrawer'
+import ThumbnailMargin from './ThumbnailMargin'
 // import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
@@ -219,6 +220,7 @@ export default class TEIEditor extends Component {
                         createEditorView={this.createEditorView}
                     />
                 </div>    
+                <ThumbnailMargin></ThumbnailMargin>
                 <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
