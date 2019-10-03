@@ -13,7 +13,7 @@ import {buildInputRules} from "./inputrules"
 
 const fs = window.nodeAppDependencies.fs
 
-export default class TEIDocumentFile {
+export default class TEIDocument {
 
     constructor() {
         this.subDocCounter = 0
@@ -35,18 +35,6 @@ export default class TEIDocumentFile {
                 group: "inline",
                 parseDOM: [{tag: "pb"}],
                 toDOM: () => this.teiMode ? ["pb"] : ["tei-pb", " "]     
-            },
-            line: {
-                content: "inline*",
-                group: "line",
-                parseDOM: [{tag: "l"}],
-                toDOM: () => this.teiMode ? ["l",0] : ["tei-l", 0]
-            },
-            lineGroup: {
-                content: "line+",
-                group: "block",
-                parseDOM: [{tag: "lg"}],
-                toDOM: () => this.teiMode ? ["lg",0] : ["tei-lg", 0]
             },
             note: {
                 inline: true,
@@ -78,57 +66,41 @@ export default class TEIDocumentFile {
             },
         }
 
-        const marks = {
-            add: {
-                parseDOM: [
-                    {
-                        tag: "add"
-                    } 
-                ],
-                toDOM: (mark) => this.teiMode ? ["add",mark.attrs,0] : ["tei-add",0]        
-            },
-            del: {
-                attrs: {
-                    resp: { default: '' }    
-                },
-                parseDOM: [
-                    {
-                        tag: "del"
-                    }
-                ],
-                toDOM: (mark) => this.teiMode ? ["del",mark.attrs,0] : ["tei-del",0]  
-            },
-            name: {
-                attrs: {
-                    type: {}    
-                },
-                parseDOM: [
-                    {
-                        tag: "name",
-                        getAttrs(dom) {
-                            return {type: dom.getAttribute("type")}
-                        }
-                    }
-                ],
-                toDOM: (mark) => this.teiMode ? ["name",mark.attrs,0]  : ["tei-name",0]   
-            },         
-            ref: {
-                attrs: {
-                    target: { default: '' }
-                },
-                parseDOM: [
-                    {
-                        tag: "ref",
-                        getAttrs(dom) {
-                            return {target: dom.getAttribute("target")}
-                        }
-                    } 
-                ],
-                toDOM: (mark) => this.teiMode ? ["ref",mark.attrs,0] : ["tei-ref",0] 
-            }
+        const marks = {   
+            hi: this.createTEIMark({ name: 'hi', attrs: [ "rend" ] }),
+            ref: this.createTEIMark({ name: 'ref', attrs: [ "target" ] }),
+            name: this.createTEIMark({ name: 'name', attrs: [ "type" ] }),
+            date: this.createTEIMark({ name: 'date', attrs: [ "target" ] }),
+            placeName: this.createTEIMark({ name: 'placeName', attrs: [ "target" ] })
         }
 
         this.xmlSchema = new Schema({ nodes, marks })
+    }
+
+    createTEIMark(teiMarkSpec) {
+        const { name } = teiMarkSpec
+
+        let attrs = {}
+        for( let attr of teiMarkSpec.attrs ) {
+            attrs[attr] = { default: '' }
+        }
+
+        return {
+            attrs,
+            parseDOM: [
+                {
+                    tag: name,
+                    getAttrs(dom) {
+                        let parsedAttrs = {}
+                        for( let attr of teiMarkSpec.attrs ) {
+                            parsedAttrs[attr] = dom.getAttribute(attr)
+                        }
+                        return parsedAttrs
+                    }
+                } 
+            ],
+            toDOM: (mark) => this.teiMode ? [name,mark.attrs,0] : [`tei-${name}`,0] 
+        }       
     }
 
     editorInitialState(documentDOM) {

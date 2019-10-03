@@ -8,7 +8,7 @@ import { Toolbar, Button, IconButton } from '@material-ui/core'
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 
-import TEIDocumentFile from "../tei-document/TEIDocumentFile"
+import TEIDocument from "../tei-document/TEIDocument"
 import { addMark } from "../tei-document/commands"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
@@ -26,7 +26,7 @@ export default class TEIEditor extends Component {
         this.state = {
             filePath: null,
             noteID: null,
-            teiDocumentFile: new TEIDocumentFile(),
+            teiDocumentFile: new TEIDocument(),
             editorView: null,
             editorState: null
         }	
@@ -227,13 +227,13 @@ export default class TEIEditor extends Component {
             <div>
                 { this.renderSaveButton() }
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                    <Button  tooltip='Add Ref Element'>hi</Button>
+                    <Button  tooltip='Add Hi Element'>hi</Button>
                     <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
                     <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
-                    <Button  tooltip='Add Ref Element'>pb</Button>
-                    <Button tooltip='Add Ref Element'>name</Button>
-                    <Button tooltip='Add Ref Element'>date</Button>
-                    <Button tooltip='Add Ref Element'>placeName</Button>
+                    <Button  tooltip='Add Pb Element'>pb</Button>
+                    <Button tooltip='Add Name Element'>name</Button>
+                    <Button tooltip='Add Date Element'>date</Button>
+                    <Button tooltip='Add Placename Element'>placeName</Button>
                 </Toolbar>
             </div>
         )
