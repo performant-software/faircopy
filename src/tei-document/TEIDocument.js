@@ -20,6 +20,15 @@ export default class TEIDocument {
         this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
 
+        this.docs = {
+            p: "(paragraph) marks paragraphs in prose.",
+            pb: "(page beginning) marks the beginning of a new page in a paginated document.",
+            note: "contains a note or annotation.",
+            hi: "(highlighted) marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
+            ref: "(reference) defines a reference to another location, possibly modified by additional text or comment.",
+            name: "(name, proper noun) contains a proper noun or noun phrase."
+        }
+
         const nodes = {
             doc: {
                 content: "block+"
@@ -69,9 +78,7 @@ export default class TEIDocument {
         const marks = {   
             hi: this.createTEIMark({ name: 'hi', attrs: [ "rend" ] }),
             ref: this.createTEIMark({ name: 'ref', attrs: [ "target" ] }),
-            name: this.createTEIMark({ name: 'name', attrs: [ "type" ] }),
-            date: this.createTEIMark({ name: 'date', attrs: [ "target" ] }),
-            placeName: this.createTEIMark({ name: 'placeName', attrs: [ "target" ] })
+            name: this.createTEIMark({ name: 'name', attrs: [ "type" ] })
         }
 
         this.xmlSchema = new Schema({ nodes, marks })
@@ -99,7 +106,7 @@ export default class TEIDocument {
                     }
                 } 
             ],
-            toDOM: (mark) => this.teiMode ? [name,mark.attrs,0] : [`tei-${name}`,0] 
+            toDOM: (mark) => this.teiMode ? [name,mark.attrs,0] : [`tei-${name}`,mark.attrs,0] 
         }       
     }
 

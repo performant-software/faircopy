@@ -178,11 +178,27 @@ export default class TEIEditor extends Component {
         cmd( editorState, editorView.dispatch );    
     }
 
-    onDel = () => {
+    onHi = () => {
         const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.del
+        const markType = teiDocumentFile.xmlSchema.marks.hi
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
+    }
+
+    onName = () => {
+        const {editorState, teiDocumentFile, editorView} = this.state 
+        const markType = teiDocumentFile.xmlSchema.marks.name
+        const cmd = addMark( markType );
+        cmd( editorState, editorView.dispatch );    
+    }
+
+    onPb = () => {
+        const { editorState } = this.state
+        const { $anchor } = editorState.selection
+        const { tr } = editorState
+        const pbNode = editorState.schema.node('pb')
+        tr.insert($anchor.pos, pbNode) 
+        this.dispatchTransaction(tr)
     }
 
     onNote = () => {
@@ -227,20 +243,18 @@ export default class TEIEditor extends Component {
             <div>
                 { this.renderSaveButton() }
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                    <Button  tooltip='Add Hi Element'>hi</Button>
-                    <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
-                    <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
-                    <Button  tooltip='Add Pb Element'>pb</Button>
-                    <Button tooltip='Add Name Element'>name</Button>
-                    <Button tooltip='Add Date Element'>date</Button>
-                    <Button tooltip='Add Placename Element'>placeName</Button>
+                    <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
+                    <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>
+                    <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
+                    <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button>
+                    <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
                 </Toolbar>
             </div>
         )
     }
 
     render() {    
-        const { editorView, editorState } = this.state
+        const { editorView, editorState, teiDocumentFile } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -256,7 +270,7 @@ export default class TEIEditor extends Component {
                     />
                     <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>    
-                <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
+                <ParameterDrawer docs={teiDocumentFile.docs} editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
             </div>
         )
     }

@@ -67,6 +67,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement() {
+        const { docs } = this.props
         const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
         let element
@@ -86,10 +87,11 @@ export default class ParameterDrawer extends Component {
                 </div>
             )
         } else {
+            const name = element.type.name
             return (
                 <div>
                    <div className='drawerHeader'>
-                        {element.type.name} - Documentation for this element.                    
+                        {name} - {docs[name]}                   
                     </div>
                     { this.renderAttributes(element) }
                 </div>
