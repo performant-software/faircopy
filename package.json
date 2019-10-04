@@ -5,11 +5,13 @@
   "main": "main.js",
   "private": true,
   "scripts": {
+    "build": "react-scripts build",
+    "dist": "electron-builder",
+    "eject": "react-scripts eject",
+    "pack": "electron-builder --dir",
     "start": "electron main.js",
     "start-dev": "BROWSER=none react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test"
   },
   "repository": "https://github.com/performant-software/faircopy",
   "keywords": [
@@ -23,11 +25,12 @@
   "homepage": ".",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^5.0.0"
+    "electron": "^5.0.0",
+    "electron-builder": "^21.2.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.5.0",
-    "@material-ui/icons": "^4.5.0",
+    "@material-ui/icons": "^4.4.3",
     "prop-types": "^15.7.2",
     "prosemirror-example-setup": "^1.0.1",
     "prosemirror-model": "^1.7.0",
@@ -45,6 +48,13 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "build": {
+    "appId": "faircopy",
+    "mac": {
+      "category": "productivity"
+    }
+  },
+  "postinstall": "electron-builder install-app-deps",
   "browserslist": {
     "production": [
       ">0.2%",
