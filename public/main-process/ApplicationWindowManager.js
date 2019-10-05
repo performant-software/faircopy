@@ -2,6 +2,7 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 
 // TODO detect PC
 const isMac = true
+const indexFilePath = 'build/index.html'
 
 class ApplicationWindowManager {
 
@@ -38,7 +39,7 @@ class ApplicationWindowManager {
         await browserWindow.loadURL('http://localhost:3000')
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
-        await browserWindow.loadFile('../../../../../../../build/index.html')
+        await browserWindow.loadFile(indexFilePath)
       }
 
       // send message indicating the target file
@@ -83,7 +84,7 @@ class ApplicationWindowManager {
       if( this.debugMode ) {
           browserWindow.loadURL('http://localhost:3000').then(loadNote)
       } else {
-          browserWindow.loadFile('../../../../../../../build/index.html').then(loadNote)
+          browserWindow.loadFile(indexFilePath).then(loadNote)
       }
 
       // For now, there is only one document window
