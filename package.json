@@ -1,15 +1,15 @@
 {
   "name": "faircopy",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "(The first of many) small sharp tools for digital scholarship in the humanities",
-  "main": "main.js",
+  "main": "public/electron.js",
   "private": true,
   "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "electron-builder -mw",
     "build": "react-scripts build",
-    "dist": "electron-builder",
-    "eject": "react-scripts eject",
-    "pack": "electron-builder --dir",
-    "start": "electron main.js",
+    "start": "electron public/electron.js",
     "start-dev": "BROWSER=none react-scripts start",
     "test": "react-scripts test"
   },
@@ -18,12 +18,10 @@
     "Electron",
     "TEI",
     "Editor",
-    "Digital Humanities",
-    "demo"
+    "Digital Humanities"
   ],
   "author": "Performant Software Solutions LLC",
-  "homepage": ".",
-  "license": "UNLICENSED",
+  "homepage": "./",
   "devDependencies": {
     "electron": "^5.0.0",
     "electron-builder": "^21.2.0"
@@ -49,9 +47,18 @@
     "extends": "react-app"
   },
   "build": {
-    "appId": "faircopy",
+    "appId": "com.performantsoftware.faircopy",
+    "productName": "FairCopy",
+    "copyright": "Copyright © 2019 ${author}",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories":{
+      "buildResources": "assets"
+    },
     "mac": {
-      "category": "productivity"
+      "category": "public.app-category.utilities"
     }
   },
   "postinstall": "electron-builder install-app-deps",
