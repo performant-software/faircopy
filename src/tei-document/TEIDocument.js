@@ -52,7 +52,10 @@ export default class TEIDocument {
                         return { facs }
                     }
                 }],
-                toDOM: (node) => this.teiMode ? ["pb",node.attrs] : ["tei-pb",node.attrs," "]     
+                toDOM: (node) => {
+                    const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
+                    return this.teiMode ? ["pb",node.attrs] : ["tei-pb",pbAttrs,0]   
+                }  
             },
             note: {
                 inline: true,

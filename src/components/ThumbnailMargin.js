@@ -16,7 +16,8 @@ export default class ThumbnailMargin extends Component {
                 const top = startCoords.top - marginTop + scrollTop
                 const thumbStyle = { top }
                 const thumbKey = `facs-thumb-${thumbnails.length}`
-                const thumbSrc = `${baseURL}/${node.attrs['facs']}`
+                // const thumbSrc = `${baseURL}/${node.attrs['facs']}`
+                const thumbSrc = `${baseURL}/img/leaf.png`
                 thumbnails.push(
                     <img key={thumbKey} style={thumbStyle} className="facs-thumbnail" alt="test" src={thumbSrc}></img>
                 )                        
