@@ -42,14 +42,23 @@ export default class TEIDocument {
             pb: {
                 inline: true,
                 group: "inline",
-                parseDOM: [{tag: "pb"}],
-                toDOM: () => this.teiMode ? ["pb"] : ["tei-pb", " "]     
+                attrs: {
+                    facs: { default: '' }
+                },
+                parseDOM: [{
+                    tag: "pb",
+                    getAttrs: (domNode) => {
+                        const facs = domNode.getAttribute("facs")
+                        return { facs }
+                    }
+                }],
+                toDOM: (node) => this.teiMode ? ["pb",node.attrs] : ["tei-pb",node.attrs," "]     
             },
             note: {
                 inline: true,
                 group: "inline",
                 attrs: {
-                    id: {}
+                    id: { }
                 },
                 parseDOM: [
                     {
