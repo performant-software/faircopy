@@ -271,7 +271,11 @@ export default class TEIEditor extends Component {
                     />
                     <ThumbnailMargin scrollTop={scrollTop} baseURL={baseURL} editorView={editorView}></ThumbnailMargin>
                 </div>    
-                <ParameterDrawer docs={teiDocumentFile.docs} editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
+                <ParameterDrawer 
+                    teiDocumentFile={teiDocumentFile} 
+                    editorState={editorState} 
+                    dispatch={this.dispatchTransaction}
+                ></ParameterDrawer>
             </div>
         )
     }

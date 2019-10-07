@@ -151,6 +151,13 @@ export default class TEIDocument {
         return `${this.subDocPrefix}${this.subDocCounter++}`
     }
 
+    moveSubDocument( oldKey, newKey ) {
+        console.log(`moving ${oldKey} to ${newKey}`)
+        const subDoc = localStorage.getItem(oldKey);
+        localStorage.setItem(newKey, subDoc);
+        localStorage.setItem(oldKey, null);
+    }
+
     createSubDocument(documentDOM) {
         const subDoc = this.createEmptyDocument(documentDOM)
         const subDocID = this.issueSubDocumentID()
