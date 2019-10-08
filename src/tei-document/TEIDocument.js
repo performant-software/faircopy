@@ -20,8 +20,9 @@ export default class TEIDocument {
         this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
 
-        // load blank XML template
-        const text = fs.readFileSync("public/template.xml", "utf8")
+        // load blank XML template - note that this reads from build dir
+        // so that it works in dev and prod
+        const text = fs.readFileSync("build/template.xml", "utf8")
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(text, "text/xml");
 
@@ -225,7 +226,9 @@ export default class TEIDocument {
 
     save(editorView, saveFilePath) {
         // Override save file for testing
-        saveFilePath = 'test-docs/je_example_out.xml'
+        if( process.env.REACT_APP_DEBUG_MODE) {
+            saveFilePath = 'test-docs/je_example_out.xml'
+        }
 
         const editorState = editorView.state
         this.teiMode = true

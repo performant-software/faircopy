@@ -119,8 +119,16 @@ class ApplicationWindowManager {
       }
     }
 
+    requestNewFile = () => {
+      // this.mainWindow.webContents.send('requestSave')
+    }
+
     requestSave = () => {
       this.mainWindow.webContents.send('requestSave')
+    }
+
+    requestSaveAs = () => {
+      // this.mainWindow.webContents.send('requestSave')
     }
 
     mainMenuTemplate() {
@@ -145,7 +153,12 @@ class ApplicationWindowManager {
             label: 'File',
             submenu: [
               { 
-                label: 'Open',
+                label: 'New File...',
+                accelerator: 'CommandOrControl+N',
+                click: this.requestNewFile
+              },
+              { 
+                label: 'Open...',
                 accelerator: 'CommandOrControl+O',
                 click: this.openFileMenu
               },
@@ -153,6 +166,10 @@ class ApplicationWindowManager {
                 label: 'Save',
                 accelerator: 'CommandOrControl+S',
                 click: this.requestSave
+              },
+              { 
+                label: 'Save As...',
+                click: this.requestSaveAs
               },
               { role: 'close' }
             ]
@@ -221,8 +238,8 @@ class ApplicationWindowManager {
             role: 'help',
             submenu: [
               {
-                label: 'Learn More',
-                click () { require('electron').shell.openExternalSync('https://electronjs.org') }
+                label: 'About',
+                click () { require('electron').shell.openExternalSync('https://www.performantsoftware.com') }
               }
             ]
           }
