@@ -171,6 +171,18 @@ export default class TEIEditor extends Component {
         this.setTitle(saveFilePath)
     }
 
+    onErase = () => {
+        const { editorState } = this.state
+        const { tr } = editorState
+        let {empty, $cursor, ranges} = editorState.selection
+        if (empty || $cursor) return
+        for (let i = 0; i < ranges.length; i++) {
+            let {$from, $to} = ranges[i]
+            tr.removeMark($from.pos, $to.pos)
+        }
+        this.dispatchTransaction(tr)
+    }
+
     onRef = () => {
         const {editorState, teiDocumentFile, editorView} = this.state 
         const markType = teiDocumentFile.xmlSchema.marks.ref
@@ -248,6 +260,7 @@ export default class TEIEditor extends Component {
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button>
                     <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
+                    <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>
             </div>
         )
