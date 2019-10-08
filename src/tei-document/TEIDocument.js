@@ -20,6 +20,11 @@ export default class TEIDocument {
         this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
 
+        // load blank XML template
+        const text = fs.readFileSync("public/template.xml", "utf8")
+        const parser = new DOMParser();
+        this.xmlDom = parser.parseFromString(text, "text/xml");
+
         this.docs = {
             p: "(paragraph) marks paragraphs in prose.",
             pb: "(page beginning) marks the beginning of a new page in a paginated document.",
@@ -152,7 +157,6 @@ export default class TEIDocument {
     }
 
     moveSubDocument( oldKey, newKey ) {
-        console.log(`moving ${oldKey} to ${newKey}`)
         const subDoc = localStorage.getItem(oldKey);
         localStorage.setItem(newKey, subDoc);
         localStorage.setItem(oldKey, null);
