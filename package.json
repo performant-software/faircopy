@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "preelectron-pack": "yarn build",
-    "electron-pack": "electron-builder -mw",
+    "predist": "yarn build",
+    "dist": "electron-builder -mw",
     "build": "react-scripts build",
     "start": "electron public/electron.js",
     "start-dev": "BROWSER=none react-scripts start",

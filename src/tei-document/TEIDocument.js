@@ -13,6 +13,33 @@ import {buildInputRules} from "./inputrules"
 
 const fs = window.nodeAppDependencies.fs
 
+const teiTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+    <TEI xmlns="http://www.tei-c.org/ns/1.0">
+        <teiHeader>
+            <fileDesc>
+                <titleStmt>
+                    <title></title>
+                </titleStmt>
+                <publicationStmt>
+                    <publisher/>
+                    <pubPlace/>
+                    <date/>
+                    <authority/>
+                <availability>
+                    <p/> 
+                    </availability>
+            </publicationStmt>
+                <sourceDesc>
+                <p/>
+                </sourceDesc>
+            </fileDesc>
+        </teiHeader>
+    <text>
+        <body></body>
+    </text>
+    </TEI>
+`
+
 export default class TEIDocument {
 
     constructor() {
@@ -20,11 +47,9 @@ export default class TEIDocument {
         this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
 
-        // load blank XML template - note that this reads from build dir
-        // so that it works in dev and prod
-        const text = fs.readFileSync("build/template.xml", "utf8")
+        // load blank XML template 
         const parser = new DOMParser();
-        this.xmlDom = parser.parseFromString(text, "text/xml");
+        this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");
 
         this.docs = {
             p: "(paragraph) marks paragraphs in prose.",
