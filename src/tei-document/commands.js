@@ -1,4 +1,5 @@
 import { NodeSelection } from "prosemirror-state"
+import { Node } from "prosemirror-model"
 
 function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {

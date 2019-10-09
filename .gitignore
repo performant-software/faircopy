@@ -3,3 +3,6 @@
 yarn-error.log
 /build
 test-docs/je_example_out.xml
+/dist
+/package
+faircopy*.tgz

@@ -15,3 +15,12 @@
     width: 100%;
     background: #ccc;
 }
+
+.save-button {
+    background: '#FAFAFA';
+    float: right;
+}
+
+.draggable {
+    -webkit-app-region: drag
+}

@@ -13,19 +13,58 @@ import {buildInputRules} from "./inputrules"
 
 const fs = window.nodeAppDependencies.fs
 
-export default class TEIDocumentFile {
+const teiTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+    <TEI xmlns="http://www.tei-c.org/ns/1.0">
+        <teiHeader>
+            <fileDesc>
+                <titleStmt>
+                    <title></title>
+                </titleStmt>
+                <publicationStmt>
+                    <publisher/>
+                    <pubPlace/>
+                    <date/>
+                    <authority/>
+                <availability>
+                    <p/> 
+                    </availability>
+            </publicationStmt>
+                <sourceDesc>
+                <p/>
+                </sourceDesc>
+            </fileDesc>
+        </teiHeader>
+    <text>
+        <body></body>
+    </text>
+    </TEI>
+`
+
+export default class TEIDocument {
 
     constructor() {
         this.subDocCounter = 0
-        // TODO add a timestamp to the prefix
-        this.subDocPrefix = 'subdoc-'
+        this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
+
+        // load blank XML template 
+        const parser = new DOMParser();
+        this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");
+
+        this.docs = {
+            p: "(paragraph) marks paragraphs in prose.",
+            pb: "(page beginning) marks the beginning of a new page in a paginated document.",
+            note: "contains a note or annotation.",
+            hi: "(highlighted) marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
+            ref: "(reference) defines a reference to another location, possibly modified by additional text or comment.",
+            name: "(name, proper noun) contains a proper noun or noun phrase."
+        }
 
         const nodes = {
             doc: {
                 content: "block+"
             },
-            paragraph: {
+            p: {
                 content: "inline*",
                 group: "block",
                 parseDOM: [{tag: "p"}],
@@ -34,26 +73,26 @@ export default class TEIDocumentFile {
             pb: {
                 inline: true,
                 group: "inline",
-                parseDOM: [{tag: "pb"}],
-                toDOM: () => this.teiMode ? ["pb"] : ["tei-pb", " "]     
-            },
-            line: {
-                content: "inline*",
-                group: "line",
-                parseDOM: [{tag: "l"}],
-                toDOM: () => this.teiMode ? ["l",0] : ["tei-l", 0]
-            },
-            lineGroup: {
-                content: "line+",
-                group: "block",
-                parseDOM: [{tag: "lg"}],
-                toDOM: () => this.teiMode ? ["lg",0] : ["tei-lg", 0]
+                attrs: {
+                    facs: { default: '' }
+                },
+                parseDOM: [{
+                    tag: "pb",
+                    getAttrs: (domNode) => {
+                        const facs = domNode.getAttribute("facs")
+                        return { facs }
+                    }
+                }],
+                toDOM: (node) => {
+                    const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
+                    return this.teiMode ? ["pb",node.attrs] : ["tei-pb",pbAttrs,0]   
+                }  
             },
             note: {
                 inline: true,
                 group: "inline",
                 attrs: {
-                    id: {}
+                    id: { }
                 },
                 parseDOM: [
                     {
@@ -66,9 +105,9 @@ export default class TEIDocumentFile {
                     }
                 ],
                 toDOM: (node) => { 
-                    let {subDocID} = node.attrs; 
+                    let {id} = node.attrs; 
                     if( this.teiMode ) {
-                        return this.serializeSubDocument(subDocID)
+                        return this.serializeSubDocument(id)
                     } else {
                         return ["tei-note", "†"] 
                     }
@@ -79,57 +118,39 @@ export default class TEIDocumentFile {
             },
         }
 
-        const marks = {
-            add: {
-                parseDOM: [
-                    {
-                        tag: "add"
-                    } 
-                ],
-                toDOM: (mark) => this.teiMode ? ["add",mark.attrs,0] : ["tei-add",0]        
-            },
-            del: {
-                attrs: {
-                    resp: { default: '' }    
-                },
-                parseDOM: [
-                    {
-                        tag: "del"
-                    }
-                ],
-                toDOM: (mark) => this.teiMode ? ["del",mark.attrs,0] : ["tei-del",0]  
-            },
-            name: {
-                attrs: {
-                    type: {}    
-                },
-                parseDOM: [
-                    {
-                        tag: "name",
-                        getAttrs(dom) {
-                            return {type: dom.getAttribute("type")}
-                        }
-                    }
-                ],
-                toDOM: (mark) => this.teiMode ? ["name",mark.attrs,0]  : ["tei-name",0]   
-            },         
-            ref: {
-                attrs: {
-                    target: { default: '' }
-                },
-                parseDOM: [
-                    {
-                        tag: "ref",
-                        getAttrs(dom) {
-                            return {target: dom.getAttribute("target")}
-                        }
-                    } 
-                ],
-                toDOM: (mark) => this.teiMode ? ["ref",mark.attrs,0] : ["tei-ref",0] 
-            }
+        const marks = {   
+            hi: this.createTEIMark({ name: 'hi', attrs: [ "rend" ] }),
+            ref: this.createTEIMark({ name: 'ref', attrs: [ "target" ] }),
+            name: this.createTEIMark({ name: 'name', attrs: [ "type" ] })
         }
 
         this.xmlSchema = new Schema({ nodes, marks })
+    }
+
+    createTEIMark(teiMarkSpec) {
+        const { name } = teiMarkSpec
+
+        let attrs = {}
+        for( let attr of teiMarkSpec.attrs ) {
+            attrs[attr] = { default: '' }
+        }
+
+        return {
+            attrs,
+            parseDOM: [
+                {
+                    tag: name,
+                    getAttrs(dom) {
+                        let parsedAttrs = {}
+                        for( let attr of teiMarkSpec.attrs ) {
+                            parsedAttrs[attr] = dom.getAttribute(attr)
+                        }
+                        return parsedAttrs
+                    }
+                } 
+            ],
+            toDOM: (mark) => this.teiMode ? [name,mark.attrs,0] : [`tei-${name}`,mark.attrs,0] 
+        }       
     }
 
     editorInitialState(documentDOM) {
@@ -161,6 +182,12 @@ export default class TEIDocumentFile {
         return `${this.subDocPrefix}${this.subDocCounter++}`
     }
 
+    moveSubDocument( oldKey, newKey ) {
+        const subDoc = localStorage.getItem(oldKey);
+        localStorage.setItem(newKey, subDoc);
+        localStorage.setItem(oldKey, null);
+    }
+
     createSubDocument(documentDOM) {
         const subDoc = this.createEmptyDocument(documentDOM)
         const subDocID = this.issueSubDocumentID()
@@ -179,6 +206,7 @@ export default class TEIDocumentFile {
         const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
         const domFragment = domSerializer.serializeFragment(subDoc.content)
         let note = document.createElement('note')
+        note.setAttribute('xml:id', noteID)
         note.appendChild( domFragment.cloneNode(true) )
         return note
     }
@@ -223,7 +251,9 @@ export default class TEIDocumentFile {
 
     save(editorView, saveFilePath) {
         // Override save file for testing
-        saveFilePath = 'test-docs/je_example_out.xml'
+        if( process.env.REACT_APP_DEBUG_MODE) {
+            saveFilePath = 'test-docs/je_example_out.xml'
+        }
 
         const editorState = editorView.state
         this.teiMode = true

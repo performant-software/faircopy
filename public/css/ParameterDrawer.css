@@ -10,4 +10,5 @@
 
 .attrTextField {
     margin: 5px;
+    max-width: 80%;
 }

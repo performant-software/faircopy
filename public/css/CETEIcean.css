@@ -670,10 +670,13 @@ tei-heraldry {
   /* Empty Rule Set */
 }
 tei-hi[rend="caps"] {
-  font-weight:bold;
+  text-transform: uppercase;
 }
 tei-hi[rend="italic"] {
   font-style: italic;
+}
+tei-hi[rend="bold"] {
+  font-weight: bold;
 }
 tei-hi {
   /* GLS: do we want to bold this or change the background color? */
@@ -1133,7 +1136,8 @@ tei-pause {
   /* Empty Rule Set*/
 }
 tei-pb {
-  background: green;
+  margin-right: 3px;
+  margin-left: 3px;
 }
 /*
 tei-pb:before {

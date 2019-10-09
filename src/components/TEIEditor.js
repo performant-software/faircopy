@@ -4,17 +4,22 @@ import React, { Component } from 'react';
 import {EditorView} from "prosemirror-view"
 import {EditorState, TextSelection} from "prosemirror-state"
 
-import { Toolbar, Button } from '@material-ui/core'
+import { Toolbar, Button, IconButton } from '@material-ui/core'
+import SaveIcon from '@material-ui/icons/Save';
+import CloseIcon from '@material-ui/icons/Close';
 
-import TEIDocumentFile from "../tei-document/TEIDocumentFile"
+import TEIDocument from "../tei-document/TEIDocument"
 import { addMark } from "../tei-document/commands"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
-import ParameterDrawer from './ParameterDrawer';
+import ParameterDrawer from './ParameterDrawer'
+import ThumbnailMargin from './ThumbnailMargin'
 // import { dispatchAction } from '../redux-store/ReduxStore';
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
+
+const untitledDocumentTitle = "Untitled Document"
 
 export default class TEIEditor extends Component {
 
@@ -23,7 +28,7 @@ export default class TEIEditor extends Component {
         this.state = {
             filePath: null,
             noteID: null,
-            teiDocumentFile: new TEIDocumentFile(),
+            teiDocumentFile: new TEIDocument(),
             editorView: null,
             editorState: null
         }	
@@ -37,6 +42,7 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('requestSave', () => this.requestSave())        
         ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
         ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
+        ipcRenderer.on('fileNew', (event) => this.newFile() )
 
         window.addEventListener("resize", this.onWindowResize)
     }
@@ -60,7 +66,7 @@ export default class TEIEditor extends Component {
                 handleClickOn: this.handleClickOn
             }
         )
-
+        nextEditorView.focus()
         this.setState( { ...this.state, editorView: nextEditorView, editorState: editorInitalState })
         return nextEditorView
     }
@@ -105,10 +111,19 @@ export default class TEIEditor extends Component {
             const filename = filePath.replace(/^.*[\\/]/, '')
             title = `${filename}`    
         } else {
-            title = "Untitled Document"
+            title = untitledDocumentTitle
         }
         var titleEl = document.getElementsByTagName("TITLE")[0]
         titleEl.innerHTML = title
+    }
+
+    newFile() {
+        const { teiDocumentFile, editorView } = this.state
+        const newEditorState = teiDocumentFile.editorInitialState(document)
+        editorView.updateState( newEditorState )        
+        this.setTitle(untitledDocumentTitle)
+        editorView.focus();
+        this.setState( { ...this.state, editorState: newEditorState, filePath: null })
     }
 
     openFile( filePath ) {
@@ -117,6 +132,7 @@ export default class TEIEditor extends Component {
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             this.setTitle(filePath)
+            editorView.focus();
             this.setState( { ...this.state, editorState: newEditorState, filePath })    
         } else {
             console.log(`Unable to load file: ${filePath}`)
@@ -135,19 +151,26 @@ export default class TEIEditor extends Component {
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             this.setTitle(`Note ${noteID}`)
+            editorView.focus();
             this.setState( { ...this.state, editorState: newEditorState, noteID })    
         } else {
             console.log(`Unable to load note: ${noteID}`)
         }
     }
 
-    requestSave = () => {
-        const { filePath, noteID } = this.state
+    saveAndCloseNote = () => {
+        const { noteID } = this.state
+        const { doc } = this.state.editorState
 
         if( noteID ) {
-            this.saveNote(noteID)
-            return
+            localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
+            ipcRenderer.send( 'closeNoteWindow', noteID )
         }
+    }
+
+    requestSave = () => {
+        const { filePath } = this.state
+
         if( filePath === null ) {
             ipcRenderer.send( 'openSaveFileDialog' )
         } else {
@@ -162,9 +185,16 @@ export default class TEIEditor extends Component {
         this.setTitle(saveFilePath)
     }
 
-    saveNote( noteID ) {
-        const { doc } = this.state.editorState
-        localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
+    onErase = () => {
+        const { editorState } = this.state
+        const { tr } = editorState
+        let {empty, $cursor, ranges} = editorState.selection
+        if (empty || $cursor) return
+        for (let i = 0; i < ranges.length; i++) {
+            let {$from, $to} = ranges[i]
+            tr.removeMark($from.pos, $to.pos)
+        }
+        this.dispatchTransaction(tr)
     }
 
     onRef = () => {
@@ -174,11 +204,27 @@ export default class TEIEditor extends Component {
         cmd( editorState, editorView.dispatch );    
     }
 
-    onDel = () => {
+    onHi = () => {
         const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.del
+        const markType = teiDocumentFile.xmlSchema.marks.hi
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
+    }
+
+    onName = () => {
+        const {editorState, teiDocumentFile, editorView} = this.state 
+        const markType = teiDocumentFile.xmlSchema.marks.name
+        const cmd = addMark( markType );
+        cmd( editorState, editorView.dispatch );    
+    }
+
+    onPb = () => {
+        const { editorState } = this.state
+        const { $anchor } = editorState.selection
+        const { tr } = editorState
+        const pbNode = editorState.schema.node('pb')
+        tr.insert($anchor.pos, pbNode) 
+        this.dispatchTransaction(tr)
     }
 
     onNote = () => {
@@ -192,19 +238,51 @@ export default class TEIEditor extends Component {
         ipcRenderer.send( 'createNoteEditorWindow', subDocID )
     }
 
+    renderSaveButton() {
+        const { noteID } = this.state
+
+        if( noteID ) {
+            return (
+               <IconButton 
+                   className='save-button' 
+                   onClick={this.saveAndCloseNote} 
+                   variant='text' 
+                   tooltip='Close note'>
+                       <CloseIcon />
+               </IconButton>
+            )
+       } else {
+           return (
+               <IconButton 
+                   className='save-button' 
+                   onClick={this.requestSave} 
+                   variant='text' 
+                   tooltip='Save document'>
+                       <SaveIcon />
+               </IconButton>
+            )
+       }
+    }
+
     renderToolbar() {
         return (
-            <Toolbar style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                <Button onClick={this.onRef} variant='text' tooltip='Add Ref Element'>ref</Button>
-                <Button onClick={this.onNote} variant='text' tooltip='Add Note Element'>note</Button>
-                <Button onClick={this.onDel} variant='text' tooltip='Add Del Element'>del</Button>
-                <Button onClick={this.requestSave} variant='text' tooltip='Save document'>Save</Button>
-            </Toolbar>
+            <div>
+                { this.renderSaveButton() }
+                <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
+                    <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
+                    <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>
+                    <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
+                    <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button>
+                    <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
+                    <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
+                </Toolbar>
+            </div>
         )
     }
 
     render() {    
-        const { editorView, editorState } = this.state
+        const { editorView, editorState, teiDocumentFile } = this.state
+        const baseURL = "http://localhost:3000"
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -218,8 +296,13 @@ export default class TEIEditor extends Component {
                         editorView={editorView}
                         createEditorView={this.createEditorView}
                     />
+                    <ThumbnailMargin scrollTop={scrollTop} baseURL={baseURL} editorView={editorView}></ThumbnailMargin>
                 </div>    
-                <ParameterDrawer editorState={editorState} dispatch={this.dispatchTransaction}></ParameterDrawer>
+                <ParameterDrawer 
+                    teiDocumentFile={teiDocumentFile} 
+                    editorState={editorState} 
+                    dispatch={this.dispatchTransaction}
+                ></ParameterDrawer>
             </div>
         )
     }

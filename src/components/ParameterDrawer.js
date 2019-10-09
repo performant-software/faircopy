@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Drawer, TextField } from '@material-ui/core'
 import { Button } from '@material-ui/core'
+import { Node } from "prosemirror-model"
 
 import { changeAttribute } from "../tei-document/commands"
 
@@ -10,10 +11,13 @@ export default class ParameterDrawer extends Component {
 
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
-            const {dispatch, editorState} = this.props
+            const {dispatch, editorState, teiDocumentFile} = this.props
             const { $anchor } = editorState.selection
             let {tr} = editorState
-        const {value} = e.target
+            const {value} = e.target
+            if( element instanceof Node && element.type.name === 'note' && attributeKey === 'id') {
+                teiDocumentFile.moveSubDocument(element.attrs['id'], value)
+            }
             tr = changeAttribute( element, attributeKey, value, $anchor, tr )
             dispatch(tr)
         }
@@ -38,6 +42,8 @@ export default class ParameterDrawer extends Component {
                         id={`attr-${key}`}
                         label={key}
                         value={attr}
+                        className="attrTextField"
+                        fullWidth={true}
                         onChange={this.changeAttributeHandler(element,key)}
                     />
                 </div>
@@ -67,6 +73,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement() {
+        const { docs } = this.props.teiDocumentFile
         const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
         let element
@@ -86,10 +93,11 @@ export default class ParameterDrawer extends Component {
                 </div>
             )
         } else {
+            const name = element.type.name
             return (
                 <div>
                    <div className='drawerHeader'>
-                        {element.type.name} - Documentation for this element.                    
+                        {name} - {docs[name]}                   
                     </div>
                     { this.renderAttributes(element) }
                 </div>

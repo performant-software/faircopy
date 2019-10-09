@@ -2,6 +2,7 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 
 // TODO detect PC
 const isMac = true
+const indexFilePath = 'build/index.html'
 
 class ApplicationWindowManager {
 
@@ -16,6 +17,7 @@ class ApplicationWindowManager {
         Menu.setApplicationMenu(menu)     
         ipcMain.on('openSaveFileDialog', this.saveFileMenu)
         ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
+        ipcMain.on('closeNoteWindow', this.closeNoteWindow)
     }
 
     async createTEIEditorWindow(targetFile) {
@@ -35,15 +37,15 @@ class ApplicationWindowManager {
       // and load the index.html of the app.
       if( this.debugMode ) {
         await browserWindow.loadURL('http://localhost:3000')
+        browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
-        await browserWindow.loadFile('../../../../../../../build/index.html')
+        await browserWindow.loadFile(indexFilePath)
       }
 
-      // Open the DevTools.
-      if( this.debugMode ) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
-
       // send message indicating the target file
-      browserWindow.webContents.send('fileOpened', targetFile )
+      if( targetFile ) {
+        browserWindow.webContents.send('fileOpened', targetFile )
+      }
 
       // For now, there is only one document window
       this.mainWindow = browserWindow
@@ -82,7 +84,7 @@ class ApplicationWindowManager {
       if( this.debugMode ) {
           browserWindow.loadURL('http://localhost:3000').then(loadNote)
       } else {
-          browserWindow.loadFile('../../../../../../../build/index.html').then(loadNote)
+          browserWindow.loadFile(indexFilePath).then(loadNote)
       }
 
       // For now, there is only one document window
@@ -109,11 +111,45 @@ class ApplicationWindowManager {
       })   
     }
 
+    closeNoteWindow = (event, noteID) => {
+      const noteWindow = this.noteWindows[noteID]
+
+      if( noteWindow ) {
+        noteWindow.close();
+      }
+    }
+
+    requestNewFile = () => {
+      this.mainWindow.webContents.send('fileNew')
+    }
+
     requestSave = () => {
       this.mainWindow.webContents.send('requestSave')
     }
 
+    requestSaveAs = () => {
+      this.saveFileMenu()
+    }
+
     mainMenuTemplate() {
+
+      let viewSubMenu = [
+        { type: 'separator' },
+        { role: 'resetzoom' },
+        { role: 'zoomin' },
+        { role: 'zoomout' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+
+      if( this.debugMode ) {
+        viewSubMenu = [ ...viewSubMenu, 
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { role: 'toggledevtools' }        
+        ]
+      } 
+
         return [
           // { role: 'appMenu' }
           ...(process.platform === 'darwin' ? [{
@@ -135,7 +171,12 @@ class ApplicationWindowManager {
             label: 'File',
             submenu: [
               { 
-                label: 'Open',
+                label: 'New File...',
+                accelerator: 'CommandOrControl+N',
+                click: this.requestNewFile
+              },
+              { 
+                label: 'Open...',
                 accelerator: 'CommandOrControl+O',
                 click: this.openFileMenu
               },
@@ -143,6 +184,10 @@ class ApplicationWindowManager {
                 label: 'Save',
                 accelerator: 'CommandOrControl+S',
                 click: this.requestSave
+              },
+              { 
+                label: 'Save As...',
+                click: this.requestSaveAs
               },
               { role: 'close' }
             ]
@@ -179,17 +224,7 @@ class ApplicationWindowManager {
           // { role: 'viewMenu' }
           {
             label: 'View',
-            submenu: [
-              { role: 'reload' },
-              { role: 'forcereload' },
-              { role: 'toggledevtools' },
-              { type: 'separator' },
-              { role: 'resetzoom' },
-              { role: 'zoomin' },
-              { role: 'zoomout' },
-              { type: 'separator' },
-              { role: 'togglefullscreen' }
-            ]
+            submenu: viewSubMenu
           },
           // { role: 'windowMenu' }
           {
@@ -211,8 +246,8 @@ class ApplicationWindowManager {
             role: 'help',
             submenu: [
               {
-                label: 'Learn More',
-                click () { require('electron').shell.openExternalSync('https://electronjs.org') }
+                label: 'About',
+                click () { require('electron').shell.openExternalSync('https://www.performantsoftware.com') }
               }
             ]
           }
