@@ -42,6 +42,8 @@ export default class ParameterDrawer extends Component {
                         id={`attr-${key}`}
                         label={key}
                         value={attr}
+                        className="attrTextField"
+                        fullWidth={true}
                         onChange={this.changeAttributeHandler(element,key)}
                     />
                 </div>
