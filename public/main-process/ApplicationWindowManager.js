@@ -120,7 +120,7 @@ class ApplicationWindowManager {
     }
 
     requestNewFile = () => {
-      // this.mainWindow.webContents.send('requestSave')
+      this.mainWindow.webContents.send('fileNew')
     }
 
     requestSave = () => {

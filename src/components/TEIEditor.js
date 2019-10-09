@@ -19,6 +19,8 @@ import ThumbnailMargin from './ThumbnailMargin'
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
+const untitledDocumentTitle = "Untitled Document"
+
 export default class TEIEditor extends Component {
 
     constructor() {
@@ -40,6 +42,7 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('requestSave', () => this.requestSave())        
         ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
         ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
+        ipcRenderer.on('fileNew', (event) => this.newFile() )
 
         window.addEventListener("resize", this.onWindowResize)
     }
@@ -108,10 +111,23 @@ export default class TEIEditor extends Component {
             const filename = filePath.replace(/^.*[\\/]/, '')
             title = `${filename}`    
         } else {
-            title = "Untitled Document"
+            title = untitledDocumentTitle
         }
         var titleEl = document.getElementsByTagName("TITLE")[0]
         titleEl.innerHTML = title
+    }
+
+    newFile() {
+        const { teiDocumentFile, editorView } = this.state
+        const doc = teiDocumentFile.createEmptyDocument(document)
+        const newEditorState = EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, 0),
+            plugins: teiDocumentFile.pluginSetup()
+        })
+        editorView.updateState( newEditorState )        
+        this.setTitle(untitledDocumentTitle)
+        this.setState( { ...this.state, editorState: newEditorState, filePath: null })
     }
 
     openFile( filePath ) {
