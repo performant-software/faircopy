@@ -18,7 +18,7 @@ class ApplicationWindowManager {
         ipcMain.on('openSaveFileDialog', this.saveFileMenu)
         ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
         ipcMain.on('closeNoteWindow', this.closeNoteWindow)
-      }
+    }
 
     async createTEIEditorWindow(targetFile) {
 

@@ -1136,6 +1136,8 @@ tei-pause {
   /* Empty Rule Set*/
 }
 tei-pb {
+  margin-right: 3px;
+  margin-left: 3px;
 }
 /*
 tei-pb:before {
