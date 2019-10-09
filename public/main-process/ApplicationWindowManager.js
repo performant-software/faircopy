@@ -132,6 +132,24 @@ class ApplicationWindowManager {
     }
 
     mainMenuTemplate() {
+
+      let viewSubMenu = [
+        { type: 'separator' },
+        { role: 'resetzoom' },
+        { role: 'zoomin' },
+        { role: 'zoomout' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+
+      if( this.debugMode ) {
+        viewSubMenu = [ ...viewSubMenu, 
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { role: 'toggledevtools' }        
+        ]
+      } 
+
         return [
           // { role: 'appMenu' }
           ...(process.platform === 'darwin' ? [{
@@ -206,17 +224,7 @@ class ApplicationWindowManager {
           // { role: 'viewMenu' }
           {
             label: 'View',
-            submenu: [
-              { role: 'reload' },
-              { role: 'forcereload' },
-              { role: 'toggledevtools' },
-              { type: 'separator' },
-              { role: 'resetzoom' },
-              { role: 'zoomin' },
-              { role: 'zoomout' },
-              { type: 'separator' },
-              { role: 'togglefullscreen' }
-            ]
+            submenu: viewSubMenu
           },
           // { role: 'windowMenu' }
           {
