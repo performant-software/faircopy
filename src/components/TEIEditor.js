@@ -66,7 +66,7 @@ export default class TEIEditor extends Component {
                 handleClickOn: this.handleClickOn
             }
         )
-
+        nextEditorView.focus()
         this.setState( { ...this.state, editorView: nextEditorView, editorState: editorInitalState })
         return nextEditorView
     }
@@ -119,14 +119,10 @@ export default class TEIEditor extends Component {
 
     newFile() {
         const { teiDocumentFile, editorView } = this.state
-        const doc = teiDocumentFile.createEmptyDocument(document)
-        const newEditorState = EditorState.create({
-            doc,
-            selection: TextSelection.create(doc, 0),
-            plugins: teiDocumentFile.pluginSetup()
-        })
+        const newEditorState = teiDocumentFile.editorInitialState(document)
         editorView.updateState( newEditorState )        
         this.setTitle(untitledDocumentTitle)
+        editorView.focus();
         this.setState( { ...this.state, editorState: newEditorState, filePath: null })
     }
 
@@ -136,6 +132,7 @@ export default class TEIEditor extends Component {
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             this.setTitle(filePath)
+            editorView.focus();
             this.setState( { ...this.state, editorState: newEditorState, filePath })    
         } else {
             console.log(`Unable to load file: ${filePath}`)
@@ -154,6 +151,7 @@ export default class TEIEditor extends Component {
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             this.setTitle(`Note ${noteID}`)
+            editorView.focus();
             this.setState( { ...this.state, editorState: newEditorState, noteID })    
         } else {
             console.log(`Unable to load note: ${noteID}`)
