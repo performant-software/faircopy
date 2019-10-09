@@ -128,7 +128,7 @@ class ApplicationWindowManager {
     }
 
     requestSaveAs = () => {
-      // this.mainWindow.webContents.send('requestSave')
+      this.saveFileMenu()
     }
 
     mainMenuTemplate() {
