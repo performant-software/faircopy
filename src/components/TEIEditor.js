@@ -282,7 +282,6 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { editorView, editorState, teiDocumentFile } = this.state
-        const baseURL = "http://localhost:3000"
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -296,7 +295,7 @@ export default class TEIEditor extends Component {
                         editorView={editorView}
                         createEditorView={this.createEditorView}
                     />
-                    <ThumbnailMargin scrollTop={scrollTop} baseURL={baseURL} editorView={editorView}></ThumbnailMargin>
+                    <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>    
                 <ParameterDrawer 
                     teiDocumentFile={teiDocumentFile} 
