@@ -20,6 +20,7 @@ import ThumbnailMargin from './ThumbnailMargin'
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 const untitledDocumentTitle = "Untitled Document"
+const versionNumber = "0.2.0"
 
 export default class TEIEditor extends Component {
 
@@ -268,6 +269,7 @@ export default class TEIEditor extends Component {
         return (
             <div>
                 { this.renderSaveButton() }
+                <span style={ {float: 'right', 'margin-top': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span>
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
                     <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
                     <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>

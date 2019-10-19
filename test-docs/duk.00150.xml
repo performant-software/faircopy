@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.whitmanarchive.org/downloads/wwa.rng" type="xml"?>
+<?oxygen SCHSchema="http://www.whitmanarchive.org/downloads/whitmanarchive_rules_mss.sch"?>
+<TEI xmlns="http://www.whitmanarchive.org/namespace" xml:id="duk.00150">
+<!--<relations>
+<work ref="xxx.01039"/>
+</relations> -->
+    <teiHeader>
+        <fileDesc>
+            <titleStmt>
+                <title level="m" type="main">Wants</title>
+                <title level="m" type="sub">a machine readable transcription</title>
+                <author>Walt Whitman</author>
+                <editor>Kenneth M. Price</editor>
+                <editor>Ed Folsom</editor>
+                <respStmt>
+                    <resp>Transcription and encoding</resp>
+                    <persName xml:id="jc">Janel Cayer</persName>
+                    <persName xml:id="es">Jeannette Schollaert</persName>
+                    <persName xml:id="km">Kevin McMullen</persName>
+                    <persName xml:id="nhg">Nicole Gray</persName>
+                    <persName xml:id="bb">Brett Barney</persName>
+                <persName xml:id="kmp">Kenneth M. Price</persName></respStmt>
+                <sponsor>Center for Digital Research in the Humanities, University of Nebraska-Lincoln</sponsor>
+                <sponsor>University of Iowa</sponsor>
+                <funder>The National Endowment for the Humanities</funder>
+            </titleStmt>
+            <editionStmt>
+                <edition>
+                    <date>2014</date>
+                </edition>
+            </editionStmt>
+            <publicationStmt>
+                <idno>duk.00150</idno>
+                <distributor>The Walt Whitman Archive</distributor>
+                <address>
+                    <addrLine>Center for Digital Research in the Humanities</addrLine>
+                    <addrLine>319 Love Library</addrLine>
+                    <addrLine>University of Nebraska-Lincoln</addrLine>
+                    <addrLine>P.O. Box 884100</addrLine>
+                    <addrLine>Lincoln, NE 68588-4100</addrLine>
+                </address>
+                <availability>
+                    <p>The text of the original item is in the public domain. The text encoding and editorial notes were created and/or prepared by the <hi rend="italic">Walt Whitman Archive</hi> and are licensed under a <ref target="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</ref> (CC BY 4.0). Any reuse of the material should credit the <hi rend="italic">Walt Whitman Archive</hi>. Permission to reproduce the graphic images of the original item has been granted by the owners of the original for this publication only.</p>
+                </availability>
+            </publicationStmt>
+            <notesStmt>
+                <note type="project" target="#dat1">This manuscript appears to be a draft piece of journalism, although it is not known if it was ever published. While Whitman wrote journalistic pieces throughout his life, the handwriting, ink, and paper are most consistent with manuscripts known to have been written before the first appearance of <hi rend="italic">Leaves of Grass</hi> in 1855. Edward Grier details some of the reasons for believing the manuscript to date to between 1841 and 1862 in <hi rend="italic">Notebooks and Unpublished Prose Manuscripts</hi> (New York: New York University Press, 1984), 1:88.</note>
+            </notesStmt>
+            <sourceDesc>
+                <bibl>
+                    <author>Walt Whitman</author>
+                    <title>Wants (Autograph MS, draft portions of an essay on labor advertisements)</title>
+                    <idno type="callno">RL.01378, MS 2o 43</idno>
+                    <date xml:id="dat1" notBefore="1841" notAfter="1862" cert="low">Between 1841 and 1862</date>
+                    <orgName xml:id="duk">Trent Collection of Whitmaniana, David M. Rubenstein Rare Book &amp; Manuscript Library, Duke University</orgName>
+                    <note type="project">Transcribed from digital images of the original.</note>
+                </bibl>
+            </sourceDesc>
+        </fileDesc>
+        <profileDesc>
+            <handNotes>
+                <handNote xml:id="h1" scribeRef="#ww" medium="black-ink"/>
+                <handNote xml:id="h2" scribeRef="#ww" medium="pencil"/>
+                <handNote xml:id="h3" scribeRef="#ww" medium="green-ink"/>
+            </handNotes>
+        </profileDesc>
+        <revisionDesc>
+            <change when="2017-03-01" who="#kmp">blessed</change>
+            <change when="2016-11-09" who="#bb">reconciled with EAD record</change>
+            <change when="2016-10-10" who="#nhg">checked, corrected</change>
+            <change when="2016-08-09" who="#km">checked</change>
+            <change when="2016-02-09" who="#es">checked, underlined title, handful of spelling corrections, changed add insertion to add lasso on leaf004r and leaf006r, completed pb info, added milestones, added reasons for gaps on leaf007r, added seq to subst on leaf006r</change>
+            <change when="2014-10-21" who="#jc">added page numbers</change>
+            <change when="2014-09-25" who="#jc">transcribed and encoded</change>
+        </revisionDesc>
+    </teiHeader>
+
+    <text type="manuscript">
+        <body>
+            <pb xml:id="leaf001r" facs="2074_010.jpg" type="recto"/>
+
+            <head type="main"><hi rend="underline"><handShift new="#h1"/>"Wants."</hi></head>
+
+            <p>Our daily papers, in New York, show that the "wants" of the human race, <add rend="insertion" place="supralinear">hereabout,</add> are by no means those <del rend="overstrike">"</del>few<del rend="overstrike">"</del> which philosophers <subst><del rend="overstrike" seq="1">are</del> <add rend="insertion" place="supralinear" seq="2">have long been</add></subst> in the habit of recommending.&#8212;Every morning, there they appear&#8212;<subst><del rend="overstrike" seq="1">long</del> <add rend="unmarked" place="supralinear" seq="2">stretched</add></subst> columns of them&#8212;of one general character, and stereotyped phrase&#8212;but still with a certain variety that marks the difference of nation, taste, or circumstance.&#8212;</p>
+            <milestone unit="glued"/>
+            <p>Life, to both poor and rich, in great cities, is an excitement and a struggle!&#8212;Those of our readers, in the country, who jog along <subst><del rend="overstrike" seq="1">in their</del> <add rend="insertion" place="supralinear" seq="2">their</add></subst> solid, easy way, and are not in danger of <del rend="overstrike">serious</del> falling on <subst><del rend="overstrike" seq="1">dangerous</del> <add rend="unmarked" place="supralinear" seq="2">slippery</add></subst> places, know very little of the shifts and <add rend="insertion" place="supralinear">frequent</add> desperations <del rend="erasure">of</del> of the <subst><del rend="overstrike" seq="1">life</del> <add rend="unmarked" place="supralinear" seq="2">existence</add></subst> of the poor in <del rend="overstrike">great</del> cities&#8212;which go far to counterbalance the supreme advantages that, (<subst><del rend="overwrite" seq="1">writers</del><add rend="overwrite" place="over" seq="2">reasoners</add></subst> may say what they like,) make the city so attractive and fascinating.</p>
+
+            <p>These "wants" in the newspapers are illustrative of the precarious nature of employment and existence here.&#8212;The <del rend="overstrike" hand="#h2">vast majority of the</del> merchants and <add rend="insertion" place="supralinear"><handShift new="#h2"/>prosperous</add><handShift new="#h1"/> mechanics do not appear in their columns&#8212;<del rend="overstrike" hand="#h2">indeed</del> <del rend="overstrike">rarely in their</del> <del rend="overstrike" hand="#h2">rarely in their</del>
+
+                <pb xml:id="leaf001v" facs="duk_am.00003.jpg" type="verso"/>
+
+                <pb xml:id="leaf002r" facs="2074_020.jpg" type="recto" n="2"/>
+
+
+                <note type="authorial" place="top"><handShift new="#h3"/>2</note>
+
+                <del rend="overstrike" hand="#h2">lives ever enter one</del>.&#8212;Happily, as to the latter class, in this country, work is not yet<!-- Whitman underlined "yet" but then crossed out the underline in pencil --> so hard to get, or employers at present<!-- Whitman underlined "at present" but then crossed out the underline in pencil --> so lordly, as to make it necessary for the carpenter or mason to run around and look to <del rend="overstrike" hand="#h2">all</del> intermediate agencies for a situation.&#8212;<subst><del rend="overstrike" seq="1" hand="#h2">As to</del> <add rend="insertion" place="supralinear" seq="2"><handShift new="#h2"/>And among</add></subst><handShift new="#h3"/> the commercial part of the community, there is a prejudice against filling even a subordinate clerkship through the means of the <add rend="insertion" place="supralinear"><handShift new="#h1"/>"want" column, or</add><handShift new="#h3"/> Intelligence office.&#8212;</p>
+            <milestone unit="glued"/>
+            <p>The vast majority of those who have to do with <subst><del rend="overstrike" seq="1" hand="#h1">Intelligence offices,</del> <add rend="insertion" place="supralinear" seq="2"><handShift new="#h1"/>the "Wants" department,</add></subst><handShift new="#h3"/> are, <add rend="insertion" place="supralinear">domestic</add> servants who <subst><del rend="overstrike" seq="1" hand="#h1">want</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>need</add></subst><handShift new="#h3"/> places, and mistresses who <subst><del rend="overstrike" seq="1" hand="#h1">want</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>need</add></subst><handShift new="#h3"/> "help."&#8212;Most of the females of the former class, are Irish women<del rend="overstrike">,</del> and girls.&#8212;Generally, <subst><add rend="insertion" place="supralinear" seq="2"><handShift new="#h1"/>when they come to the office with their little advertisements</add> <del rend="overstrike" seq="1" hand="#h1">at the Intelligence offices</del></subst><handShift new="#h3"/>, they appear decently dressed, some indeed with quite costly attire&#8212;a large proportion having been to service, and <subst><del rend="overstrike" seq="1" hand="#h2">either</del> <add rend="insertion" place="supralinear" seq="2"><handShift new="#h2"/>many of them</add></subst><handShift new="#h3"/> left of their own accord<subst><add rend="overwrite" place="over" seq="2"><handShift new="#h2"/>.&#8212;</add><del rend="overwrite" seq="1" hand="#h2"><handShift new="#h3"/>,</del> <del rend="overstrike" seq="2" hand="#h2">or been discharged</del></subst>.&#8212;They are stout, square shouldered women, with the well-known Milesian features.&#8212;Not a few of them are really good looking; although, as a general thin<subst><del rend="overwrite" seq="1">k</del><add rend="overwrite" place="over" seq="2">g</add></subst>, the best part of their countenance<add rend="unmarked" place="inline"><handShift new="#h2"/>s</add><handShift new="#h3"/> is <subst><del rend="overstrike" seq="1" hand="#h2">its</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h2"/>an</add></subst><handShift new="#h3"/> expression of patience<add rend="unmarked" place="inline"><handShift new="#h1"/>,</add> <add rend="insertion" place="supralinear">honesty,</add><handShift new="#h3"/> and good nature.</p>
+
+            <p>At the office of the <subst><del rend="overstrike" seq="1">Commissioners of Emigration,</del> <add rend="unmarked" place="supralinear" seq="2">Irish Emigrant Society,</add></subst> <del rend="overstrike" hand="#h1">(we believe it is,) on the west side of Spruce street,</del> may be seen a somewhat different class, <add rend="insertion" place="supralinear"><handShift new="#h1"/>too short of cash to pay even for a "want" advertisement;</add><handShift new="#h3"/> seeking also domestic employment.&#8212;They are females "just from Ireland."&#8212;Hot as the day may be, any <add rend="insertion" place="supralinear">time</add>
+
+                <pb xml:id="leaf002v" facs="duk_am.00004.jpg" type="verso"/>
+
+                <pb xml:id="leaf003r" facs="2074_030.jpg" type="recto" n="3"/>
+
+                <note type="authorial" place="top">3</note>
+
+                from June to August, many of them will be sweltering in thick woolen cloaks or shawls; and the <add rend="insertion" place="supralinear">whole</add> crowd <del rend="overstrike" hand="#h1">will be</del> standing shoulder to shoulder, with red faces, and much panting.&#8212;In dress, the substantial is altogether ahead of the graceful, or the seasonable.&#8212;Their feet have thick, well nailed, shoes, evidently made to last&#8212;the very extreme, against the smart patent leather, delicate soled article, which even our hardy young <add rend="insertion" place="supralinear">city</add> workingmen now usually wear in summer.&#8212;The bonnets of the women are stout Leghorn, well used by their thrifty mothers or grand-mothers, in some cases&#8212;and therefore, as may be supposed, without much pretension to style.&#8212;</p>
+            <milestone unit="glued"/>
+            <p>Although, in looking over the miscellaneous collection at the office of the <del rend="overstrike">Commissioners</del> Irish Emigrant Society, a stupid and stultified <del rend="overstrike">looking</del> face<del rend="overstrike">,</del> may now and then be seen, yet the general run is that of persons of fair natural capacity, although brought up under circumstances that render the traits and usages of intelligent life in the city, <add rend="insertion" place="supralinear">at first</add> altogether strange to them.&#8212;</p>
+
+            <p>At any rate, we never look upon one of these collections of poor creatures, without feelings of sympathy and a <add rend="insertion" place="supralinear"><handShift new="#h2"/>devout</add><handShift new="#h3"/> hope that they may have good luck.&#8212;Born in a land, which furnishes to modern times the most appaling instance of how partial and bad government must
+
+                <pb xml:id="leaf003v" facs="duk_am.00005.jpg" type="verso"/>
+
+                <pb xml:id="leaf004r" facs="2074_040.jpg" type="recto" n="4"/>
+
+                <note type="authorial" place="top">4</note>
+
+                at last result in wide-spread individual ruin,&#8212;<del rend="overstrike" hand="#h2">large</del><add rend="unmarked" place="inline"><handShift new="#h2"/>&#8212;</add><handShift new="#h3"/>portions of the men and women <subst><del rend="overstrike" seq="1">around them</del> <add rend="insertion" place="supralinear" seq="2">of that land</add></subst> literally starving to death every year&#8212;the immense product of their naturally fertile island, monopolized in the hands of a few, and mostly sent to foreign markets, while they emaciate and die&#8212;wages at the lowest figure, and employment hard to be had at that&#8212;all the honorable places and civil and religious berths occupied by their <subst><del rend="overstrike" seq="1" hand="#h1">conquerers and</del> <del rend="overstrike" seq="3" hand="#h1"><add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>oppressors</add></del></subst><handShift new="#h3"/> tyrants&#8212;the numerous passionate struggles they have made for relief, at last tacitly given up in despair&#8212;with a sort of horrid contentment under the despotism,
+                <milestone unit="glued"/>
+                insult, poverty and starvation that seem to be their destined fate for ever&#8212;<del rend="overstrike">what</del> how can one help feeling <subst><del rend="overstrike" seq="1" hand="#h1">kindly toward</del> <add rend="insertion" place="supralinear" seq="2"><handShift new="#h1"/>a deep sympathy for</add></subst><handShift new="#h3"/> these poor <del rend="overstrike" hand="#h1">Irish</del> men and women, ignorant and awkward as they are?&#8212;</p>
+
+            <p><del rend="overstrike" hand="#h2">But <subst><del rend="overstrike" seq="1" hand="#h1">at the usual Intelligence Offices, there is, as we have intimated,</del> <del rend="overstrike" hand="#h2" seq="3"><add rend="insertion" place="supralinear" seq="2"><handShift new="#h1"/>the "Want" columns of the morning papers represent, what may be called</add></del></subst> <handShift new="#h3"/>a somewhat higher range of people<subst><del rend="overstrike" seq="1" hand="#h1">,</del><add rend="unmarked" place="inline" seq="2"><handShift new="#h1"/>.</add></subst> <add rend="lasso" place="supralinear"><handShift new="#h2"/>than those at the Emigration office</add></del> <del rend="overstrike" hand="#h1"><handShift new="#h3"/>wanting employment.&#8212;</del> <del rend="overstrike"><note type="authorial" place="supralinear" rend="lasso" resp="#h1">run on</note></del> <subst><del rend="overstrike" seq="1" hand="#h1">There is one office in Nassau street, toward John, which we pass often.&#8212;</del> <add rend="unmarked" place="infralinear" seq="2"><handShift new="#h1"/><subst><add rend="unmarked" place="inline" seq="2"><metamark function="paragraph">&#182;</metamark> Then</add> <del rend="overstrike" seq="1">Reader</del></subst>, did you ever notice, the Intelligence Offices, scattered about the city?&#8212;Those illustrate the "wants" advertised in the papers.&#8212;</add></subst><handShift new="#h3"/>Sometimes, the low basement rooms will be crowded with Irish girls, seated around on long benches, and holding their linen handkerchiefs and fans in their hands.&#8212;Some of them are dressed in real fashion, and, when they go out, will draw on their kid gloves and hoist their
+
+                <pb xml:id="leaf004v" facs="duk_am.00006.jpg" type="verso"/>
+
+                <pb xml:id="leaf005r" facs="2074_050.jpg" type="recto" n="5"/>
+
+                <note type="authorial" place="top">5</note>
+
+                parasols.&#8212;Yes, a close jam of stalwart female humanity, our eyes often catch in those basements, as we pass.&#8212;<subst><del rend="overstrike" seq="1" hand="#h1">Why are they</del> <add rend="insertion" place="supralinear" seq="2"><handShift new="#h1"/>There they are, perpetually</add></subst><handShift new="#h3"/> standing or seated in that way<subst><add rend="unmarked" place="inline" seq="1"><handShift new="#h1"/>,</add> <del rend="overstrike" seq="2" hand="#h1"><handShift new="#h3"/>? Are they</del></subst> waiting for some master or mistress to come along and give them a "call"<subst><add rend="unmarked" place="inline" seq="2"><handShift new="#h1"/>.</add><del rend="overstrike" seq="1"><handShift new="#h3"/>?</del></subst>&#8212;Probably, <subst><del rend="overstrike" seq="1" hand="#h1">however, they</del> <add rend="insertion" place="supralinear" seq="2"><handShift new="#h1"/>also, many of them</add></subst><handShift new="#h3"/> dress up and go to the Intelligence Office, <subst><del rend="overstrike" seq="1">much</del> <del rend="overstrike" seq="3" hand="#h1"><add rend="unmarked" place="supralinear" seq="2">partly</add></del></subst> from <subst><del rend="overstrike" seq="1">the same motives as</del> <add rend="unmarked" place="supralinear" seq="2">motives like</add> <add rend="unmarked" place="supralinear" seq="3"><handShift new="#h1"/>those of</add> <del rend="overstrike" seq="3" hand="#h1"><handShift new="#h3"/>those of</del></subst> the fashionable lady who dawdles a morning through the shops and pavement of Broadway.&#8212;To the Irish girl, out of a situation, the Intelligence Office is a place of public seeing and being seen.&#8212;She makes acquaintance with many Bridgets and Bettys; and notes are compared, and much interesting <add rend="insertion" place="supralinear">kitchen</add> news passed from <del rend="overstrike">hand</del> mouth to ear.&#8212;</p>
+            <milestone unit="glued"/>
+
+
+            <delSpan rend="hashmark" spanTo="#d01" hand="#h1"/>
+            <p>It is said that some of the New York Intelligence Offices are made subsidiary to the basest purposes of men of licentious passions.&#8212;To the credit of humanity, we hope that, if this be a fact at all, it is the very rare exception&#8212;and are inclined to <subst><del rend="overstrike" seq="1">think</del> <add rend="insertion" place="supralinear" seq="2">believe</add></subst> that it is only so.&#8212;</p>
+            <anchor xml:id="d01"/>
+
+            <p>You will <subst><del rend="overstrike" seq="1" hand="#h1">see</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>notice</add></subst><handShift new="#h3"/>, at these offices, hardly any Americans<subst><del rend="overwrite" seq="1">,</del><add rend="overwrite" place="over" seq="2"><handShift new="#h2"/>;</add></subst><handShift new="#h3"/> probably none.&#8212;At the places we have <subst><del rend="overstrike" seq="1" hand="#h1">noticed</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>beheld</add></subst><handShift new="#h3"/> in our daily walks, we <del rend="overstrike">ha</del> do not yet remember seeing <subst><del rend="overstrike" seq="1">an</del> <add rend="unmarked" place="supralinear" seq="2">a single</add></subst> American, of either sex.&#8212;<add rend="insertion" place="supralinear"><handShift new="#h1"/>The same fact applied generally to the "want" columns.&#8212;</add><handShift new="#h3"/>Indeed, there is something utterly repugnant, in the American character, to <subst><del rend="overstrike" seq="1">being</del> <add rend="insertion" place="supralinear" seq="2">the station of</add></subst> a servant.&#8212;The nearest we ever came to <add rend="insertion" place="supralinear">being in danger from</add> a fight, was, one unfortunate
+
+                <pb xml:id="leaf005v" facs="duk_am.00007.jpg" type="verso"/>
+
+                <pb xml:id="leaf006r" facs="2074_060.jpg" type="recto" n="6"/>
+
+                <note type="authorial" place="top">6</note>
+
+                day when we accompanied a <add rend="insertion" place="supralinear">newly arrived</add> Swiss gentleman, who had resided some time in England, to dine at one of the <add rend="insertion" place="supralinear"><handShift new="#h2"/>New York</add><handShift new="#h3"/> Fulton street eating houses.&#8212;A good looking, democratic, young <subst><del rend="overstrike" seq="1" hand="#h1">fellow,</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>American,</add></subst><handShift new="#h3"/> <del rend="overstrike">with</del> in his shirt sleeves, was rather peremptorily accosted by our Swiss friend, as "Waiter."&#8212;The young chap's face turned as red as fire, and he was ready for a scrimmage in a moment.&#8212;</p>
+
+            <p>Around the doors of the larger intelligence offices, <del rend="overstrike" hand="#h2"><add rend="insertion" place="supralinear"><handShift new="#h1"/>&#8212;which are <add rend="unmarked" place="supralinear"><handShift new="#h2"/>a</add><handShift new="#h1"/> sort of tangible "want" advertisement&#8212;</add></del><handShift new="#h3"/> stand and lounge the lads and men who <subst><del rend="overstrike" seq="1" hand="#h1">want</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>wish</add></subst><handShift new="#h3"/> work.&#8212;They are Irish and English, mostly.&#8212;Every <subst><add rend="lasso" place="supralinear" seq="2">well dressed passer,</add> <del rend="overstrike" seq="1">one</del></subst> who comes along, is examined by their
+                <milestone unit="glued"/>
+                eyes, with an anxious, appealing sort of look.&#8212;The English have ruddy healthy faces, and their square shoulders and large arms look the right sort for labor.&#8212;We should think these chaps invaluable upon well conducted farms. They are evidently intelligent, and of a sort who would take pride in doing their work well.&#8212;</p>
+
+            <p>The Irish boys are ready for anything&#8212;but mostly prefer, what indeed they are at first <subst><del rend="overstrike" seq="1" hand="#h1">most</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>best</add></subst><handShift new="#h3"/> fitted for, to wield the pickaxe or the spade.&#8212;They will generally <subst><del rend="overstrike" seq="1" hand="#h1">give</del> <add rend="unmarked" place="supralinear" seq="2"><handShift new="#h1"/>make</add></subst><handShift new="#h3"/> a florid description of their capacities, by no means doing injustice to themselves, and winding up with a strong appeal to your personal benevolence, and the special virtue of giving them the preference.&#8212;</p>
+
+                <pb xml:id="leaf006v" facs="duk_am.00008.jpg" type="verso"/>
+
+                <pb xml:id="leaf007r" facs="2074_070.jpg" type="recto" n="7"/>
+
+            <note type="authorial" place="top">7</note>
+
+            <p>The Englishman, on the contrary, is a man of few words, and rarely claims more than he deserves.&#8212;Nor does he press himself upon you.&#8212;</p>
+
+            <p>Now and then, should you be looking <del rend="overstrike">after</del> at the scenes in one of these offices, you will see a mistress come after a servant.&#8212;Perhaps she is the keeper of a boarding house&#8212;a place, <add rend="insertion" place="supralinear">by the by</add> where the servants <add rend="insertion" place="supralinear">are apt to</add> get plenty of hard work and rough usage.&#8212;Her col<unclear reason="cut away" cert="medium" resp="#jc">d</unclear> eye ranges over the whole crow<unclear reason="cut away" cert="high" resp="#jc">d</unclear> <gap reason="cut away" unit="chars" atLeast="1"/> at once rejects all the good-l<unclear reason="cut away" cert="medium" resp="#jc">ooking</unclear>
+                <milestone unit="glued"/>
+                girls.&#8212;There is always tro<unclear reason="cut away" cert="medium" resp="#jc">uble</unclear> <gap reason="cut away" atLeast="1" unit="chars"/> boarding house where <del rend="overstrike" hand="#h2">there</del> <gap reason="cut away" atLeast="1" unit="chars"/>ppen<gap reason="cut away" atLeast="1" unit="chars"/> be a plump, handsome Biddy.&#8212;It is very strange.&#8212;</p>
+
+            <p>The good lady inquires and examines, and ponders and looks sharp.&#8212;She thinks well of this one's broad shoulders, but fears that she may be a trifle too fond of whiskey: isn't that the inference from her face?&#8212;In the mean time, the poor girls are quite in a state of excitement and emulation;&#8212;<subst><del rend="overstrike" seq="1">and</del> <add rend="unmarked" place="supralinear" seq="2">until</add></subst> the successful competitor marches off <add rend="insertion" place="supralinear"><handShift new="#h1"/>with her new mistress</add><!-- the text of the insertion is written in faded black ink, but the caret symbol is written in pencil. --><handShift new="#h3"/> as proud as a peacock.&#8212;</p>
+
+            <p>All these girls, likely, have some friend&#8212;some cousin, <add rend="insertion" place="supralinear"><handShift new="#h2"/>aunt,</add><handShift new="#h3"/> or one "whose mother lived near, in the o<del rend="overstrike" hand="#h2">u</del>ld country"&#8212;in whose domicile they are furnished with a shelter, while waiting to get a place.&#8212;The kindness of the Irish to each other, of which this is one specimen, puts to the</p>
+
+                <pb xml:id="leaf007v" facs="duk_am.00009.jpg" type="verso"/>
+        </body>
+    </text>
+</TEI>
