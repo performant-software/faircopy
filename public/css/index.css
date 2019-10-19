@@ -2,7 +2,8 @@
 @import "root.css";
 
 @import "EditorGutter.css";
-@import "CETEIcean.css";
+/* @import "CETEIcean.css"; */
+@import "TEIElementStyles.css";
 @import "ParameterDrawer.css";
 @import "ProseMirrorComponent.css";
 @import "TEIEditor.css";

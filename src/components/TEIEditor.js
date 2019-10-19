@@ -269,7 +269,7 @@ export default class TEIEditor extends Component {
         return (
             <div>
                 { this.renderSaveButton() }
-                <span style={ {float: 'right', 'margin-top': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span>
+                <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span>
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
                     <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
                     <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>

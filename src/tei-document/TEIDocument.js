@@ -149,7 +149,14 @@ export default class TEIDocument {
                     }
                 } 
             ],
-            toDOM: (mark) => this.teiMode ? [name,mark.attrs,0] : [`tei-${name}`,mark.attrs,0] 
+            toDOM: (mark) => {
+                if( this.teiMode ) {
+                    return [name,mark.attrs,0]
+                } else {
+                    const displayAttrs = { ...mark.attrs, phraseLvl: true }
+                    return [`tei-${name}`,displayAttrs,0]
+                }
+            } 
         }       
     }
 

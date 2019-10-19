@@ -1,0 +1,55 @@
+/* language support */
+/* render Arabic, Persian, Ottoman, Hebrew  as rtl */
+[lang = "ar"],
+[lang = "ota"],
+[lang = "fa"],
+[lang = "he"],
+[lang *="-Arab-AR"]{
+    direction:rtl;
+    text-align:right;
+}
+/* display latin scripts as ltr  */
+[lang = "en"],
+[lang = "fr"],
+[lang = "de"],
+[lang = "it"],
+[lang *="ar-Latn-"],
+[lang *="ota-Latn-"]{
+    direction:ltr;
+    text-align:left;
+}
+
+/* Phrase level markup styling is based on information layers */
+[phraselvl = "true"] {
+    border-bottom: dotted;
+}
+
+/* p */
+tei-p {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: justify;
+}
+
+tei-pb {
+    margin-right: 3px;
+    margin-left: 3px;
+  }  
+  
+tei-hi[rend="caps"] {
+text-transform: uppercase;
+}
+tei-hi[rend="italic"] {
+font-style: italic;
+}
+tei-hi[rend="bold"] {
+font-weight: bold;
+}
+
+.ProseMirror {
+    /* font-family: "Lucida Grande", "Cardo", "Arial Unicode MS","Galilee Unicode Gk", "New Athena Unicode", "Athena Unicode", "Palatino Linotype", "Titus Cyberbit Basic", "Vusillus Old Face", "Alphabetum", "Galatia SIL", "Code 2000", "GentiumAlt", "Gentium", "Minion Pro", "GeorgiaGreek", "Vusillus Old Face Italic", "Everson Mono", "Aristarcoj", "Porson", "Legendum", "Aisa Unicode", "Hindsight Unicode", "Caslon", "Verdana", "Tahoma"; */
+    font-size: 14pt;
+    line-height: 1.4em;
+}
+  
