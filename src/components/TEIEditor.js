@@ -90,20 +90,21 @@ export default class TEIEditor extends Component {
             const {id} = node.attrs
             ipcRenderer.send( 'createNoteEditorWindow', id )
         }
-        else { 
-            const { doc } = this.state.editorState
-            const $pos = doc.resolve(pos)
-            const marks = $pos.marks()
-            for( let mark of marks ) {
-                if( mark.type.name === 'ref' ) {
-                    const {target} = mark.attrs
-                    if( target && target[0] === '#') {
-                        ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
-                        return
-                    }        
-                }
-            }
-        }
+        // TODO follow refs on dclick 
+        // else { 
+        //     const { doc } = this.state.editorState
+        //     const $pos = doc.resolve(pos)
+        //     const marks = $pos.marks()
+        //     for( let mark of marks ) {
+        //         if( mark.type.name === 'ref' ) {
+        //             const {target} = mark.attrs
+        //             if( target && target[0] === '#') {
+        //                 ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
+        //                 return
+        //             }        
+        //         }
+        //     }
+        // }
     }
 
     setTitle( filePath ) {
@@ -239,10 +240,13 @@ export default class TEIEditor extends Component {
         ipcRenderer.send( 'createNoteEditorWindow', subDocID )
     }
 
-    renderSaveButton() {
+    isNoteWindow() {
         const { noteID } = this.state
+        return ( noteID !== null && noteID != undefined ) 
+    }
 
-        if( noteID ) {
+    renderSaveButton() {
+        if( this.isNoteWindow() ) {
             return (
                <IconButton 
                    className='save-button' 
@@ -266,15 +270,16 @@ export default class TEIEditor extends Component {
     }
 
     renderToolbar() {
+        const isNoteWindow = this.isNoteWindow()
         return (
             <div>
                 { this.renderSaveButton() }
-                <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span>
+                { isNoteWindow ? "" : <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
                     <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
                     <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
-                    <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button>
+                    { isNoteWindow ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>
