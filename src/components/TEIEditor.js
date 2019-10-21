@@ -290,6 +290,8 @@ export default class TEIEditor extends Component {
     render() {    
         const { editorView, editorState, teiDocumentFile } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
+        const marginTop = (this.el && this.el.top ) ? this.el.top + 30 : 30
+        console.log(marginTop)
 
         return (
             <div className='TEIEditor'> 
@@ -307,7 +309,7 @@ export default class TEIEditor extends Component {
                         editorView={editorView}
                         createEditorView={this.createEditorView}
                     />
-                    <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
+                    <ThumbnailMargin marginTop={marginTop} scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>    
             </div>
         )

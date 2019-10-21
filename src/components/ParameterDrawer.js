@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Drawer, TextField } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
@@ -33,6 +33,7 @@ export default class ParameterDrawer extends Component {
         const {attrs} = element
         const keys = Object.keys(attrs)
 
+        // TODO render all the attributes
         if( keys.length === 0 ) {
             return (
                 <div className='drawerBody'>
@@ -55,6 +56,12 @@ export default class ParameterDrawer extends Component {
                 </div>
             )
         }        
+    }
+
+    isPhraseLevel( element ) {
+        if( !element ) return false
+        const name = element.type.name
+        return (name === 'hi' || name === 'ref' || name === 'note' || name === 'pb' || name === 'name')
     }
 
     renderNoteButton( element ) {
@@ -90,14 +97,8 @@ export default class ParameterDrawer extends Component {
             element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
         }
 
-        if( !element ) {
-            return (
-                <div>
-                    <div className='drawerHeader'>
-                       <Typography>Select an element to inspect its attributes.</Typography>
-                    </div>
-                </div>
-            )
+        if( !this.isPhraseLevel(element) ) {
+            return null 
         } else {
             const name = element.type.name
             return (
@@ -119,23 +120,10 @@ export default class ParameterDrawer extends Component {
     }
 
     render() {
+        // TODO render all the phrase elements 
         return (
             this.renderElement() 
         )
     }
 
-    renderO() {   
-        // TODO When activated, drawer pulls out and focus is given to the first field
-        // may be minimized
-        return (
-            <Drawer                  
-                className='ParameterDrawer'  
-                variant="persistent"
-                anchor="bottom"
-                open={true}
-            >
-                { this.renderElement() }
-            </Drawer>
-        )     
-    }
 }
