@@ -242,7 +242,7 @@ export default class TEIEditor extends Component {
 
     isNoteWindow() {
         const { noteID } = this.state
-        return ( noteID !== null && noteID != undefined ) 
+        return ( noteID !== null && noteID !== undefined ) 
     }
 
     renderSaveButton() {
@@ -296,6 +296,11 @@ export default class TEIEditor extends Component {
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
+                <ParameterDrawer 
+                    teiDocumentFile={teiDocumentFile} 
+                    editorState={editorState} 
+                    dispatch={this.dispatchTransaction}
+                ></ParameterDrawer>
                 <div ref={(el) => this.el = el } className='body'>
                     <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
                     <ProseMirrorComponent
@@ -304,11 +309,6 @@ export default class TEIEditor extends Component {
                     />
                     <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>    
-                <ParameterDrawer 
-                    teiDocumentFile={teiDocumentFile} 
-                    editorState={editorState} 
-                    dispatch={this.dispatchTransaction}
-                ></ParameterDrawer>
             </div>
         )
     }

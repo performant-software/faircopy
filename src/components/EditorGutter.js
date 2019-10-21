@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const gutterTop = 60
+const gutterTop = 131
 const validStructureTags = ['p','lineGroup']
 
 export default class EditorGutter extends Component {
