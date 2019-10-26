@@ -290,6 +290,7 @@ export default class TEIEditor extends Component {
     render() {    
         const { editorView, editorState, teiDocumentFile } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
+        const dialogPlaneClass = this.isNoteWindow() ? 'dialogPlaneNote' : 'dialogPlane'
 
         return (
             <div className='TEIEditor'> 
@@ -304,7 +305,7 @@ export default class TEIEditor extends Component {
                     />
                     <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>
-                <div className="dialogPlane">
+                <div className={dialogPlaneClass}>
                     <ParameterDrawer 
                         teiDocumentFile={teiDocumentFile} 
                         editorState={editorState} 

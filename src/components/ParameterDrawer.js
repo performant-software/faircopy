@@ -109,13 +109,14 @@ export default class ParameterDrawer extends Component {
         const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
         // create a list of the selected phrase level elements 
-        let elements = [], count = 0
+        let elements = []
         if( selection ) {
             if( selection.node ) {
                 elements.push( this.renderElement(selection.node,'attr-panel-node') )
             } else {
                 const { $anchor } = selection
                 const marks = $anchor.marks()
+                let count = 0
                 for( const mark of marks ) {
                     if( this.isPhraseLevel(mark) ) {
                         const key = `attr-panel-${count++}`
