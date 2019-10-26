@@ -33,29 +33,22 @@ export default class ParameterDrawer extends Component {
         const {attrs} = element
         const keys = Object.keys(attrs)
 
-        // TODO render all the attributes
-        if( keys.length === 0 ) {
-            return (
-                <div className='drawerBody'>
-                    <Typography>This element has no attributes.</Typography>
-                </div>    
-            )
-        } else {
-            const key = keys[0]
+        let attrFields = []
+        for( const key of keys ) {
             const attr = attrs[key]
-            return (
-                <div className='drawerBody'>
-                    <TextField
-                        id={`attr-${key}`}
-                        label={key}
-                        value={attr}
-                        className="attrTextField"
-                        fullWidth={true}
-                        onChange={this.changeAttributeHandler(element,key)}
-                    />
-                </div>
+            attrFields.push(
+                <TextField
+                    id={`attr-${key}`}
+                    label={key}
+                    value={attr}
+                    className="attrTextField"
+                    fullWidth={true}
+                    onChange={this.changeAttributeHandler(element,key)}
+                />
             )
-        }        
+        }
+
+        return attrFields ? attrFields : <Typography>This element has no attributes.</Typography>
     }
 
     isPhraseLevel( element ) {
