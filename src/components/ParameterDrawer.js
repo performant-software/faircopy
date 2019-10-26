@@ -61,7 +61,7 @@ export default class ParameterDrawer extends Component {
     isPhraseLevel( element ) {
         if( !element ) return false
         const name = element.type.name
-        return (name === 'hi' || name === 'ref' || name === 'note' || name === 'pb' || name === 'name')
+        return (name === 'hi' || name === 'ref' || name === 'name')
     }
 
     renderNoteButton( element ) {
@@ -108,17 +108,21 @@ export default class ParameterDrawer extends Component {
     render() {
         const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
+        // create a list of the selected phrase level elements 
         let elements = [], count = 0
         if( selection ) {
-            const { $anchor } = selection
-            const marks = $anchor.marks()
-            for( const mark of marks ) {
-                const element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
-                if( this.isPhraseLevel(element) ) {
-                    const key = `attr-panel-${count++}`
-                    elements.push( this.renderElement(element,key) )
-                }    
-            } 
+            if( selection.node ) {
+                elements.push( this.renderElement(selection.node,'attr-panel-node') )
+            } else {
+                const { $anchor } = selection
+                const marks = $anchor.marks()
+                for( const mark of marks ) {
+                    if( this.isPhraseLevel(mark) ) {
+                        const key = `attr-panel-${count++}`
+                        elements.push( this.renderElement(mark,key) )
+                    }    
+                }     
+            }
         }
 
         return (
