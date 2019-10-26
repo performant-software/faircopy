@@ -85,44 +85,48 @@ export default class ParameterDrawer extends Component {
         }
     }
 
-    renderElement() {
+    renderElement(element,key) {
         const { docs } = this.props.teiDocumentFile
-        const selection = (this.props.editorState) ? this.props.editorState.selection : null 
+        const name = element.type.name
 
-        let element, name
-        if( selection ) {
-            const { $anchor } = selection
-            const marks = $anchor.marks()
-            let mark = marks.length > 0 ? marks[0] : null   
-            element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
-            name = element.type.name
-        }
-
-        const isPhrase = this.isPhraseLevel(element)
         return (
-            <Fade in={isPhrase}>
-                {isPhrase ? 
-                    <ExpansionPanel elevation={2} className="attributePanel" >
-                        <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1a-content"
-                            id="panel1a-header"                      
-                        >
-                        <Typography>{name} - {docs[name]} </Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails >
-                            { element ? this.renderAttributes(element) : "" }
-                        </ExpansionPanelDetails>
-                        </ExpansionPanel>            
-                : <div></div> }
-            </Fade>
+            <ExpansionPanel key={key} elevation={2} className="attributePanel" >
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`${key}-content`}
+                    id={`${key}-header`}             
+                >
+                    <Typography>{name} - {docs[name]} </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails >
+                    { this.renderAttributes(element) }
+                </ExpansionPanelDetails>
+            </ExpansionPanel>            
         )    
     }
 
     render() {
-        // TODO render all the phrase elements 
+        const selection = (this.props.editorState) ? this.props.editorState.selection : null 
+
+        let elements = [], count = 0
+        if( selection ) {
+            const { $anchor } = selection
+            const marks = $anchor.marks()
+            for( const mark of marks ) {
+                const element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
+                if( this.isPhraseLevel(element) ) {
+                    const key = `attr-panel-${count++}`
+                    elements.push( this.renderElement(element,key) )
+                }    
+            } 
+        }
+
         return (
-            this.renderElement() 
+            <Fade in={elements.length > 0} >
+                <div>
+                    { elements }
+                </div>
+            </Fade>
         )
     }
 
