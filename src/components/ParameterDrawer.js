@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextField } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Button, Fade } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -89,34 +89,34 @@ export default class ParameterDrawer extends Component {
         const { docs } = this.props.teiDocumentFile
         const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
-        let element
+        let element, name
         if( selection ) {
             const { $anchor } = selection
             const marks = $anchor.marks()
             let mark = marks.length > 0 ? marks[0] : null   
             element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
+            name = element.type.name
         }
 
-        if( !this.isPhraseLevel(element) ) {
-            return null 
-        } else {
-            const name = element.type.name
-            return (
-                <ExpansionPanel className="parameterDrawer">
-                    <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                    square="true"
-                    >
-                    <Typography>{name} - {docs[name]} </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        { this.renderAttributes(element) }
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            )    
-        }
+        const isPhrase = this.isPhraseLevel(element)
+        return (
+            <Fade in={isPhrase}>
+                {isPhrase ? 
+                    <ExpansionPanel elevation={2} className="attributePanel" >
+                        <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"                      
+                        >
+                        <Typography>{name} - {docs[name]} </Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails >
+                            { element ? this.renderAttributes(element) : "" }
+                        </ExpansionPanelDetails>
+                        </ExpansionPanel>            
+                : <div></div> }
+            </Fade>
+        )    
     }
 
     render() {

@@ -290,27 +290,27 @@ export default class TEIEditor extends Component {
     render() {    
         const { editorView, editorState, teiDocumentFile } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
-        const marginTop = (this.el && this.el.top ) ? this.el.top + 30 : 30
-        console.log(marginTop)
 
         return (
             <div className='TEIEditor'> 
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
-                <ParameterDrawer 
-                    teiDocumentFile={teiDocumentFile} 
-                    editorState={editorState} 
-                    dispatch={this.dispatchTransaction}
-                ></ParameterDrawer>
                 <div ref={(el) => this.el = el } className='body'>
                     <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
                     <ProseMirrorComponent
                         editorView={editorView}
                         createEditorView={this.createEditorView}
                     />
-                    <ThumbnailMargin marginTop={marginTop} scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
-                </div>    
+                    <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
+                </div>
+                <div className="dialogPlane">
+                    <ParameterDrawer 
+                        teiDocumentFile={teiDocumentFile} 
+                        editorState={editorState} 
+                        dispatch={this.dispatchTransaction}
+                    ></ParameterDrawer>
+                </div> 
             </div>
         )
     }

@@ -8,12 +8,12 @@
     min-width: calc( 100% - 12px);
 }
 
-.TEIEditor .status-bar {
-
+.TEIEditor .dialogPlane {
     position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #ccc;
+    top: 70px;
+    left: 30px;
+    margin-bottom: 15px;
+    width: 80%;
 }
 
 .save-button {

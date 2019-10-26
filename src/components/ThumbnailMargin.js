@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-// const marginTop = 131
+const marginTop = 60
 
 export default class ThumbnailMargin extends Component {
     
     renderThumbnails() {
-        const { editorView, scrollTop, marginTop } = this.props
+        const { editorView, scrollTop } = this.props
         const editorState = editorView.state
 
         const thumbnails = []
