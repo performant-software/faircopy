@@ -52,12 +52,12 @@ export default class TEIDocument {
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");
 
         this.docs = {
-            p: "(paragraph) marks paragraphs in prose.",
-            pb: "(page beginning) marks the beginning of a new page in a paginated document.",
+            p: "marks paragraphs in prose.",
+            pb: "marks the beginning of a new page in a paginated document.",
             note: "contains a note or annotation.",
-            hi: "(highlighted) marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
-            ref: "(reference) defines a reference to another location, possibly modified by additional text or comment.",
-            name: "(name, proper noun) contains a proper noun or noun phrase."
+            hi: "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
+            ref: "defines a reference to another location, possibly modified by additional text or comment.",
+            name: "contains a proper noun or noun phrase."
         }
 
         const nodes = {
