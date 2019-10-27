@@ -31,7 +31,7 @@ export default class ParameterDrawer extends Component {
 
     renderSelectField(element,fieldKey,key,attr,attrSpec) {
 
-        const menuOptions = [ <MenuItem value={""}>{"<none>"}</MenuItem> ]
+        const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
         for( const option of attrSpec.options ) {
             menuOptions.push( <MenuItem key={`${fieldKey}-${option}`} value={option}>{option}</MenuItem>)
         }
