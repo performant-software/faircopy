@@ -3,6 +3,10 @@
     margin-top: 3px;
 }
 
+.attributeSelectField {
+    min-width: 300px;
+}
+
 .attrTextField {
     min-width: 300px;
     margin: 10px;

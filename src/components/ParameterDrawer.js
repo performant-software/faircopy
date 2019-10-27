@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextField } from '@material-ui/core'
-import { Button, Fade } from '@material-ui/core'
+import { Button, Fade, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -29,8 +29,28 @@ export default class ParameterDrawer extends Component {
         }
     }
 
+    renderHiControl(element,fieldKey,key,attr) {
+        return (
+            <FormControl id={fieldKey}>
+                <InputLabel>{key}</InputLabel>
+                <Select
+                    className="attributeSelectField"
+                    value={attr}
+                    fullWidth={true}
+                    onChange={this.changeAttributeHandler(element,key)}
+                >
+                    <MenuItem value={""}>{"<none>"}</MenuItem>
+                    <MenuItem value={"bold"}>bold</MenuItem>
+                    <MenuItem value={"italic"}>italic</MenuItem>
+                    <MenuItem value={"caps"}>caps</MenuItem>
+                </Select>
+            </FormControl>
+        )
+    }
+
     renderAttributes(element) {
         const {attrs} = element
+        const elementName = element.type.name
         const keys = Object.keys(attrs)
 
         let attrFields = []
@@ -39,13 +59,17 @@ export default class ParameterDrawer extends Component {
             const attr = attrs[key] ? attrs[key] : ""
             attrFields.push(
                 <div className="attrTextField" key={fieldKey} >
-                    <TextField
-                        id={fieldKey}
-                        label={key}
-                        value={attr}                        
-                        fullWidth={true}
-                        onChange={this.changeAttributeHandler(element,key)}
-                    />
+                    { elementName === 'hi' ? 
+                        this.renderHiControl(element,fieldKey,key,attr)
+                    :
+                        <TextField
+                            id={fieldKey}
+                            label={key}
+                            value={attr}                        
+                            fullWidth={true}
+                            onChange={this.changeAttributeHandler(element,key)}
+                        />
+                    }
                 </div>
             )
         }
