@@ -35,8 +35,13 @@ tei-p {
 tei-pb {
     margin-right: 3px;
     margin-left: 3px;
-  }  
-  
+}  
+
+tei-note {
+    margin-right: 3px;
+    margin-left: 3px;
+}  
+
 tei-hi[rend="caps"] {
 text-transform: uppercase;
 }

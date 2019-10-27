@@ -138,7 +138,8 @@ export default class TEIDocument {
                     if( this.teiMode ) {
                         return this.serializeSubDocument(id)
                     } else {
-                        return ["tei-note", "†"] 
+                        const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
+                        return ["tei-note",noteAttrs,0]
                     }
                 }
             },   
