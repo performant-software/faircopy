@@ -35,20 +35,27 @@ export default class ParameterDrawer extends Component {
 
         let attrFields = []
         for( const key of keys ) {
-            const attr = attrs[key]
+            const fieldKey = `attr-${key}`
+            const attr = attrs[key] ? attrs[key] : ""
             attrFields.push(
-                <TextField
-                    id={`attr-${key}`}
-                    label={key}
-                    value={attr}
-                    className="attrTextField"
-                    fullWidth={true}
-                    onChange={this.changeAttributeHandler(element,key)}
-                />
+                <div className="attrTextField" key={fieldKey} >
+                    <TextField
+                        id={fieldKey}
+                        label={key}
+                        value={attr}                        
+                        fullWidth={true}
+                        onChange={this.changeAttributeHandler(element,key)}
+                    />
+                </div>
             )
         }
 
-        return attrFields ? attrFields : <Typography>This element has no attributes.</Typography>
+        return ( attrFields ? 
+            <div className="attributeFields">
+                {attrFields}
+            </div> 
+            : <Typography>This element has no attributes.</Typography>
+        )
     }
 
     isPhraseLevel( element ) {
@@ -57,26 +64,26 @@ export default class ParameterDrawer extends Component {
         return (name === 'hi' || name === 'ref' || name === 'name')
     }
 
-    renderNoteButton( element ) {
+    // renderNoteButton( element ) {
 
-        // must be a ref mark
-        if( element.type.name !== 'ref' ) {
-            return null
-        }
+    //     // must be a ref mark
+    //     if( element.type.name !== 'ref' ) {
+    //         return null
+    //     }
 
-        const target = element.attrs['target']
+    //     const target = element.attrs['target']
         
-        if( localStorage.getItem(target) ) {
-            const editNote = () => {
-                ipcRenderer.send( 'createNoteEditorWindow', target )
-            }
+    //     if( localStorage.getItem(target) ) {
+    //         const editNote = () => {
+    //             ipcRenderer.send( 'createNoteEditorWindow', target )
+    //         }
     
-            return (
-                <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
-            )        
+    //         return (
+    //             <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
+    //         )        
 
-        }
-    }
+    //     }
+    // }
 
     renderElement(element,key) {
         const { docs } = this.props.teiDocumentFile
@@ -89,7 +96,7 @@ export default class ParameterDrawer extends Component {
                     aria-controls={`${key}-content`}
                     id={`${key}-header`}             
                 >
-                    <Typography>{name} - {docs[name]} </Typography>
+                    <Typography><b>{name}</b>: <i>{docs[name]}</i> </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails >
                     { this.renderAttributes(element) }

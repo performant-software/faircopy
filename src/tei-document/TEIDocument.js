@@ -74,6 +74,7 @@ export default class TEIDocument {
                 inline: true,
                 group: "inline",
                 attrs: {
+                    id: { default: ''  },
                     facs: { default: '' }
                 },
                 parseDOM: [{
@@ -121,7 +122,7 @@ export default class TEIDocument {
         const marks = {   
             hi: this.createTEIMark({ name: 'hi', attrs: [ "rend" ] }),
             ref: this.createTEIMark({ name: 'ref', attrs: [ "target" ] }),
-            name: this.createTEIMark({ name: 'name', attrs: [ "type" ] })
+            name: this.createTEIMark({ name: 'name', attrs: [ "id", "type" ] })
         }
 
         this.xmlSchema = new Schema({ nodes, marks })

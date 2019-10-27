@@ -4,6 +4,11 @@
 }
 
 .attrTextField {
-    margin: 5px;
-    max-width: 90%;
+    min-width: 300px;
+    margin: 10px;
+}
+
+.attributeFields {
+    display: flex;
+    flex-wrap: wrap;
 }
