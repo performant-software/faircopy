@@ -29,7 +29,13 @@ export default class ParameterDrawer extends Component {
         }
     }
 
-    renderHiControl(element,fieldKey,key,attr) {
+    renderSelectField(element,fieldKey,key,attr,attrSpec) {
+
+        const menuOptions = [ <MenuItem value={""}>{"<none>"}</MenuItem> ]
+        for( const option of attrSpec.options ) {
+            menuOptions.push( <MenuItem key={`${fieldKey}-${option}`} value={option}>{option}</MenuItem>)
+        }
+
         return (
             <FormControl id={fieldKey}>
                 <InputLabel>{key}</InputLabel>
@@ -39,10 +45,7 @@ export default class ParameterDrawer extends Component {
                     fullWidth={true}
                     onChange={this.changeAttributeHandler(element,key)}
                 >
-                    <MenuItem value={""}>{"<none>"}</MenuItem>
-                    <MenuItem value={"bold"}>bold</MenuItem>
-                    <MenuItem value={"italic"}>italic</MenuItem>
-                    <MenuItem value={"caps"}>caps</MenuItem>
+                    { menuOptions }
                 </Select>
             </FormControl>
         )
@@ -52,15 +55,19 @@ export default class ParameterDrawer extends Component {
         const {attrs} = element
         const elementName = element.type.name
         const keys = Object.keys(attrs)
+        const {teiDocumentFile} = this.props
+        const elementSpec = teiDocumentFile.elementSpecs[elementName]
+        const defaultAttrSpec = teiDocumentFile.defaultAttrSpec
 
         let attrFields = []
         for( const key of keys ) {
             const fieldKey = `attr-${key}`
             const attr = attrs[key] ? attrs[key] : ""
+            const attrSpec = (elementSpec.attrs && elementSpec.attrs[key]) ? elementSpec.attrs[key] : defaultAttrSpec
             attrFields.push(
                 <div className="attrTextField" key={fieldKey} >
-                    { elementName === 'hi' ? 
-                        this.renderHiControl(element,fieldKey,key,attr)
+                    { attrSpec.type === 'select' ? 
+                        this.renderSelectField(element,fieldKey,key,attr,attrSpec)
                     :
                         <TextField
                             id={fieldKey}
@@ -110,7 +117,7 @@ export default class ParameterDrawer extends Component {
     // }
 
     renderElement(element,key) {
-        const { docs } = this.props.teiDocumentFile
+        const { elementSpecs } = this.props.teiDocumentFile
         const name = element.type.name
 
         return (
@@ -120,7 +127,7 @@ export default class ParameterDrawer extends Component {
                     aria-controls={`${key}-content`}
                     id={`${key}-header`}             
                 >
-                    <Typography><b>{name}</b>: <i>{docs[name]}</i> </Typography>
+                    <Typography><b>{name}</b>: <i>{elementSpecs[name].docs}</i> </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails >
                     { this.renderAttributes(element) }
