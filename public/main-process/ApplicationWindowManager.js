@@ -62,6 +62,7 @@ class ApplicationWindowManager {
 
       // Create the browser window
       const browserWindow = new BrowserWindow({
+          parent: this.mainWindow,
           width: 700,
           height: 500,
           frame: false,

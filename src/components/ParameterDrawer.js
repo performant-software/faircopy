@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { Drawer, TextField } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
+import { Button, Fade, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Node } from "prosemirror-model"
+
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { changeAttribute } from "../tei-document/commands"
 
@@ -23,100 +29,141 @@ export default class ParameterDrawer extends Component {
         }
     }
 
+    renderSelectField(element,fieldKey,key,attr,attrSpec) {
+
+        const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
+        for( const option of attrSpec.options ) {
+            menuOptions.push( <MenuItem key={`${fieldKey}-${option}`} value={option}>{option}</MenuItem>)
+        }
+
+        return (
+            <FormControl id={fieldKey}>
+                <InputLabel>{key}</InputLabel>
+                <Select
+                    className="attributeSelectField"
+                    value={attr}
+                    fullWidth={true}
+                    onChange={this.changeAttributeHandler(element,key)}
+                >
+                    { menuOptions }
+                </Select>
+            </FormControl>
+        )
+    }
+
     renderAttributes(element) {
         const {attrs} = element
+        const elementName = element.type.name
         const keys = Object.keys(attrs)
+        const {teiDocumentFile} = this.props
+        const elementSpec = teiDocumentFile.elementSpecs[elementName]
+        const defaultAttrSpec = teiDocumentFile.defaultAttrSpec
 
-        if( keys.length === 0 ) {
-            return (
-                <div className='drawerBody'>
-                    This element has no attributes.
-                </div>    
-            )
-        } else {
-            const key = keys[0]
-            const attr = attrs[key]
-            return (
-                <div className='drawerBody'>
-                    <TextField
-                        id={`attr-${key}`}
-                        label={key}
-                        value={attr}
-                        className="attrTextField"
-                        fullWidth={true}
-                        onChange={this.changeAttributeHandler(element,key)}
-                    />
+        let attrFields = []
+        for( const key of keys ) {
+            const fieldKey = `attr-${key}`
+            const attr = attrs[key] ? attrs[key] : ""
+            const attrSpec = (elementSpec.attrs && elementSpec.attrs[key]) ? elementSpec.attrs[key] : defaultAttrSpec
+            attrFields.push(
+                <div className="attrTextField" key={fieldKey} >
+                    { attrSpec.type === 'select' ? 
+                        this.renderSelectField(element,fieldKey,key,attr,attrSpec)
+                    :
+                        <TextField
+                            id={fieldKey}
+                            label={key}
+                            value={attr}                        
+                            fullWidth={true}
+                            onChange={this.changeAttributeHandler(element,key)}
+                        />
+                    }
                 </div>
             )
-        }        
-    }
-
-    renderNoteButton( element ) {
-
-        // must be a ref mark
-        if( element.type.name !== 'ref' ) {
-            return null
         }
 
-        const target = element.attrs['target']
+        return ( attrFields ? 
+            <div className="attributeFields">
+                {attrFields}
+            </div> 
+            : <Typography>This element has no attributes.</Typography>
+        )
+    }
+
+    isPhraseLevel( element ) {
+        if( !element ) return false
+        const name = element.type.name
+        return (name === 'hi' || name === 'ref' || name === 'name')
+    }
+
+    // renderNoteButton( element ) {
+
+    //     // must be a ref mark
+    //     if( element.type.name !== 'ref' ) {
+    //         return null
+    //     }
+
+    //     const target = element.attrs['target']
         
-        if( localStorage.getItem(target) ) {
-            const editNote = () => {
-                ipcRenderer.send( 'createNoteEditorWindow', target )
-            }
+    //     if( localStorage.getItem(target) ) {
+    //         const editNote = () => {
+    //             ipcRenderer.send( 'createNoteEditorWindow', target )
+    //         }
     
-            return (
-                <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
-            )        
+    //         return (
+    //             <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
+    //         )        
 
-        }
+    //     }
+    // }
+
+    renderElement(element,key) {
+        const { elementSpecs } = this.props.teiDocumentFile
+        const name = element.type.name
+
+        return (
+            <ExpansionPanel key={key} elevation={2} className="attributePanel" >
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`${key}-content`}
+                    id={`${key}-header`}             
+                >
+                    <Typography><b>{name}</b>: <i>{elementSpecs[name].docs}</i> </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails >
+                    { this.renderAttributes(element) }
+                </ExpansionPanelDetails>
+            </ExpansionPanel>            
+        )    
     }
 
-    renderElement() {
-        const { docs } = this.props.teiDocumentFile
+    render() {
         const selection = (this.props.editorState) ? this.props.editorState.selection : null 
 
-        let element
+        // create a list of the selected phrase level elements 
+        let elements = []
         if( selection ) {
-            const { $anchor } = selection
-            const marks = $anchor.marks()
-            let mark = marks.length > 0 ? marks[0] : null   
-            element = (selection.node) ? selection.node : (mark) ? mark : $anchor.parent
+            if( selection.node ) {
+                elements.push( this.renderElement(selection.node,'attr-panel-node') )
+            } else {
+                const { $anchor } = selection
+                const marks = $anchor.marks()
+                let count = 0
+                for( const mark of marks ) {
+                    if( this.isPhraseLevel(mark) ) {
+                        const key = `attr-panel-${count++}`
+                        elements.push( this.renderElement(mark,key) )
+                    }    
+                }     
+            }
         }
 
-        if( !element ) {
-            return (
-                <div>
-                    <div className='drawerHeader'>
-                        Select an element to inspect its attributes.
-                    </div>
-                </div>
-            )
-        } else {
-            const name = element.type.name
-            return (
-                <div>
-                   <div className='drawerHeader'>
-                        {name} - {docs[name]}                   
-                    </div>
-                    { this.renderAttributes(element) }
-                </div>
-            )    
-        }
-    }
-
-    render() {   
-        // TODO When activated, drawer pulls out and focus is given to the first field
-        // may be minimized
         return (
-            <Drawer                  
-                className='ParameterDrawer'  
-                variant="persistent"
-                anchor="bottom"
-                open={true}
-            >
-                { this.renderElement() }
-            </Drawer>
-        )     
+            <Fade in={elements.length > 0} >
+                <div>
+                    { elements }
+                </div>
+            </Fade>
+        )
     }
+
 }

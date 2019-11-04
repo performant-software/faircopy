@@ -51,14 +51,42 @@ export default class TEIDocument {
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");
 
-        this.docs = {
-            p: "(paragraph) marks paragraphs in prose.",
-            pb: "(page beginning) marks the beginning of a new page in a paginated document.",
-            note: "contains a note or annotation.",
-            hi: "(highlighted) marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
-            ref: "(reference) defines a reference to another location, possibly modified by additional text or comment.",
-            name: "(name, proper noun) contains a proper noun or noun phrase."
+        this.elementSpecs = {
+            "p": {
+                "doc": "marks paragraphs in prose.",
+            },
+            "pb": {
+                "docs": "marks the beginning of a new page in a paginated document."
+            },
+            "note": {
+                "docs": "contains a note or annotation.",
+            },
+            "hi": {
+                "attrs": {
+                    "rend": {
+                        "type": "select",
+                        "options": ["bold","italic","caps"]
+                    }
+                },
+                "docs": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
+            },
+            "ref": {
+                "docs": "defines a reference to another location, possibly modified by additional text or comment.",
+            },
+            "name": {
+                "docs": "contains a proper noun or noun phrase.",
+                "attrs": {
+                    "type": {
+                        "type": "select",
+                        "options": ["person","place","artwork"]
+                    }
+                },
+            }
         }
+        this.defaultAttrSpec = {
+            "type": "text"
+        }
+
 
         const nodes = {
             doc: {
@@ -74,6 +102,7 @@ export default class TEIDocument {
                 inline: true,
                 group: "inline",
                 attrs: {
+                    id: { default: ''  },
                     facs: { default: '' }
                 },
                 parseDOM: [{
@@ -109,7 +138,8 @@ export default class TEIDocument {
                     if( this.teiMode ) {
                         return this.serializeSubDocument(id)
                     } else {
-                        return ["tei-note", "†"] 
+                        const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
+                        return ["tei-note",noteAttrs,0]
                     }
                 }
             },   
@@ -121,7 +151,7 @@ export default class TEIDocument {
         const marks = {   
             hi: this.createTEIMark({ name: 'hi', attrs: [ "rend" ] }),
             ref: this.createTEIMark({ name: 'ref', attrs: [ "target" ] }),
-            name: this.createTEIMark({ name: 'name', attrs: [ "type" ] })
+            name: this.createTEIMark({ name: 'name', attrs: [ "id", "type" ] })
         }
 
         this.xmlSchema = new Schema({ nodes, marks })
@@ -149,7 +179,14 @@ export default class TEIDocument {
                     }
                 } 
             ],
-            toDOM: (mark) => this.teiMode ? [name,mark.attrs,0] : [`tei-${name}`,mark.attrs,0] 
+            toDOM: (mark) => {
+                if( this.teiMode ) {
+                    return [name,mark.attrs,0]
+                } else {
+                    const displayAttrs = { ...mark.attrs, phraseLvl: true }
+                    return [`tei-${name}`,displayAttrs,0]
+                }
+            } 
         }       
     }
 
