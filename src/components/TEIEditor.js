@@ -272,7 +272,7 @@ export default class TEIEditor extends Component {
     renderToolbar() {
         const isNoteWindow = this.isNoteWindow()
         return (
-            <div>
+            <div className="toolbar">
                 { this.renderSaveButton() }
                 { isNoteWindow ? "" : <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>

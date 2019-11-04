@@ -23,11 +23,15 @@
     width: 80%;
 }
 
-.save-button {
+.TEIEditor .save-button {
     background: '#FAFAFA';
     float: right;
 }
 
-.draggable {
+.TEIEditor .toolbar button {
+    -webkit-app-region: no-drag;
+}
+
+.TEIEditor .draggable {
     -webkit-app-region: drag
 }
