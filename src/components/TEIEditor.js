@@ -30,7 +30,7 @@ export default class TEIEditor extends Component {
         this.state = {
             filePath: null,
             noteID: null,
-            teiDocumentFile: new TEIDocument(),
+            teiDocument: new TEIDocument(),
             editorView: null,
             editorState: null
         }	
@@ -56,10 +56,10 @@ export default class TEIEditor extends Component {
     }
 
     createEditorView = (element) => {
-        const { teiDocumentFile, editorView } = this.state
+        const { teiDocument, editorView } = this.state
         if( editorView ) return;
 
-        const editorInitalState = teiDocumentFile.editorInitialState(document) 
+        const editorInitalState = teiDocument.editorInitialState(document) 
         const nextEditorView = new EditorView( 
             element,    
             { 
@@ -121,8 +121,8 @@ export default class TEIEditor extends Component {
     }
 
     newFile() {
-        const { teiDocumentFile, editorView } = this.state
-        const newEditorState = teiDocumentFile.editorInitialState(document)
+        const { teiDocument, editorView } = this.state
+        const newEditorState = teiDocument.editorInitialState(document)
         editorView.updateState( newEditorState )        
         this.setTitle(untitledDocumentTitle)
         editorView.focus();
@@ -130,8 +130,8 @@ export default class TEIEditor extends Component {
     }
 
     openFile( filePath ) {
-        const { teiDocumentFile, editorView } = this.state
-        const newEditorState = teiDocumentFile.load(filePath)
+        const { teiDocument, editorView } = this.state
+        const newEditorState = teiDocument.load(filePath)
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             this.setTitle(filePath)
@@ -143,13 +143,13 @@ export default class TEIEditor extends Component {
     }
 
     openNote( noteID ) {
-        const { teiDocumentFile, editorView } = this.state
+        const { teiDocument, editorView } = this.state
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const doc = teiDocumentFile.xmlSchema.nodeFromJSON(noteJSON);
+        const doc = teiDocument.xmlSchema.nodeFromJSON(noteJSON);
         const newEditorState = EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
-            plugins: teiDocumentFile.pluginSetup()
+            plugins: teiDocument.pluginSetup()
         })
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
@@ -182,8 +182,8 @@ export default class TEIEditor extends Component {
     }
 
     save(saveFilePath) {
-        const { teiDocumentFile, editorView } = this.state
-        teiDocumentFile.save( editorView, saveFilePath )
+        const { teiDocument, editorView } = this.state
+        teiDocument.save( editorView, saveFilePath )
         this.setState( { ...this.state, filePath: saveFilePath })
         this.setTitle(saveFilePath)
     }
@@ -201,22 +201,22 @@ export default class TEIEditor extends Component {
     }
 
     onRef = () => {
-        const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.ref
+        const {editorState, teiDocument, editorView} = this.state 
+        const markType = teiDocument.xmlSchema.marks.ref
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onHi = () => {
-        const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.hi
+        const {editorState, teiDocument, editorView} = this.state 
+        const markType = teiDocument.xmlSchema.marks.hi
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onName = () => {
-        const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.name
+        const {editorState, teiDocument, editorView} = this.state 
+        const markType = teiDocument.xmlSchema.marks.name
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
@@ -231,10 +231,10 @@ export default class TEIEditor extends Component {
     }
 
     onNote = () => {
-        const { editorState, teiDocumentFile } = this.state
+        const { editorState, teiDocument } = this.state
         const { $anchor } = editorState.selection
         const { tr } = editorState
-        const subDocID = teiDocumentFile.createSubDocument(document)
+        const subDocID = teiDocument.createSubDocument(document)
         const noteNode = editorState.schema.node('note', { id: subDocID })
         tr.insert($anchor.pos, noteNode) 
         this.dispatchTransaction(tr)
@@ -302,7 +302,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { editorView, editorState, teiDocumentFile } = this.state
+        const { editorView, editorState, teiDocument } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
 
         return (
@@ -320,7 +320,7 @@ export default class TEIEditor extends Component {
                 </div>
                 <div className={this.dialogPlaneClass()}>
                     <ParameterDrawer 
-                        teiDocumentFile={teiDocumentFile} 
+                        teiDocument={teiDocument} 
                         editorState={editorState} 
                         dispatch={this.dispatchTransaction}
                     ></ParameterDrawer>

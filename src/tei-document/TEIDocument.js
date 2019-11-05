@@ -47,10 +47,6 @@ export default class TEIDocument {
         this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
 
-        // load blank XML template 
-        const parser = new DOMParser();
-        this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");
-
         this.elementSpecs = {
             "p": {
                 "doc": "marks paragraphs in prose.",
@@ -102,7 +98,6 @@ export default class TEIDocument {
                 inline: true,
                 group: "inline",
                 attrs: {
-                    id: { default: ''  },
                     facs: { default: '' }
                 },
                 parseDOM: [{
@@ -191,6 +186,9 @@ export default class TEIDocument {
     }
 
     editorInitialState(documentDOM) {
+        // load blank XML template 
+        const parser = new DOMParser();
+        this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(documentDOM)
         const plugins = this.pluginSetup()
         const selection = TextSelection.create(doc, 0)
