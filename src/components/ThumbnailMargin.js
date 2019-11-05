@@ -17,9 +17,15 @@ export default class ThumbnailMargin extends Component {
                 const thumbStyle = { top }
                 const thumbKey = `facs-thumb-${thumbnails.length}`
                 const thumbSrc = node.attrs['facs']
-                thumbnails.push(
-                    <img key={thumbKey} style={thumbStyle} className="facs-thumbnail" alt="test" src={thumbSrc}></img>
-                )                        
+                if( thumbSrc ) {
+                    thumbnails.push(
+                        <img key={thumbKey} style={thumbStyle} className="facs-thumbnail" alt={thumbSrc} src={thumbSrc}></img>
+                    )                            
+                } else {
+                    thumbnails.push(
+                        <div key={thumbKey} style={thumbStyle} className="facs-thumbnail"><span className="fas fa-10x fa-file-alt"></span></div> 
+                    )                            
+                }
                 return false
             }
             return true
