@@ -34,7 +34,8 @@ export default class TEIEditor extends Component {
             teiDocument: new TEIDocument(),
             editorView: null,
             editorState: null,
-            alertDialogOpen: false
+            changedSinceLastSave: false,
+            alertDialogMode: false
         }	
     }
 
@@ -53,10 +54,12 @@ export default class TEIEditor extends Component {
     }
 
     onBeforeUnload = (e) => {
-        const { editorView, teiDocument, exitAnyway } = this.state
+        const { exitAnyway, changedSinceLastSave } = this.state
+        
+        // TODO isNoteWindow
 
-        if( !exitAnyway && editorView && teiDocument.hasChanged(editorView) ) {
-            this.setState({ ...this.state, alertDialogOpen: true})
+        if( !exitAnyway && changedSinceLastSave ) {
+            this.setState({ ...this.state, alertDialogMode: 'close'})
             e.returnValue = false
         } 
     }
@@ -86,11 +89,12 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { editorView, editorState } = this.state 
+        const { editorView, editorState, changedSinceLastSave } = this.state 
         if( editorView ) {
             const nextEditorState = editorState.apply(transaction)
             editorView.updateState(nextEditorState)
-            this.setState({...this.state, editorState: nextEditorState })    
+            const docChanged = changedSinceLastSave || transaction.docChanged
+            this.setState({...this.state, changedSinceLastSave: docChanged, editorState: nextEditorState })    
         }
     }
 
@@ -132,12 +136,24 @@ export default class TEIEditor extends Component {
     }
 
     newFile() {
-        const { teiDocument, editorView } = this.state
-        const newEditorState = teiDocument.editorInitialState(document)
-        editorView.updateState( newEditorState )        
-        this.setTitle(untitledDocumentTitle)
-        editorView.focus();
-        this.setState( { ...this.state, editorState: newEditorState, filePath: null })
+        const { teiDocument, editorView, changedSinceLastSave, exitAnyway } = this.state
+
+        if( !exitAnyway && changedSinceLastSave ) {
+            this.setState({ ...this.state, changedSinceLastSave: false, alertDialogMode: 'new'})
+        } else {
+            const newEditorState = teiDocument.editorInitialState(document)
+            editorView.updateState( newEditorState )        
+            this.setTitle(untitledDocumentTitle)
+            editorView.focus();
+            this.setState( { 
+                ...this.state, 
+                exitAnyway: false, 
+                alertDialogMode: false, 
+                changedSinceLastSave: false,
+                editorState: newEditorState, 
+                filePath: null 
+            })    
+        }
     }
 
     openFile( filePath ) {
@@ -147,7 +163,7 @@ export default class TEIEditor extends Component {
             editorView.updateState( newEditorState )        
             this.setTitle(filePath)
             editorView.focus();
-            this.setState( { ...this.state, editorState: newEditorState, filePath })    
+            this.setState( { ...this.state, editorState: newEditorState, changedSinceLastSave: false, filePath })    
         } else {
             console.log(`Unable to load file: ${filePath}`)
         }
@@ -195,7 +211,13 @@ export default class TEIEditor extends Component {
     save(saveFilePath) {
         const { teiDocument, editorView } = this.state
         teiDocument.save( editorView, saveFilePath )
-        this.setState( { ...this.state, filePath: saveFilePath })
+        this.setState( { ...this.state, 
+            filePath: saveFilePath, 
+            alertDialogMode: false, 
+            changedSinceLastSave: false, 
+            exitAnyway: false
+        })
+
         this.setTitle(saveFilePath)
     }
 
@@ -300,20 +322,27 @@ export default class TEIEditor extends Component {
     }
 
     renderAlertDialog() {      
+        const {alertDialogMode} = this.state
         
         const handleSave = () => {
             this.requestSave()
-            this.setState({...this.state, alertDialogOpen: false});
         }
 
         const handleClose = () => {
-            this.setState({...this.state, exitAnyway: true, alertDialogOpen: false});
-            window.close()
+            this.setState({...this.state, exitAnyway: true });
+            alertDialogMode === 'close' ? window.close() : this.newFile()
         }
         
+        let message
+        if( alertDialogMode === 'close' ) {
+            message = "Do you wish to save this file before exiting?"
+        } else if( alertDialogMode === 'new' ) {
+            message = "Do you wish to save this file before creating a new document?"
+        }
+
         return (
             <Dialog
-                open={this.state.alertDialogOpen}
+                open={alertDialogMode !== false}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -321,7 +350,7 @@ export default class TEIEditor extends Component {
                 <DialogTitle id="alert-dialog-title">{"Unsaved changes"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Do you wish to save this file before exiting?
+                        { message }
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
