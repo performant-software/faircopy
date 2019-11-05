@@ -302,6 +302,27 @@ export default class TEIDocument {
         // in the correct language
     }
 
+    hasChanged(editorView) {
+
+        // TODO determined if the file has changed
+
+        return true
+        // const editorState = editorView.state
+        // this.teiMode = true
+
+        // const domSerializer = DOMSerializer.fromSchema( this.xmlSchema )
+        // const domFragment = domSerializer.serializeFragment(editorState.doc.content)
+
+
+
+        // const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
+        // var div = document.createElement('div')
+        // div.appendChild( domFragment.cloneNode(true) )
+        // bodyEl.innerHTML = div.innerHTML
+        // const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
+
+    }
+
     save(editorView, saveFilePath) {
         // Override save file for testing
         if( process.env.REACT_APP_DEBUG_MODE) {

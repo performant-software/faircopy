@@ -5,6 +5,7 @@ import {EditorView} from "prosemirror-view"
 import {EditorState, TextSelection} from "prosemirror-state"
 
 import { Toolbar, Button, IconButton } from '@material-ui/core'
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -15,7 +16,7 @@ import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import ThumbnailMargin from './ThumbnailMargin'
-// import { dispatchAction } from '../redux-store/ReduxStore';
+// import { dispatchAction } from '../redux-store/ReduxStore'
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
@@ -32,7 +33,8 @@ export default class TEIEditor extends Component {
             noteID: null,
             teiDocument: new TEIDocument(),
             editorView: null,
-            editorState: null
+            editorState: null,
+            alertDialogOpen: false
         }	
     }
 
@@ -47,6 +49,16 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileNew', (event) => this.newFile() )
 
         window.addEventListener("resize", this.onWindowResize)
+        window.onbeforeunload = this.onBeforeUnload
+    }
+
+    onBeforeUnload = (e) => {
+        const { editorView, teiDocument, exitAnyway } = this.state
+
+        if( !exitAnyway && editorView && teiDocument.hasChanged(editorView) ) {
+            this.setState({ ...this.state, alertDialogOpen: true})
+            e.returnValue = false
+        } 
     }
 
     onWindowResize = () => {
@@ -79,7 +91,6 @@ export default class TEIEditor extends Component {
             const nextEditorState = editorState.apply(transaction)
             editorView.updateState(nextEditorState)
             this.setState({...this.state, editorState: nextEditorState })    
-            // console.log(JSON.stringify(nextEditorState.toJSON()))
         }
     }
 
@@ -288,6 +299,43 @@ export default class TEIEditor extends Component {
         )
     }
 
+    renderAlertDialog() {      
+        
+        const handleSave = () => {
+            this.requestSave()
+            this.setState({...this.state, alertDialogOpen: false});
+        }
+
+        const handleClose = () => {
+            this.setState({...this.state, exitAnyway: true, alertDialogOpen: false});
+            window.close()
+        }
+        
+        return (
+            <Dialog
+                open={this.state.alertDialogOpen}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Unsaved changes"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Do you wish to save this file before exiting?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSave} color="primary" autoFocus>
+                    Save
+                    </Button>
+                    <Button onClick={handleClose} color="primary">
+                    Don't Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
     dialogPlaneClass() {
         const { editorView, editorState } = this.state
 
@@ -325,6 +373,7 @@ export default class TEIEditor extends Component {
                         dispatch={this.dispatchTransaction}
                     ></ParameterDrawer>
                 </div> 
+                { this.renderAlertDialog() }
             </div>
         )
     }
