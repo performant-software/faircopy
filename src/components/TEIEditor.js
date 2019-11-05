@@ -5,6 +5,7 @@ import {EditorView} from "prosemirror-view"
 import {EditorState, TextSelection} from "prosemirror-state"
 
 import { Toolbar, Button, IconButton } from '@material-ui/core'
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -15,12 +16,13 @@ import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import ThumbnailMargin from './ThumbnailMargin'
-// import { dispatchAction } from '../redux-store/ReduxStore';
+// import { dispatchAction } from '../redux-store/ReduxStore'
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 const untitledDocumentTitle = "Untitled Document"
-const versionNumber = "0.2.0"
+const versionNumber = "0.3.0"
+const dialogPlaneThreshold = 200
 
 export default class TEIEditor extends Component {
 
@@ -29,9 +31,11 @@ export default class TEIEditor extends Component {
         this.state = {
             filePath: null,
             noteID: null,
-            teiDocumentFile: new TEIDocument(),
+            teiDocument: new TEIDocument(),
             editorView: null,
-            editorState: null
+            editorState: null,
+            changedSinceLastSave: false,
+            alertDialogMode: false
         }	
     }
 
@@ -46,6 +50,18 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileNew', (event) => this.newFile() )
 
         window.addEventListener("resize", this.onWindowResize)
+        window.onbeforeunload = this.onBeforeUnload
+    }
+
+    onBeforeUnload = (e) => {
+        const { exitAnyway, changedSinceLastSave } = this.state
+        
+        // TODO isNoteWindow
+
+        if( !exitAnyway && changedSinceLastSave ) {
+            this.setState({ ...this.state, alertDialogMode: 'close'})
+            e.returnValue = false
+        } 
     }
 
     onWindowResize = () => {
@@ -55,10 +71,10 @@ export default class TEIEditor extends Component {
     }
 
     createEditorView = (element) => {
-        const { teiDocumentFile, editorView } = this.state
+        const { teiDocument, editorView } = this.state
         if( editorView ) return;
 
-        const editorInitalState = teiDocumentFile.editorInitialState(document) 
+        const editorInitalState = teiDocument.editorInitialState(document) 
         const nextEditorView = new EditorView( 
             element,    
             { 
@@ -73,12 +89,12 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { editorView, editorState } = this.state 
+        const { editorView, editorState, changedSinceLastSave } = this.state 
         if( editorView ) {
             const nextEditorState = editorState.apply(transaction)
             editorView.updateState(nextEditorState)
-            this.setState({...this.state, editorState: nextEditorState })    
-            // console.log(JSON.stringify(nextEditorState.toJSON()))
+            const docChanged = changedSinceLastSave || transaction.docChanged
+            this.setState({...this.state, changedSinceLastSave: docChanged, editorState: nextEditorState })    
         }
     }
 
@@ -120,35 +136,47 @@ export default class TEIEditor extends Component {
     }
 
     newFile() {
-        const { teiDocumentFile, editorView } = this.state
-        const newEditorState = teiDocumentFile.editorInitialState(document)
-        editorView.updateState( newEditorState )        
-        this.setTitle(untitledDocumentTitle)
-        editorView.focus();
-        this.setState( { ...this.state, editorState: newEditorState, filePath: null })
+        const { teiDocument, editorView, changedSinceLastSave, exitAnyway } = this.state
+
+        if( !exitAnyway && changedSinceLastSave ) {
+            this.setState({ ...this.state, changedSinceLastSave: false, alertDialogMode: 'new'})
+        } else {
+            const newEditorState = teiDocument.editorInitialState(document)
+            editorView.updateState( newEditorState )        
+            this.setTitle(untitledDocumentTitle)
+            editorView.focus();
+            this.setState( { 
+                ...this.state, 
+                exitAnyway: false, 
+                alertDialogMode: false, 
+                changedSinceLastSave: false,
+                editorState: newEditorState, 
+                filePath: null 
+            })    
+        }
     }
 
     openFile( filePath ) {
-        const { teiDocumentFile, editorView } = this.state
-        const newEditorState = teiDocumentFile.load(filePath)
+        const { teiDocument, editorView } = this.state
+        const newEditorState = teiDocument.load(filePath)
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             this.setTitle(filePath)
             editorView.focus();
-            this.setState( { ...this.state, editorState: newEditorState, filePath })    
+            this.setState( { ...this.state, editorState: newEditorState, changedSinceLastSave: false, filePath })    
         } else {
             console.log(`Unable to load file: ${filePath}`)
         }
     }
 
     openNote( noteID ) {
-        const { teiDocumentFile, editorView } = this.state
+        const { teiDocument, editorView } = this.state
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const doc = teiDocumentFile.xmlSchema.nodeFromJSON(noteJSON);
+        const doc = teiDocument.xmlSchema.nodeFromJSON(noteJSON);
         const newEditorState = EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
-            plugins: teiDocumentFile.pluginSetup()
+            plugins: teiDocument.pluginSetup()
         })
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
@@ -181,9 +209,15 @@ export default class TEIEditor extends Component {
     }
 
     save(saveFilePath) {
-        const { teiDocumentFile, editorView } = this.state
-        teiDocumentFile.save( editorView, saveFilePath )
-        this.setState( { ...this.state, filePath: saveFilePath })
+        const { teiDocument, editorView } = this.state
+        teiDocument.save( editorView, saveFilePath )
+        this.setState( { ...this.state, 
+            filePath: saveFilePath, 
+            alertDialogMode: false, 
+            changedSinceLastSave: false, 
+            exitAnyway: false
+        })
+
         this.setTitle(saveFilePath)
     }
 
@@ -200,22 +234,22 @@ export default class TEIEditor extends Component {
     }
 
     onRef = () => {
-        const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.ref
+        const {editorState, teiDocument, editorView} = this.state 
+        const markType = teiDocument.xmlSchema.marks.ref
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onHi = () => {
-        const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.hi
+        const {editorState, teiDocument, editorView} = this.state 
+        const markType = teiDocument.xmlSchema.marks.hi
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onName = () => {
-        const {editorState, teiDocumentFile, editorView} = this.state 
-        const markType = teiDocumentFile.xmlSchema.marks.name
+        const {editorState, teiDocument, editorView} = this.state 
+        const markType = teiDocument.xmlSchema.marks.name
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
@@ -230,10 +264,10 @@ export default class TEIEditor extends Component {
     }
 
     onNote = () => {
-        const { editorState, teiDocumentFile } = this.state
+        const { editorState, teiDocument } = this.state
         const { $anchor } = editorState.selection
         const { tr } = editorState
-        const subDocID = teiDocumentFile.createSubDocument(document)
+        const subDocID = teiDocument.createSubDocument(document)
         const noteNode = editorState.schema.node('note', { id: subDocID })
         tr.insert($anchor.pos, noteNode) 
         this.dispatchTransaction(tr)
@@ -272,7 +306,7 @@ export default class TEIEditor extends Component {
     renderToolbar() {
         const isNoteWindow = this.isNoteWindow()
         return (
-            <div>
+            <div className="toolbar">
                 { this.renderSaveButton() }
                 { isNoteWindow ? "" : <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
@@ -287,10 +321,66 @@ export default class TEIEditor extends Component {
         )
     }
 
+    renderAlertDialog() {      
+        const {alertDialogMode} = this.state
+        
+        const handleSave = () => {
+            this.requestSave()
+        }
+
+        const handleClose = () => {
+            this.setState({...this.state, exitAnyway: true });
+            alertDialogMode === 'close' ? window.close() : this.newFile()
+        }
+        
+        let message
+        if( alertDialogMode === 'close' ) {
+            message = "Do you wish to save this file before exiting?"
+        } else if( alertDialogMode === 'new' ) {
+            message = "Do you wish to save this file before creating a new document?"
+        }
+
+        return (
+            <Dialog
+                open={alertDialogMode !== false}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Unsaved changes"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        { message }
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleSave} color="primary" autoFocus>
+                    Save
+                    </Button>
+                    <Button onClick={handleClose} color="primary">
+                    Don't Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
+    dialogPlaneClass() {
+        const { editorView, editorState } = this.state
+
+        // Control based on Y position of selection anchor
+        const selection = (editorState) ? editorState.selection : null 
+        if( selection ) {
+            const { $anchor } = selection
+            const selectionRect = editorView.coordsAtPos($anchor.pos)
+            if( selectionRect.top < dialogPlaneThreshold ) return 'dialogPlaneBottom'    
+        }
+        return 'dialogPlaneTop'   
+    }
+
     render() {    
-        const { editorView, editorState, teiDocumentFile } = this.state
+        const { editorView, editorState, teiDocument } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
-        const dialogPlaneClass = this.isNoteWindow() ? 'dialogPlaneNote' : 'dialogPlane'
 
         return (
             <div className='TEIEditor'> 
@@ -305,13 +395,14 @@ export default class TEIEditor extends Component {
                     />
                     <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>
-                <div className={dialogPlaneClass}>
+                <div className={this.dialogPlaneClass()}>
                     <ParameterDrawer 
-                        teiDocumentFile={teiDocumentFile} 
+                        teiDocument={teiDocument} 
                         editorState={editorState} 
                         dispatch={this.dispatchTransaction}
                     ></ParameterDrawer>
                 </div> 
+                { this.renderAlertDialog() }
             </div>
         )
     }

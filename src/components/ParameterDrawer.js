@@ -17,12 +17,12 @@ export default class ParameterDrawer extends Component {
 
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
-            const {dispatch, editorState, teiDocumentFile} = this.props
+            const {dispatch, editorState, teiDocument} = this.props
             const { $anchor } = editorState.selection
             let {tr} = editorState
             const {value} = e.target
             if( element instanceof Node && element.type.name === 'note' && attributeKey === 'id') {
-                teiDocumentFile.moveSubDocument(element.attrs['id'], value)
+                teiDocument.moveSubDocument(element.attrs['id'], value)
             }
             tr = changeAttribute( element, attributeKey, value, $anchor, tr )
             dispatch(tr)
@@ -55,9 +55,9 @@ export default class ParameterDrawer extends Component {
         const {attrs} = element
         const elementName = element.type.name
         const keys = Object.keys(attrs)
-        const {teiDocumentFile} = this.props
-        const elementSpec = teiDocumentFile.elementSpecs[elementName]
-        const defaultAttrSpec = teiDocumentFile.defaultAttrSpec
+        const {teiDocument} = this.props
+        const elementSpec = teiDocument.elementSpecs[elementName]
+        const defaultAttrSpec = teiDocument.defaultAttrSpec
 
         let attrFields = []
         for( const key of keys ) {
@@ -117,7 +117,7 @@ export default class ParameterDrawer extends Component {
     // }
 
     renderElement(element,key) {
-        const { elementSpecs } = this.props.teiDocumentFile
+        const { elementSpecs } = this.props.teiDocument
         const name = element.type.name
 
         return (

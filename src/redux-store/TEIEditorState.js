@@ -1,4 +1,4 @@
-// import TEIDocument from "../tei-document/TEIDocumentFile";
+// import TEIDocument from "../tei-document/teiDocument";
 
 var TEIEditorState = {};
 
