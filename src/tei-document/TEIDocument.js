@@ -108,8 +108,13 @@ export default class TEIDocument {
                     }
                 }],
                 toDOM: (node) => {
-                    const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
-                    return this.teiMode ? ["pb",node.attrs] : ["tei-pb",pbAttrs,0]   
+                    if( this.teiMode ) {
+                        const attrs = this.filterOutBlanks(node.attrs)
+                        return ["pb",attrs]
+                    } else {
+                        const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
+                        return ["tei-pb",pbAttrs,0]  
+                    }
                 }  
             },
             note: {
@@ -152,6 +157,18 @@ export default class TEIDocument {
         this.xmlSchema = new Schema({ nodes, marks })
     }
 
+    filterOutBlanks( attrObj ) {
+        // don't save blank attrs
+        const attrs = {}
+        for( const key of Object.keys(attrObj) ) {
+            const value = attrObj[key]
+            if( value && value.length > 0 ) {
+                attrs[key] = value
+            }
+        }
+        return attrs
+    }
+
     createTEIMark(teiMarkSpec) {
         const { name } = teiMarkSpec
 
@@ -176,7 +193,8 @@ export default class TEIDocument {
             ],
             toDOM: (mark) => {
                 if( this.teiMode ) {
-                    return [name,mark.attrs,0]
+                    const attrs = this.filterOutBlanks(mark.attrs)
+                    return [name,attrs,0]
                 } else {
                     const displayAttrs = { ...mark.attrs, phraseLvl: true }
                     return [`tei-${name}`,displayAttrs,0]
