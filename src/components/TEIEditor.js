@@ -20,7 +20,8 @@ import ThumbnailMargin from './ThumbnailMargin'
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 const untitledDocumentTitle = "Untitled Document"
-const versionNumber = "0.2.0"
+const versionNumber = "0.2.1"
+const dialogPlaneThreshold = 200
 
 export default class TEIEditor extends Component {
 
@@ -287,10 +288,22 @@ export default class TEIEditor extends Component {
         )
     }
 
+    dialogPlaneClass() {
+        const { editorView, editorState } = this.state
+
+        // Control based on Y position of selection anchor
+        const selection = (editorState) ? editorState.selection : null 
+        if( selection ) {
+            const { $anchor } = selection
+            const selectionRect = editorView.coordsAtPos($anchor.pos)
+            if( selectionRect.top < dialogPlaneThreshold ) return 'dialogPlaneBottom'    
+        }
+        return 'dialogPlaneTop'   
+    }
+
     render() {    
         const { editorView, editorState, teiDocumentFile } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
-        const dialogPlaneClass = this.isNoteWindow() ? 'dialogPlaneNote' : 'dialogPlane'
 
         return (
             <div className='TEIEditor'> 
@@ -305,7 +318,7 @@ export default class TEIEditor extends Component {
                     />
                     <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
                 </div>
-                <div className={dialogPlaneClass}>
+                <div className={this.dialogPlaneClass()}>
                     <ParameterDrawer 
                         teiDocumentFile={teiDocumentFile} 
                         editorState={editorState} 
