@@ -10,13 +10,10 @@ const process = window.nodeAppDependencies.process
 export default class FairCopyWindow extends Component {
 
   componentDidMount() {
-    console.log( `FairCopy v0.0.1`)
     console.log( `Node.js ${process.versions.node}`)
     console.log( `Chromium ${process.versions.chrome}`)
     console.log( `and Electron ${process.versions.electron}`)
   }
-
-  // can be sent either a note or a document
   
   render() {
     return (

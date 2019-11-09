@@ -106,21 +106,21 @@ export default class TEIEditor extends Component {
             const {id} = node.attrs
             ipcRenderer.send( 'createNoteEditorWindow', id )
         }
-        // TODO follow refs on dclick 
-        // else { 
-        //     const { doc } = this.state.editorState
-        //     const $pos = doc.resolve(pos)
-        //     const marks = $pos.marks()
-        //     for( let mark of marks ) {
-        //         if( mark.type.name === 'ref' ) {
-        //             const {target} = mark.attrs
-        //             if( target && target[0] === '#') {
-        //                 ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
-        //                 return
-        //             }        
-        //         }
-        //     }
-        // }
+        else if( event.ctrlKey) { 
+            const { doc } = this.state.editorState
+            const $pos = doc.resolve(pos)
+            const marks = $pos.marks()
+            for( let mark of marks ) {
+                if( mark.type.name === 'ref' ) {
+                    const {target} = mark.attrs
+                    if( target && target[0] === '#') {
+                        ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
+                        return
+                    }        
+                    // TODO support URL targets
+                }
+            }
+        }
     }
 
     setTitle( filePath ) {
