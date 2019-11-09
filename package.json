@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "(The first of many) small sharp tools for digital scholarship in the humanities",
   "main": "public/electron.js",
   "private": true,

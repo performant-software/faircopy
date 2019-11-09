@@ -21,7 +21,7 @@ import ThumbnailMargin from './ThumbnailMargin'
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 const untitledDocumentTitle = "Untitled Document"
-const versionNumber = "0.3.0"
+const versionNumber = "0.3.2"
 const dialogPlaneThreshold = 200
 
 export default class TEIEditor extends Component {
