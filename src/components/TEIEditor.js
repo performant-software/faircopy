@@ -66,8 +66,10 @@ export default class TEIEditor extends Component {
 
     onWindowResize = () => {
         // dispatch a blank transaction to force a display update of the subcomponents
-        const tr = this.state.editorState.tr
-        this.dispatchTransaction(tr)
+        if( this.state.editorState ) {
+            const tr = this.state.editorState.tr
+            this.dispatchTransaction(tr)    
+        }
     }
 
     createEditorView = (element) => {
@@ -80,7 +82,9 @@ export default class TEIEditor extends Component {
             { 
                 dispatchTransaction: this.dispatchTransaction,
                 state: editorInitalState,
-                handleClickOn: this.handleClickOn
+                handleClickOn: this.handleClickOn,
+                domParser: teiDocument.domParser,
+                transformPastedHTML: (html) => { console.log(html); return html },
             }
         )
         nextEditorView.focus()
@@ -176,7 +180,7 @@ export default class TEIEditor extends Component {
         const newEditorState = EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
-            plugins: teiDocument.pluginSetup()
+            plugins: teiDocument.plugins
         })
         if( newEditorState ) {
             editorView.updateState( newEditorState )        

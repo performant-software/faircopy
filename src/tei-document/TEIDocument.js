@@ -2,9 +2,8 @@ import {Schema, DOMParser as PMDOMParser } from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
 import {EditorState, TextSelection} from "prosemirror-state"
 import {keymap} from "prosemirror-keymap"
-import {history, undo, redo} from "prosemirror-history"
+import {history} from "prosemirror-history"
 import {baseKeymap} from "prosemirror-commands"
-import {Plugin} from "prosemirror-state"
 import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 
@@ -155,6 +154,15 @@ export default class TEIDocument {
         }
 
         this.xmlSchema = new Schema({ nodes, marks })
+        this.domParser = PMDOMParser.fromSchema(this.xmlSchema)
+        this.plugins = [
+            buildInputRules(this.xmlSchema),
+            keymap(buildKeymap(this.xmlSchema)),
+            keymap(baseKeymap),
+            dropCursor(),
+            gapCursor(),
+            history()
+        ]
     }
 
     filterOutBlanks( attrObj ) {
@@ -208,10 +216,10 @@ export default class TEIDocument {
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(documentDOM)
-        const plugins = this.pluginSetup()
+       
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
-            doc, plugins, selection 
+            doc, plugins: this.plugins, selection 
         })
     }
 
@@ -227,7 +235,7 @@ export default class TEIDocument {
     createEmptyDocument(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
-        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(div)
+        const doc = this.domParser.parse(div)
         return doc
     }
 
@@ -249,7 +257,7 @@ export default class TEIDocument {
     }
 
     parseSubDocument(node, noteID) {
-        const subDoc = PMDOMParser.fromSchema(this.xmlSchema).parse(node)
+        const subDoc = this.domParser.parse(node)
         localStorage.setItem(noteID, JSON.stringify(subDoc.toJSON()));
     }
 
@@ -264,34 +272,15 @@ export default class TEIDocument {
         return note
     }
 
-    pluginSetup() {
-        let plugins = [
-            buildInputRules(this.xmlSchema),
-            keymap(buildKeymap(this.xmlSchema)),
-            keymap(this.fairCopyKeyMap()),
-            dropCursor(),
-            gapCursor(),
-            keymap({"Mod-z": undo, "Mod-y": redo}),
-            history()
-        ]
-      
-        return plugins.concat(new Plugin({
-            props: {
-                attributes: {class: "ProseMirror-example-setup-style"}
-            }
-        }))
-    }
-
     load( filePath ) {
         const text = fs.readFileSync(filePath, "utf8")
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
-        const doc = PMDOMParser.fromSchema(this.xmlSchema).parse(bodyEl)
-        const plugins = this.pluginSetup()
+        const doc = this.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
-            doc, plugins, selection 
+            doc, plugins: this.plugins, selection 
         })
 
         // TODO db of attributes managed by this object
