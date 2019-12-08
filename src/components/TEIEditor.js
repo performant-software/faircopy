@@ -19,6 +19,7 @@ import ThumbnailMargin from './ThumbnailMargin'
 // import { dispatchAction } from '../redux-store/ReduxStore'
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
+const clippy = window.nodeAppDependencies.clipboard
 
 const untitledDocumentTitle = "Untitled Document"
 const versionNumber = "0.3.2"
@@ -84,7 +85,7 @@ export default class TEIEditor extends Component {
                 state: editorInitalState,
                 handleClickOn: this.handleClickOn,
                 domParser: teiDocument.domParser,
-                transformPastedHTML: (html) => { console.log(html); return html },
+                clipboardTextSerializer: teiDocument.clipboardTextSerializer,
             }
         )
         nextEditorView.focus()
@@ -225,6 +226,11 @@ export default class TEIEditor extends Component {
         this.setTitle(saveFilePath)
     }
 
+    onClippy = () => {
+        const html = clippy.readHTML()
+        console.log( `clippy: ${html}`) 
+    }
+
     onErase = () => {
         const { editorState } = this.state
         const { tr } = editorState
@@ -319,6 +325,7 @@ export default class TEIEditor extends Component {
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { isNoteWindow ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
+                    <Button onClick={this.onClippy} >clippy</Button>
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>
             </div>

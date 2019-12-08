@@ -232,6 +232,10 @@ export default class TEIDocument {
         return baseKeymap
     }
 
+    clipboardTextSerializer = (slice) => {
+        return "<hi rend='bold'>TEST</hi>"
+    }
+
     createEmptyDocument(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
