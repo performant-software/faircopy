@@ -78,6 +78,7 @@ export default class TEIEditor extends Component {
         if( editorView ) return;
 
         const editorInitalState = teiDocument.editorInitialState(document) 
+        const clipboardSerializer = teiDocument.createClipboardSerializer()
         const nextEditorView = new EditorView( 
             element,    
             { 
@@ -85,7 +86,7 @@ export default class TEIEditor extends Component {
                 state: editorInitalState,
                 handleClickOn: this.handleClickOn,
                 domParser: teiDocument.domParser,
-                clipboardTextSerializer: teiDocument.clipboardTextSerializer,
+                clipboardSerializer: clipboardSerializer
             }
         )
         nextEditorView.focus()
@@ -177,7 +178,7 @@ export default class TEIEditor extends Component {
     openNote( noteID ) {
         const { teiDocument, editorView } = this.state
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const doc = teiDocument.xmlSchema.nodeFromJSON(noteJSON);
+        const doc = teiDocument.teiSchema.schema.nodeFromJSON(noteJSON);
         const newEditorState = EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
@@ -245,21 +246,21 @@ export default class TEIEditor extends Component {
 
     onRef = () => {
         const {editorState, teiDocument, editorView} = this.state 
-        const markType = teiDocument.xmlSchema.marks.ref
+        const markType = teiDocument.teiSchema.schema.marks.ref
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onHi = () => {
         const {editorState, teiDocument, editorView} = this.state 
-        const markType = teiDocument.xmlSchema.marks.hi
+        const markType = teiDocument.teiSchema.schema.marks.hi
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onName = () => {
         const {editorState, teiDocument, editorView} = this.state 
-        const markType = teiDocument.xmlSchema.marks.name
+        const markType = teiDocument.teiSchema.schema.marks.name
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
