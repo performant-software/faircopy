@@ -53,9 +53,10 @@ export default class TEIDocument {
     }
 
     createClipboardSerializer() {
-        // TODO turn on tei mode
-        const domSerializer = DOMSerializer.fromSchema( this.teiSchema.schema )
-        return domSerializer
+        // clipboard serialize always serializes to TEI XML
+        const clipboardSchema = new TEISchema();
+        clipboardSchema.teiMode = true
+        return DOMSerializer.fromSchema( clipboardSchema.schema )
     }
 
     createEmptyDocument(documentDOM) {

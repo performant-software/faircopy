@@ -1,44 +1,16 @@
 import {Schema} from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
+import {elementSpecs} from './element-specs'
 
 export default class TEISchema {
 
     constructor() {
         this.teiMode = false
 
-        this.elementSpecs = {
-            "p": {
-                "doc": "marks paragraphs in prose.",
-            },
-            "pb": {
-                "docs": "marks the beginning of a new page in a paginated document."
-            },
-            "note": {
-                "docs": "contains a note or annotation.",
-            },
-            "hi": {
-                "attrs": {
-                    "rend": {
-                        "type": "select",
-                        "options": ["bold","italic","caps"]
-                    }
-                },
-                "docs": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
-            },
-            "ref": {
-                "docs": "defines a reference to another location, possibly modified by additional text or comment.",
-            },
-            "name": {
-                "docs": "contains a proper noun or noun phrase.",
-                "attrs": {
-                    "type": {
-                        "type": "select",
-                        "options": ["person","place","artwork"]
-                    }
-                },
-            }
-        }
+        this.elementSpecs = elementSpecs
+        this.pastedNoteBuffer = []
+
         this.defaultAttrSpec = {
             "type": "text"
         }
@@ -55,6 +27,7 @@ export default class TEISchema {
             },
             pb: {
                 inline: true,
+                atom: true,
                 group: "inline",
                 attrs: {
                     facs: { default: '' }
@@ -78,6 +51,7 @@ export default class TEISchema {
             },
             note: {
                 inline: true,
+                atom: true,
                 group: "inline",
                 attrs: {
                     id: { }
@@ -127,6 +101,49 @@ export default class TEISchema {
             }
         }
         return attrs
+    }
+
+
+    // Extract the note elements from the html so they don't get
+    // parsed inline by DOMParser.parseSlice() during a cut and paste
+    transformPastedHTML = ( html ) => {
+
+        const cloneNoteEl = (noteEl,empty) => {
+            const nextNoteEl = document.createElement('note')
+            nextNoteEl.setAttribute('xml:id','TEST1')
+            if(!empty) nextNoteEl.innerHTML = noteEl.innerHTML
+            return nextNoteEl
+        }
+
+        // Meta tag from ProseMirror isn't closed, remove it 
+        // so we can parse as XML. Put it back at the end.
+        const metaRegex = /(<meta [^>]*>)/
+        const matches = html.match(metaRegex)
+        let metaTag = matches && matches[1] ? matches[1]: ""
+        let xml = html.replace(metaRegex,"")
+        const parser = new DOMParser();
+        const xmlDom = parser.parseFromString(xml,'text/xml');
+
+        let noteEls = xmlDom.getElementsByTagName('note');
+        for( let i=0; i< noteEls.length; i++ ) {
+            const el = noteEls[i]
+            const noteEl = cloneNoteEl(el)
+            const emptyEl = cloneNoteEl(el,true)
+            this.pastedNoteBuffer.push(noteEl)
+            el.parentNode.replaceChild(emptyEl,el)
+        }
+
+        const nextHTML = new XMLSerializer().serializeToString(xmlDom);
+        return `${metaTag}${nextHTML}`
+    }
+    
+    transformPasted = (slice) => {
+        // apply notes after DOMParse.parseSlice()
+        while( this.pastedNoteBuffer.length > 0 ) {
+            const noteEl = this.pastedNoteBuffer.pop()
+            this.parseSubDocument(noteEl,noteEl.getAttribute('xml:id'))
+        }
+        return slice
     }
 
     parseSubDocument(node, noteID) {

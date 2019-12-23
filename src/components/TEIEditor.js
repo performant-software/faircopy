@@ -79,14 +79,16 @@ export default class TEIEditor extends Component {
 
         const editorInitalState = teiDocument.editorInitialState(document) 
         const clipboardSerializer = teiDocument.createClipboardSerializer()
+
         const nextEditorView = new EditorView( 
             element,    
             { 
                 dispatchTransaction: this.dispatchTransaction,
                 state: editorInitalState,
                 handleClickOn: this.handleClickOn,
-                domParser: teiDocument.domParser,
-                clipboardSerializer: clipboardSerializer
+                transformPastedHTML: teiDocument.teiSchema.transformPastedHTML,
+                transformPasted: teiDocument.teiSchema.transformPasted,
+                clipboardSerializer
             }
         )
         nextEditorView.focus()
