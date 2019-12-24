@@ -19,7 +19,7 @@ export default class TEIDocument {
         this.subDocCounter = 0
         this.subDocPrefix = `note-${Date.now()}-`
 
-        this.teiSchema = new TEISchema();
+        this.teiSchema = new TEISchema(this.issueSubDocumentID);
         const {schema} = this.teiSchema
         this.plugins = [
             buildInputRules(schema),
@@ -66,7 +66,7 @@ export default class TEIDocument {
         return doc
     }
 
-    issueSubDocumentID() {
+    issueSubDocumentID = () => {
         return `${this.subDocPrefix}${this.subDocCounter++}`
     }
 
@@ -109,7 +109,7 @@ export default class TEIDocument {
         }
 
         const editorState = editorView.state
-        this.teiMode = true
+        this.teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
@@ -126,6 +126,6 @@ export default class TEIDocument {
                 console.log(err)
             } 
         })
-        this.teiMode = false
+        this.teiSchema.teiMode = false
     }
 }

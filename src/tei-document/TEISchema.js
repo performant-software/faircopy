@@ -5,8 +5,9 @@ import {elementSpecs} from './element-specs'
 
 export default class TEISchema {
 
-    constructor() {
+    constructor(issueSubDocumentID) {
         this.teiMode = false
+        this.issueSubDocumentID = issueSubDocumentID
 
         this.elementSpecs = elementSpecs
         this.pastedNoteBuffer = []
@@ -54,22 +55,24 @@ export default class TEISchema {
                 atom: true,
                 group: "inline",
                 attrs: {
-                    id: { }
+                    id: {},
+                    __id__: {}
                 },
                 parseDOM: [
                     {
                         tag: "note",
                         getAttrs: (domNode) => {
-                            const noteID = domNode.getAttribute("xml:id")
+                            const xmlID = domNode.getAttribute("xml:id")
+                            const existingID = domNode.getAttribute('__id__')
+                            const noteID = existingID ? existingID : this.issueSubDocumentID()
                             this.parseSubDocument(domNode, noteID)
-                            return { id: noteID }
+                            return { id: xmlID, __id__: noteID }
                         },
                     }
                 ],
                 toDOM: (node) => { 
-                    let {id} = node.attrs; 
                     if( this.teiMode ) {
-                        return this.serializeSubDocument(id)
+                        return this.serializeSubDocument(node.attrs)
                     } else {
                         const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
                         return ["tei-note",noteAttrs,0]
@@ -120,8 +123,11 @@ export default class TEISchema {
         let noteEls = xmlDom.getElementsByTagName('note');
         for( let i=0; i< noteEls.length; i++ ) {
             const el = noteEls[i]
+            const noteID = this.issueSubDocumentID()
             const noteEl = el.cloneNode(true)
+            noteEl.setAttribute('__id__',noteID)
             const emptyEl = el.cloneNode()
+            emptyEl.setAttribute('__id__',noteID)
             el.parentNode.replaceChild(emptyEl,el)
             this.pastedNoteBuffer.push(noteEl)
         }
@@ -134,7 +140,7 @@ export default class TEISchema {
         // apply notes after DOMParse.parseSlice()
         while( this.pastedNoteBuffer.length > 0 ) {
             const noteEl = this.pastedNoteBuffer.pop()
-            this.parseSubDocument(noteEl,noteEl.getAttribute('xml:id'))
+            this.parseSubDocument(noteEl,noteEl.getAttribute('__id__'))
         }
         return slice
     }
@@ -178,14 +184,20 @@ export default class TEISchema {
         }       
     }
 
-    serializeSubDocument(noteID) {
-        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
+    serializeSubDocument(attrs) {
+        let {__id__} = attrs; 
+        const noteJSON = JSON.parse( localStorage.getItem(__id__) )
         const subDoc = this.schema.nodeFromJSON(noteJSON);
         const domSerializer = DOMSerializer.fromSchema( this.schema )
         const domFragment = domSerializer.serializeFragment(subDoc.content)
         let note = document.createElement('note')
-        note.setAttribute('xml:id', noteID)
         note.appendChild( domFragment.cloneNode(true) )
+        for( const attrKey of Object.keys(attrs)) {
+            if( attrKey !== '__id__') {
+                const attrVal = attrs[attrKey]
+                note.setAttribute(attrKey,attrVal)
+            }
+        }
         return note
     }
 }

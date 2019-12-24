@@ -49,6 +49,7 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
         ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
         ipcRenderer.on('fileNew', (event) => this.newFile() )
+        ipcRenderer.on('openPrint', (event) => this.openPrint() )
 
         window.addEventListener("resize", this.onWindowResize)
         window.onbeforeunload = this.onBeforeUnload
@@ -141,6 +142,11 @@ export default class TEIEditor extends Component {
         }
         var titleEl = document.getElementsByTagName("TITLE")[0]
         titleEl.innerHTML = title
+    }
+
+    openPrint() {
+        window.print()
+
     }
 
     newFile() {
@@ -281,7 +287,7 @@ export default class TEIEditor extends Component {
         const { $anchor } = editorState.selection
         const { tr } = editorState
         const subDocID = teiDocument.createSubDocument(document)
-        const noteNode = editorState.schema.node('note', { id: subDocID })
+        const noteNode = editorState.schema.node('note', { id: '', __id__: subDocID })
         tr.insert($anchor.pos, noteNode) 
         this.dispatchTransaction(tr)
         ipcRenderer.send( 'createNoteEditorWindow', subDocID )
