@@ -128,12 +128,16 @@ export default class TEISchema {
             noteEl.setAttribute('__id__',noteID)
             const emptyEl = el.cloneNode()
             emptyEl.setAttribute('__id__',noteID)
+            // blank is necessary so that serializer doesn't collapse element
+            emptyEl.innerHTML = ' '
             el.parentNode.replaceChild(emptyEl,el)
             this.pastedNoteBuffer.push(noteEl)
         }
 
-        const nextHTML = new XMLSerializer().serializeToString(xmlDom);
-        return `${metaTag}${nextHTML}`
+        const xhtml = new XMLSerializer().serializeToString(xmlDom);
+        const nextHTML = `${metaTag}${xhtml}`
+        debugger
+        return nextHTML
     }
     
     transformPasted = (slice) => {

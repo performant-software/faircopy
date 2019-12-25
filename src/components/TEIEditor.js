@@ -56,9 +56,13 @@ export default class TEIEditor extends Component {
     }
 
     onBeforeUnload = (e) => {
-        const { exitAnyway, changedSinceLastSave } = this.state
-        
-        // TODO isNoteWindow
+        const { exitAnyway, changedSinceLastSave, noteID } = this.state
+        const { doc } = this.state.editorState
+
+        if( this.isNoteWindow() && changedSinceLastSave ) {
+            localStorage.setItem(noteID, JSON.stringify(doc.toJSON()))
+            return
+        }
 
         if( !exitAnyway && changedSinceLastSave ) {
             this.setState({ ...this.state, alertDialogMode: 'close'})
@@ -112,8 +116,8 @@ export default class TEIEditor extends Component {
         if( !direct ) return;
 
         if( nodeType === 'note' ) {
-            const {id} = node.attrs
-            ipcRenderer.send( 'createNoteEditorWindow', id )
+            const {__id__} = node.attrs
+            ipcRenderer.send( 'createNoteEditorWindow', __id__ )
         }
         else if( event.ctrlKey) { 
             const { doc } = this.state.editorState
@@ -123,6 +127,7 @@ export default class TEIEditor extends Component {
                 if( mark.type.name === 'ref' ) {
                     const {target} = mark.attrs
                     if( target && target[0] === '#') {
+                        // TODO support internal IDs
                         ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
                         return
                     }        
