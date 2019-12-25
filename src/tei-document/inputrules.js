@@ -45,11 +45,11 @@ return textblockTypeInputRule(new RegExp("^(#{1," + maxLevel + "})\\s$"),
 // A set of input rules for creating the basic block quotes, lists,
 // code blocks, and heading.
 export function buildInputRules(schema) {
-let rules = smartQuotes.concat(ellipsis, emDash), type
-if ((type = schema.nodes.blockquote)) rules.push(blockQuoteRule(type))
-if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type))
-if ((type = schema.nodes.bullet_list)) rules.push(bulletListRule(type))
-if ((type = schema.nodes.code_block)) rules.push(codeBlockRule(type))
-if ((type = schema.nodes.heading)) rules.push(headingRule(type, 6))
-return inputRules({rules})
+    let rules = smartQuotes.concat(ellipsis, emDash), type
+    if ((type = schema.nodes.blockquote)) rules.push(blockQuoteRule(type))
+    if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type))
+    if ((type = schema.nodes.bullet_list)) rules.push(bulletListRule(type))
+    if ((type = schema.nodes.code_block)) rules.push(codeBlockRule(type))
+    if ((type = schema.nodes.heading)) rules.push(headingRule(type, 6))
+    return inputRules({rules})
 }

@@ -102,6 +102,10 @@ class ApplicationWindowManager {
         })
     }
 
+    openPrintDialog = () => {
+      this.mainWindow.webContents.send('openPrint')
+    }
+
     saveFileMenu = () => {
       dialog.showSaveDialog( {
           properties: [ 'openFile', 'createDirectory' ]
@@ -181,6 +185,11 @@ class ApplicationWindowManager {
                 accelerator: 'CommandOrControl+O',
                 click: this.openFileMenu
               },
+              // { 
+              //   label: 'Print...',
+              //   accelerator: 'CommandOrControl+P',
+              //   click: this.openPrintDialog
+              // },
               { 
                 label: 'Save',
                 accelerator: 'CommandOrControl+S',

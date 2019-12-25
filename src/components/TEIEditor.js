@@ -19,9 +19,10 @@ import ThumbnailMargin from './ThumbnailMargin'
 // import { dispatchAction } from '../redux-store/ReduxStore'
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
+const clippy = window.nodeAppDependencies.clipboard
 
 const untitledDocumentTitle = "Untitled Document"
-const versionNumber = "0.3.0"
+const versionNumber = "0.3.2"
 const dialogPlaneThreshold = 200
 
 export default class TEIEditor extends Component {
@@ -48,15 +49,20 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
         ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
         ipcRenderer.on('fileNew', (event) => this.newFile() )
+        ipcRenderer.on('openPrint', (event) => this.openPrint() )
 
         window.addEventListener("resize", this.onWindowResize)
         window.onbeforeunload = this.onBeforeUnload
     }
 
     onBeforeUnload = (e) => {
-        const { exitAnyway, changedSinceLastSave } = this.state
-        
-        // TODO isNoteWindow
+        const { exitAnyway, changedSinceLastSave, noteID } = this.state
+        const { doc } = this.state.editorState
+
+        if( this.isNoteWindow() && changedSinceLastSave ) {
+            localStorage.setItem(noteID, JSON.stringify(doc.toJSON()))
+            return
+        }
 
         if( !exitAnyway && changedSinceLastSave ) {
             this.setState({ ...this.state, alertDialogMode: 'close'})
@@ -66,8 +72,10 @@ export default class TEIEditor extends Component {
 
     onWindowResize = () => {
         // dispatch a blank transaction to force a display update of the subcomponents
-        const tr = this.state.editorState.tr
-        this.dispatchTransaction(tr)
+        if( this.state.editorState ) {
+            const tr = this.state.editorState.tr
+            this.dispatchTransaction(tr)    
+        }
     }
 
     createEditorView = (element) => {
@@ -75,12 +83,17 @@ export default class TEIEditor extends Component {
         if( editorView ) return;
 
         const editorInitalState = teiDocument.editorInitialState(document) 
+        const clipboardSerializer = teiDocument.createClipboardSerializer()
+
         const nextEditorView = new EditorView( 
             element,    
             { 
                 dispatchTransaction: this.dispatchTransaction,
                 state: editorInitalState,
-                handleClickOn: this.handleClickOn
+                handleClickOn: this.handleClickOn,
+                transformPastedHTML: teiDocument.teiSchema.transformPastedHTML,
+                transformPasted: teiDocument.teiSchema.transformPasted,
+                clipboardSerializer
             }
         )
         nextEditorView.focus()
@@ -103,24 +116,25 @@ export default class TEIEditor extends Component {
         if( !direct ) return;
 
         if( nodeType === 'note' ) {
-            const {id} = node.attrs
-            ipcRenderer.send( 'createNoteEditorWindow', id )
+            const {__id__} = node.attrs
+            ipcRenderer.send( 'createNoteEditorWindow', __id__ )
         }
-        // TODO follow refs on dclick 
-        // else { 
-        //     const { doc } = this.state.editorState
-        //     const $pos = doc.resolve(pos)
-        //     const marks = $pos.marks()
-        //     for( let mark of marks ) {
-        //         if( mark.type.name === 'ref' ) {
-        //             const {target} = mark.attrs
-        //             if( target && target[0] === '#') {
-        //                 ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
-        //                 return
-        //             }        
-        //         }
-        //     }
-        // }
+        else if( event.ctrlKey) { 
+            const { doc } = this.state.editorState
+            const $pos = doc.resolve(pos)
+            const marks = $pos.marks()
+            for( let mark of marks ) {
+                if( mark.type.name === 'ref' ) {
+                    const {target} = mark.attrs
+                    if( target && target[0] === '#') {
+                        // TODO support internal IDs
+                        ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
+                        return
+                    }        
+                    // TODO support URL targets
+                }
+            }
+        }
     }
 
     setTitle( filePath ) {
@@ -133,6 +147,11 @@ export default class TEIEditor extends Component {
         }
         var titleEl = document.getElementsByTagName("TITLE")[0]
         titleEl.innerHTML = title
+    }
+
+    openPrint() {
+        window.print()
+
     }
 
     newFile() {
@@ -172,11 +191,11 @@ export default class TEIEditor extends Component {
     openNote( noteID ) {
         const { teiDocument, editorView } = this.state
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const doc = teiDocument.xmlSchema.nodeFromJSON(noteJSON);
+        const doc = teiDocument.teiSchema.schema.nodeFromJSON(noteJSON);
         const newEditorState = EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
-            plugins: teiDocument.pluginSetup()
+            plugins: teiDocument.plugins
         })
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
@@ -221,6 +240,11 @@ export default class TEIEditor extends Component {
         this.setTitle(saveFilePath)
     }
 
+    onClippy = () => {
+        const html = clippy.readHTML()
+        console.log( `clippy: ${html}`) 
+    }
+
     onErase = () => {
         const { editorState } = this.state
         const { tr } = editorState
@@ -235,21 +259,21 @@ export default class TEIEditor extends Component {
 
     onRef = () => {
         const {editorState, teiDocument, editorView} = this.state 
-        const markType = teiDocument.xmlSchema.marks.ref
+        const markType = teiDocument.teiSchema.schema.marks.ref
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onHi = () => {
         const {editorState, teiDocument, editorView} = this.state 
-        const markType = teiDocument.xmlSchema.marks.hi
+        const markType = teiDocument.teiSchema.schema.marks.hi
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
 
     onName = () => {
         const {editorState, teiDocument, editorView} = this.state 
-        const markType = teiDocument.xmlSchema.marks.name
+        const markType = teiDocument.teiSchema.schema.marks.name
         const cmd = addMark( markType );
         cmd( editorState, editorView.dispatch );    
     }
@@ -268,7 +292,7 @@ export default class TEIEditor extends Component {
         const { $anchor } = editorState.selection
         const { tr } = editorState
         const subDocID = teiDocument.createSubDocument(document)
-        const noteNode = editorState.schema.node('note', { id: subDocID })
+        const noteNode = editorState.schema.node('note', { id: '', __id__: subDocID })
         tr.insert($anchor.pos, noteNode) 
         this.dispatchTransaction(tr)
         ipcRenderer.send( 'createNoteEditorWindow', subDocID )
@@ -315,6 +339,7 @@ export default class TEIEditor extends Component {
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { isNoteWindow ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
+                    <Button onClick={this.onClippy} >clippy</Button>
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>
             </div>

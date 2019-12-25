@@ -9,9 +9,12 @@
   <body>
     <script>
         // Make Node modules available to ReactJS App
+        const { clipboard } = require('electron')
+
         window.nodeAppDependencies = {
           process: process,
           ipcRenderer: require("electron"),
+          clipboard,
           fs: require('fs')
         }
     </script>

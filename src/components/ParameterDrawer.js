@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextField } from '@material-ui/core'
-import { Button, Fade, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
+import { Fade, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -10,8 +10,6 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { changeAttribute } from "../tei-document/commands"
-
-const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
 
 export default class ParameterDrawer extends Component {
 
@@ -55,9 +53,9 @@ export default class ParameterDrawer extends Component {
         const {attrs} = element
         const elementName = element.type.name
         const keys = Object.keys(attrs)
-        const {teiDocument} = this.props
-        const elementSpec = teiDocument.elementSpecs[elementName]
-        const defaultAttrSpec = teiDocument.defaultAttrSpec
+        const {teiSchema} = this.props.teiDocument
+        const elementSpec = teiSchema.elementSpecs[elementName]
+        const defaultAttrSpec = teiSchema.defaultAttrSpec
 
         let attrFields = []
         for( const key of keys ) {
@@ -117,7 +115,7 @@ export default class ParameterDrawer extends Component {
     // }
 
     renderElement(element,key) {
-        const { elementSpecs } = this.props.teiDocument
+        const { elementSpecs } = this.props.teiDocument.teiSchema
         const name = element.type.name
 
         return (
