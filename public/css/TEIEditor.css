@@ -6,6 +6,7 @@
     overflow-y: scroll;
     position: fixed;
     min-width: calc( 100% - 12px);
+    background: white;
 }
 
 .TEIEditor .dialogPlaneTop {

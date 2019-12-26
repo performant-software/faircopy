@@ -414,7 +414,7 @@ export default class TEIEditor extends Component {
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
-                <SplitPane split="vertical" minSize={50} defaultSize={100}>
+                <SplitPane split="vertical" minSize={5} defaultSize={200}>
                     <div>
                         <TableOfContents></TableOfContents>
                     </div>
