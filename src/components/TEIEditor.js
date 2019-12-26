@@ -9,6 +9,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import SaveIcon from '@material-ui/icons/Save'
 import CloseIcon from '@material-ui/icons/Close'
 import SplitPane from 'react-split-pane'
+import { debounce } from "debounce";
 
 import TEIDocument from "../tei-document/TEIDocument"
 import { addMark } from "../tei-document/commands"
@@ -26,6 +27,7 @@ const clippy = window.nodeAppDependencies.clipboard
 const untitledDocumentTitle = "Untitled Document"
 const versionNumber = "0.3.2"
 const dialogPlaneThreshold = 200
+const resizeRefreshRate = 100
 
 export default class TEIEditor extends Component {
 
@@ -53,7 +55,7 @@ export default class TEIEditor extends Component {
         ipcRenderer.on('fileNew', (event) => this.newFile() )
         ipcRenderer.on('openPrint', (event) => this.openPrint() )
 
-        window.addEventListener("resize", this.onWindowResize)
+        window.addEventListener("resize", debounce(this.onWindowResize,resizeRefreshRate))
         window.onbeforeunload = this.onBeforeUnload
     }
 
@@ -408,13 +410,17 @@ export default class TEIEditor extends Component {
     render() {    
         const { editorView, editorState, teiDocument } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
+        const boundingRect = this.el? this.el.getBoundingClientRect() : null
+        const left = boundingRect ? boundingRect.left : 0
+        const width = boundingRect ? boundingRect.width : 0
+        const onChange = debounce(this.onWindowResize,resizeRefreshRate)
 
         return (
             <div className='TEIEditor'> 
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
-                <SplitPane split="vertical" minSize={5} defaultSize={200}>
+                <SplitPane split="vertical" minSize={5} defaultSize={200} onChange={onChange}>
                     <div>
                         <TableOfContents></TableOfContents>
                     </div>
@@ -429,6 +435,8 @@ export default class TEIEditor extends Component {
                         </div>
                         <div className={this.dialogPlaneClass()}>
                             <ParameterDrawer 
+                                left={left}
+                                width={width}
                                 teiDocument={teiDocument} 
                                 editorState={editorState} 
                                 dispatch={this.dispatchTransaction}

@@ -11,16 +11,12 @@
 .TEIEditor .dialogPlaneTop {
     position: fixed;
     top: 70px;
-    left: 30px;
-    width: 80%;
 }
 
 .TEIEditor .dialogPlaneBottom {
     position: fixed;
     bottom: 0px;
     margin-bottom: 5px;
-    left: 30px;
-    width: 80%;
 }
 
 .TEIEditor .save-button {

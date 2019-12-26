@@ -115,22 +115,26 @@ export default class ParameterDrawer extends Component {
     // }
 
     renderElement(element,key) {
+        const { left, width } = this.props
         const { elementSpecs } = this.props.teiDocument.teiSchema
         const name = element.type.name
+        const style = {  width:width-40 }
 
         return (
-            <ExpansionPanel key={key} elevation={2} className="attributePanel" >
-                <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`${key}-content`}
-                    id={`${key}-header`}             
-                >
-                    <Typography><b>{name}</b>: <i>{elementSpecs[name].docs}</i> </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails >
-                    { this.renderAttributes(element) }
-                </ExpansionPanelDetails>
-            </ExpansionPanel>            
+            <div key={key} style={style}>
+                <ExpansionPanel elevation={2} className="attributePanel" >
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls={`${key}-content`}
+                        id={`${key}-header`}             
+                    >
+                        <Typography><b>{name}</b>: <i>{elementSpecs[name].docs}</i> </Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails >
+                        { this.renderAttributes(element) }
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>            
+            </div>
         )    
     }
 
