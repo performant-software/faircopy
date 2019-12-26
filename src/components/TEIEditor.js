@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
-// import {connect} from 'react-redux';
+import React, { Component } from 'react'
+// import {connect} from 'react-redux'
 
 import {EditorView} from "prosemirror-view"
 import {EditorState, TextSelection} from "prosemirror-state"
 
 import { Toolbar, Button, IconButton } from '@material-ui/core'
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
-import CloseIcon from '@material-ui/icons/Close';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
+import SaveIcon from '@material-ui/icons/Save'
+import CloseIcon from '@material-ui/icons/Close'
+import SplitPane from 'react-split-pane'
 
 import TEIDocument from "../tei-document/TEIDocument"
 import { addMark } from "../tei-document/commands"
@@ -16,6 +17,7 @@ import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import ThumbnailMargin from './ThumbnailMargin'
+import TableOfContents from './TableOfContents'
 // import { dispatchAction } from '../redux-store/ReduxStore'
 
 const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
@@ -412,21 +414,28 @@ export default class TEIEditor extends Component {
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
-                <div ref={(el) => this.el = el } className='body'>
-                    <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
-                    <ProseMirrorComponent
-                        editorView={editorView}
-                        createEditorView={this.createEditorView}
-                    />
-                    <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
-                </div>
-                <div className={this.dialogPlaneClass()}>
-                    <ParameterDrawer 
-                        teiDocument={teiDocument} 
-                        editorState={editorState} 
-                        dispatch={this.dispatchTransaction}
-                    ></ParameterDrawer>
-                </div> 
+                <SplitPane split="vertical" minSize={50} defaultSize={100}>
+                    <div>
+                        <TableOfContents></TableOfContents>
+                    </div>
+                    <div>
+                        <div ref={(el) => this.el = el } className='body'>
+                            <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
+                            <ProseMirrorComponent
+                                editorView={editorView}
+                                createEditorView={this.createEditorView}
+                            />
+                            <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
+                        </div>
+                        <div className={this.dialogPlaneClass()}>
+                            <ParameterDrawer 
+                                teiDocument={teiDocument} 
+                                editorState={editorState} 
+                                dispatch={this.dispatchTransaction}
+                            ></ParameterDrawer>
+                        </div> 
+                    </div>
+                </SplitPane>
                 { this.renderAlertDialog() }
             </div>
         )
