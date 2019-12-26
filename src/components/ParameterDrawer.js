@@ -115,10 +115,10 @@ export default class ParameterDrawer extends Component {
     // }
 
     renderElement(element,key) {
-        const { left, width } = this.props
+        const { width } = this.props
         const { elementSpecs } = this.props.teiDocument.teiSchema
         const name = element.type.name
-        const style = {  width:width-40 }
+        const style = { width:width-40 }
 
         return (
             <div key={key} style={style}>

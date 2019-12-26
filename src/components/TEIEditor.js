@@ -411,7 +411,6 @@ export default class TEIEditor extends Component {
         const { editorView, editorState, teiDocument } = this.state
         const scrollTop = this.el ? this.el.scrollTop : 0
         const boundingRect = this.el? this.el.getBoundingClientRect() : null
-        const left = boundingRect ? boundingRect.left : 0
         const width = boundingRect ? boundingRect.width : 0
         const onChange = debounce(this.onWindowResize,resizeRefreshRate)
 
@@ -435,7 +434,6 @@ export default class TEIEditor extends Component {
                         </div>
                         <div className={this.dialogPlaneClass()}>
                             <ParameterDrawer 
-                                left={left}
                                 width={width}
                                 teiDocument={teiDocument} 
                                 editorState={editorState} 
