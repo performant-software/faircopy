@@ -18,7 +18,7 @@ export default class TEISchema {
 
         const nodes = {
             doc: {
-                content: "(block|chunk)*"
+                content: "(chunk|block)*"
             },
             div: {
                 inline: false,
