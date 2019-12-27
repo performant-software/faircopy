@@ -251,15 +251,21 @@ export default class TEIEditor extends Component {
 
     onDiv = () => {
         const { editorState } = this.state
-        const { $anchor } = editorState.selection
-        const { tr, schema } = editorState
-        const divNode = schema.node('div', null, [schema.node('p')])
-        // TODO if there is no selection, the rest of the line
-        // should go into a be p inside the div
-        // if there is a selection, its contents should go inside 
-        // the div, with p created at either end if necessary
-        tr.insert($anchor.pos, divNode)
-        this.dispatchTransaction(tr)  
+        const { tr, schema, selection } = editorState
+        const { $anchor, $cursor } = selection
+
+        // TODO create div inside div - for all cases
+        if( $cursor ) {
+            const divNode = schema.node('div', null, [schema.node('p')])
+            tr.insert($anchor.pos, divNode)
+            this.dispatchTransaction(tr)  
+            // how to put cursor in right spot?
+            // how to put the div at the right level in the tree?
+        } else {
+            // should be simple once we understand the above.
+            // TODO create div from selection
+            // TODO select across div boundary, create div
+        }
     }
 
     onErase = () => {
