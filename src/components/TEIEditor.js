@@ -249,6 +249,19 @@ export default class TEIEditor extends Component {
         console.log( `clippy: ${html}`) 
     }
 
+    onDiv = () => {
+        const { editorState } = this.state
+        const { $anchor } = editorState.selection
+        const { tr, schema } = editorState
+        const divNode = schema.node('div', null, [schema.node('p')])
+        // TODO if there is no selection, the rest of the line
+        // should go into a be p inside the div
+        // if there is a selection, its contents should go inside 
+        // the div, with p created at either end if necessary
+        tr.insert($anchor.pos, divNode)
+        this.dispatchTransaction(tr)  
+    }
+
     onErase = () => {
         const { editorState } = this.state
         const { tr } = editorState
@@ -343,6 +356,7 @@ export default class TEIEditor extends Component {
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { isNoteWindow ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
+                    <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button>
                     <Button onClick={this.onClippy} >clippy</Button>
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>

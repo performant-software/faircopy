@@ -18,11 +18,18 @@ export default class TEISchema {
 
         const nodes = {
             doc: {
-                content: "block+"
+                content: "(block|chunk)*"
+            },
+            div: {
+                inline: false,
+                content: "chunk*",
+                group: "block",
+                parseDOM: [{tag: "div"}],
+                toDOM: () => this.teiMode ? ["div",0] : ["tei-div",0]        
             },
             p: {
                 content: "inline*",
-                group: "block",
+                group: "chunk",
                 parseDOM: [{tag: "p"}],
                 toDOM: () => this.teiMode ? ["p",0] : ["tei-p",0]        
             },
@@ -136,7 +143,6 @@ export default class TEISchema {
 
         const xhtml = new XMLSerializer().serializeToString(xmlDom);
         const nextHTML = `${metaTag}${xhtml}`
-        debugger
         return nextHTML
     }
     
