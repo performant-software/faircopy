@@ -125,7 +125,8 @@ export default class TEISchema {
         let metaTag = matches && matches[1] ? matches[1]: ""
         let xml = html.replace(metaRegex,"")
         const parser = new DOMParser();
-        const xmlDom = parser.parseFromString(xml,'text/xml');
+        // xml might be an array of elements, need to wrap them to form a valid document
+        const xmlDom = parser.parseFromString(`<xml>${xml}</xml>`,'text/xml');
 
         let noteEls = xmlDom.getElementsByTagName('note');
         for( let i=0; i< noteEls.length; i++ ) {
@@ -141,7 +142,8 @@ export default class TEISchema {
             this.pastedNoteBuffer.push(noteEl)
         }
 
-        const xhtml = new XMLSerializer().serializeToString(xmlDom);
+        let xhtml = new XMLSerializer().serializeToString(xmlDom);
+        xhtml = xhtml.replace('<xml>','').replace('</xml>','')
         const nextHTML = `${metaTag}${xhtml}`
         return nextHTML
     }
