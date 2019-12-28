@@ -21,11 +21,10 @@ import ThumbnailMargin from './ThumbnailMargin'
 import TableOfContents from './TableOfContents'
 // import { dispatchAction } from '../redux-store/ReduxStore'
 
-const {ipcRenderer} = window.nodeAppDependencies.ipcRenderer
-const clippy = window.nodeAppDependencies.clipboard
+const {ipcRenderer, clipboard} = window.fairCopy.electron
 
 const untitledDocumentTitle = "Untitled Document"
-const versionNumber = "0.3.2"
+const versionNumber = "0.4.0"
 const dialogPlaneThreshold = 200
 const resizeRefreshRate = 100
 
@@ -186,7 +185,7 @@ export default class TEIEditor extends Component {
             editorView.updateState( newEditorState )        
             this.setTitle(filePath)
             editorView.focus();
-            this.setState( { ...this.state, editorState: newEditorState, changedSinceLastSave: false, filePath })    
+            this.setState( { ...this.state, editorState: newEditorState, changedSinceLastSave: false, filePath, loaded: true })    
         } else {
             console.log(`Unable to load file: ${filePath}`)
         }
@@ -205,7 +204,7 @@ export default class TEIEditor extends Component {
             editorView.updateState( newEditorState )        
             this.setTitle(`Note ${noteID}`)
             editorView.focus();
-            this.setState( { ...this.state, editorState: newEditorState, noteID })    
+            this.setState( { ...this.state, editorState: newEditorState, noteID, loaded: true })    
         } else {
             console.log(`Unable to load note: ${noteID}`)
         }
@@ -245,22 +244,24 @@ export default class TEIEditor extends Component {
     }
 
     onClippy = () => {
-        const html = clippy.readHTML()
+        const html = clipboard.readHTML()
         console.log( `clippy: ${html}`) 
     }
 
     onDiv = () => {
-        const { editorState } = this.state
+        const { editorState, editorView } = this.state
         const { tr, schema, selection } = editorState
         const { $anchor, $cursor } = selection
 
-        // TODO create div inside div - for all cases
         if( $cursor ) {
+            // check if an ancestor is a div.. if so we go in that div somehow
             const divNode = schema.node('div', null, [schema.node('p')])
             tr.insert($anchor.pos, divNode)
+            // step into the newly created div
+            const $nextPos = tr.doc.resolve($anchor.pos+3)
+            tr.setSelection(new TextSelection($nextPos))  
             this.dispatchTransaction(tr)  
-            // how to put cursor in right spot?
-            // how to put the div at the right level in the tree?
+            editorView.focus()
         } else {
             // should be simple once we understand the above.
             // TODO create div from selection
@@ -269,7 +270,7 @@ export default class TEIEditor extends Component {
     }
 
     onErase = () => {
-        const { editorState } = this.state
+        const { editorState, editorView } = this.state
         const { tr } = editorState
         let {empty, $cursor, ranges} = editorState.selection
         if (empty || $cursor) return
@@ -278,36 +279,41 @@ export default class TEIEditor extends Component {
             tr.removeMark($from.pos, $to.pos)
         }
         this.dispatchTransaction(tr)
+        editorView.focus()
     }
 
     onRef = () => {
         const {editorState, teiDocument, editorView} = this.state 
         const markType = teiDocument.teiSchema.schema.marks.ref
-        const cmd = addMark( markType );
-        cmd( editorState, editorView.dispatch );    
+        const cmd = addMark( markType )
+        cmd( editorState, editorView.dispatch )
+        editorView.focus()   
     }
 
     onHi = () => {
         const {editorState, teiDocument, editorView} = this.state 
         const markType = teiDocument.teiSchema.schema.marks.hi
-        const cmd = addMark( markType );
-        cmd( editorState, editorView.dispatch );    
+        const cmd = addMark( markType )
+        cmd( editorState, editorView.dispatch ) 
+        editorView.focus()
     }
 
     onName = () => {
         const {editorState, teiDocument, editorView} = this.state 
         const markType = teiDocument.teiSchema.schema.marks.name
         const cmd = addMark( markType );
-        cmd( editorState, editorView.dispatch );    
+        cmd( editorState, editorView.dispatch )   
+        editorView.focus()
     }
 
     onPb = () => {
-        const { editorState } = this.state
+        const { editorState, editorView } = this.state
         const { $anchor } = editorState.selection
         const { tr } = editorState
         const pbNode = editorState.schema.node('pb')
         tr.insert($anchor.pos, pbNode) 
         this.dispatchTransaction(tr)
+        editorView.focus()
     }
 
     onNote = () => {
@@ -434,46 +440,44 @@ export default class TEIEditor extends Component {
         const width = boundingRect ? boundingRect.width : 0
         const onChange = debounce(this.onWindowResize,resizeRefreshRate)
 
+        const editorPane = (
+            <div>
+                <div ref={(el) => this.el = el } className='body'>
+                    <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
+                    <ProseMirrorComponent
+                        editorView={editorView}
+                        createEditorView={this.createEditorView}
+                    />
+                    <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
+                </div>
+                <div className={this.dialogPlaneClass()}>
+                    <ParameterDrawer 
+                        width={width}
+                        teiDocument={teiDocument} 
+                        editorState={editorState} 
+                        dispatch={this.dispatchTransaction}
+                    ></ParameterDrawer>
+                </div> 
+            </div>
+        )
+
+        const splitPane = (
+            <SplitPane split="vertical" minSize={5} defaultSize={200} onChange={onChange}>
+                <div>
+                    <TableOfContents></TableOfContents>
+                </div>
+                { editorPane }
+            </SplitPane>      
+        )
+
         return (
             <div className='TEIEditor'> 
                 <div className='header'>
                     { this.renderToolbar() }
                 </div>
-                <SplitPane split="vertical" minSize={5} defaultSize={200} onChange={onChange}>
-                    <div>
-                        <TableOfContents></TableOfContents>
-                    </div>
-                    <div>
-                        <div ref={(el) => this.el = el } className='body'>
-                            <EditorGutter scrollTop={scrollTop} editorView={editorView}></EditorGutter>
-                            <ProseMirrorComponent
-                                editorView={editorView}
-                                createEditorView={this.createEditorView}
-                            />
-                            <ThumbnailMargin scrollTop={scrollTop} editorView={editorView}></ThumbnailMargin>
-                        </div>
-                        <div className={this.dialogPlaneClass()}>
-                            <ParameterDrawer 
-                                width={width}
-                                teiDocument={teiDocument} 
-                                editorState={editorState} 
-                                dispatch={this.dispatchTransaction}
-                            ></ParameterDrawer>
-                        </div> 
-                    </div>
-                </SplitPane>
+                { splitPane }
                 { this.renderAlertDialog() }
             </div>
         )
     }
 }
-
-// Don't need Redux yet
-
-// function mapStateToProps(state) {
-// 	return {
-//         teiEditor: state.teiEditor,
-//     };
-// }
-
-// export default connect(mapStateToProps)(TEIEditor);

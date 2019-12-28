@@ -11,7 +11,7 @@ import {buildInputRules} from "./inputrules"
 import TEISchema from "./TEISchema"
 import {teiTemplate} from "./tei-template"
 
-const fs = window.nodeAppDependencies.fs
+const fs = window.fairCopy.fs
 
 export default class TEIDocument {
 
