@@ -3,6 +3,8 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 // TODO detect PC
 const isMac = true
 const indexFilePath = 'build/index.html'
+const debugBaseDir = `${process.cwd()}/public`
+const distBaseDir = 'build'
 
 class ApplicationWindowManager {
 
@@ -12,6 +14,7 @@ class ApplicationWindowManager {
         this.app = app
         this.onClose = onClose
         this.debugMode = debugMode
+        this.baseDir = (this.debugMode) ? debugBaseDir : distBaseDir
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)     
@@ -28,9 +31,11 @@ class ApplicationWindowManager {
         height: 900,
         webPreferences: {
             nodeIntegration: true,
-            preload: `${process.cwd()}/public/main-window-preload.js`
+            preload: `${this.baseDir}/main-window-preload.js`
         }
       })
+
+      console.log(this.baseDir)
 
       // Emitted when the window is closed.
       browserWindow.on('closed', this.onClose )
@@ -41,6 +46,7 @@ class ApplicationWindowManager {
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
         await browserWindow.loadFile(indexFilePath)
+        browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       }
 
       // send message indicating the target file
@@ -69,7 +75,7 @@ class ApplicationWindowManager {
           frame: false,
           webPreferences: {
               nodeIntegration: true,
-              preload: `${process.cwd()}/public/note-window-preload.js`
+              preload: `${this.baseDir}/note-window-preload.js`
           }
       })
 
