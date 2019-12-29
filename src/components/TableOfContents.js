@@ -7,6 +7,39 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 export default class TableOfContents extends Component {
 
+    renderTree() {
+      const { teiDocument } = this.props
+      const { editorView } = teiDocument
+
+      if( !editorView ) return null
+
+      const { doc } = editorView.state
+
+      let nodeIDCount = 0
+      const findTreeNodes = (node) => {
+        const childCount = node.childCount
+        const treeNodes = []
+        for( let i=0; i < childCount; i++ ) {
+          const childNode = node.child(i) 
+          if( childNode.type.groups.includes('block') ) {
+            const treeID = `div-${nodeIDCount++}`
+            treeNodes.push(
+              <TreeItem key={treeID} nodeId={treeID} label="div" >
+                { findTreeNodes(childNode) }
+              </TreeItem>
+            )
+          }   
+        }
+        return treeNodes
+      }
+
+      const tree = (
+        <TreeItem nodeId="root" label="body" >
+          { findTreeNodes(doc) }
+        </TreeItem>
+      )
+      return tree
+    }
 
     render() {
         return (
@@ -15,19 +48,7 @@ export default class TableOfContents extends Component {
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
             >
-              <TreeItem nodeId="1" label="Applications">
-                <TreeItem nodeId="2" label="Calendar" />
-                <TreeItem nodeId="3" label="Chrome" />
-                <TreeItem nodeId="4" label="Webstorm" />
-              </TreeItem>
-              <TreeItem nodeId="5" label="Documents">
-                <TreeItem nodeId="6" label="Material-UI">
-                  <TreeItem nodeId="7" label="src">
-                    <TreeItem nodeId="8" label="index.js" />
-                    <TreeItem nodeId="9" label="tree-view.js" />
-                  </TreeItem>
-                </TreeItem>
-              </TreeItem>
+              { this.renderTree() }
             </TreeView>
           </div>
         )
