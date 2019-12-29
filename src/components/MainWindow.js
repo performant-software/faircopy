@@ -79,12 +79,12 @@ export default class MainWindow extends Component {
 
         if( !exitAnyway && changedSinceLastSave ) {
             this.setState({ ...this.state, alertDialogMode: 'new'})
-            this.teiDocument.changedSinceLastSave = false 
+            teiDocument.changedSinceLastSave = false 
         } else {
             const { editorView } = teiDocument
             const newEditorState = teiDocument.editorInitialState(document)
             editorView.updateState( newEditorState )       
-            this.teiDocument.changedSinceLastSave = false 
+            teiDocument.changedSinceLastSave = false 
             this.setTitle(untitledDocumentTitle)
             editorView.focus();
             this.setState( { 
