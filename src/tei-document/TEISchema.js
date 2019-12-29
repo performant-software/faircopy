@@ -22,7 +22,7 @@ export default class TEISchema {
             },
             div: {
                 inline: false,
-                content: "chunk*",
+                content: "(chunk|block)*",
                 group: "block",
                 parseDOM: [{tag: "div"}],
                 toDOM: () => this.teiMode ? ["div",0] : ["tei-div",0]        
