@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 
-import {TextSelection} from "prosemirror-state"
 import { Toolbar, Button, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
+import {wrapIn} from 'prosemirror-commands'
 
 import { addMark } from "../tei-document/commands"
 
@@ -16,23 +16,11 @@ export default class EditorToolbar extends Component {
     onDiv = () => {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
-        const { tr, schema, selection } = editorView.state
-        const { $anchor, $cursor } = selection
-
-        if( $cursor ) {
-            // check if an ancestor is a div.. if so we go in that div somehow
-            const divNode = schema.node('div', null, [schema.node('p')])
-            tr.insert($anchor.pos, divNode)
-            // step into the newly created div
-            const $nextPos = tr.doc.resolve($anchor.pos+3)
-            tr.setSelection(new TextSelection($nextPos))  
-            editorView.dispatch(tr)  
-            editorView.focus()
-        } else {
-            // should be simple once we understand the above.
-            // TODO create div from selection
-            // TODO select across div boundary, create div
-        }
+        const { schema } = editorView.state
+        const divNodeType = schema.nodes['div']
+        const cmd = wrapIn(divNodeType)
+        cmd( editorView.state, editorView.dispatch )
+        editorView.focus() 
     }
 
     onErase = () => {
