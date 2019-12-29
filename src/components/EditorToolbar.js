@@ -139,7 +139,7 @@ export default class EditorToolbar extends Component {
                     <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> }
-                    { editMode === 'note' ? "" : <Button onClick={this.onClippy} >clippy</Button> }
+                    { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> }
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>
             </div>
