@@ -55,7 +55,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument } = this.props
+        const { teiDocument, editMode, onSave } = this.props
 
         const scrollTop = this.el ? this.el.scrollTop : 0
         const boundingRect = this.el? this.el.getBoundingClientRect() : null
@@ -65,7 +65,9 @@ export default class TEIEditor extends Component {
             <div className='TEIEditor'> 
                 <div className='header'>
                     <EditorToolbar
+                        editMode={editMode}
                         teiDocument={teiDocument}
+                        onSave={onSave}
                     ></EditorToolbar>
                 </div>
                 <div>

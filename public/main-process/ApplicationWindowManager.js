@@ -27,7 +27,8 @@ class ApplicationWindowManager {
         width: 1440,
         height: 900,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            preload: `${process.cwd()}/public/main-window-preload.js`
         }
       })
 
@@ -67,7 +68,8 @@ class ApplicationWindowManager {
           height: 500,
           frame: false,
           webPreferences: {
-              nodeIntegration: true
+              nodeIntegration: true,
+              preload: `${process.cwd()}/public/note-window-preload.js`
           }
       })
 

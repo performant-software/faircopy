@@ -15,8 +15,13 @@ export default class NoteWindow extends Component {
         super()
         this.state = {
             noteID: null,
-            teiDocument: new TEIDocument()
+            teiDocument: new TEIDocument(this.onStateChange),
+            editorState: null
         }	
+    }
+
+    onStateChange = (nextState) => {
+        this.setState({...this.state,editorState:nextState})
     }
 
     componentDidMount() {
@@ -57,8 +62,8 @@ export default class NoteWindow extends Component {
     }
 
     saveAndCloseNote = () => {
-        const { noteID } = this.state
-        const { editorView } = this.state.teiDocument.editorView
+        const { noteID, teiDocument } = this.state
+        const { editorView } = teiDocument
 
         if( noteID && editorView ) {
             const {doc} = editorView.state
@@ -68,12 +73,13 @@ export default class NoteWindow extends Component {
     }
 
     render() {    
-        const {teiDocument} = this.state 
+        const {teiDocument, editorState} = this.state 
         return (
             <TEIEditor 
                 editMode="note" 
                 onSave={this.saveAndCloseNote}
                 teiDocument={teiDocument}
+                editorState={editorState}
             ></TEIEditor>
         )
     }

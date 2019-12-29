@@ -112,7 +112,6 @@ export default class MainWindow extends Component {
 
     requestSave = () => {
         const { filePath } = this.state
-
         if( filePath === null ) {
             ipcRenderer.send( 'openSaveFileDialog' )
         } else {
