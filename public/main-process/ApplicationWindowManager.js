@@ -83,7 +83,7 @@ class ApplicationWindowManager {
 
       // and load the index.html of the app.
       if( this.debugMode ) {
-          browserWindow.loadURL('http://localhost:3000').then(loadNote)
+          browserWindow.loadURL('http://localhost:3000/index.html').then(loadNote)
       } else {
           browserWindow.loadFile(indexFilePath).then(loadNote)
       }

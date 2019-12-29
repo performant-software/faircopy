@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import MainWindow from './MainWindow'
+import NoteWindow from './NoteWindow'
 
 export default class App extends Component {
   
@@ -8,12 +9,11 @@ export default class App extends Component {
         return (
             <MainWindow></MainWindow>
         )
-    } 
-    // else {
-    //     return (
-    //         <NoteWindow></NoteWindow>
-    //     )
-    // }
+    } else {
+        return (
+            <NoteWindow></NoteWindow>
+        )
+    }
 
   }
 }

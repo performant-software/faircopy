@@ -15,15 +15,17 @@ export default class ParameterDrawer extends Component {
 
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
-            const {dispatch, editorState, teiDocument} = this.props
-            const { $anchor } = editorState.selection
-            let {tr} = editorState
+            const { teiDocument } = this.props
+            const { editorView } = teiDocument
+            const { state } = editorView 
+            const { $anchor } = state.selection
+            let {tr} = state
             const {value} = e.target
             if( element instanceof Node && element.type.name === 'note' && attributeKey === 'id') {
                 teiDocument.moveSubDocument(element.attrs['id'], value)
             }
             tr = changeAttribute( element, attributeKey, value, $anchor, tr )
-            dispatch(tr)
+            editorView.dispatch(tr)
         }
     }
 
@@ -139,7 +141,10 @@ export default class ParameterDrawer extends Component {
     }
 
     render() {
-        const selection = (this.props.editorState) ? this.props.editorState.selection : null 
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument
+
+        const selection = (editorView) ? editorView.state.selection : null 
 
         // create a list of the selected phrase level elements 
         let elements = []
