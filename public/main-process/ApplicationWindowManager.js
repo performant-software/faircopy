@@ -2,9 +2,10 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 
 // TODO detect PC
 const isMac = true
+
 const indexFilePath = 'build/index.html'
-const debugBaseDir = `${process.cwd()}/public`
-const distBaseDir = 'build'
+const debugBaseDir = `${process.cwd()}/public/main-process`
+const distBaseDir = __dirname
 
 class ApplicationWindowManager {
 
@@ -34,8 +35,6 @@ class ApplicationWindowManager {
             preload: `${this.baseDir}/main-window-preload.js`
         }
       })
-
-      console.log(this.baseDir)
 
       // Emitted when the window is closed.
       browserWindow.on('closed', this.onClose )
