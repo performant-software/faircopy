@@ -1,8 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FairCopyWindow from './components/FairCopyWindow';
-// import {createReduxStore} from './redux-store/ReduxStore';
+import App from './components/App';
 
-// ReactDOM.render(<FairCopyWindow store={createReduxStore()}/>, document.getElementById('root'));
-
-ReactDOM.render(<FairCopyWindow/>, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));

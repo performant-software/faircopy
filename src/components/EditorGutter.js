@@ -6,7 +6,8 @@ const validStructureTags = ['p','lineGroup']
 export default class EditorGutter extends Component {
 
     renderGutterMarkers() {
-        const { editorView, scrollTop } = this.props
+        const { teiDocument, scrollTop } = this.props
+        const { editorView } = teiDocument
         const editorState = editorView.state
 
         const gutterMarks = []
@@ -32,7 +33,10 @@ export default class EditorGutter extends Component {
     }
 
     render() {   
-        if( !this.props.editorView ) return null
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument
+
+        if( !editorView ) return null
 
         return (
             <div className='EditorGutter'>

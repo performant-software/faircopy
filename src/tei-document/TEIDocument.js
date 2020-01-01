@@ -1,5 +1,6 @@
 import {DOMSerializer} from "prosemirror-model"
 import {EditorState, TextSelection} from "prosemirror-state"
+import {EditorView} from "prosemirror-view"
 import {keymap} from "prosemirror-keymap"
 import {history} from "prosemirror-history"
 import {baseKeymap} from "prosemirror-commands"
@@ -11,14 +12,14 @@ import {buildInputRules} from "./inputrules"
 import TEISchema from "./TEISchema"
 import {teiTemplate} from "./tei-template"
 
-const fs = window.nodeAppDependencies.fs
+const fs = window.fairCopy.fs
 
 export default class TEIDocument {
 
-    constructor() {
+    constructor(onStateChange) {
         this.subDocCounter = 0
         this.subDocPrefix = `note-${Date.now()}-`
-
+        this.onStateChange = onStateChange
         this.teiSchema = new TEISchema(this.issueSubDocumentID);
         const {schema} = this.teiSchema
         this.plugins = [
@@ -31,16 +32,51 @@ export default class TEIDocument {
         ]
     }
 
-    editorInitialState(documentDOM) {
+    editorInitialState() {
         // load blank XML template 
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
-        const doc = this.createEmptyDocument(documentDOM)
+        const doc = this.createEmptyDocument(document)
        
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
         })
+    }
+
+    refreshView = () => {
+        // dispatch a blank transaction to force a display update of the subcomponents
+        if( this.editorView ) {
+            const { tr } = this.editorView.state
+            this.editorView.dispatch(tr)    
+        }
+    }
+
+    createEditorView = (onClick,element) => {
+        if( this.editorView ) return;
+
+        this.editorView = new EditorView( 
+            element,    
+            { 
+                dispatchTransaction: this.dispatchTransaction,
+                state: this.editorInitialState(),
+                handleClickOn: onClick,
+                transformPastedHTML: this.teiSchema.transformPastedHTML,
+                transformPasted: this.teiSchema.transformPasted,
+                clipboardSerializer: this.createClipboardSerializer()
+            }
+        )
+        this.editorView.focus()
+    }
+
+    dispatchTransaction = (transaction) => {
+        if( this.editorView ) {
+            const editorState = this.editorView.state
+            const nextEditorState = editorState.apply(transaction)
+            this.editorView.updateState(nextEditorState)
+            this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
+            this.onStateChange(nextEditorState)
+        }
     }
 
     // TODO separate module?
@@ -90,6 +126,7 @@ export default class TEIDocument {
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         const doc = this.teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
+        this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
         })
@@ -102,13 +139,13 @@ export default class TEIDocument {
         // in the correct language
     }
 
-    save(editorView, saveFilePath) {
+    save(saveFilePath) {
         // Override save file for testing
         if( process.env.REACT_APP_DEBUG_MODE) {
             saveFilePath = 'test-docs/je_example_out.xml'
         }
 
-        const editorState = editorView.state
+        const editorState = this.editorView.state
         this.teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
@@ -127,5 +164,6 @@ export default class TEIDocument {
             } 
         })
         this.teiSchema.teiMode = false
+        this.changedSinceLastSave = false
     }
 }

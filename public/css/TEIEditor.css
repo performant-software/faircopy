@@ -5,22 +5,18 @@
     height: calc( 100% - 60px );
     overflow-y: scroll;
     position: fixed;
-    min-width: calc( 100% - 12px);
+    background: white;
 }
 
 .TEIEditor .dialogPlaneTop {
     position: fixed;
     top: 70px;
-    left: 30px;
-    width: 80%;
 }
 
 .TEIEditor .dialogPlaneBottom {
     position: fixed;
     bottom: 0px;
     margin-bottom: 5px;
-    left: 30px;
-    width: 80%;
 }
 
 .TEIEditor .save-button {

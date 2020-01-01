@@ -7,17 +7,6 @@
     <title>FairCopy</title>
   </head>
   <body>
-    <script>
-        // Make Node modules available to ReactJS App
-        const { clipboard } = require('electron')
-
-        window.nodeAppDependencies = {
-          process: process,
-          ipcRenderer: require("electron"),
-          clipboard,
-          fs: require('fs')
-        }
-    </script>
     <div id='root'></div>
   </body>
 </html>

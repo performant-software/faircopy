@@ -2,7 +2,10 @@ const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 
 // TODO detect PC
 const isMac = true
+
 const indexFilePath = 'build/index.html'
+const debugBaseDir = `${process.cwd()}/public/main-process`
+const distBaseDir = __dirname
 
 class ApplicationWindowManager {
 
@@ -12,6 +15,7 @@ class ApplicationWindowManager {
         this.app = app
         this.onClose = onClose
         this.debugMode = debugMode
+        this.baseDir = (this.debugMode) ? debugBaseDir : distBaseDir
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)     
@@ -27,7 +31,8 @@ class ApplicationWindowManager {
         width: 1440,
         height: 900,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            preload: `${this.baseDir}/main-window-preload.js`
         }
       })
 
@@ -40,6 +45,7 @@ class ApplicationWindowManager {
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
         await browserWindow.loadFile(indexFilePath)
+        browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       }
 
       // send message indicating the target file
@@ -67,7 +73,8 @@ class ApplicationWindowManager {
           height: 500,
           frame: false,
           webPreferences: {
-              nodeIntegration: true
+              nodeIntegration: true,
+              preload: `${this.baseDir}/note-window-preload.js`
           }
       })
 
@@ -83,7 +90,7 @@ class ApplicationWindowManager {
 
       // and load the index.html of the app.
       if( this.debugMode ) {
-          browserWindow.loadURL('http://localhost:3000').then(loadNote)
+          browserWindow.loadURL('http://localhost:3000/index.html').then(loadNote)
       } else {
           browserWindow.loadFile(indexFilePath).then(loadNote)
       }
