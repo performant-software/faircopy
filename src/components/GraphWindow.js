@@ -8,7 +8,7 @@ export default class GraphWindow extends Component {
         super()
         this.state = {
             graphData: null,
-            rootElement: "hi",
+            rootElement: "div",
             teiGraph: new TEIGraph()
         }	
     }
@@ -16,7 +16,7 @@ export default class GraphWindow extends Component {
     componentDidMount() {
         const { teiGraph, rootElement } = this.state
         teiGraph.load()
-        const graphData = teiGraph.graphElement(rootElement)
+        const graphData = teiGraph.graphMembership(rootElement)
         this.setState( { ...this.state, graphData } )
     }
 
