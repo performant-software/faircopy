@@ -1,20 +1,7 @@
-import { linkSync } from "fs"
-
 const fs = window.fairCopy.fs
 
 const teiSimplePrintODD = 'test-docs/tei_simplePrint.odd'
 const teiSpecsDir = '../TEI/P5/Source/Specs'
-
-// on the one hand, you have elements, that are members of classes, which are then members of other classes
-// on the other hand you have elements that can contain certain classes or elements
-
-// within an element context, you have classes and elements
-// body for example
-// or p
-// show me relationship between all the classes valid in a p tag, for example
-// those classes branch out from p, and then onwards until they reach other elements on perimeter
-
-// we're trying to figure out how content and group in PM might relate to classes and elements in TEI
 
 export default class TEIGraph {
 
@@ -44,7 +31,7 @@ export default class TEIGraph {
         }
     }
 
-    graphMembers( rootClassName ) {
+    graphMembers( rootClassName, followRefs ) {
 
         const findMembers = (className) => {
             const members = []
@@ -73,14 +60,16 @@ export default class TEIGraph {
                     buildGraph(member.name)
                 } 
             }
-            const mod = this.modules[modName]
-            for( let ref of mod.refs ) {
-                const linkID = `${modName}-${ref}`
-                if( !linkMap[linkID] ) {
-                    linkMap[linkID] = { "source": modName, "target": ref, "value": 1}
-                    buildGraph(ref)
-                }
-            }        
+            if( followRefs ) {
+                const mod = this.modules[modName]
+                for( let ref of mod.refs ) {
+                    const linkID = `${modName}-${ref}`
+                    if( !linkMap[linkID] ) {
+                        linkMap[linkID] = { "source": modName, "target": ref, "value": 1}
+                        buildGraph(ref)
+                    }
+                }            
+            }
         }
 
         buildGraph(rootClassName)
