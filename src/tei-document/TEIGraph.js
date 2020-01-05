@@ -1,3 +1,5 @@
+import { linkSync } from "fs"
+
 const fs = window.fairCopy.fs
 
 const teiSimplePrintODD = 'test-docs/tei_simplePrint.odd'
@@ -57,22 +59,33 @@ export default class TEIGraph {
         }
 
         const nodeMap = {}
-        const links = []
+        const linkMap = {}
 
         const buildGraph = (modName) => {
             if( !nodeMap[modName] ) {
-                const members = findMembers( modName )
                 nodeMap[modName] = {"id": modName, "group": 1 } 
-                for( let member of members ) {
-                    links.push( {"source": modName, "target": member.name, "value": 1} )
-                    buildGraph(member.name)
-                }    
             }
+            const members = findMembers( modName )
+            for( let member of members ) {
+                const linkID = `${modName}-${member.name}`
+                if( !linkMap[linkID] ) {
+                    linkMap[linkID] = { "source": modName, "target": member.name, "value": 1}
+                    buildGraph(member.name)
+                } 
+            }
+            const mod = this.modules[modName]
+            for( let ref of mod.refs ) {
+                const linkID = `${modName}-${ref}`
+                if( !linkMap[linkID] ) {
+                    linkMap[linkID] = { "source": modName, "target": ref, "value": 1}
+                    buildGraph(ref)
+                }
+            }        
         }
 
         buildGraph(rootClassName)
         const nodes = Object.values(nodeMap)
-
+        const links = Object.values(linkMap)
         return { nodes, links }
     }
 
@@ -129,10 +142,11 @@ export default class TEIGraph {
         const memberships = getKeys(classesEl,'memberOf')
 
         const contentEl = moduleDOM.getElementsByTagName('content')[0];
-        let refs = []
-        refs = refs.concat( getKeys(contentEl,'classRef') )
-        refs = refs.concat( getKeys(contentEl,'elementRef') )
-        refs = refs.concat( getKeys(contentEl,'macroRef') )
+        const refs = [ 
+            ...getKeys(contentEl,'classRef'),
+            ...getKeys(contentEl,'elementRef'),
+            ...getKeys(contentEl,'macroRef') 
+        ]
 
         return { name: moduleName, memberships, refs }
     }

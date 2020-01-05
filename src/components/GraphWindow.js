@@ -8,8 +8,8 @@ export default class GraphWindow extends Component {
         super()
         this.state = {
             graphData: null,
-            rootElement: "p",
-            mode: "membership",
+            rootElement: "div",
+            mode: "members",
             teiGraph: new TEIGraph()
         }	
     }
