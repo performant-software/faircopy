@@ -3,6 +3,17 @@ const fs = window.fairCopy.fs
 const teiSimplePrintODD = 'test-docs/tei_simplePrint.odd'
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
+// on the one hand, you have elements, that are members of classes, which are then members of other classes
+// on the other hand you have elements that can contain certain classes or elements
+
+// within an element context, you have classes and elements
+// body for example
+// or p
+// show me relationship between all the classes valid in a p tag, for example
+// those classes branch out from p, and then onwards until they reach other elements on perimeter
+
+// we're trying to figure out how content and group in PM might relate to classes and elements in TEI
+
 export default class TEIGraph {
 
     constructor() {
@@ -12,12 +23,13 @@ export default class TEIGraph {
     load() {
 
         // recursively load module dependencies
-        const loadMemberships = (mod) => {
-            for( const className of mod.memberships ) {
-                if( !this.modules[className] ) {
-                    const mod = this.loadModule(className)
-                    this.modules[className] = mod
-                    loadMemberships(mod)
+        const loadDependencies = (mod) => {
+            const deps = mod.memberships.concat( mod.refs )
+            for( const dep of deps ) {
+                if( !this.modules[dep] ) {
+                    const mod = this.loadModule(dep)
+                    this.modules[dep] = mod
+                    loadDependencies(mod)
                 }
             }
         }
@@ -26,7 +38,7 @@ export default class TEIGraph {
         for( const moduleName of moduleNames ) {
              const mod = this.loadModule(moduleName)
              this.modules[moduleName] = mod
-             loadMemberships(mod)
+             loadDependencies(mod)
         }
     }
 
@@ -58,7 +70,6 @@ export default class TEIGraph {
             }
         }
 
-        debugger
         buildGraph(rootClassName)
         const nodes = Object.values(nodeMap)
 
@@ -90,8 +101,6 @@ export default class TEIGraph {
         }
 
         return { nodes, links }
-
-        // return JSON.parse(fs.readFileSync('test-docs/miserable.json', "utf8"))
     }
 
     loadModule( moduleName ) {
@@ -100,26 +109,32 @@ export default class TEIGraph {
         const parser = new DOMParser();
         const moduleDOM = parser.parseFromString(moduleXML, "text/xml");
 
-        const classesEl = moduleDOM.getElementsByTagName('classes')[0];
-        const classesChildren = classesEl ? classesEl.childNodes : []
-        const memberships = []
+        const getKeys = (el,keyTag) => {
+            const keys = []
+            const tags = el ? el.getElementsByTagName(keyTag) : []
 
-        for (let i = 0; i < classesChildren.length; i++) {
-            const classEl = classesChildren[i]
-            if( classEl.localName === 'memberOf') {
-                const key = classEl.getAttribute('key')
-                if( key.startsWith('model.') ) {
-                    memberships.push( key )    
+            for (let i = 0; i < tags.length; i++) {
+                const tagEl = tags[i]
+                if( keyTag === tagEl.localName )  {
+                    const key = tagEl.getAttribute('key')
+                    if( !key.startsWith('att.') ) {
+                        keys.push( key )    
+                    }
                 }
-            }
+            } 
+            return keys   
         }
 
-        // TODO parse content
-        // const contentEl = moduleDOM.getElementsByTagName('content')[0];
-        // get all the element and class refs from content
+        const classesEl = moduleDOM.getElementsByTagName('classes')[0];
+        const memberships = getKeys(classesEl,'memberOf')
 
+        const contentEl = moduleDOM.getElementsByTagName('content')[0];
+        let refs = []
+        refs = refs.concat( getKeys(contentEl,'classRef') )
+        refs = refs.concat( getKeys(contentEl,'elementRef') )
+        refs = refs.concat( getKeys(contentEl,'macroRef') )
 
-        return { name: moduleName, memberships }
+        return { name: moduleName, memberships, refs }
     }
 
     // load simple file, locate body els, make a list of their modules
@@ -142,32 +157,4 @@ export default class TEIGraph {
 
         return moduleNames
     }
-
-           // TODO
-        // Need to look into the content and classess els of the xml files listed in the simple odd
-        // What are we graphing exactly?
-//         <classes>
-        //     <memberOf key="att.global"/>
-        //     <memberOf key="model.pPart.transcriptional"/>
-        //     <memberOf key="model.linePart"/>
-        //     <memberOf key="att.transcriptional"/>
-        //     <memberOf key="att.placement"/>
-        //     <memberOf key="att.typed"/>
-        //     <memberOf key="att.dimensions"/>
-    //   </classes>
-//   <content>
-//     <macroRef key="macro.paraContent"/>
-//   </content>
-
-        // on the one hand, you have elements, that are members of classes, which are then members of other classes
-        // on the other hand you have elements that can contain certain classes or elements
-
-        // within an element context, you have classes and elements
-        // body for example
-        // or p
-        // show me relationship between all the classes valid in a p tag, for example
-        // those classes branch out from p, and then onwards until they reach other elements on perimeter
-
-        // we're trying to figure out how content and group in PM might relate to classes and elements in TEI
-
 }
