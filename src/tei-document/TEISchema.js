@@ -22,7 +22,6 @@ export default class TEISchema {
                 group: "block"
             },
             div: {
-                inline: false,
                 content: "(chunk|block)*",
                 group: "block",
                 parseDOM: [{tag: "div"}],

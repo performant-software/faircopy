@@ -1,8 +1,16 @@
 {
     "elements": [
         {
+            "name": "div",
+            "pmType": "node",
+            "content": "(chunk|block)*",
+            "group": "block"
+        },
+        {
             "name": "p",
-            "pmType": "chunk",
+            "pmType": "node",
+            "content": "inline*",
+            "group": "chunk",
             "desc": "marks paragraphs in prose."
         },
         {
@@ -25,16 +33,23 @@
         {
             "name": "ref",
             "pmType": "mark",
+            "defaultAttrs": ["target"],
             "desc": "defines a reference to another location, possibly modified by additional text or comment."
         },
         {
             "name": "name",
             "pmType": "mark",
-            "defaultAttrs": ["type"],
+            "defaultAttrs": ["id", "type"],
             "desc": "contains a proper noun or noun phrase."
         }    
     ],
     "attrs": {
+        "id": {
+            "type": "text"
+        },
+        "target": {
+            "type": "text"
+        },
         "type": {
             "type": "select",
             "options": ["person","place","artwork"]
