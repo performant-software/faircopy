@@ -32,7 +32,7 @@ class ApplicationWindowManager {
         height: 900,
         webPreferences: {
             nodeIntegration: true,
-            preload: `${this.baseDir}/graph-window-preload.js`
+            preload: `${this.baseDir}/main-window-preload.js`
         }
       })
 

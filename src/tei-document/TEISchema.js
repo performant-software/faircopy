@@ -3,6 +3,8 @@ import {DOMSerializer} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
 import {elementSpecs} from './element-specs'
 
+const fs = window.fairCopy.fs
+
 export default class TEISchema {
 
     constructor(issueSubDocumentID) {
@@ -16,89 +18,48 @@ export default class TEISchema {
             "type": "text"
         }
 
+        const schemaSpec = this.createSchemaSpec()
+        this.schema = new Schema(schemaSpec)
+        this.domParser = PMDOMParser.fromSchema(this.schema)
+    }
+
+    createSchemaSpec() {
+        const json = fs.readFileSync('config/tei-simple.json', "utf8")
+        const teiSimple = JSON.parse(json)
+
         const nodes = {
             doc: {
                 content: "(chunk|block)*",
                 group: "block"
             },
-            div: {
-                content: "(chunk|block)*",
-                group: "block",
-                parseDOM: [{tag: "div"}],
-                toDOM: () => this.teiMode ? ["div",0] : ["tei-div",0]        
-            },
-            p: {
-                content: "inline*",
-                group: "chunk",
-                parseDOM: [{tag: "p"}],
-                toDOM: () => this.teiMode ? ["p",0] : ["tei-p",0]        
-            },
-            pb: {
-                inline: true,
-                atom: true,
-                group: "inline",
-                attrs: {
-                    facs: { default: '' }
-                },
-                parseDOM: [{
-                    tag: "pb",
-                    getAttrs: (domNode) => {
-                        const facs = domNode.getAttribute("facs")
-                        return { facs }
-                    }
-                }],
-                toDOM: (node) => {
-                    if( this.teiMode ) {
-                        const attrs = this.filterOutBlanks(node.attrs)
-                        return ["pb",attrs]
-                    } else {
-                        const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
-                        return ["tei-pb",pbAttrs,0]  
-                    }
-                }  
-            },
-            note: {
-                inline: true,
-                atom: true,
-                group: "inline",
-                attrs: {
-                    id: {},
-                    __id__: {}
-                },
-                parseDOM: [
-                    {
-                        tag: "note",
-                        getAttrs: (domNode) => {
-                            const xmlID = domNode.getAttribute("xml:id")
-                            const existingID = domNode.getAttribute('__id__')
-                            const noteID = existingID ? existingID : this.issueSubDocumentID()
-                            this.parseSubDocument(domNode, noteID)
-                            return { id: xmlID, __id__: noteID }
-                        },
-                    }
-                ],
-                toDOM: (node) => { 
-                    if( this.teiMode ) {
-                        return this.serializeSubDocument(node.attrs)
-                    } else {
-                        const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
-                        return ["tei-note",noteAttrs,0]
-                    }
-                }
-            },   
             text: {
                 group: "inline"
-            },
+            }
+        }
+        
+        const marks = {}
+
+        for( const element of teiSimple.elements ) {
+            const { pmType } = element
+            if( pmType === 'mark') {
+                const { name, defaultAttrs } = element
+                marks[name] = this.createTEIMark({ name, attrs: defaultAttrs })
+            } else if( pmType === 'node' ) {
+                const { name } = element
+                nodes[name] = this.createTEINode(element)
+            } else if( pmType === 'inline-node' ) {
+                const { name } = element
+                if( name === 'note' ) {
+                    nodes[name] = this.createTEINote()
+                } else if( name === 'pb') {
+                    nodes[name] = this.createTEIPb()
+                }
+            } else {
+                console.log('unrecognized pmType')
+            }
         }
 
-        const marks = {   
-            hi: this.createTEIMark({ name: 'hi', attrs: [ "rend" ] }),
-            ref: this.createTEIMark({ name: 'ref', attrs: [ "target" ] }),
-            name: this.createTEIMark({ name: 'name', attrs: [ "id", "type" ] })
-        }
-
-        this.schema = new Schema({ nodes, marks })
-        this.domParser = PMDOMParser.fromSchema(this.schema)
+        return { nodes, marks }
     }
 
     filterOutBlanks( attrObj ) {
@@ -160,6 +121,75 @@ export default class TEISchema {
     parseSubDocument(node, noteID) {
         const subDoc = this.domParser.parse(node)
         localStorage.setItem(noteID, JSON.stringify(subDoc.toJSON()));
+    }
+
+    createTEINode(teiNodeSpec) {
+        const { name, content, group } = teiNodeSpec
+        return {
+            content,
+            group,
+            parseDOM: [{tag: name}],
+            toDOM: () => this.teiMode ? [name,0] : [`tei-${name}`,0]        
+        }
+    }
+
+    createTEINote() {
+        return {
+            inline: true,
+            atom: true,
+            group: "inline",
+            attrs: {
+                id: {},
+                __id__: {}
+            },
+            parseDOM: [
+                {
+                    tag: "note",
+                    getAttrs: (domNode) => {
+                        const xmlID = domNode.getAttribute("xml:id")
+                        const existingID = domNode.getAttribute('__id__')
+                        const noteID = existingID ? existingID : this.issueSubDocumentID()
+                        this.parseSubDocument(domNode, noteID)
+                        return { id: xmlID, __id__: noteID }
+                    },
+                }
+            ],
+            toDOM: (node) => { 
+                if( this.teiMode ) {
+                    return this.serializeSubDocument(node.attrs)
+                } else {
+                    const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
+                    return ["tei-note",noteAttrs,0]
+                }
+            }
+        }          
+    }
+
+    createTEIPb() {
+        return {
+            inline: true,
+            atom: true,
+            group: "inline",
+            attrs: {
+                facs: { default: '' }
+            },
+            parseDOM: [{
+                tag: "pb",
+                getAttrs: (domNode) => {
+                    const facs = domNode.getAttribute("facs")
+                    return { facs }
+                }
+            }],
+            toDOM: (node) => {
+                if( this.teiMode ) {
+                    const attrs = this.filterOutBlanks(node.attrs)
+                    return ["pb",attrs]
+                } else {
+                    const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
+                    return ["tei-pb",pbAttrs,0]  
+                }
+            }  
+        }
     }
 
     createTEIMark(teiMarkSpec) {
