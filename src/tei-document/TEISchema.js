@@ -1,7 +1,6 @@
 import {Schema} from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
-import {elementSpecs} from './element-specs'
 
 const fs = window.fairCopy.fs
 
@@ -11,21 +10,24 @@ export default class TEISchema {
         this.teiMode = false
         this.issueSubDocumentID = issueSubDocumentID
 
-        this.elementSpecs = elementSpecs
         this.pastedNoteBuffer = []
 
         this.defaultAttrSpec = {
             "type": "text"
         }
 
-        const schemaSpec = this.createSchemaSpec()
+        const { schemaSpec, elements, attrs } = this.parseSchemaConfig('config/tei-simple.json')
+        this.elements = elements
+        this.attrs = attrs
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
     }
 
-    createSchemaSpec() {
-        const json = fs.readFileSync('config/tei-simple.json', "utf8")
+    parseSchemaConfig(schemaConfigFile) {
+        const json = fs.readFileSync(schemaConfigFile, "utf8")
         const teiSimple = JSON.parse(json)
+
+        const elements = {}
 
         const nodes = {
             doc: {
@@ -40,26 +42,25 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType } = element
+            const { pmType, name } = element
             if( pmType === 'mark') {
-                const { name, defaultAttrs } = element
-                marks[name] = this.createTEIMark({ name, attrs: defaultAttrs })
+                const { defaultAttrs } = element
+                marks[name] = this.createMarkSpec({ name, attrs: defaultAttrs })
             } else if( pmType === 'node' ) {
-                const { name } = element
-                nodes[name] = this.createTEINode(element)
+                nodes[name] = this.createNodeSpec(element)
             } else if( pmType === 'inline-node' ) {
-                const { name } = element
                 if( name === 'note' ) {
-                    nodes[name] = this.createTEINote()
+                    nodes[name] = this.createNoteSpec()
                 } else if( name === 'pb') {
-                    nodes[name] = this.createTEIPb()
+                    nodes[name] = this.createPbSpec()
                 }
             } else {
                 console.log('unrecognized pmType')
             }
+            elements[name] = element            
         }
 
-        return { nodes, marks }
+        return { schemaSpec: { nodes, marks }, elements, attrs: teiSimple.attrs }
     }
 
     filterOutBlanks( attrObj ) {
@@ -123,7 +124,7 @@ export default class TEISchema {
         localStorage.setItem(noteID, JSON.stringify(subDoc.toJSON()));
     }
 
-    createTEINode(teiNodeSpec) {
+    createNodeSpec(teiNodeSpec) {
         const { name, content, group } = teiNodeSpec
         return {
             content,
@@ -133,7 +134,7 @@ export default class TEISchema {
         }
     }
 
-    createTEINote() {
+    createNoteSpec() {
         return {
             inline: true,
             atom: true,
@@ -165,7 +166,7 @@ export default class TEISchema {
         }          
     }
 
-    createTEIPb() {
+    createPbSpec() {
         return {
             inline: true,
             atom: true,
@@ -192,7 +193,7 @@ export default class TEISchema {
         }
     }
 
-    createTEIMark(teiMarkSpec) {
+    createMarkSpec(teiMarkSpec) {
         const { name } = teiMarkSpec
 
         let attrs = {}

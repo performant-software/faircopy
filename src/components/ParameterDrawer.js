@@ -53,20 +53,18 @@ export default class ParameterDrawer extends Component {
 
     renderAttributes(element) {
         const {attrs} = element
-        const elementName = element.type.name
         const keys = Object.keys(attrs)
         const {teiSchema} = this.props.teiDocument
-        const elementSpec = teiSchema.elementSpecs[elementName]
-        const defaultAttrSpec = teiSchema.defaultAttrSpec
+        const attrSpecs = teiSchema.attrs
 
         let attrFields = []
         for( const key of keys ) {
             const fieldKey = `attr-${key}`
             const attr = attrs[key] ? attrs[key] : ""
-            const attrSpec = (elementSpec.attrs && elementSpec.attrs[key]) ? elementSpec.attrs[key] : defaultAttrSpec
+            const attrSpec = attrSpecs[key]
             attrFields.push(
                 <div className="attrTextField" key={fieldKey} >
-                    { attrSpec.type === 'select' ? 
+                    { attrSpec && attrSpec.type === 'select' ? 
                         this.renderSelectField(element,fieldKey,key,attr,attrSpec)
                     :
                         <TextField
@@ -118,8 +116,9 @@ export default class ParameterDrawer extends Component {
 
     renderElement(element,key) {
         const { width } = this.props
-        const { elementSpecs } = this.props.teiDocument.teiSchema
+        const { elements } = this.props.teiDocument.teiSchema
         const name = element.type.name
+        const elementSpec = elements[name]
         const style = { width:width-40 }
 
         return (
@@ -130,7 +129,7 @@ export default class ParameterDrawer extends Component {
                         aria-controls={`${key}-content`}
                         id={`${key}-header`}             
                     >
-                        <Typography><b>{name}</b>: <i>{elementSpecs[name].docs}</i> </Typography>
+                        <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails >
                         { this.renderAttributes(element) }
