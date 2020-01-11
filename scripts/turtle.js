@@ -5,7 +5,7 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 // const csv = require('csvtojson');
 
-const teiSimplePrintODD = 'test-docs/tei_simplePrint.odd'
+const teiSimplePrintODD = 'scripts/tei_simplePrint.odd'
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
 // load simple file, locate body els, make a list of their modules
@@ -91,7 +91,7 @@ function load() {
 
 async function run() {
     const modules = load()
-    
+    debugger
 }
 
 // A wise turtle that understands ODD and ProseMirror
