@@ -1,6 +1,6 @@
 const fs = window.fairCopy.fs
 
-const teiSimplePrintODD = 'test-docs/tei_simplePrint.odd'
+const teiSimplePrintODD = 'scripts/tei_simplePrint.odd'
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
 export default class TEIGraph {

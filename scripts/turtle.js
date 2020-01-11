@@ -6,7 +6,39 @@ const { JSDOM } = jsdom;
 // const csv = require('csvtojson');
 
 const teiSimplePrintODD = 'scripts/tei_simplePrint.odd'
+
+// this is https://github.com/TEIC/TEI
 const teiSpecsDir = '../TEI/P5/Source/Specs'
+
+const phraseMarks = [
+    "ref",
+    "name",
+    "rs",
+    "num",
+    "measure",
+    "time",
+    "date",
+    "email",
+    "expan",
+    "abbr",
+    "orig",
+    "supplied",
+    "corr",
+    "reg",
+    "unclear",
+    "del",
+    "sic",
+    "add",
+    "term",
+    "foreign",
+    "title",
+    "hi",
+    "rhyme",
+    "seg",
+    "s",
+    "measure"
+]
+
 
 // load simple file, locate body els, make a list of their modules
 function loadModuleNames() {
@@ -51,17 +83,27 @@ function loadModule( moduleName ) {
         return keys   
     }
 
-    const classesEl = xmlDoc.getElementsByTagName('classes')[0];
+    const classesEl = xmlDoc.getElementsByTagName('classes')[0]
     const memberships = getKeys(classesEl,'memberOf')
 
-    const contentEl = xmlDoc.getElementsByTagName('content')[0];
+    const contentEl = xmlDoc.getElementsByTagName('content')[0]
     const refs = [ 
         ...getKeys(contentEl,'classRef'),
         ...getKeys(contentEl,'elementRef'),
         ...getKeys(contentEl,'macroRef') 
     ]
 
-    return { name: moduleName, memberships, refs }
+    let description = ""
+    const descEls = xmlDoc.getElementsByTagName('desc')
+    for( let i=0; i < descEls.length; i++ ) {
+        const desc = descEls[i]
+        if( desc.getAttribute("xml:lang") === "en" ) {
+            // TODO flatten out newlines and runs of whitespace
+            description = desc.innerHTML
+        }
+    }
+
+    return { name: moduleName, memberships, refs, description }
 }
 
 function load() {
@@ -91,7 +133,27 @@ function load() {
 
 async function run() {
     const modules = load()
-    debugger
+
+    const elements = [], attrs = {}
+    for( let phraseMark of phraseMarks) {
+        elements.push({
+            name: phraseMark,
+            pmType: "mark",
+            defaultAttrs: [],
+            desc: modules[phraseMark].description
+        })
+    }
+
+    elements.push( {
+        "name": "p",
+        "pmType": "node",
+        "content": "inline*",
+        "group": "chunk",
+        "desc": "marks paragraphs in prose."
+    })
+
+    const teiSimpleConfig = { elements, attrs }
+    fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig))
 }
 
 // A wise turtle that understands ODD and ProseMirror
