@@ -89,33 +89,6 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    isPhraseLevel( element ) {
-        if( !element ) return false
-        const name = element.type.name
-        return (name === 'hi' || name === 'ref' || name === 'name')
-    }
-
-    // renderNoteButton( element ) {
-
-    //     // must be a ref mark
-    //     if( element.type.name !== 'ref' ) {
-    //         return null
-    //     }
-
-    //     const target = element.attrs['target']
-        
-    //     if( localStorage.getItem(target) ) {
-    //         const editNote = () => {
-    //             ipcRenderer.send( 'createNoteEditorWindow', target )
-    //         }
-    
-    //         return (
-    //             <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
-    //         )        
-
-    //     }
-    // }
-
     renderElement(element,key) {
         const { width } = this.props
         const { elements } = this.props.teiDocument.teiSchema
@@ -157,10 +130,8 @@ export default class ParameterDrawer extends Component {
                 const marks = $anchor.marks()
                 let count = 0
                 for( const mark of marks ) {
-                    if( this.isPhraseLevel(mark) ) {
-                        const key = `attr-panel-${count++}`
-                        elements.push( this.renderElement(mark,key) )
-                    }    
+                    const key = `attr-panel-${count++}`
+                    elements.push( this.renderElement(mark,key) )
                 }     
             }
         }

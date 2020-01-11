@@ -48,6 +48,14 @@ export default class EditorToolbar extends Component {
         editorView.focus()   
     }
 
+    createMarkHandler(markType, editorView) {
+        return () => {
+            const cmd = addMark( markType )
+            cmd( editorView.state, editorView.dispatch ) 
+            editorView.focus()
+        }    
+    }
+
     onHi = () => {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
@@ -126,17 +134,37 @@ export default class EditorToolbar extends Component {
        }
     }
 
+    renderButton(elementName) {
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument    
+        const markType = teiDocument.teiSchema.schema.marks[elementName]
+        const onClick = this.createMarkHandler( markType, editorView )
+        const tooltip = `Add ${elementName} Element`
+        const key = `${elementName}-toolbar`
+
+        return (
+            <Button key={key} onClick={onClick} tooltip={tooltip}>{elementName}</Button>
+        )
+    }
+
     render() {
-        const { editMode } = this.props
+        const { editMode, teiDocument } = this.props
+        const { elements } = teiDocument.teiSchema
+
+        const markButtons = []
+        for( const element of Object.values(elements) ) {
+            if( element.pmType === 'mark' ) {
+                markButtons.push( this.renderButton(element.name) )
+            }
+        }
+
         return (
             <div className="toolbar">
                 { this.renderSaveButton() }
                 { editMode === 'note' ? "" : <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                    <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
-                    <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>
+                    { markButtons.slice(0,5) } 
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
-                    <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> }
                     { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> }
