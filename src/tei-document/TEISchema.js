@@ -9,12 +9,7 @@ export default class TEISchema {
     constructor(issueSubDocumentID) {
         this.teiMode = false
         this.issueSubDocumentID = issueSubDocumentID
-
         this.pastedNoteBuffer = []
-
-        this.defaultAttrSpec = {
-            "type": "text"
-        }
 
         const { schemaSpec, elements, attrs } = this.parseSchemaConfig('config/tei-simple.json')
         this.elements = elements
@@ -28,6 +23,10 @@ export default class TEISchema {
         const teiSimple = JSON.parse(json)
 
         const elements = {}
+        const attrs = {
+            ...teiSimple.attrs,
+            "__id__": { hidden: true }
+        }
 
         const nodes = {
             doc: {
@@ -60,7 +59,7 @@ export default class TEISchema {
             elements[name] = element            
         }
 
-        return { schemaSpec: { nodes, marks }, elements, attrs: teiSimple.attrs }
+        return { schemaSpec: { nodes, marks }, elements, attrs }
     }
 
     filterOutBlanks( attrObj ) {

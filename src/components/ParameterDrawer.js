@@ -62,21 +62,23 @@ export default class ParameterDrawer extends Component {
             const fieldKey = `attr-${key}`
             const attr = attrs[key] ? attrs[key] : ""
             const attrSpec = attrSpecs[key]
-            attrFields.push(
-                <div className="attrTextField" key={fieldKey} >
-                    { attrSpec && attrSpec.type === 'select' ? 
-                        this.renderSelectField(element,fieldKey,key,attr,attrSpec)
-                    :
-                        <TextField
-                            id={fieldKey}
-                            label={key}
-                            value={attr}                        
-                            fullWidth={true}
-                            onChange={this.changeAttributeHandler(element,key)}
-                        />
-                    }
-                </div>
-            )
+            if( !attrSpec.hidden ) {
+                attrFields.push(
+                    <div className="attrTextField" key={fieldKey} >
+                        { attrSpec && attrSpec.type === 'select' ? 
+                            this.renderSelectField(element,fieldKey,key,attr,attrSpec)
+                        :
+                            <TextField
+                                id={fieldKey}
+                                label={key}
+                                value={attr}                        
+                                fullWidth={true}
+                                onChange={this.changeAttributeHandler(element,key)}
+                            />
+                        }
+                    </div>
+                )    
+            }
         }
 
         return ( attrFields ? 
