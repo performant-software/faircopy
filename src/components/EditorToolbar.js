@@ -134,7 +134,7 @@ export default class EditorToolbar extends Component {
        }
     }
 
-    renderButton(elementName) {
+    renderMarkButton(elementName) {
         const { teiDocument } = this.props
         const { editorView } = teiDocument    
         const markType = teiDocument.teiSchema.schema.marks[elementName]
@@ -154,7 +154,7 @@ export default class EditorToolbar extends Component {
         const markButtons = []
         for( const element of Object.values(elements) ) {
             if( element.pmType === 'mark' ) {
-                markButtons.push( this.renderButton(element.name) )
+                markButtons.push( this.renderMarkButton(element.name) )
             }
         }
 
