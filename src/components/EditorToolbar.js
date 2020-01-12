@@ -23,6 +23,16 @@ export default class EditorToolbar extends Component {
         editorView.focus() 
     }
 
+    onSp = () => {
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument
+        const { schema } = editorView.state
+        const divNodeType = schema.nodes['sp']
+        const cmd = wrapIn(divNodeType)
+        cmd( editorView.state, editorView.dispatch )
+        editorView.focus() 
+    }
+
     onErase = () => {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
@@ -167,6 +177,7 @@ export default class EditorToolbar extends Component {
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> }
+                    { editMode === 'note' ? "" : <Button onClick={this.onSp} tooltip='Add Sp Element'>sp</Button> }
                     { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> }
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>

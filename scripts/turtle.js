@@ -39,6 +39,19 @@ const phraseMarks = [
     "measure"
 ]
 
+const dramaEls = [
+    // "actor",
+    // "castGroup",
+    // "castItem",
+    // "castList",
+    // "set",
+    "sp",
+    // "speaker",
+    // "stage",
+    // "role",
+    // "roleDesc"
+]
+
 
 // load simple file, locate body els, make a list of their modules
 function loadModuleNames() {
@@ -131,25 +144,48 @@ function load() {
     return modules
 }
 
-async function run() {
-    const modules = load()
-
-    const elements = [], attrs = {}
+function createPhraseElements(modules) {
+    const specs = []
     for( let phraseMark of phraseMarks) {
-        elements.push({
+        specs.push({
             name: phraseMark,
             pmType: "mark",
             defaultAttrs: [],
             desc: modules[phraseMark].description
         })
     }
+    return specs
+}
 
+function createDramaElements(modules) {
+    return [{
+        "name": "sp",
+        "pmType": "node",
+        "content": "chunk*",
+        "group": "block",
+        "desc": modules['sp'].description
+    }]
+}
+
+async function run() {
+    const modules = load()
+
+    const elements = [], attrs = {}
+
+    // elements.push(...createPhraseElements(modules))
+    elements.push(...createDramaElements(modules))
     elements.push( {
         "name": "p",
         "pmType": "node",
         "content": "inline*",
         "group": "chunk",
         "desc": "marks paragraphs in prose."
+    })
+    elements.push( {
+        "name": "div",
+        "pmType": "node",
+        "content": "(chunk|block)*",
+        "group": "block"
     })
 
     const teiSimpleConfig = { elements, attrs }
