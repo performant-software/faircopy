@@ -10,7 +10,7 @@
 }
 
 .EditorGutter .marker.p {
-    background: rgb(133, 133, 248);
+    background:#e7ddff;
 }
 
 .EditorGutter .marker.lineGroup {

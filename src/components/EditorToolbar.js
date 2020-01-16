@@ -169,10 +169,10 @@ export default class EditorToolbar extends Component {
         }
 
         return (
-            <div className="toolbar">
+            <div className="toolbar"  style={{ background: '#ddf8ff' }}>
                 { this.renderSaveButton() }
-                { editMode === 'note' ? "" : <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
-                <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
+                { editMode === 'note' ? "" : <span style={ { float: 'right', 'marginTop': '20px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
+                <Toolbar className="draggable" style={{ minHeight: '55px' }}>
                     { markButtons.slice(0,5) } 
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
