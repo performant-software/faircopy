@@ -23,6 +23,16 @@ export default class EditorToolbar extends Component {
         editorView.focus() 
     }
 
+    onSp = () => {
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument
+        const { schema } = editorView.state
+        const divNodeType = schema.nodes['sp']
+        const cmd = wrapIn(divNodeType)
+        cmd( editorView.state, editorView.dispatch )
+        editorView.focus() 
+    }
+
     onErase = () => {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
@@ -46,6 +56,14 @@ export default class EditorToolbar extends Component {
         const cmd = addMark( markType )
         cmd( editorView.state, editorView.dispatch )
         editorView.focus()   
+    }
+
+    createMarkHandler(markType, editorView) {
+        return () => {
+            const cmd = addMark( markType )
+            cmd( editorView.state, editorView.dispatch ) 
+            editorView.focus()
+        }    
     }
 
     onHi = () => {
@@ -126,19 +144,40 @@ export default class EditorToolbar extends Component {
        }
     }
 
-    render() {
-        const { editMode } = this.props
+    renderMarkButton(elementName) {
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument    
+        const markType = teiDocument.teiSchema.schema.marks[elementName]
+        const onClick = this.createMarkHandler( markType, editorView )
+        const tooltip = `Add ${elementName} Element`
+        const key = `${elementName}-toolbar`
+
         return (
-            <div className="toolbar">
+            <Button key={key} onClick={onClick} tooltip={tooltip}>{elementName}</Button>
+        )
+    }
+
+    render() {
+        const { editMode, teiDocument } = this.props
+        const { elements } = teiDocument.teiSchema
+
+        const markButtons = []
+        for( const element of Object.values(elements) ) {
+            if( element.pmType === 'mark' ) {
+                markButtons.push( this.renderMarkButton(element.name) )
+            }
+        }
+
+        return (
+            <div className="toolbar"  style={{ background: '#ddf8ff' }}>
                 { this.renderSaveButton() }
-                { editMode === 'note' ? "" : <span style={ {float: 'right', 'marginTop': '15px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
-                <Toolbar className="draggable" style={{ background: '#FAFAFA', minHeight: '55px' }}>
-                    <Button onClick={this.onHi}  tooltip='Add Hi Element'>hi</Button>
-                    <Button onClick={this.onRef} tooltip='Add Ref Element'>ref</Button>
+                { editMode === 'note' ? "" : <span style={ { float: 'right', 'marginTop': '20px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
+                <Toolbar className="draggable" style={{ minHeight: '55px' }}>
+                    { markButtons.slice(0,5) } 
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
-                    <Button onClick={this.onName} tooltip='Add Name Element'>name</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> }
+                    { editMode === 'note' ? "" : <Button onClick={this.onSp} tooltip='Add Sp Element'>sp</Button> }
                     { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> }
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>

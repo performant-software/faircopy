@@ -1,0 +1,62 @@
+{
+    "elements": [
+        {
+            "name": "div",
+            "pmType": "node",
+            "content": "(chunk|block)*",
+            "group": "block"
+        },
+        {
+            "name": "p",
+            "pmType": "node",
+            "content": "inline*",
+            "group": "chunk",
+            "desc": "marks paragraphs in prose."
+        },
+        {
+            "name": "hi",
+            "pmType": "mark",
+            "defaultAttrs": ["rend"],
+            "desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made."
+        },
+        {
+            "name": "pb",
+            "pmType": "inline-node",
+            "defaultAttrs": ["facs"],
+            "desc": "marks the beginning of a new page in a paginated document."
+        },
+        {
+            "name": "note",
+            "pmType": "inline-node",
+            "desc": "contains a note or annotation."
+        },
+        {
+            "name": "ref",
+            "pmType": "mark",
+            "defaultAttrs": ["target"],
+            "desc": "defines a reference to another location, possibly modified by additional text or comment."
+        },
+        {
+            "name": "name",
+            "pmType": "mark",
+            "defaultAttrs": ["id", "type"],
+            "desc": "contains a proper noun or noun phrase."
+        }    
+    ],
+    "attrs": {
+        "id": {
+            "type": "text"
+        },
+        "target": {
+            "type": "text"
+        },
+        "type": {
+            "type": "select",
+            "options": ["person","place","artwork"]
+        },
+        "rend": {
+            "type": "select",
+            "options": ["bold","italic","caps"]
+        }
+    }
+}

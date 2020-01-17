@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-const marginTop = 60
+const marginTop = 52
 
 export default class ThumbnailMargin extends Component {
     

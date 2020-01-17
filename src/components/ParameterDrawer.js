@@ -53,32 +53,32 @@ export default class ParameterDrawer extends Component {
 
     renderAttributes(element) {
         const {attrs} = element
-        const elementName = element.type.name
         const keys = Object.keys(attrs)
         const {teiSchema} = this.props.teiDocument
-        const elementSpec = teiSchema.elementSpecs[elementName]
-        const defaultAttrSpec = teiSchema.defaultAttrSpec
+        const attrSpecs = teiSchema.attrs
 
         let attrFields = []
         for( const key of keys ) {
             const fieldKey = `attr-${key}`
             const attr = attrs[key] ? attrs[key] : ""
-            const attrSpec = (elementSpec.attrs && elementSpec.attrs[key]) ? elementSpec.attrs[key] : defaultAttrSpec
-            attrFields.push(
-                <div className="attrTextField" key={fieldKey} >
-                    { attrSpec.type === 'select' ? 
-                        this.renderSelectField(element,fieldKey,key,attr,attrSpec)
-                    :
-                        <TextField
-                            id={fieldKey}
-                            label={key}
-                            value={attr}                        
-                            fullWidth={true}
-                            onChange={this.changeAttributeHandler(element,key)}
-                        />
-                    }
-                </div>
-            )
+            const attrSpec = attrSpecs[key]
+            if( !attrSpec.hidden ) {
+                attrFields.push(
+                    <div className="attrTextField" key={fieldKey} >
+                        { attrSpec && attrSpec.type === 'select' ? 
+                            this.renderSelectField(element,fieldKey,key,attr,attrSpec)
+                        :
+                            <TextField
+                                id={fieldKey}
+                                label={key}
+                                value={attr}                        
+                                fullWidth={true}
+                                onChange={this.changeAttributeHandler(element,key)}
+                            />
+                        }
+                    </div>
+                )    
+            }
         }
 
         return ( attrFields ? 
@@ -89,37 +89,11 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    isPhraseLevel( element ) {
-        if( !element ) return false
-        const name = element.type.name
-        return (name === 'hi' || name === 'ref' || name === 'name')
-    }
-
-    // renderNoteButton( element ) {
-
-    //     // must be a ref mark
-    //     if( element.type.name !== 'ref' ) {
-    //         return null
-    //     }
-
-    //     const target = element.attrs['target']
-        
-    //     if( localStorage.getItem(target) ) {
-    //         const editNote = () => {
-    //             ipcRenderer.send( 'createNoteEditorWindow', target )
-    //         }
-    
-    //         return (
-    //             <Button onClick={editNote} variant='contained' tooltip='Edit Note'>Edit Note</Button>
-    //         )        
-
-    //     }
-    // }
-
     renderElement(element,key) {
         const { width } = this.props
-        const { elementSpecs } = this.props.teiDocument.teiSchema
+        const { elements } = this.props.teiDocument.teiSchema
         const name = element.type.name
+        const elementSpec = elements[name]
         const style = { width:width-40 }
 
         return (
@@ -130,7 +104,7 @@ export default class ParameterDrawer extends Component {
                         aria-controls={`${key}-content`}
                         id={`${key}-header`}             
                     >
-                        <Typography><b>{name}</b>: <i>{elementSpecs[name].docs}</i> </Typography>
+                        <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails >
                         { this.renderAttributes(element) }
@@ -156,10 +130,8 @@ export default class ParameterDrawer extends Component {
                 const marks = $anchor.marks()
                 let count = 0
                 for( const mark of marks ) {
-                    if( this.isPhraseLevel(mark) ) {
-                        const key = `attr-panel-${count++}`
-                        elements.push( this.renderElement(mark,key) )
-                    }    
+                    const key = `attr-panel-${count++}`
+                    elements.push( this.renderElement(mark,key) )
                 }     
             }
         }
