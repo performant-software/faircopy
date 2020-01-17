@@ -9,7 +9,9 @@ import { addMark } from "../tei-document/commands"
 
 const { ipcRenderer, clipboard } = window.fairCopy.electron
 
-const versionNumber = "0.4.0"
+const versionNumber = "0.4.2"
+const mainWindowBackground = "#ddf8ff"
+const noteWindowBackground = "#e0ddff"
 
 export default class EditorToolbar extends Component {
 
@@ -168,17 +170,20 @@ export default class EditorToolbar extends Component {
             }
         }
 
+        const style = editMode === 'note' ? { background: noteWindowBackground } : { background: mainWindowBackground }
+
         return (
-            <div className="toolbar"  style={{ background: '#ddf8ff' }}>
+            <div className="toolbar"  style={style}>
+                { editMode === 'note' ? <span style={ {float: 'left', paddingTop: 20, paddingLeft: 20} } className="fas fa-lg fa-sticky-note"></span> : "" }
                 { this.renderSaveButton() }
                 { editMode === 'note' ? "" : <span style={ { float: 'right', 'marginTop': '20px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
                     { markButtons.slice(0,5) } 
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
-                    { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> }
-                    { editMode === 'note' ? "" : <Button onClick={this.onSp} tooltip='Add Sp Element'>sp</Button> }
-                    { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> }
+                    {/* { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> } */}
+                    {/* { editMode === 'note' ? "" : <Button onClick={this.onSp} tooltip='Add Sp Element'>sp</Button> } */}
+                    {/* { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> } */}
                     <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
                 </Toolbar>
             </div>
