@@ -10,6 +10,8 @@ import { addMark } from "../tei-document/commands"
 const { ipcRenderer, clipboard } = window.fairCopy.electron
 
 const versionNumber = "0.4.2"
+const mainWindowBackground = "#ddf8ff"
+const noteWindowBackground = "#e0ddff"
 
 export default class EditorToolbar extends Component {
 
@@ -168,8 +170,11 @@ export default class EditorToolbar extends Component {
             }
         }
 
+        const style = editMode === 'note' ? { background: noteWindowBackground } : { background: mainWindowBackground }
+
         return (
-            <div className="toolbar"  style={{ background: '#ddf8ff' }}>
+            <div className="toolbar"  style={style}>
+                { editMode === 'note' ? <span style={ {float: 'left', paddingTop: 20, paddingLeft: 20} } className="fas fa-lg fa-sticky-note"></span> : "" }
                 { this.renderSaveButton() }
                 { editMode === 'note' ? "" : <span style={ { float: 'right', 'marginTop': '20px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
