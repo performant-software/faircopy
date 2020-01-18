@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { TextField } from '@material-ui/core'
-import { Fade, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
+import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { changeAttribute } from "../tei-document/commands"
 
@@ -98,18 +94,8 @@ export default class ParameterDrawer extends Component {
 
         return (
             <div key={key} style={style}>
-                <ExpansionPanel elevation={2} className="attributePanel" >
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls={`${key}-content`}
-                        id={`${key}-header`}             
-                    >
-                        <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails >
-                        { this.renderAttributes(element) }
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>            
+                <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
+                { this.renderAttributes(element) }
             </div>
         )    
     }
@@ -137,11 +123,9 @@ export default class ParameterDrawer extends Component {
         }
 
         return (
-            <Fade in={elements.length > 0} >
-                <div>
-                    { elements }
-                </div>
-            </Fade>
+            <div id="ParameterDrawer">
+                { elements }
+            </div>
         )
     }
 

@@ -1,3 +1,8 @@
+#ParameterDrawer {
+    padding: 10px;
+    border-top: 1px solid black;
+}
+
 .attributePanel  {
     border: 1px solid #ddd;
     margin-top: 3px;

@@ -1,0 +1,15 @@
+
+#EditorToolbar button {
+    -webkit-app-region: no-drag;
+}
+
+#EditorToolbar .noteIcon {
+    float: left;
+    padding-top: 20;
+    padding-left: 20;
+}
+
+#EditorToolbar .mainWindow-right {
+    float: right;
+    margin-top: 20px;
+}

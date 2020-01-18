@@ -160,7 +160,7 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { editMode, teiDocument } = this.props
+        const { editMode, teiDocument, width } = this.props
         const { elements } = teiDocument.teiSchema
 
         const markButtons = []
@@ -170,13 +170,13 @@ export default class EditorToolbar extends Component {
             }
         }
 
-        const style = editMode === 'note' ? { background: noteWindowBackground } : { background: mainWindowBackground }
+        const style = editMode === 'note' ? { width, background: noteWindowBackground } : { width, background: mainWindowBackground }
 
         return (
-            <div className="toolbar"  style={style}>
-                { editMode === 'note' ? <span style={ {float: 'left', paddingTop: 20, paddingLeft: 20} } className="fas fa-lg fa-sticky-note"></span> : "" }
+            <div id="EditorToolbar" style={style}>
+                { editMode === 'note' ? <span className="fas fa-lg fa-sticky-note noteIcon"></span> : "" }
                 { this.renderSaveButton() }
-                { editMode === 'note' ? "" : <span style={ { float: 'right', 'marginTop': '20px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
+                { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
                     { markButtons.slice(0,5) } 
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
