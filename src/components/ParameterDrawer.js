@@ -124,7 +124,15 @@ export default class ParameterDrawer extends Component {
 
         return (
             <div id="ParameterDrawer">
-                { elements }
+                <div className="header">
+                   ATTRIBUTES
+                </div>
+                <div className="attribute-list">
+                    { elements.length === 0 ? 
+                        <span>Click on marked text to view its attributes.</span>
+                    : elements
+                    }
+                </div>
             </div>
         )
     }

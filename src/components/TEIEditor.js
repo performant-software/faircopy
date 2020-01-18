@@ -68,8 +68,8 @@ export default class TEIEditor extends Component {
                 <SplitPane 
                     split="horizontal" 
                     minSize={55} 
-                    defaultSize={height-20} 
-                    pane2Style={{ background: 'white'}}
+                    defaultSize={height-120} 
+                    pane2Style={{ background: '#fff8dd'}}
                 >
                     <div>
                         <EditorToolbar

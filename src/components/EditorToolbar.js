@@ -174,11 +174,11 @@ export default class EditorToolbar extends Component {
 
         return (
             <div id="EditorToolbar" style={style}>
-                { editMode === 'note' ? <span className="fas fa-lg fa-sticky-note noteIcon"></span> : "" }
+                { editMode === 'note' ? <span className="note-icon fas fa-lg fa-sticky-note"></span> : "" }
                 { this.renderSaveButton() }
                 { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
-                    { markButtons.slice(0,5) } 
+                    { markButtons } 
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     {/* { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> } */}
