@@ -108,5 +108,9 @@
             "type": "select",
             "options": ["bold","italic","caps"]
         }
+    },
+    "vocabs": {
+        "*[rend]": ["bold","italic","caps"],
+        "name[type]": ["person","place","artwork"]
     }
 }

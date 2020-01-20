@@ -25,11 +25,10 @@ export default class ParameterDrawer extends Component {
         }
     }
 
-    renderSelectField(element,fieldKey,key,attr,attrSpec) {
-
+    renderSelectField(element,fieldKey,key,attr,vocab) {
         const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
-        for( const option of attrSpec.options ) {
-            menuOptions.push( <MenuItem key={`${fieldKey}-${option}`} value={option}>{option}</MenuItem>)
+        for( const term of vocab ) {
+            menuOptions.push( <MenuItem key={`${fieldKey}-${term}`} value={term}>{term}</MenuItem>)
         }
 
         return (
@@ -47,7 +46,7 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderAttributes(element) {
+    renderAttributes(element,vocabs) {
         const {attrs} = element
         const keys = Object.keys(attrs)
         const {teiSchema} = this.props.teiDocument
@@ -58,11 +57,12 @@ export default class ParameterDrawer extends Component {
             const fieldKey = `attr-${key}`
             const attr = attrs[key] ? attrs[key] : ""
             const attrSpec = attrSpecs[key]
+            const vocab = vocabs[key]
             if( !attrSpec.hidden ) {
                 attrFields.push(
                     <div className="attrTextField" key={fieldKey} >
                         { attrSpec && attrSpec.type === 'select' ? 
-                            this.renderSelectField(element,fieldKey,key,attr,attrSpec)
+                            this.renderSelectField(element,fieldKey,key,attr,vocab)
                         :
                             <TextField
                                 id={fieldKey}
@@ -95,7 +95,7 @@ export default class ParameterDrawer extends Component {
         return (
             <div key={key} style={style}>
                 <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
-                { this.renderAttributes(element) }
+                { this.renderAttributes(element,elementSpec.vocabs) }
             </div>
         )    
     }

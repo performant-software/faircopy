@@ -27,6 +27,7 @@ export default class TEISchema {
             ...teiSimple.attrs,
             "__id__": { hidden: true }
         }
+        const {vocabs} = teiSimple
 
         const nodes = {
             doc: {
@@ -41,9 +42,16 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name } = element
+            const { pmType, name, defaultAttrs } = element
+            element.vocabs = {}
+            if( defaultAttrs ) {
+                for( const attr of defaultAttrs ) {
+                    let vocab = vocabs[`${element.name}[${attr}]`]
+                    if( !vocab ) vocab = vocabs[`*[${attr}]`]
+                    if( vocab ) element.vocabs[attr] = vocab
+                }    
+            }
             if( pmType === 'mark') {
-                const { defaultAttrs } = element
                 marks[name] = this.createMarkSpec({ name, attrs: defaultAttrs })
             } else if( pmType === 'node' ) {
                 nodes[name] = this.createNodeSpec(element)
