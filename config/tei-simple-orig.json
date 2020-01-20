@@ -97,13 +97,18 @@
         "target": {
             "type": "text"
         },
+        "facs": {
+            "type": "text"
+        },
         "type": {
-            "type": "select",
-            "options": ["person","place","artwork"]
+            "type": "select"
         },
         "rend": {
-            "type": "select",
-            "options": ["bold","italic","caps"]
+            "type": "select"
         }
+    },
+    "vocabs": {
+        "*[rend]": ["bold","italic","caps"],
+        "name[type]": ["person","place","artwork"]
     }
 }

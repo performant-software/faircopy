@@ -101,12 +101,10 @@
             "type": "text"
         },
         "type": {
-            "type": "select",
-            "options": ["person","place","artwork"]
+            "type": "select"
         },
         "rend": {
-            "type": "select",
-            "options": ["bold","italic","caps"]
+            "type": "select"
         }
     },
     "vocabs": {
