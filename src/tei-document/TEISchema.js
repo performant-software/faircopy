@@ -52,7 +52,7 @@ export default class TEISchema {
                 }    
             }
             if( pmType === 'mark') {
-                marks[name] = this.createMarkSpec({ name, attrs: defaultAttrs })
+                marks[name] = this.createMarkSpec({ name, attrs: defaultAttrs ? defaultAttrs : [] })
             } else if( pmType === 'node' ) {
                 nodes[name] = this.createNodeSpec(element)
             } else if( pmType === 'inline-node' ) {

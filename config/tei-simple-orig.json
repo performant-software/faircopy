@@ -100,6 +100,12 @@
         "facs": {
             "type": "text"
         },
+        "certainty": {
+            "type": "text"
+        },
+        "hand": {
+            "type": "text"
+        },
         "type": {
             "type": "select"
         },

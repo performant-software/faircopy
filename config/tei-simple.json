@@ -22,13 +22,17 @@
         {
             "name": "corr",
             "pmType": "mark",
-            "defaultAttrs": ["rend"],
+            "desc": ""
+        },
+        {
+            "name": "corr",
+            "pmType": "mark",
             "desc": ""
         },
         {
             "name": "del",
             "pmType": "mark",
-            "defaultAttrs": ["rend"],
+            "defaultAttrs": ["type","certainty","hand"],
             "desc": ""
         },
         {
@@ -64,6 +68,7 @@
         {
             "name": "gap",
             "pmType": "inline-node",
+            "defaultAttrs": ["reason","hand","agent"],
             "desc": ""
         },
         {
@@ -102,6 +107,18 @@
         },
         "type": {
             "type": "select"
+        },
+        "certainty": {
+            "type": "text"
+        },
+        "hand": {
+            "type": "text"
+        },
+        "reason": {
+            "type": "text"
+        },
+        "agent": {
+            "type": "text"
         },
         "rend": {
             "type": "select"
