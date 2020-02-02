@@ -175,7 +175,7 @@ export default class MainWindow extends Component {
         )
     }
 
-    renderNext() {
+    render() {
         const { teiDocument, editorState } = this.state
         const onChange = debounce(teiDocument.refreshView,resizeRefreshRate)
 
@@ -197,7 +197,7 @@ export default class MainWindow extends Component {
         )
     }
 
-    render() {    
+    renderOld() {    
         const { teiDocument, editorState } = this.state
 
         return (

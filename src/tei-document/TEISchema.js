@@ -11,9 +11,10 @@ export default class TEISchema {
         this.issueSubDocumentID = issueSubDocumentID
         this.pastedNoteBuffer = []
 
-        const { schemaSpec, elements, attrs } = this.parseSchemaConfig('config/tei-simple.json')
+        const { schemaSpec, elements, attrs, menuGroups } = this.parseSchemaConfig('config/tei-simple.json')
         this.elements = elements
         this.attrs = attrs
+        this.menuGroups = menuGroups
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
     }
@@ -27,7 +28,7 @@ export default class TEISchema {
             ...teiSimple.attrs,
             "__id__": { hidden: true }
         }
-        const {vocabs} = teiSimple
+        const {vocabs, menuGroups} = teiSimple
 
         const nodes = {
             doc: {
@@ -67,7 +68,7 @@ export default class TEISchema {
             elements[name] = element            
         }
 
-        return { schemaSpec: { nodes, marks }, elements, attrs }
+        return { schemaSpec: { nodes, marks }, elements, attrs, menuGroups }
     }
 
     filterOutBlanks( attrObj ) {

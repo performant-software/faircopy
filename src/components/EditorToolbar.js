@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Toolbar, Button, IconButton } from '@material-ui/core'
+import { Toolbar, Button, IconButton, Select, MenuItem } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import {wrapIn} from 'prosemirror-commands'
@@ -14,6 +14,13 @@ const mainWindowBackground = "#ddf8ff"
 const noteWindowBackground = "#e0ddff"
 
 export default class EditorToolbar extends Component {
+
+    constructor() {
+        super()
+        this.state = {
+            currentMenuGroup: 'editorial'
+        }	
+    }
 
     onDiv = () => {
         const { teiDocument } = this.props
@@ -159,7 +166,74 @@ export default class EditorToolbar extends Component {
         )
     }
 
+    renderMenuGroups() {
+        const { teiDocument } = this.props
+        const { menuGroups } = teiDocument.teiSchema
+
+        const menuItems = []
+        for( const menuGroup of Object.values(menuGroups) ) {
+            const key = `menugroup-${menuGroup.id}`
+            menuItems.push(
+                <MenuItem key={key} value={menuGroup.id}>{menuGroup.label}</MenuItem>
+            )
+        }
+
+        return (
+            <Select
+                value={this.state.currentMenuGroup}
+                onChange={(e) => { this.setState({...this.state, currentMenuGroup: e.target.value})}}
+            >
+                { menuItems }
+            </Select>
+        )
+    }
+
+    renderGroupButtons() {
+        const { teiDocument } = this.props
+        const { menuGroups, elements } = teiDocument.teiSchema
+        const { currentMenuGroup } = this.state
+        const { members } = menuGroups[currentMenuGroup]
+
+        const groupButtons = []
+        for( const elementID of members ) {
+            const element = elements[elementID]
+            if( element.pmType === 'mark' ) {
+                groupButtons.push( this.renderMarkButton(element.name) )
+            } else {
+                const key = `${element.name}-toolbar`
+                groupButtons.push(
+                    <Button key={key} disabled>{element.name}</Button>
+                )
+            }
+        }
+
+        // add the eraser
+        groupButtons.push(
+            <Button key="eraser-toolbar" onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
+        )
+    
+        return groupButtons
+    }
+
     render() {
+        const { editMode, width } = this.props
+
+        const style = editMode === 'note' ? { width, background: noteWindowBackground } : { width, background: mainWindowBackground }
+
+        return (
+            <div id="EditorToolbar" style={style}>
+                { editMode === 'note' ? <span className="note-icon fas fa-lg fa-sticky-note"></span> : "" }
+                { this.renderSaveButton() }
+                { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
+                <Toolbar className="draggable" style={{ minHeight: '55px' }}>
+                    { this.renderMenuGroups() }
+                    { this.renderGroupButtons() }
+                </Toolbar>
+            </div>
+        )
+    }
+
+    oldRender() {
         const { editMode, teiDocument, width } = this.props
         const { elements } = teiDocument.teiSchema
 
@@ -178,13 +252,13 @@ export default class EditorToolbar extends Component {
                 { this.renderSaveButton() }
                 { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
-                    { markButtons } 
+                    { this.renderMenuGroups() }
                     <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
                     { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
                     {/* { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> } */}
                     {/* { editMode === 'note' ? "" : <Button onClick={this.onSp} tooltip='Add Sp Element'>sp</Button> } */}
                     {/* { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> } */}
-                    <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
+                    
                 </Toolbar>
             </div>
         )
