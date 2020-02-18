@@ -27,7 +27,7 @@
         {
             "name": "del",
             "pmType": "mark",
-            "defaultAttrs": ["type","certainty","hand"],
+            "defaultAttrs": ["certainty","hand"],
             "desc": ""
         },
         {
