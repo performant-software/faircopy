@@ -200,9 +200,9 @@ export default class EditorToolbar extends Component {
             if( element.pmType === 'mark' ) {
                 groupButtons.push( this.renderMarkButton(element.name) )
             } else {
-                const key = `${element.name}-toolbar`
+                const key = `${elementID}-toolbar`
                 groupButtons.push(
-                    <Button key={key} disabled>{element.name}</Button>
+                    <Button key={key} disabled>{elementID}</Button>
                 )
             }
         }
