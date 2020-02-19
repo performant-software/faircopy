@@ -47,6 +47,11 @@ tei-note {
     margin-left: 3px;
 }  
 
+tei-del {
+    color: red;
+    text-decoration: line-through;
+}
+
 tei-hi[rend="caps"] {
 text-transform: uppercase;
 }
