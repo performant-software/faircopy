@@ -2,7 +2,7 @@
     {
         "id": "general",
         "label": "General",
-        "members": ["note","list","table","figure","graphic","forumula","g","q"]
+        "members": ["note","list","table","figure","graphic","formula","g","q"]
     },
     {
         "id": "emphasis",
@@ -42,7 +42,7 @@
     {
         "id": "editorial",
         "label": "Editorial",
-        "members": ["corr","del","orig","reg","sic","unclear","add","gap"]
+        "members": ["add","del","sic","corr","reg","choice","exp","abbr","orig","supplied","unclear","gap","subst"]
     },
     {
         "id": "bilbiography",
