@@ -188,6 +188,8 @@ async function run() {
         "group": "block"
     })
 
+    // TODO add vocabs 
+    
     const teiSimpleConfig = { elements, attrs }
     fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig))
 }

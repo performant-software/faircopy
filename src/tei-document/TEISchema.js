@@ -11,12 +11,31 @@ export default class TEISchema {
         this.issueSubDocumentID = issueSubDocumentID
         this.pastedNoteBuffer = []
 
-        const { schemaSpec, elements, attrs, menuGroups } = this.parseSchemaConfig('config/tei-simple.json')
+        const { schemaSpec, elements, attrs } = this.parseSchemaConfig('config/tei-simple.json')
         this.elements = elements
         this.attrs = attrs
-        this.menuGroups = menuGroups
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
+        this.menuGroups = this.parseMenuGroups('config/menu-groups.json')
+    }
+
+    parseMenuGroups(menuGroupsConfigFile) {
+        const json = fs.readFileSync(menuGroupsConfigFile, "utf8")
+        const menuEntries = JSON.parse(json)
+
+        const menuGroups = {}
+        for( const menuEntry of menuEntries ) {
+            // which ones are enabled?
+            const members = []
+            for( const member of menuEntry.members ) {
+                const enabled = ( this.elements[member] !== undefined )
+                members.push({ id: member, enabled })
+            }
+            menuEntry.members = members
+            menuGroups[menuEntry.id] = menuEntry
+        }
+
+        return menuGroups
     }
 
     parseSchemaConfig(schemaConfigFile) {

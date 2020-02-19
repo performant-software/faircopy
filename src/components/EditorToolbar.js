@@ -18,7 +18,7 @@ export default class EditorToolbar extends Component {
     constructor() {
         super()
         this.state = {
-            currentMenuGroup: 'editorial'
+            currentMenuGroup: 'general'
         }	
     }
 
@@ -195,14 +195,14 @@ export default class EditorToolbar extends Component {
         const { members } = menuGroups[currentMenuGroup]
 
         const groupButtons = []
-        for( const elementID of members ) {
-            const element = elements[elementID]
-            if( element.pmType === 'mark' ) {
+        for( const member of members ) {
+            if( member.enabled ) {
+                const element = elements[member.id]
                 groupButtons.push( this.renderMarkButton(element.name) )
             } else {
-                const key = `${elementID}-toolbar`
+                const key = `${member.id}-toolbar`
                 groupButtons.push(
-                    <Button key={key} disabled>{elementID}</Button>
+                    <Button key={key} disabled>{member.id}</Button>
                 )
             }
         }
