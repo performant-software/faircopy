@@ -1,0 +1,62 @@
+[
+    {
+        "id": "general",
+        "label": "General",
+        "members": ["note","list","table","figure","graphic","formula","g","q"]
+    },
+    {
+        "id": "emphasis",
+        "label": "Emphasis",
+        "members": ["hi","foreign","term","quote","code"]
+    },
+    {
+        "id": "structure",
+        "label": "Structure",
+        "members": ["div","pb","lb","p","l","lg","ab"]
+    },
+    {
+        "id": "linking",
+        "label": "Linking and Segmentation",
+        "members": ["ref","rs","seg","s","rhyme","c","w","m","pc","anchor","milestone"]
+    },
+    {
+        "id": "titles",
+        "label": "Titles, Headers, and Footers",
+        "members": ["title","head","argument","desc","fw","resp","respStmt","titlePart","trailer"]
+    },
+    {
+        "id": "bookLayout",
+        "label": "Book Layout",
+        "members": ["front","body","back","teicorpus","group","floatingtext","text","titlePage"]
+    },
+    {
+        "id": "correspondence",
+        "label": "Correspondence",
+        "members": ["addrLine","postscript","opener","imprimatur","dateline","byline","closer","salute","signed"]
+    },
+    {
+        "id": "drama",
+        "label": "Drama",
+        "members": ["sp","stage","actor","castGroup","castItem","castList","set","speaker","role","roleDesc"]
+    },
+    {
+        "id": "editorial",
+        "label": "Editorial",
+        "members": ["add","del","sic","corr","reg","choice","exp","abbr","orig","supplied","unclear","gap","subst"]
+    },
+    {
+        "id": "bilbiography",
+        "label": "Bibliography",
+        "members": ["bibl","author","editor","publisher","relatedItem"]
+    },
+    {
+        "id": "data",
+        "label": "Data",
+        "members": ["name","person","time","date","place","address","measure","num","email","idNo"]
+    },
+    {
+        "id": "surface",
+        "label": "Surface",
+        "members": ["surface","zone"]
+    }
+]

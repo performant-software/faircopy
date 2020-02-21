@@ -16,6 +16,26 @@ export default class TEISchema {
         this.attrs = attrs
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
+        this.menuGroups = this.parseMenuGroups('config/menu-groups.json')
+    }
+
+    parseMenuGroups(menuGroupsConfigFile) {
+        const json = fs.readFileSync(menuGroupsConfigFile, "utf8")
+        const menuEntries = JSON.parse(json)
+
+        const menuGroups = {}
+        for( const menuEntry of menuEntries ) {
+            // which ones are enabled?
+            const members = []
+            for( const member of menuEntry.members ) {
+                const enabled = ( this.elements[member] !== undefined )
+                members.push({ id: member, enabled })
+            }
+            menuEntry.members = members
+            menuGroups[menuEntry.id] = menuEntry
+        }
+
+        return menuGroups
     }
 
     parseSchemaConfig(schemaConfigFile) {
@@ -27,6 +47,7 @@ export default class TEISchema {
             ...teiSimple.attrs,
             "__id__": { hidden: true }
         }
+        const {vocabs, menuGroups} = teiSimple
 
         const nodes = {
             doc: {
@@ -41,10 +62,17 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name } = element
+            const { pmType, name, defaultAttrs } = element
+            element.vocabs = {}
+            if( defaultAttrs ) {
+                for( const attr of defaultAttrs ) {
+                    let vocab = vocabs[`${element.name}[${attr}]`]
+                    if( !vocab ) vocab = vocabs[`*[${attr}]`]
+                    if( vocab ) element.vocabs[attr] = vocab
+                }    
+            }
             if( pmType === 'mark') {
-                const { defaultAttrs } = element
-                marks[name] = this.createMarkSpec({ name, attrs: defaultAttrs })
+                marks[name] = this.createMarkSpec({ name, attrs: defaultAttrs ? defaultAttrs : [] })
             } else if( pmType === 'node' ) {
                 nodes[name] = this.createNodeSpec(element)
             } else if( pmType === 'inline-node' ) {
@@ -59,7 +87,7 @@ export default class TEISchema {
             elements[name] = element            
         }
 
-        return { schemaSpec: { nodes, marks }, elements, attrs }
+        return { schemaSpec: { nodes, marks }, elements, attrs, menuGroups }
     }
 
     filterOutBlanks( attrObj ) {

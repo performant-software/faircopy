@@ -24,9 +24,6 @@
     float: right;
 }
 
-.TEIEditor .toolbar button {
-    -webkit-app-region: no-drag;
-}
 
 .TEIEditor .draggable {
     -webkit-app-region: drag

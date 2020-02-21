@@ -175,7 +175,7 @@ export default class MainWindow extends Component {
         )
     }
 
-    render() {    
+    render() {
         const { teiDocument, editorState } = this.state
         const onChange = debounce(teiDocument.refreshView,resizeRefreshRate)
 
@@ -193,6 +193,21 @@ export default class MainWindow extends Component {
                   ></TEIEditor>
                 </SplitPane>
                 { this.renderAlertDialog() }
+            </div>
+        )
+    }
+
+    renderOld() {    
+        const { teiDocument, editorState } = this.state
+
+        return (
+            <div> 
+                <TEIEditor 
+                editorState={editorState}
+                teiDocument={teiDocument}
+                onSave={this.requestSave}  
+                ></TEIEditor>
+            { this.renderAlertDialog() }
             </div>
         )
     }

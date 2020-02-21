@@ -87,10 +87,7 @@ function loadModule( moduleName ) {
         for (let i = 0; i < tags.length; i++) {
             const tagEl = tags[i]
             if( keyTag === tagEl.localName )  {
-                const key = tagEl.getAttribute('key')
-                if( !key.startsWith('att.') ) {
-                    keys.push( key )    
-                }
+                keys.push( tagEl.getAttribute('key') )    
             }
         } 
         return keys   
@@ -188,6 +185,8 @@ async function run() {
         "group": "block"
     })
 
+    // TODO add vocabs 
+    
     const teiSimpleConfig = { elements, attrs }
     fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig))
 }

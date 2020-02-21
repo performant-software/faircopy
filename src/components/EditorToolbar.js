@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Toolbar, Button, IconButton } from '@material-ui/core'
+import { Toolbar, Button, IconButton, Select, MenuItem } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import {wrapIn} from 'prosemirror-commands'
@@ -9,28 +9,17 @@ import { addMark } from "../tei-document/commands"
 
 const { ipcRenderer, clipboard } = window.fairCopy.electron
 
-const versionNumber = "0.4.0"
+const versionNumber = "0.4.2"
+const mainWindowBackground = "#ddf8ff"
+const noteWindowBackground = "#e0ddff"
 
 export default class EditorToolbar extends Component {
 
-    onDiv = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-        const { schema } = editorView.state
-        const divNodeType = schema.nodes['div']
-        const cmd = wrapIn(divNodeType)
-        cmd( editorView.state, editorView.dispatch )
-        editorView.focus() 
-    }
-
-    onSp = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-        const { schema } = editorView.state
-        const divNodeType = schema.nodes['sp']
-        const cmd = wrapIn(divNodeType)
-        cmd( editorView.state, editorView.dispatch )
-        editorView.focus() 
+    constructor() {
+        super()
+        this.state = {
+            currentMenuGroup: 'general'
+        }	
     }
 
     onErase = () => {
@@ -48,16 +37,6 @@ export default class EditorToolbar extends Component {
         editorView.focus()
     }
 
-    onRef = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-
-        const markType = teiDocument.teiSchema.schema.marks.ref
-        const cmd = addMark( markType )
-        cmd( editorView.state, editorView.dispatch )
-        editorView.focus()   
-    }
-
     createMarkHandler(markType, editorView) {
         return () => {
             const cmd = addMark( markType )
@@ -66,50 +45,45 @@ export default class EditorToolbar extends Component {
         }    
     }
 
-    onHi = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-
-        const markType = teiDocument.teiSchema.schema.marks.hi
-        const cmd = addMark( markType )
-        cmd( editorView.state, editorView.dispatch ) 
-        editorView.focus()
+    createDivHandler( divNodeType, editorView ) {
+        return () => {
+            const cmd = wrapIn(divNodeType)
+            cmd( editorView.state, editorView.dispatch )
+            editorView.focus()     
+        }
     }
 
-    onName = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-
-        const markType = teiDocument.teiSchema.schema.marks.name
-        const cmd = addMark( markType );
-        cmd( editorView.state, editorView.dispatch )   
-        editorView.focus()
+    createSpHandler( spNodeType, editorView ) {
+        return () => {
+            const cmd = wrapIn(spNodeType)
+            cmd( editorView.state, editorView.dispatch )
+            editorView.focus()     
+        }
     }
 
-    onPb = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-        const { state } = editorView
-        const { tr, selection } = state
-        const { $anchor } = selection
-        const pbNode = state.schema.node('pb')
-        tr.insert($anchor.pos, pbNode) 
-        editorView.dispatch(tr)
-        editorView.focus()
+    createPbHandler( pbNode, editorView ) {
+        return () => {
+            const { state } = editorView
+            const { tr, selection } = state
+            const { $anchor } = selection
+            tr.insert($anchor.pos, pbNode) 
+            editorView.dispatch(tr)
+            editorView.focus()
+        }
     }
 
-    onNote = () => {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
-        const { state } = editorView
-        const { tr, selection } = state
-        const { $anchor } = selection
+    createNoteHandler( teiDocument, editorView ) {
+        return () => {
+            const { state } = editorView
+            const { tr, selection } = state
+            const { $anchor } = selection
 
-        const subDocID = teiDocument.createSubDocument(document)
-        const noteNode = state.schema.node('note', { id: '', __id__: subDocID })
-        tr.insert($anchor.pos, noteNode) 
-        editorView.dispatch(tr)
-        ipcRenderer.send( 'createNoteEditorWindow', subDocID )
+            const subDocID = teiDocument.createSubDocument(document)
+            const noteNode = state.schema.node('note', { id: '', __id__: subDocID })
+            tr.insert($anchor.pos, noteNode) 
+            editorView.dispatch(tr)
+            ipcRenderer.send( 'createNoteEditorWindow', subDocID )
+        }
     }
 
     onClippy = () => {
@@ -117,7 +91,6 @@ export default class EditorToolbar extends Component {
         console.log( `clippy: ${html}`) 
     }
 
-    
     renderSaveButton() {
         const { editMode, onSave } = this.props
 
@@ -144,42 +117,110 @@ export default class EditorToolbar extends Component {
        }
     }
 
-    renderMarkButton(elementName) {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument    
-        const markType = teiDocument.teiSchema.schema.marks[elementName]
-        const onClick = this.createMarkHandler( markType, editorView )
+    renderButton(elementName, onClick) {
         const tooltip = `Add ${elementName} Element`
         const key = `${elementName}-toolbar`
 
-        return (
-            <Button key={key} onClick={onClick} tooltip={tooltip}>{elementName}</Button>
-        )
+        if( onClick ) {
+            return (
+                <Button key={key} onClick={onClick} tooltip={tooltip}>{elementName}</Button>
+            )    
+        } else {
+            return (
+                <Button key={key} tooltip={tooltip} disabled>{elementName}</Button>
+            )            
+        }
     }
 
-    render() {
-        const { editMode, teiDocument } = this.props
-        const { elements } = teiDocument.teiSchema
+    renderMenuGroups() {
+        const { teiDocument } = this.props
+        const { menuGroups } = teiDocument.teiSchema
 
-        const markButtons = []
-        for( const element of Object.values(elements) ) {
-            if( element.pmType === 'mark' ) {
-                markButtons.push( this.renderMarkButton(element.name) )
-            }
+        const menuItems = []
+        for( const menuGroup of Object.values(menuGroups) ) {
+            const key = `menugroup-${menuGroup.id}`
+            menuItems.push(
+                <MenuItem key={key} value={menuGroup.id}>{menuGroup.label}</MenuItem>
+            )
         }
 
         return (
-            <div className="toolbar"  style={{ background: '#ddf8ff' }}>
+            <Select
+                value={this.state.currentMenuGroup}
+                onChange={(e) => { this.setState({...this.state, currentMenuGroup: e.target.value})}}
+            >
+                { menuItems }
+            </Select>
+        )
+    }
+
+    renderGroupButtons() {
+        const { teiDocument } = this.props
+        const { editorView } = teiDocument
+        const { menuGroups, elements, schema } = teiDocument.teiSchema
+        const { currentMenuGroup } = this.state
+        const { members } = menuGroups[currentMenuGroup]
+
+        const groupButtons = []
+        for( const member of members ) {
+            if( member.enabled ) {
+                const elementID = member.id
+                const element = elements[elementID]
+                switch( elementID ) {
+                    case 'div': {
+                        const onClick = this.createDivHandler( schema.nodes['div'], editorView )
+                        groupButtons.push( this.renderButton(element.name, onClick) )
+                        break
+                    }
+                    case 'sp': {
+                        const onClick = this.createSpHandler( schema.nodes['sp'], editorView )
+                        groupButtons.push( this.renderButton(element.name, onClick) )
+                        break
+                    }
+                    case 'pb': {
+                        const onClick = this.createPbHandler( schema.nodes['pb'], editorView )
+                        groupButtons.push( this.renderButton(element.name, onClick) )
+                        break
+                    }
+                    case 'note': {
+                        const onClick = this.createNoteHandler( teiDocument, editorView )
+                        groupButtons.push( this.renderButton(element.name, onClick) )
+                        break
+                    }
+                    default: {
+                        const markType = schema.marks[elementID]
+                        const onClick = this.createMarkHandler( markType, editorView )
+                        groupButtons.push( this.renderButton(element.name, onClick) )
+                        break
+                    }
+                }                
+            } else {
+                // Element is not yet implemented.
+                groupButtons.push( this.renderButton(member.id,null) )
+            }
+        }
+
+        // add the eraser
+        groupButtons.push(
+            <Button key="eraser-toolbar" onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
+        )
+    
+        return groupButtons
+    }
+
+    render() {
+        const { editMode, width } = this.props
+
+        const style = editMode === 'note' ? { width, background: noteWindowBackground } : { width, background: mainWindowBackground }
+
+        return (
+            <div id="EditorToolbar" style={style}>
+                { editMode === 'note' ? <span className="note-icon fas fa-lg fa-sticky-note"></span> : "" }
                 { this.renderSaveButton() }
-                { editMode === 'note' ? "" : <span style={ { float: 'right', 'marginTop': '20px'} }>{`DEV RELEASE v${versionNumber}`}</span> }
+                { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
-                    { markButtons.slice(0,5) } 
-                    <Button onClick={this.onNote} tooltip='Add Note Element'>note</Button>
-                    { editMode === 'note' ? "" : <Button onClick={this.onPb}  tooltip='Add Pb Element'>pb</Button> }       
-                    { editMode === 'note' ? "" : <Button onClick={this.onDiv} tooltip='Add Div Element'>div</Button> }
-                    { editMode === 'note' ? "" : <Button onClick={this.onSp} tooltip='Add Sp Element'>sp</Button> }
-                    { !process.env.REACT_APP_DEBUG_MODE ? "" : <Button onClick={this.onClippy} >clippy</Button> }
-                    <Button onClick={this.onErase} tooltip='Erase Element'><span className="fa fa-eraser"></span></Button>
+                    { this.renderMenuGroups() }
+                    { this.renderGroupButtons() }
                 </Toolbar>
             </div>
         )
