@@ -172,11 +172,11 @@ function createAttributes( elements, specs ) {
     // for each element, add the attrs to its list of possible attrs
     const findAttrs = (specIdent) => {
         const elSpec = specs[specIdent]
-        const elementAttrs = elSpec.attrs ? [ ...elSpec.attrs ] : []
+        let elementAttrs = elSpec.attrs ? [ ...elSpec.attrs ] : []
 
         if( elSpec.memberships ) {
             for( const membership of elSpec.memberships ) {                
-                elementAttrs.concat( findAttrs( membership ) )
+                elementAttrs = elementAttrs.concat( findAttrs( membership ) )
             }    
         }
         return elementAttrs
@@ -209,13 +209,18 @@ function createAttributes( elements, specs ) {
 async function run() {
     const specs = load([ ...phraseMarks, ...examplarEls, ...dramaEls ])
 
-    const elements = [], vocabs = {}
+    const elements = []
 
     elements.push(...createExamplars(specs))
     elements.push(...createPhraseElements(specs))
     elements.push(...createDramaElements(specs))
 
     const attrs = createAttributes(elements,specs)
+
+    const vocabs = {
+        "*[rend]": ["bold","italic","caps"],
+        "name[type]": ["person","place","artwork"]
+    }
 
     const teiSimpleConfig = { elements, attrs, vocabs }
     fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig))
