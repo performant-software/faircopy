@@ -33,11 +33,36 @@ function loadLocalizedString(xmlDoc, tagName) {
 
 function parseClassSpec( el ) {
     const ident = el.getAttribute('ident')
-    return { ident }
+    const attListEl = el.getElementsByTagName('attList')[0]
+    const attrs = attListEl ? parseAttList(attListEl) : []
+    return { ident, attrs }
 }
 
-function parseAttList( el ) {
-    return []
+function parseAttDef( el ) {
+    const ident = el.getAttribute('ident')
+    const description = loadLocalizedString(el, "desc")
+    const gloss = loadLocalizedString(el, "gloss")
+   
+    return { ident, description, gloss } //, usage , datatype, defaultVal, valList, valDesc }
+}
+
+function parseAttList( el ) {    
+    const attList = []
+    const attDefEls = el.getElementsByTagName('attDef')
+    for( let i=0; i < attDefEls.length; i++ ) {
+        const attDefEl = attDefEls[i]
+        attList.push( parseAttDef(attDefEl) )
+    }
+    // for refs, just return a string
+    const attRefEls = el.getElementsByTagName('attRef')
+    for( let i=0; i < attRefEls.length; i++ ) {
+        const attRefEl = attRefEls[i]
+        attList.push( attRefEl )
+    }
+    
+    // TODO attList - collapse nested attLists.. do these exist? 
+
+    return attList
 }
 
 function parseElementSpec( el ) {
@@ -47,7 +72,7 @@ function parseElementSpec( el ) {
     const description = loadLocalizedString(el, "desc")
     const gloss = loadLocalizedString(el, "gloss")
     const attListEl = el.getElementsByTagName('attList')[0]
-    const attrs = parseAttList(attListEl)
+    const attrs = attListEl ? parseAttList(attListEl) : []
 
     // const contentEl = el.getElementsByTagName('content')[0]
     // const refs = [ 

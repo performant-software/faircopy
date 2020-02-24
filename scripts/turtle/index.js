@@ -97,6 +97,7 @@ function load(elementIdents) {
                         loadSpec(membership)
                     }                    
                 }
+                // TODO resolve attrRefs
             }
         }
     }
@@ -128,6 +129,7 @@ function createDramaElements(specs) {
         "pmType": "node",
         "content": "chunk*",
         "group": "block",
+        "defaultAttrs": [],
         "desc": specs['sp'].description
     }]
 }
@@ -139,6 +141,7 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "(chunk|block)*",
             "group": "block",
+            "defaultAttrs": [],
             "desc": specs['div'].description
         },
         {
@@ -146,45 +149,73 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "inline*",
             "group": "chunk",
+            "defaultAttrs": [],
             "desc": "marks paragraphs in prose."
         },
         {
             "name": "pb",
             "pmType": "inline-node",
-            "defaultAttrs": ["facs"],
+            "defaultAttrs": [],
             "desc": "marks the beginning of a new page in a paginated document."
         },
         {
             "name": "note",
             "pmType": "inline-node",
+            "defaultAttrs": [],
             "desc": "contains a note or annotation."
         }
     ]
 }
 
-// function createAttributes( elements, specs ) {
-//     for( const element of elements ) {
-//         // get all of the attrs for these elements
-//         const attrNames = getElementAttrs( element, modules )
-//         for( const attrName of attrNames ) {
-//             if( !attrs[attrName] ) {
-//                 // TODO
-//                 attrs[attrName] = attrName
-//             }
-//         }
-//     }
-// }
+function createAttributes( elements, specs ) {
+
+    // for each element, add the attrs to its list of possible attrs
+    const findAttrs = (specIdent) => {
+        const elSpec = specs[specIdent]
+        const elementAttrs = elSpec.attrs ? [ ...elSpec.attrs ] : []
+
+        if( elSpec.memberships ) {
+            for( const membership of elSpec.memberships ) {                
+                elementAttrs.concat( findAttrs( membership ) )
+            }    
+        }
+        return elementAttrs
+    }
+
+    const attrDefs = {}
+
+    // create a global dictionary of attr definitions and record attrs for each element
+    for( const element of elements ) {
+        const attrs = findAttrs(element.name)
+        for( const attr of attrs ) {
+            if( !attrDefs[attr.ident] ) {
+                attrDefs[attr.ident] = attr
+            }
+            element.defaultAttrs.push( attr.ident )
+        }
+    }
+
+    // convert attr definitions into FairCopy data format
+    const attrs = {}
+    for( const attr of Object.values(attrDefs) ) {
+        attrs[attr.ident] = {
+            type: 'text'
+        }
+    }
+
+    return attrs
+}
 
 async function run() {
     const specs = load([ ...phraseMarks, ...examplarEls, ...dramaEls ])
 
-    const elements = [], attrs = {}, vocabs = {}
+    const elements = [], vocabs = {}
 
     elements.push(...createExamplars(specs))
     elements.push(...createPhraseElements(specs))
     elements.push(...createDramaElements(specs))
 
-    // attrs = createAttributes(elements,specs)
+    const attrs = createAttributes(elements,specs)
 
     const teiSimpleConfig = { elements, attrs, vocabs }
     fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig))
