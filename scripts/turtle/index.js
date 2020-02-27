@@ -155,7 +155,7 @@ function createExamplars(specs) {
         {
             "name": "pb",
             "pmType": "inline-node",
-            "defaultAttrs": ["facs"],  // TODO remove
+            "defaultAttrs": [], // ["facs"],  // TODO remove
             "desc": "marks the beginning of a new page in a paginated document."
         },
         {
@@ -205,7 +205,7 @@ function createAttributes( elements, specs ) {
 
     // TODO Remove
     attrs['id'] = { type: 'text' }
-    attrs['facs'] = { type: 'text' }
+    // attrs['facs'] = { type: 'text' }
 
     return attrs
 }

@@ -33,9 +33,11 @@ function loadLocalizedString(xmlDoc, tagName) {
 
 function parseClassSpec( el ) {
     const ident = el.getAttribute('ident')
+    const classesEl = el.getElementsByTagName('classes')[0]
+    const memberships = getKeys(classesEl,'memberOf')
     const attListEl = el.getElementsByTagName('attList')[0]
     const attrs = attListEl ? parseAttList(attListEl) : []
-    return { ident, attrs }
+    return { ident, memberships, attrs }
 }
 
 function parseAttDef( el ) {
