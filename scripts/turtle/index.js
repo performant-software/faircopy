@@ -155,13 +155,13 @@ function createExamplars(specs) {
         {
             "name": "pb",
             "pmType": "inline-node",
-            "defaultAttrs": [],
+            "defaultAttrs": ["facs"],  // TODO remove
             "desc": "marks the beginning of a new page in a paginated document."
         },
         {
             "name": "note",
             "pmType": "inline-node",
-            "defaultAttrs": [],
+            "defaultAttrs": ["id"], // TODO remove
             "desc": "contains a note or annotation."
         }
     ]
@@ -203,6 +203,10 @@ function createAttributes( elements, specs ) {
         }
     }
 
+    // TODO Remove
+    attrs['id'] = { type: 'text' }
+    attrs['facs'] = { type: 'text' }
+
     return attrs
 }
 
@@ -223,7 +227,7 @@ async function run() {
     }
 
     const teiSimpleConfig = { elements, attrs, vocabs }
-    fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig))
+    fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
 }
 
 // A wise turtle that understands ODD and ProseMirror

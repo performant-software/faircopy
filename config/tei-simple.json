@@ -1,1 +1,754 @@
-{"elements":[{"name":"div","pmType":"node","content":"(chunk|block)*","group":"block","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","org","sample","type","subtype","decls","hand"],"desc":"contains a subdivision of the front, body, or back of a text."},{"name":"p","pmType":"node","content":"inline*","group":"chunk","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","decls","part","hand"],"desc":"marks paragraphs in prose."},{"name":"pb","pmType":"inline-node","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","type","subtype","ed","edRef","spanTo","break"],"desc":"marks the beginning of a new page in a paginated document."},{"name":"note","pmType":"inline-node","defaultAttrs":["anchored","targetEnd","xml:id","n","xml:lang","xml:base","xml:space","place","targetLang","target","evaluate","type","subtype","hand"],"desc":"contains a note or annotation."},{"name":"ref","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","targetLang","target","evaluate","mimeType","type","subtype","decls","cRef"],"desc":"defines a reference to another location, possibly modified by additional text or comment."},{"name":"name","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","full","sort","calendar","period","evidence","instant","type","subtype"],"desc":"contains a proper noun or noun phrase."},{"name":"rs","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","role","nymRef","type","subtype"],"desc":"contains a general purpose name or referring string."},{"name":"num","pmType":"mark","defaultAttrs":["type","value","xml:id","n","xml:lang","xml:base","xml:space","type","subtype","atLeast","atMost","min","max","confidence"],"desc":"supplies the value of the number in standard form."},{"name":"measure","pmType":"mark","defaultAttrs":["type","xml:id","n","xml:lang","xml:base","xml:space","type","subtype","unit","unitRef","quantity","commodity"],"desc":"specifies the type of measurement in any convenient typology."},{"name":"time","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","calendar","period","key","ref","evidence","instant","unit","quantity","extent","precision","scope","type","subtype"],"desc":"contains a phrase defining a time of day in any format."},{"name":"date","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","key","ref","calendar","period","evidence","instant","unit","quantity","extent","precision","scope","type","subtype"],"desc":"contains a date in any format."},{"name":"email","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space"],"desc":"contains an email address identifying a location to which\n        email messages can be delivered."},{"name":"expan","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","evidence","instant"],"desc":"contains the expansion of an abbreviation."},{"name":"abbr","pmType":"mark","defaultAttrs":["type","xml:id","n","xml:lang","xml:base","xml:space","type","subtype"],"desc":"the abbreviation is for a geographic name."},{"name":"orig","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space"],"desc":"contains a reading which is marked as following the original, rather than being normalized\n        or corrected."},{"name":"supplied","pmType":"mark","defaultAttrs":["reason","xml:id","n","xml:lang","xml:base","xml:space","evidence","instant","unit","quantity","extent","precision","scope"],"desc":"one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>."},{"name":"corr","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","evidence","instant","type","subtype"],"desc":"contains the correct form of a passage apparently erroneous in the copy text."},{"name":"reg","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","evidence","instant","type","subtype"],"desc":"contains a reading which has been regularized or normalized in some sense."},{"name":"unclear","pmType":"mark","defaultAttrs":["reason","agent","xml:id","n","xml:lang","xml:base","xml:space","evidence","instant","unit","quantity","extent","precision","scope"],"desc":"damage results from smoke"},{"name":"del","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","status","cause","seq","type","subtype","unit","quantity","extent","precision","scope"],"desc":"contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as\n    superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."},{"name":"sic","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space"],"desc":"contains text reproduced although apparently incorrect or inaccurate."},{"name":"add","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","status","cause","seq","place","type","subtype","unit","quantity","extent","precision","scope"],"desc":"contains letters, words, or phrases inserted in the source\n  text by an author, scribe, or a previous annotator or corrector."},{"name":"term","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","decls","targetLang","target","evaluate","type","subtype","key","ref","sortKey","cRef"],"desc":"contains a single-word, multi-word, or symbolic\n    designation which is regarded as a technical term."},{"name":"foreign","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space"],"desc":"identifies a word or phrase as belonging to some language other than that of the\n                surrounding text."},{"name":"title","pmType":"mark","defaultAttrs":["level","type","xml:id","n","xml:lang","xml:base","xml:space","type","subtype","key","ref","calendar","period"],"desc":"descriptive paraphrase of the work\nfunctioning as a title"},{"name":"hi","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","hand"],"desc":"marks a word or phrase as graphically distinct from the\n        surrounding text, for reasons concerning which no claim is\n        made."},{"name":"rhyme","pmType":"mark","defaultAttrs":["label","xml:id","n","xml:lang","xml:base","xml:space","type","subtype"],"desc":"provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates."},{"name":"seg","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","function","type","subtype","hand","notation"],"desc":"represents any segmentation of text below the <soCalled>chunk</soCalled> level."},{"name":"s","pmType":"mark","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","function","type","subtype","notation"],"desc":"contains a sentence-like division of a text."},{"name":"measure","pmType":"mark","defaultAttrs":["type","xml:id","n","xml:lang","xml:base","xml:space","type","subtype","unit","unitRef","quantity","commodity"],"desc":"specifies the type of measurement in any convenient typology."},{"name":"sp","pmType":"node","content":"chunk*","group":"block","defaultAttrs":["xml:id","n","xml:lang","xml:base","xml:space","toWhom"],"desc":"contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."}],"attrs":{"xml:id":{"type":"text"},"n":{"type":"text"},"xml:lang":{"type":"text"},"xml:base":{"type":"text"},"xml:space":{"type":"text"},"org":{"type":"text"},"sample":{"type":"text"},"type":{"type":"text"},"subtype":{"type":"text"},"decls":{"type":"text"},"hand":{"type":"text"},"part":{"type":"text"},"ed":{"type":"text"},"edRef":{"type":"text"},"spanTo":{"type":"text"},"break":{"type":"text"},"anchored":{"type":"text"},"targetEnd":{"type":"text"},"place":{"type":"text"},"targetLang":{"type":"text"},"target":{"type":"text"},"evaluate":{"type":"text"},"mimeType":{"type":"text"},"cRef":{"type":"text"},"full":{"type":"text"},"sort":{"type":"text"},"calendar":{"type":"text"},"period":{"type":"text"},"evidence":{"type":"text"},"instant":{"type":"text"},"role":{"type":"text"},"nymRef":{"type":"text"},"value":{"type":"text"},"atLeast":{"type":"text"},"atMost":{"type":"text"},"min":{"type":"text"},"max":{"type":"text"},"confidence":{"type":"text"},"unit":{"type":"text"},"unitRef":{"type":"text"},"quantity":{"type":"text"},"commodity":{"type":"text"},"key":{"type":"text"},"ref":{"type":"text"},"extent":{"type":"text"},"precision":{"type":"text"},"scope":{"type":"text"},"reason":{"type":"text"},"agent":{"type":"text"},"status":{"type":"text"},"cause":{"type":"text"},"seq":{"type":"text"},"sortKey":{"type":"text"},"level":{"type":"text"},"label":{"type":"text"},"function":{"type":"text"},"notation":{"type":"text"},"toWhom":{"type":"text"}},"vocabs":{"*[rend]":["bold","italic","caps"],"name[type]":["person","place","artwork"]}}
+{
+	"elements": [
+		{
+			"name": "div",
+			"pmType": "node",
+			"content": "(chunk|block)*",
+			"group": "block",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"org",
+				"sample",
+				"type",
+				"subtype",
+				"decls",
+				"hand"
+			],
+			"desc": "contains a subdivision of the front, body, or back of a text."
+		},
+		{
+			"name": "p",
+			"pmType": "node",
+			"content": "inline*",
+			"group": "chunk",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"decls",
+				"part",
+				"hand"
+			],
+			"desc": "marks paragraphs in prose."
+		},
+		{
+			"name": "pb",
+			"pmType": "inline-node",
+			"defaultAttrs": [
+				"facs",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype",
+				"ed",
+				"edRef",
+				"spanTo",
+				"break"
+			],
+			"desc": "marks the beginning of a new page in a paginated document."
+		},
+		{
+			"name": "note",
+			"pmType": "inline-node",
+			"defaultAttrs": [
+				"id",
+				"anchored",
+				"targetEnd",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"place",
+				"targetLang",
+				"target",
+				"evaluate",
+				"type",
+				"subtype",
+				"hand"
+			],
+			"desc": "contains a note or annotation."
+		},
+		{
+			"name": "ref",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"targetLang",
+				"target",
+				"evaluate",
+				"mimeType",
+				"type",
+				"subtype",
+				"decls",
+				"cRef"
+			],
+			"desc": "defines a reference to another location, possibly modified by additional text or comment."
+		},
+		{
+			"name": "name",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"full",
+				"sort",
+				"calendar",
+				"period",
+				"evidence",
+				"instant",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a proper noun or noun phrase."
+		},
+		{
+			"name": "rs",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"role",
+				"nymRef",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a general purpose name or referring string."
+		},
+		{
+			"name": "num",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"value",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence"
+			],
+			"desc": "supplies the value of the number in standard form."
+		},
+		{
+			"name": "measure",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype",
+				"unit",
+				"unitRef",
+				"quantity",
+				"commodity"
+			],
+			"desc": "specifies the type of measurement in any convenient typology."
+		},
+		{
+			"name": "time",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"calendar",
+				"period",
+				"key",
+				"ref",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a phrase defining a time of day in any format."
+		},
+		{
+			"name": "date",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"key",
+				"ref",
+				"calendar",
+				"period",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a date in any format."
+		},
+		{
+			"name": "email",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space"
+			],
+			"desc": "contains an email address identifying a location to which\n        email messages can be delivered."
+		},
+		{
+			"name": "expan",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"evidence",
+				"instant"
+			],
+			"desc": "contains the expansion of an abbreviation."
+		},
+		{
+			"name": "abbr",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype"
+			],
+			"desc": "the abbreviation is for a geographic name."
+		},
+		{
+			"name": "orig",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space"
+			],
+			"desc": "contains a reading which is marked as following the original, rather than being normalized\n        or corrected."
+		},
+		{
+			"name": "supplied",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"reason",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope"
+			],
+			"desc": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>."
+		},
+		{
+			"name": "corr",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"evidence",
+				"instant",
+				"type",
+				"subtype"
+			],
+			"desc": "contains the correct form of a passage apparently erroneous in the copy text."
+		},
+		{
+			"name": "reg",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"evidence",
+				"instant",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a reading which has been regularized or normalized in some sense."
+		},
+		{
+			"name": "unclear",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"reason",
+				"agent",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope"
+			],
+			"desc": "damage results from smoke"
+		},
+		{
+			"name": "del",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"status",
+				"cause",
+				"seq",
+				"type",
+				"subtype",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope"
+			],
+			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as\n    superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
+		},
+		{
+			"name": "sic",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space"
+			],
+			"desc": "contains text reproduced although apparently incorrect or inaccurate."
+		},
+		{
+			"name": "add",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"status",
+				"cause",
+				"seq",
+				"place",
+				"type",
+				"subtype",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope"
+			],
+			"desc": "contains letters, words, or phrases inserted in the source\n  text by an author, scribe, or a previous annotator or corrector."
+		},
+		{
+			"name": "term",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"decls",
+				"targetLang",
+				"target",
+				"evaluate",
+				"type",
+				"subtype",
+				"key",
+				"ref",
+				"sortKey",
+				"cRef"
+			],
+			"desc": "contains a single-word, multi-word, or symbolic\n    designation which is regarded as a technical term."
+		},
+		{
+			"name": "foreign",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space"
+			],
+			"desc": "identifies a word or phrase as belonging to some language other than that of the\n                surrounding text."
+		},
+		{
+			"name": "title",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"level",
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype",
+				"key",
+				"ref",
+				"calendar",
+				"period"
+			],
+			"desc": "descriptive paraphrase of the work\nfunctioning as a title"
+		},
+		{
+			"name": "hi",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"hand"
+			],
+			"desc": "marks a word or phrase as graphically distinct from the\n        surrounding text, for reasons concerning which no claim is\n        made."
+		},
+		{
+			"name": "rhyme",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"label",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype"
+			],
+			"desc": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates."
+		},
+		{
+			"name": "seg",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"function",
+				"type",
+				"subtype",
+				"hand",
+				"notation"
+			],
+			"desc": "represents any segmentation of text below the <soCalled>chunk</soCalled> level."
+		},
+		{
+			"name": "s",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"function",
+				"type",
+				"subtype",
+				"notation"
+			],
+			"desc": "contains a sentence-like division of a text."
+		},
+		{
+			"name": "measure",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"type",
+				"subtype",
+				"unit",
+				"unitRef",
+				"quantity",
+				"commodity"
+			],
+			"desc": "specifies the type of measurement in any convenient typology."
+		},
+		{
+			"name": "sp",
+			"pmType": "node",
+			"content": "chunk*",
+			"group": "block",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"toWhom"
+			],
+			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."
+		}
+	],
+	"attrs": {
+		"xml:id": {
+			"type": "text"
+		},
+		"n": {
+			"type": "text"
+		},
+		"xml:lang": {
+			"type": "text"
+		},
+		"xml:base": {
+			"type": "text"
+		},
+		"xml:space": {
+			"type": "text"
+		},
+		"org": {
+			"type": "text"
+		},
+		"sample": {
+			"type": "text"
+		},
+		"type": {
+			"type": "text"
+		},
+		"subtype": {
+			"type": "text"
+		},
+		"decls": {
+			"type": "text"
+		},
+		"hand": {
+			"type": "text"
+		},
+		"part": {
+			"type": "text"
+		},
+		"ed": {
+			"type": "text"
+		},
+		"edRef": {
+			"type": "text"
+		},
+		"spanTo": {
+			"type": "text"
+		},
+		"break": {
+			"type": "text"
+		},
+		"anchored": {
+			"type": "text"
+		},
+		"targetEnd": {
+			"type": "text"
+		},
+		"place": {
+			"type": "text"
+		},
+		"targetLang": {
+			"type": "text"
+		},
+		"target": {
+			"type": "text"
+		},
+		"evaluate": {
+			"type": "text"
+		},
+		"mimeType": {
+			"type": "text"
+		},
+		"cRef": {
+			"type": "text"
+		},
+		"full": {
+			"type": "text"
+		},
+		"sort": {
+			"type": "text"
+		},
+		"calendar": {
+			"type": "text"
+		},
+		"period": {
+			"type": "text"
+		},
+		"evidence": {
+			"type": "text"
+		},
+		"instant": {
+			"type": "text"
+		},
+		"role": {
+			"type": "text"
+		},
+		"nymRef": {
+			"type": "text"
+		},
+		"value": {
+			"type": "text"
+		},
+		"atLeast": {
+			"type": "text"
+		},
+		"atMost": {
+			"type": "text"
+		},
+		"min": {
+			"type": "text"
+		},
+		"max": {
+			"type": "text"
+		},
+		"confidence": {
+			"type": "text"
+		},
+		"unit": {
+			"type": "text"
+		},
+		"unitRef": {
+			"type": "text"
+		},
+		"quantity": {
+			"type": "text"
+		},
+		"commodity": {
+			"type": "text"
+		},
+		"key": {
+			"type": "text"
+		},
+		"ref": {
+			"type": "text"
+		},
+		"extent": {
+			"type": "text"
+		},
+		"precision": {
+			"type": "text"
+		},
+		"scope": {
+			"type": "text"
+		},
+		"reason": {
+			"type": "text"
+		},
+		"agent": {
+			"type": "text"
+		},
+		"status": {
+			"type": "text"
+		},
+		"cause": {
+			"type": "text"
+		},
+		"seq": {
+			"type": "text"
+		},
+		"sortKey": {
+			"type": "text"
+		},
+		"level": {
+			"type": "text"
+		},
+		"label": {
+			"type": "text"
+		},
+		"function": {
+			"type": "text"
+		},
+		"notation": {
+			"type": "text"
+		},
+		"toWhom": {
+			"type": "text"
+		},
+		"id": {
+			"type": "text"
+		},
+		"facs": {
+			"type": "text"
+		}
+	},
+	"vocabs": {
+		"*[rend]": [
+			"bold",
+			"italic",
+			"caps"
+		],
+		"name[type]": [
+			"person",
+			"place",
+			"artwork"
+		]
+	}
+}
