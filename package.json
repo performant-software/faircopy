@@ -21,8 +21,8 @@
   "author": "Performant Software Solutions LLC",
   "homepage": ".",
   "devDependencies": {
-    "electron": "^5.0.0",
-    "electron-builder": "^21.2.0"
+    "electron": "^8.1.0",
+    "electron-builder": "^22.3.6"
   },
   "dependencies": {
     "@material-ui/core": "^4.5.0",
