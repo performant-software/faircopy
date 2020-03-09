@@ -1,126 +1,1534 @@
 {
-    "elements": [
-        {
-            "name": "div",
-            "pmType": "node",
-            "content": "(chunk|block)*",
-            "group": "block"
-        },
-        {
-            "name": "p",
-            "pmType": "node",
-            "content": "inline*",
-            "group": "chunk",
-            "desc": "marks paragraphs in prose."
-        },
-        {
-            "name": "hi",
-            "pmType": "mark",
-            "defaultAttrs": ["rend"],
-            "desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made."
-        },
-        {
-            "name": "corr",
-            "pmType": "mark",
-            "desc": ""
-        },
-        {
-            "name": "del",
-            "pmType": "mark",
-            "defaultAttrs": ["certainty","hand"],
-            "desc": ""
-        },
-        {
-            "name": "orig",
-            "pmType": "mark",
-            "defaultAttrs": ["rend"],
-            "desc": ""
-        },
-        {
-            "name": "reg",
-            "pmType": "mark",
-            "defaultAttrs": ["rend"],
-            "desc": ""
-        },
-        {
-            "name": "sic",
-            "pmType": "mark",
-            "defaultAttrs": ["rend"],
-            "desc": ""
-        },
-        {
-            "name": "unclear",
-            "pmType": "mark",
-            "defaultAttrs": ["rend"],
-            "desc": ""
-        },
-        {
-            "name": "add",
-            "pmType": "mark",
-            "defaultAttrs": ["rend"],
-            "desc": ""
-        },
-        {
-            "name": "gap",
-            "pmType": "inline-node",
-            "defaultAttrs": ["reason","hand","agent"],
-            "desc": ""
-        },
-        {
-            "name": "pb",
-            "pmType": "inline-node",
-            "defaultAttrs": ["facs"],
-            "desc": "marks the beginning of a new page in a paginated document."
-        },
-        {
-            "name": "note",
-            "pmType": "inline-node",
-            "desc": "contains a note or annotation."
-        },
-        {
-            "name": "ref",
-            "pmType": "mark",
-            "defaultAttrs": ["target"],
-            "desc": "defines a reference to another location, possibly modified by additional text or comment."
-        },
-        {
-            "name": "name",
-            "pmType": "mark",
-            "defaultAttrs": ["id", "type"],
-            "desc": "contains a proper noun or noun phrase."
-        }    
-    ],
-    "attrs": {
-        "id": {
-            "type": "text"
-        },
-        "target": {
-            "type": "text"
-        },
-        "facs": {
-            "type": "text"
-        },
-        "type": {
-            "type": "select"
-        },
-        "certainty": {
-            "type": "text"
-        },
-        "hand": {
-            "type": "text"
-        },
-        "reason": {
-            "type": "text"
-        },
-        "agent": {
-            "type": "text"
-        },
-        "rend": {
-            "type": "select"
-        }
-    },
-    "vocabs": {
-        "*[rend]": ["bold","italic","caps"],
-        "name[type]": ["person","place","artwork"]
-    }
+	"elements": [
+		{
+			"name": "div",
+			"pmType": "node",
+			"content": "(chunk|block)*",
+			"group": "block",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"org",
+				"sample",
+				"met",
+				"real",
+				"rhyme",
+				"part",
+				"type",
+				"subtype",
+				"decls",
+				"hand"
+			],
+			"desc": "contains a subdivision of the front, body, or back of a text."
+		},
+		{
+			"name": "p",
+			"pmType": "node",
+			"content": "inline*",
+			"group": "chunk",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"decls",
+				"part",
+				"hand"
+			],
+			"desc": "marks paragraphs in prose."
+		},
+		{
+			"name": "pb",
+			"pmType": "inline-node",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype",
+				"ed",
+				"edRef",
+				"spanTo",
+				"break"
+			],
+			"desc": "marks the beginning of a new page in a paginated document."
+		},
+		{
+			"name": "note",
+			"pmType": "inline-node",
+			"defaultAttrs": [
+				"id",
+				"anchored",
+				"targetEnd",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"place",
+				"targetLang",
+				"target",
+				"evaluate",
+				"type",
+				"subtype",
+				"hand"
+			],
+			"desc": "contains a note or annotation."
+		},
+		{
+			"name": "ref",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"targetLang",
+				"target",
+				"evaluate",
+				"mimeType",
+				"type",
+				"subtype",
+				"decls",
+				"cRef"
+			],
+			"desc": "defines a reference to another location, possibly modified by additional text or comment."
+		},
+		{
+			"name": "name",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"full",
+				"sort",
+				"role",
+				"nymRef",
+				"key",
+				"ref",
+				"calendar",
+				"period",
+				"when",
+				"notBefore",
+				"notAfter",
+				"from",
+				"to",
+				"when-iso",
+				"notBefore-iso",
+				"notAfter-iso",
+				"from-iso",
+				"to-iso",
+				"when-custom",
+				"notBefore-custom",
+				"notAfter-custom",
+				"from-custom",
+				"to-custom",
+				"datingPoint",
+				"datingMethod",
+				"evidence",
+				"instant",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a proper noun or noun phrase."
+		},
+		{
+			"name": "rs",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"role",
+				"nymRef",
+				"key",
+				"ref",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a general purpose name or referring string."
+		},
+		{
+			"name": "num",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"value",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence"
+			],
+			"desc": "supplies the value of the number in standard form."
+		},
+		{
+			"name": "measure",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype",
+				"unit",
+				"unitRef",
+				"quantity",
+				"commodity"
+			],
+			"desc": "specifies the type of measurement in any convenient typology."
+		},
+		{
+			"name": "time",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"calendar",
+				"period",
+				"when",
+				"notBefore",
+				"notAfter",
+				"from",
+				"to",
+				"when-iso",
+				"notBefore-iso",
+				"notAfter-iso",
+				"from-iso",
+				"to-iso",
+				"when-custom",
+				"notBefore-custom",
+				"notAfter-custom",
+				"from-custom",
+				"to-custom",
+				"datingPoint",
+				"datingMethod",
+				"key",
+				"ref",
+				"dur",
+				"dur-iso",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a phrase defining a time of day in any format."
+		},
+		{
+			"name": "date",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"key",
+				"ref",
+				"calendar",
+				"period",
+				"when",
+				"notBefore",
+				"notAfter",
+				"from",
+				"to",
+				"when-iso",
+				"notBefore-iso",
+				"notAfter-iso",
+				"from-iso",
+				"to-iso",
+				"when-custom",
+				"notBefore-custom",
+				"notAfter-custom",
+				"from-custom",
+				"to-custom",
+				"datingPoint",
+				"datingMethod",
+				"dur",
+				"dur-iso",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a date in any format."
+		},
+		{
+			"name": "email",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source"
+			],
+			"desc": "contains an email address identifying a location to which\n        email messages can be delivered."
+		},
+		{
+			"name": "expan",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"evidence",
+				"instant"
+			],
+			"desc": "contains the expansion of an abbreviation."
+		},
+		{
+			"name": "abbr",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype"
+			],
+			"desc": "the abbreviation is for a geographic name."
+		},
+		{
+			"name": "orig",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source"
+			],
+			"desc": "contains a reading which is marked as following the original, rather than being normalized\n        or corrected."
+		},
+		{
+			"name": "supplied",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"reason",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence"
+			],
+			"desc": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>."
+		},
+		{
+			"name": "corr",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"evidence",
+				"instant",
+				"type",
+				"subtype"
+			],
+			"desc": "contains the correct form of a passage apparently erroneous in the copy text."
+		},
+		{
+			"name": "reg",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"evidence",
+				"instant",
+				"type",
+				"subtype"
+			],
+			"desc": "contains a reading which has been regularized or normalized in some sense."
+		},
+		{
+			"name": "unclear",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"reason",
+				"agent",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"evidence",
+				"instant",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence"
+			],
+			"desc": "damage results from smoke"
+		},
+		{
+			"name": "del",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"status",
+				"cause",
+				"seq",
+				"evidence",
+				"instant",
+				"hand",
+				"type",
+				"subtype",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence"
+			],
+			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as\n    superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
+		},
+		{
+			"name": "sic",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source"
+			],
+			"desc": "contains text reproduced although apparently incorrect or inaccurate."
+		},
+		{
+			"name": "add",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"status",
+				"cause",
+				"seq",
+				"evidence",
+				"instant",
+				"hand",
+				"place",
+				"type",
+				"subtype",
+				"unit",
+				"quantity",
+				"extent",
+				"precision",
+				"scope",
+				"atLeast",
+				"atMost",
+				"min",
+				"max",
+				"confidence"
+			],
+			"desc": "contains letters, words, or phrases inserted in the source\n  text by an author, scribe, or a previous annotator or corrector."
+		},
+		{
+			"name": "term",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"decls",
+				"targetLang",
+				"target",
+				"evaluate",
+				"type",
+				"subtype",
+				"key",
+				"ref",
+				"sortKey",
+				"cRef"
+			],
+			"desc": "contains a single-word, multi-word, or symbolic\n    designation which is regarded as a technical term."
+		},
+		{
+			"name": "foreign",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source"
+			],
+			"desc": "identifies a word or phrase as belonging to some language other than that of the\n                surrounding text."
+		},
+		{
+			"name": "title",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"level",
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype",
+				"key",
+				"ref",
+				"calendar",
+				"period",
+				"when",
+				"notBefore",
+				"notAfter",
+				"from",
+				"to",
+				"when-iso",
+				"notBefore-iso",
+				"notAfter-iso",
+				"from-iso",
+				"to-iso",
+				"when-custom",
+				"notBefore-custom",
+				"notAfter-custom",
+				"from-custom",
+				"to-custom",
+				"datingPoint",
+				"datingMethod"
+			],
+			"desc": "descriptive paraphrase of the work\nfunctioning as a title"
+		},
+		{
+			"name": "hi",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"hand"
+			],
+			"desc": "marks a word or phrase as graphically distinct from the\n        surrounding text, for reasons concerning which no claim is\n        made."
+		},
+		{
+			"name": "rhyme",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"label",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype"
+			],
+			"desc": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates."
+		},
+		{
+			"name": "seg",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"function",
+				"met",
+				"real",
+				"rhyme",
+				"datcat",
+				"valueDatcat",
+				"part",
+				"type",
+				"subtype",
+				"hand",
+				"notation"
+			],
+			"desc": "represents any segmentation of text below the <soCalled>chunk</soCalled> level."
+		},
+		{
+			"name": "s",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"function",
+				"met",
+				"real",
+				"rhyme",
+				"datcat",
+				"valueDatcat",
+				"part",
+				"type",
+				"subtype",
+				"notation"
+			],
+			"desc": "contains a sentence-like division of a text."
+		},
+		{
+			"name": "measure",
+			"pmType": "mark",
+			"defaultAttrs": [
+				"type",
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"type",
+				"subtype",
+				"unit",
+				"unitRef",
+				"quantity",
+				"commodity"
+			],
+			"desc": "specifies the type of measurement in any convenient typology."
+		},
+		{
+			"name": "sp",
+			"pmType": "node",
+			"content": "chunk*",
+			"group": "block",
+			"defaultAttrs": [
+				"xml:id",
+				"n",
+				"xml:lang",
+				"xml:base",
+				"xml:space",
+				"rend",
+				"style",
+				"rendition",
+				"corresp",
+				"synch",
+				"sameAs",
+				"copyOf",
+				"next",
+				"prev",
+				"exclude",
+				"select",
+				"ana",
+				"facs",
+				"change",
+				"cert",
+				"resp",
+				"source",
+				"toWhom",
+				"who"
+			],
+			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."
+		}
+	],
+	"attrs": {
+		"xml:id": {
+			"type": "text"
+		},
+		"n": {
+			"type": "text"
+		},
+		"xml:lang": {
+			"type": "text"
+		},
+		"xml:base": {
+			"type": "text"
+		},
+		"xml:space": {
+			"type": "text"
+		},
+		"rend": {
+			"type": "text"
+		},
+		"style": {
+			"type": "text"
+		},
+		"rendition": {
+			"type": "text"
+		},
+		"corresp": {
+			"type": "text"
+		},
+		"synch": {
+			"type": "text"
+		},
+		"sameAs": {
+			"type": "text"
+		},
+		"copyOf": {
+			"type": "text"
+		},
+		"next": {
+			"type": "text"
+		},
+		"prev": {
+			"type": "text"
+		},
+		"exclude": {
+			"type": "text"
+		},
+		"select": {
+			"type": "text"
+		},
+		"ana": {
+			"type": "text"
+		},
+		"facs": {
+			"type": "text"
+		},
+		"change": {
+			"type": "text"
+		},
+		"cert": {
+			"type": "text"
+		},
+		"resp": {
+			"type": "text"
+		},
+		"source": {
+			"type": "text"
+		},
+		"org": {
+			"type": "text"
+		},
+		"sample": {
+			"type": "text"
+		},
+		"met": {
+			"type": "text"
+		},
+		"real": {
+			"type": "text"
+		},
+		"rhyme": {
+			"type": "text"
+		},
+		"part": {
+			"type": "text"
+		},
+		"type": {
+			"type": "text"
+		},
+		"subtype": {
+			"type": "text"
+		},
+		"decls": {
+			"type": "text"
+		},
+		"hand": {
+			"type": "text"
+		},
+		"ed": {
+			"type": "text"
+		},
+		"edRef": {
+			"type": "text"
+		},
+		"spanTo": {
+			"type": "text"
+		},
+		"break": {
+			"type": "text"
+		},
+		"anchored": {
+			"type": "text"
+		},
+		"targetEnd": {
+			"type": "text"
+		},
+		"place": {
+			"type": "text"
+		},
+		"targetLang": {
+			"type": "text"
+		},
+		"target": {
+			"type": "text"
+		},
+		"evaluate": {
+			"type": "text"
+		},
+		"mimeType": {
+			"type": "text"
+		},
+		"cRef": {
+			"type": "text"
+		},
+		"full": {
+			"type": "text"
+		},
+		"sort": {
+			"type": "text"
+		},
+		"role": {
+			"type": "text"
+		},
+		"nymRef": {
+			"type": "text"
+		},
+		"key": {
+			"type": "text"
+		},
+		"ref": {
+			"type": "text"
+		},
+		"calendar": {
+			"type": "text"
+		},
+		"period": {
+			"type": "text"
+		},
+		"when": {
+			"type": "text"
+		},
+		"notBefore": {
+			"type": "text"
+		},
+		"notAfter": {
+			"type": "text"
+		},
+		"from": {
+			"type": "text"
+		},
+		"to": {
+			"type": "text"
+		},
+		"when-iso": {
+			"type": "text"
+		},
+		"notBefore-iso": {
+			"type": "text"
+		},
+		"notAfter-iso": {
+			"type": "text"
+		},
+		"from-iso": {
+			"type": "text"
+		},
+		"to-iso": {
+			"type": "text"
+		},
+		"when-custom": {
+			"type": "text"
+		},
+		"notBefore-custom": {
+			"type": "text"
+		},
+		"notAfter-custom": {
+			"type": "text"
+		},
+		"from-custom": {
+			"type": "text"
+		},
+		"to-custom": {
+			"type": "text"
+		},
+		"datingPoint": {
+			"type": "text"
+		},
+		"datingMethod": {
+			"type": "text"
+		},
+		"evidence": {
+			"type": "text"
+		},
+		"instant": {
+			"type": "text"
+		},
+		"value": {
+			"type": "text"
+		},
+		"atLeast": {
+			"type": "text"
+		},
+		"atMost": {
+			"type": "text"
+		},
+		"min": {
+			"type": "text"
+		},
+		"max": {
+			"type": "text"
+		},
+		"confidence": {
+			"type": "text"
+		},
+		"unit": {
+			"type": "text"
+		},
+		"unitRef": {
+			"type": "text"
+		},
+		"quantity": {
+			"type": "text"
+		},
+		"commodity": {
+			"type": "text"
+		},
+		"dur": {
+			"type": "text"
+		},
+		"dur-iso": {
+			"type": "text"
+		},
+		"extent": {
+			"type": "text"
+		},
+		"precision": {
+			"type": "text"
+		},
+		"scope": {
+			"type": "text"
+		},
+		"reason": {
+			"type": "text"
+		},
+		"agent": {
+			"type": "text"
+		},
+		"status": {
+			"type": "text"
+		},
+		"cause": {
+			"type": "text"
+		},
+		"seq": {
+			"type": "text"
+		},
+		"sortKey": {
+			"type": "text"
+		},
+		"level": {
+			"type": "text"
+		},
+		"label": {
+			"type": "text"
+		},
+		"function": {
+			"type": "text"
+		},
+		"datcat": {
+			"type": "text"
+		},
+		"valueDatcat": {
+			"type": "text"
+		},
+		"notation": {
+			"type": "text"
+		},
+		"toWhom": {
+			"type": "text"
+		},
+		"who": {
+			"type": "text"
+		},
+		"id": {
+			"type": "text"
+		}
+	},
+	"vocabs": {
+		"*[rend]": [
+			"bold",
+			"italic",
+			"caps"
+		],
+		"name[type]": [
+			"person",
+			"place",
+			"artwork"
+		]
+	}
 }
