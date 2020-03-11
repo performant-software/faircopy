@@ -45,7 +45,6 @@ class ApplicationWindowManager {
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
         await browserWindow.loadFile(indexFilePath)
-        browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       }
 
       // send message indicating the target file
