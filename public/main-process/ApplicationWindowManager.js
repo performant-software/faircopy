@@ -31,7 +31,6 @@ class ApplicationWindowManager {
         width: 1440,
         height: 900,
         webPreferences: {
-            nodeIntegration: true,
             preload: `${this.baseDir}/main-window-preload.js`
         }
       })
@@ -73,7 +72,6 @@ class ApplicationWindowManager {
           height: 500,
           frame: false,
           webPreferences: {
-              nodeIntegration: true,
               preload: `${this.baseDir}/note-window-preload.js`
           }
       })

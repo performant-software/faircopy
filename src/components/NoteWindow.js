@@ -6,7 +6,7 @@ import { debounce } from "debounce";
 import TEIDocument from "../tei-document/TEIDocument"
 import TEIEditor from './TEIEditor'
 
-const {ipcRenderer} = window.fairCopy.electron
+const fairCopy = window.fairCopy
 const resizeRefreshRate = 100
 
 export default class NoteWindow extends Component {
@@ -27,7 +27,7 @@ export default class NoteWindow extends Component {
     componentDidMount() {
         const { teiDocument } = this.state
         // Receive open and save file events from the main process
-        ipcRenderer.on('noteOpened', (event, noteID) => this.openNote(noteID))
+        fairCopy.services.ipcRegisterCallback('noteOpened', (event, noteID) => this.openNote(noteID))
         window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
         window.onbeforeunload = this.onBeforeUnload
     }
@@ -68,7 +68,7 @@ export default class NoteWindow extends Component {
         if( noteID && editorView ) {
             const {doc} = editorView.state
             localStorage.setItem(noteID, JSON.stringify(doc.toJSON()));
-            ipcRenderer.send( 'closeNoteWindow', noteID )
+            fairCopy.services.ipcSend( 'closeNoteWindow', noteID )
         }
     }
 

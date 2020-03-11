@@ -7,7 +7,7 @@ import {wrapIn} from 'prosemirror-commands'
 
 import { addMark } from "../tei-document/commands"
 
-const { ipcRenderer, clipboard } = window.fairCopy.electron
+const fairCopy = window.fairCopy
 
 const versionNumber = "0.4.2"
 const mainWindowBackground = "#ddf8ff"
@@ -82,12 +82,12 @@ export default class EditorToolbar extends Component {
             const noteNode = state.schema.node('note', { id: '', __id__: subDocID })
             tr.insert($anchor.pos, noteNode) 
             editorView.dispatch(tr)
-            ipcRenderer.send( 'createNoteEditorWindow', subDocID )
+            fairCopy.services.ipcSend( 'createNoteEditorWindow', subDocID )
         }
     }
 
     onClippy = () => {
-        const html = clipboard.readHTML()
+        const html = fairCopy.services.readClipBoardHTML()
         console.log( `clippy: ${html}`) 
     }
 
