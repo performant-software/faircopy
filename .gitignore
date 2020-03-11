@@ -8,3 +8,4 @@ test-docs/je_example_out.xml
 /dist
 /package
 faircopy*.tgz
+/public/version.txt

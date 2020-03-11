@@ -7,7 +7,7 @@ import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import SplitPane from 'react-split-pane'
 
-const {ipcRenderer} = window.fairCopy.electron
+const fairCopy = window.fairCopy
 
 const dialogPlaneThreshold = 200
 
@@ -19,7 +19,7 @@ export default class TEIEditor extends Component {
 
         if( nodeType === 'note' ) {
             const {__id__} = node.attrs
-            ipcRenderer.send( 'createNoteEditorWindow', __id__ )
+            fairCopy.services.ipcSend( 'createNoteEditorWindow', __id__ )
         }
         else if( event.ctrlKey) { 
             const { doc } = this.state.editorState
@@ -30,7 +30,7 @@ export default class TEIEditor extends Component {
                     const {target} = mark.attrs
                     if( target && target[0] === '#') {
                         // TODO support internal IDs
-                        ipcRenderer.send( 'createNoteEditorWindow', target.slice(1) )
+                        fairCopy.services.ipcSend( 'createNoteEditorWindow', target.slice(1) )
                         return
                     }        
                     // TODO support URL targets

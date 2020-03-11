@@ -1,4 +1,5 @@
 const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
+const { isDebugMode } = require('./preload-services').services
 
 // TODO detect PC
 const isMac = true
@@ -9,13 +10,12 @@ const distBaseDir = __dirname
 
 class ApplicationWindowManager {
 
-    constructor(app, debugMode, onClose) {
+    constructor(app, onClose) {
         this.mainWindow = null
         this.noteWindows = {}
         this.app = app
         this.onClose = onClose
-        this.debugMode = debugMode
-        this.baseDir = (this.debugMode) ? debugBaseDir : distBaseDir
+        this.baseDir = isDebugMode() ? debugBaseDir : distBaseDir
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)     
@@ -31,7 +31,7 @@ class ApplicationWindowManager {
         width: 1440,
         height: 900,
         webPreferences: {
-            nodeIntegration: true,
+            enableRemoteModule: false,
             preload: `${this.baseDir}/main-window-preload.js`
         }
       })
@@ -40,12 +40,11 @@ class ApplicationWindowManager {
       browserWindow.on('closed', this.onClose )
 
       // and load the index.html of the app.
-      if( this.debugMode ) {
+      if( isDebugMode() ) {
         await browserWindow.loadURL('http://localhost:3000')
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
         await browserWindow.loadFile(indexFilePath)
-        browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       }
 
       // send message indicating the target file
@@ -73,7 +72,7 @@ class ApplicationWindowManager {
           height: 500,
           frame: false,
           webPreferences: {
-              nodeIntegration: true,
+              enableRemoteModule: false,
               preload: `${this.baseDir}/note-window-preload.js`
           }
       })
@@ -89,7 +88,7 @@ class ApplicationWindowManager {
       }
 
       // and load the index.html of the app.
-      if( this.debugMode ) {
+      if( isDebugMode() ) {
           browserWindow.loadURL('http://localhost:3000/index.html').then(loadNote)
       } else {
           browserWindow.loadFile(indexFilePath).then(loadNote)
@@ -102,9 +101,10 @@ class ApplicationWindowManager {
     openFileMenu = () => {
         dialog.showOpenDialog( {
             properties: [ 'openFile' ]
-        }, (files) => {
-          if( files && files.length > 0 ) {
-            this.mainWindow.webContents.send('fileOpened', files[0])
+        }).then(files => {
+          console.log('dsadsadsadsadsa')
+          if( files && files.filePaths.length > 0 ) {
+            this.mainWindow.webContents.send('fileOpened', files.filePaths[0])
           }
         })
     }
@@ -165,7 +165,7 @@ class ApplicationWindowManager {
         return [
           // { role: 'appMenu' }
           ...(process.platform === 'darwin' ? [{
-            label: this.app.getName(),
+            label: this.app.name,
             submenu: [
               { role: 'about' },
               { type: 'separator' },

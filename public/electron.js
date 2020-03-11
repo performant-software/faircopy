@@ -6,13 +6,13 @@ const { ApplicationWindowManager } = require('./main-process/ApplicationWindowMa
 // be closed automatically when the JavaScript object is garbage collected.
 let appWindowManager
 
-onMainWindowClose = () => {
+const onMainWindowClose = () => {
   appWindowManager = null
 }
 
 function createApplicationWindowManager () {
-  let debugMode = ( process.argv[3] === 'debug' )
-  appWindowManager = new ApplicationWindowManager(app, debugMode, onMainWindowClose)
+  const debugMode = process.env.FAIRCOPY_DEBUG_MODE
+  appWindowManager = new ApplicationWindowManager(app, onMainWindowClose)
   if( debugMode ) {
     appWindowManager.createTEIEditorWindow('test-docs/je_example.xml').then(() => {
       console.log("TEI Editor Ready - Loading example text.")   

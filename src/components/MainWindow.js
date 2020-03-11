@@ -10,7 +10,7 @@ import TEIDocument from "../tei-document/TEIDocument"
 import TableOfContents from './TableOfContents'
 import TEIEditor from './TEIEditor'
 
-const { ipcRenderer } = window.fairCopy.electron
+const fairCopy = window.fairCopy
 
 const untitledDocumentTitle = "Untitled Document"
 const resizeRefreshRate = 100
@@ -33,14 +33,15 @@ export default class MainWindow extends Component {
 
     componentDidMount() {
         const {teiDocument} = this.state
+        const {services} = fairCopy
         this.setTitle(null)
 
         // Receive open and save file events from the main process
-        ipcRenderer.on('fileOpened', (event, filePath) => this.openFile(filePath))
-        ipcRenderer.on('requestSave', () => this.requestSave())        
-        ipcRenderer.on('fileSaved', (event, filePath) => this.save(filePath))      
-        ipcRenderer.on('fileNew', (event) => this.newFile() )
-        ipcRenderer.on('openPrint', (event) => this.openPrint() )
+        services.ipcRegisterCallback('fileOpened', (event, filePath) => this.openFile(filePath))
+        services.ipcRegisterCallback('requestSave', () => this.requestSave())        
+        services.ipcRegisterCallback('fileSaved', (event, filePath) => this.save(filePath))      
+        services.ipcRegisterCallback('fileNew', (event) => this.newFile() )
+        services.ipcRegisterCallback('openPrint', (event) => this.openPrint() )
 
         window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
 
@@ -113,7 +114,7 @@ export default class MainWindow extends Component {
     requestSave = () => {
         const { filePath } = this.state
         if( filePath === null ) {
-            ipcRenderer.send( 'openSaveFileDialog' )
+            fairCopy.services.ipcSend( 'openSaveFileDialog' )
         } else {
             this.save(filePath)
         }
