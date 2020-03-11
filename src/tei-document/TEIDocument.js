@@ -1,9 +1,10 @@
 import {DOMSerializer} from "prosemirror-model"
 import {EditorState, TextSelection} from "prosemirror-state"
-import {EditorView} from "prosemirror-view"
+import {EditorView } from "prosemirror-view"
 import {keymap} from "prosemirror-keymap"
 import {history} from "prosemirror-history"
 import {baseKeymap} from "./basekeymap"
+import {highlighter} from "./highlighter"
 import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 
@@ -28,7 +29,8 @@ export default class TEIDocument {
             keymap(baseKeymap),
             dropCursor(),
             gapCursor(),
-            history()
+            history(),
+            // TODO highlighter()
         ]
     }
 
