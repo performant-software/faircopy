@@ -11,8 +11,8 @@ const onMainWindowClose = () => {
 }
 
 function createApplicationWindowManager () {
-  let debugMode = ( process.argv[3] === 'debug' )
-  appWindowManager = new ApplicationWindowManager(app, debugMode, onMainWindowClose)
+  const debugMode = process.env.FAIRCOPY_DEBUG_MODE
+  appWindowManager = new ApplicationWindowManager(app, onMainWindowClose)
   if( debugMode ) {
     appWindowManager.createTEIEditorWindow('test-docs/je_example.xml').then(() => {
       console.log("TEI Editor Ready - Loading example text.")   

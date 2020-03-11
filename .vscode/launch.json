@@ -22,8 +22,8 @@
             "windows": {
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
             },
+            "env": { "FAIRCOPY_DEBUG_MODE": "true" },
             "program": "${workspaceRoot}/public/electron.js",
-            "args": ["debug"],
             "protocol": "inspector",
         }
     ]

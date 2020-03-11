@@ -9,12 +9,12 @@ const distBaseDir = __dirname
 
 class ApplicationWindowManager {
 
-    constructor(app, debugMode, onClose) {
+    constructor(app, onClose) {
         this.mainWindow = null
         this.noteWindows = {}
         this.app = app
         this.onClose = onClose
-        this.debugMode = debugMode
+        this.debugMode = ( process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )
         this.baseDir = (this.debugMode) ? debugBaseDir : distBaseDir
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)

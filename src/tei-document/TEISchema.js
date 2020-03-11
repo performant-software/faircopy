@@ -11,16 +11,16 @@ export default class TEISchema {
         this.issueSubDocumentID = issueSubDocumentID
         this.pastedNoteBuffer = []
 
-        const { schemaSpec, elements, attrs } = this.parseSchemaConfig('config/tei-simple.json')
+        const { schemaSpec, elements, attrs } = this.parseSchemaConfig('tei-simple.json')
         this.elements = elements
         this.attrs = attrs
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
-        this.menuGroups = this.parseMenuGroups('config/menu-groups.json')
+        this.menuGroups = this.parseMenuGroups('menu-groups.json')
     }
 
     parseMenuGroups(menuGroupsConfigFile) {
-        const json = fairCopy.services.readFileSync(menuGroupsConfigFile)
+        const json = fairCopy.services.loadConfigFile(menuGroupsConfigFile)
         const menuEntries = JSON.parse(json)
 
         const menuGroups = {}
@@ -39,7 +39,7 @@ export default class TEISchema {
     }
 
     parseSchemaConfig(schemaConfigFile) {
-        const json = fairCopy.services.readFileSync(schemaConfigFile)
+        const json = fairCopy.services.loadConfigFile(schemaConfigFile)
         const teiSimple = JSON.parse(json)
 
         const elements = {}
