@@ -12,7 +12,7 @@ import {buildInputRules} from "./inputrules"
 import TEISchema from "./TEISchema"
 import {teiTemplate} from "./tei-template"
 
-const fs = window.fairCopy.fs
+const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
@@ -120,7 +120,7 @@ export default class TEIDocument {
     }
 
     load( filePath ) {
-        const text = fs.readFileSync(filePath, "utf8")
+        const text = fairCopy.services.readFileSync(filePath)
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
@@ -158,11 +158,7 @@ export default class TEIDocument {
         bodyEl.innerHTML = div.innerHTML
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
 
-        fs.writeFileSync(saveFilePath, fileContents, (err) => {
-            if (err) {
-                console.log(err)
-            } 
-        })
+        fairCopy.services.writeFileSync(saveFilePath, fileContents)
         this.teiSchema.teiMode = false
         this.changedSinceLastSave = false
     }

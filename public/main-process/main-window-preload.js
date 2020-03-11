@@ -1,5 +1,8 @@
+
+const preloadServices = require('./preload-services')
+
 window.fairCopy = {
     rootComponent: "MainWindow",
     electron: require("electron"),
-    fs: require('fs')
+    services: preloadServices.services
 }

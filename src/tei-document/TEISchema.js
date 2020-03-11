@@ -2,7 +2,7 @@ import {Schema} from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
 
-const fs = window.fairCopy.fs
+const fairCopy = window.fairCopy
 
 export default class TEISchema {
 
@@ -20,7 +20,7 @@ export default class TEISchema {
     }
 
     parseMenuGroups(menuGroupsConfigFile) {
-        const json = fs.readFileSync(menuGroupsConfigFile, "utf8")
+        const json = fairCopy.services.readFileSync(menuGroupsConfigFile)
         const menuEntries = JSON.parse(json)
 
         const menuGroups = {}
@@ -39,7 +39,7 @@ export default class TEISchema {
     }
 
     parseSchemaConfig(schemaConfigFile) {
-        const json = fs.readFileSync(schemaConfigFile, "utf8")
+        const json = fairCopy.services.readFileSync(schemaConfigFile)
         const teiSimple = JSON.parse(json)
 
         const elements = {}

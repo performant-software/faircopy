@@ -6,7 +6,7 @@ const { ApplicationWindowManager } = require('./main-process/ApplicationWindowMa
 // be closed automatically when the JavaScript object is garbage collected.
 let appWindowManager
 
-onMainWindowClose = () => {
+const onMainWindowClose = () => {
   appWindowManager = null
 }
 

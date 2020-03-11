@@ -102,9 +102,10 @@ class ApplicationWindowManager {
     openFileMenu = () => {
         dialog.showOpenDialog( {
             properties: [ 'openFile' ]
-        }, (files) => {
-          if( files && files.length > 0 ) {
-            this.mainWindow.webContents.send('fileOpened', files[0])
+        }).then(files => {
+          console.log('dsadsadsadsadsa')
+          if( files && files.filePaths.length > 0 ) {
+            this.mainWindow.webContents.send('fileOpened', files.filePaths[0])
           }
         })
     }
