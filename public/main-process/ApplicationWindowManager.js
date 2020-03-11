@@ -31,6 +31,7 @@ class ApplicationWindowManager {
         width: 1440,
         height: 900,
         webPreferences: {
+            enableRemoteModule: false,
             preload: `${this.baseDir}/main-window-preload.js`
         }
       })
@@ -72,6 +73,7 @@ class ApplicationWindowManager {
           height: 500,
           frame: false,
           webPreferences: {
+              enableRemoteModule: false,
               preload: `${this.baseDir}/note-window-preload.js`
           }
       })
