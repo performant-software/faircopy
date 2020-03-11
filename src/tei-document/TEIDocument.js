@@ -141,7 +141,7 @@ export default class TEIDocument {
 
     save(saveFilePath) {
         // Override save file for testing
-        if( process.env.REACT_APP_DEBUG_MODE) {
+        if( fairCopy.services.isDebugMode() ) {
             saveFilePath = 'test-docs/je_example_out.xml'
         }
 

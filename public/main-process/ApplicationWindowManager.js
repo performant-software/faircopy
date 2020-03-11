@@ -1,4 +1,5 @@
 const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
+const { isDebugMode } = require('./preload-services').services
 
 // TODO detect PC
 const isMac = true
@@ -14,8 +15,7 @@ class ApplicationWindowManager {
         this.noteWindows = {}
         this.app = app
         this.onClose = onClose
-        this.debugMode = ( process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )
-        this.baseDir = (this.debugMode) ? debugBaseDir : distBaseDir
+        this.baseDir = isDebugMode() ? debugBaseDir : distBaseDir
         const template = this.mainMenuTemplate()
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)     
@@ -40,7 +40,7 @@ class ApplicationWindowManager {
       browserWindow.on('closed', this.onClose )
 
       // and load the index.html of the app.
-      if( this.debugMode ) {
+      if( isDebugMode() ) {
         await browserWindow.loadURL('http://localhost:3000')
         browserWindow.webContents.openDevTools({ mode: 'bottom'} )
       } else {
@@ -89,7 +89,7 @@ class ApplicationWindowManager {
       }
 
       // and load the index.html of the app.
-      if( this.debugMode ) {
+      if( isDebugMode() ) {
           browserWindow.loadURL('http://localhost:3000/index.html').then(loadNote)
       } else {
           browserWindow.loadFile(indexFilePath).then(loadNote)

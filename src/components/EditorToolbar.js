@@ -9,7 +9,7 @@ import { addMark } from "../tei-document/commands"
 
 const fairCopy = window.fairCopy
 
-const versionNumber = "0.4.2"
+const versionNumber = fairCopy.services.getVersionNumber()
 const mainWindowBackground = "#ddf8ff"
 const noteWindowBackground = "#e0ddff"
 

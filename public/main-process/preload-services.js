@@ -1,6 +1,8 @@
 const fs = require('fs')
 const electron = require("electron")
 
+var versionNumber
+
 const readFileSync = function readFileSync(filePath) {
     return fs.readFileSync(filePath, "utf8")
 }
@@ -13,11 +15,23 @@ const writeFileSync = function writeFileSync(filePath, contents) {
     })
 }
 
+const isDebugMode = function isDebugMode() {
+ return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
+}
+
+const getVersionNumber = function getVersionNumber() {
+    if( versionNumber ) return versionNumber
+    const debugPath = `${process.cwd()}/public/version.txt`
+    const distPath = `${__dirname}/../version.txt`
+    const versionFilePath = isDebugMode() ? debugPath : distPath
+    versionNumber = readFileSync(versionFilePath)
+    return versionNumber
+}
+
 const loadConfigFile = function loadAppData(filePath) {
     const debugBaseDir = `${process.cwd()}/public/main-process/config`
     const distBaseDir = `${__dirname}/config`
-    const debugMode = ( process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )
-    const baseDir = (debugMode) ? debugBaseDir : distBaseDir
+    const baseDir = isDebugMode() ? debugBaseDir : distBaseDir
     return readFileSync(`${baseDir}/${filePath}`)
 }
 
@@ -33,4 +47,13 @@ const ipcSend = function ipcSend( eventID, ...params) {
     electron.ipcRenderer.send(eventID,...params)
 }
 
-exports.services = { readFileSync, writeFileSync, ipcRegisterCallback, ipcSend, readClipBoardHTML, loadConfigFile }
+exports.services = { 
+    readFileSync, 
+    writeFileSync, 
+    ipcRegisterCallback, 
+    ipcSend, 
+    readClipBoardHTML, 
+    loadConfigFile, 
+    isDebugMode,
+    getVersionNumber 
+}
