@@ -166,7 +166,7 @@ class ApplicationWindowManager {
         return [
           // { role: 'appMenu' }
           ...(process.platform === 'darwin' ? [{
-            label: this.app.getName(),
+            label: this.app.name,
             submenu: [
               { role: 'about' },
               { type: 'separator' },
