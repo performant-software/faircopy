@@ -21,7 +21,7 @@ const drawHighlight = function(state) {
         const marks = $anchor.marks()
         for( let mark of marks ) {
             // TODO this could be a heat map of the selection overlaps
-            const extent = markExtent($anchor,mark)
+            const extent = markExtent($anchor,mark,doc)
             decorations.push(
                 Decoration.inline(extent.from, extent.to, {style: "background: yellow"})
             )
@@ -30,6 +30,30 @@ const drawHighlight = function(state) {
     }
 }
 
-function markExtent($anchor, mark) {
+function markExtent($anchor, mark, doc) {
     // TODO - figure out the range of this mark in either
+
+    // find the parent node and note its length
+    // walk from index in parent node backwards and forwards until we encounter text wo/this mark
+    // do not pass node boundaries on either side
+    const parentNode = $anchor.parent
+    const pos = $anchor.pos
+    const parentStartPos = pos - $anchor.parentOffset
+    const parentEndPos = parentStartPos + parentNode.nodeSize
+    let from = pos
+    let to = pos
+
+    for( let i=pos-1; i > parentStartPos; i-- ) {
+        if( doc.rangeHasMark( i, i+1, mark.type ) ) {
+            from = i
+        } else break
+    }
+
+    for( let i=pos; i < parentEndPos; i++ ) {
+        if( doc.rangeHasMark( i, i+1, mark.type ) ) {
+            to = i
+        } else break
+    }
+
+    return { from, to }
 }

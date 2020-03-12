@@ -30,7 +30,7 @@ export default class TEIDocument {
             dropCursor(),
             gapCursor(),
             history(),
-            // TODO highlighter()
+            highlighter()
         ]
     }
 
