@@ -22,11 +22,7 @@ export function addMark(markType, attrs) {
             if ($cursor) {
                 dispatch(state.tr.addStoredMark(markType.create(attrs)))
             } else {
-                let has = false, tr = state.tr
-                for (let i = 0; !has && i < ranges.length; i++) {
-                    let {$from, $to} = ranges[i]
-                    has = state.doc.rangeHasMark($from.pos, $to.pos, markType)
-                }
+                const {tr} = state
                 for (let i = 0; i < ranges.length; i++) {
                     let {$from, $to} = ranges[i]
                     tr.addMark($from.pos, $to.pos, markType.create(attrs))
@@ -69,17 +65,36 @@ export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
     if( element instanceof Node ) {
         tr.setNodeMarkup(pos, undefined, newAttrs)
         tr.setSelection( NodeSelection.create(tr.doc, pos) )
-    } else {            
-        $anchor.parent.descendants( (node) => {
-            const {marks} = node
-            if( marks.includes(element) ) {
-                const nextMark = element.type.create( newAttrs )
-                const from = pos - $anchor.textOffset
-                const to = from + node.textContent.length
-                tr.removeMark(from,to,element)
-                tr.addMark(from,to,nextMark)
-            }
-        })
+    } else {
+        const { from, to } = markExtent($anchor,element,tr.doc)
+        const nextMark = element.type.create( newAttrs )
+        tr.removeMark(from,to,element)
+        tr.addMark(from,to,nextMark)
     }
     return tr
+}
+
+export function markExtent($anchor, mark, doc) {
+    const parentNode = $anchor.parent
+    const pos = $anchor.pos
+    const parentStartPos = pos - $anchor.parentOffset
+    const parentEndPos = parentStartPos + parentNode.nodeSize
+    let from = pos
+    let to = pos
+
+    // walk from index in parent node backwards until we encounter text wo/this mark
+    for( let i=pos-1; i > parentStartPos; i-- ) {
+        if( doc.rangeHasMark( i, i+1, mark.type ) ) {
+            from = i
+        } else break
+    }
+
+    // now walk forwards, doing the same thing
+    for( let i=pos; i < parentEndPos; i++ ) {
+        if( doc.rangeHasMark( i, i+1, mark.type ) ) {
+            to = i+1
+        } else break
+    }
+
+    return { from, to }
 }
