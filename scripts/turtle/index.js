@@ -116,7 +116,7 @@ function createPhraseElements(specs) {
         phraseElements.push({
             name: phraseMark,
             pmType: "mark",
-            defaultAttrs: [],
+            validAttrs: [],
             desc: specs[phraseMark].description
         })
     }
@@ -129,7 +129,7 @@ function createDramaElements(specs) {
         "pmType": "node",
         "content": "chunk*",
         "group": "block",
-        "defaultAttrs": [],
+        "validAttrs": [],
         "desc": specs['sp'].description
     }]
 }
@@ -141,7 +141,7 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "(chunk|block)*",
             "group": "block",
-            "defaultAttrs": [],
+            "validAttrs": [],
             "desc": specs['div'].description
         },
         {
@@ -149,19 +149,19 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "inline*",
             "group": "chunk",
-            "defaultAttrs": [],
+            "validAttrs": [],
             "desc": "marks paragraphs in prose."
         },
         {
             "name": "pb",
             "pmType": "inline-node",
-            "defaultAttrs": [], // ["facs"],  // TODO remove
+            "validAttrs": [], // ["facs"],  // TODO remove
             "desc": "marks the beginning of a new page in a paginated document."
         },
         {
             "name": "note",
             "pmType": "inline-node",
-            "defaultAttrs": ["id"], // TODO remove
+            "validAttrs": ["id"], // TODO remove
             "desc": "contains a note or annotation."
         }
     ]
@@ -191,7 +191,7 @@ function createAttributes( elements, specs ) {
             if( !attrDefs[attr.ident] ) {
                 attrDefs[attr.ident] = attr
             }
-            element.defaultAttrs.push( attr.ident )
+            element.validAttrs.push( attr.ident )
         }
     }
 
@@ -227,7 +227,7 @@ async function run() {
     }
 
     const teiSimpleConfig = { elements, attrs, vocabs }
-    fs.writeFileSync("config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
+    fs.writeFileSync("public/main-process/config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
 }
 
 // A wise turtle that understands ODD and ProseMirror

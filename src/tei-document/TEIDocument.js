@@ -121,6 +121,47 @@ export default class TEIDocument {
         return subDocID
     }
 
+    populateActiveAttrs(doc) {
+        const activeAttrs = {}
+
+        function compareToActive( element ) {
+            const {attrs, type} = element
+            const {name} = type
+            for( const attrName of Object.keys(attrs)) {
+                const val = attrs[attrName]
+                if( val && val !== "" ) {
+                    if( !activeAttrs[name] ) { 
+                        activeAttrs[name] = [ attrName ]
+                    } else {
+                        if( !activeAttrs[name].includes(attrName) ) {
+                            activeAttrs[name].push(attrName)
+                        }
+                    }    
+                }
+            }   
+        }
+
+        function scanNode(node) {
+            // first, look at the attrs for the node
+            compareToActive(node)
+
+            // then look at the attrs for each mark
+            for( const mark of node.marks ) {
+                compareToActive(mark)
+            }
+
+            // inspect children of this node
+            for( let i=0; i < node.childCount; i++ ) {
+                const child = node.child(i)
+                scanNode(child)
+            }            
+        }
+
+        scanNode(doc)
+
+        return activeAttrs
+    }
+
     load( filePath ) {
         const text = fairCopy.services.readFileSync(filePath)
         const parser = new DOMParser();
@@ -128,6 +169,7 @@ export default class TEIDocument {
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         const doc = this.teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
+        this.activeAttrs = this.populateActiveAttrs(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 

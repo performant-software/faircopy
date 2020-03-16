@@ -5,7 +5,7 @@
 			"pmType": "node",
 			"content": "(chunk|block)*",
 			"group": "block",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -46,7 +46,7 @@
 			"pmType": "node",
 			"content": "inline*",
 			"group": "chunk",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -78,7 +78,7 @@
 		{
 			"name": "pb",
 			"pmType": "inline-node",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -113,7 +113,7 @@
 		{
 			"name": "note",
 			"pmType": "inline-node",
-			"defaultAttrs": [
+			"validAttrs": [
 				"id",
 				"anchored",
 				"targetEnd",
@@ -152,7 +152,7 @@
 		{
 			"name": "ref",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -189,7 +189,7 @@
 		{
 			"name": "name",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -247,7 +247,7 @@
 		{
 			"name": "rs",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -282,7 +282,7 @@
 		{
 			"name": "num",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"type",
 				"value",
 				"xml:id",
@@ -320,7 +320,7 @@
 		{
 			"name": "measure",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"type",
 				"xml:id",
 				"n",
@@ -356,7 +356,7 @@
 		{
 			"name": "time",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -422,7 +422,7 @@
 		{
 			"name": "date",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -488,7 +488,7 @@
 		{
 			"name": "email",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -517,7 +517,7 @@
 		{
 			"name": "expan",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -548,7 +548,7 @@
 		{
 			"name": "abbr",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"type",
 				"xml:id",
 				"n",
@@ -580,7 +580,7 @@
 		{
 			"name": "orig",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -609,7 +609,7 @@
 		{
 			"name": "supplied",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"reason",
 				"xml:id",
 				"n",
@@ -651,7 +651,7 @@
 		{
 			"name": "corr",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -684,7 +684,7 @@
 		{
 			"name": "reg",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -717,7 +717,7 @@
 		{
 			"name": "unclear",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"reason",
 				"agent",
 				"xml:id",
@@ -760,7 +760,7 @@
 		{
 			"name": "del",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -807,7 +807,7 @@
 		{
 			"name": "sic",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -836,7 +836,7 @@
 		{
 			"name": "add",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -884,7 +884,7 @@
 		{
 			"name": "term",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -923,7 +923,7 @@
 		{
 			"name": "foreign",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -952,7 +952,7 @@
 		{
 			"name": "title",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"level",
 				"type",
 				"xml:id",
@@ -1006,7 +1006,7 @@
 		{
 			"name": "hi",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -1036,7 +1036,7 @@
 		{
 			"name": "rhyme",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"label",
 				"xml:id",
 				"n",
@@ -1068,7 +1068,7 @@
 		{
 			"name": "seg",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -1108,7 +1108,7 @@
 		{
 			"name": "s",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
@@ -1147,7 +1147,7 @@
 		{
 			"name": "measure",
 			"pmType": "mark",
-			"defaultAttrs": [
+			"validAttrs": [
 				"type",
 				"xml:id",
 				"n",
@@ -1185,7 +1185,7 @@
 			"pmType": "node",
 			"content": "chunk*",
 			"group": "block",
-			"defaultAttrs": [
+			"validAttrs": [
 				"xml:id",
 				"n",
 				"xml:lang",
