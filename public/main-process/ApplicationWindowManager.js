@@ -102,7 +102,6 @@ class ApplicationWindowManager {
         dialog.showOpenDialog( {
             properties: [ 'openFile' ]
         }).then(files => {
-          console.log('dsadsadsadsadsa')
           if( files && files.filePaths.length > 0 ) {
             this.mainWindow.webContents.send('fileOpened', files.filePaths[0])
           }
