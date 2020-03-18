@@ -1,4 +1,4 @@
-import { NodeSelection } from "prosemirror-state"
+import { NodeSelection, TextSelection } from "prosemirror-state"
 import { Node } from "prosemirror-model"
 
 function markApplies(doc, ranges, type) {
@@ -26,6 +26,11 @@ export function addMark(markType, attrs) {
                 for (let i = 0; i < ranges.length; i++) {
                     let {$from, $to} = ranges[i]
                     tr.addMark($from.pos, $to.pos, markType.create(attrs))
+                    // change the range to a cursor at the end of the first range
+                    if( i === 0 ) {
+                        const cursorPos = tr.doc.resolve($to.pos)
+                        tr.setSelection(new TextSelection(cursorPos,cursorPos))                
+                    }
                 }
                 dispatch(tr.scrollIntoView())
             }
