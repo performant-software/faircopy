@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-import {EditorState, TextSelection} from "prosemirror-state"
 import { debounce } from "debounce";
 
 import TEIDocument from "../tei-document/TEIDocument"
