@@ -46,38 +46,39 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderAttributes(element,vocabs) {
+    renderAttributes(element,activeAttrs,vocabs) {
         const {attrs} = element
-        const keys = Object.keys(attrs)
         const {teiSchema} = this.props.teiDocument
         const attrSpecs = teiSchema.attrs
-
         let attrFields = []
-        for( const key of keys ) {
-            const fieldKey = `attr-${key}`
-            const attr = attrs[key] ? attrs[key] : ""
-            const attrSpec = attrSpecs[key]
-            const vocab = vocabs[key]
-            if( !attrSpec.hidden ) {
-                attrFields.push(
-                    <div className="attrTextField" key={fieldKey} >
-                        { attrSpec && attrSpec.type === 'select' ? 
-                            this.renderSelectField(element,fieldKey,key,attr,vocab)
-                        :
-                            <TextField
-                                id={fieldKey}
-                                label={key}
-                                value={attr}                        
-                                fullWidth={true}
-                                onChange={this.changeAttributeHandler(element,key)}
-                            />
-                        }
-                    </div>
-                )    
-            }
+
+        if( activeAttrs ) {
+            for( const key of activeAttrs ) {
+                const fieldKey = `attr-${key}`
+                const attr = attrs[key] ? attrs[key] : ""
+                const attrSpec = attrSpecs[key]
+                const vocab = vocabs[key]
+                if( !attrSpec.hidden ) {
+                    attrFields.push(
+                        <div className="attrTextField" key={fieldKey} >
+                            { attrSpec && attrSpec.type === 'select' ? 
+                                this.renderSelectField(element,fieldKey,key,attr,vocab)
+                            :
+                                <TextField
+                                    id={fieldKey}
+                                    label={key}
+                                    value={attr}                        
+                                    fullWidth={true}
+                                    onChange={this.changeAttributeHandler(element,key)}
+                                />
+                            }
+                        </div>
+                    )    
+                }
+            }                
         }
 
-        return ( attrFields ? 
+        return ( attrFields.length > 0 ? 
             <div className="attributeFields">
                 {attrFields}
             </div> 
@@ -88,6 +89,7 @@ export default class ParameterDrawer extends Component {
     renderElement(element,key) {
         const { width } = this.props
         const { elements } = this.props.teiDocument.teiSchema
+        const { activeAttrs } = this.props.teiDocument
         const name = element.type.name
         const elementSpec = elements[name]
         const style = { width:width-40 }
@@ -95,7 +97,7 @@ export default class ParameterDrawer extends Component {
         return (
             <div key={key} style={style}>
                 <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
-                { this.renderAttributes(element,elementSpec.vocabs) }
+                { this.renderAttributes(element,activeAttrs[name],elementSpec.vocabs) }
             </div>
         )    
     }

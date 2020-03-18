@@ -18,6 +18,7 @@ const fairCopy = window.fairCopy
 export default class TEIDocument {
 
     constructor(onStateChange) {
+        this.subDocIDs = []
         this.subDocCounter = 0
         this.subDocPrefix = `note-${Date.now()}-`
         this.onStateChange = onStateChange
@@ -105,7 +106,9 @@ export default class TEIDocument {
     }
 
     issueSubDocumentID = () => {
-        return `${this.subDocPrefix}${this.subDocCounter++}`
+        const nextID = `${this.subDocPrefix}${this.subDocCounter++}`
+        this.subDocIDs.push(nextID)
+        return nextID
     }
 
     moveSubDocument( oldKey, newKey ) {
@@ -157,7 +160,15 @@ export default class TEIDocument {
             }            
         }
 
+        // scan the main doc
         scanNode(doc)
+
+        // scan any subdocs
+        for( const subDocID of this.subDocIDs ) {
+            const noteJSON = JSON.parse( localStorage.getItem(subDocID) )
+            const subDoc = this.teiSchema.schema.nodeFromJSON(noteJSON);
+            scanNode(subDoc)
+        }
 
         return activeAttrs
     }
@@ -181,6 +192,17 @@ export default class TEIDocument {
         // the tags supported by the schema
         // also embeds the technical documentation
         // in the correct language
+    }
+
+    openNote( noteID ) {
+        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
+        const doc = this.teiSchema.schema.nodeFromJSON(noteJSON);
+        this.activeAttrs = this.populateActiveAttrs(doc)
+        return EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, 0),
+            plugins: this.plugins
+        })
     }
 
     save(saveFilePath) {

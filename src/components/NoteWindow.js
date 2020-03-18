@@ -45,13 +45,7 @@ export default class NoteWindow extends Component {
     openNote( noteID ) {
         const { teiDocument } = this.state
         const { editorView } = teiDocument
-        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const doc = teiDocument.teiSchema.schema.nodeFromJSON(noteJSON);
-        const newEditorState = EditorState.create({
-            doc,
-            selection: TextSelection.create(doc, 0),
-            plugins: teiDocument.plugins
-        })
+        const newEditorState = teiDocument.openNote(noteID)
         if( newEditorState ) {
             editorView.updateState( newEditorState )        
             editorView.focus();
