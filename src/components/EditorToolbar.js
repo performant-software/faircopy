@@ -61,11 +61,12 @@ export default class EditorToolbar extends Component {
         }
     }
 
-    createPbHandler( pbNode, editorView ) {
+    createPbHandler( editorView ) {
         return () => {
             const { state } = editorView
             const { tr, selection } = state
             const { $anchor } = selection
+            const pbNode = state.schema.node('pb')
             tr.insert($anchor.pos, pbNode) 
             editorView.dispatch(tr)
             editorView.focus()
@@ -178,7 +179,7 @@ export default class EditorToolbar extends Component {
                         break
                     }
                     case 'pb': {
-                        const onClick = this.createPbHandler( schema.nodes['pb'], editorView )
+                        const onClick = this.createPbHandler( editorView )
                         groupButtons.push( this.renderButton(element.name, onClick) )
                         break
                     }
