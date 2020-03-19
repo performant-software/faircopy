@@ -46,6 +46,26 @@ export default class ParameterDrawer extends Component {
         )
     }
 
+    renderAvailableAttrsSelectField(fieldKey,availableAttrs) {
+        const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
+        for( const attr of availableAttrs ) {
+            menuOptions.push( <MenuItem key={`${fieldKey}-${attr}`} value={attr}>{attr}</MenuItem>)
+        }
+
+        return (
+            <FormControl id={fieldKey}>
+                <InputLabel>Available Attributes:</InputLabel>
+                <Select
+                    className="attributeSelectField"
+                    value={""}
+                    fullWidth={true}
+                >
+                    { menuOptions }
+                </Select>
+            </FormControl>
+        )
+    }
+
     renderAttributes(element,activeAttrs,vocabs) {
         const {attrs} = element
         const {teiSchema} = this.props.teiDocument
@@ -87,10 +107,11 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement(element,key) {
-        const { width } = this.props
-        const { elements } = this.props.teiDocument.teiSchema
-        const { activeAttrs } = this.props.teiDocument
+        const { width, teiDocument } = this.props
+        const { elements } = teiDocument.teiSchema
+        const { activeAttrs } = teiDocument
         const name = element.type.name
+        const availableAttrs = teiDocument.getAvailableAttrs(name)
         const elementSpec = elements[name]
         const style = { width:width-40 }
 
@@ -98,6 +119,7 @@ export default class ParameterDrawer extends Component {
             <div key={key} style={style}>
                 <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
                 { this.renderAttributes(element,activeAttrs[name],elementSpec.vocabs) }
+                { this.renderAvailableAttrsSelectField(`availAttrs-${name}`,availableAttrs) }
             </div>
         )    
     }

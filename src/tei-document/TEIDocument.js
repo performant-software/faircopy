@@ -20,6 +20,7 @@ export default class TEIDocument {
     constructor(onStateChange) {
         this.subDocIDs = []
         this.subDocCounter = 0
+        this.activeAttrs = {}
         this.subDocPrefix = `note-${Date.now()}-`
         this.onStateChange = onStateChange
         this.teiSchema = new TEISchema(this.issueSubDocumentID);
@@ -122,6 +123,20 @@ export default class TEIDocument {
         const subDocID = this.issueSubDocumentID()
         localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
         return subDocID
+    }
+
+    getAvailableAttrs(elementName) {
+        const { elements } = this.teiSchema
+        const { validAttrs } = elements[elementName]
+        const activeAttrs = this.activeAttrs[elementName]
+        const availableAttrs = []
+        for( const attr of validAttrs ) {
+            if( !activeAttrs.includes(attr) ) {
+                availableAttrs.push(attr)
+            }
+        }
+
+        return availableAttrs
     }
 
     populateActiveAttrs(doc) {
