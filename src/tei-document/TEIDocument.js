@@ -129,6 +129,10 @@ export default class TEIDocument {
         const { elements } = this.teiSchema
         const { validAttrs } = elements[elementName]
         const activeAttrs = this.activeAttrs[elementName]
+
+        // if there are no active attrs, then all are available
+        if( !activeAttrs ) return validAttrs.sort()
+
         const availableAttrs = []
         for( const attr of validAttrs ) {
             if( !activeAttrs.includes(attr) ) {

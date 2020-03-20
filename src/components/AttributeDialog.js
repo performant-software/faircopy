@@ -8,15 +8,17 @@ export default class AttributeDialog extends Component {
 
     renderTable() {
         const {elementName, teiDocument} = this.props
+        const {attrs} = teiDocument.teiSchema
         const availableAttrs = teiDocument.getAvailableAttrs(elementName)
 
         const tableRows = []
-        for( const attr of availableAttrs ) {
+        for( const attrName of availableAttrs ) {
+            const attr = attrs[attrName]
             tableRows.push(
-                <TableRow key={`attr-row-${attr}`} >
-                    <TableCell>{attr}</TableCell>
+                <TableRow key={`attr-row-${attrName}`} >
                     <TableCell></TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{attrName}</TableCell>
+                    <TableCell>{attr.description}</TableCell>
                 </TableRow>    
             )
         }
@@ -25,7 +27,7 @@ export default class AttributeDialog extends Component {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Name</TableCell>
+                        <TableCell></TableCell>
                         <TableCell>Description</TableCell>
                         <TableCell>Notes</TableCell>
                     </TableRow>

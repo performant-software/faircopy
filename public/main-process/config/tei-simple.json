@@ -1216,303 +1216,403 @@
 	],
 	"attrs": {
 		"xml:id": {
+			"description": "provides a unique identifier for the element bearing the attribute.",
 			"type": "text"
 		},
 		"n": {
+			"description": "gives a number (or other label) for an element, which is not necessarily unique within\n        the document.",
 			"type": "text"
 		},
 		"xml:lang": {
+			"description": "indicates the language of the element content using a <soCalled>tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
 			"type": "text"
 		},
 		"xml:base": {
+			"description": "provides a base URI reference with which applications can resolve relative URI\n        references into absolute URI references.",
 			"type": "text"
 		},
 		"xml:space": {
+			"description": "indicates the intent that applications preserve all white space",
 			"type": "text"
 		},
 		"rend": {
+			"description": "indicates how the element in question was rendered or presented in the source text.",
 			"type": "text"
 		},
 		"style": {
+			"description": "contains an expression in some formal style definition language\nwhich defines the rendering or presentation\nused for this element in the source text",
 			"type": "text"
 		},
 		"rendition": {
+			"description": "points to a description of the rendering or presentation used for this element in the\n        source text.",
 			"type": "text"
 		},
 		"corresp": {
+			"description": "points to elements that correspond to the current\n      element in some way.",
 			"type": "text"
 		},
 		"synch": {
+			"description": "points to elements that are synchronous with the current\n      element.",
 			"type": "text"
 		},
 		"sameAs": {
+			"description": "points to an element that is the same as the current\n      element.",
 			"type": "text"
 		},
 		"copyOf": {
+			"description": "points to an element of which the current element is a\n\tcopy.",
 			"type": "text"
 		},
 		"next": {
+			"description": "points to the next element of a virtual aggregate of which\n      the current element is part.",
 			"type": "text"
 		},
 		"prev": {
+			"description": "points to the previous element of a virtual aggregate of\n      which the current element is part.",
 			"type": "text"
 		},
 		"exclude": {
+			"description": "points to elements that are in exclusive alternation\n      with the current element.",
 			"type": "text"
 		},
 		"select": {
+			"description": "selects one or more alternants; if one alternant is\n      selected, the ambiguity or uncertainty is marked as resolved. If\n      more than one alternant is selected, the degree of ambiguity or\n      uncertainty is marked as reduced by the number of alternants not\n      selected.",
 			"type": "text"
 		},
 		"ana": {
+			"description": "indicates one or more elements containing interpretations of the\nelement on which the <att>ana</att> attribute appears.",
 			"type": "text"
 		},
 		"facs": {
+			"description": "points to all or part of an image which corresponds with the content of the element.",
 			"type": "text"
 		},
 		"change": {
+			"description": "points to one or more <gi>change</gi> elements documenting\n      a state or revision campaign to which the element bearing this\n      attribute and its children have been assigned by the encoder.",
 			"type": "text"
 		},
 		"cert": {
+			"description": "signifies the degree of certainty associated with the intervention or interpretation.",
 			"type": "text"
 		},
 		"resp": {
+			"description": "indicates the agency responsible for the intervention or interpretation, for example an\n        editor or transcriber.",
 			"type": "text"
 		},
 		"source": {
+			"description": "specifies the source from which some aspect of\n        this element is drawn.",
 			"type": "text"
 		},
 		"org": {
+			"description": "the immediate contents of this\n\t\t  element are regarded as forming a logical unit, to be\n\t\t  processed in sequence.",
 			"type": "text"
 		},
 		"sample": {
+			"description": "division is not a sample.",
 			"type": "text"
 		},
 		"met": {
+			"description": "contains a user-specified encoding for the conventional\nmetrical structure of the element.",
 			"type": "text"
 		},
 		"real": {
+			"description": "contains a user-specified encoding for the actual realization\nof the conventional metrical structure applicable to the element.",
 			"type": "text"
 		},
 		"rhyme": {
+			"description": "specifies the rhyme scheme applicable to a group of verse lines.",
 			"type": "text"
 		},
 		"part": {
+			"description": "this is the final part of a fragmented element",
 			"type": "text"
 		},
 		"type": {
+			"description": "characterizes the element in some sense, using any convenient\n classification scheme or typology.",
 			"type": "text"
 		},
 		"subtype": {
+			"description": "provides a sub-categorization of the element, if needed",
 			"type": "text"
 		},
 		"decls": {
+			"description": "identifies one or more <term>declarable elements</term> within the\nheader, which are understood to apply to the element bearing this\nattribute and its content.",
 			"type": "text"
 		},
 		"hand": {
+			"description": "points to a <gi>handNote</gi> element describing the hand considered responsible for the\n  \t    content of the element concerned.",
 			"type": "text"
 		},
 		"ed": {
+			"description": "supplies a sigil or other arbitrary identifier for the source edition in which\n      the associated feature (for example, a  page, column, or line\n      break) occurs at this point in the text.",
 			"type": "text"
 		},
 		"edRef": {
+			"description": "provides a pointer to the source edition in which\n      the associated feature (for example, a  page, column, or line\n      break) occurs at this point in the text.",
 			"type": "text"
 		},
 		"spanTo": {
+			"description": "The @spanTo attribute must point to an element following the\n\tcurrent element",
 			"type": "text"
 		},
 		"break": {
+			"description": "the encoding does not take any position on this issue.",
 			"type": "text"
 		},
 		"anchored": {
+			"description": "indicates whether the copy text shows the exact place of reference for the note.",
 			"type": "text"
 		},
 		"targetEnd": {
+			"description": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point.",
 			"type": "text"
 		},
 		"place": {
+			"description": " in a predefined space, for example left by an earlier scribe.",
 			"type": "text"
 		},
 		"targetLang": {
+			"description": "specifies the language of the content to be found at the destination referenced by <att>target</att>, using a <soCalled>language tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
 			"type": "text"
 		},
 		"target": {
+			"description": "specifies the destination of the reference by supplying one or more URI References",
 			"type": "text"
 		},
 		"evaluate": {
+			"description": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target.",
 			"type": "text"
 		},
 		"mimeType": {
+			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
 			"type": "text"
 		},
 		"cRef": {
+			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the\n        scheme defined in a <gi>refsDecl</gi> element in the TEI header",
 			"type": "text"
 		},
 		"full": {
+			"description": "the name component is indicated only by\none initial.",
 			"type": "text"
 		},
 		"sort": {
+			"description": "specifies the sort order of the name component in relation to others within the name.",
 			"type": "text"
 		},
 		"role": {
+			"description": "may be used to specify further information about the entity referenced by\nthis name in the form of a set of whitespace-separated values, for example the occupation of a person, or the status of a place.",
 			"type": "text"
 		},
 		"nymRef": {
+			"description": "provides a means of locating the canonical form\n      (<term>nym</term>) of the names associated with the object\n       named by\n      the element bearing it.",
 			"type": "text"
 		},
 		"key": {
+			"description": "provides an externally-defined means of identifying the entity (or entities) being\n        named, using a coded value of some kind.",
 			"type": "text"
 		},
 		"ref": {
+			"description": "provides an explicit means of locating a full definition or identity for the entity being named by\n        means of one or more URIs.",
 			"type": "text"
 		},
 		"calendar": {
+			"description": "indicates the system or calendar to which the\n        date represented by the content of this element belongs.",
 			"type": "text"
 		},
 		"period": {
+			"description": "supplies a pointer to some location defining a\n        named period of time within which the datable item is understood to have occurred.",
 			"type": "text"
 		},
 		"when": {
+			"description": "supplies the value of the date or time in a standard form,\n        e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"notBefore": {
+			"description": "specifies the earliest possible date for the event in\n        standard form, e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"notAfter": {
+			"description": "specifies the latest possible date for the event in\n        standard form, e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"from": {
+			"description": "indicates the starting point of the period in standard form, e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"to": {
+			"description": "indicates the ending point of the period in standard\n        form, e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"when-iso": {
+			"description": "supplies the value of a date or time in a standard form.",
 			"type": "text"
 		},
 		"notBefore-iso": {
+			"description": "specifies the earliest possible date for the event in standard form, e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"notAfter-iso": {
+			"description": "specifies the latest possible date for the event in standard form, e.g. yyyy-mm-dd.",
 			"type": "text"
 		},
 		"from-iso": {
+			"description": "indicates the starting point of the period in standard form.",
 			"type": "text"
 		},
 		"to-iso": {
+			"description": "indicates the ending point of the period in standard form.",
 			"type": "text"
 		},
 		"when-custom": {
+			"description": "supplies the value of a date or time in some custom standard form.",
 			"type": "text"
 		},
 		"notBefore-custom": {
+			"description": "specifies the earliest possible date for the event in some custom standard form.",
 			"type": "text"
 		},
 		"notAfter-custom": {
+			"description": "specifies the latest possible date for the event in some custom standard form.",
 			"type": "text"
 		},
 		"from-custom": {
+			"description": "indicates the starting point of the period in some custom standard form.",
 			"type": "text"
 		},
 		"to-custom": {
+			"description": "indicates the ending point of the period in some custom standard form.",
 			"type": "text"
 		},
 		"datingPoint": {
+			"description": "supplies a pointer to some location defining a named point in time with reference to which the datable item is understood to have occurred",
 			"type": "text"
 		},
 		"datingMethod": {
+			"description": "supplies a pointer to a <gi>calendar</gi> element or other\n        means of interpreting the values of the custom dating attributes.",
 			"type": "text"
 		},
 		"evidence": {
+			"description": "the intervention or interpretation has been made by the editor, cataloguer, or\n            scholar on the basis of their expertise.",
 			"type": "text"
 		},
 		"instant": {
+			"description": "indicates whether this is an instant revision or not.",
 			"type": "text"
 		},
 		"value": {
+			"description": "supplies the value of the number in standard form.",
 			"type": "text"
 		},
 		"atLeast": {
+			"description": "gives a minimum estimated value for the approximate measurement.",
 			"type": "text"
 		},
 		"atMost": {
+			"description": "gives a maximum estimated value for the approximate measurement.",
 			"type": "text"
 		},
 		"min": {
+			"description": "where the measurement summarizes more than one observation\n      or a range, supplies the minimum value\n        observed.",
 			"type": "text"
 		},
 		"max": {
+			"description": "where the measurement summarizes more than one observation\n        or a range, supplies the maximum value\n        observed.",
 			"type": "text"
 		},
 		"confidence": {
+			"description": "specifies the degree of statistical confidence (between zero and one) that a value falls within the range\n        specified by <att>min</att> and <att>max</att>, or the proportion of observed values that fall within that range.",
 			"type": "text"
 		},
 		"unit": {
+			"description": "2²⁰ or 1 048 576 bytes",
 			"type": "text"
 		},
 		"unitRef": {
+			"description": "points to a unique identifier stored in the <att>xml:id</att> of a <gi>unitDef</gi> element that defines a unit of measure.",
 			"type": "text"
 		},
 		"quantity": {
+			"description": "specifies the number of the specified units that\n      comprise the measurement",
 			"type": "text"
 		},
 		"commodity": {
+			"description": "indicates the substance that is being measured",
 			"type": "text"
 		},
 		"dur": {
+			"description": "indicates the length of this element in time.",
 			"type": "text"
 		},
 		"dur-iso": {
+			"description": "indicates the length of this element in time.",
 			"type": "text"
 		},
 		"extent": {
+			"description": "indicates the size of the object concerned using a project-specific vocabulary combining\n        quantity and units in a single string of words.",
 			"type": "text"
 		},
 		"precision": {
+			"description": "characterizes the precision of the values specified by the other attributes.",
 			"type": "text"
 		},
 		"scope": {
+			"description": "measurement applies to only the specified range of instances.",
 			"type": "text"
 		},
 		"reason": {
+			"description": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>.",
 			"type": "text"
 		},
 		"agent": {
+			"description": "damage results from smoke",
 			"type": "text"
 		},
 		"status": {
+			"description": "the deletion is not faulty.",
 			"type": "text"
 		},
 		"cause": {
+			"description": "documents the presumed cause for the intervention.",
 			"type": "text"
 		},
 		"seq": {
+			"description": "assigns a sequence number related to the order in which\n      the encoded features carrying this attribute are believed to have occurred.",
 			"type": "text"
 		},
 		"sortKey": {
+			"description": "supplies the sort key for this element in an index, list or group which contains it.",
 			"type": "text"
 		},
 		"level": {
+			"description": "the title applies to any unpublished material (including\n                                                  theses and dissertations unless\n                                                  published by a commercial press)",
 			"type": "text"
 		},
 		"label": {
+			"description": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates.",
 			"type": "text"
 		},
 		"function": {
+			"description": "characterizes the function of the segment.",
 			"type": "text"
 		},
 		"datcat": {
+			"description": "contains a PID (persistent identifier) that aligns the given element with the appropriate \n        Data Category (or categories) in ISOcat.",
 			"type": "text"
 		},
 		"valueDatcat": {
+			"description": "contains a PID (persistent identifier) that aligns the content of the given\n        element or the value of the given attribute with the appropriate simple Data\n        Category (or categories) in ISOcat.",
 			"type": "text"
 		},
 		"notation": {
+			"description": "names the notation used for the content of the element.",
 			"type": "text"
 		},
 		"toWhom": {
+			"description": "indicates the person, or group of people, to whom a speech act or action is directed.",
 			"type": "text"
 		},
 		"who": {
+			"description": "indicates the person, or group of people, to whom the element content is ascribed.",
 			"type": "text"
 		},
 		"id": {
