@@ -182,7 +182,7 @@ export default class MainWindow extends Component {
 
         return (
             <div> 
-                <SplitPane split="vertical" minSize={5} defaultSize={200} onChange={onChange}>
+                <SplitPane split="vertical" minSize={0} defaultSize={0} onChange={onChange}>
                   <TableOfContents
                     editorState={editorState}
                     teiDocument={teiDocument}                  
