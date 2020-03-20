@@ -136,7 +136,7 @@ export default class TEIDocument {
             }
         }
 
-        return availableAttrs
+        return availableAttrs.sort()
     }
 
     populateActiveAttrs(doc) {

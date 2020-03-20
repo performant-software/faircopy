@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
-import { TextField } from '@material-ui/core'
+import { TextField, Button } from '@material-ui/core'
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 
+import AttributeDialog from './AttributeDialog'
 import { changeAttribute } from "../tei-document/commands"
 
 export default class ParameterDrawer extends Component {
+
+    constructor() {
+        super()
+        this.state = {
+            attributeDialogOpen: false
+        }	
+    }
 
     changeAttributeHandler = ( element, attributeKey ) => {
         return (e) => {
@@ -39,26 +47,6 @@ export default class ParameterDrawer extends Component {
                     value={attr}
                     fullWidth={true}
                     onChange={this.changeAttributeHandler(element,key)}
-                >
-                    { menuOptions }
-                </Select>
-            </FormControl>
-        )
-    }
-
-    renderAvailableAttrsSelectField(fieldKey,availableAttrs) {
-        const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
-        for( const attr of availableAttrs ) {
-            menuOptions.push( <MenuItem key={`${fieldKey}-${attr}`} value={attr}>{attr}</MenuItem>)
-        }
-
-        return (
-            <FormControl id={fieldKey}>
-                <InputLabel>Available Attributes:</InputLabel>
-                <Select
-                    className="attributeSelectField"
-                    value={""}
-                    fullWidth={true}
                 >
                     { menuOptions }
                 </Select>
@@ -109,17 +97,30 @@ export default class ParameterDrawer extends Component {
     renderElement(element,key) {
         const { width, teiDocument } = this.props
         const { elements } = teiDocument.teiSchema
-        const { activeAttrs } = teiDocument
         const name = element.type.name
-        const availableAttrs = teiDocument.getAvailableAttrs(name)
+        const { activeAttrs } = teiDocument
         const elementSpec = elements[name]
         const style = { width:width-40 }
+
+        const onClose = () => {
+            this.setState({...this.state, attributeDialogOpen: false })
+        }
+
+        const openAttributeDialog = () => {
+            this.setState({...this.state, attributeDialogOpen: true })
+        }
 
         return (
             <div key={key} style={style}>
                 <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
                 { this.renderAttributes(element,activeAttrs[name],elementSpec.vocabs) }
-                { this.renderAvailableAttrsSelectField(`availAttrs-${name}`,availableAttrs) }
+                <Button onClick={openAttributeDialog}>Add Attributes</Button>
+                <AttributeDialog 
+                    elementName={name} 
+                    teiDocument={teiDocument} 
+                    open={this.state.attributeDialogOpen} 
+                    onClose={onClose} 
+                ></AttributeDialog>
             </div>
         )    
     }
