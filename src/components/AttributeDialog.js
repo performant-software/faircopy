@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Button, Checkbox } from '@material-ui/core'
 
 
 export default class AttributeDialog extends Component {
@@ -16,7 +16,12 @@ export default class AttributeDialog extends Component {
             const attr = attrs[attrName]
             tableRows.push(
                 <TableRow key={`attr-row-${attrName}`} >
-                    <TableCell></TableCell>
+                    <TableCell>
+                      <Checkbox
+                            checked={true}
+                            onChange={() => {}}
+                        />
+                    </TableCell>
                     <TableCell>{attrName}</TableCell>
                     <TableCell>{attr.description}</TableCell>
                 </TableRow>    
@@ -27,9 +32,14 @@ export default class AttributeDialog extends Component {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>Notes</TableCell>
+                        <TableCell>
+                            <Checkbox
+                                checked={false}
+                                onChange={() => {}}
+                            />
+                        </TableCell>
+                        <TableCell>Name</TableCell>
+                        <TableCell>Desciption</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

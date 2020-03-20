@@ -204,13 +204,6 @@ export default class TEIDocument {
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
         })
-
-        // TODO db of attributes managed by this object
-        // seperate module for parsing ODD file
-        // configures the editor to provide
-        // the tags supported by the schema
-        // also embeds the technical documentation
-        // in the correct language
     }
 
     openNote( noteID ) {
