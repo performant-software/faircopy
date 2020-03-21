@@ -20,7 +20,6 @@ export default class TEIDocument {
     constructor(onStateChange) {
         this.subDocIDs = []
         this.subDocCounter = 0
-        this.activeAttrs = {}
         this.subDocPrefix = `note-${Date.now()}-`
         this.onStateChange = onStateChange
         this.teiSchema = new TEISchema(this.issueSubDocumentID);
@@ -125,26 +124,8 @@ export default class TEIDocument {
         return subDocID
     }
 
-    getAvailableAttrs(elementName) {
-        const { elements } = this.teiSchema
-        const { validAttrs } = elements[elementName]
-        const activeAttrs = this.activeAttrs[elementName]
-
-        // if there are no active attrs, then all are available
-        if( !activeAttrs ) return validAttrs.sort()
-
-        const availableAttrs = []
-        for( const attr of validAttrs ) {
-            if( !activeAttrs.includes(attr) ) {
-                availableAttrs.push(attr)
-            }
-        }
-
-        return availableAttrs.sort()
-    }
-
     populateActiveAttrs(doc) {
-        const activeAttrs = {}
+        const { elements } = this.teiSchema
 
         function compareToActive( element ) {
             const {attrs, type} = element
@@ -152,13 +133,9 @@ export default class TEIDocument {
             for( const attrName of Object.keys(attrs)) {
                 const val = attrs[attrName]
                 if( val && val !== "" ) {
-                    if( !activeAttrs[name] ) { 
-                        activeAttrs[name] = [ attrName ]
-                    } else {
-                        if( !activeAttrs[name].includes(attrName) ) {
-                            activeAttrs[name].push(attrName)
-                        }
-                    }    
+                    if( elements[name].attrState[attrName] ) {
+                        elements[name].attrState[attrName].active = true
+                    }
                 }
             }   
         }
@@ -188,8 +165,6 @@ export default class TEIDocument {
             const subDoc = this.teiSchema.schema.nodeFromJSON(noteJSON);
             scanNode(subDoc)
         }
-
-        return activeAttrs
     }
 
     load( filePath ) {
@@ -199,7 +174,7 @@ export default class TEIDocument {
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         const doc = this.teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
-        this.activeAttrs = this.populateActiveAttrs(doc)
+        this.populateActiveAttrs(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
@@ -209,7 +184,7 @@ export default class TEIDocument {
     openNote( noteID ) {
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
         const doc = this.teiSchema.schema.nodeFromJSON(noteJSON);
-        this.activeAttrs = this.populateActiveAttrs(doc)
+        this.populateActiveAttrs(doc)
         return EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),

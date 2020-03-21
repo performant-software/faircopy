@@ -187,12 +187,14 @@ function createAttributes( elements, specs ) {
     // create a global dictionary of attr definitions and record attrs for each element
     for( const element of elements ) {
         const attrs = findAttrs(element.name)
+        const validAttrs = []
         for( const attr of attrs ) {
             if( !attrDefs[attr.ident] ) {
                 attrDefs[attr.ident] = attr
             }
-            element.validAttrs.push( attr.ident )
+            validAttrs.push( attr.ident )
         }
+        element.validAttrs = validAttrs.sort()
     }
 
     // convert attr definitions into FairCopy data format

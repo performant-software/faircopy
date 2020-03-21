@@ -54,14 +54,14 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderAttributes(element,activeAttrs,vocabs) {
+    renderAttributes(element,attrState,vocabs) {
         const {attrs} = element
         const {teiSchema} = this.props.teiDocument
         const attrSpecs = teiSchema.attrs
         let attrFields = []
 
-        if( activeAttrs ) {
-            for( const key of activeAttrs ) {
+        for( const key of Object.keys(attrState) ) {
+            if( attrState[key].active ) {
                 const fieldKey = `attr-${key}`
                 const attr = attrs[key] ? attrs[key] : ""
                 const attrSpec = attrSpecs[key]
@@ -82,9 +82,9 @@ export default class ParameterDrawer extends Component {
                             }
                         </div>
                     )    
-                }
-            }                
-        }
+                }    
+            }
+        }           
 
         return ( attrFields.length > 0 ? 
             <div className="attributeFields">
@@ -98,7 +98,6 @@ export default class ParameterDrawer extends Component {
         const { width, teiDocument } = this.props
         const { elements } = teiDocument.teiSchema
         const name = element.type.name
-        const { activeAttrs } = teiDocument
         const elementSpec = elements[name]
         const style = { width:width-40 }
 
@@ -113,8 +112,8 @@ export default class ParameterDrawer extends Component {
         return (
             <div key={key} style={style}>
                 <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
-                { this.renderAttributes(element,activeAttrs[name],elementSpec.vocabs) }
-                <Button onClick={openAttributeDialog}>Add Attributes</Button>
+                { this.renderAttributes(element,elementSpec.attrState,elementSpec.vocabs) }
+                <Button variant="contained" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
                 <AttributeDialog 
                     elementName={name} 
                     teiDocument={teiDocument} 

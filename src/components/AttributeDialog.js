@@ -8,17 +8,18 @@ export default class AttributeDialog extends Component {
 
     renderTable() {
         const {elementName, teiDocument} = this.props
-        const {attrs} = teiDocument.teiSchema
-        const availableAttrs = teiDocument.getAvailableAttrs(elementName)
+        const {attrs, elements} = teiDocument.teiSchema
+        const {attrState} = elements[elementName]
 
         const tableRows = []
-        for( const attrName of availableAttrs ) {
+        for( const attrName of Object.keys(attrState) ) {
             const attr = attrs[attrName]
             tableRows.push(
                 <TableRow key={`attr-row-${attrName}`} >
                     <TableCell>
                       <Checkbox
-                            checked={true}
+                            color="primary"
+                            checked={attrState[attrName].active}
                             onChange={() => {}}
                         />
                     </TableCell>
@@ -34,12 +35,13 @@ export default class AttributeDialog extends Component {
                     <TableRow>
                         <TableCell>
                             <Checkbox
+                                color="primary"
                                 checked={false}
                                 onChange={() => {}}
                             />
                         </TableCell>
                         <TableCell>Name</TableCell>
-                        <TableCell>Desciption</TableCell>
+                        <TableCell>Description</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
