@@ -7,13 +7,15 @@ import Typography from '@material-ui/core/Typography'
 
 import AttributeDialog from './AttributeDialog'
 import { changeAttribute } from "../tei-document/commands"
+import { heatMapColors } from "../tei-document/highlighter"
 
 export default class ParameterDrawer extends Component {
 
     constructor() {
         super()
         this.state = {
-            attributeDialogOpen: false
+            attributeDialogOpen: false,
+            openElementName: null
         }	
     }
 
@@ -60,6 +62,8 @@ export default class ParameterDrawer extends Component {
         const attrSpecs = teiSchema.attrs
         let attrFields = []
 
+        // <i class="fas fa-info-circle"></i>
+
         for( const key of Object.keys(attrState) ) {
             if( attrState[key].active ) {
                 const fieldKey = `attr-${key}`
@@ -90,7 +94,17 @@ export default class ParameterDrawer extends Component {
             <div className="attributeFields">
                 {attrFields}
             </div> 
-            : <Typography>This element has no attributes.</Typography>
+            : ""
+        )
+    }
+
+    renderLegendBox(heatmapLevel) {
+        const style = {
+            background: heatMapColors[heatmapLevel]
+        }
+
+        return (
+            <div style={style} className="legend-box"></div>
         )
     }
 
@@ -101,25 +115,17 @@ export default class ParameterDrawer extends Component {
         const elementSpec = elements[name]
         const style = { width:width-40 }
 
-        const onClose = () => {
-            this.setState({...this.state, attributeDialogOpen: false })
-        }
-
         const openAttributeDialog = () => {
-            this.setState({...this.state, attributeDialogOpen: true })
+            this.setState({...this.state, openElementName: name, attributeDialogOpen: true })
         }
 
         return (
-            <div key={key} style={style}>
-                <Typography><b>{name}</b>: <i>{elementSpec.desc}</i> </Typography>
+            <div className="element" key={key} style={style}>
+                <span>{this.renderLegendBox(0)} <b>{name}</b>: <i>{elementSpec.desc}</i> </span>
                 { this.renderAttributes(element,elementSpec.attrState,elementSpec.vocabs) }
-                <Button variant="contained" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
-                <AttributeDialog 
-                    elementName={name} 
-                    teiDocument={teiDocument} 
-                    open={this.state.attributeDialogOpen} 
-                    onClose={onClose} 
-                ></AttributeDialog>
+                <div>
+                    <Button onClick={openAttributeDialog}>Add/Remove Attributes</Button>
+                </div>
             </div>
         )    
     }
@@ -127,6 +133,7 @@ export default class ParameterDrawer extends Component {
     render() {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
+        const { attributeDialogOpen, openElementName } = this.state
 
         const selection = (editorView) ? editorView.state.selection : null 
 
@@ -146,17 +153,27 @@ export default class ParameterDrawer extends Component {
             }
         }
 
+        const onClose = () => {
+            this.setState({...this.state, openElementName: null, attributeDialogOpen: false })
+        }
+
         return (
             <div id="ParameterDrawer">
                 <div className="header">
-                   ATTRIBUTES
+                    <Typography>Element Inspector</Typography>
                 </div>
                 <div className="attribute-list">
                     { elements.length === 0 ? 
-                        <span>Click on marked text to view its attributes.</span>
+                        <Typography>Click on an element to view its attributes.</Typography>
                     : elements
                     }
                 </div>
+                <AttributeDialog 
+                    elementName={openElementName} 
+                    teiDocument={teiDocument} 
+                    open={attributeDialogOpen} 
+                    onClose={onClose} 
+                ></AttributeDialog>
             </div>
         )
     }

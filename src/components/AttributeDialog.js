@@ -61,6 +61,8 @@ export default class AttributeDialog extends Component {
     render() {
         const { open, onClose, elementName } = this.props
 
+        if( !elementName ) return null
+
         return (
             <Dialog open={open} onClose={onClose} aria-labelledby="attribute-dialog">
                 <DialogTitle id="attribute-dialog">Available Attributes for {elementName}</DialogTitle>

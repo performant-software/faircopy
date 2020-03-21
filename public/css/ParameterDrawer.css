@@ -18,6 +18,19 @@
     margin: 10px;
 }
 
+#ParameterDrawer .legend-box {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid gray;
+}
+
+#ParameterDrawer .element {
+    margin-bottom: 20px;
+}
+
 .attributeSelectField {
     min-width: 300px;
 }
