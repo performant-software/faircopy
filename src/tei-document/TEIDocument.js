@@ -124,6 +124,12 @@ export default class TEIDocument {
         return subDocID
     }
 
+    setAttrState(elementName,attrName,nextAttrState) {
+        this.teiSchema.elements[elementName].attrState[attrName] = nextAttrState
+        const {state} = this.editorView
+        this.editorView.dispatch(state.tr)
+    }
+
     populateActiveAttrs(doc) {
         const { elements } = this.teiSchema
 

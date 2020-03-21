@@ -14,13 +14,19 @@ export default class AttributeDialog extends Component {
         const tableRows = []
         for( const attrName of Object.keys(attrState) ) {
             const attr = attrs[attrName]
+    
+            const onChange = () => {
+                const active = !attrState[attrName].active
+                teiDocument.setAttrState(elementName, attrName, { active })
+            }
+        
             tableRows.push(
                 <TableRow key={`attr-row-${attrName}`} >
                     <TableCell>
                       <Checkbox
                             color="primary"
                             checked={attrState[attrName].active}
-                            onChange={() => {}}
+                            onChange={onChange}
                         />
                     </TableCell>
                     <TableCell>{attrName}</TableCell>
