@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core'
+import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
 import { Button, Checkbox } from '@material-ui/core'
 
@@ -40,11 +40,6 @@ export default class AttributeDialog extends Component {
                 <TableHead>
                     <TableRow>
                         <TableCell>
-                            <Checkbox
-                                color="primary"
-                                checked={false}
-                                onChange={() => {}}
-                            />
                         </TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Description</TableCell>
@@ -67,6 +62,7 @@ export default class AttributeDialog extends Component {
             <Dialog open={open} onClose={onClose} aria-labelledby="attribute-dialog">
                 <DialogTitle id="attribute-dialog">Available Attributes for {elementName}</DialogTitle>
                 <DialogContent>
+        <Typography>Select attributes to describe this element. These attributes will appear for every instance of {elementName}.</Typography>
                     { this.renderTable() }                    
                 </DialogContent>
                 <DialogActions>

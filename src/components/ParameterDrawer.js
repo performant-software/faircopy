@@ -63,7 +63,7 @@ export default class ParameterDrawer extends Component {
         const attrSpecs = teiSchema.attrs
         let attrFields = []
 
-        // <i class="fas fa-info-circle"></i>
+        // <i className="fas fa-info-circle"></i></span>
 
         for( const key of Object.keys(attrState) ) {
             if( attrState[key].active ) {
@@ -95,7 +95,7 @@ export default class ParameterDrawer extends Component {
             <div className="attributeFields">
                 {attrFields}
             </div> 
-            : ""
+            : <Typography variant="body1">This element has no attributes.</Typography>
         )
     }
 
@@ -160,10 +160,12 @@ export default class ParameterDrawer extends Component {
             this.setState({...this.state, openElementName: null, attributeDialogOpen: false })
         }
 
+        const s = (elements.length !== 1) ? 's' : ''
+
         return (
             <div id="ParameterDrawer">
                 <div className="header">
-                    <Typography>Element Inspector ({elements.length} elements)</Typography>
+        <Typography>Element Inspector ({elements.length} element{s})</Typography>
                 </div>
                 <div className="attribute-list">
                     { elements.length === 0 ? 
