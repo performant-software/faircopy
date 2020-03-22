@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { TextField, Button } from '@material-ui/core'
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
+import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
 import Typography from '@material-ui/core/Typography'
@@ -120,13 +121,15 @@ export default class ParameterDrawer extends Component {
         }
 
         return (
-            <div className="element" key={key} style={style}>
-                <span>{this.renderLegendBox(count)} <b>{name}</b>: <i>{elementSpec.desc}</i> </span>
-                { this.renderAttributes(element,elementSpec.attrState,elementSpec.vocabs) }
-                <div>
+            <Card variant="outlined" className="element" key={key} style={style}>
+                <CardHeader avatar={this.renderLegendBox(count)} title={name} subheader={elementSpec.desc}></CardHeader>
+                <CardContent>
+                    { this.renderAttributes(element,elementSpec.attrState,elementSpec.vocabs) }
+                </CardContent>
+                <CardActions>
                     <Button onClick={openAttributeDialog}>Add/Remove Attributes</Button>
-                </div>
-            </div>
+                </CardActions>
+            </Card>
         )    
     }
 

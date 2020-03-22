@@ -22,9 +22,10 @@
     display: inline-block;
     vertical-align: middle;
     margin-right: 5px;
-    width: 20px;
-    height: 20px;
-    border: 1px solid gray;
+    width: 30px;
+    border-radius: 25px;
+    height: 30px;
+    border: 2px solid gray;
 }
 
 #ParameterDrawer .element {

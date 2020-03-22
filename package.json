@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
