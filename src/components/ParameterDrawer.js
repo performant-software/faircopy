@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography'
 
 import AttributeDialog from './AttributeDialog'
 import { changeAttribute } from "../tei-document/commands"
-import { heatMapColors } from "../tei-document/highlighter"
+import { getHighlightColor, getHighlightRanges } from "../tei-document/highlighter"
 
 export default class ParameterDrawer extends Component {
 
@@ -100,7 +100,7 @@ export default class ParameterDrawer extends Component {
 
     renderLegendBox(heatmapLevel) {
         const style = {
-            background: heatMapColors[heatmapLevel]
+            background: getHighlightColor(heatmapLevel)
         }
 
         return (
@@ -108,7 +108,7 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderElement(element,key) {
+    renderElement(element,count,key) {
         const { width, teiDocument } = this.props
         const { elements } = teiDocument.teiSchema
         const name = element.type.name
@@ -121,7 +121,7 @@ export default class ParameterDrawer extends Component {
 
         return (
             <div className="element" key={key} style={style}>
-                <span>{this.renderLegendBox(0)} <b>{name}</b>: <i>{elementSpec.desc}</i> </span>
+                <span>{this.renderLegendBox(count)} <b>{name}</b>: <i>{elementSpec.desc}</i> </span>
                 { this.renderAttributes(element,elementSpec.attrState,elementSpec.vocabs) }
                 <div>
                     <Button onClick={openAttributeDialog}>Add/Remove Attributes</Button>
@@ -143,12 +143,12 @@ export default class ParameterDrawer extends Component {
             if( selection.node ) {
                 elements.push( this.renderElement(selection.node,'attr-panel-node') )
             } else {
+                const { doc } = editorView.state
                 const { $anchor } = selection
-                const marks = $anchor.marks()
+                const highlightRanges = getHighlightRanges(doc,$anchor)
                 let count = 0
-                for( const mark of marks ) {
-                    const key = `attr-panel-${count++}`
-                    elements.push( this.renderElement(mark,key) )
+                for( const highlightRange of highlightRanges ) {
+                    elements.push( this.renderElement(highlightRange.mark,count,`attr-panel-${count++}`) )
                 }     
             }
         }
@@ -160,7 +160,7 @@ export default class ParameterDrawer extends Component {
         return (
             <div id="ParameterDrawer">
                 <div className="header">
-                    <Typography>Element Inspector</Typography>
+                    <Typography>Element Inspector ({elements.length} elements)</Typography>
                 </div>
                 <div className="attribute-list">
                     { elements.length === 0 ? 
