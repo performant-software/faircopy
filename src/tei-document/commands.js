@@ -88,7 +88,7 @@ export function markExtent($anchor, mark, doc) {
     let to = pos
 
     // walk from index in parent node backwards until we encounter text wo/this mark
-    for( let i=pos-1; i > parentStartPos; i-- ) {
+    for( let i=pos-1; i >= parentStartPos; i-- ) {
         if( doc.rangeHasMark( i, i+1, mark.type ) ) {
             from = i
         } else break
