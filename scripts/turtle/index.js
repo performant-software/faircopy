@@ -155,7 +155,7 @@ function createExamplars(specs) {
         {
             "name": "pb",
             "pmType": "inline-node",
-            "validAttrs": [], // ["facs"],  // TODO remove
+            "validAttrs": [], 
             "desc": "marks the beginning of a new page in a paginated document."
         },
         {
@@ -202,13 +202,13 @@ function createAttributes( elements, specs ) {
     for( const attr of Object.values(attrDefs) ) {
         attrs[attr.ident] = {
             description: attr.description,
+            dataType: attr.dataType,
             type: 'text'
         }
     }
 
     // TODO Remove
     attrs['id'] = { type: 'text' }
-    // attrs['facs'] = { type: 'text' }
 
     return attrs
 }
