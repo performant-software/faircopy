@@ -1,7 +1,4 @@
-#ParameterDrawer {
-    font-family: Arial, Helvetica, sans-serif;
-    border-top: 1px solid black;
-}
+
 
 .attributePanel  {
     border: 1px solid #ddd;
@@ -15,7 +12,10 @@
 }
 
 #ParameterDrawer .attribute-list {
-    margin: 10px;
+    background: #FFF9DD;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: scroll;
 }
 
 #ParameterDrawer .legend-box {
@@ -32,16 +32,16 @@
     margin-bottom: 20px;
 }
 
-.attributeSelectField {
+#ParameterDrawer .attributeSelectField {
     min-width: 300px;
 }
 
-.attrTextField {
+#ParameterDrawer .attrTextField {
     min-width: 300px;
     margin: 10px;
 }
 
-.attributeFields {
+#ParameterDrawer .attributeFields {
     display: flex;
     flex-wrap: wrap;
 }

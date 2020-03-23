@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, Button } from '@material-ui/core'
+import { TextField, Drawer, Button } from '@material-ui/core'
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 import { Node } from "prosemirror-model"
@@ -161,25 +161,33 @@ export default class ParameterDrawer extends Component {
         }
 
         const s = (elements.length !== 1) ? 's' : ''
+        const headerMessage = (elements.length > 0) ? 
+            `Element Inspector (${elements.length} element${s})` :  
+            "Click on an element to view its attributes."
 
         return (
-            <div id="ParameterDrawer">
+            <Drawer 
+                id="ParameterDrawer"
+                variant="persistent"
+                anchor="bottom"
+                open={true}            
+            >
                 <div className="header">
-        <Typography>Element Inspector ({elements.length} element{s})</Typography>
+                    <Typography>{headerMessage}</Typography>
                 </div>
-                <div className="attribute-list">
-                    { elements.length === 0 ? 
-                        <Typography>Click on an element to view its attributes.</Typography>
-                    : elements
-                    }
-                </div>
+                { elements.length > 0 ? 
+                    <div className="attribute-list">
+                        { elements }
+                    </div>
+                    : null
+                }
                 <AttributeDialog 
                     elementName={openElementName} 
                     teiDocument={teiDocument} 
                     open={attributeDialogOpen} 
                     onClose={onClose} 
                 ></AttributeDialog>
-            </div>
+            </Drawer>
         )
     }
 

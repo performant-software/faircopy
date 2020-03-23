@@ -5,7 +5,6 @@ import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
-import SplitPane from 'react-split-pane'
 
 const fairCopy = window.fairCopy
 
@@ -61,45 +60,35 @@ export default class TEIEditor extends Component {
         const scrollTop = this.el ? this.el.scrollTop : 0
         const boundingRect = this.el? this.el.getBoundingClientRect() : null
         const width = boundingRect ? boundingRect.width : 0
-        const height = boundingRect ? boundingRect.height : 0
 
         return (
             <div className='TEIEditor'> 
-                <SplitPane 
-                    split="horizontal" 
-                    minSize={55} 
-                    defaultSize={height-120} 
-                    pane2Style={{ background: '#fff8dd'}}
-                >
-                    <div>
-                        <EditorToolbar
-                            editMode={editMode}
+                <div>
+                    <EditorToolbar
+                        editMode={editMode}
+                        teiDocument={teiDocument}
+                        onSave={onSave}
+                        width={width}
+                    ></EditorToolbar>
+                    <div ref={(el) => this.el = el } className='body'>
+                        <EditorGutter 
+                            scrollTop={scrollTop} 
                             teiDocument={teiDocument}
-                            onSave={onSave}
-                            width={width}
-                        ></EditorToolbar>
-                        <div ref={(el) => this.el = el } className='body'>
-                            <EditorGutter 
-                                scrollTop={scrollTop} 
-                                teiDocument={teiDocument}
-                            />                 
-                            <ProseMirrorComponent
-                                onClick={this.handleClickOn}
-                                teiDocument={teiDocument}
-                            />
-                            <ThumbnailMargin
-                                scrollTop={scrollTop} 
-                                teiDocument={teiDocument}
-                            />                 
-                        </div>
-                    </div>
-                    <div>
-                        <ParameterDrawer 
-                            width={width}
-                            teiDocument={teiDocument} 
+                        />                 
+                        <ProseMirrorComponent
+                            onClick={this.handleClickOn}
+                            teiDocument={teiDocument}
                         />
+                        <ThumbnailMargin
+                            scrollTop={scrollTop} 
+                            teiDocument={teiDocument}
+                        />                 
                     </div>
-                </SplitPane>
+                </div>
+                <ParameterDrawer 
+                    width={width}
+                    teiDocument={teiDocument} 
+                />
             </div>
         )
     }
