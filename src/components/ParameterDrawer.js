@@ -72,7 +72,8 @@ export default class ParameterDrawer extends Component {
         minOccurs = ( minOccurs === null ) ? 1 : Number(minOccurs)
         maxOccurs = ( maxOccurs === null ) ? 1 : (maxOccurs === "unbounded" ) ? '∞' : Number(maxOccurs)
         const s = minOccurs === 1 ? '' : 's'
-        const occurrance = (minOccurs === maxOccurs) ? `exactly ${minOccurs} time${s}.` : `(${minOccurs}-${maxOccurs})`
+        let occurrance = (minOccurs === maxOccurs) ? `${minOccurs} time${s}.` : `(${minOccurs}-${maxOccurs})`
+        occurrance = ( minOccurs === maxOccurs && maxOccurs === 1 ) ? '' : occurrance
 
         return( 
             <ClickAwayListener onClickAway={onClickAway}>
