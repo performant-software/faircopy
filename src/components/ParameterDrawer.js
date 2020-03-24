@@ -67,14 +67,20 @@ export default class ParameterDrawer extends Component {
         if( !anchorEl ) return null
         const attrSpec = attrSpecs[selectedAttr]
         const onClickAway = () => { this.setState({...this.state, anchorEl: null})}
-        
+
+        let { minOccurs, maxOccurs } = attrSpec
+        minOccurs = ( minOccurs === null ) ? 1 : Number(minOccurs)
+        maxOccurs = ( maxOccurs === null ) ? 1 : (maxOccurs === "unbounded" ) ? '∞' : Number(maxOccurs)
+        const s = minOccurs === 1 ? '' : 's'
+        const occurrance = (minOccurs === maxOccurs) ? `exactly ${minOccurs} time${s}.` : `(${minOccurs}-${maxOccurs})`
+
         return( 
             <ClickAwayListener onClickAway={onClickAway}>
                 <Popper style={{zIndex: 2000}} anchorEl={anchorEl} open={true} placement='top'>
                     <Paper className="attribute-info-popper">
                         <Typography><b>{selectedAttr}</b></Typography>
                         <Typography className="attr-description">{attrSpec.description}</Typography>
-                        <Typography className="attr-data-type">{attrSpec.dataType}</Typography>
+                        <Typography className="attr-data-type">{attrSpec.dataType} {occurrance}</Typography>
                     </Paper>
                 </Popper>
             </ClickAwayListener>

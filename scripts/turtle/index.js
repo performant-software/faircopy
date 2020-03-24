@@ -201,9 +201,8 @@ function createAttributes( elements, specs ) {
     const attrs = {}
     for( const attr of Object.values(attrDefs) ) {
         attrs[attr.ident] = {
-            description: attr.description,
-            dataType: attr.dataType,
-            type: 'text'
+            ...attr,
+            type: 'text' // TODO Remove
         }
     }
 

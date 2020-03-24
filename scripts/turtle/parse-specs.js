@@ -43,15 +43,16 @@ function parseClassSpec( el ) {
 function parseAttDef( el ) {
     const ident = el.getAttribute('ident')
     const description = loadLocalizedString(el, "desc")
-    const gloss = loadLocalizedString(el, "gloss")
     const datatypeEl = el.getElementsByTagName('datatype')[0]
+    const minOccurs = datatypeEl.getAttribute('minOccurs')
+    const maxOccurs = datatypeEl.getAttribute('maxOccurs')
     const dataRefEl = datatypeEl ? datatypeEl.getElementsByTagName('dataRef')[0] : null
     let dataType = dataRefEl ? dataRefEl.getAttribute('key') : null
     if( dataRefEl && !dataType ) {
         dataType = dataRefEl.getAttribute('name') 
     }
    
-    return { ident, description, gloss, dataType } //, usage, defaultVal, valList, valDesc }
+    return { ident, description, dataType, minOccurs, maxOccurs } //, usage, defaultVal, valList, valDesc }
 }
 
 function parseAttList( el ) {    

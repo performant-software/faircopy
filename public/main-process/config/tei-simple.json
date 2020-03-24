@@ -1215,503 +1215,803 @@
 	],
 	"attrs": {
 		"xml:id": {
+			"ident": "xml:id",
 			"description": "provides a unique identifier for the element bearing the attribute.",
 			"dataType": "ID",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"n": {
+			"ident": "n",
 			"description": "gives a number (or other label) for an element, which is not necessarily unique within\n        the document.",
 			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": "1",
 			"type": "text"
 		},
 		"xml:lang": {
+			"ident": "xml:lang",
 			"description": "indicates the language of the element content using a <soCalled>tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
 			"dataType": "teidata.language",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"xml:base": {
+			"ident": "xml:base",
 			"description": "provides a base URI reference with which applications can resolve relative URI\n        references into absolute URI references.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"xml:space": {
+			"ident": "xml:space",
 			"description": "indicates the intent that applications preserve all white space",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"rend": {
+			"ident": "rend",
 			"description": "indicates how the element in question was rendered or presented in the source text.",
 			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"style": {
+			"ident": "style",
 			"description": "contains an expression in some formal style definition language\nwhich defines the rendering or presentation\nused for this element in the source text",
 			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": "1",
 			"type": "text"
 		},
 		"rendition": {
+			"ident": "rendition",
 			"description": "points to a description of the rendering or presentation used for this element in the\n        source text.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"corresp": {
+			"ident": "corresp",
 			"description": "points to elements that correspond to the current\n      element in some way.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"synch": {
+			"ident": "synch",
 			"description": "points to elements that are synchronous with the current\n      element.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"sameAs": {
+			"ident": "sameAs",
 			"description": "points to an element that is the same as the current\n      element.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"copyOf": {
+			"ident": "copyOf",
 			"description": "points to an element of which the current element is a\n\tcopy.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"next": {
+			"ident": "next",
 			"description": "points to the next element of a virtual aggregate of which\n      the current element is part.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"prev": {
+			"ident": "prev",
 			"description": "points to the previous element of a virtual aggregate of\n      which the current element is part.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"exclude": {
+			"ident": "exclude",
 			"description": "points to elements that are in exclusive alternation\n      with the current element.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"select": {
+			"ident": "select",
 			"description": "selects one or more alternants; if one alternant is\n      selected, the ambiguity or uncertainty is marked as resolved. If\n      more than one alternant is selected, the degree of ambiguity or\n      uncertainty is marked as reduced by the number of alternants not\n      selected.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"ana": {
+			"ident": "ana",
 			"description": "indicates one or more elements containing interpretations of the\nelement on which the <att>ana</att> attribute appears.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"facs": {
+			"ident": "facs",
 			"description": "points to all or part of an image which corresponds with the content of the element.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"change": {
+			"ident": "change",
 			"description": "points to one or more <gi>change</gi> elements documenting\n      a state or revision campaign to which the element bearing this\n      attribute and its children have been assigned by the encoder.",
 			"dataType": "teidata.pointer",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"cert": {
+			"ident": "cert",
 			"description": "signifies the degree of certainty associated with the intervention or interpretation.",
 			"dataType": "teidata.probCert",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"resp": {
+			"ident": "resp",
 			"description": "indicates the agency responsible for the intervention or interpretation, for example an\n        editor or transcriber.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"source": {
+			"ident": "source",
 			"description": "specifies the source from which some aspect of\n        this element is drawn.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"org": {
+			"ident": "org",
 			"description": "the immediate contents of this\n\t\t  element are regarded as forming a logical unit, to be\n\t\t  processed in sequence.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"sample": {
+			"ident": "sample",
 			"description": "division is not a sample.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"met": {
+			"ident": "met",
 			"description": "contains a user-specified encoding for the conventional\nmetrical structure of the element.",
 			"dataType": "token",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"real": {
+			"ident": "real",
 			"description": "contains a user-specified encoding for the actual realization\nof the conventional metrical structure applicable to the element.",
 			"dataType": "token",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"rhyme": {
+			"ident": "rhyme",
 			"description": "specifies the rhyme scheme applicable to a group of verse lines.",
 			"dataType": "token",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"part": {
+			"ident": "part",
 			"description": "this is the final part of a fragmented element",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"type": {
+			"ident": "type",
 			"description": "characterizes the element in some sense, using any convenient\n classification scheme or typology.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"subtype": {
+			"ident": "subtype",
 			"description": "provides a sub-categorization of the element, if needed",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"decls": {
+			"ident": "decls",
 			"description": "identifies one or more <term>declarable elements</term> within the\nheader, which are understood to apply to the element bearing this\nattribute and its content.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"hand": {
+			"ident": "hand",
 			"description": "points to a <gi>handNote</gi> element describing the hand considered responsible for the\n  \t    content of the element concerned.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"ed": {
+			"ident": "ed",
 			"description": "supplies a sigil or other arbitrary identifier for the source edition in which\n      the associated feature (for example, a  page, column, or line\n      break) occurs at this point in the text.",
 			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"edRef": {
+			"ident": "edRef",
 			"description": "provides a pointer to the source edition in which\n      the associated feature (for example, a  page, column, or line\n      break) occurs at this point in the text.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"spanTo": {
+			"ident": "spanTo",
 			"description": "The @spanTo attribute must point to an element following the\n\tcurrent element",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"break": {
+			"ident": "break",
 			"description": "the encoding does not take any position on this issue.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"anchored": {
+			"ident": "anchored",
 			"description": "indicates whether the copy text shows the exact place of reference for the note.",
 			"dataType": "teidata.truthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"targetEnd": {
+			"ident": "targetEnd",
 			"description": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"place": {
+			"ident": "place",
 			"description": " in a predefined space, for example left by an earlier scribe.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"targetLang": {
+			"ident": "targetLang",
 			"description": "specifies the language of the content to be found at the destination referenced by <att>target</att>, using a <soCalled>language tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
 			"dataType": "teidata.language",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"target": {
+			"ident": "target",
 			"description": "specifies the destination of the reference by supplying one or more URI References",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"evaluate": {
+			"ident": "evaluate",
 			"description": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"mimeType": {
+			"ident": "mimeType",
 			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
 			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"cRef": {
+			"ident": "cRef",
 			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the\n        scheme defined in a <gi>refsDecl</gi> element in the TEI header",
 			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": "1",
 			"type": "text"
 		},
 		"full": {
+			"ident": "full",
 			"description": "the name component is indicated only by\none initial.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"sort": {
+			"ident": "sort",
 			"description": "specifies the sort order of the name component in relation to others within the name.",
 			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"role": {
+			"ident": "role",
 			"description": "may be used to specify further information about the entity referenced by\nthis name in the form of a set of whitespace-separated values, for example the occupation of a person, or the status of a place.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"nymRef": {
+			"ident": "nymRef",
 			"description": "provides a means of locating the canonical form\n      (<term>nym</term>) of the names associated with the object\n       named by\n      the element bearing it.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"key": {
+			"ident": "key",
 			"description": "provides an externally-defined means of identifying the entity (or entities) being\n        named, using a coded value of some kind.",
 			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"ref": {
+			"ident": "ref",
 			"description": "provides an explicit means of locating a full definition or identity for the entity being named by\n        means of one or more URIs.",
 			"dataType": "teidata.pointer",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"calendar": {
+			"ident": "calendar",
 			"description": "indicates the system or calendar to which the\n        date represented by the content of this element belongs.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"period": {
+			"ident": "period",
 			"description": "supplies a pointer to some location defining a\n        named period of time within which the datable item is understood to have occurred.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"when": {
+			"ident": "when",
 			"description": "supplies the value of the date or time in a standard form,\n        e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"notBefore": {
+			"ident": "notBefore",
 			"description": "specifies the earliest possible date for the event in\n        standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"notAfter": {
+			"ident": "notAfter",
 			"description": "specifies the latest possible date for the event in\n        standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"from": {
+			"ident": "from",
 			"description": "indicates the starting point of the period in standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"to": {
+			"ident": "to",
 			"description": "indicates the ending point of the period in standard\n        form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"when-iso": {
+			"ident": "when-iso",
 			"description": "supplies the value of a date or time in a standard form.",
 			"dataType": "teidata.temporal.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"notBefore-iso": {
+			"ident": "notBefore-iso",
 			"description": "specifies the earliest possible date for the event in standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"notAfter-iso": {
+			"ident": "notAfter-iso",
 			"description": "specifies the latest possible date for the event in standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"from-iso": {
+			"ident": "from-iso",
 			"description": "indicates the starting point of the period in standard form.",
 			"dataType": "teidata.temporal.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"to-iso": {
+			"ident": "to-iso",
 			"description": "indicates the ending point of the period in standard form.",
 			"dataType": "teidata.temporal.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"when-custom": {
+			"ident": "when-custom",
 			"description": "supplies the value of a date or time in some custom standard form.",
 			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"notBefore-custom": {
+			"ident": "notBefore-custom",
 			"description": "specifies the earliest possible date for the event in some custom standard form.",
 			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"notAfter-custom": {
+			"ident": "notAfter-custom",
 			"description": "specifies the latest possible date for the event in some custom standard form.",
 			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"from-custom": {
+			"ident": "from-custom",
 			"description": "indicates the starting point of the period in some custom standard form.",
 			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"to-custom": {
+			"ident": "to-custom",
 			"description": "indicates the ending point of the period in some custom standard form.",
 			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"datingPoint": {
+			"ident": "datingPoint",
 			"description": "supplies a pointer to some location defining a named point in time with reference to which the datable item is understood to have occurred",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"datingMethod": {
+			"ident": "datingMethod",
 			"description": "supplies a pointer to a <gi>calendar</gi> element or other\n        means of interpreting the values of the custom dating attributes.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"evidence": {
+			"ident": "evidence",
 			"description": "the intervention or interpretation has been made by the editor, cataloguer, or\n            scholar on the basis of their expertise.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"instant": {
+			"ident": "instant",
 			"description": "indicates whether this is an instant revision or not.",
 			"dataType": "teidata.xTruthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"value": {
+			"ident": "value",
 			"description": "supplies the value of the number in standard form.",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"atLeast": {
+			"ident": "atLeast",
 			"description": "gives a minimum estimated value for the approximate measurement.",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"atMost": {
+			"ident": "atMost",
 			"description": "gives a maximum estimated value for the approximate measurement.",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"min": {
+			"ident": "min",
 			"description": "where the measurement summarizes more than one observation\n      or a range, supplies the minimum value\n        observed.",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"max": {
+			"ident": "max",
 			"description": "where the measurement summarizes more than one observation\n        or a range, supplies the maximum value\n        observed.",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"confidence": {
+			"ident": "confidence",
 			"description": "specifies the degree of statistical confidence (between zero and one) that a value falls within the range\n        specified by <att>min</att> and <att>max</att>, or the proportion of observed values that fall within that range.",
 			"dataType": "teidata.probability",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"unit": {
+			"ident": "unit",
 			"description": "2²⁰ or 1 048 576 bytes",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"unitRef": {
+			"ident": "unitRef",
 			"description": "points to a unique identifier stored in the <att>xml:id</att> of a <gi>unitDef</gi> element that defines a unit of measure.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "1",
 			"type": "text"
 		},
 		"quantity": {
+			"ident": "quantity",
 			"description": "specifies the number of the specified units that\n      comprise the measurement",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"commodity": {
+			"ident": "commodity",
 			"description": "indicates the substance that is being measured",
 			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"dur": {
+			"ident": "dur",
 			"description": "indicates the length of this element in time.",
 			"dataType": "teidata.duration.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"dur-iso": {
+			"ident": "dur-iso",
 			"description": "indicates the length of this element in time.",
 			"dataType": "teidata.duration.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"extent": {
+			"ident": "extent",
 			"description": "indicates the size of the object concerned using a project-specific vocabulary combining\n        quantity and units in a single string of words.",
 			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"precision": {
+			"ident": "precision",
 			"description": "characterizes the precision of the values specified by the other attributes.",
 			"dataType": "teidata.certainty",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"scope": {
+			"ident": "scope",
 			"description": "measurement applies to only the specified range of instances.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"reason": {
+			"ident": "reason",
 			"description": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>.",
 			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"agent": {
+			"ident": "agent",
 			"description": "damage results from smoke",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"status": {
+			"ident": "status",
 			"description": "the deletion is not faulty.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"cause": {
+			"ident": "cause",
 			"description": "documents the presumed cause for the intervention.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"seq": {
+			"ident": "seq",
 			"description": "assigns a sequence number related to the order in which\n      the encoded features carrying this attribute are believed to have occurred.",
 			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": "1",
 			"type": "text"
 		},
 		"sortKey": {
+			"ident": "sortKey",
 			"description": "supplies the sort key for this element in an index, list or group which contains it.",
 			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"level": {
+			"ident": "level",
 			"description": "the title applies to any unpublished material (including\n                                                  theses and dissertations unless\n                                                  published by a commercial press)",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"label": {
+			"ident": "label",
 			"description": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates.",
 			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"function": {
+			"ident": "function",
 			"description": "characterizes the function of the segment.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"datcat": {
+			"ident": "datcat",
 			"description": "contains a PID (persistent identifier) that aligns the given element with the appropriate \n        Data Category (or categories) in ISOcat.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"valueDatcat": {
+			"ident": "valueDatcat",
 			"description": "contains a PID (persistent identifier) that aligns the content of the given\n        element or the value of the given attribute with the appropriate simple Data\n        Category (or categories) in ISOcat.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"notation": {
+			"ident": "notation",
 			"description": "names the notation used for the content of the element.",
 			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"type": "text"
 		},
 		"toWhom": {
+			"ident": "toWhom",
 			"description": "indicates the person, or group of people, to whom a speech act or action is directed.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"who": {
+			"ident": "who",
 			"description": "indicates the person, or group of people, to whom the element content is ascribed.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
 			"type": "text"
 		},
 		"id": {
