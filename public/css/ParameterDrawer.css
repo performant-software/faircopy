@@ -6,6 +6,21 @@
     margin-left: 40px;
 }
 
+.attribute-info-popper {
+    max-width: 250px;
+    padding: 10px;
+}
+
+.attr-description {
+    padding-bottom: 5px;
+}
+
+.attr-data-type {
+    padding-top: 5px;
+    border-top: 1px solid gray;
+    font-style: italic;
+}
+
 #ParameterDrawer .header {
     padding: 5px;
     background: #ffea8a;
@@ -37,8 +52,13 @@
 }
 
 #ParameterDrawer .attrTextField {
+    display: flex;
     min-width: 300px;
     margin: 10px;
+}
+
+#ParameterDrawer .attr-info-button {
+    padding-top: 20px;
 }
 
 #ParameterDrawer .attributeFields {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, Drawer, Button } from '@material-ui/core'
+import { TextField, Drawer, Button, Popper, Paper, ClickAwayListener } from '@material-ui/core'
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 import { Node } from "prosemirror-model"
@@ -16,7 +16,9 @@ export default class ParameterDrawer extends Component {
         super()
         this.state = {
             attributeDialogOpen: false,
-            openElementName: null
+            openElementName: null,
+            anchorEl: null,
+            selectedAttr: null
         }	
     }
 
@@ -57,13 +59,33 @@ export default class ParameterDrawer extends Component {
         )
     }
 
+    renderAttributeInfoPopper() {
+        const {teiSchema} = this.props.teiDocument
+        const attrSpecs = teiSchema.attrs
+        const {selectedAttr, anchorEl} = this.state
+
+        if( !anchorEl ) return null
+        const attrSpec = attrSpecs[selectedAttr]
+        const onClickAway = () => { this.setState({...this.state, anchorEl: null})}
+        
+        return( 
+            <ClickAwayListener onClickAway={onClickAway}>
+                <Popper style={{zIndex: 2000}} anchorEl={anchorEl} open={true} placement='top'>
+                    <Paper className="attribute-info-popper">
+                        <Typography><b>{selectedAttr}</b></Typography>
+                        <Typography className="attr-description">{attrSpec.description}</Typography>
+                        <Typography className="attr-data-type">{attrSpec.dataType}</Typography>
+                    </Paper>
+                </Popper>
+            </ClickAwayListener>
+        )
+    }
+
     renderAttributes(element,attrState,vocabs) {
         const {attrs} = element
         const {teiSchema} = this.props.teiDocument
         const attrSpecs = teiSchema.attrs
         let attrFields = []
-
-        // <i className="fas fa-info-circle"></i></span>
 
         for( const key of Object.keys(attrState) ) {
             if( attrState[key].active ) {
@@ -72,6 +94,9 @@ export default class ParameterDrawer extends Component {
                 const attrSpec = attrSpecs[key]
                 const vocab = vocabs[key]
                 if( !attrSpec.hidden ) {
+                    const handleClick = (e) => {
+                        this.setState({ ...this.state, selectedAttr: key, anchorEl: e.currentTarget })
+                    }
                     attrFields.push(
                         <div className="attrTextField" key={fieldKey} >
                             { attrSpec && attrSpec.type === 'select' ? 
@@ -85,6 +110,7 @@ export default class ParameterDrawer extends Component {
                                     onChange={this.changeAttributeHandler(element,key)}
                                 />
                             }
+                            <i className="fas fa-info-circle attr-info-button" onClick={handleClick} ></i>
                         </div>
                     )    
                 }    
@@ -187,6 +213,7 @@ export default class ParameterDrawer extends Component {
                     open={attributeDialogOpen} 
                     onClose={onClose} 
                 ></AttributeDialog>
+                { this.renderAttributeInfoPopper() }
             </Drawer>
         )
     }
