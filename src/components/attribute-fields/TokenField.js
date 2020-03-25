@@ -5,11 +5,11 @@ import { tokenValidator } from '../../tei-document/attribute-validators'
 
 export default class TokenField extends Component {
 
-    constructor(props) {
+    constructor() {
         super()
         this.state = {
             error: false,
-            errorMessage: ""
+            errorMessage: " "
         }	
     }
 

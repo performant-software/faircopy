@@ -4,13 +4,14 @@
 // (#x9) characters, that have no leading or trailing spaces (#x20) and that
 // have no internal sequences of two or more spaces.
 export function tokenValidator( value ) {
-
-    // TODO validate
-    
-    if( value && value.length > 0 ) {
-        return { error: true, errorMessage: "test error"}
-
-    } else {
-        return { error: false, errorMessage: ""}
+    if( value.search(/^\s/) !== -1  ) {
+        return { error: true, errorMessage: "can not start with whitespace"}
     }
+    if( value.search(/\s$/) !== -1  ) {
+        return { error: true, errorMessage: "can not end with whitespace"}
+    }
+    if( value.search(/\s{2,}/) !== -1 ) {
+        return { error: true, errorMessage: "runs of whitespace are not allowed"}
+    }
+    return { error: false, errorMessage: ""}
 }
