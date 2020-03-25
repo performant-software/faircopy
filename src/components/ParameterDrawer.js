@@ -11,6 +11,7 @@ import { changeAttribute } from "../tei-document/commands"
 import { getHighlightColor, getHighlightRanges } from "../tei-document/highlighter"
 
 import TokenField from './attribute-fields/TokenField'
+import TEIDataTextField from './attribute-fields/TEIDataTextField';
 
 export default class ParameterDrawer extends Component {
 
@@ -90,16 +91,23 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeField(attrName,value,dataType,vocab,onChange) {
-
-        // TODO pick field based on dataType
-
-        return (
-            <TokenField
-                attrName={attrName}
-                value={value}                        
-                onChangeCallback={onChange}
-            ></TokenField>
-        )
+        if( dataType === 'token') {
+            return (
+                <TokenField
+                    attrName={attrName}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TokenField>
+            )    
+        } else {
+            return (
+                <TEIDataTextField
+                    attrName={attrName}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIDataTextField>
+            )    
+        }
 
         // TODO refactor this.renderSelectField(element,fieldKey,key,attr,vocab)
     }
