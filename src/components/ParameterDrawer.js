@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextField, Drawer, Button, Popper, Paper, ClickAwayListener } from '@material-ui/core'
+import { Drawer, Button, Popper, Paper, ClickAwayListener } from '@material-ui/core'
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 import { Node } from "prosemirror-model"
@@ -9,6 +9,8 @@ import Typography from '@material-ui/core/Typography'
 import AttributeDialog from './AttributeDialog'
 import { changeAttribute } from "../tei-document/commands"
 import { getHighlightColor, getHighlightRanges } from "../tei-document/highlighter"
+
+import TokenField from './attribute-fields/TokenField'
 
 export default class ParameterDrawer extends Component {
 
@@ -23,13 +25,12 @@ export default class ParameterDrawer extends Component {
     }
 
     changeAttributeHandler = ( element, attributeKey ) => {
-        return (e) => {
+        return (value) => {
             const { teiDocument } = this.props
             const { editorView } = teiDocument
             const { state } = editorView 
             const { $anchor } = state.selection
             let {tr} = state
-            const {value} = e.target
             if( element instanceof Node && element.type.name === 'note' && attributeKey === 'id') {
                 teiDocument.moveSubDocument(element.attrs['id'], value)
             }
@@ -88,35 +89,43 @@ export default class ParameterDrawer extends Component {
         )
     }
 
+    renderAttributeField(attrName,value,dataType,vocab,onChange) {
+
+        // TODO pick field based on dataType
+
+        return (
+            <TokenField
+                attrName={attrName}
+                value={value}                        
+                onChangeCallback={onChange}
+            ></TokenField>
+        )
+
+        // TODO refactor this.renderSelectField(element,fieldKey,key,attr,vocab)
+    }
+
     renderAttributes(element,attrState,vocabs) {
-        const {attrs} = element
         const {teiSchema} = this.props.teiDocument
         const attrSpecs = teiSchema.attrs
+        
         let attrFields = []
 
         for( const key of Object.keys(attrState) ) {
             if( attrState[key].active ) {
-                const fieldKey = `attr-${key}`
-                const attr = attrs[key] ? attrs[key] : ""
                 const attrSpec = attrSpecs[key]
-                const vocab = vocabs[key]
                 if( !attrSpec.hidden ) {
+                    const fieldKey = `attr-${key}`
+                    const {attrs} = element
+                    const value = attrs[key] ? attrs[key] : ""
+                    const vocab = vocabs[key]
+                    const onChange = this.changeAttributeHandler(element,key)
+
                     const handleClick = (e) => {
                         this.setState({ ...this.state, selectedAttr: key, anchorEl: e.currentTarget })
                     }
                     attrFields.push(
                         <div className="attrTextField" key={fieldKey} >
-                            { attrSpec && attrSpec.type === 'select' ? 
-                                this.renderSelectField(element,fieldKey,key,attr,vocab)
-                            :
-                                <TextField
-                                    id={fieldKey}
-                                    label={key}
-                                    value={attr}                        
-                                    fullWidth={true}
-                                    onChange={this.changeAttributeHandler(element,key)}
-                                />
-                            }
+                            { this.renderAttributeField(key,value,attrSpec.dataType,vocab,onChange) }
                             <i className="fas fa-info-circle attr-info-button" onClick={handleClick} ></i>
                         </div>
                     )    
