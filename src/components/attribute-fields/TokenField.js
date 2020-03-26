@@ -5,19 +5,21 @@ import { tokenValidator } from '../../tei-document/attribute-validators'
 
 export default class TokenField extends Component {
 
-    constructor() {
+    constructor(props) {
         super()
-        this.state = {
-            error: false,
-            errorMessage: ""
-        }	
+        const { value } = props
+        this.state = value !== null && value !== '' ? tokenValidator(value) : {}
     }
 
     onChange = (e) => {
         const {value} = e.target
         const { onChangeCallback } = this.props
-        const validState = tokenValidator(value)
-        this.setState({...this.state, ...validState })
+        if( value !== null && value !== '' ) {
+            const validState = tokenValidator(value)
+            this.setState({...this.state, ...validState })    
+        } else {
+            this.setState({})
+        }
         onChangeCallback(value)
     }
 
