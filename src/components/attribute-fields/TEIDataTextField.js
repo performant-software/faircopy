@@ -20,6 +20,7 @@ export default class TEIDataTextField extends Component {
     render() {
         const { attrName, value } = this.props
         const { error, errorMessage } = this.state
+        const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
 
         return (
             <TextField
@@ -28,7 +29,7 @@ export default class TEIDataTextField extends Component {
                 fullWidth={true}
                 onChange={this.onChange}
                 error={error}
-                helperText={errorMessage}
+                helperText={helperText}
             />
         )
     }
