@@ -11,7 +11,8 @@ import { changeAttribute } from "../tei-document/commands"
 import { getHighlightColor, getHighlightRanges } from "../tei-document/highlighter"
 
 import TokenField from './attribute-fields/TokenField'
-import TEIDataTextField from './attribute-fields/TEIDataTextField';
+import TEIDataTextField from './attribute-fields/TEIDataTextField'
+import TEIDataWordField from './attribute-fields/TEIDataWordField'
 
 export default class ParameterDrawer extends Component {
 
@@ -90,7 +91,9 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderAttributeField(attrName,value,dataType,vocab,onChange) {
+    renderAttributeField(attrName,value,attrSpec,vocab,onChange) {
+        const { dataType, minOccurs, maxOccurs } = attrSpec
+
         if( dataType === 'token') {
             return (
                 <TokenField
@@ -99,16 +102,28 @@ export default class ParameterDrawer extends Component {
                     onChangeCallback={onChange}
                 ></TokenField>
             )    
-        } else {
+        }
+        if( dataType === 'teidata.word' ) {
             return (
-                <TEIDataTextField
+                <TEIDataWordField
                     attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
                     value={value}                        
                     onChangeCallback={onChange}
-                ></TEIDataTextField>
-            )    
+                ></TEIDataWordField>
+            )
         }
 
+        // TODO for now, this is the default
+        return (
+            <TEIDataTextField
+                attrName={attrName}
+                value={value}                        
+                onChangeCallback={onChange}
+            ></TEIDataTextField>
+        )    
+        
         // TODO refactor this.renderSelectField(element,fieldKey,key,attr,vocab)
     }
 
@@ -133,7 +148,7 @@ export default class ParameterDrawer extends Component {
                     }
                     attrFields.push(
                         <div className="attrTextField" key={fieldKey} >
-                            { this.renderAttributeField(key,value,attrSpec.dataType,vocab,onChange) }
+                            { this.renderAttributeField(key,value,attrSpec,vocab,onChange) }
                             <i className="fas fa-info-circle attr-info-button" onClick={handleClick} ></i>
                         </div>
                     )    

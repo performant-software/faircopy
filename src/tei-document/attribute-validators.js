@@ -15,3 +15,28 @@ export function tokenValidator( value ) {
     }
     return { error: false, errorMessage: ""}
 }
+
+// Attributes using this datatype must contain a single
+// word which contains only letters, digits,
+// punctuation characters, or symbols: thus it cannot include
+// whitespace.
+export function teiDataWordValidator( value, minOccurs, maxOccurs ) {
+    let tokenStatus = tokenValidator(value)
+    if( tokenStatus.error ) return tokenStatus
+
+    let min = (minOccurs !== null ) ? Number(minOccurs) : 1
+    let max = (maxOccurs === "unbounded" ) ? "unbounded" : (maxOccurs !== null ) ? Number(maxOccurs) : 1
+    
+    const match = value.match(/[\S]+/g)
+    const wordCount = (match) ? match.length : 0
+
+    if( max !== "unbounded" && wordCount > max ) {
+        return { error: true, errorMessage: "exceeded allowable number of words"}
+    }
+
+    if( wordCount < min ) {
+        return { error: true, errorMessage: "does not contain minimum number of words"}
+    }
+
+    return { error: false, errorMessage: "" }
+}
