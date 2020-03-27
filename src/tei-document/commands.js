@@ -69,14 +69,16 @@ export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
     newAttrs[attributeKey] = value
     if( element instanceof Node ) {
         tr.setNodeMarkup(pos, undefined, newAttrs)
-        tr.setSelection( NodeSelection.create(tr.doc, pos) )
+        const nextNode = NodeSelection.create(tr.doc, pos)
+        tr.setSelection( nextNode )
+        return nextNode
     } else {
         const { from, to } = markExtent($anchor,element,tr.doc)
         const nextMark = element.type.create( newAttrs )
         tr.removeMark(from,to,element)
         tr.addMark(from,to,nextMark)
+        return nextMark
     }
-    return tr
 }
 
 export function markExtent($anchor, mark, doc) {

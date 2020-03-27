@@ -24,6 +24,10 @@
     border-bottom: dotted #0187a8;
 }
 
+[__error__ = "true"] {
+    border-bottom: dotted red;
+}
+
 tei-div {
     display: block;
     border-top: 1px dotted black;

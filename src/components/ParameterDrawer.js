@@ -27,7 +27,7 @@ export default class ParameterDrawer extends Component {
     }
 
     changeAttributeHandler = ( element, attributeKey ) => {
-        return (value) => {
+        return (value,error) => {
             const { teiDocument } = this.props
             const { editorView } = teiDocument
             const { state } = editorView 
@@ -36,7 +36,8 @@ export default class ParameterDrawer extends Component {
             if( element instanceof Node && element.type.name === 'note' && attributeKey === 'id') {
                 teiDocument.moveSubDocument(element.attrs['id'], value)
             }
-            tr = changeAttribute( element, attributeKey, value, $anchor, tr )
+            const nextElement = changeAttribute( element, '__error__', (error === true), $anchor, tr )                
+            changeAttribute( nextElement, attributeKey, value, $anchor, tr )
             editorView.dispatch(tr)
         }
     }

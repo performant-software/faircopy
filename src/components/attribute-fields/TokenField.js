@@ -16,11 +16,12 @@ export default class TokenField extends Component {
         const { onChangeCallback } = this.props
         if( value !== null && value !== '' ) {
             const validState = tokenValidator(value)
-            this.setState({...this.state, ...validState })    
+            this.setState(validState)
+            onChangeCallback(value,validState.error)
         } else {
             this.setState({})
+            onChangeCallback(value,false)
         }
-        onChangeCallback(value)
     }
 
     render() {

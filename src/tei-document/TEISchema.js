@@ -104,6 +104,18 @@ export default class TEISchema {
         return attrs
     }
 
+    filterOutErrors( attrObj ) {
+        // don't save error flags
+        const attrs = {}
+        for( const key of Object.keys(attrObj) ) {
+            const value = attrObj[key]
+            if( key !== '__error__' ) {
+                attrs[key] = value
+            }
+        }
+        return attrs
+    }
+
 
     // Extract the note elements from the html so they don't get
     // parsed inline by DOMParser.parseSlice() during a cut and paste
@@ -229,6 +241,7 @@ export default class TEISchema {
         for( let attr of teiMarkSpec.attrs ) {
             attrs[attr] = { default: '' }
         }
+        attrs['__error__'] = { default: 'false' }
 
         return {
             attrs,
@@ -246,7 +259,8 @@ export default class TEISchema {
             ],
             toDOM: (mark) => {
                 if( this.teiMode ) {
-                    const attrs = this.filterOutBlanks(mark.attrs)
+                    let attrs = this.filterOutBlanks(mark.attrs)
+                    attrs = this.filterOutErrors(mark.attrs)
                     return [name,attrs,0]
                 } else {
                     const displayAttrs = { ...mark.attrs, phraseLvl: true }

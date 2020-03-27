@@ -17,10 +17,11 @@ export default class TEIDataWordField extends Component {
         if( value !== "" && value !== null ) {
             const validState = teiDataWordValidator(value, minOccurs, maxOccurs)
             this.setState(validState)    
+            onChangeCallback(value,validState.error)
         } else {
             this.setState({})
+            onChangeCallback(value,false)
         }
-        onChangeCallback(value)
     }
 
     render() {
