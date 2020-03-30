@@ -1,5 +1,6 @@
 const fs = require('fs')
 const electron = require("electron")
+const { initConfigClient, configSubscribe, configUnsubscribe, updateConfig } = require('./config-client')
 
 var versionNumber
 
@@ -55,5 +56,9 @@ exports.services = {
     readClipBoardHTML, 
     loadConfigFile, 
     isDebugMode,
-    getVersionNumber 
+    getVersionNumber,
+    initConfigClient, 
+    configSubscribe, 
+    configUnsubscribe, 
+    updateConfig
 }

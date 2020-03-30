@@ -1,5 +1,6 @@
 const { BrowserWindow, dialog, Menu, ipcMain } = require('electron')
 const { isDebugMode } = require('./preload-services').services
+const { ConfigManager } = require('./ConfigManager')
 
 // TODO detect PC
 const isMac = true
@@ -22,6 +23,7 @@ class ApplicationWindowManager {
         ipcMain.on('openSaveFileDialog', this.saveFileMenu)
         ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
         ipcMain.on('closeNoteWindow', this.closeNoteWindow)
+        this.configManager = new ConfigManager()
     }
 
     async createTEIEditorWindow(targetFile) {

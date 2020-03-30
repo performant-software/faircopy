@@ -8,7 +8,9 @@ export default class AttributeDialog extends Component {
 
     renderTable() {
         const {elementName, teiDocument} = this.props
-        const {attrs, elements} = teiDocument.teiSchema
+        const {attrs} = teiDocument.teiSchema
+        const {fairCopyConfig} = teiDocument
+        const {elements} = fairCopyConfig.state
         const {attrState} = elements[elementName]
 
         const tableRows = []
@@ -17,7 +19,7 @@ export default class AttributeDialog extends Component {
     
             const onChange = () => {
                 const active = !attrState[attrName].active
-                teiDocument.setAttrState(elementName, attrName, { active })
+                fairCopyConfig.setAttrState(elementName, attrName, { active })
             }
         
             tableRows.push(

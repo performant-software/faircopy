@@ -178,8 +178,10 @@ export default class ParameterDrawer extends Component {
     renderElement(element,count,key) {
         const { width, teiDocument } = this.props
         const { elements } = teiDocument.teiSchema
+        const configElements = teiDocument.fairCopyConfig.state.elements
         const name = element.type.name
         const elementSpec = elements[name]
+        const {attrState} = configElements[name]
         const style = { width:width-40 }
 
         const openAttributeDialog = () => {
@@ -190,7 +192,7 @@ export default class ParameterDrawer extends Component {
             <Card variant="outlined" className="element" key={key} style={style}>
                 <CardHeader avatar={this.renderLegendBox(count)} title={name} subheader={elementSpec.desc}></CardHeader>
                 <CardContent>
-                    { this.renderAttributes(element,elementSpec.attrState,elementSpec.vocabs) }
+                    { this.renderAttributes(element,attrState,elementSpec.vocabs) }
                 </CardContent>
                 <CardActions>
                     <Button onClick={openAttributeDialog}>Add/Remove Attributes</Button>

@@ -12,6 +12,7 @@ import {buildKeymap} from "./keymap"
 import {buildInputRules} from "./inputrules"
 import TEISchema from "./TEISchema"
 import {teiTemplate} from "./tei-template"
+import FairCopyConfig from "../faircopy-config/FairCopyConfig"
 
 const fairCopy = window.fairCopy
 
@@ -124,63 +125,16 @@ export default class TEIDocument {
         return subDocID
     }
 
-    setAttrState(elementName,attrName,nextAttrState) {
-        this.teiSchema.elements[elementName].attrState[attrName] = nextAttrState
-        const {state} = this.editorView
-        this.editorView.dispatch(state.tr)
-    }
-
-    populateActiveAttrs(doc) {
-        const { elements } = this.teiSchema
-
-        function compareToActive( element ) {
-            const {attrs, type} = element
-            const {name} = type
-            for( const attrName of Object.keys(attrs)) {
-                const val = attrs[attrName]
-                if( val && val !== "" ) {
-                    if( elements[name].attrState[attrName] ) {
-                        elements[name].attrState[attrName].active = true
-                    }
-                }
-            }   
-        }
-
-        function scanNode(node) {
-            // first, look at the attrs for the node
-            compareToActive(node)
-
-            // then look at the attrs for each mark
-            for( const mark of node.marks ) {
-                compareToActive(mark)
-            }
-
-            // inspect children of this node
-            for( let i=0; i < node.childCount; i++ ) {
-                const child = node.child(i)
-                scanNode(child)
-            }            
-        }
-
-        // scan the main doc
-        scanNode(doc)
-
-        // scan any subdocs
-        for( const subDocID of this.subDocIDs ) {
-            const noteJSON = JSON.parse( localStorage.getItem(subDocID) )
-            const subDoc = this.teiSchema.schema.nodeFromJSON(noteJSON);
-            scanNode(subDoc)
-        }
-    }
-
     load( filePath ) {
         const text = fairCopy.services.readFileSync(filePath)
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
+        // TODO load the config ID from the TEI header
         const doc = this.teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
-        this.populateActiveAttrs(doc)
+        this.fairCopyConfig = new FairCopyConfig(this)
+        this.fairCopyConfig.create(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
@@ -190,7 +144,8 @@ export default class TEIDocument {
     openNote( noteID ) {
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
         const doc = this.teiSchema.schema.nodeFromJSON(noteJSON);
-        this.populateActiveAttrs(doc)
+        // TODO
+        // this.populateActiveAttrs(doc)
         return EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
@@ -209,6 +164,7 @@ export default class TEIDocument {
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
+        // TODO add application element with config ID
         const domSerializer = DOMSerializer.fromSchema( this.teiSchema.schema )
         const domFragment = domSerializer.serializeFragment(editorState.doc.content)
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]

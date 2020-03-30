@@ -64,13 +64,11 @@ export default class TEISchema {
         for( const element of teiSimple.elements ) {
             const { pmType, name, validAttrs } = element
             element.vocabs = {}
-            element.attrState = {}
             if( validAttrs ) {
                 for( const attr of validAttrs ) {
                     let vocab = vocabs[`${element.name}[${attr}]`]
                     if( !vocab ) vocab = vocabs[`*[${attr}]`]
                     if( vocab ) element.vocabs[attr] = vocab
-                    element.attrState[attr] = { active: false }
                 }    
             }
             if( pmType === 'mark') {
