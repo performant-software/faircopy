@@ -28,11 +28,11 @@ export default class FairCopyConfig {
         this.populateActiveAttrs(doc)
     }
 
-    setAttrState(elementName,attrName,nextAttrState) {
-        const {editorView} = this.teiDocument
-        this.state.elements[elementName].attrState[attrName] = nextAttrState
-        const {state} = editorView
-        editorView.dispatch(state.tr)
+    setAttrState(elementName,attrName,nextAttrState) {        
+        // update config state
+        const nextState = { ...this.state }
+        nextState.elements[elementName].attrState[attrName] = nextAttrState
+        this.setState(nextState)        
     }
 
     populateActiveAttrs(doc) {
@@ -99,6 +99,13 @@ export default class FairCopyConfig {
     onUpdate = (nextState) => {
         // receive next state from main process, update state
         this.state = nextState
+
+        // create a trivial editor state update to push new state
+        const {editorView} = this.teiDocument
+        if( editorView ) {
+            const {state} = editorView
+            editorView.dispatch(state.tr)            
+        }  
     }
 
     setState(nextState) {

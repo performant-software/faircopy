@@ -12,7 +12,7 @@ import {buildKeymap} from "./keymap"
 import {buildInputRules} from "./inputrules"
 import TEISchema from "./TEISchema"
 import {teiTemplate} from "./tei-template"
-import FairCopyConfig from "../faircopy-config/FairCopyConfig"
+import FairCopyConfig from "./FairCopyConfig"
 
 const fairCopy = window.fairCopy
 
