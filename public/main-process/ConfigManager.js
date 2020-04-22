@@ -5,25 +5,10 @@ class ConfigManager {
 
     constructor() {
         this.configs = {}
-        this.windows = []
         ipcMain.on('onConfigUpdate', this.onUpdate)
     }
 
-    addWindow( windowID ) {
-        this.windows.push(windowID)
-    }
-
-    removeWindow( windowID ) {
-        const nextWindows = []
-        for( const window of this.windows ) {
-            if( window.id !== windowID ) {
-                nextWindows.push(window)
-            }
-        }
-        this.windows = nextWindows
-    }
-
-    onUpdate = ( browserFrame, configPath, incomingState ) => {
+    onUpdate = ( sender, configPath, incomingState ) => {
         let nextState
 
         // if there is no incoming state
@@ -43,8 +28,8 @@ class ConfigManager {
         this.configs[configPath] = nextState
 
         // broadcast config state to all windows
-        for( const windowID of this.windows ) {
-            const browserWindow = BrowserWindow.fromId(windowID)
+        const browserWindows = BrowserWindow.getAllWindows()
+        for( const browserWindow of browserWindows ) {
             browserWindow.webContents.send('onConfigUpdated', configPath, nextState )    
         }
     }

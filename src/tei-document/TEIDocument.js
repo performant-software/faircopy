@@ -144,8 +144,8 @@ export default class TEIDocument {
     openNote( noteID ) {
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
         const doc = this.teiSchema.schema.nodeFromJSON(noteJSON);
-        // TODO
-        // this.populateActiveAttrs(doc)
+        // TODO determine configPath
+        this.fairCopyConfig = new FairCopyConfig(this,"config-settings.json")
         return EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),

@@ -27,6 +27,7 @@ export default class NoteWindow extends Component {
         const { teiDocument } = this.state
         // Receive open and save file events from the main process
         fairCopy.services.ipcRegisterCallback('noteOpened', (event, noteID) => this.openNote(noteID))
+        fairCopy.services.initConfigClient()
         window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
         window.onbeforeunload = this.onBeforeUnload
     }

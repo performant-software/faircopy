@@ -56,7 +56,6 @@ class ApplicationWindowManager {
 
       // For now, there is only one document window
       this.mainWindow = browserWindow
-      this.configManager.addWindow(this.mainWindow.id)
     }
 
     createNoteEditorWindow = (event, noteID) => {
@@ -71,20 +70,18 @@ class ApplicationWindowManager {
       // Create the browser window
       const browserWindow = new BrowserWindow({
           parent: this.mainWindow,
-          width: 700,
-          height: 500,
+          width: 1000,
+          height: 700,
           frame: false,
           webPreferences: {
               enableRemoteModule: false,
               preload: `${this.baseDir}/note-window-preload.js`
           }
       })
-      this.configManager.addWindow(browserWindow.id)
 
       // Emitted when the note window is closed.
       browserWindow.on('closed', () => {
         this.noteWindows[noteID] = null
-        this.configManager.removeWindow(browserWindow.id)
       } )
 
       const loadNote = () => {
