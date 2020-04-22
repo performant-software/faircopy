@@ -42,6 +42,7 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('fileSaved', (event, filePath) => this.save(filePath))      
         services.ipcRegisterCallback('fileNew', (event) => this.newFile() )
         services.ipcRegisterCallback('openPrint', (event) => this.openPrint() )
+        services.initConfigClient()
 
         window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
 

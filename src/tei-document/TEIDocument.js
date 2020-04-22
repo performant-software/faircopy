@@ -130,11 +130,11 @@ export default class TEIDocument {
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
-        // TODO load the config ID from the TEI header
+        // TODO load the config path from the TEI header
         const doc = this.teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
         this.fairCopyConfig = new FairCopyConfig(this)
-        this.fairCopyConfig.create(doc)
+        this.fairCopyConfig.createFromDoc(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 

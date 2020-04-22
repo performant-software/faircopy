@@ -48,6 +48,7 @@ const ipcSend = function ipcSend( eventID, ...params) {
     electron.ipcRenderer.send(eventID,...params)
 }
 
+
 exports.services = { 
     readFileSync, 
     writeFileSync, 
@@ -57,7 +58,7 @@ exports.services = {
     loadConfigFile, 
     isDebugMode,
     getVersionNumber,
-    initConfigClient, 
+    initConfigClient,
     configSubscribe, 
     configUnsubscribe, 
     updateConfig

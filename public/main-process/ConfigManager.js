@@ -1,36 +1,53 @@
 const { BrowserWindow, ipcMain } = require('electron')
+const fs = require('fs')
 
 class ConfigManager {
 
     constructor() {
-        this.subscribers = []        
-        ipcMain.on('onConfigSubscribe', this.onConfigSubscribe)
-        ipcMain.on('onConfigUnsubscribe', this.onConfigSubscribe)
-        ipcMain.on('onConfigUpdate', this.receiveConfig)
+        this.configs = {}
+        this.windows = []
+        ipcMain.on('onConfigUpdate', this.onUpdate)
     }
 
-    onConfigSubscribe(configID, windowID) {
-        // add a subscriber to the list
-
-        // send the new subscriber the config from local storage
-        const configState = localStorage.getItem(configID)
-        this.sendConfig(windowID,configID,configState)
+    addWindow( windowID ) {
+        this.windows.push(windowID)
     }
 
-    onConfigUnsubscribe(configID, windowID) {
-        // remove a subscriber from the list
+    removeWindow( windowID ) {
+        const nextWindows = []
+        for( const window of this.windows ) {
+            if( window.id !== windowID ) {
+                nextWindows.push(window)
+            }
+        }
+        this.windows = nextWindows
     }
 
-    receiveConfig(configID, configState) {
-        // write config to local storage
-        // send the config to all subscribers
-    }
+    onUpdate = ( browserFrame, configPath, incomingState ) => {
+        let nextState
 
-    sendConfig(windowID, configID, configState ) {
-        const browserWindow = BrowserWindow.fromId(windowID)
-        browserWindow.webContents.send('onConfigUpdate', configID, configState )
-    }    
+        // if there is no incoming state
+        if( !incomingState ) {
+            // load from file if it isn't loaded
+            const currentState = this.configs[configPath]
+            if( !currentState ) {
+                const configJSON = fs.readFileSync( configPath )
+                nextState = JSON.parse(configJSON)
+            } else {
+                nextState = currentState
+            }
+        } else {
+            nextState = incomingState
+        }
+
+        this.configs[configPath] = nextState
+
+        // broadcast config state to all windows
+        for( const windowID of this.windows ) {
+            const browserWindow = BrowserWindow.fromId(windowID)
+            browserWindow.webContents.send('onConfigUpdated', configPath, nextState )    
+        }
+    }
 }
-
 
 exports.ConfigManager = ConfigManager

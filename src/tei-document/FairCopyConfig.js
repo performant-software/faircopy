@@ -2,30 +2,28 @@ const fairCopy = window.fairCopy
 
 export default class FairCopyConfig {
 
-    constructor(teiDocument, configID) {
-        this.configID = configID
+    constructor(teiDocument, configPath) {
+        this.configPath = configPath
         this.teiDocument = teiDocument
         this.state = null
         // subscribe onUpdate callback to this config ID, if there is one
-        if( configID ) {
-            fairCopy.services.configSubscribe(this.configID,this.onUpdate)
+        if( configPath ) {
+            fairCopy.services.configSubscribe(this.configPath,this.onUpdate)
         }
     }
 
     destroy() {
         // unsubscribe onUpdate callback
-        fairCopy.services.configUnsubscribe(this.configID,this.onUpdate)
+        fairCopy.services.configUnsubscribe(this.configPath,this.onUpdate)
     }
 
-    create(doc) {
-        // create a relative URI with a GUID 
-        this.configID = `config-${Date.now()}`
-
-        // subscribe to state updates (from other documents and processes)
-        // fairCopy.services.configSubscribe(this.configID,this.onUpdate)
+    createFromDoc(doc) {
+        // TODO base on the document path
+        this.configPath = "config-settings.json"  
 
         // populate it based on the tei document
-        this.populateActiveAttrs(doc)
+        const initialState = this.populateActiveAttrs(doc)
+        fairCopy.services.configSubscribe(this.configPath,this.onUpdate,initialState)
     }
 
     setAttrState(elementName,attrName,nextAttrState) {        
@@ -37,8 +35,8 @@ export default class FairCopyConfig {
 
     populateActiveAttrs(doc) {
         const { teiSchema, subDocIDs } = this.teiDocument
-        const nextState = { elements: {} }
-        const { elements } = nextState
+        const initialState = { elements: {} }
+        const { elements } = initialState
 
         function compareToActive( element ) {
             const {attrs, type} = element
@@ -93,7 +91,7 @@ export default class FairCopyConfig {
             scanNode(subDoc)
         }
 
-        this.setState(nextState)
+        return initialState
     }
 
     onUpdate = (nextState) => {
@@ -110,8 +108,7 @@ export default class FairCopyConfig {
 
     setState(nextState) {
         // send next state to main process
-        // fairCopy.services.updateConfig(this.configID, nextState)
-        this.onUpdate(nextState)
+        fairCopy.services.updateConfig(this.configPath, nextState)
     }
 
 }
