@@ -25,7 +25,7 @@ function loadLocalizedString(el, tagName, lang="en") {
         const tagEl = tagEls[i]
         if( tagEl.getAttribute("xml:lang") === lang ) {
             // TODO flatten out newlines and runs of whitespace
-            str = tagEl.innerText
+            str = tagEl.innerHTML
         }
     }
     return str

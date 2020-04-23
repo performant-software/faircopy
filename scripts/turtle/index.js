@@ -222,12 +222,7 @@ async function run() {
 
     const attrs = createAttributes(elements,specs)
 
-    const vocabs = {
-        "*[rend]": ["bold","italic","caps"],
-        "name[type]": ["person","place","artwork"]
-    }
-
-    const teiSimpleConfig = { elements, attrs, vocabs }
+    const teiSimpleConfig = { elements, attrs }
     fs.writeFileSync("public/main-process/config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
 }
 

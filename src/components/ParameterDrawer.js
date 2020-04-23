@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Drawer, Button, Popper, Paper, ClickAwayListener } from '@material-ui/core'
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
@@ -13,6 +12,7 @@ import { getHighlightColor, getHighlightRanges } from "../tei-document/highlight
 import TokenField from './attribute-fields/TokenField'
 import TEIDataTextField from './attribute-fields/TEIDataTextField'
 import TEIDataWordField from './attribute-fields/TEIDataWordField'
+import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 
 export default class ParameterDrawer extends Component {
 
@@ -40,27 +40,6 @@ export default class ParameterDrawer extends Component {
             changeAttribute( nextElement, attributeKey, value, $anchor, tr )
             editorView.dispatch(tr)
         }
-    }
-
-    renderSelectField(element,fieldKey,key,attr,vocab) {
-        const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
-        for( const term of vocab ) {
-            menuOptions.push( <MenuItem key={`${fieldKey}-${term}`} value={term}>{term}</MenuItem>)
-        }
-
-        return (
-            <FormControl id={fieldKey}>
-                <InputLabel>{key}</InputLabel>
-                <Select
-                    className="attributeSelectField"
-                    value={attr}
-                    fullWidth={true}
-                    onChange={this.changeAttributeHandler(element,key)}
-                >
-                    { menuOptions }
-                </Select>
-            </FormControl>
-        )
     }
 
     renderAttributeInfoPopper() {
@@ -92,8 +71,8 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderAttributeField(attrName,value,attrSpec,vocab,onChange) {
-        const { dataType, minOccurs, maxOccurs } = attrSpec
+    renderAttributeField(attrName,value,attrSpec,onChange) {
+        const { dataType, minOccurs, maxOccurs, valList, valListType } = attrSpec
 
         if( dataType === 'token') {
             return (
@@ -115,6 +94,19 @@ export default class ParameterDrawer extends Component {
                 ></TEIDataWordField>
             )
         }
+        if( dataType === 'teidata.enumerated' ) {
+            return (
+                <TEIEnumeratedField
+                    attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
+                    valList={valList}
+                    valListType={valListType}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIEnumeratedField>
+            )  
+        }
 
         // TODO for now, this is the default
         return (
@@ -125,10 +117,9 @@ export default class ParameterDrawer extends Component {
             ></TEIDataTextField>
         )    
         
-        // TODO refactor this.renderSelectField(element,fieldKey,key,attr,vocab)
     }
 
-    renderAttributes(element,attrState,vocabs) {
+    renderAttributes(element,attrState) {
         const {teiSchema} = this.props.teiDocument
         const attrSpecs = teiSchema.attrs
         
@@ -141,7 +132,6 @@ export default class ParameterDrawer extends Component {
                     const fieldKey = `attr-${key}`
                     const {attrs} = element
                     const value = attrs[key] ? attrs[key] : ""
-                    const vocab = vocabs[key]
                     const onChange = this.changeAttributeHandler(element,key)
 
                     const handleClick = (e) => {
@@ -149,7 +139,7 @@ export default class ParameterDrawer extends Component {
                     }
                     attrFields.push(
                         <div className="attrTextField" key={fieldKey} >
-                            { this.renderAttributeField(key,value,attrSpec,vocab,onChange) }
+                            { this.renderAttributeField(key,value,attrSpec,onChange) }
                             <i className="fas fa-info-circle attr-info-button" onClick={handleClick} ></i>
                         </div>
                     )    
@@ -192,7 +182,7 @@ export default class ParameterDrawer extends Component {
             <Card variant="outlined" className="element" key={key} style={style}>
                 <CardHeader avatar={this.renderLegendBox(count)} title={name} subheader={elementSpec.desc}></CardHeader>
                 <CardContent>
-                    { this.renderAttributes(element,attrState,elementSpec.vocabs) }
+                    { this.renderAttributes(element,attrState) }
                 </CardContent>
                 <CardActions>
                     <Button onClick={openAttributeDialog}>Add/Remove Attributes</Button>
