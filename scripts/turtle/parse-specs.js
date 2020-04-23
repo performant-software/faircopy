@@ -17,15 +17,15 @@ const getKeys = (el,keyTag) => {
     return keys   
 }
 
-function loadLocalizedString(xmlDoc, tagName) {
+function loadLocalizedString(el, tagName, lang="en") {
     // Load the description of this element
     let str = ""
-    const descEls = xmlDoc.getElementsByTagName(tagName)
-    for( let i=0; i < descEls.length; i++ ) {
-        const strEl = descEls[i]
-        if( strEl.getAttribute("xml:lang") === "en" ) {
+    const tagEls = el.getElementsByTagName(tagName)
+    for( let i=0; i < tagEls.length; i++ ) {
+        const tagEl = tagEls[i]
+        if( tagEl.getAttribute("xml:lang") === lang ) {
             // TODO flatten out newlines and runs of whitespace
-            str = strEl.innerHTML
+            str = tagEl.innerText
         }
     }
     return str
@@ -51,8 +51,21 @@ function parseAttDef( el ) {
     if( dataRefEl && !dataType ) {
         dataType = dataRefEl.getAttribute('name') 
     }
+
+    const valListEl = el.getElementsByTagName('valList')[0]
+    const valListType = valListEl ? valListEl.getAttribute('type') : null
+    const valList = valListEl ? [] : null
+    if( valListEl ) {
+        const valItemEls = valListEl.getElementsByTagName('valItem')
+        for( let i=0; i < valItemEls.length; i++ ) {
+            const valItemEl = valItemEls[i]
+            const valIdent = valItemEl.getAttribute('ident')
+            const valDesc = loadLocalizedString(valItemEl, 'desc')
+            valList.push({ ident: valIdent, desc: valDesc })
+        }
+    }
    
-    return { ident, description, dataType, minOccurs, maxOccurs } //, usage, defaultVal, valList, valDesc }
+    return { ident, description, dataType, minOccurs, maxOccurs, valList, valListType } //, usage, defaultVal }
 }
 
 function parseAttList( el ) {    
