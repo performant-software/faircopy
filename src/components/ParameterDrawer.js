@@ -6,6 +6,7 @@ import { Node } from "prosemirror-model"
 import Typography from '@material-ui/core/Typography'
 
 import AttributeDialog from './AttributeDialog'
+import VocabDialog from './VocabDialog'
 import { changeAttribute } from "../tei-document/commands"
 import { getHighlightColor, getHighlightRanges } from "../tei-document/highlighter"
 
@@ -21,6 +22,8 @@ export default class ParameterDrawer extends Component {
         this.state = {
             attributeDialogOpen: false,
             openElementName: null,
+            vocabDialogOpen: false,
+            openAttributeName: null,
             anchorEl: null,
             selectedAttr: null
         }	
@@ -104,6 +107,7 @@ export default class ParameterDrawer extends Component {
                     valListType={valListType}
                     value={value}                        
                     onChangeCallback={onChange}
+                    vocabEditorCallback={this.openVocabEditor}
                 ></TEIEnumeratedField>
             )  
         }
@@ -117,6 +121,14 @@ export default class ParameterDrawer extends Component {
             ></TEIDataTextField>
         )    
         
+    }
+
+    openVocabEditor = (attrName) => {
+        this.setState({
+            ...this.state,
+            vocabDialogOpen: true,
+            openAttributeName: attrName
+        })
     }
 
     renderAttributes(element,attrState) {
@@ -194,7 +206,9 @@ export default class ParameterDrawer extends Component {
     render() {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
-        const { attributeDialogOpen, openElementName } = this.state
+        const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttributeName } = this.state
+        const attrSpecs = teiDocument.teiSchema.attrs
+        const openAttrSpec = openAttributeName ? attrSpecs[openAttributeName] : null
 
         const selection = (editorView) ? editorView.state.selection : null 
 
@@ -214,8 +228,12 @@ export default class ParameterDrawer extends Component {
             }
         }
 
-        const onClose = () => {
+        const onCloseAttributeDialog = () => {
             this.setState({...this.state, openElementName: null, attributeDialogOpen: false })
+        }
+
+        const onCloseVocabDialog = () => {
+            this.setState({...this.state, openAttributeName: null, vocabDialogOpen: false })
         }
 
         const s = (elements.length !== 1) ? 's' : ''
@@ -243,8 +261,13 @@ export default class ParameterDrawer extends Component {
                     elementName={openElementName} 
                     teiDocument={teiDocument} 
                     open={attributeDialogOpen} 
-                    onClose={onClose} 
+                    onClose={onCloseAttributeDialog} 
                 ></AttributeDialog>
+                <VocabDialog 
+                    attrSpec={openAttrSpec}
+                    open={vocabDialogOpen} 
+                    onClose={onCloseVocabDialog}
+                ></VocabDialog>
                 { this.renderAttributeInfoPopper() }
             </Drawer>
         )

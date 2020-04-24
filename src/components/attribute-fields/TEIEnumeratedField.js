@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
-import { TextField } from '@material-ui/core'
+import { TextField, IconButton } from '@material-ui/core'
 
 import { teiDataWordValidator } from '../../tei-document/attribute-validators'
 
@@ -50,20 +50,33 @@ export default class TEIEnumeratedField extends Component {
         )
     }
 
+    openVocabEditor = () => {
+        const { attrName, vocabEditorCallback } = this.props
+        vocabEditorCallback(attrName)
+    }
+
     renderOpenVocab() {
         const { attrName, value } = this.props
         const { error, errorMessage } = this.state
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
 
         return (
-            <TextField
-                label={attrName}
-                value={value}                        
-                fullWidth={true}
-                onChange={this.onChange}
-                error={error}
-                helperText={helperText}
-            />
+            <div style={{ display: 'flex'}}>
+                <TextField
+                    label={attrName}
+                    value={value}                        
+                    fullWidth={true}
+                    onChange={this.onChange}
+                    error={error}
+                    helperText={helperText}
+                />
+                <IconButton 
+                    onClick={this.openVocabEditor} 
+                    tooltip={"Open Vocab Editor"}
+                >
+                    <i className="fas fa-sm fa-list-alt"></i>
+                </IconButton>
+            </div>
         )
     }
 
