@@ -74,7 +74,7 @@ export default class ParameterDrawer extends Component {
         )
     }
 
-    renderAttributeField(attrName,value,attrSpec,onChange) {
+    renderAttributeField(elementName,attrName,value,attrSpec,onChange) {
         const { dataType, minOccurs, maxOccurs, valList, valListType } = attrSpec
 
         if( dataType === 'token') {
@@ -100,6 +100,7 @@ export default class ParameterDrawer extends Component {
         if( dataType === 'teidata.enumerated' ) {
             return (
                 <TEIEnumeratedField
+                    elementName={elementName}
                     attrName={attrName}
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
@@ -123,10 +124,11 @@ export default class ParameterDrawer extends Component {
         
     }
 
-    openVocabEditor = (attrName) => {
+    openVocabEditor = (elementName,attrName) => {
         this.setState({
             ...this.state,
             vocabDialogOpen: true,
+            openElementName: elementName,
             openAttributeName: attrName
         })
     }
@@ -134,6 +136,7 @@ export default class ParameterDrawer extends Component {
     renderAttributes(element,attrState) {
         const {teiSchema} = this.props.teiDocument
         const attrSpecs = teiSchema.attrs
+        const elementName = element.type.name
         
         let attrFields = []
 
@@ -151,7 +154,7 @@ export default class ParameterDrawer extends Component {
                     }
                     attrFields.push(
                         <div className="attrTextField" key={fieldKey} >
-                            { this.renderAttributeField(key,value,attrSpec,onChange) }
+                            { this.renderAttributeField(elementName,key,value,attrSpec,onChange) }
                             <i className="fas fa-info-circle attr-info-button" onClick={handleClick} ></i>
                         </div>
                     )    
@@ -205,7 +208,7 @@ export default class ParameterDrawer extends Component {
 
     render() {
         const { teiDocument } = this.props
-        const { editorView } = teiDocument
+        const { editorView, fairCopyConfig } = teiDocument
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttributeName } = this.state
         const attrSpecs = teiDocument.teiSchema.attrs
         const openAttrSpec = openAttributeName ? attrSpecs[openAttributeName] : null
@@ -264,6 +267,8 @@ export default class ParameterDrawer extends Component {
                     onClose={onCloseAttributeDialog} 
                 ></AttributeDialog>
                 <VocabDialog 
+                    fairCopyConfig={fairCopyConfig}
+                    elementName={openElementName}
                     attrSpec={openAttrSpec}
                     open={vocabDialogOpen} 
                     onClose={onCloseVocabDialog}

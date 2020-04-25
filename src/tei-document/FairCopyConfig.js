@@ -22,23 +22,32 @@ export default class FairCopyConfig {
         this.configPath = "config-settings.json"  
 
         // populate it based on the tei document
-        const initialState = this.populateActiveAttrs(doc)
+        const initialState = this.generateInitialState(doc)
         fairCopy.services.configSubscribe(this.configPath,this.onUpdate,initialState)
     }
 
     setAttrState(elementName,attrName,nextAttrState) {        
-        // update config state
         const nextState = { ...this.state }
         nextState.elements[elementName].attrState[attrName] = nextAttrState
         this.setState(nextState)        
     }
 
-    populateActiveAttrs(doc) {
-        const { teiSchema, subDocIDs } = this.teiDocument
-        const initialState = { elements: {} }
-        const { elements } = initialState
+    setVocabState(vocabName,nextVocabState) {
+        const nextState = { ...this.state }
+        nextState.vocabs[vocabName] = nextVocabState
+        this.setState(nextState)        
+    }
 
-        function compareToActive( element ) {
+    getDefaultVocabKey(elementName,attributeName) {
+        return `${elementName}[${attributeName}]`
+    }
+
+    generateInitialState(doc) {
+        const { teiSchema, subDocIDs } = this.teiDocument
+        const initialState = { elements: {}, vocabs: {} }
+        const { elements, vocabs } = initialState
+
+        const compareToActive = ( element ) => {
             const {attrs, type} = element
             const {name} = type
             for( const attrName of Object.keys(attrs)) {
@@ -46,6 +55,21 @@ export default class FairCopyConfig {
                 if( val && val !== "" ) {
                     if( elements[name].attrState[attrName] ) {
                         elements[name].attrState[attrName].active = true
+                        // populate the vocabulary with any existing values
+                        if( teiSchema.attrs[attrName].dataType === "teidata.enumerated" ) {
+                            const vocabID = this.getDefaultVocabKey(name,attrName)
+                            const vocabEntry = vocabs[vocabID]
+                            const valEntry = [val,'']
+                            if( vocabEntry ) {
+                                // unique values only
+                                if( !vocabEntry.find( v => v[0] === val ) ) {
+                                    vocabEntry.push(valEntry)
+                                }
+                            } else {
+                                vocabs[vocabID] = [valEntry]
+                            }
+                            elements[name].attrState[attrName].vocabID = vocabID
+                        }
                     }
                 }
             }   
@@ -112,28 +136,3 @@ export default class FairCopyConfig {
     }
 
 }
-
-// TODO - program should clear sub docs from local storage before exiting or when loading a different document
-
-// const configSchema = {
-//     id, //(generated GUID by default)
-//     name, //human readable name
-//     type, //local or published (published are refreshed on load)
-//     elements: {
-//         attrs 
-//     },
-//     vocabs: {
-//         name: {
-//             name,
-//             target, //  *[rend] or name[type]
-//             src, // (load from JSON-LD data source)
-//             type, // closed, semiopen, open
-//             values: [
-//                 {
-//                     ident,
-//                     description
-//                 }
-//             ]
-//         }
-//     }
-// }

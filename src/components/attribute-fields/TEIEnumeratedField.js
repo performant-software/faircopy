@@ -51,8 +51,8 @@ export default class TEIEnumeratedField extends Component {
     }
 
     openVocabEditor = () => {
-        const { attrName, vocabEditorCallback } = this.props
-        vocabEditorCallback(attrName)
+        const { elementName, attrName, vocabEditorCallback } = this.props
+        vocabEditorCallback(elementName,attrName)
     }
 
     renderOpenVocab() {

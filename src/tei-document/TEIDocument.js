@@ -159,6 +159,8 @@ export default class TEIDocument {
             saveFilePath = 'test-docs/je_example_out.xml'
         }
 
+        // TODO - program should clear sub docs from local storage before exiting or when loading a different document
+
         const editorState = this.editorView.state
         this.teiSchema.teiMode = true
 
