@@ -23,7 +23,7 @@ export default class ParameterDrawer extends Component {
             attributeDialogOpen: false,
             openElementName: null,
             vocabDialogOpen: false,
-            openAttributeName: null,
+            openAttrName: null,
             anchorEl: null,
             selectedAttr: null
         }	
@@ -129,7 +129,7 @@ export default class ParameterDrawer extends Component {
             ...this.state,
             vocabDialogOpen: true,
             openElementName: elementName,
-            openAttributeName: attrName
+            openAttrName: attrName
         })
     }
 
@@ -209,9 +209,7 @@ export default class ParameterDrawer extends Component {
     render() {
         const { teiDocument } = this.props
         const { editorView, fairCopyConfig } = teiDocument
-        const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttributeName } = this.state
-        const attrSpecs = teiDocument.teiSchema.attrs
-        const openAttrSpec = openAttributeName ? attrSpecs[openAttributeName] : null
+        const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
 
         const selection = (editorView) ? editorView.state.selection : null 
 
@@ -269,7 +267,7 @@ export default class ParameterDrawer extends Component {
                 <VocabDialog 
                     fairCopyConfig={fairCopyConfig}
                     elementName={openElementName}
-                    attrSpec={openAttrSpec}
+                    attrName={openAttrName}
                     open={vocabDialogOpen} 
                     onClose={onCloseVocabDialog}
                 ></VocabDialog>

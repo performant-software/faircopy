@@ -3,7 +3,7 @@ import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@m
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
 import { Button, InputBase, TextField } from '@material-ui/core'
 
-import { teiDataWordValidator } from '../tei-document/attribute-validators'
+// import { teiDataWordValidator } from '../tei-document/attribute-validators'
 
 export default class VocabDialog extends Component {
 
@@ -16,14 +16,14 @@ export default class VocabDialog extends Component {
     }
 
     getVocab() {
-        const { fairCopyConfig, elementName, attrSpec } = this.props
         let vocab, vocabID
         // if the vocab has been modified, use latest copy, otherwise use existing
         if( this.state.vocabID ) {
             vocabID = this.state.vocabID
             vocab = this.state.vocab            
         } else {
-            vocabID = fairCopyConfig.state.elements[elementName].attrState[attrSpec.ident].vocabID
+            const { fairCopyConfig, elementName, attrName } = this.props
+            vocabID = fairCopyConfig.state.elements[elementName].attrState[attrName].vocabID
             vocab = ( vocabID && fairCopyConfig.state.vocabs[vocabID]) ? fairCopyConfig.state.vocabs[vocabID] : []
         }
         return { vocabID, vocab }
@@ -32,14 +32,11 @@ export default class VocabDialog extends Component {
     onCellChange = (e) => {
         const { vocab, vocabID } = this.getVocab()
         const {target} = e
-        const {val} = target
-        const dataCellID = target.getAttribute('datacellid')  
-
-        // TODO patch in change
-
-
+        const {value} = target
+        const cellIndex = parseInt(target.getAttribute('datacellidx'))
+        vocab[cellIndex] = [ value, '']
         // TODO validate the change?
-        this.setState({ ...this.state, vocabID, vocab })  
+        this.setState({ ...this.state, vocab, vocabID })
     }
 
     onVocabChange = () => {
@@ -96,7 +93,7 @@ export default class VocabDialog extends Component {
                 <TableRow key={`attr-row-${row}`} >
                     <TableCell>
                         <InputBase
-                            inputProps={{ 'datacellid': row }}
+                            inputProps={{ 'datacellidx': row }}
                             value={val}                        
                             fullWidth={true}
                             onChange={this.onCellChange}
@@ -138,12 +135,8 @@ export default class VocabDialog extends Component {
                     { this.renderTable() }                    
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.onSave} color="primary">
-                        Save
-                    </Button>
-                    <Button onClick={this.onClose} color="primary">
-                        Cancel
-                    </Button>
+                    <Button onClick={this.onSave} color="primary">Save</Button>
+                    <Button onClick={this.onClose} color="primary">Cancel</Button>
                 </DialogActions>
             </Dialog>
         )
