@@ -12,17 +12,10 @@ export default class TEIEnumeratedField extends Component {
         this.state = value !== "" && value !== null ? teiDataWordValidator(value, minOccurs, maxOccurs) : {}
     }
 
-    onChange = (e) => {
-        const {value} = e.target
-        const { onChangeCallback, minOccurs, maxOccurs } = this.props
-        if( value !== "" && value !== null ) {
-            const validState = teiDataWordValidator(value, minOccurs, maxOccurs)
-            this.setState(validState)    
-            onChangeCallback(value,validState.error)
-        } else {
-            this.setState({})
-            onChangeCallback(value,false)
-        }
+    onChange = (e, value) => {
+        const { onChangeCallback } = this.props
+        let val = value ? value[0] : ''
+        onChangeCallback(val,false)
     }
 
     openVocabEditor = () => {
@@ -65,12 +58,4 @@ export default class TEIEnumeratedField extends Component {
         )
     }
 
-    // render() {
-    //     // const { valListType } = this.props
-    //     // if( valListType === "closed" ) {
-    //     //     return this.renderClosedVocab()
-    //     // } else {
-    //         return this.renderOpenVocab()
-    //     // }
-    // }
 }
