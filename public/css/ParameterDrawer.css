@@ -65,3 +65,13 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+.vocab-name-field {
+    margin-bottom: 20px;
+}
+
+.vocab-add-row {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: flex;
+}

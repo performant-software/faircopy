@@ -32,9 +32,9 @@ export default class FairCopyConfig {
         this.setState(nextState)        
     }
 
-    setVocabState(vocabName,nextVocabState) {
+    setVocabState(vocabID,nextVocabState) {
         const nextState = { ...this.state }
-        nextState.vocabs[vocabName] = nextVocabState
+        nextState.vocabs[vocabID] = nextVocabState
         this.setState(nextState)        
     }
 

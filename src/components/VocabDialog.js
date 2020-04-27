@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
-import { Button, InputBase, TextField } from '@material-ui/core'
+import { Button, IconButton, InputBase, TextField } from '@material-ui/core'
+import TEIDataWordField from './attribute-fields/TEIDataWordField';
 
 // import { teiDataWordValidator } from '../tei-document/attribute-validators'
 
@@ -10,6 +11,9 @@ export default class VocabDialog extends Component {
     constructor() {
         super()
         this.state = {
+            addMode: false,
+            addTerm: '',
+            addTermError: false,
             vocabID: null,
             vocab: null
         }	
@@ -21,64 +25,64 @@ export default class VocabDialog extends Component {
             return { vocabID: this.state.vocabID, vocab: this.state.vocab }
         } else {
             const { fairCopyConfig, elementName, attrName } = this.props
-            return fairCopyConfig.getVocab( elementName, attrName )
+            const v = fairCopyConfig.getVocab( elementName, attrName )
+            return { vocab: [...v.vocab], vocabID: v.vocabID }
         }
     }
 
-    onCellChange = (e) => {
-        const { vocab, vocabID } = this.getVocab()
-        const {target} = e
-        const {value} = target
-        const cellIndex = parseInt(target.getAttribute('datacellidx'))
-        vocab[cellIndex] = [ value, '']
-        // TODO validate the change?
-        this.setState({ ...this.state, vocab, vocabID })
-    }
-
-    onVocabChange = () => {
-        // TODO
-    }
-
     onSave = () => {
-        const { onClose } = this.props
-        // TODO pass vocab on to config
-        this.setState({ ...this.state, vocabID: null, vocab: null })
+        const { vocab, vocabID } = this.state
+        const { onClose, fairCopyConfig } = this.props
+        fairCopyConfig.setVocabState(vocabID, vocab)
+        this.setState({ ...this.state, vocabID: null, vocab: null, addMode: false })
         onClose()
     }
 
     onClose = () => {
         const { onClose } = this.props
-        this.setState({ ...this.state, vocabID: null, vocab: null })
+        this.setState({ ...this.state, vocabID: null, vocab: null, addMode: false })
         onClose()
     }
 
     renderNameField() {
         const { vocabID } = this.getVocab()
 
+        const onVocabChange = () => {
+            // TODO
+        }
+    
         // TODO
-        // - combo box for selecting an existing vocab vs. creating a new one
+        // autocomplete existing name 
+        // new button to create a new name, turns it into textfield
 
         return (
-            <TextField            
-                label="Vocabulary Name"
-                value={vocabID}
-                onChange={this.onVocabChange}                       
-                fullWidth={true}
-            ></TextField>
+            <div className="vocab-name-field">
+                <TextField          
+                    label="Vocabulary Name"
+                    value={vocabID}
+                    onChange={onVocabChange}                       
+                    fullWidth={true}
+                ></TextField>
+            </div>
         )
     }
 
     renderTable() {
-        // const { valList } = attrSpec
         const { vocab } = this.getVocab()
 
-        // TODO
-        // - record field input
-        // - display validation errors
-        // - add a new row
-        // - internal scrolling for the table
-        // - delete a row
-        // - show a row is readonly
+        const onCellChange = (e) => {
+            const { vocab, vocabID } = this.getVocab()
+            const {target} = e
+            const {value} = target
+            const cellIndex = parseInt(target.getAttribute('datacellidx'))
+            const ident = vocab[cellIndex][0]
+            vocab[cellIndex] = [ ident, value ]
+            this.setState({ ...this.state, vocab, vocabID })
+        }
+    
+        const onCellDelete = (e) => {
+            // TODO
+        }
 
         let row = 0
         const tableRows = []
@@ -88,15 +92,22 @@ export default class VocabDialog extends Component {
             tableRows.push(
                 <TableRow key={`attr-row-${row}`} >
                     <TableCell>
+                        <Typography>{val}</Typography>
+                    </TableCell>
+                    <TableCell>
                         <InputBase
                             inputProps={{ 'datacellidx': row }}
-                            value={val}                        
+                            value={desc}                        
                             fullWidth={true}
-                            onChange={this.onCellChange}
+                            onChange={onCellChange}
                         />      
                     </TableCell>
                     <TableCell>
-                        <Typography>{desc}</Typography>
+                        <IconButton
+                            onClick={onCellDelete}
+                        >
+                            <i className="fas fa-minus-circle"></i>
+                        </IconButton>
                     </TableCell>
                 </TableRow>    
             )    
@@ -109,6 +120,7 @@ export default class VocabDialog extends Component {
                     <TableRow>
                         <TableCell>Value</TableCell>
                         <TableCell>Description</TableCell>
+                        <TableCell>Action</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -118,6 +130,67 @@ export default class VocabDialog extends Component {
         )
     }
 
+    renderAddRow() {
+        const onAddClick = () => this.setState({...this.state, addMode: true })
+        
+        const onCancelClick = () => {
+            this.setState({...this.state, addTerm: '', addTermError: false, addMode: false })
+        }
+        
+        const onChange = (value,error) => {
+            // TODO run term through validator
+            this.setState({...this.state, addTerm: value, addTermError: error })
+        }
+
+        const onSaveClick = () => {
+            const { addTerm, addTermError } = this.state    
+            if( !addTermError ) {
+                // add this term to to vocab
+                const v = this.getVocab()
+                const nextVocab = [ ...v.vocab, [addTerm,'']]
+                this.setState({...this.state, vocab: nextVocab, vocabID: v.vocabID, addTerm: '', addTermError: false, addMode: false })
+            } 
+        }
+
+        const { attrName } = this.props
+        const { addMode, addTerm, addTermError } = this.state
+
+        if( addMode ) {
+            return (
+                <div className="vocab-add-row">
+                    <TEIDataWordField
+                        attrName={attrName}
+                        value={addTerm}                        
+                        onChangeCallback={onChange}
+                    />
+                    <IconButton 
+                        onClick={onSaveClick} 
+                        disabled={addTermError}
+                        tooltip={"Save Term"}
+                    >
+                        <i className="fas fa-check-circle"></i>
+                    </IconButton>
+                    <IconButton 
+                        onClick={onCancelClick} 
+                        tooltip={"Cancel"}
+                    >
+                        <i className="fas fa-times-circle"></i>
+                    </IconButton>
+                </div>
+            )    
+        } else {
+            return (
+                <div className="vocab-add-row">
+                    <Button 
+                        onClick={onAddClick} 
+                        tooltip={"Add a Term"}
+                    >
+                        <span><i className="fas fa-lg fa-plus-circle"></i> Add Term</span>
+                    </Button>
+                </div>
+            )    
+        }
+    }
 
     render() {
         const { open } = this.props
@@ -128,7 +201,8 @@ export default class VocabDialog extends Component {
                 <DialogTitle id="attribute-dialog">Edit Vocabulary</DialogTitle>
                 <DialogContent>
                     { this.renderNameField() }
-                    { this.renderTable() }                    
+                    { this.renderTable() }
+                    { this.renderAddRow() }                   
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.onSave} color="primary">Save</Button>
