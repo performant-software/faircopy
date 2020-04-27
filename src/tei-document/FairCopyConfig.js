@@ -42,6 +42,13 @@ export default class FairCopyConfig {
         return `${elementName}[${attributeName}]`
     }
 
+    getVocab(elementName,attrName) {
+        // TODO mix-in the valList from the attribute spec
+        const vocabID = this.state.elements[elementName].attrState[attrName].vocabID
+        const vocab = ( vocabID && this.state.vocabs[vocabID]) ? this.state.vocabs[vocabID] : []
+        return { vocabID, vocab } 
+    }
+
     generateInitialState(doc) {
         const { teiSchema, subDocIDs } = this.teiDocument
         const initialState = { elements: {}, vocabs: {} }

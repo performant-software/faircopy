@@ -75,7 +75,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeField(elementName,attrName,value,attrSpec,onChange) {
-        const { dataType, minOccurs, maxOccurs, valList, valListType } = attrSpec
+        const { dataType, minOccurs, maxOccurs } = attrSpec
 
         if( dataType === 'token') {
             return (
@@ -98,14 +98,14 @@ export default class ParameterDrawer extends Component {
             )
         }
         if( dataType === 'teidata.enumerated' ) {
+            const { vocab } = this.props.teiDocument.fairCopyConfig.getVocab(elementName,attrName)
             return (
                 <TEIEnumeratedField
                     elementName={elementName}
                     attrName={attrName}
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
-                    valList={valList}
-                    valListType={valListType}
+                    vocab={vocab}
                     value={value}                        
                     onChangeCallback={onChange}
                     vocabEditorCallback={this.openVocabEditor}

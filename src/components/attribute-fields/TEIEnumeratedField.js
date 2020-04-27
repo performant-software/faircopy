@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core'
 import { TextField, IconButton } from '@material-ui/core'
+import { Autocomplete } from '@material-ui/lab'
 
 import { teiDataWordValidator } from '../../tei-document/attribute-validators'
 
@@ -25,51 +25,36 @@ export default class TEIEnumeratedField extends Component {
         }
     }
 
-    renderClosedVocab() {
-        const { attrName, value, valList } = this.props
-        const fieldKey = `attr-field-${attrName}`
-
-        const menuOptions = [ <MenuItem key={`${fieldKey}----`} value={""}>{"<none>"}</MenuItem> ]
-        for( const val of valList ) {
-            const term = val.ident
-            menuOptions.push( <MenuItem key={`${fieldKey}-${term}`} value={term}>{term}</MenuItem>)
-        }
-
-        return (
-            <FormControl id={fieldKey}>
-                <InputLabel>{attrName}</InputLabel>
-                <Select
-                    className="attributeSelectField"
-                    value={value}
-                    fullWidth={true}
-                    onChange={this.onChange}
-                >
-                    { menuOptions }
-                </Select>
-            </FormControl>
-        )
-    }
-
     openVocabEditor = () => {
         const { elementName, attrName, vocabEditorCallback } = this.props
         vocabEditorCallback(elementName,attrName)
     }
 
-    renderOpenVocab() {
-        const { attrName, value } = this.props
+    render() {
+        const { attrName, value, vocab } = this.props
         const { error, errorMessage } = this.state
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
+        const valObj = vocab.find( v => v[0] === value )
+
+        const renderInput = (params) => <TextField
+                                            {...params}
+                                            label={attrName}
+                                            fullWidth={true}
+                                            error={error}
+                                            helperText={helperText}
+                                        />
 
         return (
             <div style={{ display: 'flex'}}>
-                <TextField
-                    label={attrName}
-                    value={value}                        
-                    fullWidth={true}
+                <Autocomplete
+                    value={valObj}
+                    freeSolo
+                    options={vocab}
                     onChange={this.onChange}
-                    error={error}
-                    helperText={helperText}
-                />
+                    getOptionLabel={(option) => option[0]}
+                    renderInput={renderInput}
+                    style={{ width: 300 }}
+                />               
                 <IconButton 
                     onClick={this.openVocabEditor} 
                     tooltip={"Open Vocab Editor"}
@@ -80,12 +65,12 @@ export default class TEIEnumeratedField extends Component {
         )
     }
 
-    render() {
-        const { valListType } = this.props
-        if( valListType === "closed" ) {
-            return this.renderClosedVocab()
-        } else {
-            return this.renderOpenVocab()
-        }
-    }
+    // render() {
+    //     // const { valListType } = this.props
+    //     // if( valListType === "closed" ) {
+    //     //     return this.renderClosedVocab()
+    //     // } else {
+    //         return this.renderOpenVocab()
+    //     // }
+    // }
 }

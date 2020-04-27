@@ -16,17 +16,13 @@ export default class VocabDialog extends Component {
     }
 
     getVocab() {
-        let vocab, vocabID
         // if the vocab has been modified, use latest copy, otherwise use existing
         if( this.state.vocabID ) {
-            vocabID = this.state.vocabID
-            vocab = this.state.vocab            
+            return { vocabID: this.state.vocabID, vocab: this.state.vocab }
         } else {
             const { fairCopyConfig, elementName, attrName } = this.props
-            vocabID = fairCopyConfig.state.elements[elementName].attrState[attrName].vocabID
-            vocab = ( vocabID && fairCopyConfig.state.vocabs[vocabID]) ? fairCopyConfig.state.vocabs[vocabID] : []
+            return fairCopyConfig.getVocab( elementName, attrName )
         }
-        return { vocabID, vocab }
     }
 
     onCellChange = (e) => {
