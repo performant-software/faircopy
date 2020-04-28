@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
 import { Button, IconButton, TextField } from '@material-ui/core'
-import TEIDataWordField from './attribute-fields/TEIDataWordField';
+import VocabTermField from './attribute-fields/VocabTermField';
 
 // import { teiDataWordValidator } from '../tei-document/attribute-validators'
 
@@ -123,28 +123,34 @@ export default class VocabDialog extends Component {
         }
         
         const onChange = (value,error) => {
-            // TODO run term through validator
+            const { vocab } = this.getVocab()
+            if( !error ) {
+                error = vocab.find( v => v[0] === value )
+            }
             this.setState({...this.state, addTerm: value, addTermError: error })
         }
 
         const onSaveClick = () => {
-            const { addTerm, addTermError } = this.state    
-            if( !addTermError ) {
-                // add this term to to vocab
+            const { addTerm } = this.state    
+            if( !addTerm || addTerm === '' ) {
+                // don't add blank terms
+                this.setState({...this.state, addTerm: '', addTermError: false, addMode: false })
+            } else {
                 const v = this.getVocab()
                 const nextVocab = [ ...v.vocab, [addTerm,true]]
-                this.setState({...this.state, vocab: nextVocab, vocabID: v.vocabID, addTerm: '', addTermError: false, addMode: false })
-            } 
+                this.setState({...this.state, vocab: nextVocab, vocabID: v.vocabID, addTerm: '', addTermError: false, addMode: false })    
+            }
         }
 
         const { addMode, addTerm, addTermError } = this.state
+        const {vocab} = this.getVocab()
 
         if( addMode ) {
             return (
                 <div className="vocab-add-row">
-                    <TEIDataWordField
-                        attrName="new term"
-                        value={addTerm}                        
+                    <VocabTermField
+                        value={addTerm}            
+                        vocab={vocab}            
                         onChangeCallback={onChange}
                     />
                     <IconButton 
