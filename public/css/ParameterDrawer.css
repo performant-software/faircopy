@@ -66,11 +66,15 @@
     flex-wrap: wrap;
 }
 
-.vocab-name-field {
+#VocabDialog .vocab-content {
+    width: 400px;
+}
+
+#VocabDialog .vocab-name-field {
     margin-bottom: 20px;
 }
 
-.vocab-add-row {
+#VocabDialog .vocab-add-row {
     margin-top: 10px;
     margin-bottom: 20px;
     display: flex;

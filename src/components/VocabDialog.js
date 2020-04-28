@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
-import { Button, IconButton, InputBase, TextField } from '@material-ui/core'
+import { Button, IconButton, TextField } from '@material-ui/core'
 import TEIDataWordField from './attribute-fields/TEIDataWordField';
 
 // import { teiDataWordValidator } from '../tei-document/attribute-validators'
@@ -68,42 +68,28 @@ export default class VocabDialog extends Component {
     }
 
     renderTable() {
-        const { vocab } = this.getVocab()
-
-        const onCellChange = (e) => {
-            const { vocab, vocabID } = this.getVocab()
-            const {target} = e
-            const {value} = target
-            const cellIndex = parseInt(target.getAttribute('datacellidx'))
-            const ident = vocab[cellIndex][0]
-            vocab[cellIndex] = [ ident, value ]
-            this.setState({ ...this.state, vocab, vocabID })
-        }
+        const { vocab, vocabID } = this.getVocab()
     
         const onCellDelete = (e) => {
-            // TODO
+            const {currentTarget} = e
+            const cellIndex = parseInt(currentTarget.getAttribute('datacellidx'))
+            const nextVocab = [ ...vocab ]
+            nextVocab.splice(cellIndex,1)
+            this.setState({ ...this.state, vocabID, vocab: nextVocab })
         }
 
         let row = 0
         const tableRows = []
         for( const vocabEntry of vocab ) {
             const val = vocabEntry[0]
-            const desc = vocabEntry[1]
             tableRows.push(
                 <TableRow key={`attr-row-${row}`} >
                     <TableCell>
                         <Typography>{val}</Typography>
                     </TableCell>
                     <TableCell>
-                        <InputBase
-                            inputProps={{ 'datacellidx': row }}
-                            value={desc}                        
-                            fullWidth={true}
-                            onChange={onCellChange}
-                        />      
-                    </TableCell>
-                    <TableCell>
-                        <IconButton
+                        <IconButton   
+                            datacellidx={row}                          
                             onClick={onCellDelete}
                         >
                             <i className="fas fa-minus-circle"></i>
@@ -115,12 +101,11 @@ export default class VocabDialog extends Component {
         }
         
         return (
-            <Table stickyHeader>
+            <Table stickyHeader size="small" >
                 <TableHead>
                     <TableRow>
                         <TableCell>Value</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>Action</TableCell>
+                        <TableCell>Remove</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -147,19 +132,18 @@ export default class VocabDialog extends Component {
             if( !addTermError ) {
                 // add this term to to vocab
                 const v = this.getVocab()
-                const nextVocab = [ ...v.vocab, [addTerm,'']]
+                const nextVocab = [ ...v.vocab, [addTerm,true]]
                 this.setState({...this.state, vocab: nextVocab, vocabID: v.vocabID, addTerm: '', addTermError: false, addMode: false })
             } 
         }
 
-        const { attrName } = this.props
         const { addMode, addTerm, addTermError } = this.state
 
         if( addMode ) {
             return (
                 <div className="vocab-add-row">
                     <TEIDataWordField
-                        attrName={attrName}
+                        attrName="new term"
                         value={addTerm}                        
                         onChangeCallback={onChange}
                     />
@@ -197,9 +181,9 @@ export default class VocabDialog extends Component {
         if( !open ) return null
 
         return (
-            <Dialog open={open} onClose={this.onClose} aria-labelledby="attribute-dialog">
+            <Dialog id="VocabDialog" maxWidth="lg" open={open} onClose={this.onClose} aria-labelledby="attribute-dialog">
                 <DialogTitle id="attribute-dialog">Edit Vocabulary</DialogTitle>
-                <DialogContent>
+                <DialogContent className="vocab-content">
                     { this.renderNameField() }
                     { this.renderTable() }
                     { this.renderAddRow() }                   

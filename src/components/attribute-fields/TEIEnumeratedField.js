@@ -41,7 +41,6 @@ export default class TEIEnumeratedField extends Component {
             <div style={{ display: 'flex'}}>
                 <Autocomplete
                     value={valObj}
-                    freeSolo
                     options={vocab}
                     onChange={this.onChange}
                     getOptionLabel={(option) => option[0]}

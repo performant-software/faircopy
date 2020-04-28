@@ -66,7 +66,7 @@ export default class FairCopyConfig {
                         if( teiSchema.attrs[attrName].dataType === "teidata.enumerated" ) {
                             const vocabID = this.getDefaultVocabKey(name,attrName)
                             const vocabEntry = vocabs[vocabID]
-                            const valEntry = [val,'']
+                            const valEntry = [val,true]
                             if( vocabEntry ) {
                                 // unique values only
                                 if( !vocabEntry.find( v => v[0] === val ) ) {
