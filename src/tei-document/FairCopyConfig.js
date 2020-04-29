@@ -1,5 +1,3 @@
-import { debounce } from "debounce"
-
 const fairCopy = window.fairCopy
 
 export default class FairCopyConfig {

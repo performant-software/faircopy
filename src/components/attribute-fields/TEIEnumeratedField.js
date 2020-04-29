@@ -24,10 +24,11 @@ export default class TEIEnumeratedField extends Component {
     }
 
     render() {
-        const { attrName, value, vocab, valListType } = this.props
+        const { elementName, attrName, value, vocab, valListType } = this.props
         const { error, errorMessage } = this.state
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
         const valObj = vocab.find( v => v[0] === value )
+        const key = `enumfield-${elementName}-${attrName}-${Date.now()}`
 
         let vocabButton = null
         if( valListType !== 'closed' ) {
@@ -50,6 +51,7 @@ export default class TEIEnumeratedField extends Component {
         return (
             <div style={{ display: 'flex'}}>
                 <Autocomplete
+                    key={key}
                     value={valObj}
                     options={vocab}
                     onChange={this.onChange}
