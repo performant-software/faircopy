@@ -1221,7 +1221,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"n": {
 			"ident": "n",
@@ -1230,7 +1230,7 @@
 			"minOccurs": null,
 			"maxOccurs": "1",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"xml:lang": {
 			"ident": "xml:lang",
@@ -1239,7 +1239,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"xml:base": {
 			"ident": "xml:base",
@@ -1248,7 +1248,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"xml:space": {
 			"ident": "xml:space",
@@ -1275,7 +1275,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"style": {
 			"ident": "style",
@@ -1284,7 +1284,7 @@
 			"minOccurs": null,
 			"maxOccurs": "1",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"rendition": {
 			"ident": "rendition",
@@ -1293,7 +1293,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"corresp": {
 			"ident": "corresp",
@@ -1302,7 +1302,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"synch": {
 			"ident": "synch",
@@ -1311,7 +1311,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"sameAs": {
 			"ident": "sameAs",
@@ -1320,7 +1320,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"copyOf": {
 			"ident": "copyOf",
@@ -1329,7 +1329,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"next": {
 			"ident": "next",
@@ -1338,7 +1338,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"prev": {
 			"ident": "prev",
@@ -1347,7 +1347,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"exclude": {
 			"ident": "exclude",
@@ -1356,7 +1356,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"select": {
 			"ident": "select",
@@ -1365,7 +1365,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"ana": {
 			"ident": "ana",
@@ -1374,7 +1374,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"facs": {
 			"ident": "facs",
@@ -1383,7 +1383,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"change": {
 			"ident": "change",
@@ -1392,7 +1392,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"cert": {
 			"ident": "cert",
@@ -1401,7 +1401,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"resp": {
 			"ident": "resp",
@@ -1410,7 +1410,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"source": {
 			"ident": "source",
@@ -1419,7 +1419,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"org": {
 			"ident": "org",
@@ -1476,7 +1476,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"real": {
 			"ident": "real",
@@ -1485,7 +1485,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"rhyme": {
 			"ident": "rhyme",
@@ -1494,7 +1494,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"part": {
 			"ident": "part",
@@ -1533,7 +1533,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"subtype": {
 			"ident": "subtype",
@@ -1542,7 +1542,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"decls": {
 			"ident": "decls",
@@ -1551,7 +1551,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"hand": {
 			"ident": "hand",
@@ -1560,7 +1560,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"ed": {
 			"ident": "ed",
@@ -1569,7 +1569,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"edRef": {
 			"ident": "edRef",
@@ -1578,7 +1578,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"spanTo": {
 			"ident": "spanTo",
@@ -1587,7 +1587,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"break": {
 			"ident": "break",
@@ -1609,7 +1609,7 @@
 					"desc": "the encoding does not take any position on this issue."
 				}
 			],
-			"valListType": null
+			"valListType": "open"
 		},
 		"anchored": {
 			"ident": "anchored",
@@ -1618,7 +1618,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"targetEnd": {
 			"ident": "targetEnd",
@@ -1627,7 +1627,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"place": {
 			"ident": "place",
@@ -1686,7 +1686,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"target": {
 			"ident": "target",
@@ -1695,7 +1695,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"evaluate": {
 			"ident": "evaluate",
@@ -1726,7 +1726,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"cRef": {
 			"ident": "cRef",
@@ -1735,7 +1735,7 @@
 			"minOccurs": null,
 			"maxOccurs": "1",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"full": {
 			"ident": "full",
@@ -1766,7 +1766,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"role": {
 			"ident": "role",
@@ -1775,7 +1775,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"nymRef": {
 			"ident": "nymRef",
@@ -1784,7 +1784,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"key": {
 			"ident": "key",
@@ -1793,7 +1793,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"ref": {
 			"ident": "ref",
@@ -1802,7 +1802,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"calendar": {
 			"ident": "calendar",
@@ -1811,7 +1811,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"period": {
 			"ident": "period",
@@ -1820,7 +1820,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"when": {
 			"ident": "when",
@@ -1829,7 +1829,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notBefore": {
 			"ident": "notBefore",
@@ -1838,7 +1838,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notAfter": {
 			"ident": "notAfter",
@@ -1847,7 +1847,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"from": {
 			"ident": "from",
@@ -1856,7 +1856,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"to": {
 			"ident": "to",
@@ -1865,7 +1865,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"when-iso": {
 			"ident": "when-iso",
@@ -1874,7 +1874,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notBefore-iso": {
 			"ident": "notBefore-iso",
@@ -1883,7 +1883,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notAfter-iso": {
 			"ident": "notAfter-iso",
@@ -1892,7 +1892,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"from-iso": {
 			"ident": "from-iso",
@@ -1901,7 +1901,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"to-iso": {
 			"ident": "to-iso",
@@ -1910,7 +1910,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"when-custom": {
 			"ident": "when-custom",
@@ -1919,7 +1919,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notBefore-custom": {
 			"ident": "notBefore-custom",
@@ -1928,7 +1928,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notAfter-custom": {
 			"ident": "notAfter-custom",
@@ -1937,7 +1937,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"from-custom": {
 			"ident": "from-custom",
@@ -1946,7 +1946,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"to-custom": {
 			"ident": "to-custom",
@@ -1955,7 +1955,7 @@
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"datingPoint": {
 			"ident": "datingPoint",
@@ -1964,7 +1964,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"datingMethod": {
 			"ident": "datingMethod",
@@ -1973,7 +1973,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"evidence": {
 			"ident": "evidence",
@@ -2004,7 +2004,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"value": {
 			"ident": "value",
@@ -2013,7 +2013,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"atLeast": {
 			"ident": "atLeast",
@@ -2022,7 +2022,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"atMost": {
 			"ident": "atMost",
@@ -2031,7 +2031,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"min": {
 			"ident": "min",
@@ -2040,7 +2040,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"max": {
 			"ident": "max",
@@ -2049,7 +2049,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"confidence": {
 			"ident": "confidence",
@@ -2058,7 +2058,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"unit": {
 			"ident": "unit",
@@ -2153,7 +2153,7 @@
 			"minOccurs": null,
 			"maxOccurs": "1",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"quantity": {
 			"ident": "quantity",
@@ -2162,7 +2162,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"commodity": {
 			"ident": "commodity",
@@ -2171,7 +2171,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"dur": {
 			"ident": "dur",
@@ -2180,7 +2180,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"dur-iso": {
 			"ident": "dur-iso",
@@ -2189,7 +2189,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"extent": {
 			"ident": "extent",
@@ -2198,7 +2198,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"precision": {
 			"ident": "precision",
@@ -2207,7 +2207,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"scope": {
 			"ident": "scope",
@@ -2238,7 +2238,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"agent": {
 			"ident": "agent",
@@ -2311,7 +2311,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"seq": {
 			"ident": "seq",
@@ -2320,7 +2320,7 @@
 			"minOccurs": null,
 			"maxOccurs": "1",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"sortKey": {
 			"ident": "sortKey",
@@ -2329,7 +2329,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"level": {
 			"ident": "level",
@@ -2368,7 +2368,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"function": {
 			"ident": "function",
@@ -2377,7 +2377,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"datcat": {
 			"ident": "datcat",
@@ -2386,7 +2386,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"valueDatcat": {
 			"ident": "valueDatcat",
@@ -2395,7 +2395,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"notation": {
 			"ident": "notation",
@@ -2404,7 +2404,7 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"toWhom": {
 			"ident": "toWhom",
@@ -2413,7 +2413,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"who": {
 			"ident": "who",
@@ -2422,7 +2422,7 @@
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
-			"valListType": null
+			"valListType": "open"
 		},
 		"id": {
 			"type": "text"

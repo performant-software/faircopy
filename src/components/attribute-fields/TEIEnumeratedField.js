@@ -24,10 +24,20 @@ export default class TEIEnumeratedField extends Component {
     }
 
     render() {
-        const { attrName, value, vocab } = this.props
+        const { attrName, value, vocab, valListType } = this.props
         const { error, errorMessage } = this.state
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
         const valObj = vocab.find( v => v[0] === value )
+
+        let vocabButton = null
+        if( valListType !== 'closed' ) {
+            vocabButton = <IconButton 
+                                onClick={this.openVocabEditor} 
+                                tooltip={"Open Vocab Editor"}
+                            >
+                                <i className="fas fa-sm fa-list-alt"></i>
+                            </IconButton>
+        }
 
         const renderInput = (params) => <TextField
                                             {...params}
@@ -46,13 +56,8 @@ export default class TEIEnumeratedField extends Component {
                     getOptionLabel={(option) => option[0]}
                     renderInput={renderInput}
                     style={{ width: 300 }}
-                />               
-                <IconButton 
-                    onClick={this.openVocabEditor} 
-                    tooltip={"Open Vocab Editor"}
-                >
-                    <i className="fas fa-sm fa-list-alt"></i>
-                </IconButton>
+                />   
+                { vocabButton } 
             </div>
         )
     }

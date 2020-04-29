@@ -82,13 +82,15 @@ export default class VocabDialog extends Component {
         const tableRows = []
         for( const vocabEntry of vocab ) {
             const val = vocabEntry[0]
+            const enabled = vocabEntry[1]
             tableRows.push(
                 <TableRow key={`attr-row-${row}`} >
                     <TableCell>
                         <Typography>{val}</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="right">
                         <IconButton   
+                            disabled={!enabled}
                             datacellidx={row}                          
                             onClick={onCellDelete}
                         >
@@ -105,7 +107,7 @@ export default class VocabDialog extends Component {
                 <TableHead>
                     <TableRow>
                         <TableCell>Value</TableCell>
-                        <TableCell>Remove</TableCell>
+                        <TableCell align="right" >Remove</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

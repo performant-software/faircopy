@@ -1,3 +1,5 @@
+import { debounce } from "debounce"
+
 const fairCopy = window.fairCopy
 
 export default class FairCopyConfig {
@@ -22,7 +24,7 @@ export default class FairCopyConfig {
         this.configPath = "config-settings.json"  
 
         // populate it based on the tei document
-        const initialState = this.generateInitialState(doc)
+        const initialState = this.stateFromDoc(doc)
         fairCopy.services.configSubscribe(this.configPath,this.onUpdate,initialState)
     }
 
@@ -43,16 +45,69 @@ export default class FairCopyConfig {
     }
 
     getVocab(elementName,attrName) {
-        // TODO mix-in the valList from the attribute spec
         const vocabID = this.state.elements[elementName].attrState[attrName].vocabID
         const vocab = ( vocabID && this.state.vocabs[vocabID]) ? this.state.vocabs[vocabID] : []
         return { vocabID, vocab } 
     }
 
-    generateInitialState(doc) {
+    initialState() {
+        const { teiSchema } = this.teiDocument
+        const { attrs } = teiSchema
+
+        const elements = {}
+        const vocabs = {}
+        
+        // intialize the elements
+        for( const element of Object.values(teiSchema.elements) ) {
+            const { validAttrs } = element
+            const configElement = {
+                attrState: {}
+            }
+            if( validAttrs ) {
+                for( const attr of validAttrs ) {
+                    configElement.attrState[attr] = { active: false }        
+                    const { valList, valListType } = teiSchema.attrs[attr]
+                    if( valList && valListType !== 'open' ) {
+                        configElement.attrState[attr].vocabID = this.getDefaultVocabKey('*',attr)    
+                    } 
+                }
+            }
+            elements[element.name] = configElement
+        }
+
+        // initialize vocabs
+        for( const attr of Object.values(attrs) ) {
+            const { valList, valListType } = attr
+            if( valList && valListType !== 'open' ) {
+                const vocabKey = this.getDefaultVocabKey('*',attr.ident)
+                const vocab = []
+                for( const val of valList ) {
+                    // marked as read only
+                    vocab.push([val.ident, false])
+                }
+                vocabs[vocabKey] = vocab 
+            }
+        }
+
+        return { elements, vocabs }
+    }
+
+    stateFromDoc(doc) {
         const { teiSchema, subDocIDs } = this.teiDocument
-        const initialState = { elements: {}, vocabs: {} }
-        const { elements, vocabs } = initialState
+        const { elements, vocabs } = this.initialState()
+
+        const addTerm = ( vocabID, term ) => {
+            const vocabEntry = vocabs[vocabID]
+            const valEntry = [term,true]
+            if( vocabEntry ) {
+                // unique values only
+                if( !vocabEntry.find( v => v[0] === term ) ) {
+                    vocabEntry.push(valEntry)
+                }
+            } else {
+                vocabs[vocabID] = [valEntry]
+            }
+        }
 
         const compareToActive = ( element ) => {
             const {attrs, type} = element
@@ -62,20 +117,21 @@ export default class FairCopyConfig {
                 if( val && val !== "" ) {
                     if( elements[name].attrState[attrName] ) {
                         elements[name].attrState[attrName].active = true
+                        const attrSpec = teiSchema.attrs[attrName]
                         // populate the vocabulary with any existing values
-                        if( teiSchema.attrs[attrName].dataType === "teidata.enumerated" ) {
-                            const vocabID = this.getDefaultVocabKey(name,attrName)
-                            const vocabEntry = vocabs[vocabID]
-                            const valEntry = [val,true]
-                            if( vocabEntry ) {
-                                // unique values only
-                                if( !vocabEntry.find( v => v[0] === val ) ) {
-                                    vocabEntry.push(valEntry)
+                        if( attrSpec.dataType === "teidata.enumerated" ) {
+                            let vocabID
+                            if( attrSpec.valListType !== 'open' ) {
+                                // attrs of the same type that are not open share a common vocab
+                                vocabID = this.getDefaultVocabKey('*',attrName)
+                                if( attrSpec.valListType === 'semi' ) {
+                                    addTerm(vocabID,val)
                                 }
                             } else {
-                                vocabs[vocabID] = [valEntry]
+                                vocabID = this.getDefaultVocabKey(name,attrName)
+                                addTerm(vocabID,val)
                             }
-                            elements[name].attrState[attrName].vocabID = vocabID
+                            elements[name].attrState[attrName].vocabID = vocabID    
                         }
                     }
                 }
@@ -98,20 +154,6 @@ export default class FairCopyConfig {
             }            
         }
 
-        // intialize the elements
-        for( const element of Object.values(teiSchema.elements) ) {
-            const { validAttrs } = element
-            const configElement = {
-                attrState: {}
-            }
-            if( validAttrs ) {
-                for( const attr of validAttrs ) {
-                    configElement.attrState[attr] = { active: false }
-                }    
-            }
-            elements[element.name] = configElement
-        }
-
         // scan the main doc
         scanNode(doc)
 
@@ -122,7 +164,7 @@ export default class FairCopyConfig {
             scanNode(subDoc)
         }
 
-        return initialState
+        return { elements, vocabs }
     }
 
     onUpdate = (nextState) => {

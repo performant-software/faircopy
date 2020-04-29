@@ -53,7 +53,8 @@ function parseAttDef( el ) {
     }
 
     const valListEl = el.getElementsByTagName('valList')[0]
-    const valListType = valListEl ? valListEl.getAttribute('type') : null
+    let valListType = valListEl ? valListEl.getAttribute('type') : null
+    valListType = valListType ? valListType : 'open'
     const valList = valListEl ? [] : null
     if( valListEl ) {
         const valItemEls = valListEl.getElementsByTagName('valItem')

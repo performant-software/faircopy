@@ -75,7 +75,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeField(elementName,attrName,value,attrSpec,onChange) {
-        const { dataType, minOccurs, maxOccurs } = attrSpec
+        const { dataType, minOccurs, maxOccurs, valListType } = attrSpec
 
         if( dataType === 'token') {
             return (
@@ -106,6 +106,7 @@ export default class ParameterDrawer extends Component {
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
                     vocab={vocab}
+                    valListType={valListType}
                     value={value}                        
                     onChangeCallback={onChange}
                     vocabEditorCallback={this.openVocabEditor}
