@@ -1,4 +1,11 @@
 
+export function singleTokenValidator( value ) {
+    if( value.search(/\s/) !== -1  ) {
+        return { error: true, errorMessage: "can not contain whitespace"}
+    }
+    return { error: false, errorMessage: ""}
+}
+
 // token represents tokenized strings. The ·value space· of token is the set of
 // strings that do not contain the carriage return (#xD), line feed (#xA) nor tab
 // (#x9) characters, that have no leading or trailing spaces (#x20) and that

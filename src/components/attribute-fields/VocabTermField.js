@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { TextField } from '@material-ui/core'
 
-import { teiDataWordValidator } from '../../tei-document/attribute-validators'
+import { singleTokenValidator } from '../../tei-document/attribute-validators'
 
 export default class VocabTermField extends Component {
 
     constructor(props) {
         super()
         const { value } = props
-        this.state = value !== "" && value !== null ? teiDataWordValidator(value) : {}
+        this.state = value !== "" && value !== null ? singleTokenValidator(value) : {}
     }
 
     onChange = (e) => {
         const {value} = e.target
         const { vocab, onChangeCallback } = this.props
         if( value !== "" && value !== null ) {
-            const validState = teiDataWordValidator(value)
+            const validState = singleTokenValidator(value)
             if( !validState.error ) {
                 const exists = vocab.find( v => v[0] === value )
                 if( exists ) {
