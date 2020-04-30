@@ -4,8 +4,6 @@ import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/
 import { Button, IconButton, TextField } from '@material-ui/core'
 import VocabTermField from './attribute-fields/VocabTermField';
 
-// import { teiDataWordValidator } from '../tei-document/attribute-validators'
-
 export default class VocabDialog extends Component {
 
     constructor() {
