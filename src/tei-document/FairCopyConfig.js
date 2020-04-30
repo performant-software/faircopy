@@ -64,10 +64,12 @@ export default class FairCopyConfig {
             if( validAttrs ) {
                 for( const attr of validAttrs ) {
                     configElement.attrState[attr] = { active: false }        
-                    const { valList, valListType } = teiSchema.attrs[attr]
-                    if( valList && valListType !== 'open' ) {
-                        configElement.attrState[attr].vocabID = this.getDefaultVocabKey('*',attr)    
-                    } 
+                    const { valListType, dataType } = teiSchema.attrs[attr]
+                    if( dataType === 'teidata.enumerated' ) {
+                        configElement.attrState[attr].vocabID = (valListType !== 'open') ?
+                            this.getDefaultVocabKey('*',attr) :
+                            this.getDefaultVocabKey(element.name,attr)
+                    }
                 }
             }
             elements[element.name] = configElement
