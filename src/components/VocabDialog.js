@@ -9,14 +9,15 @@ import VocabTermField from './attribute-fields/VocabTermField';
 export default class VocabDialog extends Component {
 
     constructor() {
-        super()
-        this.state = {
+        super() 
+        this.initialState = {
             addMode: false,
             addTerm: '',
             addTermError: false,
             vocabID: null,
             vocab: null
         }	
+        this.state = this.initialState	
     }
 
     getVocab() {
@@ -34,13 +35,13 @@ export default class VocabDialog extends Component {
         const { vocab, vocabID } = this.state
         const { onClose, fairCopyConfig } = this.props
         fairCopyConfig.setVocabState(vocabID, vocab)
-        this.setState({ ...this.state, vocabID: null, vocab: null, addMode: false })
+        this.setState({ ...this.initialState })
         onClose()
     }
 
     onClose = () => {
         const { onClose } = this.props
-        this.setState({ ...this.state, vocabID: null, vocab: null, addMode: false })
+        this.setState({ ...this.initialState })
         onClose()
     }
 
@@ -140,7 +141,7 @@ export default class VocabDialog extends Component {
             } else {
                 const v = this.getVocab()
                 const nextVocab = [ ...v.vocab, [addTerm,true]]
-                this.setState({...this.state, vocab: nextVocab, vocabID: v.vocabID, addTerm: '', addTermError: false, addMode: false })    
+                this.setState({ ...this.initialState, vocab: nextVocab, vocabID: v.vocabID })    
             }
         }
 
