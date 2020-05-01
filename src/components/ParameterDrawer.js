@@ -14,6 +14,7 @@ import TokenField from './attribute-fields/TokenField'
 import TEIDataTextField from './attribute-fields/TEIDataTextField'
 import TEIDataWordField from './attribute-fields/TEIDataWordField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
+import IDField from './attribute-fields/IDField'
 
 export default class ParameterDrawer extends Component {
 
@@ -181,6 +182,18 @@ export default class ParameterDrawer extends Component {
         )
     }
 
+    renderIDField(element) {
+        const xmlID = element.attrs['xml:id'] ? element.attrs['xml:id'] : ""
+        const onChange = this.changeAttributeHandler(element,'xml:id')
+
+        return (
+            <IDField
+                value={xmlID}
+                onChangeCallback={onChange}
+            ></IDField>
+        )
+    }
+
     renderElement(element,count,key) {
         const { width, teiDocument } = this.props
         const { elements } = teiDocument.teiSchema
@@ -196,7 +209,12 @@ export default class ParameterDrawer extends Component {
 
         return (
             <Card variant="outlined" className="element" key={key} style={style}>
-                <CardHeader avatar={this.renderLegendBox(count)} title={name} subheader={elementSpec.desc}></CardHeader>
+                <CardHeader 
+                    avatar={this.renderLegendBox(count)} 
+                    title={name} 
+                    subheader={elementSpec.desc}
+                    action={this.renderIDField(element)}
+                ></CardHeader>
                 <CardContent>
                     { this.renderAttributes(element,attrState) }
                 </CardContent>
