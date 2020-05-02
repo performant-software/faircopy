@@ -3,6 +3,8 @@ import { TextField, Typography, IconButton, Button } from '@material-ui/core'
 
 import { singleTokenValidator } from '../../tei-document/attribute-validators'
 
+const fairCopy = window.fairCopy
+
 export default class IDField extends Component {
 
     constructor(props) {
@@ -53,7 +55,8 @@ export default class IDField extends Component {
         const onClick = () => { this.setState( {...this.state, valueBuffer: value, editMode: true} )}
 
         const onCopy= () => {
-            // TODO copy id to clipboard with a preceding hashtag
+            const value = this.getID()
+            fairCopy.services.copyToClipBoard(`#${value}`)
         }
 
         return (

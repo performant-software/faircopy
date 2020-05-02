@@ -40,6 +40,10 @@ const readClipBoardHTML = function readClipBoardHTML() {
     return electron.clipboard.readHTML()
 }
 
+const copyToClipBoard = function copyToClipBoard(content) {
+    electron.clipboard.writeText(content)
+}
+
 const ipcRegisterCallback = function ipcRegisterCallback( eventID, callback ) {
     electron.ipcRenderer.on(eventID,callback)
 }
@@ -55,6 +59,7 @@ exports.services = {
     ipcRegisterCallback, 
     ipcSend, 
     readClipBoardHTML, 
+    copyToClipBoard,
     loadConfigFile, 
     isDebugMode,
     getVersionNumber,

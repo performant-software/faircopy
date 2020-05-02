@@ -125,6 +125,12 @@ export default class TEIDocument {
         return subDocID
     }
 
+    createIDTable(doc) {
+        // TODO gather up all xml:ids and their nodes/marks
+
+
+    }
+
     load( filePath ) {
         const text = fairCopy.services.readFileSync(filePath)
         const parser = new DOMParser();
@@ -135,6 +141,7 @@ export default class TEIDocument {
         const selection = TextSelection.create(doc, 0)
         this.fairCopyConfig = new FairCopyConfig(this)
         this.fairCopyConfig.createFromDoc(doc)
+        this.createIDTable(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
