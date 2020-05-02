@@ -14,6 +14,7 @@ import TokenField from './attribute-fields/TokenField'
 import TEIDataTextField from './attribute-fields/TEIDataTextField'
 import TEIDataWordField from './attribute-fields/TEIDataWordField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
+import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
 import IDField from './attribute-fields/IDField'
 
 export default class ParameterDrawer extends Component {
@@ -112,6 +113,20 @@ export default class ParameterDrawer extends Component {
                     onChangeCallback={onChange}
                     vocabEditorCallback={this.openVocabEditor}
                 ></TEIEnumeratedField>
+            )  
+        }
+        if( dataType === 'teidata.pointer' ) {
+            const { teiDocument } = this.props
+            return (
+                <TEIDataPointerField
+                    elementName={elementName}
+                    attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
+                    teiDocument={teiDocument}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIDataPointerField>
             )  
         }
 

@@ -125,8 +125,32 @@ export default class TEIDocument {
         return subDocID
     }
 
-    getXMLIDs(doc) {
-        // TODO return an array of XML IDs to use for autocomplete
+    getXMLIDs() {
+        if( this.editorView ) {
+            const { doc } = this.editorView.state
+            return this.getXMLIDsInDoc(doc)
+        }
+        return null
+    }
+
+    getXMLIDsInDoc(doc) {
+        const xmlIDs = []
+
+        const gatherID = (element) => {
+            const xmlID = element.attrs['xml:id']
+            if( xmlID ) xmlIDs.push(`#${xmlID}`)
+        }
+        
+        // gather up all xml:ids and their nodes/marks
+        doc.descendants((node) => {
+            gatherID(node)
+            for( const mark of node.marks ) {
+                gatherID(mark)
+            }        
+            return true
+        })
+
+        return xmlIDs
     }
 
     findID(targetID) {
@@ -146,7 +170,6 @@ export default class TEIDocument {
         
         let result = null
 
-        // gather up all xml:ids and their nodes/marks
         doc.descendants((node) => {
             if( !result ) {
                 result = findID(node)
