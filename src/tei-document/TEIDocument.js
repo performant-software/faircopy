@@ -125,27 +125,42 @@ export default class TEIDocument {
         return subDocID
     }
 
-    processIDs(doc) {
-        const idTable = []
+    getXMLIDs(doc) {
+        // TODO return an array of XML IDs to use for autocomplete
+    }
+
+    findID(targetID) {
+        if( this.editorView ) {
+            const { doc } = this.editorView.state
+            return this.findIDInDoc(doc,targetID)
+        }
+        return null
+    }
+
+    findIDInDoc(doc,targetID) {
 
         const findID = (element) => {
-            const xmlID = element.attrs['id']
-            if( xmlID ) {
-                idTable.push( xmlID )
-                console.log(`found id: ${xmlID}`)
-            }
+            const xmlID = element.attrs['xml:id']
+            return ( xmlID && xmlID === targetID ) ? element : null
         }
         
+        let result = null
+
         // gather up all xml:ids and their nodes/marks
         doc.descendants((node) => {
-            findID(node)
-            for( const mark of node.marks ) {
-                findID(mark)
-            }
-            return true
+            if( !result ) {
+                result = findID(node)
+                if( !result ) {
+                    for( const mark of node.marks ) {
+                        result = findID(mark)
+                        if( result ) break 
+                    }        
+                }
+            } 
+            return (result === null)
         })
 
-        console.log('done')
+        return result
     }
 
     load( filePath ) {
@@ -158,7 +173,6 @@ export default class TEIDocument {
         const selection = TextSelection.create(doc, 0)
         this.fairCopyConfig = new FairCopyConfig(this)
         this.fairCopyConfig.createFromDoc(doc)
-        this.processIDs(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 

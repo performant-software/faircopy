@@ -183,11 +183,13 @@ export default class ParameterDrawer extends Component {
     }
 
     renderIDField(element) {
+        const { teiDocument } = this.props
         const xmlID = element.attrs['xml:id'] ? element.attrs['xml:id'] : ""
         const onChange = this.changeAttributeHandler(element,'xml:id')
 
         return (
             <IDField
+                teiDocument={teiDocument}
                 value={xmlID}
                 onChangeCallback={onChange}
             ></IDField>
