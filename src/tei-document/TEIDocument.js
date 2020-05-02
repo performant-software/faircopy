@@ -125,10 +125,27 @@ export default class TEIDocument {
         return subDocID
     }
 
-    createIDTable(doc) {
-        // TODO gather up all xml:ids and their nodes/marks
+    processIDs(doc) {
+        const idTable = []
 
+        const findID = (element) => {
+            const xmlID = element.attrs['id']
+            if( xmlID ) {
+                idTable.push( xmlID )
+                console.log(`found id: ${xmlID}`)
+            }
+        }
+        
+        // gather up all xml:ids and their nodes/marks
+        doc.descendants((node) => {
+            findID(node)
+            for( const mark of node.marks ) {
+                findID(mark)
+            }
+            return true
+        })
 
+        console.log('done')
     }
 
     load( filePath ) {
@@ -141,7 +158,7 @@ export default class TEIDocument {
         const selection = TextSelection.create(doc, 0)
         this.fairCopyConfig = new FairCopyConfig(this)
         this.fairCopyConfig.createFromDoc(doc)
-        this.createIDTable(doc)
+        this.processIDs(doc)
         this.changedSinceLastSave = false
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 

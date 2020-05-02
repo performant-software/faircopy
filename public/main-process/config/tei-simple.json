@@ -1221,7 +1221,8 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": "open"
+			"valListType": "open",
+			"hidden": true
 		},
 		"n": {
 			"ident": "n",
@@ -1248,7 +1249,8 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": "open"
+			"valListType": "open",
+			"hidden": true
 		},
 		"xml:space": {
 			"ident": "xml:space",
@@ -2423,9 +2425,6 @@
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
-		},
-		"id": {
-			"type": "text"
 		}
 	}
 }

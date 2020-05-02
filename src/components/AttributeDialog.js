@@ -17,24 +17,26 @@ export default class AttributeDialog extends Component {
         for( const attrName of Object.keys(attrState) ) {
             const attr = attrs[attrName]
     
-            const onChange = () => {
-                const active = !attrState[attrName].active
-                fairCopyConfig.setAttrState(elementName, attrName, { ...attrState[attrName], active })
+            if( !attr.hidden ) {
+                const onChange = () => {
+                    const active = !attrState[attrName].active
+                    fairCopyConfig.setAttrState(elementName, attrName, { ...attrState[attrName], active })
+                }
+            
+                tableRows.push(
+                    <TableRow key={`attr-row-${attrName}`} >
+                        <TableCell>
+                          <Checkbox
+                                color="primary"
+                                checked={attrState[attrName].active}
+                                onChange={onChange}
+                            />
+                        </TableCell>
+                        <TableCell>{attrName}</TableCell>
+                        <TableCell>{attr.description}</TableCell>
+                    </TableRow>    
+                )    
             }
-        
-            tableRows.push(
-                <TableRow key={`attr-row-${attrName}`} >
-                    <TableCell>
-                      <Checkbox
-                            color="primary"
-                            checked={attrState[attrName].active}
-                            onChange={onChange}
-                        />
-                    </TableCell>
-                    <TableCell>{attrName}</TableCell>
-                    <TableCell>{attr.description}</TableCell>
-                </TableRow>    
-            )
         }
         
         return (

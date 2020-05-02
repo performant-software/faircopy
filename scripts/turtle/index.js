@@ -161,7 +161,7 @@ function createExamplars(specs) {
         {
             "name": "note",
             "pmType": "inline-node",
-            "validAttrs": ["id"], // TODO remove
+            "validAttrs": [], 
             "desc": "contains a note or annotation."
         }
     ]
@@ -205,8 +205,9 @@ function createAttributes( elements, specs ) {
         }
     }
 
-    // TODO Remove
-    attrs['id'] = { type: 'text' }
+    // These attributes are treated specially
+    attrs['xml:id'].hidden = true
+    attrs['xml:base'].hidden = true
 
     return attrs
 }

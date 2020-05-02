@@ -61,16 +61,17 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name, validAttrs } = element
+            const { pmType, name } = element
+            const validAttrs = element.validAttrs ? element.validAttrs : []
             if( pmType === 'mark') {
-                marks[name] = this.createMarkSpec({ name, attrs: validAttrs ? validAttrs : [] })
+                marks[name] = this.createMarkSpec({ name, attrs: validAttrs })
             } else if( pmType === 'node' ) {
                 nodes[name] = this.createNodeSpec(element)
             } else if( pmType === 'inline-node' ) {
                 if( name === 'note' ) {
-                    nodes[name] = this.createNoteSpec()
+                    nodes[name] = this.createNoteSpec(validAttrs)
                 } else if( name === 'pb') {
-                    nodes[name] = this.createPbSpec()
+                    nodes[name] = this.createPbSpec(validAttrs)
                 }
             } else {
                 console.log('unrecognized pmType')
@@ -156,6 +157,7 @@ export default class TEISchema {
 
     createNodeSpec(teiNodeSpec) {
         const { name, content, group } = teiNodeSpec
+        // TODO add attrSpec
         return {
             content,
             group,
@@ -164,24 +166,25 @@ export default class TEISchema {
         }
     }
 
-    createNoteSpec() {
+    createNoteSpec(validAttrs) {
+
+        let attrs = this.getAttrSpec(validAttrs)
+        attrs['__id__'] = {}
+
         return {
             inline: true,
             atom: true,
             group: "inline",
-            attrs: {
-                id: {},
-                __id__: {}
-            },
+            attrs,
             parseDOM: [
                 {
                     tag: "note",
                     getAttrs: (domNode) => {
-                        const xmlID = domNode.getAttribute("xml:id")
+                        const attrParser = this.getAttrParser(validAttrs)
                         const existingID = domNode.getAttribute('__id__')
                         const noteID = existingID ? existingID : this.issueSubDocumentID()
                         this.parseSubDocument(domNode, noteID)
-                        return { id: xmlID, __id__: noteID }
+                        return { ...attrParser(domNode), __id__: noteID }
                     },
                 }
             ],
@@ -196,20 +199,18 @@ export default class TEISchema {
         }          
     }
 
-    createPbSpec() {
+    createPbSpec(validAttrs) {
+
+        const attrs = this.getAttrSpec(validAttrs)
+
         return {
             inline: true,
             atom: true,
             group: "inline",
-            attrs: {
-                facs: { default: '' }
-            },
+            attrs: attrs,
             parseDOM: [{
                 tag: "pb",
-                getAttrs: (domNode) => {
-                    const facs = domNode.getAttribute("facs")
-                    return { facs }
-                }
+                getAttrs: this.getAttrParser(validAttrs)
             }],
             toDOM: (node) => {
                 if( this.teiMode ) {
@@ -223,27 +224,42 @@ export default class TEISchema {
         }
     }
 
-    createMarkSpec(teiMarkSpec) {
-        const { name } = teiMarkSpec
-
+    getAttrSpec( validAttrs ) {
         let attrs = {}
-        for( let attr of teiMarkSpec.attrs ) {
+        for( const attr of validAttrs ) {
             attrs[attr] = { default: '' }
         }
         attrs['__error__'] = { default: 'false' }
+        return attrs
+    }
+
+    getAttrParser( validAttrs ) {
+        return (dom) => {
+            let parsedAttrs = {}
+            for( const attr of validAttrs ) {
+                parsedAttrs[attr] = dom.getAttribute(attr)
+            }
+            // all ids should be in xml namespace
+            const bareID = parsedAttrs['id']
+            if( bareID ) {
+                parsedAttrs['xml:id'] = bareID
+                parsedAttrs['id'] = null
+            }
+            return parsedAttrs    
+        }
+    }
+
+    createMarkSpec(teiMarkSpec) {
+        const { name } = teiMarkSpec
+
+        const attrs = this.getAttrSpec(teiMarkSpec.attrs)
 
         return {
             attrs,
             parseDOM: [
                 {
                     tag: name,
-                    getAttrs(dom) {
-                        let parsedAttrs = {}
-                        for( let attr of teiMarkSpec.attrs ) {
-                            parsedAttrs[attr] = dom.getAttribute(attr)
-                        }
-                        return parsedAttrs
-                    }
+                    getAttrs: this.getAttrParser(teiMarkSpec.attrs)
                 } 
             ],
             toDOM: (mark) => {
