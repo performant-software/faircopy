@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TextField, Typography, IconButton, Button } from '@material-ui/core'
 
-import { singleTokenValidator } from '../../tei-document/attribute-validators'
+import { idValidator } from '../../tei-document/attribute-validators'
 
 const fairCopy = window.fairCopy
 
@@ -16,7 +16,7 @@ export default class IDField extends Component {
             errorMessage: null,
             editMode: false
         }
-        this.state = (value !== null && value !== '') ? { ...this.initialState, ...singleTokenValidator(value) } : this.initialState
+        this.state = (value !== null && value !== '') ? { ...this.initialState, ...idValidator(value) } : this.initialState
     }
 
     getID() {
@@ -31,7 +31,7 @@ export default class IDField extends Component {
     onChange = (e) => {
         const {value} = e.target
         if( value !== null && value !== '' ) {
-            const validState = singleTokenValidator(value)
+            const validState = idValidator(value)
             this.setState( { ...validState, valueBuffer: value } )
         } else {
             const { editMode } = this.state

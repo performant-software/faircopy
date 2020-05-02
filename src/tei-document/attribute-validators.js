@@ -6,6 +6,14 @@ export function singleTokenValidator( value ) {
     return { error: false, errorMessage: ""}
 }
 
+// IDs are used as relative URIs, so they must be valid as such
+export function idValidator( value ) {
+    if( value.search(/[\s#&?:]/) !== -1  ) {
+        return { error: true, errorMessage: "can not contain whitespace or '#,&,?,:'."}
+    }
+    return { error: false, errorMessage: ""}
+}
+
 // token represents tokenized strings. The ·value space· of token is the set of
 // strings that do not contain the carriage return (#xD), line feed (#xA) nor tab
 // (#x9) characters, that have no leading or trailing spaces (#x20) and that
