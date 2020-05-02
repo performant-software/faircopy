@@ -8,8 +8,8 @@ export function singleTokenValidator( value ) {
 
 // IDs are used as relative URIs, so they must be valid as such
 export function idValidator( value ) {
-    if( value.search(/[\s#&?:]/) !== -1  ) {
-        return { error: true, errorMessage: "can not contain whitespace or '#,&,?,:'."}
+    if( value.search(/[\s#&?:\/]/) !== -1  ) {
+        return { error: true, errorMessage: "can not contain whitespace any of: '#,&,?,:,/'."}
     }
     return { error: false, errorMessage: ""}
 }
