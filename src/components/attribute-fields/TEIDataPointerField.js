@@ -64,7 +64,7 @@ export default class TEIDataPointerField extends Component {
 
         const renderTags = (values, getTagProps) => {
             return values.map((option, index) => (
-                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                <Chip variant="outlined" style={{maxWidth: 200}} label={option} {...getTagProps({ index })} />
             ))
         }
 

@@ -35,14 +35,16 @@ export default class TEIEnumeratedField extends Component {
 
     renderInput = (params) => {
         const { error, errorMessage } = this.state
-        const { attrName } = this.props
+        const { attrName, maxOccurs } = this.props
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
+        const variant = (maxOccurs) ? "outlined" : "standard"
 
         return (
             <TextField
                 {...params}
                 className="field-input"
                 label={attrName}
+                variant={variant}
                 fullWidth={true}
                 error={error}
                 helperText={helperText}
@@ -83,7 +85,7 @@ export default class TEIEnumeratedField extends Component {
 
         const renderTags = (values, getTagProps) => {
             return values.map((option, index) => (
-                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                <Chip variant="outlined" style={{maxWidth: 200}} label={option} {...getTagProps({ index })} />
             ))
         }
 
