@@ -25,6 +25,7 @@ export default class TEIEnumeratedField extends Component {
         return (
             <IconButton 
                 onClick={onClick} 
+                className="teidata-enumerated-vocab-button"
                 tooltip={"Open Vocab Editor"}
             >
                 <i className="fas fa-sm fa-list-alt"></i>
@@ -40,6 +41,7 @@ export default class TEIEnumeratedField extends Component {
         return (
             <TextField
                 {...params}
+                className="field-input"
                 label={attrName}
                 fullWidth={true}
                 error={error}
@@ -67,7 +69,6 @@ export default class TEIEnumeratedField extends Component {
                 onChange={onChange}
                 getOptionLabel={(option) => option[0]}
                 renderInput={this.renderInput}
-                style={{ width: 300 }}
             />   
         )    
     }
@@ -101,7 +102,6 @@ export default class TEIEnumeratedField extends Component {
                 getOptionLabel={(option) => option}
                 renderInput={this.renderInput}
                 renderTags={renderTags}
-                style={{ width: 300 }}
             />   
         )  
     }

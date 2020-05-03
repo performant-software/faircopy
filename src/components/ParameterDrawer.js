@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Drawer, Button, Popper, Paper, ClickAwayListener } from '@material-ui/core'
+import { Drawer, Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-ui/core'
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 import { Node } from "prosemirror-model"
 
@@ -170,9 +170,11 @@ export default class ParameterDrawer extends Component {
                         this.setState({ ...this.state, selectedAttr: key, anchorEl: e.currentTarget })
                     }
                     attrFields.push(
-                        <div className="attrTextField" key={fieldKey} >
+                        <div className="attrField" key={fieldKey} >
                             { this.renderAttributeField(elementName,key,value,attrSpec,onChange) }
-                            <i className="fas fa-info-circle attr-info-button" onClick={handleClick} ></i>
+                            <IconButton className="attr-info-button" onClick={handleClick}>
+                                <i className="fas fa-info-circle" ></i>
+                            </IconButton>
                         </div>
                     )    
                 }    

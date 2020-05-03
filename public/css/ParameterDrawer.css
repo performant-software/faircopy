@@ -47,18 +47,26 @@
     margin-bottom: 20px;
 }
 
-#ParameterDrawer .attributeSelectField {
-    min-width: 300px;
-}
-
-#ParameterDrawer .attrTextField {
-    display: flex;
-    min-width: 300px;
+#ParameterDrawer .attrField {
     margin: 10px;
+    display: flex;
 }
 
 #ParameterDrawer .attr-info-button {
-    padding-top: 20px;
+    color: gray;
+    max-height: 50px;
+    margin-top: 5px;
+}
+
+#ParameterDrawer .field-input {
+    min-width: 250px;
+    max-width: 500px;
+}
+
+#ParameterDrawer .teidata-enumerated-vocab-button {
+    color: gray;
+    max-height: 50px;
+    margin-top: 5px;
 }
 
 #ParameterDrawer .attributeFields {

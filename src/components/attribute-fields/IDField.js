@@ -95,6 +95,7 @@ export default class IDField extends Component {
             <div className="element-id-field">
                 <TextField
                     label="xml:id"
+                    className="field-input"
                     value={value}                        
                     fullWidth={true}
                     onChange={this.onChange}

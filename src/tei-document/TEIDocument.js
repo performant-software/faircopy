@@ -150,7 +150,7 @@ export default class TEIDocument {
             return true
         })
 
-        return xmlIDs
+        return xmlIDs.sort()
     }
 
     findID(targetID) {

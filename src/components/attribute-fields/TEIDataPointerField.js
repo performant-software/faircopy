@@ -14,13 +14,16 @@ export default class TEIDataPointerField extends Component {
 
     renderInput = (params) => {
         const { error, errorMessage } = this.state
-        const { attrName } = this.props
+        const { attrName, maxOccurs } = this.props
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
+        const variant = (maxOccurs) ? "outlined" : "standard"
 
         return (
             <TextField
                 {...params}
                 label={attrName}
+                className="field-input"
+                variant={variant}
                 fullWidth={true}
                 error={error}
                 helperText={helperText}
@@ -47,7 +50,6 @@ export default class TEIDataPointerField extends Component {
                 onChange={onChange}
                 getOptionLabel={(option) => option}
                 renderInput={this.renderInput}
-                style={{ width: 300 }}
             />   
         )    
     }
@@ -81,7 +83,6 @@ export default class TEIDataPointerField extends Component {
                 getOptionLabel={(option) => option}
                 renderInput={this.renderInput}
                 renderTags={renderTags}
-                style={{ width: 300 }}
             />   
         )  
     }

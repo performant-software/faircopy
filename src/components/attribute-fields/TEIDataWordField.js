@@ -32,6 +32,7 @@ export default class TEIDataWordField extends Component {
         return (
             <TextField
                 label={attrName}
+                className="field-input"
                 value={value}                        
                 fullWidth={true}
                 onChange={this.onChange}

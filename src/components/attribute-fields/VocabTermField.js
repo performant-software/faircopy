@@ -39,7 +39,8 @@ export default class VocabTermField extends Component {
         return (
             <TextField
                 label="new term"
-                value={value}                        
+                value={value}      
+                className="field-input"                  
                 fullWidth={true}
                 onChange={this.onChange}
                 error={error}
