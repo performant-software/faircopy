@@ -1,4 +1,4 @@
-import { NodeSelection, TextSelection } from "prosemirror-state"
+import { TextSelection, NodeSelection } from "prosemirror-state"
 import { Node } from "prosemirror-model"
 
 function markApplies(doc, ranges, type) {
@@ -64,14 +64,14 @@ export function removeMark(markType) {
 }
 
 export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
-    const {pos} = $anchor
     let newAttrs = { ...element.attrs }
     newAttrs[attributeKey] = value
     if( element instanceof Node ) {
-        tr.setNodeMarkup(pos, undefined, newAttrs)
-        const nextNode = NodeSelection.create(tr.doc, pos)
-        tr.setSelection( nextNode )
-        return nextNode
+        const {pos} = $anchor
+        tr.setNodeMarkup(pos,element.type,newAttrs)
+        const selection = NodeSelection.create(tr.doc, pos)
+        tr.setSelection( selection )
+        return element
     } else {
         const { from, to } = markExtent($anchor,element,tr.doc)
         const nextMark = element.type.create( newAttrs )
