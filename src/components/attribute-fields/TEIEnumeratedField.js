@@ -44,6 +44,7 @@ export default class TEIEnumeratedField extends Component {
                 {...params}
                 className="field-input"
                 label={attrName}
+                InputLabelProps={{disableAnimation: true}}
                 variant={variant}
                 fullWidth={true}
                 error={error}
@@ -97,6 +98,7 @@ export default class TEIEnumeratedField extends Component {
         return (
             <Autocomplete
                 multiple
+                disableClearable
                 key={key}
                 value={values}
                 options={terms}

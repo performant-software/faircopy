@@ -43,6 +43,7 @@ export default class TEIDataPointerField extends Component {
                 {...params}
                 label={attrName}
                 className="field-input"
+                InputLabelProps={{disableAnimation: true}}
                 variant={variant}
                 fullWidth={true}
                 error={error}
@@ -67,7 +68,6 @@ export default class TEIDataPointerField extends Component {
                 onChangeCallback(value,false)
             }
         }
-
 
         // TODO record input state 
         // const onInputChange = (e,value) => {
@@ -117,6 +117,7 @@ export default class TEIDataPointerField extends Component {
             <Autocomplete
                 freeSolo
                 multiple
+                disableClearable
                 key={key}
                 value={values}
                 options={IDs}
