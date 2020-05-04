@@ -2,14 +2,34 @@ import React, { Component } from 'react'
 import { TextField, Chip } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 
-import { teiDataWordValidator } from '../../tei-document/attribute-validators'
+import { uriValidator } from '../../tei-document/attribute-validators'
 
 export default class TEIDataPointerField extends Component {
 
     constructor(props) {
         super()
-        const { value, minOccurs, maxOccurs } = props
-        this.state = value && value !== "" ? teiDataWordValidator(value, minOccurs, maxOccurs) : {}
+        const { value, maxOccurs } = props
+ 
+        if( value && value !== "" ) {
+            if( maxOccurs ) {
+                const values = value.split(' ')
+                this.state = this.validateValues(values)    
+            } else {
+                this.state = this.validateValues([value])
+            }
+        } else {
+            this.state = {}
+        }
+    }
+
+    validateValues(values) {
+        for( const value of values ) {
+            const validResult = uriValidator(value)
+            if( validResult.error ) {
+                return validResult
+            }
+        }
+        return { error: false, errorMessage: '' }
     }
 
     renderInput = (params) => {
@@ -38,16 +58,34 @@ export default class TEIDataPointerField extends Component {
 
         const onChange = (e, value) => {
             const { onChangeCallback } = this.props
-            let val = value ? value : ''
-            onChangeCallback(val,false)
+            if( value && value !== "" ) {
+                const validResult = this.validateValues([value])
+                this.setState(validResult)
+                onChangeCallback(value,validResult.error)
+            } else {
+                this.setState({})
+                onChangeCallback(value,false)
+            }
         }
+
+
+        // TODO record input state 
+        // const onInputChange = (e,value) => {
+        //     this.setState({...this.state, inputValue: value })
+        // }
+
+        // const onBlur = () => {
+        // }
 
         return (
             <Autocomplete
+                freeSolo
                 key={key}
                 value={value}
                 options={IDs}
                 onChange={onChange}
+                // onInputChange={onInputChange}
+                // onBlur={onBlur}
                 getOptionLabel={(option) => option}
                 renderInput={this.renderInput}
             />   
@@ -58,8 +96,10 @@ export default class TEIDataPointerField extends Component {
 
         const onChange = (e, values) => {
             const { onChangeCallback } = this.props
+            const validResult = this.validateValues(values)
+            this.setState(validResult)
             const str = values.join(' ')
-            onChangeCallback(str,false)
+            onChangeCallback(str,validResult.error)
         }
 
         const renderTags = (values, getTagProps) => {
@@ -75,6 +115,7 @@ export default class TEIDataPointerField extends Component {
 
         return (
             <Autocomplete
+                freeSolo
                 multiple
                 key={key}
                 value={values}

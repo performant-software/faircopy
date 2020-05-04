@@ -14,6 +14,20 @@ export function idValidator( value ) {
     return { error: false, errorMessage: ""}
 }
 
+// Test that this is a valid URI
+export function uriValidator( value ) {
+    try {
+        if( value.startsWith('#') ) {
+            return idValidator( value.slice(1) )
+        } else {
+            new URL(value)
+        }
+        return { error: false, errorMessage: ""}
+    } catch(e) {
+        return { error: true, errorMessage: `Invalid URI` }
+    }
+}
+
 // token represents tokenized strings. The ·value space· of token is the set of
 // strings that do not contain the carriage return (#xD), line feed (#xA) nor tab
 // (#x9) characters, that have no leading or trailing spaces (#x20) and that

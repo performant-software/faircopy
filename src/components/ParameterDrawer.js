@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Drawer, Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-ui/core'
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
-import { Node } from "prosemirror-model"
 
 import Typography from '@material-ui/core/Typography'
 
@@ -38,9 +37,6 @@ export default class ParameterDrawer extends Component {
             const { state } = editorView 
             const { $anchor } = state.selection
             let {tr} = state
-            if( element instanceof Node && element.type.name === 'note' && attributeKey === 'id') {
-                teiDocument.moveSubDocument(element.attrs['id'], value)
-            }
             const nextElement = changeAttribute( element, '__error__', (error === true), $anchor, tr )                
             changeAttribute( nextElement, attributeKey, value, $anchor, tr )
             editorView.dispatch(tr)
