@@ -44,7 +44,7 @@ export default class IDField extends Component {
 
         return (
             <div className="element-id-field">
-                <Button onClick={onClick} >Assign ID</Button>
+                <Button variant="outlined" onClick={onClick} >Assign ID</Button>
             </div>    
         ) 
     }

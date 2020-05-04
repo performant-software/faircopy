@@ -16,6 +16,8 @@ import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
 import IDField from './attribute-fields/IDField'
 
+const fairCopy = window.fairCopy
+
 export default class ParameterDrawer extends Component {
 
     constructor() {
@@ -222,13 +224,28 @@ export default class ParameterDrawer extends Component {
             this.setState({...this.state, openElementName: name, attributeDialogOpen: true })
         }
 
+        const onEditNode = () => {
+            const {__id__} = element.attrs
+            fairCopy.services.ipcSend( 'createNoteEditorWindow', __id__ )
+        }
+
+        let headerAction
+        if( name === 'note' ) {
+            headerAction = <div style={{display: 'flex'}}>
+                                { this.renderIDField(element) }
+                                <Button variant="outlined" className="edit-note-button" onClick={onEditNode}>Edit Note</Button>
+                            </div>
+        } else {
+            headerAction = this.renderIDField(element)
+        }
+
         return (
             <Card variant="outlined" className="element" key={key} style={style}>
                 <CardHeader 
                     avatar={this.renderLegendBox(count)} 
                     title={name} 
                     subheader={elementSpec.desc}
-                    action={this.renderIDField(element)}
+                    action={headerAction}
                 ></CardHeader>
                 <CardContent>
                     { this.renderAttributes(element,attrState) }

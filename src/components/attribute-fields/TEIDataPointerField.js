@@ -69,14 +69,6 @@ export default class TEIDataPointerField extends Component {
             }
         }
 
-        // TODO record input state 
-        // const onInputChange = (e,value) => {
-        //     this.setState({...this.state, inputValue: value })
-        // }
-
-        // const onBlur = () => {
-        // }
-
         return (
             <Autocomplete
                 freeSolo
@@ -84,8 +76,6 @@ export default class TEIDataPointerField extends Component {
                 value={value}
                 options={IDs}
                 onChange={onChange}
-                // onInputChange={onInputChange}
-                // onBlur={onBlur}
                 getOptionLabel={(option) => option}
                 renderInput={this.renderInput}
             />   

@@ -102,3 +102,8 @@
 .element-id-field .element-id:hover {
     text-decoration: underline;
 }
+
+#ParameterDrawer .edit-note-button {
+    margin-top: 30px;
+    margin-right: 20px;
+}

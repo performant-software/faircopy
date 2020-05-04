@@ -13,29 +13,29 @@ const dialogPlaneThreshold = 200
 export default class TEIEditor extends Component {
 
     handleClickOn = (view,pos,node,nodePos,event,direct) => {
-        const nodeType = node.type.name
-        if( !direct ) return;
+        // const nodeType = node.type.name
+        // if( !direct ) return;
 
-        if( nodeType === 'note' ) {
-            const {__id__} = node.attrs
-            fairCopy.services.ipcSend( 'createNoteEditorWindow', __id__ )
-        }
-        else if( event.ctrlKey) { 
-            const { doc } = this.state.editorState
-            const $pos = doc.resolve(pos)
-            const marks = $pos.marks()
-            for( let mark of marks ) {
-                if( mark.type.name === 'ref' ) {
-                    const {target} = mark.attrs
-                    if( target && target[0] === '#') {
-                        // TODO support internal IDs
-                        fairCopy.services.ipcSend( 'createNoteEditorWindow', target.slice(1) )
-                        return
-                    }        
-                    // TODO support URL targets
-                }
-            }
-        }
+        // if( nodeType === 'note' ) {
+        //     const {__id__} = node.attrs
+        //     fairCopy.services.ipcSend( 'createNoteEditorWindow', __id__ )
+        // }
+        // else if( event.ctrlKey) { 
+        //     const { doc } = this.state.editorState
+        //     const $pos = doc.resolve(pos)
+        //     const marks = $pos.marks()
+        //     for( let mark of marks ) {
+        //         if( mark.type.name === 'ref' ) {
+        //             const {target} = mark.attrs
+        //             if( target && target[0] === '#') {
+        //                 // TODO support internal IDs
+        //                 fairCopy.services.ipcSend( 'createNoteEditorWindow', target.slice(1) )
+        //                 return
+        //             }        
+        //             // TODO support URL targets
+        //         }
+        //     }
+        // }
     }
 
     dialogPlaneClass() {
