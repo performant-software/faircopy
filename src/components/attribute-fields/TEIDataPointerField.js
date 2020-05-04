@@ -23,13 +23,22 @@ export default class TEIDataPointerField extends Component {
     }
 
     validateValues(values) {
+        let error = false
+        let errorMessage = ''
+        const errorValues = []
         for( const value of values ) {
             const validResult = uriValidator(value)
             if( validResult.error ) {
-                return validResult
+                if( !error ) {
+                    // record the specifics of the first error
+                    error = true
+                    errorMessage = validResult.errorMessage    
+                }
+                // record all bad values
+                errorValues.push(value)
             }
         }
-        return { error: false, errorMessage: '' }
+        return { error, errorMessage, errorValues }
     }
 
     renderInput = (params) => {
@@ -82,10 +91,22 @@ export default class TEIDataPointerField extends Component {
         )    
     }
 
+    valuesToOptions(values) { 
+        return values.map(value => { 
+            const error = this.state.errorValues.includes(value)
+            return { value, error } 
+        })
+     }
+
+    optionsToValues(options) {
+         return options.map( o => o.value ? o.value : o )
+    }
+
     renderMultiTermField() {
 
-        const onChange = (e, values) => {
+        const onChange = (e, selectedOptions) => {
             const { onChangeCallback } = this.props
+            const values = this.optionsToValues(selectedOptions)
             const validResult = this.validateValues(values)
             this.setState(validResult)
             const str = values.join(' ')
@@ -93,14 +114,18 @@ export default class TEIDataPointerField extends Component {
         }
 
         const renderTags = (values, getTagProps) => {
-            return values.map((option, index) => (
-                <Chip variant="outlined" style={{maxWidth: 200}} label={option} {...getTagProps({ index })} />
-            ))
+            return values.map((option, index) => {
+                const color = option.error ? 'red' : 'black'
+                return (
+                    <Chip variant="outlined" style={{color, maxWidth: 200}} label={option.value} {...getTagProps({ index })} />
+                )
+            })
         }
 
         const { teiDocument, value } = this.props
-        const IDs = teiDocument.getXMLIDs()
+        const options = this.valuesToOptions( teiDocument.getXMLIDs() )
         const values = value.length > 0 ? value.split(' ') : []
+        const selectedOptions = this.valuesToOptions( values )
         const key = `multiterm-${Date.now()}`
 
         return (
@@ -109,10 +134,10 @@ export default class TEIDataPointerField extends Component {
                 multiple
                 disableClearable
                 key={key}
-                value={values}
-                options={IDs}
+                value={selectedOptions}
+                options={options}
                 onChange={onChange}
-                getOptionLabel={(option) => option}
+                getOptionLabel={(option) => option.value}
                 renderInput={this.renderInput}
                 renderTags={renderTags}
             />   
