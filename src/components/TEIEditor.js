@@ -6,8 +6,6 @@ import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 
-const fairCopy = window.fairCopy
-
 const dialogPlaneThreshold = 200
 
 export default class TEIEditor extends Component {

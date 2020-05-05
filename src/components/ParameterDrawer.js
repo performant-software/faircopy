@@ -28,8 +28,28 @@ export default class ParameterDrawer extends Component {
             vocabDialogOpen: false,
             openAttrName: null,
             anchorEl: null,
-            selectedAttr: null
+            selectedAttr: null,
+            errorStates: {}
         }	
+    }
+
+    getNextErrorStates(elementName, attrName, error ) {
+        const { errorStates } = this.state
+        const nextErrorStates = { ...errorStates }
+
+        if( error ) {
+            if( nextErrorStates[elementName] ) {
+                if( !nextErrorStates[elementName].includes(attrName) ) nextErrorStates[elementName].push(attrName)
+            } else {
+                nextErrorStates[elementName] = [ attrName ]
+            }
+        } else {
+            if( nextErrorStates[elementName] ) {
+                nextErrorStates[elementName] = nextErrorStates[elementName].filter( a => a !== attrName )
+            } 
+        }
+
+        return nextErrorStates
     }
 
     changeAttributeHandler = ( element, attributeKey ) => {
@@ -39,7 +59,14 @@ export default class ParameterDrawer extends Component {
             const { state } = editorView 
             const { $anchor } = state.selection
             let {tr} = state
-            const nextElement = changeAttribute( element, '__error__', (error === true), $anchor, tr )                
+    
+            const elementName = element.type.name
+            const nextErrorStates = this.getNextErrorStates(elementName,attributeKey,error)
+            this.setState({...this.state, errorStates: nextErrorStates })
+
+            // if there are any errors for this element, mark it in the editor
+            const elementError = ( nextErrorStates[elementName] && nextErrorStates[elementName].length > 0 )
+            const nextElement = changeAttribute( element, '__error__', elementError, $anchor, tr )                
             changeAttribute( nextElement, attributeKey, value, $anchor, tr )
             editorView.dispatch(tr)
         }
