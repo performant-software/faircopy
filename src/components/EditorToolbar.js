@@ -83,7 +83,6 @@ export default class EditorToolbar extends Component {
             const noteNode = state.schema.node('note', { id: '', __id__: subDocID })
             tr.insert($anchor.pos, noteNode) 
             editorView.dispatch(tr)
-            fairCopy.services.ipcSend( 'createNoteEditorWindow', subDocID )
         }
     }
 
