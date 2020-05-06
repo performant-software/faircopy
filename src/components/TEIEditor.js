@@ -10,32 +10,6 @@ const dialogPlaneThreshold = 200
 
 export default class TEIEditor extends Component {
 
-    handleClickOn = (view,pos,node,nodePos,event,direct) => {
-        // const nodeType = node.type.name
-        // if( !direct ) return;
-
-        // if( nodeType === 'note' ) {
-        //     const {__id__} = node.attrs
-        //     fairCopy.services.ipcSend( 'createNoteEditorWindow', __id__ )
-        // }
-        // else if( event.ctrlKey) { 
-        //     const { doc } = this.state.editorState
-        //     const $pos = doc.resolve(pos)
-        //     const marks = $pos.marks()
-        //     for( let mark of marks ) {
-        //         if( mark.type.name === 'ref' ) {
-        //             const {target} = mark.attrs
-        //             if( target && target[0] === '#') {
-        //                 // TODO support internal IDs
-        //                 fairCopy.services.ipcSend( 'createNoteEditorWindow', target.slice(1) )
-        //                 return
-        //             }        
-        //             // TODO support URL targets
-        //         }
-        //     }
-        // }
-    }
-
     dialogPlaneClass() {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
@@ -53,11 +27,9 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editMode, onSave } = this.props
+        const { teiDocument, editMode, onSave, width } = this.props
 
         const scrollTop = this.el ? this.el.scrollTop : 0
-        const boundingRect = this.el? this.el.getBoundingClientRect() : null
-        const width = boundingRect ? boundingRect.width : 0
 
         return (
             <div className='TEIEditor'> 
@@ -68,13 +40,12 @@ export default class TEIEditor extends Component {
                         onSave={onSave}
                         width={width}
                     ></EditorToolbar>
-                    <div ref={(el) => this.el = el } className='body'>
+                    <div style={{width: width ? width : '100%'}} ref={(el) => this.el = el } className='body'>
                         <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
                         />                 
                         <ProseMirrorComponent
-                            onClick={this.handleClickOn}
                             teiDocument={teiDocument}
                         />
                         <ThumbnailMargin

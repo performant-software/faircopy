@@ -1,0 +1,15 @@
+{
+    "corpusName": "My Corpus",
+    "resources": {
+        "je_example": {
+            "id": "je_example",
+            "type": "text",
+            "filePath": "je_example.xml" 
+        },
+        "je_example2": {
+            "id": "je_example2",
+            "type": "text",
+            "filePath": "je_example2.xml" 
+        }
+    }
+}

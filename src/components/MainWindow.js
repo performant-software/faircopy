@@ -23,6 +23,7 @@ export default class MainWindow extends Component {
             filePath: null,
             teiDocument: new TEIDocument(this.onStateChange),
             editorState: null,
+            width: null,
             alertDialogMode: false
         }	
     }
@@ -178,17 +179,25 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { teiDocument, editorState } = this.state
-        const onChange = debounce(teiDocument.refreshView,resizeRefreshRate)
+        const { teiDocument, editorState, width } = this.state
+        const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
+
+        const onChange = (sidebarWidth) => {
+            const boundingRect = this.el? this.el.getBoundingClientRect() : null
+            const windowWidth = boundingRect ? boundingRect.width : 0
+            this.setState({...this.state, width: windowWidth - sidebarWidth })
+            refreshCallback()
+        }
 
         return (
-            <div> 
-                <SplitPane split="vertical" minSize={0} defaultSize={0} onChange={onChange}>
+            <div ref={(el) => this.el = el} > 
+                <SplitPane split="vertical" minSize={0} defaultSize={300} onChange={onChange}>
                   <TableOfContents
                     editorState={editorState}
                     teiDocument={teiDocument}                  
                   ></TableOfContents>
                   <TEIEditor 
+                    width={width}
                     editorState={editorState}
                     teiDocument={teiDocument}
                     onSave={this.requestSave}  
