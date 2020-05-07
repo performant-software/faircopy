@@ -26,6 +26,14 @@ export default class FairCopyConfig {
         fairCopy.services.configSubscribe(this.configPath,this.onUpdate,initialState)
     }
 
+    createNew() {
+        // TODO base on the document path
+        this.configPath = "config-settings.json"  
+
+        // populate it based on the tei document
+        fairCopy.services.configSubscribe(this.configPath,this.onUpdate,this.initialState())
+    }
+
     setAttrState(elementName,attrName,nextAttrState) {        
         const nextState = { ...this.state }
         nextState.elements[elementName].attrState[attrName] = nextAttrState

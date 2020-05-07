@@ -41,6 +41,9 @@ export default class TEIDocument {
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
+
+        this.fairCopyConfig = new FairCopyConfig(this)
+        this.fairCopyConfig.createNew()
        
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 

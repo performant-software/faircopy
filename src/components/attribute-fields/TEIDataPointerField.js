@@ -9,7 +9,7 @@ export default class TEIDataPointerField extends Component {
     constructor(props) {
         super()
         const { value, maxOccurs } = props
- 
+
         if( value && value !== "" ) {
             if( maxOccurs ) {
                 const values = value.split(' ')
@@ -93,7 +93,7 @@ export default class TEIDataPointerField extends Component {
 
     valuesToOptions(values) { 
         return values.map(value => { 
-            const error = this.state.errorValues.includes(value)
+            const error = this.state.errorValues ? this.state.errorValues.includes(value) : false
             return { value, error } 
         })
      }
