@@ -190,7 +190,9 @@ export default class TEISchema {
             ],
             toDOM: (node) => { 
                 if( this.teiMode ) {
-                    return this.serializeSubDocument(node.attrs)
+                    let attrs = this.filterOutBlanks(node.attrs)
+                    attrs = this.filterOutErrors(attrs)
+                    return this.serializeSubDocument(attrs)
                 } else {
                     const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
                     return ["tei-note",noteAttrs,0]
@@ -214,7 +216,8 @@ export default class TEISchema {
             }],
             toDOM: (node) => {
                 if( this.teiMode ) {
-                    const attrs = this.filterOutBlanks(node.attrs)
+                    let attrs = this.filterOutBlanks(node.attrs)
+                    attrs = this.filterOutErrors(attrs)
                     return ["pb",attrs]
                 } else {
                     const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
@@ -265,7 +268,7 @@ export default class TEISchema {
             toDOM: (mark) => {
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(mark.attrs)
-                    attrs = this.filterOutErrors(mark.attrs)
+                    attrs = this.filterOutErrors(attrs)
                     return [name,attrs,0]
                 } else {
                     const displayAttrs = { ...mark.attrs, phraseLvl: true }
