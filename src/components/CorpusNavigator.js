@@ -43,7 +43,7 @@ export default class CorpusNavigator extends Component {
 
     render() {
         return (
-            <h1>Corpus</h1>
+            "Corpus"
         )
     }
 
