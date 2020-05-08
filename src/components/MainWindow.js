@@ -9,6 +9,7 @@ import TEIDocument from "../tei-document/TEIDocument"
 
 import TableOfContents from './TableOfContents'
 import TEIEditor from './TEIEditor'
+import TabbedSidebar from './TabbedSidebar';
 
 const fairCopy = window.fairCopy
 
@@ -188,38 +189,24 @@ export default class MainWindow extends Component {
             this.setState({...this.state, width: windowWidth - sidebarWidth })
             refreshCallback()
         }
-
+        
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300} onChange={onChange}>
-                  <TableOfContents
-                    editorState={editorState}
-                    teiDocument={teiDocument}                  
-                  ></TableOfContents>
-                  <TEIEditor 
-                    width={width}
-                    editorState={editorState}
-                    teiDocument={teiDocument}
-                    onSave={this.requestSave}  
-                  ></TEIEditor>
+                    <TabbedSidebar
+                        editorState={editorState}
+                        teiDocument={teiDocument}                                      
+                    ></TabbedSidebar>                
+                    <TEIEditor 
+                        width={width}
+                        editorState={editorState}
+                        teiDocument={teiDocument}
+                        onSave={this.requestSave}  
+                    ></TEIEditor>
                 </SplitPane>
                 { this.renderAlertDialog() }
             </div>
         )
     }
 
-    renderOld() {    
-        const { teiDocument, editorState } = this.state
-
-        return (
-            <div> 
-                <TEIEditor 
-                editorState={editorState}
-                teiDocument={teiDocument}
-                onSave={this.requestSave}  
-                ></TEIEditor>
-            { this.renderAlertDialog() }
-            </div>
-        )
-    }
 }

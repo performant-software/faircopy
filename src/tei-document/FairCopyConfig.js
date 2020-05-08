@@ -180,11 +180,7 @@ export default class FairCopyConfig {
         this.state = nextState
 
         // create a trivial editor state update to push new state
-        const {editorView} = this.teiDocument
-        if( editorView ) {
-            const {state} = editorView
-            editorView.dispatch(state.tr)            
-        }  
+        this.teiDocument.refreshView()
     }
 
     setState(nextState) {
