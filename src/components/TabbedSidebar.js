@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography, Box } from '@material-ui/core'
+import { Tabs, Tab } from '@material-ui/core'
 import TableOfContents from './TableOfContents'
 import CorpusNavigator from './CorpusNavigator'
 
