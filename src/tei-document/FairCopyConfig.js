@@ -2,14 +2,14 @@ const fairCopy = window.fairCopy
 
 export default class FairCopyConfig {
 
-    constructor(teiDocument, configPath) {
+    constructor(configPath) {
         this.configPath = configPath
-        this.teiDocument = teiDocument
         this.state = null
         // subscribe onUpdate callback to this config ID, if there is one
-        if( configPath ) {
-            fairCopy.services.configSubscribe(this.configPath,this.onUpdate)
-        }
+        // TODO
+        // if( configPath ) {
+        //     fairCopy.services.configSubscribe(this.configPath,this.onUpdate)
+        // }
     }
 
     destroy() {
@@ -17,19 +17,13 @@ export default class FairCopyConfig {
         fairCopy.services.configUnsubscribe(this.configPath,this.onUpdate)
     }
 
-    createFromDoc(doc) {
-        // TODO base on the document path
-        this.configPath = "config-settings.json"  
-
+    createFromDoc(teiDocument) {
         // populate it based on the tei document
-        const initialState = this.stateFromDoc(doc)
+        const initialState = this.stateFromDoc(teiDocument)
         fairCopy.services.configSubscribe(this.configPath,this.onUpdate,initialState)
     }
 
     createNew() {
-        // TODO base on the document path
-        this.configPath = "config-settings.json"  
-
         // populate it based on the tei document
         fairCopy.services.configSubscribe(this.configPath,this.onUpdate,this.initialState())
     }
@@ -56,8 +50,7 @@ export default class FairCopyConfig {
         return { vocabID, vocab } 
     }
 
-    initialState() {
-        const { teiSchema } = this.teiDocument
+    initialState(teiSchema) {
         const { attrs } = teiSchema
 
         const elements = {}
@@ -100,9 +93,11 @@ export default class FairCopyConfig {
         return { elements, vocabs }
     }
 
-    stateFromDoc(doc) {
-        const { teiSchema, subDocIDs } = this.teiDocument
-        const { elements, vocabs } = this.initialState()
+    stateFromDoc(teiDocument) {
+        const { teiSchema } = teiDocument
+        const { subDocIDs } = teiSchema
+        const doc = teiDocument.initialState.doc
+        const { elements, vocabs } = this.initialState(teiSchema)
 
         const addTerm = ( vocabID, term ) => {
             const vocabEntry = vocabs[vocabID]
@@ -180,7 +175,7 @@ export default class FairCopyConfig {
         this.state = nextState
 
         // create a trivial editor state update to push new state
-        this.teiDocument.refreshView()
+        // TODO this.teiDocument.refreshView()
     }
 
     setState(nextState) {

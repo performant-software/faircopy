@@ -1,5 +1,6 @@
 {
     "corpusName": "My Corpus",
+    "defaultResource": "je_example",
     "resources": {
         "je_example": {
             "id": "je_example",

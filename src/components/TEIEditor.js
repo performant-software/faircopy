@@ -11,8 +11,7 @@ const dialogPlaneThreshold = 200
 export default class TEIEditor extends Component {
 
     dialogPlaneClass() {
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
+        const { editorView } = this.props
 
         if( editorView ) {
             const { selection } = editorView.state
@@ -27,7 +26,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editMode, onSave, width } = this.props
+        const { teiDocument, editMode, onSave, width, createEditorView } = this.props
 
         const scrollTop = this.el ? this.el.scrollTop : 0
 
@@ -46,7 +45,8 @@ export default class TEIEditor extends Component {
                             teiDocument={teiDocument}
                         />                 
                         <ProseMirrorComponent
-                            teiDocument={teiDocument}
+                            createEditorView={createEditorView}
+                            editorView={teiDocument.editorView}
                         />
                         <ThumbnailMargin
                             scrollTop={scrollTop} 

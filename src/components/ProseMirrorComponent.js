@@ -3,14 +3,14 @@ import React, { Component } from 'react';
 export default class ProseMirrorComponent extends Component {
   
   focus() {
-    const {editorView} = this.props.teiDocument 
+    const {editorView} = this.props 
     if (editorView) {
       editorView.focus();
     }
   }
 
   componentWillUnmount() {
-    const {editorView} = this.props.teiDocument 
+    const {editorView} = this.props 
     if (editorView) {
       editorView.destroy();
     }
@@ -25,7 +25,7 @@ export default class ProseMirrorComponent extends Component {
   render() {
     // Render just an empty div which is then used as a container for an
     // EditorView instance.
-    const { teiDocument, onClick } = this.props
-    return <div className='ProseMirrorComponent' ref={ (el) => { teiDocument.createEditorView(onClick,el)} }  />;
+    const { createEditorView, onClick } = this.props
+    return <div className='ProseMirrorComponent' ref={ (el) => { createEditorView(onClick,el)} }  />;
   }
 }

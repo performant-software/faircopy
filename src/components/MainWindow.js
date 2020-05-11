@@ -1,19 +1,17 @@
 import React, { Component } from 'react'
 
-import { Button } from '@material-ui/core'
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
 import SplitPane from 'react-split-pane'
 import { debounce } from "debounce";
 
-import TEIDocument from "../tei-document/TEIDocument"
+import { EditorView } from "prosemirror-view"
+import {DOMSerializer} from "prosemirror-model"
 
-import TableOfContents from './TableOfContents'
 import TEIEditor from './TEIEditor'
 import TabbedSidebar from './TabbedSidebar';
+import AlertDialog from './AlertDialog';
 
-const fairCopy = window.fairCopy
+import TEISchema from "../tei-document/TEISchema"
 
-const untitledDocumentTitle = "Untitled Document"
 const resizeRefreshRate = 100
 
 export default class MainWindow extends Component {
@@ -21,166 +19,76 @@ export default class MainWindow extends Component {
     constructor() {
         super()
         this.state = {
-            filePath: null,
-            teiDocument: new TEIDocument(this.onStateChange),
             editorState: null,
-            width: null,
+            width: -300,
             alertDialogMode: false
         }	
     }
 
-    onStateChange = (nextState) => {
-        this.setState({...this.state,editorState:nextState})
-    }
-
     componentDidMount() {
-        const {teiDocument} = this.state
-        const {services} = fairCopy
-        this.setTitle(null)
-
-        // Receive open and save file events from the main process
-        services.ipcRegisterCallback('fileOpened', (event, filePath) => this.openFile(filePath))
-        services.ipcRegisterCallback('requestSave', () => this.requestSave())        
-        services.ipcRegisterCallback('fileSaved', (event, filePath) => this.save(filePath))      
-        services.ipcRegisterCallback('fileNew', (event) => this.newFile() )
-        services.ipcRegisterCallback('openPrint', (event) => this.openPrint() )
-        services.initConfigClient()
-
+        const { teiDocument } = this.props.fairCopyProject
         window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
-
         window.onbeforeunload = this.onBeforeUnload
     }
 
     onBeforeUnload = (e) => {
-        const { exitAnyway, teiDocument } = this.state
+        const { teiDocument } = this.props.fairCopyProject
         const { changedSinceLastSave } = teiDocument
-
+        const { exitAnyway } = this.state
+    
         if( !exitAnyway && changedSinceLastSave ) {
             this.setState({ ...this.state, alertDialogMode: 'close'})
             e.returnValue = false
         } 
     }
 
-    setTitle( filePath ) {
-        let title
-        if( filePath ) {
-            const filename = filePath.replace(/^.*[\\/]/, '')
-            title = `${filename}`    
-        } else {
-            title = untitledDocumentTitle
-        }
-        var titleEl = document.getElementsByTagName("TITLE")[0]
-        titleEl.innerHTML = title
+    onStateChange = (nextState) => {
+        this.setState({...this.state,editorState:nextState})
     }
 
-    openPrint() {
-        window.print()
-    }
+    createEditorView = (onClick,element) => {
+        const { teiSchema, teiDocument } = this.props.fairCopyProject
 
-    newFile() {
-        const { teiDocument, exitAnyway } = this.state
-        const { changedSinceLastSave } = teiDocument
+        if( teiDocument.editorView ) return;
 
-        if( !exitAnyway && changedSinceLastSave ) {
-            this.setState({ ...this.state, alertDialogMode: 'new'})
-            teiDocument.changedSinceLastSave = false 
-        } else {
-            const { editorView } = teiDocument
-            const newEditorState = teiDocument.editorInitialState(document)
-            editorView.updateState( newEditorState )       
-            teiDocument.changedSinceLastSave = false 
-            this.setTitle(untitledDocumentTitle)
-            editorView.focus();
-            this.setState( { 
-                ...this.state, 
-                exitAnyway: false, 
-                alertDialogMode: false, 
-                filePath: null 
-            })    
-        }
-    }
-
-    openFile( filePath ) {
-        const { teiDocument } = this.state
-        const newEditorState = teiDocument.load(filePath)
-        if( newEditorState ) {
-            const {editorView} = teiDocument
-            editorView.updateState( newEditorState )        
-            this.setTitle(filePath)
-            editorView.focus();
-            this.setState( { ...this.state, filePath })    
-        } else {
-            console.log(`Unable to load file: ${filePath}`)
-        }
-    }
-
-    requestSave = () => {
-        const { filePath } = this.state
-        if( filePath === null ) {
-            fairCopy.services.ipcSend( 'openSaveFileDialog' )
-        } else {
-            this.save(filePath)
-        }
-    }
-
-    save(saveFilePath) {
-        const { teiDocument } = this.state
-        teiDocument.save( saveFilePath )
-        this.setState( { ...this.state, 
-            filePath: saveFilePath, 
-            alertDialogMode: false, 
-            exitAnyway: false
-        })
-
-        this.setTitle(saveFilePath)
-    }
-
-    renderAlertDialog() {      
-        const {alertDialogMode} = this.state
-        
-        const handleSave = () => {
-            this.requestSave()
-        }
-
-        const handleClose = () => {
-            this.setState({...this.state, exitAnyway: true });
-            alertDialogMode === 'close' ? window.close() : this.newFile()
-        }
-        
-        let message
-        if( alertDialogMode === 'close' ) {
-            message = "Do you wish to save this file before exiting?"
-        } else if( alertDialogMode === 'new' ) {
-            message = "Do you wish to save this file before creating a new document?"
-        }
-
-        return (
-            <Dialog
-                open={alertDialogMode !== false}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">{"Unsaved changes"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        { message }
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleSave} color="primary" autoFocus>
-                    Save
-                    </Button>
-                    <Button onClick={handleClose} color="primary">
-                    Don't Save
-                    </Button>
-                </DialogActions>
-            </Dialog>
+        const editorView = new EditorView( 
+            element,
+            { 
+                dispatchTransaction: this.dispatchTransaction,
+                state: teiDocument.initialState,
+                handleClickOn: onClick,
+                transformPastedHTML: teiSchema.transformPastedHTML,
+                transformPasted: teiSchema.transformPasted,
+                clipboardSerializer: this.createClipboardSerializer()
+            }
         )
+        editorView.focus()
+        teiDocument.editorView = editorView
+    }
+
+    createClipboardSerializer() {
+        // clipboard serialize always serializes to TEI XML
+        const clipboardSchema = new TEISchema();
+        clipboardSchema.teiMode = true
+        return DOMSerializer.fromSchema( clipboardSchema.schema )
+    }
+
+    dispatchTransaction = (transaction) => {
+        const { teiDocument } = this.props.fairCopyProject
+        const { editorView } = teiDocument
+
+        if( editorView ) {
+            const editorState = editorView.state
+            const nextEditorState = editorState.apply(transaction)
+            editorView.updateState(nextEditorState)
+            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+            this.onStateChange(nextEditorState)
+        }
     }
 
     render() {
-        const { teiDocument, editorState, width } = this.state
+        const { alertDialogMode, editorState, width } = this.state
+        const { teiDocument } = this.props.fairCopyProject
         const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
 
         const onChange = (sidebarWidth) => {
@@ -201,10 +109,13 @@ export default class MainWindow extends Component {
                         width={width}
                         editorState={editorState}
                         teiDocument={teiDocument}
+                        createEditorView={this.createEditorView}
                         onSave={this.requestSave}  
                     ></TEIEditor>
                 </SplitPane>
-                { this.renderAlertDialog() }
+                <AlertDialog
+                    alertDialogMode={alertDialogMode}
+                ></AlertDialog>
             </div>
         )
     }
