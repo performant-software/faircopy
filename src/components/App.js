@@ -109,7 +109,8 @@ export default class App extends Component {
   }
 
   openProject( projectPath ) {
-    const fairCopyProject = new FairCopyProject(projectPath)      
+    const fairCopyProject = new FairCopyProject(projectPath)   
+    this.setTitle(fairCopyProject.projectName)   
     this.setState({...this.state, fairCopyProject})
   }
 

@@ -5,11 +5,9 @@ export default class FairCopyConfig {
     constructor(configPath) {
         this.configPath = configPath
         this.state = null
-        // subscribe onUpdate callback to this config ID, if there is one
-        // TODO
-        // if( configPath ) {
-        //     fairCopy.services.configSubscribe(this.configPath,this.onUpdate)
-        // }
+        if( configPath ) {
+            fairCopy.services.configSubscribe(this.configPath,this.onUpdate)
+        } 
     }
 
     destroy() {
@@ -181,6 +179,13 @@ export default class FairCopyConfig {
     setState(nextState) {
         // send next state to main process
         fairCopy.services.updateConfig(this.configPath, nextState)
+    }
+
+    save() {
+        console.log('saving')
+        if( this.state ) {
+            fairCopy.services.writeFileSync(this.configPath, JSON.stringify(this.state, null, '\t'))
+        }
     }
 
 }

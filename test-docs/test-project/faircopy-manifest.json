@@ -1,5 +1,6 @@
 {
-    "corpusName": "My Corpus",
+    "projectName": "Example Project",
+    "appVersion": "0.5.3",
     "defaultResource": "je_example",
     "resources": {
         "je_example": {

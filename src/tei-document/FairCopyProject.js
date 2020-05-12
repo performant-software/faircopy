@@ -9,17 +9,17 @@ export default class FairCopyProject {
     constructor(projectPath) {
         this.projectPath = projectPath
         this.loadManifest()
-        this.fairCopyConfig = new FairCopyConfig("config-settings.json")
+        this.fairCopyConfig = new FairCopyConfig(`${this.projectPath}/config-settings.json`)
         this.teiSchema = new TEISchema()
         this.teiDocument = this.loadResource( this.defaultResource )
-        // TODO refactor
-        this.fairCopyConfig.createFromDoc(this.teiDocument)
     }
 
     loadManifest() {
         const json = fairCopy.services.readFileSync(`${this.projectPath}/faircopy-manifest.json`)
         const fairCopyManifest = JSON.parse(json)
         this.defaultResource = fairCopyManifest.defaultResource
+        this.projectName = fairCopyManifest.projectName
+        this.resources = fairCopyManifest.resources
     }
 
     loadResource( resourceID ) {
