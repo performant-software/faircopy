@@ -8,7 +8,8 @@ import TreeItem from '@material-ui/lab/TreeItem';
 export default class TableOfContents extends Component {
 
     renderTree() {
-      const { teiDocument } = this.props
+      const { fairCopyProject } = this.props
+      const { teiDocument } = fairCopyProject
       const { editorView } = teiDocument
 
       if( !editorView ) return null

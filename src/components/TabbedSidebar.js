@@ -20,8 +20,7 @@ export default class TabbedSidebar extends Component {
     }
 
     render() {
-        const { editorState, fairCopyProject } = this.props
-        const { teiDocument } = fairCopyProject
+        const { fairCopyProject } = this.props
         const { currentTab } = this.state
 
         const onChange = (e,nextTab) => { this.setState({...this.state, currentTab: nextTab})}
@@ -39,8 +38,7 @@ export default class TabbedSidebar extends Component {
                 </TabPanel>
                 <TabPanel value={currentTab} index={1}>
                     <TableOfContents
-                        editorState={editorState}
-                        teiDocument={teiDocument}                  
+                        fairCopyProject={fairCopyProject}             
                     ></TableOfContents>
                 </TabPanel>
             </div>

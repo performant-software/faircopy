@@ -3,15 +3,10 @@ import React, { Component } from 'react'
 import SplitPane from 'react-split-pane'
 import { debounce } from "debounce";
 
-import { EditorView } from "prosemirror-view"
-import {DOMSerializer} from "prosemirror-model"
-
-import TEIEditor from './TEIEditor'
 import TabbedSidebar from './TabbedSidebar';
 import AlertDialog from './AlertDialog';
 
-import TEISchema from "../tei-document/TEISchema"
-
+import TEIEditor from './TEIEditor'
 const resizeRefreshRate = 100
 
 export default class MainWindow extends Component {
@@ -19,7 +14,7 @@ export default class MainWindow extends Component {
     constructor() {
         super()
         this.state = {
-            editorState: null,
+            latest: null,
             width: -300,
             alertDialogMode: false
         }	
@@ -43,51 +38,11 @@ export default class MainWindow extends Component {
     }
 
     onStateChange = (nextState) => {
-        this.setState({...this.state,editorState:nextState})
-    }
-
-    createEditorView = (onClick,element) => {
-        const { teiSchema, teiDocument } = this.props.fairCopyProject
-
-        if( teiDocument.editorView ) return;
-
-        const editorView = new EditorView( 
-            element,
-            { 
-                dispatchTransaction: this.dispatchTransaction,
-                state: teiDocument.initialState,
-                handleClickOn: onClick,
-                transformPastedHTML: teiSchema.transformPastedHTML,
-                transformPasted: teiSchema.transformPasted,
-                clipboardSerializer: this.createClipboardSerializer()
-            }
-        )
-        editorView.focus()
-        teiDocument.editorView = editorView
-    }
-
-    createClipboardSerializer() {
-        // clipboard serialize always serializes to TEI XML
-        const clipboardSchema = new TEISchema();
-        clipboardSchema.teiMode = true
-        return DOMSerializer.fromSchema( clipboardSchema.schema )
-    }
-
-    dispatchTransaction = (transaction) => {
-        const { teiDocument } = this.props.fairCopyProject
-        const { editorView } = teiDocument
-
-        if( editorView ) {
-            const editorState = editorView.state
-            const nextEditorState = editorState.apply(transaction)
-            editorView.updateState(nextEditorState)
-            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
-            this.onStateChange(nextEditorState)
-        }
+        this.setState({...this.state,latest:nextState})
     }
 
     render() {
-        const { alertDialogMode, editorState, width } = this.state
+        const { alertDialogMode, width } = this.state
         const { fairCopyProject } = this.props
         const { teiDocument } = fairCopyProject
         const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
@@ -103,16 +58,14 @@ export default class MainWindow extends Component {
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300} onChange={onChange}>
                     <TabbedSidebar
-                        editorState={editorState}
                         fairCopyProject={fairCopyProject}                                      
-                    ></TabbedSidebar>                
+                    ></TabbedSidebar>    
                     <TEIEditor 
                         width={width}
-                        editorState={editorState}
-                        teiDocument={teiDocument}
-                        createEditorView={this.createEditorView}
+                        fairCopyProject={fairCopyProject}
+                        onStateChange={this.onStateChange}
                         onSave={this.requestSave}  
-                    ></TEIEditor>
+                    ></TEIEditor>   
                 </SplitPane>
                 <AlertDialog
                     alertDialogMode={alertDialogMode}

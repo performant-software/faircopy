@@ -1,32 +1,64 @@
 import React, { Component } from 'react'
 
+import {EditorView} from "prosemirror-view"
+import {DOMSerializer} from "prosemirror-model"
+
+import TEISchema from "../tei-document/TEISchema"
+
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 
-const dialogPlaneThreshold = 200
-
 export default class TEIEditor extends Component {
 
-    dialogPlaneClass() {
-        const { editorView } = this.props
+
+    createEditorView = (onClick,element) => {
+        const { teiSchema, teiDocument } = this.props.fairCopyProject
+
+        if( teiDocument.editorView ) return;
+
+        const editorView = new EditorView( 
+            element,
+            { 
+                dispatchTransaction: this.dispatchTransaction,
+                state: teiDocument.initialState,
+                handleClickOn: onClick,
+                transformPastedHTML: teiSchema.transformPastedHTML,
+                transformPasted: teiSchema.transformPasted,
+                clipboardSerializer: this.createClipboardSerializer()
+            }
+        )
+        editorView.focus()
+        teiDocument.editorView = editorView
+    }
+
+
+    createClipboardSerializer() {
+        // clipboard serialize always serializes to TEI XML
+        const clipboardSchema = new TEISchema();
+        clipboardSchema.teiMode = true
+        return DOMSerializer.fromSchema( clipboardSchema.schema )
+    }
+
+    dispatchTransaction = (transaction) => {
+        const { onStateChange } = this.props
+        const { teiDocument } = this.props.fairCopyProject
+        const { editorView } = teiDocument
 
         if( editorView ) {
-            const { selection } = editorView.state
-            if( selection ) {
-                const { $anchor } = selection
-                const selectionRect = editorView.coordsAtPos($anchor.pos)
-                if( selectionRect.top < dialogPlaneThreshold ) return 'dialogPlaneBottom'    
-            }
-            // Control based on Y position of selection anchor
-            return 'dialogPlaneTop'   
+            const editorState = editorView.state
+            const nextEditorState = editorState.apply(transaction)
+            editorView.updateState(nextEditorState)
+            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+            onStateChange(nextEditorState)
         }
     }
 
     render() {    
-        const { teiDocument, editMode, onSave, width, createEditorView } = this.props
+        const { editMode, onSave, width } = this.props
+        const { teiDocument } = this.props.fairCopyProject
 
         const scrollTop = this.el ? this.el.scrollTop : 0
 
@@ -45,7 +77,7 @@ export default class TEIEditor extends Component {
                             teiDocument={teiDocument}
                         />                 
                         <ProseMirrorComponent
-                            createEditorView={createEditorView}
+                            createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                         />
                         <ThumbnailMargin

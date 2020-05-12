@@ -8,8 +8,9 @@ import { Typography } from '@material-ui/core';
 
 export default class ProjectNavigator extends Component {
 
-    onClickNode = (e,value) => {
-
+    onClickNode = (e,resourceID) => {
+      const { fairCopyProject } = this.props
+      fairCopyProject.loadResource(resourceID)
     }
 
     renderTree() {
@@ -23,7 +24,7 @@ export default class ProjectNavigator extends Component {
         treeNodes.push(
           <TreeItem 
             key={treeID} 
-            nodeId={treeID} 
+            nodeId={resource.id} 
             label={label} >
           </TreeItem>
         )
