@@ -27,26 +27,22 @@ export default class TabbedMainView extends Component {
 
         return (
             <Tabs value={currentTab} onChange={onChange} aria-label="mainview tabs">
-                <Tab label="Project" {...this.a11yProps(0)} />
+                <Tab label="Doc 1" {...this.a11yProps(0)} />
             </Tabs>
         )
     }
 
     renderTabPanels() {
-        const { editorState, fairCopyProject } = this.props
-        const { teiDocument } = fairCopyProject
-
-        const { width } = this.props
+        const { width, fairCopyProject, onStateChange, onSave } = this.props
         const { currentTab } = this.state
 
         return (
             <TabPanel value={currentTab} index={0}>
                 <TEIEditor 
                     width={width}
-                    editorState={editorState}
-                    teiDocument={teiDocument}
-                    createEditorView={this.createEditorView}
-                    onSave={this.requestSave}  
+                    fairCopyProject={fairCopyProject}
+                    onStateChange={onStateChange}
+                    onSave={onSave}  
                 ></TEIEditor>
             </TabPanel>
         )

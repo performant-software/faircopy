@@ -6,7 +6,7 @@ import { debounce } from "debounce";
 import TabbedSidebar from './TabbedSidebar';
 import AlertDialog from './AlertDialog';
 
-import TEIEditor from './TEIEditor'
+import TabbedMainView from './TabbedMainView';
 const resizeRefreshRate = 100
 
 export default class MainWindow extends Component {
@@ -60,12 +60,12 @@ export default class MainWindow extends Component {
                     <TabbedSidebar
                         fairCopyProject={fairCopyProject}                                      
                     ></TabbedSidebar>    
-                    <TEIEditor 
+                    <TabbedMainView
                         width={width}
                         fairCopyProject={fairCopyProject}
                         onStateChange={this.onStateChange}
                         onSave={this.requestSave}  
-                    ></TEIEditor>   
+                    ></TabbedMainView>
                 </SplitPane>
                 <AlertDialog
                     alertDialogMode={alertDialogMode}
