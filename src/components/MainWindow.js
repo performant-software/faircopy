@@ -88,7 +88,8 @@ export default class MainWindow extends Component {
 
     render() {
         const { alertDialogMode, editorState, width } = this.state
-        const { teiDocument } = this.props.fairCopyProject
+        const { fairCopyProject } = this.props
+        const { teiDocument } = fairCopyProject
         const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
 
         const onChange = (sidebarWidth) => {
@@ -103,7 +104,7 @@ export default class MainWindow extends Component {
                 <SplitPane split="vertical" minSize={0} defaultSize={300} onChange={onChange}>
                     <TabbedSidebar
                         editorState={editorState}
-                        teiDocument={teiDocument}                                      
+                        fairCopyProject={fairCopyProject}                                      
                     ></TabbedSidebar>                
                     <TEIEditor 
                         width={width}

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from '@material-ui/core'
 import TableOfContents from './TableOfContents'
-import CorpusNavigator from './CorpusNavigator'
-
+import ProjectNavigator from './ProjectNavigator'
 
 export default class TabbedSidebar extends Component {
 
@@ -21,7 +20,8 @@ export default class TabbedSidebar extends Component {
     }
 
     render() {
-        const { editorState, teiDocument } = this.props
+        const { editorState, fairCopyProject } = this.props
+        const { teiDocument } = fairCopyProject
         const { currentTab } = this.state
 
         const onChange = (e,nextTab) => { this.setState({...this.state, currentTab: nextTab})}
@@ -29,13 +29,13 @@ export default class TabbedSidebar extends Component {
         return (
             <div id="TabbedSidebar">
                 <Tabs value={currentTab} onChange={onChange} aria-label="simple tabs example">
-                    <Tab label="Corpus" {...this.a11yProps(0)} />
+                    <Tab label="Project" {...this.a11yProps(0)} />
                     <Tab label="Text" {...this.a11yProps(1)} />
                 </Tabs>
                 <TabPanel value={currentTab} index={0}>
-                    <CorpusNavigator>
-
-                    </CorpusNavigator>
+                    <ProjectNavigator
+                        fairCopyProject={fairCopyProject}
+                    ></ProjectNavigator>
                 </TabPanel>
                 <TabPanel value={currentTab} index={1}>
                     <TableOfContents
