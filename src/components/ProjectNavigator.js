@@ -8,7 +8,7 @@ import { Typography } from '@material-ui/core';
 
 export default class ProjectNavigator extends Component {
 
-    onClickNode = () => {
+    onClickNode = (e,value) => {
 
     }
 
@@ -22,7 +22,6 @@ export default class ProjectNavigator extends Component {
         const label = <Typography>{resource.id}</Typography>
         treeNodes.push(
           <TreeItem 
-            onClick={this.onClickNode}
             key={treeID} 
             nodeId={treeID} 
             label={label} >
@@ -32,7 +31,10 @@ export default class ProjectNavigator extends Component {
 
       const projectLabel = <Typography>{projectName}</Typography>
       return (
-        <TreeItem nodeId="root" label={projectLabel} >
+        <TreeItem 
+          nodeId="root" 
+          label={projectLabel}            
+        >
           { treeNodes }
         </TreeItem>
       )
@@ -45,6 +47,7 @@ export default class ProjectNavigator extends Component {
               defaultExpanded={["root"]}
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
+              onNodeSelect={this.onClickNode}
             >
               { this.renderTree() }
             </TreeView>
