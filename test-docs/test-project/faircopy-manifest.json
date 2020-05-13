@@ -1,17 +1,27 @@
 {
     "projectName": "Example Project",
     "appVersion": "0.5.3",
-    "defaultResource": "je_example",
+    "defaultResource": "1-Loomings",
     "resources": {
-        "je_example": {
-            "id": "je_example",
+        "1-Loomings": {
+            "id": "1-Loomings",
             "type": "text",
-            "filePath": "je_example.xml" 
+            "filePath": "1-Loomings.xml" 
         },
-        "je_example2": {
-            "id": "je_example2",
+        "2-The-Carpet-Bag": {
+            "id": "2-The-Carpet-Bag",
             "type": "text",
-            "filePath": "je_example2.xml" 
+            "filePath": "2-The-Carpet-Bag.xml" 
+        },
+        "3-The-Spouter-Inn": {
+            "id": "3-The-Spouter-Inn",
+            "type": "text",
+            "filePath": "3-The-Spouter-Inn.xml" 
+        },
+        "4-The-Counterpane": {
+            "id": "4-The-Counterpane",
+            "type": "text",
+            "filePath": "4-The-Counterpane.xml" 
         }
     }
 }

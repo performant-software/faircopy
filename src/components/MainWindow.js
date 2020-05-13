@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
 
 import SplitPane from 'react-split-pane'
-import { debounce } from "debounce";
 
 import TabbedSidebar from './TabbedSidebar';
 import AlertDialog from './AlertDialog';
 
 import TabbedMainView from './TabbedMainView';
-
-const resizeRefreshRate = 100
 
 export default class MainWindow extends Component {
 
@@ -41,6 +38,16 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources })
     }
 
+    onCloseResource = (resourceID) => {
+        // const { fairCopyProject } = this.props
+        // const { openResources, selectedResource } = this.state
+        // if( resourceID === selectedResource ) {
+
+        // } 
+
+        // this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources })
+    }
+
     render() {
         const { alertDialogMode, width, openResources, selectedResource } = this.state
         const { fairCopyProject } = this.props
@@ -48,6 +55,7 @@ export default class MainWindow extends Component {
         // const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
 
         const onChange = (sidebarWidth) => {
+            // TODO
             // const boundingRect = this.el? this.el.getBoundingClientRect() : null
             // const windowWidth = boundingRect ? boundingRect.width : 0
             // this.setState({...this.state, width: windowWidth - sidebarWidth })
@@ -69,6 +77,7 @@ export default class MainWindow extends Component {
                         openResources={openResources}
                         selectedResource={selectedResource}
                         onStateChange={this.onStateChange}
+                        onCloseResource={this.onCloseResource}
                         onSelectResource={this.onSelectResource}
                     ></TabbedMainView>
                 </SplitPane>

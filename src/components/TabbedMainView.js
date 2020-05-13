@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Typography } from '@material-ui/core'
+import { Tabs, Tab } from '@material-ui/core'
 
 import TEIEditor from './TEIEditor'
 
@@ -13,10 +13,21 @@ export default class TabbedMainView extends Component {
         };
     }
 
+    renderTabLabel(resourceID) {
+        const { onCloseResource } = this.props
+        const onCloseClick = () => { onCloseResource(resourceID); return false }
+        return (
+            <div className='tab-label'>
+                <div className='name'>{resourceID}</div>
+                <div onClick={onCloseClick} className='close-x'><i className='far fa-window-close'></i></div>
+            </div>
+        )
+    }
+
     renderTabs() {
         const { openResources, selectedResource, onSelectResource } = this.props
 
-        const onChange = (e,nextTab) => {
+        const onChange = (e) => {
             let resourceID = e.currentTarget.getAttribute('dataresourceid')
             onSelectResource(resourceID)
         }
@@ -28,9 +39,16 @@ export default class TabbedMainView extends Component {
             const {resourceID} = openResource
             if( selectedResource === resourceID ) currentTab = i
             const tabID = `main-tab-${resourceID}`
-            const label = <Typography>{resourceID} <i className='far fa-times-circle'></i></Typography>
+            const label = this.renderTabLabel(resourceID)
             tabs.push(
-                <Tab key={tabID} dataresourceid={resourceID} label={label} {...this.a11yProps(i++)} />
+                <Tab 
+                    key={tabID} 
+                    dataresourceid={resourceID} 
+                    label={label} 
+                    disableRipple={true}
+                    disableFocusRipple={true}
+                    {...this.a11yProps(i++)} 
+                />
             )
         }
 
