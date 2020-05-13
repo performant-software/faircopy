@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import {EditorView} from "prosemirror-view"
 import {DOMSerializer} from "prosemirror-model"
+import { debounce } from "debounce";
 
 import TEISchema from "../tei-document/TEISchema"
 
@@ -11,11 +12,31 @@ import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 
+const resizeRefreshRate = 100
+
 export default class TEIEditor extends Component {
 
+    componentDidMount() {
+        const { teiDocument } = this.props
+        window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
+        window.onbeforeunload = this.onBeforeUnload
+    }
+
+    onBeforeUnload = (e) => {
+        const { teiDocument } = this.props
+        const { changedSinceLastSave } = teiDocument
+        const { exitAnyway } = this.state
+    
+        if( !exitAnyway && changedSinceLastSave ) {
+            // TODO send callback
+            // this.setState({ ...this.state, alertDialogMode: 'close'})
+            e.returnValue = false
+        } 
+    }
 
     createEditorView = (onClick,element) => {
-        const { teiSchema, teiDocument } = this.props.fairCopyProject
+        const { teiDocument } = this.props
+        const { teiSchema } = teiDocument
 
         if( teiDocument.editorView ) return;
 
@@ -43,8 +64,7 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { onStateChange } = this.props
-        const { teiDocument } = this.props.fairCopyProject
+        const { teiDocument, onStateChange } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -57,8 +77,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { editMode, onSave, width } = this.props
-        const { teiDocument } = this.props.fairCopyProject
+        const { teiDocument, editMode, onSave, width } = this.props
 
         const scrollTop = this.el ? this.el.scrollTop : 0
 

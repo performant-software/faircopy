@@ -9,8 +9,8 @@ import { Typography } from '@material-ui/core';
 export default class ProjectNavigator extends Component {
 
     onClickNode = (e,resourceID) => {
-      const { fairCopyProject } = this.props
-      fairCopyProject.loadResource(resourceID)
+      const { onSelectResource } = this.props
+      onSelectResource(resourceID)
     }
 
     renderTree() {

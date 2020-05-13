@@ -7,6 +7,7 @@ import TabbedSidebar from './TabbedSidebar';
 import AlertDialog from './AlertDialog';
 
 import TabbedMainView from './TabbedMainView';
+
 const resizeRefreshRate = 100
 
 export default class MainWindow extends Component {
@@ -14,57 +15,61 @@ export default class MainWindow extends Component {
     constructor() {
         super()
         this.state = {
+            selectedResource: null,
+            openResources: {},
             latest: null,
             width: -300,
             alertDialogMode: false
         }	
     }
 
-    componentDidMount() {
-        const { teiDocument } = this.props.fairCopyProject
-        window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
-        window.onbeforeunload = this.onBeforeUnload
-    }
-
-    onBeforeUnload = (e) => {
-        const { teiDocument } = this.props.fairCopyProject
-        const { changedSinceLastSave } = teiDocument
-        const { exitAnyway } = this.state
-    
-        if( !exitAnyway && changedSinceLastSave ) {
-            this.setState({ ...this.state, alertDialogMode: 'close'})
-            e.returnValue = false
-        } 
-    }
-
     onStateChange = (nextState) => {
         this.setState({...this.state,latest:nextState})
     }
 
-    render() {
-        const { alertDialogMode, width } = this.state
+    onSelectResource = (resourceID) => {
         const { fairCopyProject } = this.props
-        const { teiDocument } = fairCopyProject
-        const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
+        const { openResources, selectedResource } = this.state
+        if( resourceID === selectedResource ) return
+        let nextResources
+        if( !openResources[resourceID] ) {
+            nextResources = { ...openResources }
+            nextResources[resourceID] = fairCopyProject.openResource(resourceID)
+        } else {
+            nextResources = openResources
+        }
+        this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources })
+    }
+
+    render() {
+        const { alertDialogMode, width, openResources, selectedResource } = this.state
+        const { fairCopyProject } = this.props
+
+        // const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
 
         const onChange = (sidebarWidth) => {
-            const boundingRect = this.el? this.el.getBoundingClientRect() : null
-            const windowWidth = boundingRect ? boundingRect.width : 0
-            this.setState({...this.state, width: windowWidth - sidebarWidth })
-            refreshCallback()
+            // const boundingRect = this.el? this.el.getBoundingClientRect() : null
+            // const windowWidth = boundingRect ? boundingRect.width : 0
+            // this.setState({...this.state, width: windowWidth - sidebarWidth })
+            // refreshCallback()
         }
         
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300} onChange={onChange}>
                     <TabbedSidebar
-                        fairCopyProject={fairCopyProject}                                      
+                        fairCopyProject={fairCopyProject}    
+                        openResources={openResources}
+                        selectedResource={selectedResource}
+                        onSelectResource={this.onSelectResource}                                  
                     ></TabbedSidebar>    
                     <TabbedMainView
                         width={width}
                         fairCopyProject={fairCopyProject}
+                        openResources={openResources}
+                        selectedResource={selectedResource}
                         onStateChange={this.onStateChange}
-                        onSave={this.requestSave}  
+                        onSelectResource={this.onSelectResource}
                     ></TabbedMainView>
                 </SplitPane>
                 <AlertDialog

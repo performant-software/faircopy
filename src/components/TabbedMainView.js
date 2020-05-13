@@ -6,13 +6,6 @@ import TEIEditor from './TEIEditor'
 
 export default class TabbedMainView extends Component {
 
-    constructor() {
-        super()
-        this.state = {
-            currentTab: 0
-        }
-    }
-
     a11yProps(index) {
         return {
           id: `mainview-tab-${index}`,
@@ -21,31 +14,57 @@ export default class TabbedMainView extends Component {
     }
 
     renderTabs() {
-        const { currentTab } = this.state
+        const { openResources, selectedResource, onSelectResource } = this.props
 
-        const onChange = (e,nextTab) => { this.setState({...this.state, currentTab: nextTab})}
+        const onChange = (e,nextTab) => {
+            let resourceID = e.currentTarget.getAttribute('dataresourceid')
+            onSelectResource(resourceID)
+        }
+
+        const tabs = []
+        let currentTab 
+        let i = 0
+        for( const openResource of Object.values(openResources) ) {
+            const {resourceID} = openResource
+            if( selectedResource === resourceID ) currentTab = i
+            const tabID = `main-tab-${resourceID}`
+            tabs.push(
+                <Tab key={tabID} dataresourceid={resourceID} label={resourceID} {...this.a11yProps(i++)} />
+            )
+        }
 
         return (
             <Tabs value={currentTab} onChange={onChange} aria-label="mainview tabs">
-                <Tab label="Doc 1" {...this.a11yProps(0)} />
+                { tabs }
             </Tabs>
         )
     }
 
     renderTabPanels() {
-        const { width, fairCopyProject, onStateChange, onSave } = this.props
-        const { currentTab } = this.state
+        const { width, onStateChange, onSave } = this.props
+        const { openResources, selectedResource } = this.props
 
-        return (
-            <TabPanel value={currentTab} index={0}>
-                <TEIEditor 
-                    width={width}
-                    fairCopyProject={fairCopyProject}
-                    onStateChange={onStateChange}
-                    onSave={onSave}  
-                ></TEIEditor>
-            </TabPanel>
-        )
+        const tabPanels = []
+        let i = 0
+        for( const openResource of Object.values(openResources) ) {
+            const {resourceID} = openResource
+            const tabPanelID = `main-tabpanel-${resourceID}`
+            const hidden = selectedResource !== resourceID
+
+            tabPanels.push(
+                <TabPanel key={tabPanelID} hidden={hidden} index={i++}>
+                    <TEIEditor 
+                        hidden={hidden}
+                        width={width}
+                        teiDocument={openResource}
+                        onStateChange={onStateChange}
+                        onSave={onSave}  
+                    ></TEIEditor>
+                </TabPanel>
+            )
+        }
+
+        return tabPanels
     }
 
     render() {
@@ -61,17 +80,17 @@ export default class TabbedMainView extends Component {
 }
 
 function TabPanel(props) {
-    const { children, value, index, ...other } = props;
+    const { children, hidden, index, ...other } = props;
   
     return (
       <div
         role="tabpanel"
-        hidden={value !== index}
+        hidden={hidden}
         id={`simple-tabpanel-${index}`}
         aria-labelledby={`simple-tab-${index}`}
         {...other}
       >
-        {value === index && children }
+        { children }
       </div>
     );
 }

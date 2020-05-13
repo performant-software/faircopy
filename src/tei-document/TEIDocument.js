@@ -15,9 +15,10 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( filePath, teiSchema, fairCopyConfig ) {
+    constructor( resourceID, filePath, teiSchema, fairCopyConfig ) {
         this.editorView = null
         this.pastedNoteBuffer = []
+        this.resourceID = resourceID
         this.teiSchema = teiSchema
         this.fairCopyConfig = fairCopyConfig
         const {schema} = teiSchema

@@ -20,11 +20,11 @@ export default class TabbedSidebar extends Component {
     }
 
     render() {
-        const { fairCopyProject } = this.props
+        const { fairCopyProject, selectedResource, openResources, onSelectResource } = this.props
         const { currentTab } = this.state
 
         const onChange = (e,nextTab) => { this.setState({...this.state, currentTab: nextTab})}
-
+        
         return (
             <div id="TabbedSidebar">
                 <Tabs value={currentTab} onChange={onChange} aria-label="simple tabs example">
@@ -34,11 +34,14 @@ export default class TabbedSidebar extends Component {
                 <TabPanel value={currentTab} index={0}>
                     <ProjectNavigator
                         fairCopyProject={fairCopyProject}
+                        openResources={openResources}
+                        selectedResource={selectedResource}
+                        onSelectResource={onSelectResource}
                     ></ProjectNavigator>
                 </TabPanel>
                 <TabPanel value={currentTab} index={1}>
                     <TableOfContents
-                        fairCopyProject={fairCopyProject}             
+                        teiDocument={openResources[selectedResource]}        
                     ></TableOfContents>
                 </TabPanel>
             </div>

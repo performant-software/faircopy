@@ -11,7 +11,6 @@ export default class FairCopyProject {
         this.loadManifest()
         this.fairCopyConfig = new FairCopyConfig(`${this.projectPath}/config-settings.json`)
         this.teiSchema = new TEISchema()
-        this.teiDocument = this.loadResource( this.defaultResource )
     }
 
     loadManifest() {
@@ -22,9 +21,17 @@ export default class FairCopyProject {
         this.resources = fairCopyManifest.resources
     }
 
-    loadResource( resourceID ) {
-        const filePath = `${this.projectPath}/${resourceID}.xml`
-        const teiDocument = new TEIDocument(filePath, this.teiSchema, this.fairCopyConfig)
-        return teiDocument
+    openResource( resourceID ) {
+        const resourceEntry = this.resources[resourceID]
+        if( !resourceEntry ) return null
+
+        if( resourceEntry.type === 'text') {
+            const filePath = `${this.projectPath}/${resourceEntry.filePath}`
+            const teiDocument = new TEIDocument( resourceID, filePath, this.teiSchema, this.fairCopyConfig)
+            return teiDocument    
+        } else {
+            // TODO load facs
+            return null
+        }        
     }
 }
