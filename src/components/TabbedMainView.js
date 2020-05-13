@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab } from '@material-ui/core'
+import { Tabs, Tab, Typography } from '@material-ui/core'
 
 import TEIEditor from './TEIEditor'
 
@@ -28,8 +28,9 @@ export default class TabbedMainView extends Component {
             const {resourceID} = openResource
             if( selectedResource === resourceID ) currentTab = i
             const tabID = `main-tab-${resourceID}`
+            const label = <Typography>{resourceID} <i className='far fa-times-circle'></i></Typography>
             tabs.push(
-                <Tab key={tabID} dataresourceid={resourceID} label={resourceID} {...this.a11yProps(i++)} />
+                <Tab key={tabID} dataresourceid={resourceID} label={label} {...this.a11yProps(i++)} />
             )
         }
 

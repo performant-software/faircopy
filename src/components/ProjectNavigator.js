@@ -9,6 +9,7 @@ import { Typography } from '@material-ui/core';
 export default class ProjectNavigator extends Component {
 
     onClickNode = (e,resourceID) => {
+      if( resourceID === 'root' ) return
       const { onSelectResource } = this.props
       onSelectResource(resourceID)
     }
