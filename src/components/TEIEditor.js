@@ -16,6 +16,13 @@ const resizeRefreshRate = 100
 
 export default class TEIEditor extends Component {
 
+    constructor() {
+        super()
+        this.state = {
+            scrollTop: 0
+        }
+    }
+
     componentDidMount() {
         const { teiDocument } = this.props
         window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
@@ -53,8 +60,8 @@ export default class TEIEditor extends Component {
         )
         editorView.focus()
         teiDocument.editorView = editorView
+        teiDocument.refreshView()
     }
-
 
     createClipboardSerializer() {
         // clipboard serialize always serializes to TEI XML
@@ -76,10 +83,23 @@ export default class TEIEditor extends Component {
         }
     }
 
+    onScroll = () => {
+        if( this.el ) {
+            const scrollTop = this.el.scrollTop
+            this.setState({...this.state,scrollTop})    
+        }
+    }
+
     render() {    
         const { teiDocument, editMode, onSave, width } = this.props
+        const { scrollTop } = this.state
 
-        const scrollTop = this.el ? this.el.scrollTop : 0
+        const onRef = (el) => {
+            this.el = el
+            if( el ) {
+                el.addEventListener("scroll", debounce(this.onScroll,resizeRefreshRate))
+            }
+        }
 
         return (
             <div className='TEIEditor'> 
@@ -90,7 +110,7 @@ export default class TEIEditor extends Component {
                         onSave={onSave}
                         width={width}
                     ></EditorToolbar>
-                    <div style={{width: width ? width : '100%'}} ref={(el) => this.el = el } className='body'>
+                    <div style={{width: width ? width : '100%'}} ref={onRef} className='body'>
                         <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}

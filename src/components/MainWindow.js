@@ -28,8 +28,9 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
         if( resourceID === selectedResource ) return
+        const openResource = openResources[resourceID]
         let nextResources
-        if( !openResources[resourceID] ) {
+        if( !openResource ) {
             nextResources = { ...openResources }
             nextResources[resourceID] = fairCopyProject.openResource(resourceID)
         } else {
@@ -52,19 +53,9 @@ export default class MainWindow extends Component {
         const { alertDialogMode, width, openResources, selectedResource } = this.state
         const { fairCopyProject } = this.props
 
-        // const refreshCallback = debounce(teiDocument.refreshView,resizeRefreshRate)
-
-        const onChange = (sidebarWidth) => {
-            // TODO
-            // const boundingRect = this.el? this.el.getBoundingClientRect() : null
-            // const windowWidth = boundingRect ? boundingRect.width : 0
-            // this.setState({...this.state, width: windowWidth - sidebarWidth })
-            // refreshCallback()
-        }
-        
         return (
             <div ref={(el) => this.el = el} > 
-                <SplitPane split="vertical" minSize={0} defaultSize={300} onChange={onChange}>
+                <SplitPane split="vertical" minSize={0} defaultSize={300}>
                     <TabbedSidebar
                         fairCopyProject={fairCopyProject}    
                         openResources={openResources}

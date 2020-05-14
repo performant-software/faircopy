@@ -12,10 +12,12 @@ export default class TabbedSidebar extends Component {
         }
     }
 
-    a11yProps(index) {
+    tabProps(index) {
         return {
           id: `simple-tab-${index}`,
           'aria-controls': `simple-tabpanel-${index}`,
+          disableRipple: true,
+          disableFocusRipple: true,
         };
     }
 
@@ -28,8 +30,8 @@ export default class TabbedSidebar extends Component {
         return (
             <div id="TabbedSidebar">
                 <Tabs value={currentTab} onChange={onChange} aria-label="simple tabs example">
-                    <Tab label="Project" {...this.a11yProps(0)} />
-                    <Tab label="Text" {...this.a11yProps(1)} />
+                    <Tab label="Project" {...this.tabProps(0)} />
+                    <Tab label="Text" disabled {...this.tabProps(1)} />
                 </Tabs>
                 <TabPanel value={currentTab} index={0}>
                     <ProjectNavigator
