@@ -213,11 +213,12 @@ export default class EditorToolbar extends Component {
 
         const style = editMode === 'note' ? { width, background: noteWindowBackground } : { width, background: mainWindowBackground }
 
+        // { this.renderSaveButton() }
+        // { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
+
         return (
             <div id="EditorToolbar" style={style}>
                 { editMode === 'note' ? <span className="note-icon fas fa-lg fa-sticky-note"></span> : "" }
-                { this.renderSaveButton() }
-                { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
                 <Toolbar className="draggable" style={{ minHeight: '55px' }}>
                     { this.renderMenuGroups() }
                     { this.renderGroupButtons() }

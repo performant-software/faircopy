@@ -40,13 +40,21 @@ export default class MainWindow extends Component {
     }
 
     onCloseResource = (resourceID) => {
-        // const { fairCopyProject } = this.props
-        // const { openResources, selectedResource } = this.state
-        // if( resourceID === selectedResource ) {
+        const { openResources, selectedResource } = this.state
 
-        // } 
+        const nextResourceArr = Object.values(openResources).filter( r => r.resourceID !== resourceID )
 
-        // this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources })
+        let nextSelection, nextResources = {}
+        if( nextResourceArr.length > 0 ) {
+            for( const resource of nextResourceArr ) {
+                nextResources[resource.resourceID] = resource
+            }
+            nextSelection = ( resourceID === selectedResource ) ? nextResourceArr[0].resourceID : selectedResource
+        } else {
+            nextSelection = null
+        }
+
+        this.setState( {...this.state, selectedResource: nextSelection, openResources: nextResources })
     }
 
     render() {
