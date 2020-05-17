@@ -13,5 +13,6 @@
 }
 
 #ProjectSidebar .edit-button {
+    padding-top: 10px;
     float: right;
 }

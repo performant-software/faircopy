@@ -34,7 +34,7 @@ export default class TableOfContents extends Component {
       }
 
       const tree = (
-        <TreeItem nodeId="root" label="body" >
+        <TreeItem nodeId="root" label="Table of Contents" >
           { findTreeNodes(doc) }
         </TreeItem>
       )

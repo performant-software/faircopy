@@ -16,26 +16,29 @@ export default class ProjectNavigator extends Component {
 
     renderTree() {
       const { fairCopyProject } = this.props
-      const { resources, projectName } = fairCopyProject
+      const { resources } = fairCopyProject
  
       const treeNodes = []
       for( const resource of Object.values(resources) ) {
         const treeID = `nav-node-${resource.id}`
+        const icon = <i className="fas fa-book fa-lg"></i>
         const label = <Typography>{resource.id}</Typography>
         treeNodes.push(
           <TreeItem 
+            className="tree-item"
             key={treeID} 
             nodeId={resource.id} 
+            icon={icon}
             label={label} >
           </TreeItem>
         )
       }
 
-      const projectLabel = <Typography>{projectName}</Typography>
+      const openResourcesLabel = <Typography>Open Resources</Typography>
       return (
         <TreeItem 
           nodeId="root" 
-          label={projectLabel}            
+          label={openResourcesLabel}            
         >
           { treeNodes }
         </TreeItem>

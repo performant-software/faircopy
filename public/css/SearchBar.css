@@ -1,0 +1,21 @@
+#SearchBar {
+    width: 250px;
+    height: 30px;
+    margin-top: 5px;
+    float: right;
+    background: white;
+    border: 2px solid #EAEAEA;
+    border-radius: 10px;
+}
+
+#SearchBar .search-input {
+    margin-left: 5px;
+    margin-top: 5px;
+    display: inline-block;
+}
+
+#SearchBar .search-button {
+    max-width: 40px;
+    margin-top: 5px;
+    float: right;
+}

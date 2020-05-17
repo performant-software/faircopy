@@ -12,6 +12,7 @@ import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import { Typography } from '@material-ui/core';
+import SearchBar from './SearchBar';
 
 const resizeRefreshRate = 100
 
@@ -108,6 +109,7 @@ export default class TEIEditor extends Component {
             <div style={style} className='TEIEditor'> 
                 <div>
                     <div className="titlebar">
+                        <SearchBar></SearchBar>
                         <Typography variant="h6">{teiDocument.resourceID}</Typography>
                     </div>
                     <EditorToolbar

@@ -12,7 +12,10 @@ export default class ProjectSidebar extends Component {
             <div id="ProjectSidebar">
                 <div className="title-bar">
                     <Typography  variant="h6" className="project-title">{fairCopyProject.projectName}</Typography>
-                    <Button className="edit-button">
+                    <Button className="edit-button"
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
                         <i className="far fa-edit fa-2x"></i>
                     </Button>
                 </div>
@@ -22,7 +25,6 @@ export default class ProjectSidebar extends Component {
                     selectedResource={selectedResource}
                     onSelectResource={onSelectResource}
                 ></ProjectNavigator>
-                <Typography>TABLE OF CONTENTS</Typography>
                 { selectedResource && 
                     <TableOfContents
                         teiDocument={openResources[selectedResource]}        
