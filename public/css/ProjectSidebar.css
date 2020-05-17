@@ -2,3 +2,16 @@
     background: #F3F6F8;
     height: 100%;
 }
+
+#ProjectSidebar .title-bar {
+    padding: 10px;
+}
+
+#ProjectSidebar .project-title {
+    padding: 10px;
+    display: inline-block;
+}
+
+#ProjectSidebar .edit-button {
+    float: right;
+}

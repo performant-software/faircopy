@@ -108,7 +108,7 @@ export default class TEIEditor extends Component {
             <div style={style} className='TEIEditor'> 
                 <div>
                     <div className="titlebar">
-                        <Typography variant="h4">{teiDocument.resourceID}</Typography>
+                        <Typography variant="h6">{teiDocument.resourceID}</Typography>
                     </div>
                     <EditorToolbar
                         editMode={editMode}

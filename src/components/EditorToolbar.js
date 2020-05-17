@@ -221,14 +221,14 @@ export default class EditorToolbar extends Component {
                         disableRipple={true}
                         disableFocusRipple={true}
                     >
-                        <i className="fas fa-marker fa-2x"></i>
+                        <i className="fa fa-marker fa-2x"></i>
                     </Button> 
                     <Button
                         className="toolbar-button"
                         disableRipple={true}
                         disableFocusRipple={true}
                     >
-                        <i className="fas fa-file fa-2x"></i>
+                        <i className="far fa-file fa-2x"></i>
                     </Button>    
                     <Button
                         className="toolbar-button"
@@ -236,14 +236,14 @@ export default class EditorToolbar extends Component {
                         disableRipple={true}
                         disableFocusRipple={true}
                     >
-                        <i className="fas fa-image fa-2x"></i>
+                        <i className="far fa-image fa-2x"></i>
                     </Button>  
                     <Button
                         className="toolbar-button"
                         disableRipple={true}
                         disableFocusRipple={true}
                     >
-                        <i className="fas fa-edit fa-2x"></i>
+                        <i className="far fa-edit fa-2x"></i>
                     </Button>                   
                 </div>
                 <div className="rightgroup">
