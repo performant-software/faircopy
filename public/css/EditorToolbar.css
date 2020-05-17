@@ -1,4 +1,19 @@
 
+#EditorToolbar {
+    border: 2px solid #EAEAEA;
+    border-radius: 10px;
+    height: 40px;
+    margin: 10px;
+}
+
+#EditorToolbar .leftgroup {
+    display: inline-block;
+}
+
+#EditorToolbar .rightgroup {
+    float: right;
+}
+
 #EditorToolbar button {
     -webkit-app-region: no-drag;
 }

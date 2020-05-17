@@ -1,9 +1,0 @@
-
-#TabbedMainView .tab-label .name {
-    display: inline;
-    margin-right: 15px;
-}
-
-#TabbedMainView .tab-label .close-x {
-    float: right;
-}

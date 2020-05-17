@@ -11,6 +11,7 @@ import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
+import { Typography } from '@material-ui/core';
 
 const resizeRefreshRate = 100
 
@@ -91,7 +92,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editMode, onSave, width } = this.props
+        const { teiDocument, editMode, onSave, width, hidden } = this.props
         const { scrollTop } = this.state
 
         const onRef = (el) => {
@@ -101,9 +102,14 @@ export default class TEIEditor extends Component {
             }
         }
 
+        const style = hidden ? { display: 'none' } : {}
+
         return (
-            <div className='TEIEditor'> 
+            <div style={style} className='TEIEditor'> 
                 <div>
+                    <div className="titlebar">
+                        <Typography variant="h4">{teiDocument.resourceID}</Typography>
+                    </div>
                     <EditorToolbar
                         editMode={editMode}
                         teiDocument={teiDocument}

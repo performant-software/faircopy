@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 
 import SplitPane from 'react-split-pane'
 
-import TabbedSidebar from './TabbedSidebar';
-import AlertDialog from './AlertDialog';
+import ProjectSidebar from './ProjectSidebar'
+import AlertDialog from './AlertDialog'
 
-import TabbedMainView from './TabbedMainView';
+import TEIEditor from './TEIEditor'
 
 export default class MainWindow extends Component {
 
@@ -28,12 +28,13 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
         if( resourceID === selectedResource ) return
-        const openResource = openResources[resourceID]
         let nextResources
-        if( !openResource ) {
+        if( !openResources[resourceID] ) {
+            // open the selected resource
             nextResources = { ...openResources }
             nextResources[resourceID] = fairCopyProject.openResource(resourceID)
         } else {
+            // selected an already open resource
             nextResources = openResources
         }
         this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources })
@@ -61,24 +62,33 @@ export default class MainWindow extends Component {
         const { alertDialogMode, width, openResources, selectedResource } = this.state
         const { fairCopyProject } = this.props
 
+        const editors = []
+        for( const teiDocument of Object.values(openResources) ) {
+            const hidden = selectedResource !== teiDocument.resourceID
+            editors.push(
+                <TEIEditor 
+                    key={`editor-${teiDocument.resourceID}`}
+                    hidden={hidden}
+                    width={width}
+                    teiDocument={teiDocument}
+                    onStateChange={this.onStateChange}
+                    onSave={this.onSave}  
+                ></TEIEditor>
+            )
+        }
+
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
-                    <TabbedSidebar
+                    <ProjectSidebar
                         fairCopyProject={fairCopyProject}    
                         openResources={openResources}
                         selectedResource={selectedResource}
                         onSelectResource={this.onSelectResource}                                  
-                    ></TabbedSidebar>    
-                    <TabbedMainView
-                        width={width}
-                        fairCopyProject={fairCopyProject}
-                        openResources={openResources}
-                        selectedResource={selectedResource}
-                        onStateChange={this.onStateChange}
-                        onCloseResource={this.onCloseResource}
-                        onSelectResource={this.onSelectResource}
-                    ></TabbedMainView>
+                    ></ProjectSidebar>    
+                    <div>
+                        { editors }
+                    </div>
                 </SplitPane>
                 <AlertDialog
                     alertDialogMode={alertDialogMode}

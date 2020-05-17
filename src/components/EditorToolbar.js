@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Toolbar, Button, IconButton, Select, MenuItem } from '@material-ui/core'
+import { ButtonGroup, Button, IconButton, Select, MenuItem } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import {wrapIn} from 'prosemirror-commands'
@@ -9,9 +9,8 @@ import { addMark } from "../tei-document/commands"
 
 const fairCopy = window.fairCopy
 
-const versionNumber = fairCopy.services.getVersionNumber()
-const mainWindowBackground = "#ddf8ff"
-const noteWindowBackground = "#e0ddff"
+// const mainWindowBackground = "#ddf8ff"
+// const noteWindowBackground = "#e0ddff"
 
 export default class EditorToolbar extends Component {
 
@@ -209,20 +208,69 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { editMode, width } = this.props
-
-        const style = editMode === 'note' ? { width, background: noteWindowBackground } : { width, background: mainWindowBackground }
+        const { editMode } = this.props
 
         // { this.renderSaveButton() }
         // { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
 
         return (
-            <div id="EditorToolbar" style={style}>
-                { editMode === 'note' ? <span className="note-icon fas fa-lg fa-sticky-note"></span> : "" }
-                <Toolbar className="draggable" style={{ minHeight: '55px' }}>
-                    { this.renderMenuGroups() }
-                    { this.renderGroupButtons() }
-                </Toolbar>
+            <div id="EditorToolbar">
+                <div className="leftgroup">
+                    <Button
+                        className="toolbar-button"
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-marker fa-2x"></i>
+                    </Button> 
+                    <Button
+                        className="toolbar-button"
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-file fa-2x"></i>
+                    </Button>    
+                    <Button
+                        className="toolbar-button"
+                        disabled
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-image fa-2x"></i>
+                    </Button>  
+                    <Button
+                        className="toolbar-button"
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-edit fa-2x"></i>
+                    </Button>                   
+                </div>
+                <div className="rightgroup">
+                <Button
+                        className="toolbar-button"
+                        disabled
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-print fa-2x"></i>
+                    </Button> 
+                    <Button
+                        className="toolbar-button"
+                        disabled
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-cloud-upload-alt fa-2x"></i>
+                    </Button>    
+                    <Button
+                        className="toolbar-button"
+                        disableRipple={true}
+                        disableFocusRipple={true}
+                    >
+                        <i className="fas fa-save fa-2x"></i>
+                    </Button>  
+                </div>
             </div>
         )
     }

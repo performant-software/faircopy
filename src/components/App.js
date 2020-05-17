@@ -105,7 +105,7 @@ export default class App extends Component {
         title = untitledDocumentTitle
     }
     var titleEl = document.getElementsByTagName("TITLE")[0]
-    titleEl.innerHTML = title
+    titleEl.innerHTML = `FairCopy - ${title}`
   }
 
   openProject( projectPath ) {

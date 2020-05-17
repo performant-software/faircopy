@@ -1,4 +1,11 @@
 
+.TEIEditor .titlebar {
+    background: #0086C0;
+    color: white;
+    padding: 10px;
+    height: 42px;
+}
+
 .TEIEditor .body {
     display: flex;
     height: calc( 100% - 60px );
