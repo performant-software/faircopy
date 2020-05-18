@@ -27,8 +27,13 @@ export default class TEIEditor extends Component {
 
     componentDidMount() {
         const { teiDocument } = this.props
-        window.addEventListener("resize", debounce(teiDocument.refreshView,resizeRefreshRate))
+        this.resizeListener = debounce(teiDocument.refreshView,resizeRefreshRate)
+        window.addEventListener("resize", this.resizeListener )
         window.onbeforeunload = this.onBeforeUnload
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.resizeListener )
     }
 
     onBeforeUnload = (e) => {
