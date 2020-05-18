@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import { Typography } from '@material-ui/core';
+import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@material-ui/core';
 
 export default class ResourceBrowser extends Component {
 
-  renderResourceList() {
+  renderResourceTable() {
     const { fairCopyProject, onSelectResource } = this.props
     const { resources } = fairCopyProject
 
@@ -13,28 +13,46 @@ export default class ResourceBrowser extends Component {
       onSelectResource(resourceID)
     }
 
-    const resourceList = []
+    const resourceRows = []
     for( const resource of Object.values(resources) ) {
-      resourceList.push(
-        <li dataresourceid={resource.id} onClick={onClick} key={`resource-${resource.id}`}>{ resource.id }</li>
+      resourceRows.push(
+        <TableRow hover dataresourceid={resource.id} onClick={onClick} key={`resource-${resource.id}`}>
+          <TableCell component="th" scope="row">
+            {resource.id}
+          </TableCell>
+        </TableRow>
       )
     }
   
     return (
-      <ul>
-        { resourceList }
-      </ul>
+      <TableContainer className="table-container" component={Paper}>
+        <Table stickyHeader >
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            { resourceRows }
+          </TableBody>
+        </Table>
+      </TableContainer>
     )
   }
 
   render() {
+      const { width } = this.props
+
       return (
-        <div id="ResourceBrowser">
+        <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
           <div className="titlebar">
+              <Button disabled className="add-resource-button">
+                <i className="fas fa-plus-circle fa-2x"></i>
+              </Button>
               <Typography variant="h6">Browse Resources</Typography>
           </div>
           <div>
-              { this.renderResourceList() }
+              { this.renderResourceTable() }
           </div>
         </div>
       )

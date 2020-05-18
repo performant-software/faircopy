@@ -89,11 +89,12 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen } = this.state
+        const { resourceBrowserOpen, width } = this.state
         return (
             <div>
                 { resourceBrowserOpen && 
                     <ResourceBrowser
+                        width={width}
                         onSelectResource={this.onSelectResource}   
                         fairCopyProject={fairCopyProject}
                     ></ResourceBrowser> }
