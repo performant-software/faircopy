@@ -6,7 +6,7 @@ import ProjectNavigator from './ProjectNavigator'
 export default class ProjectSidebar extends Component {
 
     render() {
-        const { fairCopyProject, selectedResource, openResources, onSelectResource } = this.props
+        const { fairCopyProject, selectedResource, openResources, onSelectResource, onOpenResourceBrowser, onCloseResource } = this.props
 
         return (
             <div id="ProjectSidebar">
@@ -20,10 +20,11 @@ export default class ProjectSidebar extends Component {
                     </Button>
                 </div>
                 <ProjectNavigator
-                    fairCopyProject={fairCopyProject}
                     openResources={openResources}
                     selectedResource={selectedResource}
                     onSelectResource={onSelectResource}
+                    onCloseResource={onCloseResource}
+                    onOpenResourceBrowser={onOpenResourceBrowser}
                 ></ProjectNavigator>
                 { selectedResource && 
                     <TableOfContents

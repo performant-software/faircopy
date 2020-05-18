@@ -6,6 +6,7 @@ import ProjectSidebar from './ProjectSidebar'
 import AlertDialog from './AlertDialog'
 
 import TEIEditor from './TEIEditor'
+import ResourceBrowser from './ResourceBrowser'
 
 export default class MainWindow extends Component {
 
@@ -16,6 +17,7 @@ export default class MainWindow extends Component {
             openResources: {},
             latest: null,
             width: -300,
+            resourceBrowserOpen: true,
             alertDialogMode: false
         }	
     }
@@ -37,7 +39,7 @@ export default class MainWindow extends Component {
             // selected an already open resource
             nextResources = openResources
         }
-        this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources })
+        this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources, resourceBrowserOpen: false })
     }
 
     onCloseResource = (resourceID) => {
@@ -45,22 +47,27 @@ export default class MainWindow extends Component {
 
         const nextResourceArr = Object.values(openResources).filter( r => r.resourceID !== resourceID )
 
-        let nextSelection, nextResources = {}
+        let nextSelection, resourceBrowserOpen, nextResources = {}
         if( nextResourceArr.length > 0 ) {
             for( const resource of nextResourceArr ) {
                 nextResources[resource.resourceID] = resource
             }
             nextSelection = ( resourceID === selectedResource ) ? nextResourceArr[0].resourceID : selectedResource
+            resourceBrowserOpen = false
         } else {
             nextSelection = null
+            resourceBrowserOpen = true
         }
 
-        this.setState( {...this.state, selectedResource: nextSelection, openResources: nextResources })
+        this.setState( {...this.state, selectedResource: nextSelection, openResources: nextResources, resourceBrowserOpen })
     }
 
-    render() {
-        const { alertDialogMode, width, openResources, selectedResource } = this.state
-        const { fairCopyProject } = this.props
+    onOpenResourceBrowser = () => {
+        this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })
+    }
+
+    renderEditors() {
+        const { width, openResources, selectedResource } = this.state
 
         const editors = []
         for( const teiDocument of Object.values(openResources) ) {
@@ -77,6 +84,28 @@ export default class MainWindow extends Component {
             )
         }
 
+        return editors 
+    }
+
+    renderContentPane() {
+        const { fairCopyProject } = this.props
+        const { resourceBrowserOpen } = this.state
+        return (
+            <div>
+                { resourceBrowserOpen && 
+                    <ResourceBrowser
+                        onSelectResource={this.onSelectResource}   
+                        fairCopyProject={fairCopyProject}
+                    ></ResourceBrowser> }
+                { this.renderEditors() }
+            </div>
+        )
+    }
+
+    render() {
+        const { alertDialogMode, openResources, selectedResource } = this.state
+        const { fairCopyProject } = this.props
+
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
@@ -84,11 +113,11 @@ export default class MainWindow extends Component {
                         fairCopyProject={fairCopyProject}    
                         openResources={openResources}
                         selectedResource={selectedResource}
-                        onSelectResource={this.onSelectResource}                                  
+                        onSelectResource={this.onSelectResource}   
+                        onCloseResource={this.onCloseResource}
+                        onOpenResourceBrowser={this.onOpenResourceBrowser}                               
                     ></ProjectSidebar>    
-                    <div>
-                        { editors }
-                    </div>
+                    { this.renderContentPane() }
                 </SplitPane>
                 <AlertDialog
                     alertDialogMode={alertDialogMode}
