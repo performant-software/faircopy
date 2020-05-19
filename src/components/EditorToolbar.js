@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { ButtonGroup, Button, IconButton, Select, MenuItem } from '@material-ui/core'
+import { Button, IconButton, Select, MenuItem } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveIcon from '@material-ui/icons/Save'
 import {wrapIn} from 'prosemirror-commands'
@@ -8,9 +8,6 @@ import {wrapIn} from 'prosemirror-commands'
 import { addMark } from "../tei-document/commands"
 
 const fairCopy = window.fairCopy
-
-// const mainWindowBackground = "#ddf8ff"
-// const noteWindowBackground = "#e0ddff"
 
 export default class EditorToolbar extends Component {
 
@@ -208,15 +205,20 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { editMode } = this.props
-
         // { this.renderSaveButton() }
         // { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
+
+        const onClickMarker = () => {
+            const { onOpenElementMenu } = this.props
+            onOpenElementMenu(this.markerButtonEl)
+        }
 
         return (
             <div id="EditorToolbar">
                 <div className="leftgroup">
                     <Button
+                        ref={(el)=> { this.markerButtonEl = el }}
+                        onClick={onClickMarker}
                         className="toolbar-button"
                         disableRipple={true}
                         disableFocusRipple={true}

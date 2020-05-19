@@ -7,6 +7,7 @@ import AlertDialog from './AlertDialog'
 
 import TEIEditor from './TEIEditor'
 import ResourceBrowser from './ResourceBrowser'
+import ElementMenu from './ElementMenu'
 
 export default class MainWindow extends Component {
 
@@ -66,6 +67,14 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })
     }
 
+    onOpenElementMenu = (elementMenuAnchorEl) => {
+        this.setState({...this.state, elementMenuAnchorEl })
+    }
+
+    onCloseElementMenu = () => {
+        this.setState({...this.state, elementMenuAnchorEl: null })
+    }
+
     renderEditors() {
         const { width, openResources, selectedResource } = this.state
 
@@ -79,7 +88,7 @@ export default class MainWindow extends Component {
                     width={width}
                     teiDocument={teiDocument}
                     onStateChange={this.onStateChange}
-                    onSave={this.onSave}  
+                    onOpenElementMenu={this.onOpenElementMenu}
                 ></TEIEditor>
             )
         }
@@ -104,7 +113,7 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { alertDialogMode, openResources, selectedResource } = this.state
+        const { alertDialogMode, openResources, selectedResource, elementMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
 
         return (
@@ -123,6 +132,10 @@ export default class MainWindow extends Component {
                 <AlertDialog
                     alertDialogMode={alertDialogMode}
                 ></AlertDialog>
+                <ElementMenu
+                    anchorEl={elementMenuAnchorEl}
+                    onClose={this.onCloseElementMenu}
+                ></ElementMenu>
             </div>
         )
     }
