@@ -16,32 +16,12 @@ export default class TEISchema {
         this.attrs = attrs
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
-        this.menuGroups = this.parseMenuGroups('menu-groups.json')
     }
 
     issueSubDocumentID = () => {
         const nextID = `${this.subDocPrefix}${this.subDocCounter++}`
         this.subDocIDs.push(nextID)
         return nextID
-    }
-
-    parseMenuGroups(menuGroupsConfigFile) {
-        const json = fairCopy.services.loadConfigFile(menuGroupsConfigFile)
-        const menuEntries = JSON.parse(json)
-
-        const menuGroups = {}
-        for( const menuEntry of menuEntries ) {
-            // which ones are enabled?
-            const members = []
-            for( const member of menuEntry.members ) {
-                const enabled = ( this.elements[member] !== undefined )
-                members.push({ id: member, enabled })
-            }
-            menuEntry.members = members
-            menuGroups[menuEntry.id] = menuEntry
-        }
-
-        return menuGroups
     }
 
     parseSchemaConfig(schemaConfigFile) {

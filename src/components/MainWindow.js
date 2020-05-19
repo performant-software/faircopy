@@ -19,7 +19,9 @@ export default class MainWindow extends Component {
             latest: null,
             width: -300,
             resourceBrowserOpen: true,
-            alertDialogMode: false
+            alertDialogMode: false,
+            openMenuID: null,
+            elementMenuAnchorEl: null
         }	
     }
 
@@ -67,12 +69,12 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })
     }
 
-    onOpenElementMenu = (elementMenuAnchorEl) => {
-        this.setState({...this.state, elementMenuAnchorEl })
+    onOpenElementMenu = (menuID, elementMenuAnchorEl) => {
+        this.setState({...this.state, openMenuID: menuID, elementMenuAnchorEl })
     }
 
     onCloseElementMenu = () => {
-        this.setState({...this.state, elementMenuAnchorEl: null })
+        this.setState({...this.state, openMenuID: null, elementMenuAnchorEl: null })
     }
 
     renderEditors() {
@@ -113,8 +115,10 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { alertDialogMode, openResources, selectedResource, elementMenuAnchorEl } = this.state
+        const { alertDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
         const { fairCopyProject } = this.props
+        const { menus } = fairCopyProject
+        const openMenu = openMenuID ? menus[openMenuID] : null
 
         return (
             <div ref={(el) => this.el = el} > 
@@ -133,6 +137,7 @@ export default class MainWindow extends Component {
                     alertDialogMode={alertDialogMode}
                 ></AlertDialog>
                 <ElementMenu
+                    menuGroups={openMenu}
                     anchorEl={elementMenuAnchorEl}
                     onClose={this.onCloseElementMenu}
                 ></ElementMenu>

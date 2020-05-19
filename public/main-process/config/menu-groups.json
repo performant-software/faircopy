@@ -1,57 +1,68 @@
-[
-    {
-        "id": "general",
-        "label": "General Editing",
-        "members": ["hi", "note", "ref", "name", "date"]
-    },
-    {
-        "id": "transcription",
-        "label": "Transcription",
-        "members": ["add", "del", "sic", "corr", "orig", "reg", "abbr", "pb", "lb" ]
-    },
-    {
-        "id": "structure",
-        "label": "Structure",
-        "members": ["div","p","l","lg","list","item","ab"]
-    },
-    {
-        "id": "figure",
-        "label": "Figures and Tables",
-        "members": [ "table","figure","formula","quote","code"]
-    },
-    {
-        "id": "titles",
-        "label": "Titles, Headers, and Footers",
-        "members": ["title","head","argument","fw","titlePart","trailer"]
-    },
-    {
-        "id": "bookLayout",
-        "label": "Book Layout",
-        "members": ["front","body","back","floatingtext","titlePage"]
-    },
-    {
-        "id": "correspondence",
-        "label": "Correspondence",
-        "members": ["addrLine","postscript","opener","imprimatur","dateline","byline","closer","salute","signed"]
-    },
-    {
-        "id": "drama",
-        "label": "Drama",
-        "members": ["sp","stage","actor","castGroup","castItem","castList","set","speaker","role","roleDesc"]
-    },
-    {
-        "id": "bilbiography",
-        "label": "Bibliography",
-        "members": ["bibl","author","editor","publisher","relatedItem","resp","respStmt"]
-    },
-    {
-        "id": "segmentation",
-        "label": "Segmentation",
-        "members": ["rs","seg","s","rhyme","c","w","m","pc","anchor","milestone"]
-    },
-    {
-        "id": "data",
-        "label": "Data",
-        "members": ["person","time","place","address","measure","num","email","idNo","desc"]
-    }
-]
+{ 
+    "mark": [
+        {
+            "id": "general",
+            "label": "General Editing",
+            "members": ["hi", "ref", "name", "date"]
+        },
+        {
+            "id": "transcription",
+            "label": "Transcription",
+            "members": ["add", "del", "sic", "corr", "orig", "reg", "abbr" ]
+        },
+        {
+            "id": "correspondence",
+            "label": "Correspondence",
+            "members": ["addrLine","postscript","opener","imprimatur","dateline","byline","closer","salute","signed"]
+        },
+        {
+            "id": "segmentation",
+            "label": "Sentences",
+            "members": ["rs","seg","s","rhyme","c","w","m","pc","anchor","milestone"]
+        },
+        {
+            "id": "data",
+            "label": "Data",
+            "members": ["person","time","place","address","measure","num","email","idNo","desc"]
+        }
+    ],
+    "structure": [
+        {
+            "id": "general",
+            "label": "General Editing",
+            "members": ["note", "pb", "lb"]
+        },
+        {
+            "id": "structure",
+            "label": "Structure",
+            "members": ["div","p","l","lg","list","item","ab"]
+        },        
+        {
+            "id": "titles",
+            "label": "Titles, Headers, and Footers",
+            "members": ["title","head","argument","fw","titlePart","trailer"]
+        },
+        {
+            "id": "bookLayout",
+            "label": "Book Layout",
+            "members": ["front","body","back","floatingtext","titlePage"]
+        },
+        {
+            "id": "drama",
+            "label": "Drama",
+            "members": ["sp","stage","actor","castGroup","castItem","castList","set","speaker","role","roleDesc"]
+        },
+        {
+            "id": "bilbiography",
+            "label": "Bibliography",
+            "members": ["bibl","author","editor","publisher","relatedItem","resp","respStmt"]
+        }
+    ],
+    "graphic": [
+        {
+            "id": "figure",
+            "label": "Figures and Tables",
+            "members": [ "table","figure","formula","quote","code"]
+        }
+    ]
+}

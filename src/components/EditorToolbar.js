@@ -205,12 +205,14 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
+        const { onOpenElementMenu } = this.props
+
         // { this.renderSaveButton() }
         // { editMode === 'note' ? "" : <span className="mainWindow-right">{`DEV RELEASE v${versionNumber}`}</span> }
 
-        const onClickMarker = () => {
-            const { onOpenElementMenu } = this.props
-            onOpenElementMenu(this.markerButtonEl)
+        const buttonProps = {
+            disableRipple: true,
+            disableFocusRipple: true
         }
 
         return (
@@ -218,57 +220,52 @@ export default class EditorToolbar extends Component {
                 <div className="leftgroup">
                     <Button
                         ref={(el)=> { this.markerButtonEl = el }}
-                        onClick={onClickMarker}
+                        onClick={()=>{onOpenElementMenu('mark',this.markerButtonEl)}}
                         className="toolbar-button"
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        {...buttonProps}
                     >
                         <i className="fa fa-marker fa-2x"></i>
                     </Button> 
                     <Button
                         className="toolbar-button"
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{onOpenElementMenu('structure',this.structureButtonEl)}}
+                        {...buttonProps}
                     >
                         <i className="far fa-file fa-2x"></i>
                     </Button>    
                     <Button
                         className="toolbar-button"
                         disabled
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        {...buttonProps}
                     >
                         <i className="far fa-image fa-2x"></i>
                     </Button>  
                     <Button
                         className="toolbar-button"
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        {...buttonProps}
                     >
                         <i className="far fa-edit fa-2x"></i>
                     </Button>                   
                 </div>
                 <div className="rightgroup">
-                <Button
+                    <Button 
                         className="toolbar-button"
                         disabled
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        {...buttonProps}
                     >
                         <i className="fas fa-print fa-2x"></i>
                     </Button> 
                     <Button
                         className="toolbar-button"
                         disabled
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        {...buttonProps}
                     >
                         <i className="fas fa-cloud-upload-alt fa-2x"></i>
                     </Button>    
                     <Button
                         className="toolbar-button"
-                        disableRipple={true}
-                        disableFocusRipple={true}
+                        {...buttonProps}
                     >
                         <i className="fas fa-save fa-2x"></i>
                     </Button>  

@@ -6,8 +6,9 @@ export default class ElementMenu extends Component {
     constructor() {
         super()
         this.state = {
-            subMenu: false
+            openSubMenu: null
         }
+        this.subMenuEls = {}
     }
 
     renderMenu( menuID, menuItems, subMenu, anchorEl, onClose ) {
@@ -24,7 +25,7 @@ export default class ElementMenu extends Component {
         }
 
         return (
-            <Popper  className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} transition disablePortal>
+            <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
                     <Grow
                         {...TransitionProps}
@@ -44,32 +45,50 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { subMenu } = this.state
+        const { menuGroups } = this.props
+        const { openSubMenu } = this.state
 
-        if( !subMenu || !this.subMenuEl ) return null
+        if( !openSubMenu ) return
 
-        const onClose = () => { 
-            this.subMenuEl = null
-            this.setState({...this.state, subMenu: false })
+        const members = menuGroups[openSubMenu].members
+
+        const closeSubMenu = () => { 
+            this.subMenuEls[openSubMenu] = null
+            this.setState({...this.state, openSubMenu: null })
         }
 
-        const menuItems = [ <MenuItem key="sub-menu-1" onClick={onClose}>Sub 1</MenuItem> ]
+        const menuItems = []
+        for( const member of members ) {
+            menuItems.push(
+                <MenuItem disabled={!member.enabled} key={`submenu-${member.id}`} onClick={closeSubMenu}>{member.id}</MenuItem>
+            )
+        }
 
-        return this.renderMenu( 'submenu', menuItems, true, this.subMenuEl, onClose)
+        return this.renderMenu( 'submenu', menuItems, true, this.subMenuEls[openSubMenu], closeSubMenu)
     }
 
     render() {
-        const { anchorEl, onClose } = this.props
+        const { anchorEl, onClose, menuGroups } = this.props
 
         if( !anchorEl ) return null
 
-        const openSubMenu = () => { this.setState({...this.state, subMenu: true })}
+        const onClick = (menuGroupID) => { this.setState({...this.state, openSubMenu: menuGroupID })}
 
-        const menuItems = [
-            <MenuItem key="menu-1" ref={(el)=> { this.subMenuEl = el }} onClick={openSubMenu}>Profile <i className="fas fa-chevron-right"></i></MenuItem>,
-            <MenuItem key="menu-2" onClick={onClose}>My account</MenuItem>,
-            <MenuItem key="menu-3" onClick={onClose}>Logout</MenuItem>    
-        ]
+        const menuItems = []
+        for( const menuGroup of Object.values(menuGroups) ) {
+            const menuGroupID = menuGroup.id
+            const key = `menugroup-${menuGroupID}`
+            menuItems.push(
+                <MenuItem 
+                    onClick={()=>onClick(menuGroupID)}
+                    ref={(el)=> { this.subMenuEls[menuGroupID] = el }}
+                    key={key} 
+                    value={menuGroupID}
+                >
+                    {menuGroup.label} <i className="fas fa-chevron-right"></i>
+                </MenuItem>
+            )
+        }
 
         return (
             <div id="ElementMenu">

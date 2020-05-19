@@ -11,6 +11,35 @@ export default class FairCopyProject {
         this.loadManifest()
         this.fairCopyConfig = new FairCopyConfig(`${this.projectPath}/config-settings.json`)
         this.teiSchema = new TEISchema()
+        this.menus = this.parseMenus('menu-groups.json')
+    }
+
+    parseMenus(menuGroupsConfigFile) {
+        const json = fairCopy.services.loadConfigFile(menuGroupsConfigFile)
+        const menuData = JSON.parse(json)
+
+        const menus = {}
+        for( const menuID of Object.keys(menuData) ) {
+            menus[menuID] = this.parseMenu(menuData[menuID])
+        }
+
+        return menus
+    }
+
+    parseMenu(menuEntries) {
+        const menuGroups = {}
+        for( const menuEntry of menuEntries ) {
+            // which ones are enabled?
+            const members = []
+            for( const member of menuEntry.members ) {
+                const enabled = ( this.teiSchema.elements[member] !== undefined )
+                members.push({ id: member, enabled })
+            }
+            menuEntry.members = members
+            menuGroups[menuEntry.id] = menuEntry
+        }
+
+        return menuGroups
     }
 
     loadManifest() {
