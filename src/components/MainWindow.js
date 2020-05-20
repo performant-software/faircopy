@@ -120,6 +120,8 @@ export default class MainWindow extends Component {
         const { menus } = fairCopyProject
         const openMenu = openMenuID ? menus[openMenuID] : null
 
+        const teiDocument = selectedResource ? openResources[selectedResource] : null
+
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
@@ -137,6 +139,7 @@ export default class MainWindow extends Component {
                     alertDialogMode={alertDialogMode}
                 ></AlertDialog>
                 <ElementMenu
+                    teiDocument={teiDocument}
                     menuGroups={openMenu}
                     anchorEl={elementMenuAnchorEl}
                     onClose={this.onCloseElementMenu}

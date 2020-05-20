@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Popper, MenuItem, MenuList, Grow, Paper, ClickAwayListener } from '@material-ui/core'
 
+import { createElement } from "../tei-document/editor-actions"
+
 export default class ElementMenu extends Component {
 
     constructor() {
@@ -45,22 +47,26 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { menuGroups } = this.props
+        const { menuGroups, teiDocument } = this.props
         const { openSubMenu } = this.state
 
         if( !openSubMenu ) return
 
         const members = menuGroups[openSubMenu].members
 
-        const closeSubMenu = () => { 
+        const closeSubMenu = () => {
             this.subMenuEls[openSubMenu] = null
             this.setState({...this.state, openSubMenu: null })
         }
 
         const menuItems = []
         for( const member of members ) {
+            const onClick = () => { 
+                createElement(member.id, teiDocument) 
+                closeSubMenu()
+            }
             menuItems.push(
-                <MenuItem disabled={!member.enabled} key={`submenu-${member.id}`} onClick={closeSubMenu}>{member.id}</MenuItem>
+                <MenuItem disabled={!member.enabled} onClick={onClick} key={`submenu-${member.id}`}>{member.id}</MenuItem>
             )
         }
 
