@@ -50,7 +50,7 @@ export default class ElementMenu extends Component {
         const { menuGroups, teiDocument } = this.props
         const { openSubMenu } = this.state
 
-        if( !openSubMenu ) return
+        if( !openSubMenu || !menuGroups[openSubMenu] ) return
 
         const members = menuGroups[openSubMenu].members
 
