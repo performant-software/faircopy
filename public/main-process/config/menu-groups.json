@@ -39,7 +39,7 @@
         },        
         {
             "id": "titles",
-            "label": "Titles, Headers, and Footers",
+            "label": "Headers",
             "members": ["title","head","argument","fw","titlePart","trailer"]
         },
         {

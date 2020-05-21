@@ -22,16 +22,16 @@ export default class ElementMenu extends Component {
             placement = 'right-start'
             elevation = 12
         } else {
-            placement = 'bottom'
+            placement = 'bottom-start'
             elevation = 6
         }
 
         return (
             <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} transition disablePortal>
-                {({ TransitionProps, placement }) => (
+                {({ TransitionProps }) => (
                     <Grow
                         {...TransitionProps}
-                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                        style={{ transformOrigin: 'center top' }}
                     >
                     <Paper elevation={elevation}>
                         <ClickAwayListener onClickAway={onClose}>
@@ -89,9 +89,10 @@ export default class ElementMenu extends Component {
                     onClick={()=>onClick(menuGroupID)}
                     ref={(el)=> { this.subMenuEls[menuGroupID] = el }}
                     key={key} 
+                    className="menu-item"
                     value={menuGroupID}
                 >
-                    {menuGroup.label} <i className="fas fa-chevron-right"></i>
+                    {menuGroup.label} <i className="menu-chevron fas fa-chevron-right"></i>
                 </MenuItem>
             )
         }
