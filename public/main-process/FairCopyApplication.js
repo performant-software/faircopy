@@ -1,0 +1,119 @@
+const { BrowserWindow, ipcMain } = require('electron')
+const { isDebugMode } = require('./preload-services').services
+const { ProjectStore } = require('./ProjectStore')
+const { MainMenu } = require('./MainMenu')
+
+const indexFilePath = 'build/index.html'
+const debugBaseDir = `${process.cwd()}/public/main-process`
+const distBaseDir = __dirname
+
+class FairCopyApplication {
+
+  constructor() {
+    this.mainWindow = null
+    this.noteWindows = {}
+    this.baseDir = isDebugMode() ? debugBaseDir : distBaseDir
+  }
+
+  async createMainWindow(onClose) {
+    this.mainMenu = new MainMenu(this)
+    this.projectStore = new ProjectStore(this)
+
+    this.mainWindow = await this.createWindow('main-window-preload.js', onClose)
+
+    ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
+    // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
+    // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
+  }
+
+  openProject(targetFile) {
+    this.projectStore.openProject(targetFile)
+  }
+
+  sendToMainWindow(message, params) {
+    this.mainWindow.webContents.send(message, params)
+  }
+
+  async createWindow(preload,onClose) {
+
+    // Create the browser window.
+    const browserWindow = new BrowserWindow({
+      width: 1440,
+      height: 900,
+      webPreferences: {
+          enableRemoteModule: false,
+          preload: `${this.baseDir}/${preload}`
+      }
+    })
+
+    // Emitted when the window is closed.
+    browserWindow.on('closed', onClose )
+
+    // and load the index.html of the app.
+    if( isDebugMode() ) {
+      await browserWindow.loadURL('http://localhost:3000')
+      browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+    } else {
+      await browserWindow.loadFile(indexFilePath)
+    }
+
+    // For now, there is only one document window
+    return browserWindow
+  }
+}
+
+exports.FairCopyApplication = FairCopyApplication
+
+
+// TODO note window code to refactor
+
+// async createNoteEditorWindow = (event, noteID) => {
+
+//   if( this.noteWindows[noteID] ) {
+//     this.noteWindows[noteID].focus()
+//     console.log("Window already open for note.")
+//     // TODO set focus on this windo
+//     return
+//   }
+
+//   this.mainWindow = await this.createWindow('main-window-preload.js')
+
+//   // Create the browser window
+//   const browserWindow = new BrowserWindow({
+//       parent: this.mainWindow,
+//       width: 1000,
+//       height: 700,
+//       frame: false,
+//       webPreferences: {
+//           enableRemoteModule: false,
+//           preload: `${this.baseDir}/note-window-preload.js`
+//       }
+//   })
+
+//   // Emitted when the note window is closed.
+//   browserWindow.on('closed', () => {
+//     this.noteWindows[noteID] = null
+//   } )
+
+//   const loadNote = () => {
+//     // send message indicating the target note
+//     browserWindow.webContents.send('noteOpened', noteID)
+//   }
+
+//   // and load the index.html of the app.
+//   if( isDebugMode() ) {
+//       browserWindow.loadURL('http://localhost:3000/index.html').then(loadNote)
+//   } else {
+//       browserWindow.loadFile(indexFilePath).then(loadNote)
+//   }
+
+//   // For now, there is only one document window
+//   this.noteWindows[noteID] = browserWindow
+// }
+// closeNoteWindow = (event, noteID) => {
+//   const noteWindow = this.noteWindows[noteID]
+
+//   if( noteWindow ) {
+//     noteWindow.close();
+//   }
+// }

@@ -1,24 +1,25 @@
 // Modules to control application life and create native browser window
 const { app } = require('electron')
-const { ApplicationWindowManager } = require('./main-process/ApplicationWindowManager')
+const { FairCopyApplication } = require('./main-process/FairCopyApplication')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let appWindowManager
+let fairCopyApplication
 
 const onMainWindowClose = () => {
-  appWindowManager = null
+  fairCopyApplication = null
 }
 
 function createApplicationWindowManager () {
   const debugMode = process.env.FAIRCOPY_DEBUG_MODE
-  appWindowManager = new ApplicationWindowManager(app, onMainWindowClose)
+  fairCopyApplication = new FairCopyApplication()
   if( debugMode ) {
-    appWindowManager.createTEIEditorWindow('test-docs/je_example.xml').then(() => {
+    fairCopyApplication.createMainWindow(onMainWindowClose).then(() => {
       console.log("TEI Editor Ready - Loading example text.")   
+      fairCopyApplication.openProject('test-docs/test-project.zip')
     })
   } else {
-    appWindowManager.createTEIEditorWindow().then(() => {
+    fairCopyApplication.createMainWindow(onMainWindowClose).then(() => {
       console.log("TEI Editor Ready")   
     })
   }
@@ -40,5 +41,5 @@ app.on('window-all-closed', function () {
 app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (appWindowManager === null) createApplicationWindowManager()
+  if (fairCopyApplication === null) createApplicationWindowManager()
 })
