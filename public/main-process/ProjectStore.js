@@ -1,5 +1,6 @@
+const AdmZip = require('adm-zip');
 
-const fs = require('fs')
+const { ConfigManager } = require('./ConfigManager')
 
 class ProjectStore {
 
@@ -8,39 +9,26 @@ class ProjectStore {
     }
 
     openProject(targetFile) {
+        this.projectArchive = new AdmZip(targetFile)
+        this.loadManifest()
+        this.configManager = new ConfigManager()
         this.fairCopyApplication.sendToMainWindow('fileOpened', targetFile )
     }
 
-    // constructor() {
-    //     this.configs = {}
-    //     ipcMain.on('onConfigUpdate', this.onUpdate)
-    // }
+    loadManifest() {
+        const json = this.openUTF8File('faircopy-manifest.json')
+        const fairCopyManifest = JSON.parse(json)
+        this.defaultResource = fairCopyManifest.defaultResource
+        this.projectName = fairCopyManifest.projectName
+        this.resources = fairCopyManifest.resources
+    }
 
-    // onUpdate = ( sender, configPath, incomingState ) => {
-    //     let nextState
+    openUTF8File(targetFilePath) {
+        const zipEntries = this.projectArchive.getEntries() 
+        const targetEntry = zipEntries.find((entry) => entry.entryName === targetFilePath)
+        return targetEntry ? targetEntry.getData().toString('utf8') : null
+    }
 
-    //     // if there is no incoming state
-    //     if( !incomingState ) {
-    //         // load from file if it isn't loaded
-    //         const currentState = this.configs[configPath]
-    //         if( !currentState ) {
-    //             const configJSON = fs.readFileSync( configPath )
-    //             nextState = JSON.parse(configJSON)
-    //         } else {
-    //             nextState = currentState
-    //         }
-    //     } else {
-    //         nextState = incomingState
-    //     }
-
-    //     this.configs[configPath] = nextState
-
-    //     // broadcast config state to all windows
-    //     const browserWindows = BrowserWindow.getAllWindows()
-    //     for( const browserWindow of browserWindows ) {
-    //         browserWindow.webContents.send('onConfigUpdated', configPath, nextState )    
-    //     }
-    // }
 }
 
 exports.ProjectStore = ProjectStore
