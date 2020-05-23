@@ -1,6 +1,5 @@
 const AdmZip = require('adm-zip');
-
-const { ConfigManager } = require('./ConfigManager')
+const fs = require('fs')
 
 class ProjectStore {
 
@@ -9,18 +8,28 @@ class ProjectStore {
     }
 
     openProject(targetFile) {
+        const { baseDir } = this.fairCopyApplication
         this.projectArchive = new AdmZip(targetFile)
-        this.loadManifest()
-        this.configManager = new ConfigManager()
-        this.fairCopyApplication.sendToMainWindow('fileOpened', targetFile )
+        const fairCopyManifest = this.openUTF8File('faircopy-manifest.json')
+        const fairCopyConfig = this.openUTF8File('config-settings.json')
+        const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
+        const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
+        const projectData = { fairCopyManifest, teiSchema, fairCopyConfig, menuGroups }
+        
+        // project store keeps a copy of the resource data
+        const manifestData = JSON.parse(fairCopyManifest)
+        this.resources = manifestData.resources
+
+        this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
     }
 
-    loadManifest() {
-        const json = this.openUTF8File('faircopy-manifest.json')
-        const fairCopyManifest = JSON.parse(json)
-        this.defaultResource = fairCopyManifest.defaultResource
-        this.projectName = fairCopyManifest.projectName
-        this.resources = fairCopyManifest.resources
+    openResource = (resourceID) => {
+        const resourceEntry = this.resources[resourceID]
+        if( resourceEntry ) {
+            const resource = this.openUTF8File(resourceEntry.filePath)
+            const resourceData = { resourceID, resource }
+            this.fairCopyApplication.sendToMainWindow('resourceOpened', resourceData )
+        }
     }
 
     openUTF8File(targetFilePath) {

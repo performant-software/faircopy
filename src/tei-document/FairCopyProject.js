@@ -2,20 +2,16 @@ import TEIDocument from "./TEIDocument"
 import TEISchema from "./TEISchema"
 import FairCopyConfig from "./FairCopyConfig"
 
-const fairCopy = window.fairCopy
-
 export default class FairCopyProject {
 
-    constructor(projectPath) {
-        this.projectPath = projectPath
-        this.loadManifest()
-        this.fairCopyConfig = new FairCopyConfig(`${this.projectPath}/config-settings.json`)
-        this.teiSchema = new TEISchema()
-        this.menus = this.parseMenus('menu-groups.json')
+    constructor(projectData) {
+        this.loadManifest(projectData.fairCopyManifest)
+        this.fairCopyConfig = new FairCopyConfig(projectData.fairCopyConfig)
+        this.teiSchema = new TEISchema(projectData.teiSchema)
+        this.menus = this.parseMenus(projectData.menuGroups)
     }
 
-    parseMenus(menuGroupsConfigFile) {
-        const json = fairCopy.services.loadConfigFile(menuGroupsConfigFile)
+    parseMenus(json) {
         const menuData = JSON.parse(json)
 
         const menus = {}
@@ -42,8 +38,7 @@ export default class FairCopyProject {
         return menuGroups
     }
 
-    loadManifest() {
-        const json = fairCopy.services.readFileSync(`${this.projectPath}/faircopy-manifest.json`)
+    loadManifest(json) {
         const fairCopyManifest = JSON.parse(json)
         this.defaultResource = fairCopyManifest.defaultResource
         this.projectName = fairCopyManifest.projectName
@@ -55,8 +50,7 @@ export default class FairCopyProject {
         if( !resourceEntry ) return null
 
         if( resourceEntry.type === 'text') {
-            const filePath = `${this.projectPath}/${resourceEntry.filePath}`
-            const teiDocument = new TEIDocument( resourceID, filePath, this.teiSchema, this.fairCopyConfig)
+            const teiDocument = new TEIDocument( resourceID, this.teiSchema, this.fairCopyConfig)
             return teiDocument    
         } else {
             // TODO load facs

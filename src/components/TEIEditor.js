@@ -71,8 +71,10 @@ export default class TEIEditor extends Component {
     }
 
     createClipboardSerializer() {
+        const { teiDocument } = this.props
+        const { teiSchema } = teiDocument
         // clipboard serialize always serializes to TEI XML
-        const clipboardSchema = new TEISchema();
+        const clipboardSchema = new TEISchema(teiSchema.schemaJSON);
         clipboardSchema.teiMode = true
         return DOMSerializer.fromSchema( clipboardSchema.schema )
     }

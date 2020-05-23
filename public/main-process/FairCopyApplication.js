@@ -1,7 +1,7 @@
 const { BrowserWindow, ipcMain } = require('electron')
-const { isDebugMode } = require('./preload-services').services
 const { ProjectStore } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
+const fs = require('fs')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -12,7 +12,20 @@ class FairCopyApplication {
   constructor() {
     this.mainWindow = null
     this.noteWindows = {}
-    this.baseDir = isDebugMode() ? debugBaseDir : distBaseDir
+    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
+    this.versionNumber = this.getVersionNumber()
+  }
+
+  getVersionNumber() {
+    const debugPath = `${process.cwd()}/public/version.txt`
+    const distPath = `${__dirname}/../version.txt`
+    const versionFilePath = this.isDebugMode() ? debugPath : distPath
+    const versionNumber = fs.readFileSync(versionFilePath)
+    return versionNumber
+  }
+
+  isDebugMode() {
+    return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
   }
 
   async createMainWindow(onClose) {
@@ -22,6 +35,7 @@ class FairCopyApplication {
     this.mainWindow = await this.createWindow('main-window-preload.js', onClose)
 
     ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
+    ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
   }
@@ -50,7 +64,7 @@ class FairCopyApplication {
     browserWindow.on('closed', onClose )
 
     // and load the index.html of the app.
-    if( isDebugMode() ) {
+    if( this.isDebugMode() ) {
       await browserWindow.loadURL('http://localhost:3000')
       browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {

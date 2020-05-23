@@ -15,7 +15,7 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, filePath, teiSchema, fairCopyConfig ) {
+    constructor( resourceID, teiSchema, fairCopyConfig ) {
         this.editorView = null
         this.pastedNoteBuffer = []
         this.resourceID = resourceID
@@ -31,7 +31,11 @@ export default class TEIDocument {
             history(),
             highlighter()
         ]
-        this.initialState = filePath  ? this.load( filePath ) : this.editorInitialState()
+        if( resourceID ) {
+            this.requestResource( resourceID )
+        } else {
+            this.initialState = this.editorInitialState()
+        }
         this.changedSinceLastSave = false
     }
 
@@ -191,17 +195,22 @@ export default class TEIDocument {
         return result
     }
 
-    load( filePath ) {
-        const text = fairCopy.services.readFileSync(filePath)
+    requestResource( filePath ) {
+        fairCopy.services.ipcSend('requestResource', filePath )
+        this.loading = true
+    }
+
+    load( text ) {
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         const doc = this.teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
-        return EditorState.create({ 
+        this.initialState = EditorState.create({ 
             doc, plugins: this.plugins, selection 
         })
+        this.loading = false
     }
 
     openNote( noteID ) {

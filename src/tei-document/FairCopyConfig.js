@@ -2,12 +2,8 @@ const fairCopy = window.fairCopy
 
 export default class FairCopyConfig {
 
-    constructor(configPath) {
-        this.configPath = configPath
-        this.state = null
-        if( configPath ) {
-            fairCopy.services.configSubscribe(this.configPath,this.onUpdate)
-        } 
+    constructor(json) {
+        this.state = JSON.parse(json)
     }
 
     destroy() {

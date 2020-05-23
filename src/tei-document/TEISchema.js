@@ -2,20 +2,19 @@ import {Schema} from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
 
-const fairCopy = window.fairCopy
-
 export default class TEISchema {
 
-    constructor() {
+    constructor(json) {
         this.subDocIDs = []
         this.subDocCounter = 0
         this.subDocPrefix = `note-${Date.now()}-`
         this.teiMode = false
-        const { schemaSpec, elements, attrs } = this.parseSchemaConfig('tei-simple.json')
+        const { schemaSpec, elements, attrs } = this.parseSchemaConfig(json)
         this.elements = elements
         this.attrs = attrs
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
+        this.schemaJSON = json
     }
 
     issueSubDocumentID = () => {
@@ -24,8 +23,7 @@ export default class TEISchema {
         return nextID
     }
 
-    parseSchemaConfig(schemaConfigFile) {
-        const json = fairCopy.services.loadConfigFile(schemaConfigFile)
+    parseSchemaConfig(json) {
         const teiSimple = JSON.parse(json)
 
         const elements = {}

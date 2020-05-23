@@ -88,12 +88,12 @@ export default class App extends Component {
     this.setTitle(null)
 
     // Receive open and save file events from the main process
-    services.ipcRegisterCallback('fileOpened', (event, filePath) => this.openFile(filePath))
+    services.ipcRegisterCallback('fileOpened', (event, projectData) => this.openFile(projectData))
     // services.ipcRegisterCallback('requestSave', () => this.requestSave())        
     // services.ipcRegisterCallback('fileSaved', (event, filePath) => this.save(filePath))      
     // services.ipcRegisterCallback('fileNew', (event) => this.newFile() )
     // services.ipcRegisterCallback('openPrint', (event) => this.openPrint() )
-    services.initConfigClient()
+    // services.initConfigClient()
   }
 
   setTitle( filePath ) {
@@ -108,15 +108,10 @@ export default class App extends Component {
     titleEl.innerHTML = `FairCopy - ${title}`
   }
 
-  openProject( projectPath ) {
-    const fairCopyProject = new FairCopyProject(projectPath)   
+  openFile( projectData ) {
+    const fairCopyProject = new FairCopyProject(projectData)   
     this.setTitle(fairCopyProject.projectName)   
     this.setState({...this.state, fairCopyProject})
-  }
-
-  openFile( filePath ) {
-      // TODO refactor
-      this.openProject('test-docs/test-project')
   }
   
   render() {

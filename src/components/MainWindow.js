@@ -9,6 +9,8 @@ import TEIEditor from './TEIEditor'
 import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 
+const fairCopy = window.fairCopy
+
 export default class MainWindow extends Component {
 
     constructor() {
@@ -23,6 +25,21 @@ export default class MainWindow extends Component {
             openMenuID: null,
             elementMenuAnchorEl: null
         }	
+    }
+
+    componentDidMount() {
+        const {services} = fairCopy
+        services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
+    }
+    
+    receiveResourceData( resourceData ) {
+        const { resourceID, resource } = resourceData
+        const { openResources } = this.state
+        const openResource = openResources[resourceID]
+        if( openResource ) {
+            openResource.load(resource)
+            this.setState({...this.state})
+        } 
     }
 
     onStateChange = (nextState) => {
@@ -83,16 +100,21 @@ export default class MainWindow extends Component {
         const editors = []
         for( const teiDocument of Object.values(openResources) ) {
             const hidden = selectedResource !== teiDocument.resourceID
-            editors.push(
-                <TEIEditor 
-                    key={`editor-${teiDocument.resourceID}`}
-                    hidden={hidden}
-                    width={width}
-                    teiDocument={teiDocument}
-                    onStateChange={this.onStateChange}
-                    onOpenElementMenu={this.onOpenElementMenu}
-                ></TEIEditor>
-            )
+            const key = `editor-${teiDocument.resourceID}`
+            if( teiDocument.loading ) {
+                editors.push(<div key={key}></div>)
+            } else {
+                editors.push(
+                    <TEIEditor 
+                        key={key}
+                        hidden={hidden}
+                        width={width}
+                        teiDocument={teiDocument}
+                        onStateChange={this.onStateChange}
+                        onOpenElementMenu={this.onOpenElementMenu}
+                    ></TEIEditor>
+                )    
+            }
         }
 
         return editors 
