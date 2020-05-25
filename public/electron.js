@@ -13,16 +13,16 @@ const onMainWindowClose = () => {
 function createApplicationWindowManager () {
   const debugMode = process.env.FAIRCOPY_DEBUG_MODE
   fairCopyApplication = new FairCopyApplication()
-  if( debugMode ) {
-    fairCopyApplication.createMainWindow(onMainWindowClose).then(() => {
-      console.log("TEI Editor Ready - Loading example text.")   
-      fairCopyApplication.openProject('test-docs/test-project.zip')
+  // if( debugMode ) {
+  //   fairCopyApplication.createMainWindow(onMainWindowClose).then(() => {
+  //     console.log("TEI Editor Ready - Loading example text.")   
+  //     fairCopyApplication.openProject('test-docs/test-project.zip')
+  //   })
+  // } else {
+    fairCopyApplication.createProjectWindow(onMainWindowClose).then(() => {
+      console.log("Project Window Ready")   
     })
-  } else {
-    fairCopyApplication.createMainWindow(onMainWindowClose).then(() => {
-      console.log("TEI Editor Ready")   
-    })
-  }
+  // }
 }
 
 // This method will be called when Electron has finished

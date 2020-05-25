@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import MainWindow from './MainWindow'
 import NoteWindow from './NoteWindow'
-import GraphWindow from './GraphWindow'
+import ProjectWindow from './ProjectWindow'
 
 import FairCopyProject from '../tei-document/FairCopyProject'
 
@@ -83,9 +83,13 @@ export default class App extends Component {
 // }
 
   componentDidMount() {
-    const {services} = fairCopy
+    const { services, rootComponent } = fairCopy
 
-    this.setTitle(null)
+    if( rootComponent === 'ProjectWindow' ) {
+      this.setTitle('Select Project')
+    } else {
+      this.setTitle(null)
+    }
 
     // Receive open and save file events from the main process
     services.ipcRegisterCallback('fileOpened', (event, projectData) => this.openFile(projectData))
@@ -128,9 +132,9 @@ export default class App extends Component {
         return (
             <NoteWindow></NoteWindow>
         )
-    } else {
+    } else if( rootComponent === "ProjectWindow" ) {
       return (
-        <GraphWindow></GraphWindow>
+          <ProjectWindow></ProjectWindow>
       )
     }
 

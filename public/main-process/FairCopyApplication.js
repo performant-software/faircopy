@@ -32,12 +32,24 @@ class FairCopyApplication {
     this.mainMenu = new MainMenu(this)
     this.projectStore = new ProjectStore(this)
 
-    this.mainWindow = await this.createWindow('main-window-preload.js', onClose)
+    this.mainWindow = await this.createWindow('main-window-preload.js', onClose, 1440, 900, true )
 
     ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
+  }
+
+  async createProjectWindow(onAppClose) {
+    this.projectWindow = await this.createWindow('project-window-preload.js', onAppClose, 720, 450, false)
+
+    ipcMain.on('requestProject', (event,targetFile) => {
+      this.createMainWindow(onAppClose).then(() => {
+        this.projectWindow.close()
+        this.projectWindow = null
+        this.openProject(targetFile)
+      })
+    })
   }
 
   openProject(targetFile) {
@@ -48,16 +60,17 @@ class FairCopyApplication {
     this.mainWindow.webContents.send(message, params)
   }
 
-  async createWindow(preload,onClose) {
+  async createWindow(preload,onClose, width, height, resizable) {
 
     // Create the browser window.
     const browserWindow = new BrowserWindow({
-      width: 1440,
-      height: 900,
+      width,
+      height,
       webPreferences: {
           enableRemoteModule: false,
-          preload: `${this.baseDir}/${preload}`
-      }
+          preload: `${this.baseDir}/${preload}`,
+      },
+      resizable
     })
 
     // Emitted when the window is closed.
