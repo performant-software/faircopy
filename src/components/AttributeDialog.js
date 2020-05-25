@@ -21,6 +21,7 @@ export default class AttributeDialog extends Component {
                 const onChange = () => {
                     const active = !attrState[attrName].active
                     fairCopyConfig.setAttrState(elementName, attrName, { ...attrState[attrName], active })
+                    teiDocument.refreshView()
                 }
             
                 tableRows.push(

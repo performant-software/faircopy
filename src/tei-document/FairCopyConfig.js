@@ -173,8 +173,10 @@ export default class FairCopyConfig {
     }
 
     setState(nextState) {
+        // TODO
         // send next state to main process
-        fairCopy.services.updateConfig(this.configPath, nextState)
+        // fairCopy.services.updateConfig(this.configPath, nextState)
+        this.onUpdate(nextState)
     }
 
     save() {
