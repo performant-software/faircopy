@@ -1,9 +1,5 @@
-#ProjectWindow {
-    margin: 12px;
-}
-
 #ProjectWindow h1 {
-    margin-bottom: 20px;
+    margin: 20px;
 }
 
 #ProjectWindow h2 {
@@ -15,17 +11,22 @@
 }
 
 #ProjectWindow li {
-    margin-bottom: 10px;5
+    margin-bottom: 10px;
 }
 
 #ProjectWindow .content {
     display: flex;
+    margin: 12px;
+    background: #F8F5FF;
+    padding: 5px;
+    padding-top: 15px;
+    border-radius: 10px;
 }
 
 #ProjectWindow .left-side {
     width: 40%;
     height: 300px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 #ProjectWindow .right-side {
@@ -33,4 +34,12 @@
     height: 300px;
     padding-left: 20px;
     border-left: 3px solid gray;
+}
+
+#ProjectWindow button {
+    background: white;
+}
+
+#ProjectWindow .version {
+    margin: 20px;
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Typography, Card, CardContent, CardActions} from '@material-ui/core'
+import { Button, Typography, Card, CardContent, CardActionArea} from '@material-ui/core'
 
 const fairCopy = window.fairCopy
 
@@ -36,14 +36,16 @@ export default class ProjectWindow extends Component {
                     <div className="right-side">
                         <Typography variant="h6" component="h2">Recent Projects</Typography>
                         <Card variant="outlined">
-                            <CardContent>
-                                <Typography>Example Project</Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={onClick} size="small">Open</Button>
-                            </CardActions>
+                            <CardActionArea onClick={onClick}>
+                                <CardContent>
+                                    <Typography>Example Project</Typography>
+                                </CardContent>
+                            </CardActionArea>
                         </Card>
                     </div>
+                </div>
+                <div>
+                    <Typography className='version'>Version: v0.6.0</Typography>
                 </div>
             </div>
         )

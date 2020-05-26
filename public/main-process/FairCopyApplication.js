@@ -32,7 +32,7 @@ class FairCopyApplication {
     this.mainMenu = new MainMenu(this)
     this.projectStore = new ProjectStore(this)
 
-    this.mainWindow = await this.createWindow('main-window-preload.js', onClose, 1440, 900, true )
+    this.mainWindow = await this.createWindow('main-window-preload.js', onClose, 1440, 900, true, '#fff' )
 
     ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
@@ -41,7 +41,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow(onAppClose) {
-    this.projectWindow = await this.createWindow('project-window-preload.js', onAppClose, 720, 450, false)
+    this.projectWindow = await this.createWindow('project-window-preload.js', onAppClose, 720, 450, false, '#E6DEF9')
 
     ipcMain.on('requestProject', (event,targetFile) => {
       this.createMainWindow(onAppClose).then(() => {
@@ -60,7 +60,7 @@ class FairCopyApplication {
     this.mainWindow.webContents.send(message, params)
   }
 
-  async createWindow(preload,onClose, width, height, resizable) {
+  async createWindow(preload,onClose, width, height, resizable, backgroundColor) {
 
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -70,7 +70,8 @@ class FairCopyApplication {
           enableRemoteModule: false,
           preload: `${this.baseDir}/${preload}`,
       },
-      resizable
+      resizable,
+      backgroundColor
     })
 
     // Emitted when the window is closed.
