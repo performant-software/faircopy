@@ -6,20 +6,20 @@ const { FairCopyApplication } = require('./main-process/FairCopyApplication')
 // be closed automatically when the JavaScript object is garbage collected.
 let fairCopyApplication
 
-const onMainWindowClose = () => {
+const onAppClose = () => {
   fairCopyApplication = null
 }
 
 function createApplicationWindowManager () {
   const debugMode = process.env.FAIRCOPY_DEBUG_MODE
-  fairCopyApplication = new FairCopyApplication()
+  fairCopyApplication = new FairCopyApplication(onAppClose)
   // if( debugMode ) {
-  //   fairCopyApplication.createMainWindow(onMainWindowClose).then(() => {
+  //   fairCopyApplication.createMainWindow().then(() => {
   //     console.log("TEI Editor Ready - Loading example text.")   
   //     fairCopyApplication.openProject('test-docs/test-project.zip')
   //   })
   // } else {
-    fairCopyApplication.createProjectWindow(onMainWindowClose).then(() => {
+    fairCopyApplication.createProjectWindow().then(() => {
       console.log("Project Window Ready")   
     })
   // }

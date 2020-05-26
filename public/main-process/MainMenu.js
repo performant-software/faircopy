@@ -14,10 +14,13 @@ class MainMenu {
 
     openFileMenu = () => {
         dialog.showOpenDialog( {
+            filters: [ 
+              { name: 'FairCopy Project', extensions: ['faircopy'] }
+            ],
             properties: [ 'openFile' ]
         }).then(files => {
           if( files && files.filePaths.length > 0 ) {
-            this.fairCopyApplication.sendToMainWindow('fileOpened', files.filePaths[0])
+            this.fairCopyApplication.openProject( files.filePaths[0] )
           }
         })
     }
@@ -88,12 +91,12 @@ class MainMenu {
               label: 'File',
               submenu: [
                 { 
-                  label: 'New File...',
+                  label: 'New Project...',
                   accelerator: 'CommandOrControl+N',
                   click: this.requestNewFile
                 },
                 { 
-                  label: 'Open...',
+                  label: 'Open Project...',
                   accelerator: 'CommandOrControl+O',
                   click: this.openFileMenu
                 },

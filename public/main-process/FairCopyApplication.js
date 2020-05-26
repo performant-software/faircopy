@@ -9,11 +9,13 @@ const distBaseDir = __dirname
 
 class FairCopyApplication {
 
-  constructor() {
+  constructor(onAppClose) {
+    this.onAppClose = onAppClose
     this.mainWindow = null
     this.noteWindows = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.versionNumber = this.getVersionNumber()
+    this.mainMenu = new MainMenu(this)
   }
 
   getVersionNumber() {
@@ -28,39 +30,45 @@ class FairCopyApplication {
     return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
   }
 
-  async createMainWindow(onClose) {
-    this.mainMenu = new MainMenu(this)
+  async createMainWindow() {
     this.projectStore = new ProjectStore(this)
 
-    this.mainWindow = await this.createWindow('main-window-preload.js', onClose, 1440, 900, true, '#fff' )
+    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff' )
 
-    ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
+    // ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
   }
 
-  async createProjectWindow(onAppClose) {
-    this.projectWindow = await this.createWindow('project-window-preload.js', onAppClose, 720, 480, false, '#E6DEF9')
+  async createProjectWindow() {
+
+    this.projectWindow = await this.createWindow('project-window-preload.js', 720, 480, false, '#E6DEF9')
+
+    ipcMain.on('requestFileOpen', (event) => { 
+      this.mainMenu.openFileMenu() 
+    })
 
     ipcMain.on('requestProject', (event,targetFile) => {
-      this.createMainWindow(onAppClose).then(() => {
-        this.projectWindow.close()
-        this.projectWindow = null
-        this.openProject(targetFile)
-      })
+      this.openProject(targetFile)
     })
   }
 
   openProject(targetFile) {
-    this.projectStore.openProject(targetFile)
+    this.createMainWindow().then(() => {
+      if( this.projectWindow ) {
+        this.projectWindow.close()
+        this.projectWindow = null  
+      }
+      this.projectStore.openProject(targetFile)
+    })
   }
 
   sendToMainWindow(message, params) {
     this.mainWindow.webContents.send(message, params)
   }
 
-  async createWindow(preload,onClose, width, height, resizable, backgroundColor) {
+  async createWindow(preload, width, height, resizable, backgroundColor) {
 
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -75,7 +83,7 @@ class FairCopyApplication {
     })
 
     // Emitted when the window is closed.
-    browserWindow.on('closed', onClose )
+    browserWindow.on('closed', this.onAppClose )
 
     // and load the index.html of the app.
     if( this.isDebugMode() ) {

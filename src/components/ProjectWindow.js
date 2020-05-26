@@ -4,23 +4,14 @@ import { Button, Typography, Card, CardContent, CardActionArea} from '@material-
 const fairCopy = window.fairCopy
 
 export default class ProjectWindow extends Component {
-
-    // constructor() {
-    //     super()
-    //     this.state = {
-    //     }	
-    // }
-
-    // componentDidMount() {
-    //     const {services} = fairCopy
-    //     services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
-    // }
-    
+  
     render() {
-
-        const onClick = () => {
-            // request open project
-            fairCopy.services.ipcSend('requestProject', 'test-docs/test-project.zip' )
+        const projectPath = 'test-docs/example.faircopy'
+        const onClickRecent = () => {
+            fairCopy.services.ipcSend('requestProject', projectPath )
+        }
+        const onClickOpen = () => {
+            fairCopy.services.ipcSend('requestFileOpen')
         }
 
         return (
@@ -32,16 +23,17 @@ export default class ProjectWindow extends Component {
                 <div className="content">
                     <div className="left-side">
                         <ul>
-                            <li><Button variant='outlined'>New Project</Button></li>
-                            <li><Button variant='outlined'>Open Project</Button></li>
+                            <li><Button disabled variant='outlined'>New Project...</Button></li>
+                            <li><Button onClick={onClickOpen} variant='outlined'>Open Project...</Button></li>
                         </ul>
                     </div>
                     <div className="right-side">
                         <Typography variant="h6" component="h2">Recent Projects</Typography>
                         <Card variant="outlined">
-                            <CardActionArea onClick={onClick}>
+                            <CardActionArea onClick={onClickRecent}>
                                 <CardContent>
-                                    <Typography>Example Project</Typography>
+                                    <Typography><i className='fas fa-book'></i> Example Project</Typography>
+                                    <Typography variant="body2">{projectPath}</Typography>
                                 </CardContent>
                             </CardActionArea>
                         </Card>
