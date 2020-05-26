@@ -37,7 +37,6 @@ class FairCopyApplication {
 
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
     ipcMain.on('requestSave', (event,resourceID,resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
-    // ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
   }
@@ -45,6 +44,10 @@ class FairCopyApplication {
   async createProjectWindow() {
 
     this.projectWindow = await this.createWindow('project-window-preload.js', 720, 480, false, '#E6DEF9')
+
+    ipcMain.on('requestFileOpen', (event) => { 
+      this.mainMenu.openFileMenu() 
+    })
 
     ipcMain.on('requestFileOpen', (event) => { 
       this.mainMenu.openFileMenu() 

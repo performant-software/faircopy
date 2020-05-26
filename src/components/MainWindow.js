@@ -30,8 +30,44 @@ export default class MainWindow extends Component {
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
+        services.ipcRegisterCallback('fileSaved', (event, resourceID) => this.saved(resourceID))
     }
     
+// openPrint() {
+//     window.print()
+// }
+
+// newFile() {
+//     const { teiDocument, exitAnyway } = this.state
+//     const { changedSinceLastSave } = teiDocument
+
+//     if( !exitAnyway && changedSinceLastSave ) {
+//         this.setState({ ...this.state, alertDialogMode: 'new'})
+//         teiDocument.changedSinceLastSave = false 
+//     } else {
+//         const { editorView } = teiDocument
+//         const newEditorState = teiDocument.editorInitialState(document)
+//         editorView.updateState( newEditorState )       
+//         teiDocument.changedSinceLastSave = false 
+//         this.setTitle(untitledDocumentTitle)
+//         editorView.focus();
+//         this.setState( { 
+//             ...this.state, 
+//             exitAnyway: false, 
+//             alertDialogMode: false, 
+//             filePath: null 
+//         })    
+//     }
+// }
+
+    saved(resourceID) {
+        // TODO
+        // this.setState( { ...this.state, 
+        //     alertDialogMode: false, 
+        //     exitAnyway: false
+        // })
+    }
+
     receiveResourceData( resourceData ) {
         const { resourceID, resource } = resourceData
         const { openResources } = this.state
