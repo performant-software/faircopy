@@ -59,7 +59,14 @@ export default class ElementMenu extends Component {
                 closeSubMenu()
             }
             menuItems.push(
-                <MenuItem disabled={!member.enabled} onClick={onClick} key={`submenu-${member.id}`}>{member.id}</MenuItem>
+                <MenuItem 
+                    disabled={!member.enabled} 
+                    onClick={onClick} 
+                    key={`submenu-${member.id}`}
+                    disableRipple={true}
+                    disableFocusRipple={true}
+                >
+                        {member.id}</MenuItem>
             )
         }
 
@@ -82,6 +89,8 @@ export default class ElementMenu extends Component {
                     onClick={()=>onClick(menuGroupID)}
                     ref={(el)=> { this.subMenuEls[menuGroupID] = el }}
                     key={key} 
+                    disableRipple={true}
+                    disableFocusRipple={true}
                     className="menu-item"
                     value={menuGroupID}
                 >
