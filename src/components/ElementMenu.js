@@ -27,21 +27,14 @@ export default class ElementMenu extends Component {
         }
 
         return (
-            <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} transition disablePortal>
-                {({ TransitionProps }) => (
-                    <Grow
-                        {...TransitionProps}
-                        style={{ transformOrigin: 'center top' }}
-                    >
-                    <Paper elevation={elevation}>
-                        <ClickAwayListener onClickAway={onClose}>
-                            <MenuList id={menuID}>
-                                { menuItems }
-                            </MenuList>
-                        </ClickAwayListener>
-                    </Paper>
-                    </Grow>
-                )}
+            <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
+                <Paper elevation={elevation}>
+                    <ClickAwayListener onClickAway={onClose}>
+                        <MenuList id={menuID}>
+                            { menuItems }
+                        </MenuList>
+                    </ClickAwayListener>
+                </Paper>
             </Popper>
         )
     }
