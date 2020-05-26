@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Popper, MenuItem, MenuList, Grow, Paper, ClickAwayListener } from '@material-ui/core'
+import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
 
 import { createElement } from "../tei-document/editor-actions"
 

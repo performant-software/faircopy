@@ -105,15 +105,15 @@ class MainMenu {
                 //   accelerator: 'CommandOrControl+P',
                 //   click: this.openPrintDialog
                 // },
-                { 
-                  label: 'Save',
-                  accelerator: 'CommandOrControl+S',
-                  click: this.requestSave
-                },
-                { 
-                  label: 'Save As...',
-                  click: this.requestSaveAs
-                },
+                // { 
+                //   label: 'Save',
+                //   accelerator: 'CommandOrControl+S',
+                //   click: this.requestSave
+                // },
+                // { 
+                //   label: 'Save As...',
+                //   click: this.requestSaveAs
+                // },
                 { role: 'close' }
               ]
             },
