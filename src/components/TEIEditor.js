@@ -100,7 +100,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editMode, width, hidden, onOpenElementMenu } = this.props
+        const { teiDocument, editMode, width, hidden, onOpenElementMenu, fairCopyProject } = this.props
         const { scrollTop } = this.state
 
         const onRef = (el) => {
@@ -111,13 +111,14 @@ export default class TEIEditor extends Component {
         }
 
         const style = hidden ? { display: 'none' } : {}
+        const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
 
         return (
             <div style={style} className='TEIEditor'> 
                 <div>
                     <div className="titlebar">
                         <SearchBar></SearchBar>
-                        <Typography variant="h6">{teiDocument.resourceID}</Typography>
+                        <Typography component="h1" variant="h6">{resourceName}</Typography>
                     </div>
                     <EditorToolbar
                         editMode={editMode}

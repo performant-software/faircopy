@@ -96,6 +96,7 @@ export default class MainWindow extends Component {
 
     renderEditors() {
         const { width, openResources, selectedResource } = this.state
+        const { fairCopyProject } = this.props
 
         const editors = []
         for( const teiDocument of Object.values(openResources) ) {
@@ -110,6 +111,7 @@ export default class MainWindow extends Component {
                         hidden={hidden}
                         width={width}
                         teiDocument={teiDocument}
+                        fairCopyProject={fairCopyProject}
                         onStateChange={this.onStateChange}
                         onOpenElementMenu={this.onOpenElementMenu}
                     ></TEIEditor>

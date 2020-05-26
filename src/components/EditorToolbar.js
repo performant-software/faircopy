@@ -9,6 +9,10 @@ export default class EditorToolbar extends Component {
     render() {
         const { onOpenElementMenu, teiDocument } = this.props
 
+        const onClickSave = () => {
+            teiDocument.save()
+        }
+
         const buttonProps = {
             disableRipple: true,
             disableFocusRipple: true
@@ -70,6 +74,7 @@ export default class EditorToolbar extends Component {
                         <i className="fas fa-cloud-upload-alt fa-2x"></i>
                     </Button>    
                     <Button
+                        onClick={onClickSave}
                         className="toolbar-button"
                         {...buttonProps}
                     >

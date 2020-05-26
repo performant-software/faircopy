@@ -35,7 +35,7 @@ export default class ProjectNavigator extends Component {
       )    
     }
 
-    renderTreeItemLabel(resourceID) {
+    renderTreeItemLabel(resourceName, resourceID) {
       const { onCloseResource } = this.props
 
       const onClick = (event) => {
@@ -45,7 +45,7 @@ export default class ProjectNavigator extends Component {
 
       return (
         <div>
-          <Typography className="tree-item-name">{resourceID}</Typography>
+          <Typography className="tree-item-name">{resourceName}</Typography>
           <Button 
             className="tree-item-close"
             onClick={onClick}
@@ -57,14 +57,15 @@ export default class ProjectNavigator extends Component {
     }
 
     renderTree() {
-      const { openResources } = this.props
+      const { openResources, fairCopyProject } = this.props
 
       const treeNodes = []
       for( const resource of Object.values(openResources) ) {
         const {resourceID} = resource
+        const {name} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
         const icon = <i className="fas fa-book fa-lg"></i>
-        const label = this.renderTreeItemLabel(resourceID)
+        const label = this.renderTreeItemLabel(name,resourceID)
         treeNodes.push(
           <TreeItem 
             className="tree-item"

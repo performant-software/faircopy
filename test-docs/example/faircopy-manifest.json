@@ -1,27 +1,26 @@
 {
     "projectName": "Example Project",
     "appVersion": "0.5.3",
-    "defaultResource": "1-Loomings",
     "resources": {
-        "1-Loomings": {
-            "id": "1-Loomings",
-            "type": "text",
-            "filePath": "1-Loomings.xml" 
+        "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3ecb6d": {
+            "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3ecb6d",
+            "name": "1-Loomings",
+            "type": "text"
         },
-        "2-The-Carpet-Bag": {
-            "id": "2-The-Carpet-Bag",
-            "type": "text",
-            "filePath": "2-The-Carpet-Bag.xml" 
+        "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3fcb6d": {
+            "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3fcb6d",
+            "name": "2-The Carpet Bag",
+            "type": "text"
         },
-        "3-The-Spouter-Inn": {
-            "id": "3-The-Spouter-Inn",
-            "type": "text",
-            "filePath": "3-The-Spouter-Inn.xml" 
+        "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3gcb6d": {
+            "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3gcb6d",
+            "name": "3-The Spouter Inn",
+            "type": "text"
         },
-        "4-The-Counterpane": {
-            "id": "4-The-Counterpane",
-            "type": "text",
-            "filePath": "4-The-Counterpane.xml" 
+        "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3hcb6d": {
+            "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3hcb6d",
+            "name": "4-The Counterpane", 
+            "type": "text"
         }
     }
 }

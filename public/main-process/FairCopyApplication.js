@@ -36,6 +36,7 @@ class FairCopyApplication {
     this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff' )
 
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
+    ipcMain.on('requestSave', (event,resourceID,resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
     // ipcMain.on('openSaveFileDialog', this.mainMenu.saveFileMenu)
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     // ipcMain.on('closeNoteWindow', this.closeNoteWindow)

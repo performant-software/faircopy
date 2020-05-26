@@ -18,7 +18,7 @@ export default class ResourceBrowser extends Component {
       resourceRows.push(
         <TableRow hover dataresourceid={resource.id} onClick={onClick} key={`resource-${resource.id}`}>
           <TableCell component="th" scope="row">
-            {resource.id}
+            {resource.name}
           </TableCell>
         </TableRow>
       )

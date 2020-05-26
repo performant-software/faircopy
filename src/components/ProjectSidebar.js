@@ -7,7 +7,6 @@ export default class ProjectSidebar extends Component {
 
     render() {
         const { fairCopyProject, selectedResource, openResources, onSelectResource, onOpenResourceBrowser, onCloseResource } = this.props
-
         return (
             <div id="ProjectSidebar">
                 <div className="title-bar">
@@ -22,6 +21,7 @@ export default class ProjectSidebar extends Component {
                 <ProjectNavigator
                     openResources={openResources}
                     selectedResource={selectedResource}
+                    fairCopyProject={fairCopyProject}
                     onSelectResource={onSelectResource}
                     onCloseResource={onCloseResource}
                     onOpenResourceBrowser={onOpenResourceBrowser}

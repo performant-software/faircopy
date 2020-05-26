@@ -40,7 +40,6 @@ export default class FairCopyProject {
 
     loadManifest(json) {
         const fairCopyManifest = JSON.parse(json)
-        this.defaultResource = fairCopyManifest.defaultResource
         this.projectName = fairCopyManifest.projectName
         this.resources = fairCopyManifest.resources
     }

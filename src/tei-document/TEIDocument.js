@@ -195,8 +195,8 @@ export default class TEIDocument {
         return result
     }
 
-    requestResource( filePath ) {
-        fairCopy.services.ipcSend('requestResource', filePath )
+    requestResource( resourceID ) {
+        fairCopy.services.ipcSend('requestResource', resourceID )
         this.loading = true
     }
 
@@ -223,11 +223,11 @@ export default class TEIDocument {
         })
     }
 
-    save(saveFilePath) {
+    save() {
         // Override save file for testing
-        if( fairCopy.services.isDebugMode() ) {
-            saveFilePath = 'test-docs/je_example_out.xml'
-        }
+        // if( fairCopy.services.isDebugMode() ) {
+        //     saveFilePath = 'test-docs/je_example_out.xml'
+        // }
 
         // TODO - program should clear sub docs from local storage before exiting or when loading a different document
 
@@ -245,7 +245,7 @@ export default class TEIDocument {
         bodyEl.innerHTML = div.innerHTML
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
 
-        fairCopy.services.writeFileSync(saveFilePath, fileContents)
+        fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
         this.teiSchema.teiMode = false
         this.changedSinceLastSave = false
     }
