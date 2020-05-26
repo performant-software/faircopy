@@ -41,7 +41,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow(onAppClose) {
-    this.projectWindow = await this.createWindow('project-window-preload.js', onAppClose, 720, 450, false, '#E6DEF9')
+    this.projectWindow = await this.createWindow('project-window-preload.js', onAppClose, 720, 480, false, '#E6DEF9')
 
     ipcMain.on('requestProject', (event,targetFile) => {
       this.createMainWindow(onAppClose).then(() => {

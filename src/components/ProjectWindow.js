@@ -25,7 +25,10 @@ export default class ProjectWindow extends Component {
 
         return (
             <div id="ProjectWindow" >
-                <Typography variant="h5" component="h1">Welcome to FairCopy!</Typography>
+                <div className='header'>
+                    <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy</Typography>
+                    <Typography>A word processor for the humanities scholar.</Typography>
+                </div>
                 <div className="content">
                     <div className="left-side">
                         <ul>
@@ -46,6 +49,7 @@ export default class ProjectWindow extends Component {
                 </div>
                 <div>
                     <Typography className='version'>Version: v0.6.0</Typography>
+                    <Button className='quit-button' variant='outlined'>Quit</Button>
                 </div>
             </div>
         )

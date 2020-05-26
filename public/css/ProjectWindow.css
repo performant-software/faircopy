@@ -1,5 +1,9 @@
-#ProjectWindow h1 {
+#ProjectWindow .header {
     margin: 20px;
+}
+
+#ProjectWindow h1 {
+    margin-bottom: 10px;
 }
 
 #ProjectWindow h2 {
@@ -42,4 +46,8 @@
 
 #ProjectWindow .version {
     margin: 20px;
+}
+
+#ProjectVersion .quit-button {
+    float: right;
 }
