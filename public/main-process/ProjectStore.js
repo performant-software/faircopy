@@ -13,7 +13,7 @@ class ProjectStore {
         this.projectFilePath = projectFilePath
         if( !this.projectArchive ) {
             console.log('Attempted to open invalid project file.')
-            return;
+            return
         }
         const fairCopyManifest = this.readUTF8File('faircopy-manifest.json')
         const fairCopyConfig = this.readUTF8File('config-settings.json')
@@ -77,4 +77,26 @@ class ProjectStore {
 
 }
 
+const createProjectArchive = function createProject(projectInfo) {
+    const { name, description, filePath } = projectInfo
+    const projectArchive = new AdmZip()      
+   
+    const fairCopyManifest = {
+        projectName: name,
+        description: description,
+        appVersion: "0.5.3",
+        resources: {}
+    }
+
+    // TODO how to do config?
+    const fairCopyConfig = {
+
+    }
+
+    projectArchive.addFile('faircopy-manifest.json', JSON.stringify(fairCopyManifest))
+    projectArchive.addFile('config-settings.json', JSON.stringify(fairCopyConfig))
+    projectArchive.writeZip(filePath)
+}
+
 exports.ProjectStore = ProjectStore
+exports.createProjectArchive = createProjectArchive

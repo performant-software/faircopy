@@ -1,5 +1,5 @@
 const { BrowserWindow, ipcMain } = require('electron')
-const { ProjectStore } = require('./ProjectStore')
+const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
 
@@ -37,16 +37,26 @@ class FairCopyApplication {
 
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
     ipcMain.on('requestSave', (event,resourceID,resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
+    ipcMain.on('requestNewProject', (event, projectInfo) => { 
+      // TODO
+    })
+
+    // TODO refactor
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
     // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
   }
 
   async createProjectWindow() {
 
-    this.projectWindow = await this.createWindow('project-window-preload.js', 720, 480, false, '#E6DEF9')
+    this.projectWindow = await this.createWindow('project-window-preload.js', 720, 480, false, '#E6DEF9' )
 
-    ipcMain.on('requestFileOpen', (event) => { 
-      this.mainMenu.openFileMenu() 
+    ipcMain.on('requestNewProjectFile', (event) => { 
+      // TODO open dialog to get project file name
+    })
+
+    ipcMain.on('requestNewProject', (event, projectInfo) => { 
+      createProjectArchive(projectInfo)
+      this.openProject(projectInfo.filePath)
     })
 
     ipcMain.on('requestFileOpen', (event) => { 
@@ -72,7 +82,7 @@ class FairCopyApplication {
     this.mainWindow.webContents.send(message, params)
   }
 
-  async createWindow(preload, width, height, resizable, backgroundColor) {
+  async createWindow(preload, width, height, resizable, backgroundColor ) {
 
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -87,7 +97,11 @@ class FairCopyApplication {
     })
 
     // Emitted when the window is closed.
-    browserWindow.on('closed', this.onAppClose )
+    browserWindow.on('closed', () => {
+      // All IPC listeners are cleared when current window is closed.
+      ipcMain.removeAllListeners()
+      this.onAppClose()
+    } )
 
     // and load the index.html of the app.
     if( this.isDebugMode() ) {

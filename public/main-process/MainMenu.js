@@ -25,11 +25,11 @@ class MainMenu {
         })
     }
 
-    openPrintDialog = () => {
-      this.fairCopyApplication.sendToMainWindow('openPrint')
-    }
+    // openPrintDialog = () => {
+    //   this.fairCopyApplication.sendToMainWindow('openPrint')
+    // }
 
-    saveFileMenu = () => {
+    newFileMenu = () => {
       dialog.showSaveDialog( {
           properties: [ 'openFile', 'createDirectory' ]
       }, (files) => {
@@ -40,15 +40,7 @@ class MainMenu {
     }
 
     requestNewFile = () => {
-      this.fairCopyApplication.sendToMainWindow('fileNew')
-    }
-
-    requestSave = () => {
-      this.fairCopyApplication.sendToMainWindow('requestSave')
-    }
-
-    requestSaveAs = () => {
-      this.saveFileMenu()
+      // TODO
     }
 
     mainMenuTemplate() {

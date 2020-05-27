@@ -1,11 +1,11 @@
-const { BrowserWindow, ipcMain } = require('electron')
+const { BrowserWindow } = require('electron')
 const fs = require('fs')
 
 class ConfigManager {
 
     constructor() {
         this.configs = {}
-        ipcMain.on('onConfigUpdate', this.onUpdate)
+        //ipcMain.on('onConfigUpdate', this.onUpdate)
     }
 
     onUpdate = ( sender, configPath, incomingState ) => {
