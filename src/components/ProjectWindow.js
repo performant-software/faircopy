@@ -68,11 +68,9 @@ export default class ProjectWindow extends Component {
                     <li>
                         <TextField 
                             className="new-project-field"
-                            label="Project Description" 
+                            label="Short Description" 
                             onChange={onChangeDescription}
                             value={description}
-                            multiline
-                            rows={3}
                         />
                     </li>
                     <li>
@@ -92,18 +90,43 @@ export default class ProjectWindow extends Component {
             </div>
         )
     }
+
+    renderProjectCard(project) {
+        const { projectName, description, projectFilePath } = project
+
+        const onClick = () => {
+            fairCopy.services.ipcSend('requestProject', projectFilePath )
+        }
+
+        return (
+            <Card className='recent-project-card' key={`project-${projectFilePath}`} variant="outlined">
+                <CardActionArea onClick={onClick}>
+                    <CardContent>
+                        <Typography><i className='fas fa-book'></i> {projectName}</Typography>
+                        <Typography variant="body2">{description}</Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Card>
+        )
+    }
   
     renderSelectProject() {
-        const projectPath = 'test-docs/example.faircopy'
-        const onClickRecent = () => {
-            fairCopy.services.ipcSend('requestProject', projectPath )
-        }
+        let projects = localStorage.getItem('recentProjects')
+        projects = projects ? JSON.parse(projects) : []
+
         const onClickOpen = () => {
             fairCopy.services.ipcSend('requestFileOpen')
         }
+
         const onClickNew = () => {
            this.setState({ ...this.state, mode: 'new' })
+        }  
+
+        const projectCards = []
+        for( const project of projects ) {
+            projectCards.push(this.renderProjectCard(project))
         }
+
         return (
             <div className="content select-project">
                 <div className="left-side">
@@ -114,14 +137,7 @@ export default class ProjectWindow extends Component {
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
-                    <Card variant="outlined">
-                        <CardActionArea onClick={onClickRecent}>
-                            <CardContent>
-                                <Typography><i className='fas fa-book'></i> Example Project</Typography>
-                                <Typography variant="body2">{projectPath}</Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
+                    { projectCards }
                 </div>
             </div>
         )

@@ -12,7 +12,7 @@ class FairCopyApplication {
   constructor(onAppClose) {
     this.onAppClose = onAppClose
     this.mainWindow = null
-    this.noteWindows = {}
+    // this.noteWindows = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.versionNumber = this.getVersionNumber()
     this.mainMenu = new MainMenu(this)
@@ -65,7 +65,9 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestProject', (event,targetFile) => {
-      this.openProject(targetFile)
+      if( fs.existsSync(targetFile) ) {
+        this.openProject(targetFile)
+      }
     })
   }
 

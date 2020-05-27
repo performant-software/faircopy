@@ -5,6 +5,7 @@ import FairCopyConfig from "./FairCopyConfig"
 export default class FairCopyProject {
 
     constructor(projectData) {
+        this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
         this.fairCopyConfig = new FairCopyConfig(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
@@ -41,6 +42,7 @@ export default class FairCopyProject {
     loadManifest(json) {
         const fairCopyManifest = JSON.parse(json)
         this.projectName = fairCopyManifest.projectName
+        this.description = fairCopyManifest.description
         this.resources = fairCopyManifest.resources
     }
 

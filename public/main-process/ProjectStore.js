@@ -38,7 +38,7 @@ class ProjectStore {
         // project store keeps a copy of the resource data
         this.resources = manifestData.resources
 
-        const projectData = { fairCopyManifest, teiSchema, fairCopyConfig, menuGroups }
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups }
         this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
     }
 

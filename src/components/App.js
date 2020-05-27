@@ -34,9 +34,31 @@ export default class App extends Component {
   }
 
   openFile( projectData ) {
-    const fairCopyProject = new FairCopyProject(projectData)   
+    const fairCopyProject = new FairCopyProject(projectData)
     this.setTitle(fairCopyProject.projectName)   
     this.setState({...this.state, fairCopyProject})
+    this.addToRecentProjects(fairCopyProject)
+  }
+
+  // record this as a recent project
+  addToRecentProjects( fairCopyProject ) {
+    let projects = localStorage.getItem('recentProjects');
+    projects = projects ? JSON.parse(projects) : []
+
+    const { projectName, description, projectFilePath } = fairCopyProject
+    const nextEntry = { projectName, description, projectFilePath, lastAccess: Date.now() }
+
+    let nextProjects = []
+    for( const project of projects ) {
+      if( project.projectFilePath !== projectFilePath ) {
+        nextProjects.push(project)
+      }
+    }
+    nextProjects.push(nextEntry)
+
+    // only record the three most recent
+    nextProjects = nextProjects.sort((a,b)=>(b.lastAccess - a.lastAccess)).slice(0,3)
+    localStorage.setItem('recentProjects', JSON.stringify(nextProjects));
   }
 
   render() {
