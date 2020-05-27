@@ -25,6 +25,10 @@ class MainMenu {
         })
     }
 
+    closeProject = () => {
+      this.fairCopyApplication.closeProject()
+    }
+
     // openPrintDialog = () => {
     //   this.fairCopyApplication.sendToMainWindow('openPrint')
     // }
@@ -36,10 +40,6 @@ class MainMenu {
           ],
           properties: [ 'openFile', 'createDirectory' ]
       })   
-    }
-
-    requestNewFile = () => {
-      // TODO
     }
 
     mainMenuTemplate() {
@@ -105,7 +105,11 @@ class MainMenu {
                 //   label: 'Save As...',
                 //   click: this.requestSaveAs
                 // },
-                { role: 'close' }
+                { 
+                  label: 'Close Project',
+                  accelerator: 'CommandOrControl+W',
+                  click: this.closeProject
+                },
               ]
             },
             // { role: 'editMenu' }

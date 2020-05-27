@@ -80,6 +80,17 @@ class FairCopyApplication {
     })
   }
 
+  closeProject() {
+    if( this.mainWindow ) {
+      this.mainWindow.close()
+      this.mainWindow = null
+      ipcMain.removeAllListeners()
+    }
+    if( !this.projectWindow ) {
+      this.createProjectWindow().then(() => {})
+    }
+  }
+
   sendToMainWindow(message, params) {
     this.mainWindow.webContents.send(message, params)
   }
