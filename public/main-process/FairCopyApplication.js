@@ -50,8 +50,9 @@ class FairCopyApplication {
 
     this.projectWindow = await this.createWindow('project-window-preload.js', 720, 480, false, '#E6DEF9' )
 
-    ipcMain.on('requestNewProjectFile', (event) => { 
-      // TODO open dialog to get project file name
+    ipcMain.on('requestNewPath', (event) => { 
+      const targetPath = this.mainMenu.selectPath()
+      this.projectWindow.webContents.send('pathSelected', targetPath)
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
@@ -106,7 +107,7 @@ class FairCopyApplication {
     // and load the index.html of the app.
     if( this.isDebugMode() ) {
       await browserWindow.loadURL('http://localhost:3000')
-      browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+      // browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {
       await browserWindow.loadFile(indexFilePath)
     }

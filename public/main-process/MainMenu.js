@@ -29,13 +29,9 @@ class MainMenu {
     //   this.fairCopyApplication.sendToMainWindow('openPrint')
     // }
 
-    newFileMenu = () => {
-      dialog.showSaveDialog( {
+    selectPath = () => {
+      return dialog.showSaveDialogSync( {
           properties: [ 'openFile', 'createDirectory' ]
-      }, (files) => {
-        if( files && files.length > 0 ) {
-          this.fairCopyApplication.sendToMainWindow('fileSaved', files)
-        }
       })   
     }
 

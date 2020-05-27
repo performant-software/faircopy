@@ -19,12 +19,42 @@
 }
 
 #ProjectWindow .content {
-    display: flex;
     margin: 12px;
     background: #F8F5FF;
     padding: 5px;
     padding-top: 15px;
     border-radius: 10px;
+}
+
+#ProjectWindow .select-project {
+    display: flex;
+}
+
+#ProjectWindow .new-project-form li {
+    list-style: none;
+}
+
+#ProjectWindow .new-project-form h2 {
+    margin-left: 10px;
+}
+
+#ProjectWindow .new-project-field {
+    width: 250px;
+    margin-bottom: 10px;
+}
+
+#ProjectWindow .action-button {
+    margin-right: 10px;
+}
+
+#ProjectWindow .browse-button {
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+#ProjectWindow .form-actions {
+    position: absolute;
+    right: 10px;
 }
 
 #ProjectWindow .left-side {
