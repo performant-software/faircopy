@@ -12,6 +12,7 @@ export default class ProjectSidebar extends Component {
                 <div className="title-bar">
                     <Typography  variant="h6" className="project-title">{fairCopyProject.projectName}</Typography>
                     <Button className="edit-button"
+                        disabled
                         disableRipple={true}
                         disableFocusRipple={true}
                     >

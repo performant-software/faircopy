@@ -52,6 +52,7 @@ export default class EditorToolbar extends Component {
                         <i className="fas fa-eraser fa-2x"></i>
                     </Button>  
                     <Button
+                        disabled
                         className="toolbar-button"
                         {...buttonProps}
                     >
