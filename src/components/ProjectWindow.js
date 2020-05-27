@@ -50,6 +50,7 @@ export default class ProjectWindow extends Component {
             this.setState({...this.state, description: value })
         }
         const { projectName, description, filePath } = this.state
+        const saveAllowed = (projectName.length > 0 && filePath.length > 0 )
         return (
             <div className="content new-project-form">
                 <Typography variant="h6" component="h2">New Project</Typography>
@@ -83,7 +84,7 @@ export default class ProjectWindow extends Component {
                     </li>
                 </ul>
                 <div className='form-actions'>
-                    <Button className='action-button' onClick={onClickSave} variant='outlined'>Save</Button>
+                    <Button disabled={!saveAllowed} className='action-button' onClick={onClickSave} variant='outlined'>Save</Button>
                     <Button className='action-button' onClick={onClickCancel} variant='outlined'>Cancel</Button>
                 </div>
             </div>

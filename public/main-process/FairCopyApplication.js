@@ -33,7 +33,7 @@ class FairCopyApplication {
   async createMainWindow() {
     this.projectStore = new ProjectStore(this)
 
-    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff' )
+    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
 
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
     ipcMain.on('requestSave', (event,resourceID,resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
@@ -70,6 +70,7 @@ class FairCopyApplication {
   }
 
   openProject(targetFile) {
+    ipcMain.removeAllListeners()
     this.createMainWindow().then(() => {
       if( this.projectWindow ) {
         this.projectWindow.close()
@@ -83,7 +84,7 @@ class FairCopyApplication {
     this.mainWindow.webContents.send(message, params)
   }
 
-  async createWindow(preload, width, height, resizable, backgroundColor ) {
+  async createWindow(preload, width, height, resizable, backgroundColor, devTools ) {
 
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -99,15 +100,13 @@ class FairCopyApplication {
 
     // Emitted when the window is closed.
     browserWindow.on('closed', () => {
-      // All IPC listeners are cleared when current window is closed.
-      ipcMain.removeAllListeners()
       this.onAppClose()
     } )
 
     // and load the index.html of the app.
     if( this.isDebugMode() ) {
       await browserWindow.loadURL('http://localhost:3000')
-      // browserWindow.webContents.openDevTools({ mode: 'bottom'} )
+      if(devTools) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {
       await browserWindow.loadFile(indexFilePath)
     }

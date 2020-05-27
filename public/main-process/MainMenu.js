@@ -31,6 +31,9 @@ class MainMenu {
 
     selectPath = () => {
       return dialog.showSaveDialogSync( {
+          filters: [ 
+            { name: 'FairCopy Project', extensions: ['faircopy'] }
+          ],
           properties: [ 'openFile', 'createDirectory' ]
       })   
     }
