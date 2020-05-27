@@ -70,7 +70,11 @@ class FairCopyApplication {
   }
 
   openProject(targetFile) {
-    ipcMain.removeAllListeners()
+    if( this.mainWindow ) {
+      this.mainWindow.close()
+      this.mainWindow = null
+      ipcMain.removeAllListeners()
+    }
     this.createMainWindow().then(() => {
       if( this.projectWindow ) {
         this.projectWindow.close()
