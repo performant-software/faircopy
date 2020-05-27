@@ -22,7 +22,9 @@ export default class ProjectWindow extends Component {
     }
 
     onPathUpdated(filePath) {
-        this.setState({...this.state, filePath })
+        if( filePath ) {
+            this.setState({...this.state, filePath })
+        }
     }
 
     renderNewProject() {
@@ -53,7 +55,7 @@ export default class ProjectWindow extends Component {
         const saveAllowed = (projectName.length > 0 && filePath.length > 0 )
         return (
             <div className="content new-project-form">
-                <Typography variant="h6" component="h2">New Project</Typography>
+                <Typography variant="h6" component="h2">Start a New Project</Typography>
                 <ul>
                     <li>
                         <TextField 
@@ -66,7 +68,7 @@ export default class ProjectWindow extends Component {
                     <li>
                         <TextField 
                             className="new-project-field"
-                            label="Description" 
+                            label="Project Description" 
                             onChange={onChangeDescription}
                             value={description}
                             multiline
@@ -80,7 +82,7 @@ export default class ProjectWindow extends Component {
                             value={filePath}
                             disabled
                         />
-                        <Button className='browse-button'onClick={onClickBrowse} variant='outlined'>Browse...</Button>
+                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='outlined'>Browse...</Button>
                     </li>
                 </ul>
                 <div className='form-actions'>
@@ -136,7 +138,7 @@ export default class ProjectWindow extends Component {
                 </div>
                 { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }
                 <div>
-                    <Typography className='version'>Version: v0.6.0</Typography>
+                    {  mode === 'select' && <Typography className='version'>Version: v0.6.0</Typography> } 
                 </div>
             </div>
         )

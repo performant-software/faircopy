@@ -35,7 +35,7 @@
 }
 
 #ProjectWindow .new-project-form h2 {
-    margin-left: 10px;
+    margin-left: 15px;
 }
 
 #ProjectWindow .new-project-field {
@@ -48,13 +48,13 @@
 }
 
 #ProjectWindow .browse-button {
-    margin-top: 5px;
+    margin-top: 10px;
     margin-left: 10px;
 }
 
 #ProjectWindow .form-actions {
-    position: absolute;
-    right: 10px;
+    margin-left: 550px;
+    margin-bottom: 10px;
 }
 
 #ProjectWindow .left-side {
