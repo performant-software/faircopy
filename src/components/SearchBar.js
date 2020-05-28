@@ -6,7 +6,7 @@ export default class SearchBar extends Component {
     render() {
         return (
             <div id="SearchBar">
-                <Button className="search-button">
+                <Button disabled className="search-button">
                     <i className="fa fa-search fa-lg"></i>
                 </Button>
                 <InputBase

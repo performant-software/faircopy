@@ -6,6 +6,10 @@
     height: 42px;
 }
 
+.TEIEditor .titlebar h1 {
+    padding-top: 5px;
+}
+
 .TEIEditor .body {
     display: flex;
     height: calc( 100% - 60px );

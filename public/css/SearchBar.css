@@ -9,13 +9,13 @@
 }
 
 #SearchBar .search-input {
-    margin-left: 5px;
-    margin-top: 5px;
+    margin-left: 10px;
+    margin-bottom: 10px;
     display: inline-block;
 }
 
 #SearchBar .search-button {
     max-width: 40px;
-    margin-top: 5px;
+    margin-top: 4px;
     float: right;
 }
