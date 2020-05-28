@@ -9,8 +9,7 @@ const distBaseDir = __dirname
 
 class FairCopyApplication {
 
-  constructor(onAppClose) {
-    this.onAppClose = onAppClose
+  constructor() {
     this.mainWindow = null
     // this.noteWindows = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
@@ -48,7 +47,7 @@ class FairCopyApplication {
 
   async createProjectWindow() {
 
-    this.projectWindow = await this.createWindow('project-window-preload.js', 720, 480, false, '#E6DEF9' )
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
 
     ipcMain.on('requestNewPath', (event) => { 
       const targetPath = this.mainMenu.selectPath()
@@ -114,11 +113,6 @@ class FairCopyApplication {
       resizable,
       backgroundColor
     })
-
-    // Emitted when the window is closed.
-    browserWindow.on('closed', () => {
-      this.onAppClose()
-    } )
 
     // and load the index.html of the app.
     if( this.isDebugMode() ) {

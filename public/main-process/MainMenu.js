@@ -62,7 +62,6 @@ class MainMenu {
         } 
   
           return [
-            // { role: 'appMenu' }
             ...(process.platform === 'darwin' ? [{
               label: 'FairCopy',
               submenu: [
@@ -77,15 +76,9 @@ class MainMenu {
                 { role: 'quit' }
               ]
             }] : []),
-            // { role: 'fileMenu' }
             {
               label: 'File',
               submenu: [
-                { 
-                  label: 'New Project...',
-                  accelerator: 'CommandOrControl+N',
-                  click: this.requestNewFile
-                },
                 { 
                   label: 'Open Project...',
                   accelerator: 'CommandOrControl+O',
@@ -96,15 +89,6 @@ class MainMenu {
                 //   accelerator: 'CommandOrControl+P',
                 //   click: this.openPrintDialog
                 // },
-                // { 
-                //   label: 'Save',
-                //   accelerator: 'CommandOrControl+S',
-                //   click: this.requestSave
-                // },
-                // { 
-                //   label: 'Save As...',
-                //   click: this.requestSaveAs
-                // },
                 { 
                   label: 'Close Project',
                   accelerator: 'CommandOrControl+W',
@@ -112,7 +96,6 @@ class MainMenu {
                 },
               ]
             },
-            // { role: 'editMenu' }
             {
               label: 'Edit',
               submenu: [
@@ -141,12 +124,10 @@ class MainMenu {
                 ])
               ]
             },
-            // { role: 'viewMenu' }
             {
               label: 'View',
               submenu: viewSubMenu
             },
-            // { role: 'windowMenu' }
             {
               label: 'Window',
               submenu: [

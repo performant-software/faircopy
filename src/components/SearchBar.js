@@ -10,6 +10,7 @@ export default class SearchBar extends Component {
                     <i className="fa fa-search fa-lg"></i>
                 </Button>
                 <InputBase
+                    disabled
                     placeholder="Search"
                     className="search-input"
                 />
