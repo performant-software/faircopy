@@ -224,10 +224,6 @@ export default class TEIDocument {
     }
 
     save() {
-        // Override save file for testing
-        // if( fairCopy.services.isDebugMode() ) {
-        //     saveFilePath = 'test-docs/je_example_out.xml'
-        // }
 
         // TODO - program should clear sub docs from local storage before exiting or when loading a different document
 
@@ -236,7 +232,6 @@ export default class TEIDocument {
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        // TODO add application element with config ID
         const domSerializer = DOMSerializer.fromSchema( this.teiSchema.schema )
         const domFragment = domSerializer.serializeFragment(editorState.doc.content)
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]

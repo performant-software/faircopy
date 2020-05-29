@@ -42,7 +42,7 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
     }
 
-    saveResource = (resourceID, resourceData) => {
+    saveResource(resourceID, resourceData) {
         const resourceEntry = this.resources[resourceID]
         if( resourceEntry ) {
             this.writeUTF8File(resourceID,resourceData)
@@ -52,11 +52,24 @@ class ProjectStore {
         }
     }
 
-    removeResource = (resourceID) => {
+    addResource( resourceEntryJSON, resourceData ) {
+        const resourceEntry = JSON.parse(resourceEntryJSON)
+        this.resources[resourceEntry.id] = resourceEntry
+        this.projectArchive.addFile(resourceEntry.id, resourceData)
+        this.saveManifest()
+    }
+
+    removeResource(resourceID) {
+        this.resources[resourceID] = null
+        this.projectArchive.deleteFile(resourceID)
+        this.saveManifest()
+    }
+
+    saveManifest() {
         // TODO
     }
 
-    openResource = (resourceID) => {
+    openResource(resourceID) {
         const resourceEntry = this.resources[resourceID]
         if( resourceEntry ) {
             const resource = this.readUTF8File(resourceID)

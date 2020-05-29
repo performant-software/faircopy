@@ -189,6 +189,11 @@ export default class MainWindow extends Component {
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
 
+        const onSaveResource = (name, type) => {
+            fairCopyProject.newResource(name, type)
+            this.setState( {...this.state, editDialogMode: false} )
+        }
+
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
@@ -207,8 +212,8 @@ export default class MainWindow extends Component {
                 ></AlertDialog>
                 <EditResourceDialog
                     editDialogMode={editDialogMode}
-                    onSave={()=>{ }}
-                    onClose={()=>{this.setState( {...this.state, editDialogMode: false} )}}
+                    onSave={onSaveResource}
+                    onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog>
                 <ElementMenu
                     teiDocument={teiDocument}

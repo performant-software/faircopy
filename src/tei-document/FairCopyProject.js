@@ -1,6 +1,11 @@
+import { v4 as uuidv4 } from 'uuid'
+
 import TEIDocument from "./TEIDocument"
 import TEISchema from "./TEISchema"
 import FairCopyConfig from "./FairCopyConfig"
+import {teiTemplate} from "./tei-template"
+
+const fairCopy = window.fairCopy
 
 export default class FairCopyProject {
 
@@ -46,12 +51,27 @@ export default class FairCopyProject {
         this.resources = fairCopyManifest.resources
     }
 
+    newResource( name, type ) {
+        const resourceEntry = {
+            id: uuidv4(),
+            name, 
+            type
+        }
+        this.resources[resourceEntry.id] = resourceEntry
+
+        let resourceData
+        if( resourceEntry.type === 'text') {
+            resourceData = teiTemplate
+        }
+        fairCopy.services.ipcSend('addResource', resourceEntry, resourceData )
+    }
+
     openResource( resourceID ) {
         const resourceEntry = this.resources[resourceID]
         if( !resourceEntry ) return null
 
         if( resourceEntry.type === 'text') {
-            const teiDocument = new TEIDocument( resourceID, this.teiSchema, this.fairCopyConfig)
+            const teiDocument = new TEIDocument( resourceID, this.teiSchema, this.fairCopyConfig )
             return teiDocument    
         } else {
             // TODO load facs
