@@ -5,6 +5,7 @@ import SearchBar from './SearchBar'
 export default class ResourceBrowser extends Component {
 
   renderToolbar() {
+    const { onEditResource } = this.props
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -16,7 +17,7 @@ export default class ResourceBrowser extends Component {
 
     return (
       <div className="toolbar">
-        <Button {...buttonProps}>Create</Button>    
+        <Button onClick={onEditResource} {...buttonProps}>Create</Button>    
         <Button disabled {...buttonProps}>Import</Button>    
         <Button disabled {...buttonProps}>Export</Button>    
         <Button disabled {...buttonProps}>Actions</Button> 

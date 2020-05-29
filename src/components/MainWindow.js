@@ -8,6 +8,7 @@ import AlertDialog from './AlertDialog'
 import TEIEditor from './TEIEditor'
 import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
+import EditResourceDialog from './EditResourceDialog'
 
 const fairCopy = window.fairCopy
 
@@ -22,6 +23,7 @@ export default class MainWindow extends Component {
             width: -300,
             resourceBrowserOpen: true,
             alertDialogMode: false,
+            editDialogMode: false,
             openMenuID: null,
             elementMenuAnchorEl: null
         }	
@@ -130,6 +132,10 @@ export default class MainWindow extends Component {
         this.setState({...this.state, openMenuID: null, elementMenuAnchorEl: null })
     }
 
+    onEditResource = () => {
+        this.setState({...this.state, editDialogMode: true })
+    }
+
     renderEditors() {
         const { width, openResources, selectedResource } = this.state
         const { fairCopyProject } = this.props
@@ -167,6 +173,7 @@ export default class MainWindow extends Component {
                     <ResourceBrowser
                         width={width}
                         onSelectResource={this.onSelectResource}   
+                        onEditResource={this.onEditResource}
                         fairCopyProject={fairCopyProject}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
@@ -175,7 +182,7 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { alertDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
+        const { alertDialogMode, editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
         const { fairCopyProject } = this.props
         const { menus } = fairCopyProject
         const openMenu = openMenuID ? menus[openMenuID] : null
@@ -198,6 +205,11 @@ export default class MainWindow extends Component {
                 <AlertDialog
                     alertDialogMode={alertDialogMode}
                 ></AlertDialog>
+                <EditResourceDialog
+                    editDialogMode={editDialogMode}
+                    onSave={()=>{ }}
+                    onClose={()=>{this.setState( {...this.state, editDialogMode: false} )}}
+                ></EditResourceDialog>
                 <ElementMenu
                     teiDocument={teiDocument}
                     menuGroups={openMenu}
