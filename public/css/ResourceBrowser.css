@@ -5,11 +5,14 @@
     height: 42px;
 }
 
-#ResourceBrowser .table-container {
-    margin: 20px;
-    max-width: 620px;
+#ResourceBrowser .titlebar h1 {
+    padding-top: 5px;
 }
 
-#ResourceBrowser .add-resource-button {
-    float: right;
+#ResourceBrowser .toolbar {
+    margin: 10px;
+}
+
+#ResourceBrowser .toolbar-button {
+    margin-right: 20px;
 }
