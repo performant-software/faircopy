@@ -16,8 +16,13 @@ export default class EditResourceDialog extends Component {
         const { editDialogMode, onSave, onClose } = this.props
         const { name } = this.state
         
-        const onChangeName = () => {
-            // TODO
+        const onChangeName = (e) => {
+            const name = e.currentTarget.value
+            this.setState( { ...this.state, name })
+        }
+
+        const onSaveResource = () => {
+            onSave(this.state.name,"text")
         }
         
         return (
@@ -36,7 +41,7 @@ export default class EditResourceDialog extends Component {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" onClick={onSave} autoFocus>Save</Button>
+                    <Button variant="outlined" onClick={onSaveResource} autoFocus>Save</Button>
                     <Button variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

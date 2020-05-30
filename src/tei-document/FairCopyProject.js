@@ -63,7 +63,7 @@ export default class FairCopyProject {
         if( resourceEntry.type === 'text') {
             resourceData = teiTemplate
         }
-        fairCopy.services.ipcSend('addResource', resourceEntry, resourceData )
+        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
     }
 
     openResource( resourceID ) {

@@ -1,6 +1,9 @@
 const AdmZip = require('adm-zip');
 const fs = require('fs')
 
+const manifestEntryName = 'faircopy-manifest.json'
+const configSettingsEntryName = 'config-settings.json'
+
 class ProjectStore {
 
     constructor(fairCopyApplication) {
@@ -15,8 +18,8 @@ class ProjectStore {
             console.log('Attempted to open invalid project file.')
             return
         }
-        const fairCopyManifest = this.readUTF8File('faircopy-manifest.json')
-        const fairCopyConfig = this.readUTF8File('config-settings.json')
+        const fairCopyManifest = this.readUTF8File(manifestEntryName)
+        const fairCopyConfig = this.readUTF8File(configSettingsEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
         const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
 
@@ -30,20 +33,20 @@ class ProjectStore {
             return
         }
         
-        const manifestData = JSON.parse(fairCopyManifest)
-        if( !manifestData ) {
+        // project store keeps a copy of the manifest data
+        this.manifestData = JSON.parse(fairCopyManifest)
+        if( !this.manifestData ) {
             console.log('Error parsing project manifest.')
             return
         }
-        // project store keeps a copy of the resource data
-        this.resources = manifestData.resources
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups }
         this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
     }
 
     saveResource(resourceID, resourceData) {
-        const resourceEntry = this.resources[resourceID]
+        const { resources } = this.manifestData
+        const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             this.writeUTF8File(resourceID,resourceData)
             this.projectArchive.writeZip(this.projectFilePath, (err) => {
@@ -54,23 +57,26 @@ class ProjectStore {
 
     addResource( resourceEntryJSON, resourceData ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
-        this.resources[resourceEntry.id] = resourceEntry
+        this.manifestData.resources[resourceEntry.id] = resourceEntry
         this.projectArchive.addFile(resourceEntry.id, resourceData)
         this.saveManifest()
     }
 
     removeResource(resourceID) {
-        this.resources[resourceID] = null
+        delete this.manifestData.resources[resourceID] 
         this.projectArchive.deleteFile(resourceID)
         this.saveManifest()
     }
 
     saveManifest() {
-        // TODO
+        this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
+        this.projectArchive.writeZip(this.projectFilePath, (err) => {
+            if(err) console.log(err)
+        })
     }
 
     openResource(resourceID) {
-        const resourceEntry = this.resources[resourceID]
+        const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
             const resource = this.readUTF8File(resourceID)
             const resourceData = { resourceID, resource }
@@ -106,8 +112,8 @@ const createProjectArchive = function createProject(projectInfo) {
 
     }
 
-    projectArchive.addFile('faircopy-manifest.json', JSON.stringify(fairCopyManifest))
-    projectArchive.addFile('config-settings.json', JSON.stringify(fairCopyConfig))
+    projectArchive.addFile(manifestEntryName, JSON.stringify(fairCopyManifest))
+    projectArchive.addFile(configSettingsEntryName, JSON.stringify(fairCopyConfig))
     projectArchive.writeZip(filePath)
 }
 
