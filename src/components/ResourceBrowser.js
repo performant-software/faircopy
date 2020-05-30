@@ -74,13 +74,16 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width } = this.props
+      const { width, fairCopyProject } = this.props
+      const { resources } = fairCopyProject
+      const resourceCount = Object.keys(resources).length
+      const s = resourceCount === 1 ? '' : 's'
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
           <div className="titlebar">
               <SearchBar></SearchBar>
-              <Typography component="h1" variant="h6">Browse Resources (4 resources)</Typography>
+              <Typography component="h1" variant="h6">Browse Resources ({resourceCount} resource{s})</Typography>
           </div>
           { this.renderToolbar() }
           <div>

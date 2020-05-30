@@ -14,7 +14,6 @@ export default class EditResourceDialog extends Component {
 
     render() {      
         const { editDialogMode, onSave, onClose } = this.props
-        const { name } = this.state
         
         const onChangeName = (e) => {
             const name = e.currentTarget.value
@@ -22,11 +21,17 @@ export default class EditResourceDialog extends Component {
         }
 
         const onSaveResource = () => {
-            onSave(this.state.name,"text")
+            const { name } = this.state
+            if( name.length > 0 ) {
+                onSave(this.state.name,"text")
+            }
         }
-        
+
+        const { name } = this.state
+
         return (
             <Dialog
+                id="EditResourceDialog"
                 open={editDialogMode !== false}
                 onClose={onClose}
                 aria-labelledby="edit-resource-title"
@@ -35,6 +40,7 @@ export default class EditResourceDialog extends Component {
                 <DialogTitle id="edit-resource-title">Create Resource</DialogTitle>
                 <DialogContent>
                     <TextField 
+                        className="name-field"
                         value={name}
                         onChange={onChangeName}
                         label="Resource Name" 
