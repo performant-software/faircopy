@@ -4,6 +4,14 @@ import SearchBar from './SearchBar'
 
 export default class ResourceBrowser extends Component {
 
+  constructor() {
+    super()
+    this.state = {
+      allChecked: false,
+      checked: {}
+    }
+  }
+
   renderToolbar() {
     const { onEditResource } = this.props
 
@@ -26,29 +34,59 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { fairCopyProject, onSelectResource } = this.props
-    const { resources } = fairCopyProject
 
     const onClick = (e) => {
+      const { onSelectResource } = this.props
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
       onSelectResource(resourceID)
     }
 
+    const toggleAll = () => {
+      const { fairCopyProject } = this.props
+      const { resources } = fairCopyProject
+      const { checked, allChecked } = this.state
+      const nextAllChecked = !allChecked
+      const nextChecked = { ...checked }
+      for( const resource of Object.values(resources) ) {
+        nextChecked[resource.id] = nextAllChecked
+      }
+      this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
+    }
+
+    const onClickCheck = (e) => {
+      const { checked } = this.state
+      const nextChecked = { ...checked }
+      const resourceID = e.currentTarget.getAttribute('dataresourceid')
+      nextChecked[resourceID] = checked[resourceID] ? false : true
+      this.setState({ ...this.state, checked: nextChecked })
+    }
+
+    const cellProps = {
+      padding: 'none',
+      component: "th",
+      scope: "row"
+    }
+
+    const { checked, allChecked } = this.state
+    const { fairCopyProject } = this.props
+    const { resources } = fairCopyProject
+
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
+      const check = checked[resource.id] === true
       resourceRows.push(
-        <TableRow hover dataresourceid={resource.id} onClick={onClick} key={`resource-${resource.id}`}>
-          <TableCell padding="none" component="th" scope="row">
-            <Checkbox checked={false} name="checkedA" />
+        <TableRow hover key={`resource-${resource.id}`}>
+          <TableCell {...cellProps} >
+            <Checkbox onClick={onClickCheck} dataresourceid={resource.id} checked={check} />
           </TableCell>
-          <TableCell padding="none" component="th" scope="row">
-            <i className="fas fa-book fa-lg"></i>
-          </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
             {resource.name}
           </TableCell>
-          <TableCell component="th" scope="row">
-            {Date.now()}
+          <TableCell {...cellProps} >
+            text
+          </TableCell>
+          <TableCell {...cellProps} >
+            ---
           </TableCell>
         </TableRow>
       )
@@ -59,10 +97,10 @@ export default class ResourceBrowser extends Component {
         <Table stickyHeader size="small" >
           <TableHead>
             <TableRow>
-              <TableCell padding="none"><Checkbox checked={false} name="checkedA" /></TableCell>
+              <TableCell padding="none"><Checkbox onClick={toggleAll} checked={allChecked} /></TableCell>
+              <TableCell padding="none">Name</TableCell>
               <TableCell padding="none">Type</TableCell>
-              <TableCell >Name</TableCell>
-              <TableCell>Last Modified</TableCell>
+              <TableCell padding="none">Last Modified</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
