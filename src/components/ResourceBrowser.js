@@ -12,8 +12,37 @@ export default class ResourceBrowser extends Component {
     }
   }
 
+  onOpenActionMenu = (anchorEl) => {
+    const { onOpenPopupMenu } = this.props
+    const menuOptions = [
+      {
+        id: 'open',
+        label: 'Open',
+        action: this.createHandler('open')
+      },
+      {
+        id: 'rename',
+        label: 'Rename',
+        action: this.createHandler('rename')
+      },
+      {
+        id: 'delete',
+        label: 'Delete',
+        action: this.createHandler('delete')
+      }
+    ]
+    onOpenPopupMenu(menuOptions, anchorEl)
+  }
+
+  createHandler(actionID) {
+    return () => {
+      console.log(actionID)
+    }
+  }
+
   renderToolbar() {
     const { onEditResource } = this.props
+    const { checked } = this.state
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -23,12 +52,19 @@ export default class ResourceBrowser extends Component {
       disableFocusRipple: true
     }
 
+    const actionsEnabled = Object.values(checked).find( c => c === true )
+
     return (
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>Create</Button>    
         <Button disabled {...buttonProps}>Import</Button>    
         <Button disabled {...buttonProps}>Export</Button>    
-        <Button disabled {...buttonProps}>Actions</Button> 
+        <Button 
+          disabled={!actionsEnabled}
+          ref={(el)=> { this.actionButtonEl = el }}
+          onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
+          {...buttonProps}
+        >Actions</Button> 
       </div>
     )
   }
@@ -77,7 +113,7 @@ export default class ResourceBrowser extends Component {
       resourceRows.push(
         <TableRow hover key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
-            <Checkbox onClick={onClickCheck} dataresourceid={resource.id} checked={check} />
+            <Checkbox onClick={onClickCheck} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
           <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
             {resource.name}
@@ -97,7 +133,7 @@ export default class ResourceBrowser extends Component {
         <Table stickyHeader size="small" >
           <TableHead>
             <TableRow>
-              <TableCell padding="none"><Checkbox onClick={toggleAll} checked={allChecked} /></TableCell>
+              <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
               <TableCell padding="none">Name</TableCell>
               <TableCell padding="none">Type</TableCell>
               <TableCell padding="none">Last Modified</TableCell>

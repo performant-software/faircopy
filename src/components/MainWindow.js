@@ -9,6 +9,7 @@ import TEIEditor from './TEIEditor'
 import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 import EditResourceDialog from './EditResourceDialog'
+import PopupMenu from './PopupMenu'
 
 const fairCopy = window.fairCopy
 
@@ -25,7 +26,9 @@ export default class MainWindow extends Component {
             alertDialogMode: false,
             editDialogMode: false,
             openMenuID: null,
-            elementMenuAnchorEl: null
+            elementMenuAnchorEl: null,
+            popupMenuOptions: null, 
+            popupMenuAnchorEl: null
         }	
     }
 
@@ -37,29 +40,6 @@ export default class MainWindow extends Component {
     
 // openPrint() {
 //     window.print()
-// }
-
-// newFile() {
-//     const { teiDocument, exitAnyway } = this.state
-//     const { changedSinceLastSave } = teiDocument
-
-//     if( !exitAnyway && changedSinceLastSave ) {
-//         this.setState({ ...this.state, alertDialogMode: 'new'})
-//         teiDocument.changedSinceLastSave = false 
-//     } else {
-//         const { editorView } = teiDocument
-//         const newEditorState = teiDocument.editorInitialState(document)
-//         editorView.updateState( newEditorState )       
-//         teiDocument.changedSinceLastSave = false 
-//         this.setTitle(untitledDocumentTitle)
-//         editorView.focus();
-//         this.setState( { 
-//             ...this.state, 
-//             exitAnyway: false, 
-//             alertDialogMode: false, 
-//             filePath: null 
-//         })    
-//     }
 // }
 
     saved(resourceID) {
@@ -132,6 +112,14 @@ export default class MainWindow extends Component {
         this.setState({...this.state, openMenuID: null, elementMenuAnchorEl: null })
     }
 
+    onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl) => {
+        this.setState({...this.state, popupMenuOptions, popupMenuAnchorEl })
+    }
+
+    onClosePopupMenu = () => {
+        this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null })
+    }
+
     onEditResource = () => {
         this.setState({...this.state, editDialogMode: true })
     }
@@ -173,6 +161,7 @@ export default class MainWindow extends Component {
                     <ResourceBrowser
                         width={width}
                         onSelectResource={this.onSelectResource}   
+                        onOpenPopupMenu={this.onOpenPopupMenu}
                         onEditResource={this.onEditResource}
                         fairCopyProject={fairCopyProject}
                     ></ResourceBrowser> }
@@ -183,6 +172,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { alertDialogMode, editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
+        const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
         const { menus } = fairCopyProject
         const openMenu = openMenuID ? menus[openMenuID] : null
@@ -221,6 +211,11 @@ export default class MainWindow extends Component {
                     anchorEl={elementMenuAnchorEl}
                     onClose={this.onCloseElementMenu}
                 ></ElementMenu>
+                <PopupMenu
+                    menuOptions={popupMenuOptions}
+                    anchorEl={popupMenuAnchorEl}
+                    onClose={this.onClosePopupMenu}                
+                ></PopupMenu>
             </div>
         )
     }

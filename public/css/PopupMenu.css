@@ -1,0 +1,7 @@
+#PopupMenu .popup {
+    z-index: 1000;
+}
+
+#PopupMenu .menu-item {
+    width: 140px;
+}
