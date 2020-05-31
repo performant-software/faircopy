@@ -20,6 +20,7 @@ export default class PopupMenu extends Component {
                     key={key} 
                     disableRipple={true}
                     className="menu-item"
+                    disabled={menuOption.disabled}
                     value={menuOption.id}
                 >
                     {menuOption.label}

@@ -18,12 +18,20 @@ export default class ResourceBrowser extends Component {
       {
         id: 'open',
         label: 'Open',
+        disabled: true,
         action: this.createHandler('open')
       },
       {
-        id: 'rename',
-        label: 'Rename',
-        action: this.createHandler('rename')
+        id: 'edit-tags',
+        label: 'Edit Tags',
+        disabled: true,
+        action: this.createHandler('edit-tags')
+      },
+      {
+        id: 'export',
+        label: 'Export',
+        disabled: true,
+        action: this.createHandler('export')
       },
       {
         id: 'delete',
@@ -58,13 +66,12 @@ export default class ResourceBrowser extends Component {
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>Create</Button>    
         <Button disabled {...buttonProps}>Import</Button>    
-        <Button disabled {...buttonProps}>Export</Button>    
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}
           onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
           {...buttonProps}
-        >Actions</Button> 
+        >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button> 
       </div>
     )
   }
@@ -124,6 +131,9 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             ---
           </TableCell>
+          <TableCell {...cellProps} >
+            ---
+          </TableCell>
         </TableRow>
       )
     }
@@ -136,6 +146,7 @@ export default class ResourceBrowser extends Component {
               <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
               <TableCell padding="none">Name</TableCell>
               <TableCell padding="none">Type</TableCell>
+              <TableCell padding="none">Tags</TableCell>
               <TableCell padding="none">Last Modified</TableCell>
             </TableRow>
           </TableHead>
