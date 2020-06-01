@@ -38,10 +38,6 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('fileSaved', (event, resourceID) => this.saved(resourceID))
     }
     
-// openPrint() {
-//     window.print()
-// }
-
     saved(resourceID) {
         // TODO
         // this.setState( { ...this.state, 
@@ -64,25 +60,43 @@ export default class MainWindow extends Component {
         this.setState({...this.state,latest:nextState})
     }
 
-    onSelectResource = (resourceID) => {
+    onSelectResources(resourceIDs) {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
-        if( resourceID === selectedResource ) return
-        let nextResources
-        if( !openResources[resourceID] ) {
-            // open the selected resource
-            nextResources = { ...openResources }
-            nextResources[resourceID] = fairCopyProject.openResource(resourceID)
-        } else {
-            // selected an already open resource
-            nextResources = openResources
+
+        // select the first one from the list
+        const nextSelection = resourceIDs[0]
+
+        let change = (selectedResource !== nextSelection)
+        let nextResources = { ...openResources }
+        for( const resourceID of resourceIDs ) {
+            if( !openResources[resourceID] ) {
+                nextResources[resourceID] = fairCopyProject.openResource(resourceID)
+                change = true
+            }    
         }
-        this.setState( {...this.state, selectedResource: resourceID, openResources: nextResources, resourceBrowserOpen: false })
+
+        if( change ) {
+            this.setState( {
+                ...this.state, 
+                selectedResource: nextSelection,
+                openResources: nextResources, 
+                resourceBrowserOpen: false, 
+                popupMenuOptions: null, 
+                popupMenuAnchorEl: null
+            })    
+        } else {
+            this.setState( {
+                ...this.state, 
+                resourceBrowserOpen: false, 
+                popupMenuOptions: null, 
+                popupMenuAnchorEl: null
+            })    
+        }
     }
 
     onCloseResource = (resourceID) => {
         const { openResources, selectedResource } = this.state
-
         const nextResourceArr = Object.values(openResources).filter( r => r.resourceID !== resourceID )
 
         let nextSelection, resourceBrowserOpen, nextResources = {}
@@ -124,6 +138,16 @@ export default class MainWindow extends Component {
         this.setState({...this.state, editDialogMode: true })
     }
 
+    onResourceAction = (actionID, resourceIDs) => {
+        switch(actionID) {
+            case 'open':
+                this.onSelectResources(resourceIDs)
+                break
+            default:
+                console.error(`Unrecognized batch action id: ${actionID}`)
+        }
+    }
+
     renderEditors() {
         const { width, openResources, selectedResource } = this.state
         const { fairCopyProject } = this.props
@@ -155,12 +179,13 @@ export default class MainWindow extends Component {
     renderContentPane() {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, width } = this.state
+
         return (
             <div>
                 { resourceBrowserOpen && 
                     <ResourceBrowser
                         width={width}
-                        onSelectResource={this.onSelectResource}   
+                        onResourceAction={this.onResourceAction}
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onEditResource={this.onEditResource}
                         fairCopyProject={fairCopyProject}
@@ -184,6 +209,10 @@ export default class MainWindow extends Component {
             this.setState( {...this.state, editDialogMode: false} )
         }
 
+        const onSelectResource = ( resourceID ) => {
+            this.onResourceAction( 'open', [resourceID] )
+        }
+
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
@@ -191,7 +220,7 @@ export default class MainWindow extends Component {
                         fairCopyProject={fairCopyProject}    
                         openResources={openResources}
                         selectedResource={selectedResource}
-                        onSelectResource={this.onSelectResource}   
+                        onSelectResource={onSelectResource}   
                         onCloseResource={this.onCloseResource}
                         onOpenResourceBrowser={this.onOpenResourceBrowser}                               
                     ></ProjectSidebar>    

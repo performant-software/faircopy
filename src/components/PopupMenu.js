@@ -12,7 +12,6 @@ export default class PopupMenu extends Component {
             const key = `menugroup-${menuOption.id}`
             const onClick = () => {
                 menuOption.action()
-                onClose()
             }    
             menuItems.push(
                 <MenuItem 

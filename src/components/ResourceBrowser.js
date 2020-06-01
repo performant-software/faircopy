@@ -18,33 +18,38 @@ export default class ResourceBrowser extends Component {
       {
         id: 'open',
         label: 'Open',
-        disabled: true,
-        action: this.createHandler('open')
+        action: this.createResourceAction('open')
       },
       {
         id: 'edit-tags',
         label: 'Edit Tags',
         disabled: true,
-        action: this.createHandler('edit-tags')
+        action: this.createResourceAction('edit-tags')
       },
       {
         id: 'export',
         label: 'Export',
         disabled: true,
-        action: this.createHandler('export')
+        action: this.createResourceAction('export')
       },
       {
         id: 'delete',
         label: 'Delete',
-        action: this.createHandler('delete')
+        action: this.createResourceAction('delete')
       }
     ]
     onOpenPopupMenu(menuOptions, anchorEl)
   }
 
-  createHandler(actionID) {
+  createResourceAction(actionID) {    
     return () => {
-      console.log(actionID)
+      const { onResourceAction } = this.props
+      const { checked } = this.state
+      const resourceIDs = []
+      for( const resourceID of Object.keys(checked) ) {
+        if( checked[resourceID] ) resourceIDs.push(resourceID)
+      }
+      onResourceAction(actionID, resourceIDs)
     }
   }
 
@@ -79,9 +84,9 @@ export default class ResourceBrowser extends Component {
   renderResourceTable() {
 
     const onClick = (e) => {
-      const { onSelectResource } = this.props
+      const { onResourceAction } = this.props
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
-      onSelectResource(resourceID)
+      onResourceAction( 'open', [resourceID] )
     }
 
     const toggleAll = () => {

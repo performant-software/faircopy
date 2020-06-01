@@ -8,9 +8,9 @@ import { Button, Typography } from '@material-ui/core';
 
 export default class ProjectNavigator extends Component {
 
-    onClickNode = (e,resourceID) => {
-      if( resourceID === 'root' ) return
+    onClickNode = (e) => {
       const { onSelectResource } = this.props
+      const resourceID = e.currentTarget.getAttribute('dataresourceid')
       onSelectResource(resourceID)
     }
 
@@ -45,7 +45,7 @@ export default class ProjectNavigator extends Component {
 
       return (
         <div>
-          <Typography className="tree-item-name">{resourceName}</Typography>
+          <Typography onClick={this.onClickNode} dataresourceid={resourceID} className="tree-item-name">{resourceName}</Typography>
           <Button 
             className="tree-item-close"
             onClick={onClick}
@@ -96,7 +96,6 @@ export default class ProjectNavigator extends Component {
               defaultExpanded={["root"]}
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpandIcon={<ChevronRightIcon />}
-              onNodeSelect={this.onClickNode}
             >
               { this.renderTree() }
             </TreeView>
