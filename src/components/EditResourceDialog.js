@@ -54,7 +54,7 @@ export default class EditResourceDialog extends Component {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" onClick={onSaveResource} autoFocus>Save</Button>
+                    <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>
                     <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
