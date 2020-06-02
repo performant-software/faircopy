@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
 
 import { Button } from '@material-ui/core'
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core'
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select } from '@material-ui/core'
 
 export default class EditResourceDialog extends Component {
 
     constructor() {
         super()
         this.initialState = {
-            name: ""
+            name: "",
+            resourceType: "text",
+            url: "https://iiif.harvardartmuseums.org/manifests/object/299843"
         }
         this.state = this.initialState
     }
@@ -16,16 +18,21 @@ export default class EditResourceDialog extends Component {
     render() {      
         const { editDialogMode, onSave, onClose } = this.props
         
-        const onChangeName = (e) => {
-            const name = e.currentTarget.value
-            this.setState( { ...this.state, name })
+        const onChange = (e) => {
+            const {name, value} = e.target
+            const nextState = { ...this.state }
+            if( name === 'resourceType' && value === 'text' ) {
+                nextState['url'] = ''
+            }
+            nextState[name] = value
+            this.setState(nextState)
         }
 
         const onSaveResource = () => {
-            const { name } = this.state
+            const { name, resourceType, url } = this.state
             if( name.length > 0 ) {
                 this.setState(this.initialState)
-                onSave(name,"text")
+                onSave(name,resourceType,url)
             }
         }
 
@@ -34,7 +41,7 @@ export default class EditResourceDialog extends Component {
             onClose()
         }
 
-        const { name } = this.state
+        const { name, resourceType, url } = this.state
 
         return (
             <Dialog
@@ -47,10 +54,27 @@ export default class EditResourceDialog extends Component {
                 <DialogTitle id="edit-resource-title">Create Resource</DialogTitle>
                 <DialogContent>
                     <TextField 
+                        name="name"
                         className="name-field"
                         value={name}
-                        onChange={onChangeName}
+                        onChange={onChange}
                         label="Resource Name" 
+                    />
+                    <Select
+                        name="resourceType"
+                        value={resourceType}
+                        onChange={onChange}
+                    >
+                        <MenuItem value={'text'}>Text</MenuItem>
+                        <MenuItem value={'facs'}>Facsimile</MenuItem>
+                    </Select>
+                    <TextField 
+                        disabled={resourceType !== 'facs'}
+                        name="url"
+                        className="name-field"
+                        value={url}
+                        onChange={onChange}
+                        label="IIIF Manigest URL" 
                     />
                 </DialogContent>
                 <DialogActions>
