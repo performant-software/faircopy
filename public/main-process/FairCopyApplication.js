@@ -34,7 +34,11 @@ class FairCopyApplication {
 
     this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
 
-    ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
+    ipcMain.on('requestResource', (event,resourceID) => { 
+      this.projectStore.openResource(resourceID).then(()=>{
+        console.log(`opened resourceID: ${resourceID}`)
+      }) 
+    })
     ipcMain.on('requestSave', (event,resourceID,resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
     ipcMain.on('addResource', (event, resourceEntry,resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
     ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
@@ -80,7 +84,9 @@ class FairCopyApplication {
         this.projectWindow.close()
         this.projectWindow = null  
       }
-      this.projectStore.openProject(targetFile)
+      this.projectStore.openProject(targetFile).then( () => { 
+        console.log(`Opened project: ${targetFile}`)
+      })
     })
   }
 

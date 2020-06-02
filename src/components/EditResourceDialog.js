@@ -7,9 +7,10 @@ export default class EditResourceDialog extends Component {
 
     constructor() {
         super()
-        this.state = {
+        this.initialState = {
             name: ""
         }
+        this.state = this.initialState
     }
 
     render() {      
@@ -23,8 +24,14 @@ export default class EditResourceDialog extends Component {
         const onSaveResource = () => {
             const { name } = this.state
             if( name.length > 0 ) {
-                onSave(this.state.name,"text")
+                this.setState(this.initialState)
+                onSave(name,"text")
             }
+        }
+
+        const onClickClose = () => {
+            this.setState(this.initialState)
+            onClose()
         }
 
         const { name } = this.state
@@ -33,7 +40,7 @@ export default class EditResourceDialog extends Component {
             <Dialog
                 id="EditResourceDialog"
                 open={editDialogMode !== false}
-                onClose={onClose}
+                onClose={onClickClose}
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
@@ -48,7 +55,7 @@ export default class EditResourceDialog extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={onSaveResource} autoFocus>Save</Button>
-                    <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                    <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )

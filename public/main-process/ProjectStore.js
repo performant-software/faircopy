@@ -1,4 +1,4 @@
-const AdmZip = require('adm-zip');
+const JSZip = require('jszip');
 const fs = require('fs')
 
 const manifestEntryName = 'faircopy-manifest.json'
@@ -10,16 +10,19 @@ class ProjectStore {
         this.fairCopyApplication = fairCopyApplication
     }
 
-    openProject(projectFilePath) {
+    async openProject(projectFilePath) {
         const { baseDir } = this.fairCopyApplication
-        this.projectArchive = new AdmZip(projectFilePath)
+        
+        const data = fs.readFileSync(projectFilePath)
+        this.projectArchive = await JSZip.loadAsync(data)
         this.projectFilePath = projectFilePath
+
         if( !this.projectArchive ) {
             console.log('Attempted to open invalid project file.')
             return
         }
-        const fairCopyManifest = this.readUTF8File(manifestEntryName)
-        const fairCopyConfig = this.readUTF8File(configSettingsEntryName)
+        const fairCopyManifest = await this.readUTF8File(manifestEntryName)
+        const fairCopyConfig = await this.readUTF8File(configSettingsEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
         const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
 
@@ -49,59 +52,64 @@ class ProjectStore {
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             this.writeUTF8File(resourceID,resourceData)
-            this.writeArchive()
+            this.writeProjectArchive()
         }
     }
 
     addResource( resourceEntryJSON, resourceData ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
-        this.projectArchive.addFile(resourceEntry.id, Buffer.alloc(resourceData.length, resourceData))
+        this.projectArchive.file(resourceEntry.id, Buffer.alloc(resourceData.length, resourceData))
         this.saveManifest()
     }
 
     removeResource(resourceID) {
         delete this.manifestData.resources[resourceID] 
-        this.projectArchive.deleteFile(resourceID)
+        this.projectArchive.remove(resourceID)
         this.saveManifest()
     }
 
     saveManifest() {
         this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
-        this.writeArchive()
+        this.writeProjectArchive()
     }
 
-    openResource(resourceID) {
+    async openResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            const resource = this.readUTF8File(resourceID)
+            const resource = await this.readUTF8File(resourceID)
             const resourceData = { resourceID, resource }
             this.fairCopyApplication.sendToMainWindow('resourceOpened', resourceData )
         }
     }
 
     writeUTF8File( targetFilePath, data ) {
-        this.projectArchive.updateFile(targetFilePath, Buffer.alloc(data.length, data))
+        this.projectArchive.file(targetFilePath, Buffer.alloc(data.length, data))
     }
 
     readUTF8File(targetFilePath) {
-        const zipEntries = this.projectArchive.getEntries() 
-        const targetEntry = zipEntries.find((entry) => entry.entryName === targetFilePath)
-        return targetEntry ? targetEntry.getData().toString('utf8') : null
+        return this.projectArchive
+            .file(targetFilePath)
+            .async("string")
     }
 
-    writeArchive() {
-        try {
-            this.projectArchive.writeZip()    
-        } catch(err) {
-            console.log(err)
-        }
+    writeProjectArchive() {
+        writeArchive(this.projectFilePath, this.projectArchive)
     }
+}
+
+function writeArchive(zipPath, zipData) {
+    zipData
+        .generateNodeStream({type:'nodebuffer',streamFiles:true})
+        .pipe(fs.createWriteStream(zipPath))
+        .on('finish', function () {
+            console.log(`${zipPath} written.`);
+        });
 }
 
 const createProjectArchive = function createProject(projectInfo) {
     const { name, description, filePath } = projectInfo
-    const projectArchive = new AdmZip()      
+    const projectArchive = new JSZip()      
    
     const fairCopyManifest = {
         projectName: name,
@@ -115,9 +123,9 @@ const createProjectArchive = function createProject(projectInfo) {
 
     }
 
-    projectArchive.addFile(manifestEntryName, JSON.stringify(fairCopyManifest))
-    projectArchive.addFile(configSettingsEntryName, JSON.stringify(fairCopyConfig))
-    projectArchive.writeZip(filePath)
+    projectArchive.file(manifestEntryName, JSON.stringify(fairCopyManifest))
+    projectArchive.file(configSettingsEntryName, JSON.stringify(fairCopyConfig))
+    writeArchive(filePath,projectArchive)
 }
 
 exports.ProjectStore = ProjectStore
