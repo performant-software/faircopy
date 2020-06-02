@@ -49,16 +49,14 @@ class ProjectStore {
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             this.writeUTF8File(resourceID,resourceData)
-            this.projectArchive.writeZip(this.projectFilePath, (err) => {
-                if(err) console.log(err)
-            })
+            this.writeArchive()
         }
     }
 
     addResource( resourceEntryJSON, resourceData ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
-        this.projectArchive.addFile(resourceEntry.id, resourceData)
+        this.projectArchive.addFile(resourceEntry.id, Buffer.alloc(resourceData.length, resourceData))
         this.saveManifest()
     }
 
@@ -70,9 +68,7 @@ class ProjectStore {
 
     saveManifest() {
         this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
-        this.projectArchive.writeZip(this.projectFilePath, (err) => {
-            if(err) console.log(err)
-        })
+        this.writeArchive()
     }
 
     openResource(resourceID) {
@@ -85,7 +81,7 @@ class ProjectStore {
     }
 
     writeUTF8File( targetFilePath, data ) {
-        this.projectArchive.updateFile(targetFilePath, data)
+        this.projectArchive.updateFile(targetFilePath, Buffer.alloc(data.length, data))
     }
 
     readUTF8File(targetFilePath) {
@@ -94,6 +90,13 @@ class ProjectStore {
         return targetEntry ? targetEntry.getData().toString('utf8') : null
     }
 
+    writeArchive() {
+        try {
+            this.projectArchive.writeZip()    
+        } catch(err) {
+            console.log(err)
+        }
+    }
 }
 
 const createProjectArchive = function createProject(projectInfo) {

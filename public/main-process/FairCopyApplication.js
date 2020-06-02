@@ -36,7 +36,8 @@ class FairCopyApplication {
 
     ipcMain.on('requestResource', (event,resourceID) => { this.projectStore.openResource(resourceID) })
     ipcMain.on('requestSave', (event,resourceID,resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
-    ipcMain.on('addResource', (event, resourceEntry,resourceData) => {  this.projectStore.addResource(resourceEntry,resourceData) })
+    ipcMain.on('addResource', (event, resourceEntry,resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
+    ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
 
     // TODO refactor
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)

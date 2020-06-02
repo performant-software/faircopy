@@ -66,6 +66,13 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
     }
 
+    removeResources( resourceIDs ) {
+        for( const resourceID of resourceIDs ) {
+            this.resources[resourceID] = null
+            fairCopy.services.ipcSend('removeResource', resourceID )
+        }
+    }
+
     openResource( resourceID ) {
         const resourceEntry = this.resources[resourceID]
         if( !resourceEntry ) return null

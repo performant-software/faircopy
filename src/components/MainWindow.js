@@ -153,6 +153,8 @@ export default class MainWindow extends Component {
     }
 
     onResourceAction = (actionID, resourceIDs) => {
+        const { fairCopyProject } = this.props
+
         switch(actionID) {
             case 'open':
                 this.selectResources(resourceIDs)
@@ -161,10 +163,11 @@ export default class MainWindow extends Component {
                 this.closeResources(resourceIDs)
                 break
             case 'delete':
+                fairCopyProject.removeResources(resourceIDs)
                 this.closeResources(resourceIDs)
                 break
             default:
-                console.error(`Unrecognized batch action id: ${actionID}`)
+                console.error(`Unrecognized resource action id: ${actionID}`)
         }
     }
 
