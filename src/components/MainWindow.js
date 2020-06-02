@@ -60,7 +60,7 @@ export default class MainWindow extends Component {
         this.setState({...this.state,latest:nextState})
     }
 
-    onSelectResources(resourceIDs) {
+    selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
 
@@ -95,23 +95,37 @@ export default class MainWindow extends Component {
         }
     }
 
-    onCloseResource = (resourceID) => {
-        const { openResources, selectedResource } = this.state
-        const nextResourceArr = Object.values(openResources).filter( r => r.resourceID !== resourceID )
+    closeResources(resourceIDs) {
+        const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
-        let nextSelection, resourceBrowserOpen, nextResources = {}
+        let nextResourceArr = []
+        for( const openResourceID of Object.keys(openResources) ) {
+            if( !resourceIDs.find(id => id === openResourceID) ) {
+                // this id is not on the close list
+                nextResourceArr.push(openResources[openResourceID])    
+            }
+        }
+
+        let nextSelection, nextBrowserOpen, nextResources = {}
         if( nextResourceArr.length > 0 ) {
             for( const resource of nextResourceArr ) {
                 nextResources[resource.resourceID] = resource
             }
-            nextSelection = ( resourceID === selectedResource ) ? nextResourceArr[0].resourceID : selectedResource
-            resourceBrowserOpen = false
+            nextSelection = resourceIDs.find(id => id === selectedResource) ? nextResourceArr[0].resourceID : selectedResource
+            nextBrowserOpen = resourceBrowserOpen
         } else {
             nextSelection = null
-            resourceBrowserOpen = true
+            nextBrowserOpen = true
         }
 
-        this.setState( {...this.state, selectedResource: nextSelection, openResources: nextResources, resourceBrowserOpen })
+        this.setState( {
+            ...this.state, 
+            selectedResource: nextSelection, 
+            openResources: nextResources, 
+            resourceBrowserOpen: nextBrowserOpen,
+            popupMenuOptions: null, 
+            popupMenuAnchorEl: null 
+        })
     }
 
     onOpenResourceBrowser = () => {
@@ -141,7 +155,13 @@ export default class MainWindow extends Component {
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
             case 'open':
-                this.onSelectResources(resourceIDs)
+                this.selectResources(resourceIDs)
+                break
+            case 'close':
+                this.closeResources(resourceIDs)
+                break
+            case 'delete':
+                this.closeResources(resourceIDs)
                 break
             default:
                 console.error(`Unrecognized batch action id: ${actionID}`)
@@ -213,6 +233,10 @@ export default class MainWindow extends Component {
             this.onResourceAction( 'open', [resourceID] )
         }
 
+        const onCloseResource = ( resourceID ) => {
+            this.onResourceAction( 'close', [resourceID] )
+        }
+
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
@@ -221,7 +245,7 @@ export default class MainWindow extends Component {
                         openResources={openResources}
                         selectedResource={selectedResource}
                         onSelectResource={onSelectResource}   
-                        onCloseResource={this.onCloseResource}
+                        onCloseResource={onCloseResource}
                         onOpenResourceBrowser={this.onOpenResourceBrowser}                               
                     ></ProjectSidebar>    
                     { this.renderContentPane() }
