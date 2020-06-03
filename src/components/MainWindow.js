@@ -10,6 +10,8 @@ import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 import EditResourceDialog from './EditResourceDialog'
 import PopupMenu from './PopupMenu'
+import TEIDocument from '../tei-document/TEIDocument'
+import FacsEditor from './FacsEditor'
 
 const fairCopy = window.fairCopy
 
@@ -176,23 +178,36 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
 
         const editors = []
-        for( const teiDocument of Object.values(openResources) ) {
-            const hidden = selectedResource !== teiDocument.resourceID
-            const key = `editor-${teiDocument.resourceID}`
-            if( teiDocument.loading ) {
+        for( const resource of Object.values(openResources) ) {
+            const hidden = selectedResource !== resource.resourceID
+            const key = `editor-${resource.resourceID}`
+            if( resource.loading ) {
                 editors.push(<div key={key}></div>)
             } else {
-                editors.push(
-                    <TEIEditor 
-                        key={key}
-                        hidden={hidden}
-                        width={width}
-                        teiDocument={teiDocument}
-                        fairCopyProject={fairCopyProject}
-                        onStateChange={this.onStateChange}
-                        onOpenElementMenu={this.onOpenElementMenu}
-                    ></TEIEditor>
-                )    
+                if( resource instanceof TEIDocument ) {
+                    editors.push(
+                        <TEIEditor 
+                            key={key}
+                            hidden={hidden}
+                            width={width}
+                            teiDocument={resource}
+                            fairCopyProject={fairCopyProject}
+                            onStateChange={this.onStateChange}
+                            onOpenElementMenu={this.onOpenElementMenu}
+                        ></TEIEditor>
+                    )        
+                } else {
+                    editors.push(
+                        <FacsEditor
+                            key={key}
+                            hidden={hidden}
+                            width={width}
+                            facsDocument={resource}
+                            fairCopyProject={fairCopyProject}
+                            onStateChange={this.onStateChange}                        
+                        ></FacsEditor>
+                    )                     
+                }
             }
         }
 
@@ -227,8 +242,8 @@ export default class MainWindow extends Component {
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
 
-        const onSaveResource = (name, type) => {
-            fairCopyProject.newResource(name, type)
+        const onSaveResource = (name, type, url) => {
+            fairCopyProject.newResource(name, type, url)
             this.setState( {...this.state, editDialogMode: false} )
         }
 

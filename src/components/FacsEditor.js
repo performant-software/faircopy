@@ -1,16 +1,43 @@
 import React, { Component } from 'react'
-import OpenSeadragonViewer from "openseadragon-react-viewer"
+import OpenSeadragon from 'openseadragon';
+import axios from 'axios';
 
 export default class FacsEditor extends Component {
 
+    componentDidMount() {
+		const url = 'https://ids.lib.harvard.edu/ids/iiif/47174896/info.json'
+        this.loadFolio(url);
+    }
+
+    loadFolio(url){
+		if(typeof this.viewer !== 'undefined'){
+			this.viewer.destroy();
+		}
+		this.viewer = OpenSeadragon({
+            element: this.viewerEl
+        });
+        
+		axios.get(url).then(
+			(resp) => {
+				this.viewer.addTiledImage({
+					tileSource: resp.data
+				});
+			},
+			(error) => {
+				console.log('Unable to load image: ' + error);
+			}
+		);
+	}
+    
     render() {
-        const manifestUrl = 'https://iiif.stack.rdc.library.northwestern.edu/public/f9/12/a5/81/-d/9e/8-/43/d6/-a/7c/8-/a8/d4/6e/ff/75/17-manifest.json?manifest=https://iiif.stack.rdc.library.northwestern.edu/public/f9/12/a5/81/-d/9e/8-/43/d6/-a/7c/8-/a8/d4/6e/ff/75/17-manifest.json'
+        const { hidden } = this.props
+
+        const style = hidden ? { display: 'none' } : {}
 
         return (
-            <div className="FacsEditor">
-                <OpenSeadragonViewer manifestUrl={manifestUrl} />
+            <div id="FacsEditor" style={style} >
+                <div className="osd-viewer" ref={(el)=> { this.viewerEl = el }}></div>
             </div>
         )
     }
-   
 }
