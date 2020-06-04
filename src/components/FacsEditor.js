@@ -14,7 +14,9 @@ export default class FacsEditor extends Component {
     }
 
     initViewer = (el) => {
-		const url = 'https://ids.lib.harvard.edu/ids/iiif/47174896/info.json'
+        const { facsDocument } = this.props
+        const { facs } = facsDocument
+        const { surfaces } = facs
 
 		this.viewer = OpenSeadragon({
             // showNavigator: true,
@@ -23,8 +25,14 @@ export default class FacsEditor extends Component {
             showZoomControl: false,
             element: el
         });
+
+        const urls = []
+        for( const surface of surfaces ) {
+            const slash = surface.imageAPIURL.endsWith('/') ? '' : '/'
+            urls.push( `${surface.imageAPIURL}${slash}info.json` )
+        }
         
-		axios.get(url).then(
+		axios.get(urls[0]).then(
 			(resp) => {
 				this.viewer.addTiledImage({
 					tileSource: resp.data

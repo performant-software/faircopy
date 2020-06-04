@@ -10,7 +10,7 @@ export default class EditResourceDialog extends Component {
         this.initialState = {
             name: "",
             resourceType: "text",
-            url: "https://iiif.harvardartmuseums.org/manifests/object/299843"
+            url: ""
         }
         this.state = this.initialState
     }
@@ -66,16 +66,16 @@ export default class EditResourceDialog extends Component {
                         onChange={onChange}
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
-                        {/* <MenuItem value={'facs'}>Facsimile</MenuItem> */}
-                    </Select>
-                    {/* <TextField 
+                        <MenuItem value={'facs'}>Facsimile</MenuItem>
+                    </Select><br/>
+                    <TextField 
                         disabled={resourceType !== 'facs'}
                         name="url"
                         className="name-field"
                         value={url}
                         onChange={onChange}
                         label="IIIF Manigest URL" 
-                    /> */}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>

@@ -1,9 +1,12 @@
+import {teiToFacsimile, facsimileToTEI} from './convert-facs'
 
 const fairCopy = window.fairCopy
 
 export default class FacsDocument {
 
     constructor( resourceID ) {
+        this.facs = null
+
         if( resourceID ) {
             this.resourceID = resourceID
             this.name = 'test'
@@ -17,11 +20,14 @@ export default class FacsDocument {
         this.loading = true
     }
 
-    load( facs ) {
-        // const parser = new DOMParser();
-        // this.xmlDom = parser.parseFromString(facs, "text/xml");
-        // const facsEl = this.xmlDom.getElementsByTagName('facsimile')[0]
-        // TODO
+    load( facsXML ) {
+        this.facs = teiToFacsimile(facsXML)        
         this.loading = false
+    }
+
+    save() {
+        const fileContents = facsimileToTEI(this.facs)
+        fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
+        this.changedSinceLastSave = false
     }
 }

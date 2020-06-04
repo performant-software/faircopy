@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
-import {createFacsFromIIIF} from './iiif-processing'
+import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import FairCopyConfig from "./FairCopyConfig"
 import {teiTemplate} from "./tei-template"
@@ -52,7 +52,7 @@ export default class FairCopyProject {
         this.description = fairCopyManifest.description
         this.resources = fairCopyManifest.resources
     }
-
+    
     newResource( name, type, url ) {
         const resourceEntry = {
             id: uuidv4(),
@@ -64,7 +64,7 @@ export default class FairCopyProject {
         if( resourceEntry.type === 'text') {
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
         } else {
-            createFacsFromIIIF(url, (resourceData) => {
+            importIIIFManifest(url, (resourceData) => {
                 if( resourceData ) {
                     fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
                 }
