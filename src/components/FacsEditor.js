@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import OpenSeadragon from 'openseadragon';
 import axios from 'axios';
-import SeaDragonComponent from './SeaDragonComponent';
+import { Typography } from '@material-ui/core';
+
+import SearchBar from './SearchBar';
 
 export default class FacsEditor extends Component {
 
@@ -11,10 +13,14 @@ export default class FacsEditor extends Component {
         }    
     }
 
-    loadFolio = (el) => {
+    initViewer = (el) => {
 		const url = 'https://ids.lib.harvard.edu/ids/iiif/47174896/info.json'
 
 		this.viewer = OpenSeadragon({
+            // showNavigator: true,
+            showHomeControl: false,
+            showFullPageControl: false,
+            showZoomControl: false,
             element: el
         });
         
@@ -37,8 +43,25 @@ export default class FacsEditor extends Component {
 
         return (
             <div id="FacsEditor" style={style} >
-                <SeaDragonComponent loadFolio={this.loadFolio} ></SeaDragonComponent>
+                <div className="titlebar">
+                    <SearchBar></SearchBar>
+                    <Typography component="h1" variant="h6">Image Name</Typography>
+                </div>
+                <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
             </div>
         )
     }
 }
+
+class SeaDragonComponent extends Component {
+  
+    shouldComponentUpdate() {
+      return false;
+    }
+  
+    render() {
+      const { initViewer } = this.props
+      return <div className="osd-viewer" ref={(el)=> { initViewer(el) }}></div>
+    }
+  }
+  

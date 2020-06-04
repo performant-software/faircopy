@@ -1,4 +1,18 @@
 #FacsEditor .osd-viewer {
-    width: 500px;
-    height: 500px;
+    position: relative;
+		padding: 0;
+		margin: 0;
+		width: 100%;
+		height: calc( 100vh - 62px);
+}
+
+#FacsEditor .titlebar {
+    background: #0086C0;
+    color: white;
+    padding: 10px;
+    height: 42px;
+}
+
+#FacsEditor .titlebar h1 {
+    padding-top: 5px;
 }
