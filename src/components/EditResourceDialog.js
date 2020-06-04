@@ -59,23 +59,23 @@ export default class EditResourceDialog extends Component {
                         value={name}
                         onChange={onChange}
                         label="Resource Name" 
-                    />
+                    /><br/>
                     <Select
                         name="resourceType"
                         value={resourceType}
                         onChange={onChange}
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
-                        <MenuItem value={'facs'}>Facsimile</MenuItem>
+                        {/* <MenuItem value={'facs'}>Facsimile</MenuItem> */}
                     </Select>
-                    <TextField 
+                    {/* <TextField 
                         disabled={resourceType !== 'facs'}
                         name="url"
                         className="name-field"
                         value={url}
                         onChange={onChange}
                         label="IIIF Manigest URL" 
-                    />
+                    /> */}
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>

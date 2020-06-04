@@ -65,7 +65,9 @@ export default class FairCopyProject {
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
         } else {
             createFacsFromIIIF(url, (resourceData) => {
-                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
+                if( resourceData ) {
+                    fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
+                }
             })
         }
     }
