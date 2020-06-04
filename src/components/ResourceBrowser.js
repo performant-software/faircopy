@@ -131,7 +131,7 @@ export default class ResourceBrowser extends Component {
             {resource.name}
           </TableCell>
           <TableCell {...cellProps} >
-            text
+            {resource.type}
           </TableCell>
           <TableCell {...cellProps} >
             ---

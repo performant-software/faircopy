@@ -6,6 +6,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Button, Typography } from '@material-ui/core';
 
+import TEIDocument from '../tei-document/TEIDocument'
+
 export default class ProjectNavigator extends Component {
 
     onClickNode = (e) => {
@@ -64,7 +66,8 @@ export default class ProjectNavigator extends Component {
         const {resourceID} = resource
         const {name} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
-        const icon = <i className="fas fa-book fa-lg"></i>
+        const iconType = resource instanceof TEIDocument ? 'fa-book' : 'fa-image' 
+        const icon = <i className={`fas ${iconType} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID)
         treeNodes.push(
           <TreeItem 
