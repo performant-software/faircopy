@@ -5,9 +5,9 @@ export default class FacsDocument {
 
     constructor( resourceID ) {
         if( resourceID ) {
-            this.requestResource( resourceID )
             this.resourceID = resourceID
             this.name = 'test'
+            this.requestResource( resourceID )
         }
         this.changedSinceLastSave = false
     }

@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
 import OpenSeadragon from 'openseadragon';
 import axios from 'axios';
+import SeaDragonComponent from './SeaDragonComponent';
 
 export default class FacsEditor extends Component {
 
-    componentDidMount() {
-		const url = 'https://ids.lib.harvard.edu/ids/iiif/47174896/info.json'
-        this.loadFolio(url);
+    componentWillUnmount() {
+        if(typeof this.viewer !== 'undefined'){
+            this.viewer.destroy();
+        }    
     }
 
-    loadFolio(url){
-		if(typeof this.viewer !== 'undefined'){
-			this.viewer.destroy();
-		}
+    loadFolio = (el) => {
+		const url = 'https://ids.lib.harvard.edu/ids/iiif/47174896/info.json'
+
 		this.viewer = OpenSeadragon({
-            element: this.viewerEl
+            element: el
         });
         
 		axios.get(url).then(
@@ -36,7 +37,7 @@ export default class FacsEditor extends Component {
 
         return (
             <div id="FacsEditor" style={style} >
-                <div className="osd-viewer" ref={(el)=> { this.viewerEl = el }}></div>
+                <SeaDragonComponent loadFolio={this.loadFolio} ></SeaDragonComponent>
             </div>
         )
     }
