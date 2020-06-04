@@ -26,7 +26,10 @@ export const teiTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 </TEI>
 `
 
-export const facsTemplate = `
+export const facsTemplate = (data) => { 
+    const { manifestURL } = data
+
+    return `
 <?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
@@ -48,7 +51,8 @@ export const facsTemplate = `
             </sourceDesc>
         </fileDesc>
     </teiHeader>
-    <facsimile>
+    <facsimile sameAs="${manifestURL}">
     </facsimile>
 </TEI>
 `
+}

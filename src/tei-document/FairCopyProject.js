@@ -61,13 +61,13 @@ export default class FairCopyProject {
         }
         this.resources[resourceEntry.id] = resourceEntry
 
-        let resourceData
         if( resourceEntry.type === 'text') {
-            resourceData = teiTemplate
+            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
         } else {
-            resourceData = createFacsFromIIIF(url)
+            createFacsFromIIIF(url, (resourceData) => {
+                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
+            })
         }
-        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
     }
 
     removeResources( resourceIDs ) {
