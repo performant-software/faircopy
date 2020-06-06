@@ -18,30 +18,26 @@ export default class FacsEditor extends Component {
         const { facs } = facsDocument
         const { surfaces } = facs
 
-		this.viewer = OpenSeadragon({
-            // showNavigator: true,
-            showHomeControl: false,
-            showFullPageControl: false,
-            showZoomControl: false,
-            element: el
-        });
-
-        const urls = []
-        for( const surface of surfaces ) {
+        // create an array of ajax get promises
+        const requests = []
+        for( const surface of surfaces.slice(0,3) ) {
             const slash = surface.imageAPIURL.endsWith('/') ? '' : '/'
-            urls.push( `${surface.imageAPIURL}${slash}info.json` )
+            requests.push( axios.get(`${surface.imageAPIURL}${slash}info.json`) )
         }
-        
-		axios.get(urls[0]).then(
-			(resp) => {
-				this.viewer.addTiledImage({
-					tileSource: resp.data
-				});
-			},
-			(error) => {
-				console.log('Unable to load image: ' + error);
-			}
-		);
+
+        Promise.all(requests).then((responses) => {
+            const tileSources = responses.map((response) => response.data )
+            this.viewer = OpenSeadragon({
+                element: el,
+                tileSources,
+                showHomeControl: false,
+                showFullPageControl: false,
+                showZoomControl: false,
+                sequenceMode: true
+            })    
+        }, (err) => {
+            console.log('Unable to load image: ' + err);
+        })
 	}
     
     render() {
