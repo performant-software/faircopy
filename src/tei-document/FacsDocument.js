@@ -15,6 +15,10 @@ export default class FacsDocument {
         this.changedSinceLastSave = false
     }
 
+    getSurfaces() {
+        return this.facs.surfaces
+    }
+
     requestResource( resourceID ) {
         fairCopy.services.ipcSend('requestResource', resourceID )
         this.loading = true

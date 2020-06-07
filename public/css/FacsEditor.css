@@ -16,3 +16,24 @@
 #FacsEditor .titlebar h1 {
     padding-top: 5px;
 }
+
+#FacsEditor .prev-nav-button {
+    position: absolute;
+    z-index:800;
+    margin-left: 20px;
+    margin-top: 300px;
+    color: white;
+}
+
+#FacsEditor .next-nav-button {
+    position: absolute;
+    z-index:800;
+    right: 0px;
+    margin-right: 20px;
+    margin-top: 300px;
+    color: white;
+}
+
+#FacsEditor .editor {
+    background: black;
+}
