@@ -32,6 +32,10 @@ export default class FacsEditor extends Component {
     }
 
     initViewer = (el) => {
+        if( !el ) {
+            this.viewer = null
+            return
+        }
         const { surface } = this.state
         const imageInfoURL = this.getImageInfoURL( surface )
         axios.get(imageInfoURL).then((response) => {
