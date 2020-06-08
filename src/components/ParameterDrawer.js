@@ -286,7 +286,7 @@ export default class ParameterDrawer extends Component {
 
     render() {
         const { teiDocument } = this.props
-        const { editorView, fairCopyConfig } = teiDocument
+        const { editorView } = teiDocument
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
 
         const selection = (editorView) ? editorView.state.selection : null 
