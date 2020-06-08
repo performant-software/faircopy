@@ -4,7 +4,6 @@ import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
-import FairCopyConfig from "./FairCopyConfig"
 import {teiTemplate} from "./tei-template"
 
 const fairCopy = window.fairCopy
@@ -14,7 +13,7 @@ export default class FairCopyProject {
     constructor(projectData) {
         this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
-        this.fairCopyConfig = new FairCopyConfig(projectData.fairCopyConfig)
+        this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
     }

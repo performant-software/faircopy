@@ -44,9 +44,7 @@ export default class TEIDocument {
         const parser = new DOMParser();
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
-
-        this.fairCopyConfig.createNew()
-       
+               
         const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
@@ -193,6 +191,12 @@ export default class TEIDocument {
         })
 
         return result
+    }
+
+    getVocab(elementName,attrName) {
+        const vocabID = this.fairCopyConfig.elements[elementName].attrState[attrName].vocabID
+        const vocab = ( vocabID && this.fairCopyConfig.vocabs[vocabID]) ? this.fairCopyConfig.vocabs[vocabID] : []
+        return { vocabID, vocab } 
     }
 
     requestResource( resourceID ) {

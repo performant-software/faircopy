@@ -125,7 +125,7 @@ export default class ParameterDrawer extends Component {
             )
         }
         if( dataType === 'teidata.enumerated' ) {
-            const { vocab } = this.props.teiDocument.fairCopyConfig.getVocab(elementName,attrName)
+            const { vocab } = this.props.teiDocument.getVocab(elementName,attrName)
             return (
                 <TEIEnumeratedField
                     elementName={elementName}
@@ -241,7 +241,7 @@ export default class ParameterDrawer extends Component {
     renderElement(element,count,key) {
         const { width, teiDocument } = this.props
         const { elements } = teiDocument.teiSchema
-        const configElements = teiDocument.fairCopyConfig.state.elements
+        const configElements = teiDocument.fairCopyConfig.elements
         const name = element.type.name
         const elementSpec = elements[name]
         const {attrState} = configElements[name]
@@ -343,7 +343,7 @@ export default class ParameterDrawer extends Component {
                     onClose={onCloseAttributeDialog} 
                 ></AttributeDialog>
                 <VocabDialog 
-                    fairCopyConfig={fairCopyConfig}
+                    teiDocument={teiDocument}
                     elementName={openElementName}
                     attrName={openAttrName}
                     open={vocabDialogOpen} 

@@ -113,7 +113,7 @@ function writeArchive(zipPath, zipData) {
         });
 }
 
-const createProjectArchive = function createProjectArchive(projectInfo) {
+const createProjectArchive = function createProjectArchive(projectInfo,baseDir) {
     const { name, description, filePath, appVersion } = projectInfo
     const projectArchive = new JSZip()      
    
@@ -124,13 +124,11 @@ const createProjectArchive = function createProjectArchive(projectInfo) {
         resources: {}
     }
 
-    // TODO how to do config?
-    const fairCopyConfig = {
-
-    }
+    // Load the initial config for the project
+    const fairCopyConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
     projectArchive.file(manifestEntryName, JSON.stringify(fairCopyManifest))
-    projectArchive.file(configSettingsEntryName, JSON.stringify(fairCopyConfig))
+    projectArchive.file(configSettingsEntryName, fairCopyConfig)
     writeArchive(filePath,projectArchive)
 }
 

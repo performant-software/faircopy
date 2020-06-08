@@ -53,6 +53,8 @@ export default class ProjectWindow extends Component {
         }
         const { projectName, description, filePath } = this.state
         const saveAllowed = (projectName.length > 0 && filePath.length > 0 )
+        const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
+
         return (
             <div className="content new-project-form">
                 <Typography variant="h6" component="h2">Start a New Project</Typography>
@@ -80,12 +82,12 @@ export default class ProjectWindow extends Component {
                             value={filePath}
                             disabled
                         />
-                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='outlined'>Browse...</Button>
+                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Browse...</Button>
                     </li>
                 </ul>
                 <div className='form-actions'>
-                    <Button disabled={!saveAllowed} className='action-button' onClick={onClickSave} variant='outlined'>Save</Button>
-                    <Button className='action-button' onClick={onClickCancel} variant='outlined'>Cancel</Button>
+                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Save</Button>
+                    <Button className='action-button' onClick={onClickCancel} variant='contained'>Cancel</Button>
                 </div>
             </div>
         )
@@ -131,8 +133,8 @@ export default class ProjectWindow extends Component {
             <div className="content select-project">
                 <div className="left-side">
                     <ul>
-                        <li><Button onClick={onClickNew} variant='outlined'>New Project...</Button></li>
-                        <li><Button onClick={onClickOpen} variant='outlined'>Open Project...</Button></li>
+                        <li><Button onClick={onClickNew} variant='contained'>New Project...</Button></li>
+                        <li><Button onClick={onClickOpen} variant='contained'>Open Project...</Button></li>
                     </ul>
                 </div>
                 <div className="right-side">

@@ -23,16 +23,17 @@ export default class VocabDialog extends Component {
         if( this.state.vocabID ) {
             return { vocabID: this.state.vocabID, vocab: this.state.vocab }
         } else {
-            const { fairCopyConfig, elementName, attrName } = this.props
-            const v = fairCopyConfig.getVocab( elementName, attrName )
+            const { teiDocument, elementName, attrName } = this.props
+            const v = teiDocument.getVocab( elementName, attrName )
             return { vocab: [...v.vocab], vocabID: v.vocabID }
         }
     }
 
     onSave = () => {
         const { vocab, vocabID } = this.state
-        const { onClose, fairCopyConfig } = this.props
-        fairCopyConfig.setVocabState(vocabID, vocab)
+        const { onClose, teiDocument } = this.props
+        const { fairCopyConfig } = teiDocument
+        fairCopyConfig.vocabs[vocabID] = vocab
         this.setState({ ...this.initialState })
         onClose()
     }

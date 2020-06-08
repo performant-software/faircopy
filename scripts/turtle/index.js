@@ -7,6 +7,7 @@ const fs = require('fs');
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
 const {parseSpecs} = require('./parse-specs');
+const {createConfig} = require('./create-config')
 
 // const teiSimplePrintODD = 'scripts/tei_simplePrint.odd'
 
@@ -225,6 +226,10 @@ async function run() {
 
     const teiSimpleConfig = { elements, attrs }
     fs.writeFileSync("public/main-process/config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
+
+    // new project config is based on schema
+    const fairCopyConfig = createConfig(teiSimpleConfig)
+    fs.writeFileSync("public/main-process/config/faircopy-config.json",JSON.stringify(fairCopyConfig, null, '\t'))
 }
 
 // A wise turtle that understands ODD and ProseMirror

@@ -78,6 +78,11 @@
     background: white;
 }
 
+#ProjectWindow .save-button-active {
+    background: #1976d2;
+    margin-right: 10px;
+}
+
 #ProjectWindow .version {
     margin: 20px;
 }

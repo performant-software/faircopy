@@ -10,7 +10,7 @@ export default class AttributeDialog extends Component {
         const {elementName, teiDocument} = this.props
         const {attrs} = teiDocument.teiSchema
         const {fairCopyConfig} = teiDocument
-        const {elements} = fairCopyConfig.state
+        const {elements} = fairCopyConfig
         const {attrState} = elements[elementName]
 
         const tableRows = []
@@ -20,7 +20,7 @@ export default class AttributeDialog extends Component {
             if( !attr.hidden ) {
                 const onChange = () => {
                     const active = !attrState[attrName].active
-                    fairCopyConfig.setAttrState(elementName, attrName, { ...attrState[attrName], active })
+                    fairCopyConfig.elements[elementName].attrState[attrName] = { ...attrState[attrName], active }
                     teiDocument.refreshView()
                 }
             
@@ -67,7 +67,7 @@ export default class AttributeDialog extends Component {
             <Dialog open={open} onClose={onClose} aria-labelledby="attribute-dialog">
                 <DialogTitle id="attribute-dialog">Available Attributes for {elementName}</DialogTitle>
                 <DialogContent>
-        <Typography>Select attributes to describe this element. These attributes will appear for every instance of {elementName}.</Typography>
+                    <Typography>Select attributes to describe this element. These attributes will appear for every instance of {elementName}.</Typography>
                     { this.renderTable() }                    
                 </DialogContent>
                 <DialogActions>
