@@ -113,14 +113,14 @@ function writeArchive(zipPath, zipData) {
         });
 }
 
-const createProjectArchive = function createProject(projectInfo) {
-    const { name, description, filePath } = projectInfo
+const createProjectArchive = function createProjectArchive(projectInfo) {
+    const { name, description, filePath, appVersion } = projectInfo
     const projectArchive = new JSZip()      
    
     const fairCopyManifest = {
         projectName: name,
         description: description,
-        appVersion: "0.5.3",
+        appVersion,
         resources: {}
     }
 

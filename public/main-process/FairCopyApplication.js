@@ -59,7 +59,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive(projectInfo)
+      createProjectArchive({ ...projectInfo, appVersion: this.versionNumber})
       this.openProject(projectInfo.filePath)
     })
 
