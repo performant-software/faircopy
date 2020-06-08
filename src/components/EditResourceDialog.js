@@ -5,23 +5,26 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem,
 
 export default class EditResourceDialog extends Component {
 
-    constructor() {
-        super()
-        this.initialState = {
+    constructor(props) {
+        super(props)
+
+        const { resourceEntry } = this.props
+        this.initialState = resourceEntry ? { ...resourceEntry } : {
             name: "",
-            resourceType: "text",
+            localID: "",
+            type: "text",
             url: ""
         }
         this.state = this.initialState
     }
 
     render() {      
-        const { editDialogMode, onSave, onClose } = this.props
+        const { editDialogMode, onSave, onClose, resourceEntry } = this.props
         
         const onChange = (e) => {
             const {name, value} = e.target
             const nextState = { ...this.state }
-            if( name === 'resourceType' && value === 'text' ) {
+            if( name === 'type' && value === 'text' ) {
                 nextState['url'] = ''
             }
             nextState[name] = value
@@ -29,10 +32,10 @@ export default class EditResourceDialog extends Component {
         }
 
         const onSaveResource = () => {
-            const { name, resourceType, url } = this.state
-            if( name.length > 0 ) {
+            const { name, type, localID, url } = this.state
+            if( name.length > 0 && localID && localID.length > 0) {
                 this.setState(this.initialState)
-                onSave(name,resourceType,url)
+                onSave(name,localID,type,url)
             }
         }
 
@@ -41,7 +44,9 @@ export default class EditResourceDialog extends Component {
             onClose()
         }
 
-        const { name, resourceType, url } = this.state
+        const dialogTitle = resourceEntry ? "Edit Resource" : "Create Resource"
+
+        const { name, type, localID, url } = this.state
 
         return (
             <Dialog
@@ -51,7 +56,7 @@ export default class EditResourceDialog extends Component {
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Create Resource</DialogTitle>
+                <DialogTitle id="edit-resource-title">{dialogTitle}</DialogTitle>
                 <DialogContent>
                     <TextField 
                         name="name"
@@ -60,22 +65,28 @@ export default class EditResourceDialog extends Component {
                         onChange={onChange}
                         label="Resource Name" 
                     /><br/>
-                    <Select
-                        name="resourceType"
-                        value={resourceType}
+                    <TextField 
+                        name="localID"
+                        className="name-field"
+                        value={localID}
+                        onChange={onChange}
+                        label="ID" 
+                    /><br/>
+                    { !resourceEntry && <span><Select
+                        name="type"
+                        value={type}
                         onChange={onChange}
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
                         <MenuItem value={'facs'}>Facsimile</MenuItem>
-                    </Select><br/>
-                    <TextField 
-                        disabled={resourceType !== 'facs'}
+                    </Select><br/></span>}
+                    { type === 'facs' && <TextField 
                         name="url"
                         className="name-field"
                         value={url}
                         onChange={onChange}
                         label="IIIF Manigest URL" 
-                    />
+                    /> }
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>

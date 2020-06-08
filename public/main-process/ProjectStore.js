@@ -69,6 +69,12 @@ class ProjectStore {
         this.saveManifest()
     }
 
+    updateResource(resourceEntryJSON) {
+        const resourceEntry = JSON.parse(resourceEntryJSON)
+        this.manifestData.resources[resourceEntry.id] = resourceEntry
+        this.saveManifest()
+    }
+
     saveManifest() {
         this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
         this.writeProjectArchive()

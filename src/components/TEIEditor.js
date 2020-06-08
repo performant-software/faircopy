@@ -100,7 +100,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editMode, width, hidden, onOpenElementMenu, fairCopyProject } = this.props
+        const { teiDocument, editMode, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject } = this.props
         const { scrollTop } = this.state
 
         const onRef = (el) => {
@@ -125,6 +125,7 @@ export default class TEIEditor extends Component {
                         teiDocument={teiDocument}
                         width={width}
                         onOpenElementMenu={onOpenElementMenu}
+                        onEditResource={onEditResource}
                     ></EditorToolbar>
                     <div style={{width: width ? width : '100%'}} ref={onRef} className='body'>
                         <EditorGutter 

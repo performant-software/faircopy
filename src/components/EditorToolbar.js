@@ -7,7 +7,7 @@ import { eraseSelection } from "../tei-document/editor-actions"
 export default class EditorToolbar extends Component {
     
     render() {
-        const { onOpenElementMenu, teiDocument } = this.props
+        const { onOpenElementMenu, onEditResource, teiDocument } = this.props
 
         const onClickSave = () => {
             teiDocument.save()
@@ -52,7 +52,7 @@ export default class EditorToolbar extends Component {
                         <i className="fas fa-eraser fa-2x"></i>
                     </Button>  
                     <Button
-                        disabled
+                        onClick={onEditResource}
                         className="toolbar-button"
                         {...buttonProps}
                     >

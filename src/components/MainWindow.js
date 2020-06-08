@@ -194,6 +194,7 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onStateChange={this.onStateChange}
                             onOpenElementMenu={this.onOpenElementMenu}
+                            onEditResource={this.onEditResource}
                         ></TEIEditor>
                     )        
                 } else {
@@ -204,7 +205,8 @@ export default class MainWindow extends Component {
                             width={width}
                             facsDocument={resource}
                             fairCopyProject={fairCopyProject}
-                            onStateChange={this.onStateChange}                        
+                            onStateChange={this.onStateChange}       
+                            onEditResource={this.onEditResource}                 
                         ></FacsEditor>
                     )                     
                 }
@@ -241,9 +243,14 @@ export default class MainWindow extends Component {
         const openMenu = openMenuID ? menus[openMenuID] : null
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
+        const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
 
-        const onSaveResource = (name, type, url) => {
-            fairCopyProject.newResource(name, type, url)
+        const onSaveResource = (name,localID,type,url) => {
+            if( resourceEntry ) {
+                fairCopyProject.updateResource({ id: resourceEntry.id, name, localID, type })
+            } else {
+                fairCopyProject.newResource(name,localID,type,url)    
+            }
             this.setState( {...this.state, editDialogMode: false} )
         }
 
@@ -271,11 +278,11 @@ export default class MainWindow extends Component {
                 <AlertDialog
                     alertDialogMode={alertDialogMode}
                 ></AlertDialog>
-                <EditResourceDialog
-                    editDialogMode={editDialogMode}
+                { editDialogMode && <EditResourceDialog
+                    resourceEntry={resourceEntry}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
-                ></EditResourceDialog>
+                ></EditResourceDialog> }
                 <ElementMenu
                     teiDocument={teiDocument}
                     menuGroups={openMenu}

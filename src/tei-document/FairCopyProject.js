@@ -53,9 +53,19 @@ export default class FairCopyProject {
         this.resources = fairCopyManifest.resources
     }
     
-    newResource( name, type, url ) {
+    updateResource( resourceEntry ) {
+        if( this.resources[resourceEntry.id] ) {
+            this.resources[resourceEntry.id] = resourceEntry
+            fairCopy.services.ipcSend('updateResource', JSON.stringify(resourceEntry) )
+        } else {
+            console.log(`Unable to update resource: ${resourceEntry}`)
+        }
+    }
+
+    newResource( name, localID, type, url ) {
         const resourceEntry = {
             id: uuidv4(),
+            localID,
             name, 
             type
         }

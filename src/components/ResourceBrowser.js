@@ -128,6 +128,9 @@ export default class ResourceBrowser extends Component {
             <Checkbox onClick={onClickCheck} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
           <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
+            {resource.localID}
+          </TableCell>
+          <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
             {resource.name}
           </TableCell>
           <TableCell {...cellProps} >
@@ -149,6 +152,7 @@ export default class ResourceBrowser extends Component {
           <TableHead>
             <TableRow>
               <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+              <TableCell padding="none">ID</TableCell>
               <TableCell padding="none">Name</TableCell>
               <TableCell padding="none">Type</TableCell>
               <TableCell padding="none">Tags</TableCell>
