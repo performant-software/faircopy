@@ -7,7 +7,7 @@ const { FairCopyApplication } = require('./main-process/FairCopyApplication')
 let fairCopyApplication
 
 function createApplicationWindowManager () {
-  const debugMode = process.env.FAIRCOPY_DEBUG_MODE
+  const debugMode = false //process.env.FAIRCOPY_DEBUG_MODE
   fairCopyApplication = new FairCopyApplication()
   if( debugMode ) {
     fairCopyApplication.createMainWindow().then(() => {

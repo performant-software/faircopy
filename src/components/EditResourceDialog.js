@@ -3,17 +3,20 @@ import React, { Component } from 'react'
 import { Button } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select } from '@material-ui/core'
 
+import { idValidator, validateURL } from '../tei-document/attribute-validators'
+
 export default class EditResourceDialog extends Component {
 
     constructor(props) {
         super(props)
 
         const { resourceEntry } = this.props
-        this.initialState = resourceEntry ? { ...resourceEntry } : {
+        this.initialState = resourceEntry ? { ...resourceEntry, validationErrors: {} } : {
             name: "",
             localID: "",
             type: "text",
-            url: ""
+            url: "",
+            validationErrors: {}
         }
         this.state = this.initialState
     }
@@ -32,10 +35,29 @@ export default class EditResourceDialog extends Component {
         }
 
         const onSaveResource = () => {
+            const { resourceEntry } = this.props
             const { name, type, localID, url } = this.state
-            if( name.length > 0 && localID && localID.length > 0) {
+
+            const nextErrors = {}
+            if( name.length === 0 ) nextErrors['name'] = "Name cannot be blank."
+
+            if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
+            else {
+                const idValid = idValidator(localID)
+                if( idValid.error ) nextErrors['localID'] = idValid.errorMessage    
+            }
+
+            if( !resourceEntry && type === 'facs') { 
+                const validURL = validateURL(url)
+                if( validURL.error ) nextErrors['url'] = validURL.errorMessage
+            }
+
+            const hasErrors = Object.keys(nextErrors).length > 0
+            if( hasErrors ) {
+                this.setState({ ...this.state, validationErrors: nextErrors })
+            } else {
                 this.setState(this.initialState)
-                onSave(name,localID,type,url)
+                onSave(name,localID,type,url)    
             }
         }
 
@@ -46,7 +68,7 @@ export default class EditResourceDialog extends Component {
 
         const dialogTitle = resourceEntry ? "Edit Resource" : "Create Resource"
 
-        const { name, type, localID, url } = this.state
+        const { name, type, localID, url, validationErrors } = this.state
 
         return (
             <Dialog
@@ -63,6 +85,8 @@ export default class EditResourceDialog extends Component {
                         className="name-field"
                         value={name}
                         onChange={onChange}
+                        error={validationErrors['name'] !== undefined }
+                        helperText={validationErrors['name']}
                         label="Resource Name" 
                     /><br/>
                     <TextField 
@@ -70,6 +94,8 @@ export default class EditResourceDialog extends Component {
                         className="name-field"
                         value={localID}
                         onChange={onChange}
+                        error={validationErrors['localID'] !== undefined }
+                        helperText={validationErrors['localID']}
                         label="ID" 
                     /><br/>
                     { !resourceEntry && <span><Select
@@ -85,7 +111,9 @@ export default class EditResourceDialog extends Component {
                         className="name-field"
                         value={url}
                         onChange={onChange}
-                        label="IIIF Manigest URL" 
+                        error={validationErrors['url'] !== undefined }
+                        helperText={validationErrors['url']}
+                        label="IIIF Manifest URL" 
                     /> }
                 </DialogContent>
                 <DialogActions>

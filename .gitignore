@@ -4,9 +4,9 @@ yarn-error.log
 /scripts/node_modules
 /scripts/yarn-error.log
 /build
-test-docs/je_example_out.xml
 /dist
 /package
+/test-docs/example.faircopy
 /temp
 faircopy*.tgz
 /public/version.txt

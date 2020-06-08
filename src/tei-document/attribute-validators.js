@@ -69,3 +69,12 @@ export function teiDataWordValidator( value, minOccurs, maxOccurs ) {
 
     return { error: false, errorMessage: "" }
 }
+
+export function validateURL(value) {
+    try {
+        new URL(value)
+        return { error: false, errorMessage: ""}
+    } catch(e) {
+        return { error: true, errorMessage: `Invalid URL` }
+    }
+}
