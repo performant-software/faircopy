@@ -145,7 +145,7 @@ export default class TEIDocument {
 
         const gatherID = (element) => {
             const xmlID = element.attrs['xml:id']
-            if( xmlID ) xmlIDs.push(`#${xmlID}`)
+            if( xmlID ) xmlIDs.push(xmlID)
         }
         
         // gather up all xml:ids and their nodes/marks
@@ -157,7 +157,12 @@ export default class TEIDocument {
             return true
         })
 
-        return xmlIDs.sort()
+        const sortedIDs = xmlIDs.sort()
+        const xmlIDMap = {}
+        for( const id of sortedIDs ) {
+            xmlIDMap[id] = 'text'
+        }
+        return xmlIDMap
     }
 
     findID(targetID) {
