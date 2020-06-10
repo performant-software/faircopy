@@ -25,6 +25,15 @@ class MainMenu {
         })
     }
 
+    openImport = () => {
+      return dialog.showOpenDialogSync( {
+          filters: [ 
+            { name: 'TEI XML', extensions: ['xml'] }
+          ],
+          properties: [ 'openFile' ]
+      })
+    }
+
     closeProject = () => {
       this.fairCopyApplication.closeProject()
     }

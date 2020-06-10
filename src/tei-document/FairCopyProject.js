@@ -98,4 +98,19 @@ export default class FairCopyProject {
             return new FacsDocument( resourceID )
         }        
     }
+
+    importResource(importData) {
+        const { data } = importData
+        // TODO base this on file path
+        const simpleName = 'importtest'
+
+        const resourceEntry = {
+            id: uuidv4(),
+            localID: simpleName,
+            name: simpleName,
+            type: 'text'
+        }
+        this.resources[resourceEntry.id] = resourceEntry
+        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
+    }
 }

@@ -38,6 +38,7 @@ export default class MainWindow extends Component {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('fileSaved', (event, resourceID) => this.saved(resourceID))
+        services.ipcRegisterCallback('importOpened', (event, importData) => this.receiveImportData(importData))
     }
     
     saved(resourceID) {
@@ -56,6 +57,11 @@ export default class MainWindow extends Component {
             openResource.load(resource)
             this.setState({...this.state})
         } 
+    }
+
+    receiveImportData( importData ) {
+        const { fairCopyProject } = this.props
+        fairCopyProject.importResource(importData)
     }
 
     onStateChange = (nextState) => {
@@ -154,6 +160,10 @@ export default class MainWindow extends Component {
         this.setState({...this.state, editDialogMode: true })
     }
 
+    onImportResource = () => {
+        fairCopy.services.ipcSend('requestImport')
+    }
+
     onResourceAction = (actionID, resourceIDs) => {
         const { fairCopyProject } = this.props
 
@@ -228,6 +238,7 @@ export default class MainWindow extends Component {
                         onResourceAction={this.onResourceAction}
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onEditResource={this.onEditResource}
+                        onImportResource={this.onImportResource}
                         fairCopyProject={fairCopyProject}
                     ></ResourceBrowser> }
                 { this.renderEditors() }

@@ -54,7 +54,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderToolbar() {
-    const { onEditResource } = this.props
+    const { onEditResource, onImportResource } = this.props
     const { checked } = this.state
 
     const buttonProps = {
@@ -70,7 +70,7 @@ export default class ResourceBrowser extends Component {
     return (
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>Create</Button>    
-        <Button disabled {...buttonProps}>Import</Button>    
+        <Button onClick={onImportResource} {...buttonProps}>Import</Button>    
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}

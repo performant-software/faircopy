@@ -43,6 +43,14 @@ class FairCopyApplication {
     ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
     ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
     ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
+    
+    ipcMain.on('requestImport', (event) => { 
+      const paths = this.mainMenu.openImport()
+      const path = paths[0]
+      const data = fs.readFileSync(path).toString('utf-8')
+      const importData = { path, data }
+      this.sendToMainWindow('importOpened', importData )
+    })
 
     // TODO refactor
     // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
