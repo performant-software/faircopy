@@ -43,7 +43,10 @@ class ProjectStore {
             return
         }
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups }
+        // TODO load id map
+        const idMap = "{}"
+
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, idMap }
         this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
     }
 
@@ -105,6 +108,7 @@ class ProjectStore {
 }
 
 function writeArchive(zipPath, zipData) {
+    // TODO can we debounce this to prevent numerous calls?
     zipData
         .generateNodeStream({type:'nodebuffer',streamFiles:true})
         .pipe(fs.createWriteStream(zipPath))

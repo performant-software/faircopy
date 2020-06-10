@@ -4,6 +4,7 @@ import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
+import IDMap from "./IDMap"
 import {teiTemplate} from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
 
@@ -17,6 +18,7 @@ export default class FairCopyProject {
         this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
+        this.idMap = new IDMap(this.teiSchema,JSON.parse(projectData.idMap))
     }
 
     parseMenus(json) {
@@ -105,16 +107,21 @@ export default class FairCopyProject {
         
         const name = fairCopy.services.getBasename(path,'.xml').trim()
         const sanitizedID = sanitizeID(name)
-        const localID = sanitizedID ? sanitizedID : 'abcd'  // TODO generate a unique ID
-        // TODO ensure localID uniqueness in project
-
+        const localID = sanitizedID && !this.idMap.get(sanitizedID) ? sanitizedID : this.idMap.getUniqueID()  
+        
         const resourceEntry = {
             id: uuidv4(),
             localID,
             name,
             type: 'text'
         }
-        this.resources[resourceEntry.id] = resourceEntry
-        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
+
+        if( this.idMap.addText(localID,data) ) {
+            this.resources[resourceEntry.id] = resourceEntry
+            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
+            this.idMap.save()    
+        } else {
+            console.log(`Error adding text to ID Map: ${path}`)
+        }
     }
 }
