@@ -2,11 +2,9 @@
 
 // TODO use this code as part of the XML import process
 
-export function createFromDoc(teiDocument) {
-    const { teiSchema } = teiDocument
+export function learnDoc(fairCopyConfig, doc, teiSchema) {
     const { subDocIDs } = teiSchema
-    const doc = teiDocument.initialState.doc
-    const { elements, vocabs } = this.createNew(teiSchema)
+    const { elements, vocabs } = fairCopyConfig
 
     const addTerm = ( vocabID, term ) => {
         const vocabEntry = vocabs[vocabID]
@@ -81,18 +79,4 @@ export function createFromDoc(teiDocument) {
 
 function getDefaultVocabKey(elementName,attributeName) {
     return `${elementName}[${attributeName}]`
-}
-
-//Old interface////////////////////////////////////////////////////////////////
-
-function setAttrState(elementName,attrName,nextAttrState) {        
-    const nextState = { ...this.state }
-    nextState.elements[elementName].attrState[attrName] = nextAttrState
-    this.setState(nextState)        
-}
-
-function setVocabState(vocabID,nextVocabState) {
-    const nextState = { ...this.state }
-    nextState.vocabs[vocabID] = nextVocabState
-    this.setState(nextState)        
 }

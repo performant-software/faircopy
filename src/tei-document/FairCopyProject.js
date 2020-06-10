@@ -7,6 +7,7 @@ import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import {teiTemplate} from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
+import {learnDoc} from "./faircopy-config"
 
 const fairCopy = window.fairCopy
 
@@ -116,7 +117,14 @@ export default class FairCopyProject {
             type: 'text'
         }
 
-        if( this.idMap.addText(localID,data) ) {
+        // parse the data into a ProseMirror doc
+        const parser = new DOMParser();
+        const xmlDom = parser.parseFromString(data, "text/xml");
+        const bodyEl = xmlDom.getElementsByTagName('body')[0]
+        const doc = this.teiSchema.domParser.parse(bodyEl)
+
+        if( this.idMap.addText(localID,doc) ) {
+            this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema)
             this.resources[resourceEntry.id] = resourceEntry
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
             this.idMap.save()    

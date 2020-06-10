@@ -7,13 +7,8 @@ export default class IDMap {
         this.idMap = idMapData
     }
 
-    addText(localID, xml) {        
+    addText(localID, doc) {        
         if( this.get(localID) ) return false
-
-        const parser = new DOMParser();
-        const xmlDom = parser.parseFromString(xml, "text/xml");
-        const bodyEl = xmlDom.getElementsByTagName('body')[0]
-        const doc = this.teiSchema.domParser.parse(bodyEl)
 
         const xmlIDs = []
 
