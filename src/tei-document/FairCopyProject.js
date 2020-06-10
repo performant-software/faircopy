@@ -5,6 +5,7 @@ import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import {teiTemplate} from "./tei-template"
+import {sanitizeID} from "./attribute-validators"
 
 const fairCopy = window.fairCopy
 
@@ -100,14 +101,17 @@ export default class FairCopyProject {
     }
 
     importResource(importData) {
-        const { data } = importData
-        // TODO base this on file path
-        const simpleName = 'importtest'
+        const { path, data } = importData
+        
+        const name = fairCopy.services.getBasename(path,'.xml').trim()
+        const sanitizedID = sanitizeID(name)
+        const localID = sanitizedID ? sanitizedID : 'abcd'  // TODO generate a unique ID
+        // TODO ensure localID uniqueness in project
 
         const resourceEntry = {
             id: uuidv4(),
-            localID: simpleName,
-            name: simpleName,
+            localID,
+            name,
             type: 'text'
         }
         this.resources[resourceEntry.id] = resourceEntry

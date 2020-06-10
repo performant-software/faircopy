@@ -39,7 +39,8 @@ export default class EditResourceDialog extends Component {
             const { name, type, localID, url } = this.state
 
             const nextErrors = {}
-            if( name.length === 0 ) nextErrors['name'] = "Name cannot be blank."
+            const trimmedName = name.trim()
+            if( trimmedName.length === 0 ) nextErrors['name'] = "Name cannot be blank."
 
             if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
             else {
@@ -57,7 +58,7 @@ export default class EditResourceDialog extends Component {
                 this.setState({ ...this.state, validationErrors: nextErrors })
             } else {
                 this.setState(this.initialState)
-                onSave(name,localID,type,url)    
+                onSave(trimmedName,localID,type,url)    
             }
         }
 

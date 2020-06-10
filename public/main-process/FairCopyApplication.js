@@ -46,10 +46,12 @@ class FairCopyApplication {
     
     ipcMain.on('requestImport', (event) => { 
       const paths = this.mainMenu.openImport()
-      const path = paths[0]
-      const data = fs.readFileSync(path).toString('utf-8')
-      const importData = { path, data }
-      this.sendToMainWindow('importOpened', importData )
+      const path = paths ? paths[0] : null
+      if( path ) {
+        const data = fs.readFileSync(path).toString('utf-8')
+        const importData = { path, data }
+        this.sendToMainWindow('importOpened', importData )  
+      }
     })
 
     // TODO refactor

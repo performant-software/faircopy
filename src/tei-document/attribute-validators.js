@@ -9,7 +9,7 @@ export function singleTokenValidator( value ) {
 // IDs are used as relative URIs, so they must be valid as such
 export function idValidator( value ) {
     if( value.search(/[\s#&?:/]/) !== -1  ) {
-        return { error: true, errorMessage: "can not contain whitespace any of: '#,&,?,:,/'."}
+        return { error: true, errorMessage: "can not contain whitespace or any of: '#,&,?,:,/'."}
     }
     return { error: false, errorMessage: ""}
 }
@@ -77,4 +77,10 @@ export function validateURL(value) {
     } catch(e) {
         return { error: true, errorMessage: `Invalid URL` }
     }
+}
+
+export function sanitizeID(value) {
+    // can not contain whitespace or any of: '#,&,?,:,/'
+    let cleanID = value.replace(/[\s#&?:/]/g,'');
+    return cleanID.length > 0 ? cleanID : null
 }
