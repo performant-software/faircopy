@@ -73,7 +73,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeInfoPopper() {
-        const {teiSchema} = this.props.teiDocument
+        const {teiSchema} = this.props.teiDocument.fairCopyProject
         const attrSpecs = teiSchema.attrs
         const {selectedAttr, anchorEl} = this.state
 
@@ -176,7 +176,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributes(element,attrState) {
-        const {teiSchema} = this.props.teiDocument
+        const {teiSchema} = this.props.teiDocument.fairCopyProject
         const attrSpecs = teiSchema.attrs
         const elementName = element.type.name
         
@@ -240,8 +240,9 @@ export default class ParameterDrawer extends Component {
 
     renderElement(element,count,key) {
         const { width, teiDocument } = this.props
-        const { elements } = teiDocument.teiSchema
-        const configElements = teiDocument.fairCopyConfig.elements
+        const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
+        const { elements } = teiSchema
+        const configElements = fairCopyConfig.elements
         const name = element.type.name
         const elementSpec = elements[name]
         const {attrState} = configElements[name]

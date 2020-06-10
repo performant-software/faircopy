@@ -2,8 +2,8 @@ import { wrapIn } from 'prosemirror-commands'
 import { addMark } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
-    const { editorView } = teiDocument
-    const { schema } = teiDocument.teiSchema
+    const { editorView, fairCopyProject } = teiDocument
+    const {schema} = fairCopyProject.teiSchema
 
     switch( elementID ) {
         case 'div': 

@@ -15,13 +15,12 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, teiSchema, fairCopyConfig ) {
+    constructor( resourceID, fairCopyProject ) {
         this.editorView = null
         this.pastedNoteBuffer = []
         this.resourceID = resourceID
-        this.teiSchema = teiSchema
-        this.fairCopyConfig = fairCopyConfig
-        const {schema} = teiSchema
+        this.fairCopyProject = fairCopyProject
+        const {schema} = fairCopyProject.teiSchema
         this.plugins = [
             buildInputRules(schema),
             keymap(buildKeymap(schema)),
@@ -59,6 +58,7 @@ export default class TEIDocument {
         // so we can parse as XML. Put it back at the end.
         const metaRegex = /(<meta [^>]*>)/
         const matches = html.match(metaRegex)
+        const { teiSchema } = this.fairCopyProject
         let metaTag = matches && matches[1] ? matches[1]: ""
         let xml = html.replace(metaRegex,"")
         const parser = new DOMParser();
@@ -68,7 +68,7 @@ export default class TEIDocument {
         let noteEls = xmlDom.getElementsByTagName('note');
         for( let i=0; i< noteEls.length; i++ ) {
             const el = noteEls[i]
-            const noteID = this.teiSchema.issueSubDocumentID()
+            const noteID = teiSchema.issueSubDocumentID()
             const noteEl = el.cloneNode(true)
             noteEl.setAttribute('__id__',noteID)
             const emptyEl = el.cloneNode()
@@ -115,7 +115,7 @@ export default class TEIDocument {
     createEmptyDocument(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
-        const doc = this.teiSchema.domParser.parse(div)
+        const doc = this.fairCopyProject.teiSchema.domParser.parse(div)
         return doc
     }
 
@@ -127,14 +127,16 @@ export default class TEIDocument {
 
     createSubDocument(documentDOM) {
         const subDoc = this.createEmptyDocument(documentDOM)
-        const subDocID = this.teiSchema.issueSubDocumentID()
+        const { teiSchema } = this.fairCopyProject
+        const subDocID = teiSchema.issueSubDocumentID()
         localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
         return subDocID
     }
 
     getVocab(elementName,attrName) {
-        const vocabID = this.fairCopyConfig.elements[elementName].attrState[attrName].vocabID
-        const vocab = ( vocabID && this.fairCopyConfig.vocabs[vocabID]) ? this.fairCopyConfig.vocabs[vocabID] : []
+        const { fairCopyConfig } = this.fairCopyProject
+        const vocabID = fairCopyConfig.elements[elementName].attrState[attrName].vocabID
+        const vocab = ( vocabID && fairCopyConfig.vocabs[vocabID]) ? fairCopyConfig.vocabs[vocabID] : []
         return { vocabID, vocab } 
     }
 
@@ -145,9 +147,10 @@ export default class TEIDocument {
 
     load( text ) {
         const parser = new DOMParser();
+        const { teiSchema } = this.fairCopyProject
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
-        const doc = this.teiSchema.domParser.parse(bodyEl)
+        const doc = teiSchema.domParser.parse(bodyEl)
         const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
         this.initialState = EditorState.create({ 
@@ -158,7 +161,8 @@ export default class TEIDocument {
 
     openNote( noteID ) {
         const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const doc = this.teiSchema.schema.nodeFromJSON(noteJSON);
+        const { teiSchema } = this.fairCopyProject
+        const doc = teiSchema.schema.nodeFromJSON(noteJSON);
         return EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
@@ -171,11 +175,12 @@ export default class TEIDocument {
         // TODO - program should clear sub docs from local storage before exiting or when loading a different document
 
         const editorState = this.editorView.state
-        this.teiSchema.teiMode = true
+        const { teiSchema } = this.fairCopyProject
+        teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        const domSerializer = DOMSerializer.fromSchema( this.teiSchema.schema )
+        const domSerializer = DOMSerializer.fromSchema( teiSchema.schema )
         const domFragment = domSerializer.serializeFragment(editorState.doc.content)
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         var div = document.createElement('div')
@@ -184,7 +189,7 @@ export default class TEIDocument {
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
 
         fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
-        this.teiSchema.teiMode = false
+        teiSchema.teiMode = false
         this.changedSinceLastSave = false
     }
 }

@@ -4,7 +4,8 @@ const fairCopy = window.fairCopy
 
 export default class FacsDocument {
 
-    constructor( resourceID ) {
+    constructor( resourceID, fairCopyProject ) {
+        this.fairCopyProject = fairCopyProject
         this.facs = null
 
         if( resourceID ) {

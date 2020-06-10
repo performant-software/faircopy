@@ -38,6 +38,7 @@ export default class IDMap {
 
     getLocalURI( uri, parent ) {
         // TODO take uri and return a local URI 
+        return uri
     }
 
     set( uri, value ) {
@@ -51,6 +52,7 @@ export default class IDMap {
 
     getRelativeURIList( parent ) {
         // TODO 
+        return []
     }
 
     getUniqueID() {

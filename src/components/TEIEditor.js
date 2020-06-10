@@ -50,7 +50,7 @@ export default class TEIEditor extends Component {
 
     createEditorView = (onClick,element) => {
         const { teiDocument } = this.props
-        const { teiSchema } = teiDocument
+        const { teiSchema } = teiDocument.fairCopyProject
 
         if( teiDocument.editorView ) return;
 
@@ -72,7 +72,7 @@ export default class TEIEditor extends Component {
 
     createClipboardSerializer() {
         const { teiDocument } = this.props
-        const { teiSchema } = teiDocument
+        const { teiSchema } = teiDocument.fairCopyProject
         // clipboard serialize always serializes to TEI XML
         const clipboardSchema = new TEISchema(teiSchema.schemaJSON);
         clipboardSchema.teiMode = true

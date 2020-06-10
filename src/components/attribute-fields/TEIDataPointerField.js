@@ -123,7 +123,8 @@ export default class TEIDataPointerField extends Component {
         }
 
         const { teiDocument, value } = this.props
-        const options = this.valuesToOptions( teiDocument.getXMLIDs() )
+        const { idMap } = teiDocument.fairCopyProject
+        const options = this.valuesToOptions( idMap.getRelativeURIList() )
         const values = value.length > 0 ? value.split(' ') : []
         const selectedOptions = this.valuesToOptions( values )
         const key = `multiterm-${Date.now()}`

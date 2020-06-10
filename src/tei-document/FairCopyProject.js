@@ -97,9 +97,9 @@ export default class FairCopyProject {
         if( !resourceEntry ) return null
 
         if( resourceEntry.type === 'text') {
-            return new TEIDocument( resourceID, this.teiSchema, this.fairCopyConfig )
+            return new TEIDocument( resourceID, this )
         } else {
-            return new FacsDocument( resourceID )
+            return new FacsDocument( resourceID, this )
         }        
     }
 

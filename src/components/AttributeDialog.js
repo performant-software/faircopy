@@ -8,8 +8,9 @@ export default class AttributeDialog extends Component {
 
     renderTable() {
         const {elementName, teiDocument} = this.props
-        const {attrs} = teiDocument.teiSchema
-        const {fairCopyConfig} = teiDocument
+        const { fairCopyProject } = teiDocument
+        const { teiSchema, fairCopyConfig } = fairCopyProject
+        const {attrs} = teiSchema
         const {elements} = fairCopyConfig
         const {attrState} = elements[elementName]
 
