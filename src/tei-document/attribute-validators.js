@@ -20,7 +20,7 @@ export function uriValidator( value ) {
         if( value.startsWith('#') ) {
             return idValidator( value.slice(1) )
         } else {
-            new URL(value)
+            new URL(value, 'https://faircopy.com/')
         }
         return { error: false, errorMessage: ""}
     } catch(e) {

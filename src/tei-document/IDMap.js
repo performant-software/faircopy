@@ -4,11 +4,10 @@ export default class IDMap {
 
     constructor(teiSchema,idMapData) {
         this.teiSchema = teiSchema
-        this.idMap = idMapData
+        this.idMap = JSON.parse(idMapData)
     }
 
-    addText(localID, doc) {        
-        if( this.get(localID) ) return false
+    mapXMLIDs(localID, doc) {        
 
         const xmlIDs = []
 
@@ -33,26 +32,28 @@ export default class IDMap {
         }
 
         this.idMap[localID] = xmlIDMap
-        return true
     }
 
-    getLocalURI( uri, parent ) {
-        // TODO take uri and return a local URI 
-        return uri
-    }
-
-    set( uri, value ) {
-        // TODO 
-    }
-
-    get( uri ) {
-        // TODO retrieve the record for this URI
+    get( id, localID ) {
+        const resourceMap = this.idMap[localID]
+        if( resourceMap ) {
+            return resourceMap[id]
+        }
         return null
     }
 
     getRelativeURIList( parent ) {
-        // TODO 
-        return []
+        const uris = []
+        for( const resourceID of Object.keys(this.idMap) ) {
+            for( const xmlID of Object.keys(this.idMap[resourceID])) {
+                if( resourceID === parent ) {
+                    uris.push(`#${xmlID}`)
+                } else {
+                    uris.push(`${resourceID}#${xmlID}`)
+                }
+            }
+        }
+        return uris
     }
 
     getUniqueID() {

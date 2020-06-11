@@ -175,7 +175,7 @@ export default class TEIDocument {
         // TODO - program should clear sub docs from local storage before exiting or when loading a different document
 
         const editorState = this.editorView.state
-        const { teiSchema } = this.fairCopyProject
+        const { teiSchema, idMap } = this.fairCopyProject
         teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
@@ -187,8 +187,12 @@ export default class TEIDocument {
         div.appendChild( domFragment.cloneNode(true) )
         bodyEl.innerHTML = div.innerHTML
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
-
         fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
+
+        const localID = this.fairCopyProject.getLocalID(this.resourceID)
+        idMap.mapXMLIDs(localID,editorState.doc)
+        idMap.save()
+
         teiSchema.teiMode = false
         this.changedSinceLastSave = false
     }

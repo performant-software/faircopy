@@ -19,7 +19,7 @@ export default class FairCopyProject {
         this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
-        this.idMap = new IDMap(this.teiSchema,JSON.parse(projectData.idMap))
+        this.idMap = new IDMap(this.teiSchema,projectData.idMap)
     }
 
     parseMenus(json) {
@@ -63,6 +63,11 @@ export default class FairCopyProject {
         } else {
             console.log(`Unable to update resource: ${resourceEntry}`)
         }
+    }
+
+    getLocalID( resourceID ) {
+        const resourceEntry = this.resources[resourceID]
+        return resourceEntry.localID
     }
 
     newResource( name, localID, type, url ) {
@@ -123,14 +128,11 @@ export default class FairCopyProject {
         const bodyEl = xmlDom.getElementsByTagName('body')[0]
         const doc = this.teiSchema.domParser.parse(bodyEl)
 
-        if( this.idMap.addText(localID,doc) ) {
-            this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema)
-            this.resources[resourceEntry.id] = resourceEntry
-            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
-            saveConfig(this.fairCopyConfig)
-            this.idMap.save()    
-        } else {
-            console.log(`Error adding text to ID Map: ${path}`)
-        }
+        this.idMap.mapXMLIDs(localID,doc)
+        this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema)
+        this.resources[resourceEntry.id] = resourceEntry
+        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
+        saveConfig(this.fairCopyConfig)
+        this.idMap.save()    
     }
 }

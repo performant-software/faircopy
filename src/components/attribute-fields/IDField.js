@@ -79,9 +79,11 @@ export default class IDField extends Component {
 
         const onSaveClick = () => {
             const { teiDocument } = this.props
+            const { fairCopyProject } = teiDocument
+            const { idMap } = fairCopyProject
             const { valueBuffer } = this.state
             // check for uniqueness
-            if( teiDocument.findID(valueBuffer) ) {
+            if( idMap.get(valueBuffer, fairCopyProject.getLocalID(teiDocument.resourceID)) ) {
                 this.setState( { ...this.state, error: true, errorMessage: 'ID must be unique to the document.'})
             } else {
                 this.setState({ ...this.initialState })
