@@ -103,6 +103,29 @@ export default class TEIDocument {
         return baseKeymap
     }
 
+    hasID(targetID) {       
+        const editorState = this.editorView.state
+        const {doc} = editorState
+        let found = false
+    
+        const findID = (element) => {
+            const xmlID = element.attrs['xml:id']
+            if( targetID === xmlID ) {
+                found = true
+            }
+        }
+        
+        // gather up all xml:ids and their nodes/marks
+        doc.descendants((node) => {
+            if( findID(node) ) return false
+            for( const mark of node.marks ) {
+                if( findID(mark) ) return false
+            }        
+            return true
+        })
+
+        return found
+    }
 
     refreshView = () => {
         // dispatch a blank transaction to force a display update of the subcomponents
