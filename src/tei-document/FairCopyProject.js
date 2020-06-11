@@ -7,7 +7,7 @@ import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import {teiTemplate} from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
-import {learnDoc} from "./faircopy-config"
+import {learnDoc, saveConfig} from "./faircopy-config"
 
 const fairCopy = window.fairCopy
 
@@ -127,6 +127,7 @@ export default class FairCopyProject {
             this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema)
             this.resources[resourceEntry.id] = resourceEntry
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
+            saveConfig(this.fairCopyConfig)
             this.idMap.save()    
         } else {
             console.log(`Error adding text to ID Map: ${path}`)

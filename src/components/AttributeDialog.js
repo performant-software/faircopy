@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
 import { Button, Checkbox } from '@material-ui/core'
-
+import { saveConfig } from '../tei-document/faircopy-config'
 
 export default class AttributeDialog extends Component {
 
@@ -22,6 +22,7 @@ export default class AttributeDialog extends Component {
                 const onChange = () => {
                     const active = !attrState[attrName].active
                     fairCopyConfig.elements[elementName].attrState[attrName] = { ...attrState[attrName], active }
+                    saveConfig(fairCopyConfig)
                     teiDocument.refreshView()
                 }
             

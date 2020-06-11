@@ -1,8 +1,11 @@
 const JSZip = require('jszip');
 const fs = require('fs')
+const debounce = require('debounce')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
+const idMapEntryName = 'id-map.json'
+const zipWriteDelay = 200
 
 class ProjectStore {
 
@@ -23,6 +26,7 @@ class ProjectStore {
         }
         const fairCopyManifest = await this.readUTF8File(manifestEntryName)
         const fairCopyConfig = await this.readUTF8File(configSettingsEntryName)
+        const idMap = await this.readUTF8File(idMapEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
         const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
 
@@ -31,8 +35,8 @@ class ProjectStore {
             return
         }
 
-        if( !fairCopyManifest || !fairCopyConfig ) {
-            console.log('Project file is missing required files.')
+        if( !fairCopyManifest || !fairCopyConfig || !idMap ) {
+            console.log('Project file is missing required entries.')
             return
         }
         
@@ -43,8 +47,10 @@ class ProjectStore {
             return
         }
 
-        // TODO load id map
-        const idMap = "{}"
+        // create a debounced function for writing the ZIP
+        this.writeProjectArchive = debounce(() => {
+            writeArchive(this.projectFilePath, this.projectArchive)
+        },zipWriteDelay)
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, idMap }
         this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
@@ -83,6 +89,16 @@ class ProjectStore {
         this.writeProjectArchive()
     }
 
+    saveFairCopyConfig( fairCopyConfig ) {
+        this.writeUTF8File( configSettingsEntryName, fairCopyConfig)
+        this.writeProjectArchive()
+    }
+
+    saveIDMap( idMap ) {
+        this.writeUTF8File( idMapEntryName, idMap)
+        this.writeProjectArchive()
+    }
+
     async openResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
@@ -93,17 +109,13 @@ class ProjectStore {
     }
 
     writeUTF8File( targetFilePath, data ) {
-        this.projectArchive.file(targetFilePath, Buffer.alloc(data.length, data))
+        this.projectArchive.file(targetFilePath, data)
     }
 
     readUTF8File(targetFilePath) {
         return this.projectArchive
             .file(targetFilePath)
             .async("string")
-    }
-
-    writeProjectArchive() {
-        writeArchive(this.projectFilePath, this.projectArchive)
     }
 }
 
@@ -112,7 +124,7 @@ function writeArchive(zipPath, zipData) {
     zipData
         .generateNodeStream({type:'nodebuffer',streamFiles:true})
         .pipe(fs.createWriteStream(zipPath))
-        .on('finish', function () {
+        .on('finish', () => {
             console.log(`${zipPath} written.`);
         });
 }
@@ -133,6 +145,7 @@ const createProjectArchive = function createProjectArchive(projectInfo,baseDir) 
 
     projectArchive.file(manifestEntryName, JSON.stringify(fairCopyManifest))
     projectArchive.file(configSettingsEntryName, fairCopyConfig)
+    projectArchive.file(idMapEntryName, "{}")
     writeArchive(filePath,projectArchive)
 }
 

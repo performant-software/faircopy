@@ -3,6 +3,7 @@ import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@m
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
 import { Button, IconButton, TextField } from '@material-ui/core'
 import VocabTermField from './attribute-fields/VocabTermField';
+import { saveConfig } from '../tei-document/faircopy-config'
 
 export default class VocabDialog extends Component {
 
@@ -34,6 +35,7 @@ export default class VocabDialog extends Component {
         const { onClose, teiDocument } = this.props
         const { fairCopyConfig } = teiDocument
         fairCopyConfig.vocabs[vocabID] = vocab
+        saveConfig(fairCopyConfig)
         this.setState({ ...this.initialState })
         onClose()
     }

@@ -34,10 +34,12 @@ export default class App extends Component {
   }
 
   openFile( projectData ) {
-    const fairCopyProject = new FairCopyProject(projectData)
-    this.setTitle(fairCopyProject.projectName)   
-    this.setState({...this.state, fairCopyProject})
-    this.addToRecentProjects(fairCopyProject)
+    // setTimeout( () => {
+      const fairCopyProject = new FairCopyProject(projectData)
+      this.setTitle(fairCopyProject.projectName)   
+      this.setState({...this.state, fairCopyProject})
+      this.addToRecentProjects(fairCopyProject)  
+    // },2000)
   }
 
   // record this as a recent project

@@ -1,6 +1,4 @@
-
-
-// TODO use this code as part of the XML import process
+const fairCopy = window.fairCopy
 
 export function learnDoc(fairCopyConfig, doc, teiSchema) {
     const { subDocIDs } = teiSchema
@@ -79,4 +77,8 @@ export function learnDoc(fairCopyConfig, doc, teiSchema) {
 
 function getDefaultVocabKey(elementName,attributeName) {
     return `${elementName}[${attributeName}]`
+}
+
+export function saveConfig( fairCopyConfig ) {
+    fairCopy.services.ipcSend('requestSaveConfig', JSON.stringify(fairCopyConfig))
 }

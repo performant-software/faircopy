@@ -1,4 +1,4 @@
-// const fairCopy = window.fairCopy
+const fairCopy = window.fairCopy
 
 export default class IDMap {
 
@@ -61,8 +61,6 @@ export default class IDMap {
     }
 
     save() {
-        // TODO save ID map
-        // fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
-        // this.changedSinceLastSave = false
+        fairCopy.services.ipcSend('requestSaveIDMap', JSON.stringify(this.idMap))
     }
 }
