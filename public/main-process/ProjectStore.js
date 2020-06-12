@@ -11,6 +11,11 @@ class ProjectStore {
 
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
+
+        // create a debounced function for writing the ZIP
+        this.writeProjectArchive = debounce(() => {
+            writeArchive(this.projectFilePath, this.projectArchive)
+        },zipWriteDelay)
     }
 
     async openProject(projectFilePath) {
@@ -46,11 +51,6 @@ class ProjectStore {
             console.log('Error parsing project manifest.')
             return
         }
-
-        // create a debounced function for writing the ZIP
-        this.writeProjectArchive = debounce(() => {
-            writeArchive(this.projectFilePath, this.projectArchive)
-        },zipWriteDelay)
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, idMap }
         this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
