@@ -94,9 +94,12 @@ export default class FairCopyProject {
 
     removeResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
+            const {localID} = this.resources[resourceID]
+            this.idMap.removeResource(localID)
             delete this.resources[resourceID]
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
+        this.idMap.save()
     }
 
     openResource( resourceID ) {

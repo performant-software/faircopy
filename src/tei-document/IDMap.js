@@ -48,6 +48,10 @@ export default class IDMap {
         this.idMap[localID] = facsIDMap
     }
 
+    removeResource( localID ) {
+        delete this.idMap[localID]
+    }
+
     get( id, localID ) {
         const resourceMap = this.idMap[localID]
         if( resourceMap ) {
