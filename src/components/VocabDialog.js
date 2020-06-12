@@ -33,7 +33,7 @@ export default class VocabDialog extends Component {
     onSave = () => {
         const { vocab, vocabID } = this.state
         const { onClose, teiDocument } = this.props
-        const { fairCopyConfig } = teiDocument
+        const { fairCopyConfig } = teiDocument.fairCopyProject
         fairCopyConfig.vocabs[vocabID] = vocab
         saveConfig(fairCopyConfig)
         this.setState({ ...this.initialState })
