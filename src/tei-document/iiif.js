@@ -6,7 +6,7 @@ export function importIIIFManifest( manifestURL, callback ) {
         (resp) => {
             const facsData = iiifToFacsimile(resp.data)
             const facsXML = facsimileToTEI(facsData)
-            callback(facsXML)
+            callback(facsXML,facsData)
         },
         (error) => {
             console.log(`Unable to load IIIF manifest ${manifestURL} :\n'${error}`);

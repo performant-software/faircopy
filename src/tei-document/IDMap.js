@@ -7,7 +7,7 @@ export default class IDMap {
         this.idMap = JSON.parse(idMapData)
     }
 
-    mapXMLIDs(localID, doc) {        
+    mapTextIDs(localID, doc) {        
 
         const xmlIDs = []
 
@@ -32,6 +32,20 @@ export default class IDMap {
         }
 
         this.idMap[localID] = xmlIDMap
+    }
+
+    mapFacsIDs(localID, facs) {
+        const { surfaces } = facs
+
+        const facsIDs = surfaces.map(s => s.id)
+
+        const sortedIDs = facsIDs.sort()
+        const facsIDMap = {}
+        for( const id of sortedIDs ) {
+            facsIDMap[id] = 'facs'
+        }
+
+        this.idMap[localID] = facsIDMap
     }
 
     get( id, localID ) {

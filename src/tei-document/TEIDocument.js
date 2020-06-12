@@ -213,7 +213,7 @@ export default class TEIDocument {
         fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
 
         const localID = this.fairCopyProject.getLocalID(this.resourceID)
-        idMap.mapXMLIDs(localID,editorState.doc)
+        idMap.mapTextIDs(localID,editorState.doc)
         idMap.save()
 
         teiSchema.teiMode = false

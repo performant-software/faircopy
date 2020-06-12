@@ -82,9 +82,11 @@ export default class FairCopyProject {
         if( resourceEntry.type === 'text') {
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
         } else {
-            importIIIFManifest(url, (resourceData) => {
-                if( resourceData ) {
-                    fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), resourceData )
+            importIIIFManifest(url, (xml,facs) => {
+                if( xml ) {
+                    fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
+                    this.idMap.mapFacsIDs(localID,facs)
+                    this.idMap.save()
                 }
             })
         }
@@ -128,7 +130,7 @@ export default class FairCopyProject {
         const bodyEl = xmlDom.getElementsByTagName('body')[0]
         const doc = this.teiSchema.domParser.parse(bodyEl)
 
-        this.idMap.mapXMLIDs(localID,doc)
+        this.idMap.mapTextIDs(localID,doc)
         this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema)
         this.resources[resourceEntry.id] = resourceEntry
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )

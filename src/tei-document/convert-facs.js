@@ -9,7 +9,7 @@ export function iiifToFacsimile( manifestData ) {
     let n=1
     const surfaces = []
     for( const canvas of canvases ) {
-        const id = `page-${n++}`
+        const id = generateID('page-',n++)
         const { images, width, height } = canvas
         const canvasURI = canvas['@id']
         const image = images[0]
@@ -42,12 +42,14 @@ export function teiToFacsimile(xml) {
     const surfaceEls = facsEl.getElementsByTagName('surface')
     for( let i=0; i < surfaceEls.length; i++ ) {
         const surfaceEl = surfaceEls[i]
+        const id = surfaceEl.getAttribute('xml:id')
         const width = surfaceEl.getAttribute('lrx')
         const height = surfaceEl.getAttribute('lry')
         const canvasURI = surfaceEl.getAttribute('sameAs')
         const graphicEl = surfaceEl.getElementsByTagName('graphic')[0]
         const imageAPIURL = graphicEl.getAttribute('url')
         surfaces.push({
+            id,
             canvasURI,
             width,
             height,
@@ -63,4 +65,18 @@ export function teiToFacsimile(xml) {
 
 export function facsimileToTEI(facs) {
    return facsTemplate(facs)
+}
+
+function generateID( prefix, ordinalID ) {
+    let zeros = ""
+
+    if( ordinalID < 10 ) {
+        zeros = zeros + "0"
+    }
+
+    if( ordinalID < 100 ) {
+        zeros = zeros + "0"
+    }
+
+    return `${prefix}${zeros}${ordinalID}`
 }
