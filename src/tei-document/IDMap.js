@@ -42,7 +42,7 @@ export default class IDMap {
         const sortedIDs = facsIDs.sort()
         const facsIDMap = {}
         for( const id of sortedIDs ) {
-            facsIDMap[id] = 'facs'
+            facsIDMap[id] = { type: 'facs', thumbnailURL: "https://dave-uploads-juxtaeditions.s3.amazonaws.com/uploads%2F1517779510205-1e9aye5o7ui-047c34f6f61235162591944771a71e6c%2FMD_Amer_0074.jpg" }
         }
 
         this.idMap[localID] = facsIDMap
@@ -52,12 +52,25 @@ export default class IDMap {
         delete this.idMap[localID]
     }
 
-    get( id, localID ) {
-        const resourceMap = this.idMap[localID]
-        if( resourceMap ) {
-            return resourceMap[id]
+    get( uri, parent ) {
+        try {
+            let rootPath = parent ? `${parent}/` : ''
+            const url = new URL(uri, `https://uri.faircopy.com/${rootPath}`)
+            if( url.hostname === 'uri.faircopy.com') {
+                const localID = url.pathname.slice(1) // slice off /
+                if( localID.length === 0 ) return null // relative URL w/no parent
+                const resourceID = url.hash ? url.hash.slice(1) : null // slice off #
+                const resourceMap = this.idMap[localID]
+                if( resourceMap ) {
+                    return resourceMap[resourceID]
+                } 
+            }   
+            // local ID not found or external URL
+            return null
+        } catch(e) {
+            // not a valid URI
+            return null            
         }
-        return null
     }
 
     getRelativeURIList( parent ) {
