@@ -1,3 +1,5 @@
+import { getThumbnailURL } from '../tei-document/iiif'
+
 const fairCopy = window.fairCopy
 
 export default class IDMap {
@@ -39,9 +41,7 @@ export default class IDMap {
 
         const facsIDMap = {}
         for( const surface of surfaces ) {
-            const { imageAPIURL } = surface
-            const slash = imageAPIURL.endsWith('/') ? '' : '/'
-            const thumbnailURL = `${imageAPIURL}${slash}full/120,/0/default.jpg`
+            const thumbnailURL = getThumbnailURL(surface)
             facsIDMap[surface.id] = { type: 'facs', thumbnailURL }
         }
 

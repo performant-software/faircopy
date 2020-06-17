@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Typography, Button } from '@material-ui/core';
 
 import SearchBar from './SearchBar';
+import { getImageInfoURL } from '../tei-document/iiif'
 
 export default class FacsEditor extends Component {
 
@@ -21,14 +22,9 @@ export default class FacsEditor extends Component {
     }
 
     componentWillUnmount() {
-        if(typeof this.viewer !== 'undefined'){
+        if(this.viewer){
             this.viewer.destroy();
         }    
-    }
-
-    getImageInfoURL( surface ) {
-        const slash = surface.imageAPIURL.endsWith('/') ? '' : '/'
-        return `${surface.imageAPIURL}${slash}info.json`
     }
 
     initViewer = (el) => {
@@ -37,7 +33,7 @@ export default class FacsEditor extends Component {
             return
         }
         const { surface } = this.state
-        const imageInfoURL = this.getImageInfoURL( surface )
+        const imageInfoURL = getImageInfoURL( surface )
         axios.get(imageInfoURL).then((response) => {
             const tileSource = response.data
             this.viewer = OpenSeadragon({
@@ -56,7 +52,7 @@ export default class FacsEditor extends Component {
         const { facsDocument } = this.props
         const surfaces = facsDocument.getSurfaces()
         const nextSurface = surfaces[nextIndex]
-        const imageInfoURL = this.getImageInfoURL( nextSurface )
+        const imageInfoURL = getImageInfoURL( nextSurface )
         axios.get(imageInfoURL).then((response) => {
             const tileSource = response.data
             this.viewer.open(tileSource)

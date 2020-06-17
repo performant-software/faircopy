@@ -14,3 +14,14 @@ export function importIIIFManifest( manifestURL, callback ) {
         }
     );
 }
+
+export function getImageInfoURL( surface ) {
+    const slash = surface.imageAPIURL.endsWith('/') ? '' : '/'
+    return `${surface.imageAPIURL}${slash}info.json`
+}
+
+export function getThumbnailURL( surface, width=120 ) {
+    const { imageAPIURL } = surface
+    const slash = imageAPIURL.endsWith('/') ? '' : '/'
+    return `${imageAPIURL}${slash}full/${width},/0/default.jpg`
+}
