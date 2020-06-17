@@ -65,7 +65,6 @@ export default class ThumbnailMargin extends Component {
         for( const uri of uris ) {
             const resource = idMap.get(uri)
             if( resource && resource.type === 'facs' ) {
-                console.log('bang')
                 thumbURLs.push(resource.thumbnailURL)
             }
         }

@@ -28,7 +28,7 @@ export default class IDMap {
         const sortedIDs = xmlIDs.sort()
         const xmlIDMap = {}
         for( const id of sortedIDs ) {
-            xmlIDMap[id] = 'text'
+            xmlIDMap[id] = { type: 'text' }
         }
 
         this.idMap[localID] = xmlIDMap
@@ -37,12 +37,12 @@ export default class IDMap {
     mapFacsIDs(localID, facs) {
         const { surfaces } = facs
 
-        const facsIDs = surfaces.map(s => s.id)
-
-        const sortedIDs = facsIDs.sort()
         const facsIDMap = {}
-        for( const id of sortedIDs ) {
-            facsIDMap[id] = { type: 'facs', thumbnailURL: "https://dave-uploads-juxtaeditions.s3.amazonaws.com/uploads%2F1517779510205-1e9aye5o7ui-047c34f6f61235162591944771a71e6c%2FMD_Amer_0074.jpg" }
+        for( const surface of surfaces ) {
+            const { imageAPIURL } = surface
+            const slash = imageAPIURL.endsWith('/') ? '' : '/'
+            const thumbnailURL = `${imageAPIURL}${slash}full/120,/0/default.jpg`
+            facsIDMap[surface.id] = { type: 'facs', thumbnailURL }
         }
 
         this.idMap[localID] = facsIDMap
