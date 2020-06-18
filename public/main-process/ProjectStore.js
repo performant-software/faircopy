@@ -53,7 +53,21 @@ class ProjectStore {
         }
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, idMap }
-        this.fairCopyApplication.sendToMainWindow('fileOpened', projectData )
+        this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
+    }
+
+    async openImageView(imageView,imageViewInfo) {
+        const { resourceID, xmlID } = imageViewInfo
+        const { baseDir } = this.fairCopyApplication
+        const idMap = await this.readUTF8File(idMapEntryName)
+        const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
+
+        const resourceEntry = this.manifestData.resources[resourceID]
+        if( resourceEntry ) {
+            const resource = await this.readUTF8File(resourceID)
+            const imageViewData = { resourceID, xmlID, resource, teiSchema, idMap }
+            imageView.webContents.send('imageViewOpened', imageViewData )    
+        }
     }
 
     saveResource(resourceID, resourceData) {

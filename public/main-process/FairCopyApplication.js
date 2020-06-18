@@ -11,6 +11,7 @@ class FairCopyApplication {
 
   constructor() {
     this.mainWindow = null
+    this.imageViews = []
     // this.noteWindows = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.versionNumber = this.getVersionNumber()
@@ -56,9 +57,11 @@ class FairCopyApplication {
       }
     })
 
-    // TODO refactor
-    // ipcMain.on('createNoteEditorWindow', this.createNoteEditorWindow)
-    // ipcMain.on('closeNoteWindow', this.closeNoteWindow)
+    ipcMain.on('requestImageView', (event, imageViewInfo) => { 
+      this.createImageWindow(imageViewInfo).then( () => { 
+        console.log(`Opened image view.`)
+      })
+    })
   }
 
   async createProjectWindow() {
@@ -84,6 +87,12 @@ class FairCopyApplication {
         this.openProject(targetFile)
       }
     })
+  }
+
+  async createImageWindow(imageViewInfo) {
+    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
+    this.imageViews.push(imageView)
+    await this.projectStore.openImageView(imageView,imageViewInfo)
   }
 
   openProject(targetFile) {

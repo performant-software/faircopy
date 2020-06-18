@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import MainWindow from './MainWindow'
-import NoteWindow from './NoteWindow'
+import ImageWindow from './ImageWindow'
 import ProjectWindow from './ProjectWindow'
 
 import FairCopyProject from '../tei-document/FairCopyProject'
+import ImageView from '../tei-document/ImageView'
 
 const fairCopy = window.fairCopy
 
@@ -13,7 +14,8 @@ export default class App extends Component {
     super(props)
 
     this.state = {
-      fairCopyProject: null
+      fairCopyProject: null,
+      imageView: null
     }
   }
 
@@ -25,7 +27,11 @@ export default class App extends Component {
     } 
 
     // Receive open and save file events from the main process
-    services.ipcRegisterCallback('fileOpened', (event, projectData) => this.openFile(projectData))
+    if( rootComponent === 'MainWindow' ) {
+      services.ipcRegisterCallback('projectOpened', (event, projectData) => this.openProject(projectData))
+    } else if( rootComponent === 'ImageWindow' ) {
+      services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
+    }
   }
 
   setTitle( projectName ) {
@@ -33,13 +39,21 @@ export default class App extends Component {
       titleEl.innerHTML = `FairCopy - ${projectName}`    
   }
 
-  openFile( projectData ) {
+  openProject( projectData ) {
     // setTimeout( () => {
       const fairCopyProject = new FairCopyProject(projectData)
       this.setTitle(fairCopyProject.projectName)   
       this.setState({...this.state, fairCopyProject})
       this.addToRecentProjects(fairCopyProject)  
     // },2000)
+  }
+
+  openImageView( imageViewData ) {
+    setTimeout( () => {
+      const imageView = new ImageView(imageViewData)
+      this.setTitle('IMAGE TITLE')   
+      this.setState({...this.state, imageView})
+    },2000)
   }
 
   // record this as a recent project
@@ -64,7 +78,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {fairCopyProject} = this.state
+    const {fairCopyProject, imageView} = this.state
     const {rootComponent} = window.fairCopy
 
     if( rootComponent === "MainWindow" ) {
@@ -73,9 +87,11 @@ export default class App extends Component {
             fairCopyProject={fairCopyProject}
           ></MainWindow>
         ) 
-    } else if( rootComponent === "NoteWindow" ) {
+    } else if( rootComponent === "ImageWindow" ) {
         return (
-            <NoteWindow></NoteWindow>
+            <ImageWindow
+              imageView={imageView}
+            ></ImageWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {
       return (

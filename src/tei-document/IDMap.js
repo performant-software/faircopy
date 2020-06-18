@@ -59,10 +59,10 @@ export default class IDMap {
             if( url.hostname === 'uri.faircopy.com') {
                 const localID = url.pathname.slice(1) // slice off /
                 if( localID.length === 0 ) return null // relative URL w/no parent
-                const resourceID = url.hash ? url.hash.slice(1) : null // slice off #
+                const xmlID = url.hash ? url.hash.slice(1) : null // slice off #
                 const resourceMap = this.idMap[localID]
                 if( resourceMap ) {
-                    return resourceMap[resourceID]
+                    return { localID, xmlID, ...resourceMap[xmlID] }
                 } 
             }   
             // local ID not found or external URL

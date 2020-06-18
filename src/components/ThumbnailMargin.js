@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+const fairCopy = window.fairCopy
+
 const marginTop = 125
 
 export default class ThumbnailMargin extends Component {
@@ -12,16 +14,24 @@ export default class ThumbnailMargin extends Component {
 
         const thumbnails = []
         editorState.doc.descendants( (node,pos) => {
-            const imageURLs = this.findImageURLs(node)
-            if( imageURLs ) {
+            const thumbResources = this.findImageURLs(node)
+            if( thumbResources ) {
                 const startCoords = editorView.coordsAtPos(pos)
                 const top = startCoords.top - marginTop + scrollTop
                 const thumbStyle = { top }
                 const thumbKey = `facs-thumb-${thumbnails.length}`
-                const thumbSrc = imageURLs[0]
-                if( thumbSrc ) {
+                const thumbResource = thumbResources[0]
+                if( thumbResource ) {
+                    const { thumbnailURL, resourceID, xmlID } = thumbResource
                     thumbnails.push(
-                        <img key={thumbKey} style={thumbStyle} className="facs-thumbnail" alt={thumbSrc} src={thumbSrc}></img>
+                        <img 
+                            onClick={() => { fairCopy.services.ipcSend('requestImageView', { resourceID, xmlID }) }} 
+                            key={thumbKey} 
+                            style={thumbStyle} 
+                            className="facs-thumbnail" 
+                            alt={thumbnailURL} 
+                            src={thumbnailURL}
+                        ></img>
                     )
                 } 
             }
@@ -60,15 +70,16 @@ export default class ThumbnailMargin extends Component {
             scanAttributes(mark)
         }
 
-        // obtain the image URL for thumbnails
-        const thumbURLs = []
+        // obtain the resource data for thumbnails
+        const thumbResources = []
         for( const uri of uris ) {
             const resource = idMap.get(uri)
             if( resource && resource.type === 'facs' ) {
-                thumbURLs.push(resource.thumbnailURL)
+                const resourceID = fairCopyProject.getResourceID( resource.localID )
+                thumbResources.push({ ...resource, resourceID })
             }
         }
-        return thumbURLs.length > 0 ? thumbURLs : null   
+        return thumbResources.length > 0 ? thumbResources : null   
     }
 
     render() {   

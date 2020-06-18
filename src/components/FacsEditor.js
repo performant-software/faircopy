@@ -11,13 +11,23 @@ export default class FacsEditor extends Component {
     constructor(props) {
         super()
         
-        const { facsDocument } = props
+        let facsDocument = props.facsDocument ? props.facsDocument : null
+        let startIndex = 0
+
+        if( props.imageView ) {
+            const { imageView } = props
+            facsDocument = imageView.facsDocument
+            const { surfaces } = facsDocument.facs
+            startIndex = surfaces.findIndex( s => s.id === imageView.startingID )
+            startIndex = startIndex === -1 ? 0 : startIndex
+        } 
+
         const surfaces = facsDocument.getSurfaces()
-        const surface = surfaces[0]
+        const surface = surfaces[startIndex]                
 
         this.state = {
             surface,
-            surfaceIndex: 0
+            surfaceIndex: startIndex
         }
     }
 
@@ -61,9 +71,10 @@ export default class FacsEditor extends Component {
     }
     
     render() {
-        const { fairCopyProject, facsDocument, hidden } = this.props
+        const { fairCopyProject, hidden } = this.props
+        const facsDocument = this.props.facsDocument ? this.props.facsDocument : this.props.imageView.facsDocument
         const { surfaceIndex } = this.state
-        const resourceName = fairCopyProject.resources[facsDocument.resourceID].name
+        const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
         const surfaces = facsDocument.getSurfaces()
 
         const style = hidden ? { display: 'none' } : {}
@@ -84,10 +95,12 @@ export default class FacsEditor extends Component {
 
         return (
             <div id="FacsEditor" style={style} >
-                <div className="titlebar">
-                    <SearchBar></SearchBar>
-                    <Typography component="h1" variant="h6">{resourceName}</Typography>
-                </div>
+                { this.props.facsDocument && 
+                    <div className="titlebar">
+                        <SearchBar></SearchBar>
+                        <Typography component="h1" variant="h6">{resourceName}</Typography>
+                    </div>        
+                }
                 <div className="editor">
                     { enablePrev && <Button onClick={onPrev} className='prev-nav-button'><i className='fas fa-caret-left fa-7x'></i></Button> }
                     { enableNext && <Button onClick={onNext} className='next-nav-button'><i className='fas fa-caret-right fa-7x'></i></Button> }

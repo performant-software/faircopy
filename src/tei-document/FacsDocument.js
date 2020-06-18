@@ -4,14 +4,18 @@ const fairCopy = window.fairCopy
 
 export default class FacsDocument {
 
-    constructor( resourceID, fairCopyProject ) {
-        this.fairCopyProject = fairCopyProject
+    constructor( resourceID, imageViewContext, resource=null ) {
+        this.imageViewContext = imageViewContext
         this.facs = null
 
         if( resourceID ) {
             this.resourceID = resourceID
-            this.name = 'test'
-            this.requestResource( resourceID )
+            if( !resource ) {
+                this.name = 'test'
+                this.requestResource( resourceID )    
+            } else {
+                this.load(resource)
+            }
         }
         this.changedSinceLastSave = false
     }

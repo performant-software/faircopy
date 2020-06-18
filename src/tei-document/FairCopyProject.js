@@ -70,6 +70,11 @@ export default class FairCopyProject {
         return resourceEntry.localID
     }
 
+    getResourceID( localID ) {
+        const resource = Object.values(this.resources).find( r => r.localID === localID)
+        return ( resource ) ? resource.id : null
+    }
+
     newResource( name, localID, type, url ) {
         const resourceEntry = {
             id: uuidv4(),
