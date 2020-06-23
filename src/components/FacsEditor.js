@@ -37,6 +37,15 @@ export default class FacsEditor extends Component {
         }    
     }
 
+    getFacsDocument() {
+        if( this.props.imageView ) {
+            const { imageView } = this.props
+            return imageView.facsDocument
+        } else {
+            return this.props.facsDocument
+        }
+    }
+
     initViewer = (el) => {
         if( !el ) {
             this.viewer = null
@@ -59,7 +68,7 @@ export default class FacsEditor extends Component {
     }
     
     setSurfaceIndex( nextIndex ) {
-        const { facsDocument } = this.props
+        const facsDocument = this.getFacsDocument()
         const surfaces = facsDocument.getSurfaces()
         const nextSurface = surfaces[nextIndex]
         const imageInfoURL = getImageInfoURL( nextSurface )
@@ -72,7 +81,7 @@ export default class FacsEditor extends Component {
     
     render() {
         const { fairCopyProject, hidden } = this.props
-        const facsDocument = this.props.facsDocument ? this.props.facsDocument : this.props.imageView.facsDocument
+        const facsDocument = this.getFacsDocument()
         const { surfaceIndex } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
         const surfaces = facsDocument.getSurfaces()
@@ -93,9 +102,11 @@ export default class FacsEditor extends Component {
             }
         }
 
+        const showSearchBar = !!this.props.facsDocument
+
         return (
             <div id="FacsEditor" style={style} >
-                { this.props.facsDocument && 
+                { showSearchBar && 
                     <div className="titlebar">
                         <SearchBar></SearchBar>
                         <Typography component="h1" variant="h6">{resourceName}</Typography>
@@ -104,7 +115,7 @@ export default class FacsEditor extends Component {
                 <div className="editor">
                     { enablePrev && <Button onClick={onPrev} className='prev-nav-button'><i className='fas fa-caret-left fa-7x'></i></Button> }
                     { enableNext && <Button onClick={onNext} className='next-nav-button'><i className='fas fa-caret-right fa-7x'></i></Button> }
-                    <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
+                    <SeaDragonComponent showSearchBar={showSearchBar} initViewer={this.initViewer} ></SeaDragonComponent>
                 </div>
             </div>
         )
@@ -118,8 +129,9 @@ class SeaDragonComponent extends Component {
     }
   
     render() {
-      const { initViewer } = this.props
-      return <div className="osd-viewer" ref={(el)=> { initViewer(el) }}></div>
+      const { initViewer, showSearchBar } = this.props
+      const searchFlag = showSearchBar ? 'search-on' : 'search-off' 
+      return <div className={`osd-viewer ${searchFlag}`} ref={(el)=> { initViewer(el) }}></div>
     }
   }
   
