@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 
 import {EditorView} from "prosemirror-view"
-import {DOMSerializer} from "prosemirror-model"
 import { debounce } from "debounce";
-
-import TEISchema from "../tei-document/TEISchema"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
@@ -13,7 +10,8 @@ import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import { Typography } from '@material-ui/core';
 import SearchBar from './SearchBar';
-import {transformPastedHTMLHandler,transformPastedHandler} from "../tei-document/cut-and-paste"
+import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
+import NotePopup from './NotePopup';
 
 const resizeRefreshRate = 100
 
@@ -22,7 +20,8 @@ export default class TEIEditor extends Component {
     constructor() {
         super()
         this.state = {
-            scrollTop: 0
+            scrollTop: 0,
+            notePopupAnchorEl: null
         }
     }
 
@@ -63,21 +62,12 @@ export default class TEIEditor extends Component {
                 handleClickOn: onClick,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema),
                 transformPasted: transformPastedHandler(teiSchema),
-                clipboardSerializer: this.createClipboardSerializer()
+                clipboardSerializer: createClipboardSerializer(teiSchema)
             }
         )
         editorView.focus()
         teiDocument.editorView = editorView
         teiDocument.refreshView()
-    }
-
-    createClipboardSerializer() {
-        const { teiDocument } = this.props
-        const { teiSchema } = teiDocument.fairCopyProject
-        // clipboard serialize always serializes to TEI XML
-        const clipboardSchema = new TEISchema(teiSchema.schemaJSON);
-        clipboardSchema.teiMode = true
-        return DOMSerializer.fromSchema( clipboardSchema.schema )
     }
 
     dispatchTransaction = (transaction) => {
@@ -100,9 +90,19 @@ export default class TEIEditor extends Component {
         }
     }
 
+    onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
+        if( node.type.name === 'note' ) {
+            this.setState({...this.state, notePopupAnchorEl: event.target })
+        }
+    }
+
+    onClosePopupMenu = () => {
+        this.setState({...this.state, notePopupAnchorEl: null })
+    }
+
     render() {    
         const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject } = this.props
-        const { scrollTop } = this.state
+        const { scrollTop, notePopupAnchorEl } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -133,6 +133,7 @@ export default class TEIEditor extends Component {
                             teiDocument={teiDocument}
                         />                 
                         <ProseMirrorComponent
+                            onClick={this.onClickOn}
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                         />
@@ -146,6 +147,10 @@ export default class TEIEditor extends Component {
                     width={width}
                     teiDocument={teiDocument} 
                 />
+                <NotePopup
+                    anchorEl={notePopupAnchorEl}
+                    onClose={this.onClosePopupMenu}        
+                ></NotePopup>
             </div>
         )
     }

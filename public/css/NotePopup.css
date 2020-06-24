@@ -1,0 +1,11 @@
+#NotePopup .note-popup {
+    z-index: 1000;
+}
+
+#NotePopup .body {
+    display: flex;
+    height: 100%;
+    overflow-y: scroll;
+    position: fixed;
+    background: white;
+}

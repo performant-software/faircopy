@@ -1,3 +1,5 @@
+import {DOMSerializer} from "prosemirror-model"
+import TEISchema from "../tei-document/TEISchema"
 
 // buffer for storing subdocuments 
 const pastedNoteBuffer = []
@@ -45,5 +47,14 @@ export function transformPastedHandler(teiSchema) {
             teiSchema.parseSubDocument(noteEl,noteEl.getAttribute('__id__'))
         }
         return slice
+    }
+}
+
+export function createClipboardSerializer(teiSchema) {
+    return () => {
+        // clipboard serialize always serializes to TEI XML
+        const clipboardSchema = new TEISchema(teiSchema.schemaJSON);
+        clipboardSchema.teiMode = true
+        return DOMSerializer.fromSchema( clipboardSchema.schema )    
     }
 }
