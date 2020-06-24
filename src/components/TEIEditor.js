@@ -13,6 +13,7 @@ import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import { Typography } from '@material-ui/core';
 import SearchBar from './SearchBar';
+import {transformPastedHTMLHandler,transformPastedHandler} from "../tei-document/cut-and-paste"
 
 const resizeRefreshRate = 100
 
@@ -60,8 +61,8 @@ export default class TEIEditor extends Component {
                 dispatchTransaction: this.dispatchTransaction,
                 state: teiDocument.initialState,
                 handleClickOn: onClick,
-                transformPastedHTML: teiSchema.transformPastedHTML,
-                transformPasted: teiSchema.transformPasted,
+                transformPastedHTML: transformPastedHTMLHandler(teiSchema),
+                transformPasted: transformPastedHandler(teiSchema),
                 clipboardSerializer: this.createClipboardSerializer()
             }
         )
@@ -100,7 +101,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, editMode, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject } = this.props
+        const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject } = this.props
         const { scrollTop } = this.state
 
         const onRef = (el) => {
@@ -121,7 +122,6 @@ export default class TEIEditor extends Component {
                         <Typography component="h1" variant="h6">{resourceName}</Typography>
                     </div>
                     <EditorToolbar
-                        editMode={editMode}
                         teiDocument={teiDocument}
                         width={width}
                         onOpenElementMenu={onOpenElementMenu}
