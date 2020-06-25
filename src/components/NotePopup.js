@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Popper, Paper, ClickAwayListener } from '@material-ui/core'
+import { Popper, Paper } from '@material-ui/core'
 import { debounce } from "debounce";
 import {EditorView} from "prosemirror-view"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
-// import EditorGutter from "./EditorGutter"
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 
 const resizeRefreshRate = 100

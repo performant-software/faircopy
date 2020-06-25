@@ -3,11 +3,10 @@
 }
 
 #NotePopup .note-body {
-    display: flex;
     margin: 5px;
     background: white;
 }
 
 .note-body .ProseMirrorComponent {
-    width: 300px;
+    max-width: 400px;
 }
