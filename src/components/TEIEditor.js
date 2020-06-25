@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
-
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
+import { Typography } from '@material-ui/core';
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
-import { Typography } from '@material-ui/core';
 import SearchBar from './SearchBar';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 import NotePopup from './NotePopup';
@@ -21,6 +20,7 @@ export default class TEIEditor extends Component {
         super()
         this.state = {
             scrollTop: 0,
+            noteID: null,
             notePopupAnchorEl: null
         }
     }
@@ -48,7 +48,7 @@ export default class TEIEditor extends Component {
         } 
     }
 
-    createEditorView = (onClick,element) => {
+    createEditorView = (element) => {
         const { teiDocument } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
 
@@ -59,7 +59,7 @@ export default class TEIEditor extends Component {
             { 
                 dispatchTransaction: this.dispatchTransaction,
                 state: teiDocument.initialState,
-                handleClickOn: onClick,
+                handleClickOn: this.onClickOn,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema),
                 transformPasted: transformPastedHandler(teiSchema),
                 clipboardSerializer: createClipboardSerializer(teiSchema)
@@ -92,7 +92,8 @@ export default class TEIEditor extends Component {
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
         if( node.type.name === 'note' ) {
-            this.setState({...this.state, notePopupAnchorEl: event.target })
+            const noteID = node.attrs['__id__']
+            this.setState({...this.state, noteID, notePopupAnchorEl: event.target })
         }
     }
 
@@ -102,7 +103,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject } = this.props
-        const { scrollTop, notePopupAnchorEl } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -133,7 +134,6 @@ export default class TEIEditor extends Component {
                             teiDocument={teiDocument}
                         />                 
                         <ProseMirrorComponent
-                            onClick={this.onClickOn}
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                         />
@@ -148,6 +148,8 @@ export default class TEIEditor extends Component {
                     teiDocument={teiDocument} 
                 />
                 <NotePopup
+                    teiDocument={teiDocument}
+                    noteID={noteID}
                     anchorEl={notePopupAnchorEl}
                     onClose={this.onClosePopupMenu}        
                 ></NotePopup>

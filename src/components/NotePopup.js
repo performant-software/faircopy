@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Popper, Paper, ClickAwayListener } from '@material-ui/core'
 import { debounce } from "debounce";
+import {EditorView} from "prosemirror-view"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 // import EditorGutter from "./EditorGutter"
+import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 
 const resizeRefreshRate = 100
 
@@ -23,8 +25,43 @@ export default class NotePopup extends Component {
         }
     }
 
+    createEditorView = (element) => {
+        const { teiDocument, noteID } = this.props
+        const { teiSchema } = teiDocument.fairCopyProject
+
+        if( teiDocument.noteEditorView ) return;
+
+        const initialState = teiDocument.openSubDocument( noteID )
+
+        const editorView = new EditorView( 
+            element,
+            { 
+                dispatchTransaction: this.dispatchTransaction,
+                state: initialState,
+                transformPastedHTML: transformPastedHTMLHandler(teiSchema),
+                transformPasted: transformPastedHandler(teiSchema),
+                clipboardSerializer: createClipboardSerializer(teiSchema)
+            }
+        )
+        editorView.focus()
+        teiDocument.noteEditorView = editorView
+        teiDocument.refreshNoteView()
+    }
+
+    dispatchTransaction = (transaction) => {
+        const { teiDocument } = this.props
+        const { noteEditorView } = teiDocument
+
+        if( noteEditorView ) {
+            const editorState = noteEditorView.state
+            const nextEditorState = editorState.apply(transaction)
+            noteEditorView.updateState(nextEditorState)
+            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+        }
+    }
+
     renderEditor() {
-        const { teiDocument, createEditorView } = this.props
+        const { teiDocument } = this.props
         // const { scrollTop } = this.state
 
         const onRef = (el) => {
@@ -37,8 +74,8 @@ export default class NotePopup extends Component {
         return (
             <div style={{width: 300}} ref={onRef} className='body'>
                 <ProseMirrorComponent
-                    createEditorView={createEditorView}
-                    editorView={teiDocument.editorView}
+                    createEditorView={this.createEditorView}
+                    editorView={teiDocument.noteEditorView}
                 />                  
             </div>
         )        

@@ -1,4 +1,3 @@
-import {DOMSerializer} from "prosemirror-model"
 import {EditorState, TextSelection} from "prosemirror-state"
 import {keymap} from "prosemirror-keymap"
 import {history} from "prosemirror-history"
@@ -16,7 +15,10 @@ const fairCopy = window.fairCopy
 export default class TEIDocument {
 
     constructor( resourceID, fairCopyProject ) {
+        this.subDocs = {}
+        this.subDocCounter = 0
         this.editorView = null
+        this.noteEditorView = null
         this.resourceID = resourceID
         this.fairCopyProject = fairCopyProject
         const {schema} = fairCopyProject.teiSchema
@@ -58,6 +60,33 @@ export default class TEIDocument {
         return baseKeymap
     }
 
+    issueSubDocumentID = () => {
+        return `subdoc-${this.subDocCounter++}`
+    }
+
+    parseSubDocument(node, noteID) {
+        const {teiSchema} = this.fairCopyProject
+        const subDoc = teiSchema.parseBody(node,this)
+        this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
+    }
+
+    serializeSubDocument(attrs) {
+        const {teiSchema} = this.fairCopyProject
+        let {__id__} = attrs; 
+        const noteJSON = JSON.parse( this.subDocs[__id__] )
+        const subDoc = teiSchema.schema.nodeFromJSON(noteJSON);
+        const domFragment = teiSchema.serializeBody(subDoc.content, this)
+        let note = document.createElement('note')
+        note.appendChild( domFragment.cloneNode(true) )
+        for( const attrKey of Object.keys(attrs)) {
+            if( attrKey !== '__id__') {
+                const attrVal = attrs[attrKey]
+                note.setAttribute(attrKey,attrVal)
+            }
+        }
+        return note
+    }
+
     hasID(targetID) {       
         const editorState = this.editorView.state
         const {doc} = editorState
@@ -90,6 +119,14 @@ export default class TEIDocument {
         }
     }
 
+    refreshNoteView = () => {
+        // dispatch a blank transaction to force a display update of the subcomponents
+        if( this.noteEditorView ) {
+            const { tr } = this.noteEditorView.state
+            this.noteEditorView.dispatch(tr)    
+        }
+    }
+
     createEmptyDocument(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
@@ -97,17 +134,21 @@ export default class TEIDocument {
         return doc
     }
 
-    moveSubDocument( oldKey, newKey ) {
-        const subDoc = localStorage.getItem(oldKey);
-        localStorage.setItem(newKey, subDoc);
-        localStorage.setItem(oldKey, null);
+    openSubDocument( noteID ) {
+        const noteJSON = JSON.parse( this.subDocs[noteID] )
+        const { teiSchema } = this.fairCopyProject
+        const doc = teiSchema.schema.nodeFromJSON(noteJSON);
+        return EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, 0),
+            plugins: this.plugins
+        })
     }
 
     createSubDocument(documentDOM) {
         const subDoc = this.createEmptyDocument(documentDOM)
-        const { teiSchema } = this.fairCopyProject
-        const subDocID = teiSchema.issueSubDocumentID()
-        localStorage.setItem(subDocID, JSON.stringify(subDoc.toJSON()));
+        const subDocID = this.issueSubDocumentID()
+        this.subDocs[subDocID] = JSON.stringify(subDoc.toJSON())
         return subDocID
     }
 
@@ -128,7 +169,7 @@ export default class TEIDocument {
         const { teiSchema } = this.fairCopyProject
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
-        const doc = teiSchema.domParser.parse(bodyEl)
+        const doc = teiSchema.parseBody(bodyEl,this)
         const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
         this.initialState = EditorState.create({ 
@@ -137,29 +178,14 @@ export default class TEIDocument {
         this.loading = false
     }
 
-    openNote( noteID ) {
-        const noteJSON = JSON.parse( localStorage.getItem(noteID) )
-        const { teiSchema } = this.fairCopyProject
-        const doc = teiSchema.schema.nodeFromJSON(noteJSON);
-        return EditorState.create({
-            doc,
-            selection: TextSelection.create(doc, 0),
-            plugins: this.plugins
-        })
-    }
-
     save() {
-
-        // TODO - program should clear sub docs from local storage before exiting or when loading a different document
-
         const editorState = this.editorView.state
         const { teiSchema, idMap } = this.fairCopyProject
         teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        const domSerializer = DOMSerializer.fromSchema( teiSchema.schema )
-        const domFragment = domSerializer.serializeFragment(editorState.doc.content)
+        const domFragment = teiSchema.serializeBody(editorState.doc.content, this)
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )

@@ -1,13 +1,11 @@
 import {Schema} from "prosemirror-model"
-import {DOMSerializer} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
+import {DOMSerializer} from "prosemirror-model"
 
 export default class TEISchema {
 
     constructor(json) {
-        this.subDocIDs = []
-        this.subDocCounter = 0
-        this.subDocPrefix = `note-${Date.now()}-`
+        this.teiDocuments = []
         this.teiMode = false
         const { schemaSpec, elements, attrs } = this.parseSchemaConfig(json)
         this.elements = elements
@@ -17,10 +15,21 @@ export default class TEISchema {
         this.schemaJSON = json
     }
 
-    issueSubDocumentID = () => {
-        const nextID = `${this.subDocPrefix}${this.subDocCounter++}`
-        this.subDocIDs.push(nextID)
-        return nextID
+    parseBody(bodyEl, teiDocument) {
+        // make the TEIDocument visible to the node spec parser for access to sub docs
+        this.teiDocuments.push(teiDocument)
+        const doc = this.domParser.parse(bodyEl)
+        this.teiDocuments.pop()
+        return doc
+    }
+
+    serializeBody( content, teiDocument ) {
+        // make the TEIDocument visible to the serialize for access to sub docs
+        this.teiDocuments.push(teiDocument)
+        const domSerializer = DOMSerializer.fromSchema( this.schema )
+        const domFragment = domSerializer.serializeFragment(content)
+        this.teiDocuments.pop()
+        return domFragment
     }
 
     parseSchemaConfig(json) {
@@ -90,11 +99,6 @@ export default class TEISchema {
         return attrs
     }
 
-    parseSubDocument(node, noteID) {
-        const subDoc = this.domParser.parse(node)
-        localStorage.setItem(noteID, JSON.stringify(subDoc.toJSON()));
-    }
-
     createNodeSpec(teiNodeSpec) {
         const { name, content, group } = teiNodeSpec
         // TODO add attrSpec
@@ -122,8 +126,9 @@ export default class TEISchema {
                     getAttrs: (domNode) => {
                         const attrParser = this.getAttrParser(validAttrs)
                         const existingID = domNode.getAttribute('__id__')
-                        const noteID = existingID ? existingID : this.issueSubDocumentID()
-                        this.parseSubDocument(domNode, noteID)
+                        const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
+                        const noteID = existingID ? existingID : teiDocument.issueSubDocumentID()
+                        teiDocument.parseSubDocument(domNode, noteID)
                         return { ...attrParser(domNode), __id__: noteID }
                     },
                 }
@@ -132,7 +137,8 @@ export default class TEISchema {
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(node.attrs)
                     attrs = this.filterOutErrors(attrs)
-                    return this.serializeSubDocument(attrs)
+                    const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
+                    return teiDocument.serializeSubDocument(attrs)
                 } else {
                     const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
                     return ["tei-note",noteAttrs,0]
@@ -216,22 +222,5 @@ export default class TEISchema {
                 }
             } 
         }       
-    }
-
-    serializeSubDocument(attrs) {
-        let {__id__} = attrs; 
-        const noteJSON = JSON.parse( localStorage.getItem(__id__) )
-        const subDoc = this.schema.nodeFromJSON(noteJSON);
-        const domSerializer = DOMSerializer.fromSchema( this.schema )
-        const domFragment = domSerializer.serializeFragment(subDoc.content)
-        let note = document.createElement('note')
-        note.appendChild( domFragment.cloneNode(true) )
-        for( const attrKey of Object.keys(attrs)) {
-            if( attrKey !== '__id__') {
-                const attrVal = attrs[attrKey]
-                note.setAttribute(attrKey,attrVal)
-            }
-        }
-        return note
     }
 }
