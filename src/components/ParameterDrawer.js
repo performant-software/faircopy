@@ -281,7 +281,10 @@ export default class ParameterDrawer extends Component {
         let elements = []
         if( selection ) {
             if( selection.node ) {
-                elements.push( this.renderElement(selection.node,0,'attr-panel-node') )
+                // don't display drawer for notes on selection
+                if( selection.node.type.name !== 'note' ) {
+                    elements.push( this.renderElement(selection.node,0,'attr-panel-node') )
+                }
             } else {
                 const { doc } = editorView.state
                 const { $anchor } = selection

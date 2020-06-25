@@ -1,4 +1,4 @@
-import {Plugin} from "prosemirror-state"
+import {Plugin, TextSelection} from "prosemirror-state"
 import {DecorationSet, Decoration } from "prosemirror-view"
 import {markExtent} from "./commands"
 
@@ -21,7 +21,7 @@ const heatMapColors = [
 const drawHighlight = function(state) { 
     const { doc, selection } = state
 
-    if( selection ) {
+    if( selection && selection instanceof TextSelection ) {
         const { $anchor } = selection
         const highlights = getHighlightRanges(doc, $anchor) 
         const decorations = []
