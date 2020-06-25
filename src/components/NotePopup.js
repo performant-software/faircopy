@@ -14,7 +14,8 @@ export default class NotePopup extends Component {
     constructor() {
         super()
         this.state = {
-            scrollTop: 0
+            scrollTop: 0,
+            noteEditorView: null
         }
     }
 
@@ -26,10 +27,11 @@ export default class NotePopup extends Component {
     }
 
     createEditorView = (element) => {
+        const { noteEditorView } = this.state
         const { teiDocument, noteID } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
 
-        // if( teiDocument.noteEditorView ) return;
+        if( noteEditorView ) return;
 
         const initialState = teiDocument.openSubDocument( noteID )
 
@@ -44,13 +46,12 @@ export default class NotePopup extends Component {
             }
         )
         editorView.focus()
-        teiDocument.noteEditorView = editorView
-        teiDocument.refreshNoteView()
+        this.setState( { ...this.state, noteEditorView: editorView } )
     }
 
     dispatchTransaction = (transaction) => {
         const { teiDocument } = this.props
-        const { noteEditorView } = teiDocument
+        const { noteEditorView } = this.state
 
         if( noteEditorView ) {
             const editorState = noteEditorView.state
@@ -60,9 +61,12 @@ export default class NotePopup extends Component {
         }
     }
 
+    editorViewDestroyed = () => {
+        this.setState({ ...this.state, noteEditorView: null })
+    }
+
     renderEditor() {
-        const { teiDocument } = this.props
-        // const { scrollTop } = this.state
+        const { noteEditorView } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -74,15 +78,16 @@ export default class NotePopup extends Component {
         return (
             <div ref={onRef} className='note-body'>
                 <ProseMirrorComponent
+                    editorViewDestroyed={this.editorViewDestroyed}
                     createEditorView={this.createEditorView}
-                    editorView={teiDocument.noteEditorView}
+                    editorView={noteEditorView}
                 />                  
             </div>
         )        
     }
 
     render() {
-        const { anchorEl, onClose } = this.props
+        const { anchorEl } = this.props
 
         if( !anchorEl ) return null
 

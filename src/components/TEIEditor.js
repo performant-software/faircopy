@@ -9,6 +9,7 @@ import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import SearchBar from './SearchBar';
+import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 
 const resizeRefreshRate = 100
@@ -18,7 +19,8 @@ export default class TEIEditor extends Component {
     constructor() {
         super()
         this.state = {
-            editable: true,
+            noteID: null,
+            notePopupAnchorEl: null,
             scrollTop: 0
         }
     }
@@ -46,10 +48,6 @@ export default class TEIEditor extends Component {
         } 
     }
 
-    isEditable = () => {
-        return this.state.editable
-    }
-
     createEditorView = (element) => {
         const { teiDocument } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
@@ -62,7 +60,6 @@ export default class TEIEditor extends Component {
                 dispatchTransaction: this.dispatchTransaction,
                 state: teiDocument.initialState,
                 handleClickOn: this.onClickOn,
-                editable: this.isEditable, 
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema),
                 transformPasted: transformPastedHandler(teiSchema),
                 clipboardSerializer: createClipboardSerializer(teiSchema)
@@ -94,23 +91,19 @@ export default class TEIEditor extends Component {
     }
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
-        const { onOpenNote, onCloseNote } = this.props
-
         if( !direct ) return
         
         if( node.type.name === 'note' ) {
             const noteID = node.attrs['__id__']
-            this.setState({ ...this.state, editable: false })
-            onOpenNote(noteID, event.target)
+            this.setState({...this.state, noteID, notePopupAnchorEl: event.target })
         } else {
-            this.setState({ ...this.state, editable: true })
-            onCloseNote()
+            this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
         }
     }
 
     render() {    
         const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject } = this.props
-        const { scrollTop } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -154,6 +147,11 @@ export default class TEIEditor extends Component {
                     width={width}
                     teiDocument={teiDocument} 
                 />
+                <NotePopup
+                    teiDocument={teiDocument}
+                    noteID={noteID}
+                    anchorEl={notePopupAnchorEl}
+                ></NotePopup>
             </div>
         )
     }
