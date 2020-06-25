@@ -2,10 +2,12 @@
     z-index: 1000;
 }
 
-#NotePopup .body {
+#NotePopup .note-body {
     display: flex;
-    height: 100%;
-    overflow-y: scroll;
-    position: fixed;
+    margin: 5px;
     background: white;
+}
+
+.note-body .ProseMirrorComponent {
+    width: 300px;
 }

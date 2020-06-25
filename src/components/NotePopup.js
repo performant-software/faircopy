@@ -29,7 +29,7 @@ export default class NotePopup extends Component {
         const { teiDocument, noteID } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
 
-        if( teiDocument.noteEditorView ) return;
+        // if( teiDocument.noteEditorView ) return;
 
         const initialState = teiDocument.openSubDocument( noteID )
 
@@ -72,7 +72,7 @@ export default class NotePopup extends Component {
         }
 
         return (
-            <div style={{width: 300}} ref={onRef} className='body'>
+            <div ref={onRef} className='note-body'>
                 <ProseMirrorComponent
                     createEditorView={this.createEditorView}
                     editorView={teiDocument.noteEditorView}
@@ -93,9 +93,7 @@ export default class NotePopup extends Component {
             <div id="NotePopup">
                  <Popper className="note-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
                     <Paper elevation={elevation}>
-                        <ClickAwayListener onClickAway={onClose}>
-                            {this.renderEditor()}                            
-                        </ClickAwayListener>
+                        { this.renderEditor() }            
                     </Paper>
                 </Popper>
             </div>

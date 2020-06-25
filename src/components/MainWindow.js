@@ -12,6 +12,7 @@ import EditResourceDialog from './EditResourceDialog'
 import PopupMenu from './PopupMenu'
 import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
+import NotePopup from './NotePopup';
 
 const fairCopy = window.fairCopy
 
@@ -30,7 +31,9 @@ export default class MainWindow extends Component {
             openMenuID: null,
             elementMenuAnchorEl: null,
             popupMenuOptions: null, 
-            popupMenuAnchorEl: null
+            popupMenuAnchorEl: null,
+            noteID: null,
+            notePopupAnchorEl: null
         }	
     }
 
@@ -164,6 +167,14 @@ export default class MainWindow extends Component {
         fairCopy.services.ipcSend('requestImport')
     }
 
+    onOpenNote = (noteID,notePopupAnchorEl) => {
+        this.setState({...this.state, noteID, notePopupAnchorEl })
+    }
+
+    onCloseNote = () => {
+        this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+    }
+
     onResourceAction = (actionID, resourceIDs) => {
         const { fairCopyProject } = this.props
 
@@ -205,6 +216,8 @@ export default class MainWindow extends Component {
                             onStateChange={this.onStateChange}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onEditResource={this.onEditResource}
+                            onOpenNote={this.onOpenNote}
+                            onCloseNote={this.onCloseNote}
                         ></TEIEditor>
                     )        
                 } else {
@@ -248,7 +261,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { alertDialogMode, editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
-        const { popupMenuOptions, popupMenuAnchorEl } = this.state
+        const { popupMenuOptions, popupMenuAnchorEl, noteID, notePopupAnchorEl } = this.state
         const { fairCopyProject } = this.props
         const { menus } = fairCopyProject
         const openMenu = openMenuID ? menus[openMenuID] : null
@@ -272,7 +285,7 @@ export default class MainWindow extends Component {
         const onCloseResource = ( resourceID ) => {
             this.onResourceAction( 'close', [resourceID] )
         }
-
+   
         return (
             <div ref={(el) => this.el = el} > 
                 <SplitPane split="vertical" minSize={0} defaultSize={300}>
@@ -305,6 +318,12 @@ export default class MainWindow extends Component {
                     anchorEl={popupMenuAnchorEl}
                     onClose={this.onClosePopupMenu}                
                 ></PopupMenu>
+                <NotePopup
+                    teiDocument={teiDocument}
+                    noteID={noteID}
+                    anchorEl={notePopupAnchorEl}
+                    onClose={this.onCloseNote}        
+                ></NotePopup>
             </div>
         )
     }
