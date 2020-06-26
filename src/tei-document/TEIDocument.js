@@ -18,6 +18,7 @@ export default class TEIDocument {
         this.subDocs = {}
         this.subDocCounter = 0
         this.editorView = null
+        this.noteEditorView = null
         this.resourceID = resourceID
         this.fairCopyProject = fairCopyProject
         const {schema} = fairCopyProject.teiSchema

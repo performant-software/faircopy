@@ -60,13 +60,6 @@ export default class EditorToolbar extends Component {
                     </Button>                   
                 </div>
                 <div className="rightgroup">
-                    <Button 
-                        className="toolbar-button"
-                        disabled
-                        {...buttonProps}
-                    >
-                        <i className="fas fa-print fa-2x"></i>
-                    </Button> 
                     <Button
                         className="toolbar-button"
                         disabled

@@ -10,15 +10,20 @@ export default class NotePopup extends Component {
     constructor() {
         super()
         this.state = {
-            currentNoteID: null,
-            noteEditorView: null
+            currentNoteID: null
         }
     }
 
     createEditorView = (element) => {
-        const { noteEditorView } = this.state
         const { teiDocument, noteID } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
+        const { noteEditorView } = teiDocument
+
+        if( !noteID ) {
+            this.saveNote()
+            teiDocument.noteEditorView = null
+            return
+        } 
 
         if( noteEditorView ) return
         const initialState = teiDocument.openSubDocument( noteID )
@@ -34,12 +39,13 @@ export default class NotePopup extends Component {
             }
         )
         editorView.focus()
-        this.setState( { ...this.state, currentNoteID: noteID, noteEditorView: editorView } )
+        teiDocument.noteEditorView = editorView
+        this.setState( { ...this.state, currentNoteID: noteID } )
     }
 
     dispatchTransaction = (transaction) => {
         const { teiDocument } = this.props
-        const { noteEditorView } = this.state
+        const { noteEditorView } = teiDocument
 
         if( noteEditorView ) {
             const editorState = noteEditorView.state
@@ -49,13 +55,20 @@ export default class NotePopup extends Component {
         }
     }
 
-    destroyEditorView = (editorView) => {
+    saveNote() {
         const { teiDocument } = this.props
         const { currentNoteID } = this.state
-        const editorState = editorView.state
+        const { noteEditorView } = teiDocument
+        const editorState = noteEditorView.state
         teiDocument.saveNote(currentNoteID,editorState)
+    }
+
+    destroyEditorView = (editorView) => {
+        const { teiDocument } = this.props
+        this.saveNote()
         editorView.destroy()
-        this.setState({ ...this.state, currentNoteID: null, noteEditorView: null })
+        teiDocument.noteEditorView = null
+        this.setState({ ...this.state, currentNoteID: null })
     }
 
     renderEditor() {
