@@ -94,11 +94,18 @@ export default class TEIEditor extends Component {
         if( !direct ) return
         
         if( node.type.name === 'note' ) {
-            const noteID = node.attrs['__id__']
-            // TODO if this is a different note, save before switching
-            this.setState({...this.state, noteID, notePopupAnchorEl: event.target })
+            const { noteID } = this.state
+            const nextID = node.attrs['__id__']
+            if( noteID !== nextID ) {
+                if( noteID !== null ) {
+                    // TODO if this is a different note, save before switching
+                    this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+                } else {
+                    this.setState({...this.state, noteID: nextID, notePopupAnchorEl: event.target })
+                }
+            }
         } else {
-            // TODO save an notes that are open
+            // TODO save any notes that are open
             this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
         }
     }

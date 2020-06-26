@@ -1,27 +1,16 @@
 import React, { Component } from 'react'
 import { Popper, Paper } from '@material-ui/core'
-import { debounce } from "debounce";
 import {EditorView} from "prosemirror-view"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
-
-const resizeRefreshRate = 100
 
 export default class NotePopup extends Component {
 
     constructor() {
         super()
         this.state = {
-            scrollTop: 0,
             noteEditorView: null
-        }
-    }
-
-    onScroll = () => {
-        if( this.el ) {
-            const scrollTop = this.el.scrollTop
-            this.setState({...this.state,scrollTop})    
         }
     }
 
@@ -30,8 +19,7 @@ export default class NotePopup extends Component {
         const { teiDocument, noteID } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
 
-        if( noteEditorView ) return;
-
+        if( noteEditorView ) return
         const initialState = teiDocument.openSubDocument( noteID )
 
         const editorView = new EditorView( 
@@ -67,15 +55,8 @@ export default class NotePopup extends Component {
     renderEditor() {
         const { noteEditorView } = this.state
 
-        const onRef = (el) => {
-            this.el = el
-            if( el ) {
-                el.addEventListener("scroll", debounce(this.onScroll,resizeRefreshRate))
-            }
-        }
-
         return (
-            <div ref={onRef} className='note-body'>
+            <div className='note-body'>
                 <ProseMirrorComponent
                     editorViewDestroyed={this.editorViewDestroyed}
                     createEditorView={this.createEditorView}
