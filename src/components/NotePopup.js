@@ -10,6 +10,7 @@ export default class NotePopup extends Component {
     constructor() {
         super()
         this.state = {
+            currentNoteID: null,
             noteEditorView: null
         }
     }
@@ -33,7 +34,7 @@ export default class NotePopup extends Component {
             }
         )
         editorView.focus()
-        this.setState( { ...this.state, noteEditorView: editorView } )
+        this.setState( { ...this.state, currentNoteID: noteID, noteEditorView: editorView } )
     }
 
     dispatchTransaction = (transaction) => {
@@ -48,8 +49,13 @@ export default class NotePopup extends Component {
         }
     }
 
-    editorViewDestroyed = () => {
-        this.setState({ ...this.state, noteEditorView: null })
+    destroyEditorView = (editorView) => {
+        const { teiDocument } = this.props
+        const { currentNoteID } = this.state
+        const editorState = editorView.state
+        teiDocument.saveNote(currentNoteID,editorState)
+        editorView.destroy()
+        this.setState({ ...this.state, currentNoteID: null, noteEditorView: null })
     }
 
     renderEditor() {
@@ -58,7 +64,7 @@ export default class NotePopup extends Component {
         return (
             <div className='note-body'>
                 <ProseMirrorComponent
-                    editorViewDestroyed={this.editorViewDestroyed}
+                    destroyEditorView={this.destroyEditorView}
                     createEditorView={this.createEditorView}
                     editorView={noteEditorView}
                 />                  

@@ -18,7 +18,6 @@ export default class TEIDocument {
         this.subDocs = {}
         this.subDocCounter = 0
         this.editorView = null
-        this.noteEditorView = null
         this.resourceID = resourceID
         this.fairCopyProject = fairCopyProject
         const {schema} = fairCopyProject.teiSchema
@@ -119,14 +118,6 @@ export default class TEIDocument {
         }
     }
 
-    refreshNoteView = () => {
-        // dispatch a blank transaction to force a display update of the subcomponents
-        if( this.noteEditorView ) {
-            const { tr } = this.noteEditorView.state
-            this.noteEditorView.dispatch(tr)    
-        }
-    }
-
     createEmptyDocument(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
@@ -176,6 +167,11 @@ export default class TEIDocument {
             doc, plugins: this.plugins, selection 
         })
         this.loading = false
+    }
+
+    saveNote(noteID, editorState) {
+        const subDoc = editorState.doc
+        this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
     }
 
     save() {

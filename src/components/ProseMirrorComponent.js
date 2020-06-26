@@ -10,10 +10,14 @@ export default class ProseMirrorComponent extends Component {
   }
 
   componentWillUnmount() {
-    const {editorView,editorViewDestroyed} = this.props 
+    const {editorView, destroyEditorView} = this.props 
     if (editorView) {
       editorView.destroy()
-      if( editorViewDestroyed ) editorViewDestroyed()
+      if( destroyEditorView ) {
+        destroyEditorView(editorView)
+      } else {
+        editorView.destroy()
+      }
     }
   }
 
