@@ -44,7 +44,7 @@ export default class NotePopup extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { teiDocument } = this.props
+        const { teiDocument, onStateChange } = this.props
         const { noteEditorView } = teiDocument
 
         if( noteEditorView ) {
@@ -52,6 +52,7 @@ export default class NotePopup extends Component {
             const nextEditorState = editorState.apply(transaction)
             noteEditorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+            onStateChange(nextEditorState)
         }
     }
 

@@ -2,7 +2,8 @@ import { wrapIn } from 'prosemirror-commands'
 import { addMark } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
-    const { editorView, fairCopyProject } = teiDocument
+    const { fairCopyProject } = teiDocument
+    const editorView = teiDocument.getActiveView()
     const {schema} = fairCopyProject.teiSchema
 
     switch( elementID ) {
@@ -27,7 +28,7 @@ export function onClippy() {
 
 
 export function eraseSelection(teiDocument) {
-    const { editorView } = teiDocument
+    const editorView = teiDocument.getActiveView()
     const { tr, selection } = editorView.state
 
     let {empty, $cursor, ranges} = selection

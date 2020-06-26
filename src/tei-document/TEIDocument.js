@@ -156,6 +156,11 @@ export default class TEIDocument {
         this.loading = true
     }
 
+    getActiveView() {
+        // if the note editor is active, use it, otherwise use main view
+        return this.noteEditorView ? this.noteEditorView : this.editorView
+    }
+
     load( text ) {
         const parser = new DOMParser();
         const { teiSchema } = this.fairCopyProject

@@ -53,7 +53,7 @@ export default class ParameterDrawer extends Component {
     changeAttributeHandler = ( element, attributeKey ) => {
         return (value,error) => {
             const { teiDocument } = this.props
-            const { editorView } = teiDocument
+            const editorView = teiDocument.getActiveView()
             const { state } = editorView 
             const { $anchor } = state.selection
             let {tr} = state
@@ -272,11 +272,11 @@ export default class ParameterDrawer extends Component {
 
     render() {
         const { teiDocument } = this.props
-        const { editorView } = teiDocument
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
 
+        const editorView = teiDocument.getActiveView()
         const selection = (editorView) ? editorView.state.selection : null 
-
+        
         // create a list of the selected phrase level elements 
         let elements = []
         if( selection ) {
