@@ -21,7 +21,9 @@ export default class TEIEditor extends Component {
         this.state = {
             noteID: null,
             notePopupAnchorEl: null,
-            scrollTop: 0
+            scrollTop: 0,
+            ctrlDown: false,
+            altDown: false
         }
     }
 
@@ -92,7 +94,7 @@ export default class TEIEditor extends Component {
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
         if( !direct ) return
-        
+
         if( node.type.name === 'note' ) {
             const { noteID } = this.state
             const nextID = node.attrs['__id__']
@@ -108,9 +110,31 @@ export default class TEIEditor extends Component {
         }
     }
 
+    onKeyDown = ( event ) => {
+        const { ctrlDown, altDown } = this.state
+
+        if( event.altKey && !altDown ) {
+           this.setState({...this.state, altDown: true })
+        }
+        if( event.ctrlKey && !ctrlDown ) {
+            this.setState({...this.state, ctrlDown: true })            
+        }
+    }
+
+    onKeyUp = ( event ) => {
+        const { ctrlDown, altDown } = this.state
+
+        if( !event.altKey && altDown ) {
+            this.setState({...this.state, altDown: false })
+        }
+        if( !event.ctrlKey && ctrlDown ) {
+            this.setState({...this.state, ctrlDown: false })            
+        }
+    }
+
     render() {    
         const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl, altDown } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -123,7 +147,12 @@ export default class TEIEditor extends Component {
         const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
 
         return (
-            <div style={style} className='TEIEditor'> 
+            <div 
+                style={style} 
+                onKeyDown={this.onKeyDown} 
+                onKeyUp={this.onKeyUp} 
+                className='TEIEditor'
+            > 
                 <div>
                     <div className="titlebar">
                         <SearchBar></SearchBar>
