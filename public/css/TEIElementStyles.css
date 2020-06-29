@@ -56,14 +56,14 @@ tei-del {
     text-decoration: line-through;
 }
 
-tei-hi[rend="caps"] {
-text-transform: uppercase;
+*[rendition~="simple:caps"] {
+    text-transform: uppercase;
 }
-tei-hi[rend="italic"] {
-font-style: italic;
+*[rendition~="simple:italic"] {
+    font-style: italic;
 }
-tei-hi[rend="bold"] {
-font-weight: bold;
+*[rendition~="simple:bold"] {
+    font-weight: bold;
 }
 
 .ProseMirror {
