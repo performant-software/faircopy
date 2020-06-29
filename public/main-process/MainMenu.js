@@ -157,7 +157,7 @@ class MainMenu {
               submenu: [
                 {
                   label: 'About',
-                  click () { require('electron').shell.openExternalSync('https://www.performantsoftware.com') }
+                  click () { require('electron').shell.openExternal('https://faircopyeditor.com/') }
                 }
               ]
             }
