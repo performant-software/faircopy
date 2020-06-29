@@ -134,7 +134,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl, altDown } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl } = this.state
 
         const onRef = (el) => {
             this.el = el

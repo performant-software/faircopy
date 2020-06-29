@@ -12,8 +12,9 @@ export default class ProjectNavigator extends Component {
 
     onClickNode = (e) => {
       const { onSelectResource } = this.props
-      const resourceID = e.currentTarget.getAttribute('dataresourceid')
-      onSelectResource(resourceID)
+      const { currentTarget } = e
+      const resourceID = currentTarget.getAttribute('dataresourceid')
+      onSelectResource(resourceID)  
     }
 
     renderTreeRootLabel() {
@@ -26,7 +27,7 @@ export default class ProjectNavigator extends Component {
 
       return (
         <div>
-          <Typography className="tree-item-name">Open Resources</Typography>
+          <Typography className="open-resources">Open Resources</Typography>
           <Button 
             className="tree-item-close"
             onClick={onClick}
@@ -46,8 +47,8 @@ export default class ProjectNavigator extends Component {
       }
 
       return (
-        <div>
-          <Typography onClick={this.onClickNode} dataresourceid={resourceID} className="tree-item-name">{resourceName}</Typography>
+        <div className='tree-item'>
+          <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceName}</Typography>
           <Button 
             className="tree-item-close"
             onClick={onClick}
@@ -93,17 +94,20 @@ export default class ProjectNavigator extends Component {
     }
 
     render() {
-        return (
-          <div id="ProjectNavigator">
-            <TreeView
-              defaultExpanded={["root"]}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-            >
-              { this.renderTree() }
-            </TreeView>
-          </div>
-        )
+      const { selectedResource } = this.props
+
+      return (
+        <div id="ProjectNavigator">
+          <TreeView
+            selected={selectedResource}
+            defaultExpanded={["root"]}
+            defaultCollapseIcon={<ExpandMoreIcon />}
+            defaultExpandIcon={<ChevronRightIcon />}
+          >
+            { this.renderTree() }
+          </TreeView>
+        </div>
+      )
     }
 
 }

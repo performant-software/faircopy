@@ -3,14 +3,20 @@
     margin-top: 10px;
 }
 
-#ProjectNavigator .tree-item-name {
+#ProjectNavigator .open-resources {
+    margin-left: 10px;
     display: inline-block;
 }
 
+#ProjectNavigator .tree-item-name {
+    margin-left: 10px;
+    display: inline-block;
+    width: 100%;
+}
+
 #ProjectNavigator .tree-item {
-    margin-left: 20px;
+    display: flex;
     margin-top: 5px;
-    margin-bottom: 5px;
 }
 
 #ProjectNavigator .tree-item-close {
