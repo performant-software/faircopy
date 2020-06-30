@@ -62,6 +62,7 @@ export default class MainWindow extends Component {
     receiveImportData( importData ) {
         const { fairCopyProject } = this.props
         fairCopyProject.importResource(importData)
+        this.setState({...this.state})
     }
 
     onStateChange = (nextState) => {
