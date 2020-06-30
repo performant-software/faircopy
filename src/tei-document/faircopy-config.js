@@ -1,7 +1,7 @@
 const fairCopy = window.fairCopy
 
-export function learnDoc(fairCopyConfig, doc, teiSchema) {
-    const { subDocIDs } = teiSchema
+export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
+    const { subDocs } = tempDoc
     const { elements, vocabs } = fairCopyConfig
 
     const addTerm = ( vocabID, term ) => {
@@ -66,8 +66,8 @@ export function learnDoc(fairCopyConfig, doc, teiSchema) {
     scanNode(doc)
 
     // scan any subdocs
-    for( const subDocID of subDocIDs ) {
-        const noteJSON = JSON.parse( localStorage.getItem(subDocID) )
+    for( const subDocJSON of Object.values(subDocs) ) {
+        const noteJSON = JSON.parse( subDocJSON )
         const subDoc = teiSchema.schema.nodeFromJSON(noteJSON);
         scanNode(subDoc)
     }

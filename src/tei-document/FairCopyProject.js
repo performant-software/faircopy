@@ -120,7 +120,7 @@ export default class FairCopyProject {
 
     importResource(importData) {
         const { path, data } = importData
-        
+
         const name = fairCopy.services.getBasename(path,'.xml').trim()
         const sanitizedID = sanitizeID(name)
         const localID = sanitizedID && !this.idMap.get(sanitizedID) ? sanitizedID : this.idMap.getUniqueID()  
@@ -134,12 +134,13 @@ export default class FairCopyProject {
 
         // parse the data into a ProseMirror doc
         const parser = new DOMParser();
+        const tempDoc = new TEIDocument(null,this)
         const xmlDom = parser.parseFromString(data, "text/xml");
         const bodyEl = xmlDom.getElementsByTagName('body')[0]
-        const doc = this.teiSchema.domParser.parse(bodyEl)
+        const doc = this.teiSchema.parseBody(bodyEl,tempDoc)
 
         this.idMap.mapTextIDs(localID,doc)
-        this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema)
+        this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)
         this.resources[resourceEntry.id] = resourceEntry
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
         saveConfig(this.fairCopyConfig)
