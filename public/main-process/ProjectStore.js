@@ -136,7 +136,14 @@ class ProjectStore {
 function writeArchive(zipPath, zipData) {
     // TODO can we debounce this to prevent numerous calls?
     zipData
-        .generateNodeStream({type:'nodebuffer',streamFiles:true})
+        .generateNodeStream({
+            type:'nodebuffer',
+            compression: "DEFLATE",
+            compressionOptions: {
+                level: 1
+            },
+            streamFiles:true
+        })
         .pipe(fs.createWriteStream(zipPath))
         .on('finish', () => {
             console.log(`${zipPath} written.`);
