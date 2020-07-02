@@ -136,7 +136,27 @@ export default class FairCopyProject {
         const parser = new DOMParser();
         const tempDoc = new TEIDocument(null,this)
         const xmlDom = parser.parseFromString(data, "text/xml");
-        const bodyEl = xmlDom.getElementsByTagName('body')[0]
+
+        // Check for basic validity 
+        if( xmlDom.getElementsByTagName('parsererror').length > 0 ) {
+            console.log('Document is not a well formed XML document.')
+            return
+        } 
+
+        const teiEl = xmlDom.getElementsByTagName('tei')[0]
+        if( !teiEl ) {
+            console.log('Document must contain a <TEI> element.')
+            return
+        }
+        const teiHeaderEl = teiEl.getElementsByTagName('teiheader')[0]
+
+        // TODO handle import of facs 
+        const bodyEl = teiEl.getElementsByTagName('body')[0]
+        if( !teiHeaderEl || !bodyEl ) {
+            console.log('<TEI> element must contain <TEIHEADER> and <BODY>.')
+            return                        
+        } 
+
         const doc = this.teiSchema.parseBody(bodyEl,tempDoc)
 
         this.idMap.mapTextIDs(localID,doc)
