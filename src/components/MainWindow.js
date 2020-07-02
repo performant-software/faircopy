@@ -179,6 +179,9 @@ export default class MainWindow extends Component {
                 fairCopyProject.removeResources(resourceIDs)
                 this.closeResources(resourceIDs)
                 break
+            case 'export':
+                fairCopy.services.ipcSend('requestExport', resourceIDs)
+                break
             default:
                 console.error(`Unrecognized resource action id: ${actionID}`)
         }

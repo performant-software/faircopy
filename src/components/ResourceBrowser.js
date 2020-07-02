@@ -29,7 +29,6 @@ export default class ResourceBrowser extends Component {
       {
         id: 'export',
         label: 'Export',
-        disabled: true,
         action: this.createResourceAction('export')
       },
       {

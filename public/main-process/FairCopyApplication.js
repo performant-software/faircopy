@@ -57,6 +57,16 @@ class FairCopyApplication {
       }
     })
 
+    ipcMain.on('requestExport', (event, exportOptions) => { 
+      const paths = this.mainMenu.openExport()
+      const path = paths ? paths[0] : null
+      if( path ) {
+        this.projectStore.exportResources(exportOptions,path).then( () => { 
+          console.log(`Resources exported.`)
+        })
+      }
+    })
+
     ipcMain.on('requestImageView', (event, imageViewInfo) => { 
       this.createImageWindow(imageViewInfo).then( () => { 
         console.log(`Opened image view.`)
