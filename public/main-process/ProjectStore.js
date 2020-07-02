@@ -1,6 +1,7 @@
 const JSZip = require('jszip');
 const fs = require('fs')
 const debounce = require('debounce')
+const format = require('xml-formatter');
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -102,8 +103,13 @@ class ProjectStore {
         for( const resourceID of resourceIDs ) {
             const resourceEntry = this.manifestData.resources[resourceID]
             const resource = await this.readUTF8File(resourceID)
+            const xml = format(resource, {
+                indentation: '\t', 
+                collapseContent: true, 
+                lineSeparator: '\n'
+            })
             const filePath = `${path}/${resourceEntry.localID}.xml`
-            fs.writeFileSync(filePath,resource)
+            fs.writeFileSync(filePath,xml)
         }
         console.log(`Export resources to: ${path}`)
     }
