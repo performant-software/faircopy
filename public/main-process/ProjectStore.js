@@ -82,7 +82,7 @@ class ProjectStore {
     addResource( resourceEntryJSON, resourceData ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
-        this.projectArchive.file(resourceEntry.id, Buffer.alloc(resourceData.length, resourceData))
+        this.projectArchive.file(resourceEntry.id, resourceData)
         this.saveManifest()
     }
 
