@@ -62,9 +62,9 @@ export default class TEIEditor extends Component {
                 dispatchTransaction: this.dispatchTransaction,
                 state: teiDocument.initialState,
                 handleClickOn: this.onClickOn,
-                transformPastedHTML: transformPastedHTMLHandler(teiSchema),
-                transformPasted: transformPastedHandler(teiSchema),
-                clipboardSerializer: createClipboardSerializer(teiSchema)
+                transformPastedHTML: transformPastedHTMLHandler(teiSchema,teiDocument),
+                transformPasted: transformPastedHandler(teiSchema,teiDocument),
+                clipboardSerializer: createClipboardSerializer(teiSchema,teiDocument)
             }
         )
         editorView.focus()
