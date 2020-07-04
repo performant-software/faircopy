@@ -25,7 +25,8 @@ export default class MainWindow extends Component {
             latest: null,
             width: -300,
             resourceBrowserOpen: true,
-            alertDialogMode: false,
+            alertDialogMode: 'closed',
+            alertOptions: null,
             editDialogMode: false,
             openMenuID: null,
             elementMenuAnchorEl: null,
@@ -61,8 +62,13 @@ export default class MainWindow extends Component {
 
     receiveImportData( importData ) {
         const { fairCopyProject } = this.props
-        fairCopyProject.importResource(importData)
-        this.setState({...this.state})
+        const { error, errorMessage } = fairCopyProject.importResource(importData)
+        if( error ) {
+            const alertOptions = { errorMessage }
+            this.setState({...this.state, alertDialogMode: 'importError', alertOptions })
+        } else {
+            this.setState({...this.state})
+        }
     }
 
     onStateChange = (nextState) => {
@@ -252,8 +258,47 @@ export default class MainWindow extends Component {
         )
     }
 
+    renderAlertDialog() {
+        const { alertDialogMode, alertOptions } = this.state
+
+        const onCloseAlert = () => {
+            this.setState({ ...this.state, alertDialogMode: 'closed', alertOptions: null })
+        }
+
+        let open, title, message, actions, handleClose
+        switch(alertDialogMode) {
+            case 'importError':
+                open = true
+                title = "Import Error"
+                message = alertOptions.errorMessage
+                handleClose = onCloseAlert
+                actions = [
+                    {
+                        label: "OK",
+                        defaultAction: true,
+                        handler: onCloseAlert
+                    }
+                ]
+                break
+
+            case 'closed':
+            default:
+                open = false
+        }
+    
+        return (
+            <AlertDialog
+                open={open}
+                title={title}
+                message={message}
+                actions={actions}
+                handleClose={handleClose}
+            ></AlertDialog>    
+        )
+    }
+
     render() {
-        const { alertDialogMode, editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
+        const { editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
         const { menus } = fairCopyProject
@@ -292,9 +337,7 @@ export default class MainWindow extends Component {
                     ></ProjectSidebar>    
                     { this.renderContentPane() }
                 </SplitPane>
-                <AlertDialog
-                    alertDialogMode={alertDialogMode}
-                ></AlertDialog>
+                { this.renderAlertDialog() }
                 { editDialogMode && <EditResourceDialog
                     resourceEntry={resourceEntry}
                     onSave={onSaveResource}

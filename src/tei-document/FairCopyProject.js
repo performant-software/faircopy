@@ -139,22 +139,19 @@ export default class FairCopyProject {
 
         // Check for basic validity 
         if( xmlDom.getElementsByTagName('parsererror').length > 0 ) {
-            console.log('Document is not a well formed XML document.')
-            return
+            return { error: true, errorMessage: 'Document is not a well formed XML document.' }
         } 
 
-        const teiEl = xmlDom.getElementsByTagName('tei')[0]
+        const teiEl = xmlDom.getElementsByTagName('tei')[0] || xmlDom.getElementsByTagName('TEI')[0]
         if( !teiEl ) {
-            console.log('Document must contain a <TEI> element.')
-            return
+            return { error: true, errorMessage: 'Document must contain a <TEI> element.' }
         }
-        const teiHeaderEl = teiEl.getElementsByTagName('teiheader')[0]
+        const teiHeaderEl = teiEl.getElementsByTagName('teiheader')[0] || teiEl.getElementsByTagName('teiHeader')[0]
 
         // TODO handle import of facs 
-        const bodyEl = teiEl.getElementsByTagName('body')[0]
+        const bodyEl = teiEl.getElementsByTagName('body')[0] || teiEl.getElementsByTagName('BODY')[0]
         if( !teiHeaderEl || !bodyEl ) {
-            console.log('<TEI> element must contain <TEIHEADER> and <BODY>.')
-            return                        
+            return { error: true, errorMessage: '<TEI> element must contain <teiHeader> and <body>.' }
         } 
 
         const doc = this.teiSchema.parseBody(bodyEl,tempDoc)
@@ -165,5 +162,6 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
         saveConfig(this.fairCopyConfig)
         this.idMap.save()    
+        return { error: false, errorMessage: null }
     }
 }
