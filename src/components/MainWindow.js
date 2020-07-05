@@ -113,6 +113,17 @@ export default class MainWindow extends Component {
     closeResources(resourceIDs) {
         const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
+        for( const resourceID of resourceIDs ) {
+            const resource = openResources[resourceID]
+            if( resource.changedSinceLastSave ) {
+                const alertOptions = {
+                    resource, resourceIDs
+                }
+                this.setState({ ...this.state, alertDialogMode: 'confirmSave', alertOptions })
+                return 
+            }
+        }
+
         let nextResourceArr = []
         for( const openResourceID of Object.keys(openResources) ) {
             if( !resourceIDs.find(id => id === openResourceID) ) {
@@ -138,6 +149,8 @@ export default class MainWindow extends Component {
             selectedResource: nextSelection, 
             openResources: nextResources, 
             resourceBrowserOpen: nextBrowserOpen,
+            alertDialogMode: 'closed', 
+            alertOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null 
         })
@@ -280,6 +293,39 @@ export default class MainWindow extends Component {
                     }
                 ]
                 break
+                
+            case 'confirmSave': {
+                const onSave = () => {
+                    const { resource, resourceIDs } = alertOptions
+                    resource.save()
+                    onCloseAlert()
+                    this.closeResources(resourceIDs)
+                }
+
+                const onCloseWithoutSave = () => {
+                    const { resource, resourceIDs } = alertOptions
+                    resource.changedSinceLastSave = false       
+                    onCloseAlert()
+                    this.closeResources(resourceIDs)
+                }
+
+                open = true
+                title = "Close without saving?"
+                message = `Close resource without saving?`
+                handleClose = onCloseAlert
+                actions = [
+                    {
+                        label: "Save",
+                        defaultAction: true,
+                        handler: onSave
+                    },
+                    {
+                        label: "Close",
+                        handler: onCloseWithoutSave
+                    }
+                ]
+                break
+            }
 
             case 'closed':
             default:
