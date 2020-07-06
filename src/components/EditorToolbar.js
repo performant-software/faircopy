@@ -8,9 +8,11 @@ export default class EditorToolbar extends Component {
     
     render() {
         const { onOpenElementMenu, onEditResource, teiDocument } = this.props
+        const { changedSinceLastSave } = teiDocument
 
         const onClickSave = () => {
             teiDocument.save()
+            teiDocument.refreshView()
         }
 
         const buttonProps = {
@@ -70,6 +72,7 @@ export default class EditorToolbar extends Component {
                     <Button
                         onClick={onClickSave}
                         className="toolbar-button"
+                        disabled={!changedSinceLastSave}
                         {...buttonProps}
                     >
                         <i className="fas fa-save fa-2x"></i>
