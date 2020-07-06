@@ -12,11 +12,13 @@ class ProjectStore {
 
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
+        this.jobsInProgress = []
 
         // create a debounced function for writing the ZIP
         this.writeProjectArchive = debounce(() => {
-            writeArchive(this.projectFilePath, this.projectArchive)
-        },zipWriteDelay)
+            this.jobsInProgress.push(Date.now())
+            writeArchive(this.projectFilePath, this.projectArchive, () => { this.jobsInProgress.pop() })
+        },zipWriteDelay, true)
     }
 
     async openProject(projectFilePath) {
@@ -68,6 +70,16 @@ class ProjectStore {
             const resource = await this.readUTF8File(resourceID)
             const imageViewData = { resourceID, xmlID, resource, teiSchema, idMap }
             imageView.webContents.send('imageViewOpened', imageViewData )    
+        }
+    }
+
+    quitSafely = (quitCallback) => {
+        if( this.jobsInProgress.length > 0 ) {
+            // write jobs still active, wait a moment and then try again 
+            setTimeout( () => { this.quitSafely(quitCallback) }, zipWriteDelay*2 )
+        } else {
+            // if we aren't writing now, quit 
+            quitCallback()
         }
     }
 
@@ -149,8 +161,7 @@ class ProjectStore {
     }
 }
 
-function writeArchive(zipPath, zipData) {
-    // TODO can we debounce this to prevent numerous calls?
+function writeArchive(zipPath, zipData, whenFinished) {
     zipData
         .generateNodeStream({
             type:'nodebuffer',
@@ -163,6 +174,7 @@ function writeArchive(zipPath, zipData) {
         .pipe(fs.createWriteStream(zipPath))
         .on('finish', () => {
             console.log(`${zipPath} written.`);
+            if( whenFinished ) whenFinished()
         });
 }
 

@@ -35,6 +35,14 @@ class FairCopyApplication {
 
     this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
 
+    // let render window handle on close (without browser restrictions)
+    this.mainWindow.on('close', () => {
+      if( !this.exiting ) {
+        this.sendToMainWindow('requestExitApp')
+        return false  
+      }
+    })
+
     ipcMain.on('requestResource', (event,resourceID) => { 
       this.projectStore.openResource(resourceID).then(()=>{
         console.log(`opened resourceID: ${resourceID}`)
@@ -46,7 +54,8 @@ class FairCopyApplication {
     ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
     ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
-    
+    ipcMain.on('exitApp', (event) => { this.exitApp() })
+
     ipcMain.on('requestImport', (event) => { 
       const paths = this.mainMenu.openImport()
       const path = paths ? paths[0] : null
@@ -103,6 +112,18 @@ class FairCopyApplication {
     const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
     this.imageViews.push(imageView)
     await this.projectStore.openImageView(imageView,imageViewInfo)
+  }
+
+  exitApp() {
+    if( !this.exiting ) {
+      this.exiting = true
+      this.projectStore.quitSafely(() => {
+        for( const imageView of this.imageViews ) {
+          imageView.close()
+        }
+        this.mainWindow.close()
+      })  
+    }
   }
 
   openProject(targetFile) {

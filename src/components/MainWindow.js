@@ -27,6 +27,7 @@ export default class MainWindow extends Component {
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
+            exitOnClose: false,
             editDialogMode: false,
             openMenuID: null,
             elementMenuAnchorEl: null,
@@ -40,6 +41,7 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('fileSaved', (event, resourceID) => this.saved(resourceID))
         services.ipcRegisterCallback('importOpened', (event, importData) => this.receiveImportData(importData))
+        services.ipcRegisterCallback('requestExitApp', (event, importData) => this.requestExitApp() ) 
     }
     
     saved(resourceID) {
@@ -48,6 +50,16 @@ export default class MainWindow extends Component {
         //     alertDialogMode: false, 
         //     exitAnyway: false
         // })
+    }
+
+    requestExitApp = () => {
+        const { openResources } = this.state
+        const resourceIDs = Object.keys( openResources )
+        if( resourceIDs.length > 0 ) {
+            this.closeResources( resourceIDs, true)
+        } else {
+            fairCopy.services.ipcSend('exitApp')
+        }
     }
 
     receiveResourceData( resourceData ) {
@@ -110,7 +122,7 @@ export default class MainWindow extends Component {
         }
     }
 
-    closeResources(resourceIDs) {
+    closeResources(resourceIDs,exitOnClose=false) {
         const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
         for( const resourceID of resourceIDs ) {
@@ -119,7 +131,7 @@ export default class MainWindow extends Component {
                 const alertOptions = {
                     resource, resourceIDs
                 }
-                this.setState({ ...this.state, alertDialogMode: 'confirmSave', alertOptions })
+                this.setState({ ...this.state, exitOnClose, alertDialogMode: 'confirmSave', alertOptions })
                 return 
             }
         }
@@ -154,6 +166,10 @@ export default class MainWindow extends Component {
             popupMenuOptions: null, 
             popupMenuAnchorEl: null 
         })
+
+        if( exitOnClose ) {
+            fairCopy.services.ipcSend('exitApp')
+        }    
     }
 
     onOpenResourceBrowser = () => {
@@ -296,22 +312,25 @@ export default class MainWindow extends Component {
                 
             case 'confirmSave': {
                 const onSave = () => {
+                    const { exitOnClose } = this.state
                     const { resource, resourceIDs } = alertOptions
                     resource.save()
-                    onCloseAlert()
-                    this.closeResources(resourceIDs)
+                    this.closeResources(resourceIDs,exitOnClose)
                 }
 
                 const onCloseWithoutSave = () => {
+                    const { exitOnClose } = this.state
                     const { resource, resourceIDs } = alertOptions
                     resource.changedSinceLastSave = false       
-                    onCloseAlert()
-                    this.closeResources(resourceIDs)
+                    this.closeResources(resourceIDs,exitOnClose)
                 }
 
+                const { fairCopyProject } = this.props
+                const { resource } = alertOptions
+                const resourceName = fairCopyProject.resources[resource.resourceID].name
                 open = true
-                title = "Close without saving?"
-                message = `Close resource without saving?`
+                title = "Confirm Close"
+                message = `Close "${resourceName}" without saving?`
                 handleClose = onCloseAlert
                 actions = [
                     {
