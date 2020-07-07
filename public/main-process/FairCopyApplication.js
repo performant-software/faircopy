@@ -16,6 +16,8 @@ class FairCopyApplication {
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.versionNumber = this.getVersionNumber()
     this.mainMenu = new MainMenu(this)
+    this.exiting = false
+    this.returnToProjectWindow = false
   }
 
   getVersionNumber() {
@@ -33,13 +35,21 @@ class FairCopyApplication {
   async createMainWindow() {
     this.projectStore = new ProjectStore(this)
 
+    if( this.mainWindow ) {
+      if( !this.mainWindow.isDestroyed() ) {
+        this.mainWindow.destroy()
+      }
+      this.mainWindow = null
+    }
     this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
 
     // let render window handle on close (without browser restrictions)
-    this.mainWindow.on('close', () => {
+    this.mainWindow.on('close', (event) => {
       if( !this.exiting ) {
         this.sendToMainWindow('requestExitApp')
-        return false  
+        event.preventDefault()
+      } else {
+        this.exiting = false
       }
     })
 
@@ -119,19 +129,27 @@ class FairCopyApplication {
       this.exiting = true
       this.projectStore.quitSafely(() => {
         for( const imageView of this.imageViews ) {
-          imageView.close()
+          if( !imageView.isDestroyed() ) {
+            imageView.close()
+          }
         }
-        this.mainWindow.close()
+        this.imageViews = []
+
+        if( this.returnToProjectWindow ) {
+          ipcMain.removeAllListeners()
+          this.createProjectWindow().then(() => {
+            this.returnToProjectWindow = false
+          })
+        } 
+
+        if( this.mainWindow ) {
+          this.mainWindow.close()
+        }
       })  
     }
   }
 
   openProject(targetFile) {
-    if( this.mainWindow ) {
-      this.mainWindow.close()
-      this.mainWindow = null
-      ipcMain.removeAllListeners()
-    }
     this.createMainWindow().then(() => {
       if( this.projectWindow ) {
         this.projectWindow.close()
@@ -144,13 +162,12 @@ class FairCopyApplication {
   }
 
   closeProject() {
-    if( this.mainWindow ) {
+    if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
+      this.returnToProjectWindow = true
       this.mainWindow.close()
-      this.mainWindow = null
-      ipcMain.removeAllListeners()
     }
-    if( !this.projectWindow ) {
-      this.createProjectWindow().then(() => {})
+    if( this.projectWindow && !this.projectWindow.isDestroyed()) {
+      this.projectWindow.close()
     }
   }
 
