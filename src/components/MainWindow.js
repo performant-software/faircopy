@@ -113,18 +113,20 @@ export default class MainWindow extends Component {
         }
     }
 
-    closeResources(resourceIDs,exitOnClose=false) {
+    closeResources(resourceIDs,exitOnClose=false,promptSave=true) {
         const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
-        for( const resourceID of resourceIDs ) {
-            const resource = openResources[resourceID]
-            if( resource.changedSinceLastSave ) {
-                const alertOptions = {
-                    resource, resourceIDs
+        if( promptSave ) {
+            for( const resourceID of resourceIDs ) {
+                const resource = openResources[resourceID]
+                if( resource && resource.changedSinceLastSave ) {
+                    const alertOptions = {
+                        resource, resourceIDs
+                    }
+                    this.setState({ ...this.state, exitOnClose, alertDialogMode: 'confirmSave', alertOptions })
+                    return 
                 }
-                this.setState({ ...this.state, exitOnClose, alertDialogMode: 'confirmSave', alertOptions })
-                return 
-            }
+            }    
         }
 
         let nextResourceArr = []
@@ -192,8 +194,6 @@ export default class MainWindow extends Component {
     }
 
     onResourceAction = (actionID, resourceIDs) => {
-        const { fairCopyProject } = this.props
-
         switch(actionID) {
             case 'open':
                 this.selectResources(resourceIDs)
@@ -202,8 +202,8 @@ export default class MainWindow extends Component {
                 this.closeResources(resourceIDs)
                 return false
             case 'delete':
-                fairCopyProject.removeResources(resourceIDs)
-                this.onClosePopupMenu()
+                const alertOptions = { resourceIDs }
+                this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions })
                 return true
             case 'export':
                 fairCopy.services.ipcSend('requestExport', resourceIDs)
@@ -301,6 +301,38 @@ export default class MainWindow extends Component {
                     }
                 ]
                 break
+
+            case 'confirmDelete': {
+                const { resourceIDs } = alertOptions
+
+                const onDelete = () => {
+                    const { fairCopyProject } = this.props
+                    fairCopyProject.removeResources(resourceIDs)
+                    this.closeResources(resourceIDs, false, false )    
+                }
+
+                const onCancel = () => {
+                    onCloseAlert()
+                }
+
+                open = true
+                title = "Confirm Delete"
+                const s = resourceIDs.length === 1 ? '' : 's'
+                message = `Do you wish to delete ${resourceIDs.length} resource${s}?`
+                handleClose = onCloseAlert
+                actions = [
+                    {
+                        label: "Delete",
+                        defaultAction: true,
+                        handler: onDelete
+                    },
+                    {
+                        label: "Cancel",
+                        handler: onCancel
+                    }
+                ]
+                break
+            }
                 
             case 'confirmSave': {
                 const onSave = () => {
