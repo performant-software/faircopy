@@ -197,19 +197,20 @@ export default class MainWindow extends Component {
         switch(actionID) {
             case 'open':
                 this.selectResources(resourceIDs)
-                break
+                return false
             case 'close':
                 this.closeResources(resourceIDs)
-                break
+                return false
             case 'delete':
                 fairCopyProject.removeResources(resourceIDs)
-                this.closeResources(resourceIDs)
-                break
+                this.onClosePopupMenu()
+                return true
             case 'export':
                 fairCopy.services.ipcSend('requestExport', resourceIDs)
-                break
+                return false
             default:
                 console.error(`Unrecognized resource action id: ${actionID}`)
+                return false
         }
     }
 

@@ -48,7 +48,9 @@ export default class ResourceBrowser extends Component {
       for( const resourceID of Object.keys(checked) ) {
         if( checked[resourceID] ) resourceIDs.push(resourceID)
       }
-      onResourceAction(actionID, resourceIDs)
+      if( onResourceAction(actionID, resourceIDs) ) {
+        this.setState({ ...this.state, checked: {}, allChecked: false })
+      }
     }
   }
 
