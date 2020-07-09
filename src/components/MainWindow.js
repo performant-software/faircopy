@@ -415,7 +415,7 @@ export default class MainWindow extends Component {
    
         return (
             <div ref={(el) => this.el = el} > 
-                <SplitPane split="vertical" minSize={0} defaultSize={300}>
+                <SplitPane split="vertical" minSize={250} maxSize={630} defaultSize={250}>
                     <ProjectSidebar
                         fairCopyProject={fairCopyProject}    
                         openResources={openResources}
