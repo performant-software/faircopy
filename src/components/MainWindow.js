@@ -23,7 +23,6 @@ export default class MainWindow extends Component {
             selectedResource: null,
             openResources: {},
             latest: null,
-            width: -300,
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -215,7 +214,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { width, openResources, selectedResource } = this.state
+        const { openResources, selectedResource } = this.state
         const { fairCopyProject } = this.props
 
         const editors = []
@@ -230,7 +229,6 @@ export default class MainWindow extends Component {
                         <TEIEditor 
                             key={key}
                             hidden={hidden}
-                            width={width}
                             teiDocument={resource}
                             fairCopyProject={fairCopyProject}
                             onStateChange={this.onStateChange}
@@ -245,7 +243,6 @@ export default class MainWindow extends Component {
                         <FacsEditor
                             key={key}
                             hidden={hidden}
-                            width={width}
                             facsDocument={resource}
                             fairCopyProject={fairCopyProject}
                             onStateChange={this.onStateChange}       
@@ -261,13 +258,12 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, width } = this.state
+        const { resourceBrowserOpen } = this.state
 
         return (
             <div>
                 { resourceBrowserOpen && 
                     <ResourceBrowser
-                        width={width}
                         onResourceAction={this.onResourceAction}
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onEditResource={this.onEditResource}

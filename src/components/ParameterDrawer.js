@@ -237,14 +237,13 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement(element,count,key) {
-        const { width, teiDocument } = this.props
+        const { teiDocument } = this.props
         const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
         const { elements } = teiSchema
         const configElements = fairCopyConfig.elements
         const name = element.type.name
         const elementSpec = elements[name]
         const {attrState} = configElements[name]
-        const style = { width:width-40 }
 
         const openAttributeDialog = () => {
             this.setState({...this.state, openElementName: name, attributeDialogOpen: true })
@@ -253,7 +252,7 @@ export default class ParameterDrawer extends Component {
         const headerAction = this.renderIDField(element)
 
         return (
-            <Card variant="outlined" className="element" key={key} style={style}>
+            <Card variant="outlined" className="element" key={key} >
                 <CardHeader 
                     avatar={this.renderLegendBox(count)} 
                     title={name} 

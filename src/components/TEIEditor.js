@@ -133,7 +133,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, width, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange } = this.props
+        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange } = this.props
         const { scrollTop, noteID, notePopupAnchorEl } = this.state
 
         const onRef = (el) => {
@@ -160,11 +160,10 @@ export default class TEIEditor extends Component {
                     </div>
                     <EditorToolbar
                         teiDocument={teiDocument}
-                        width={width}
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
                     ></EditorToolbar>
-                    <div style={{width: width ? width : '100%'}} ref={onRef} className='body'>
+                    <div ref={onRef} className='body'>
                         <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
@@ -180,7 +179,6 @@ export default class TEIEditor extends Component {
                     </div>
                 </div>
                 <ParameterDrawer 
-                    width={width}
                     teiDocument={teiDocument} 
                 />
                 <NotePopup
