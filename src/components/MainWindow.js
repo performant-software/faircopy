@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { debounce } from "debounce";
 
 import SplitPane from 'react-split-pane'
 
@@ -14,6 +15,10 @@ import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
 
 const fairCopy = window.fairCopy
+
+const initialLeftPaneWidth = 250
+const maxLeftPaneWidth = 630
+const resizeRefreshRate = 100
 
 export default class MainWindow extends Component {
 
@@ -32,6 +37,7 @@ export default class MainWindow extends Component {
             elementMenuAnchorEl: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
+            leftPaneWidth: initialLeftPaneWidth
         }	
     }
 
@@ -214,13 +220,14 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource } = this.state
+        const { openResources, selectedResource, leftPaneWidth } = this.state
         const { fairCopyProject } = this.props
 
         const editors = []
         for( const resource of Object.values(openResources) ) {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
+            const editorWidth = `calc(100vw - 10px - ${leftPaneWidth}px)`
             if( resource.loading ) {
                 editors.push(<div key={key}></div>)
             } else {
@@ -236,6 +243,7 @@ export default class MainWindow extends Component {
                             onEditResource={this.onEditResource}
                             onOpenNote={this.onOpenNote}
                             onCloseNote={this.onCloseNote}
+                            editorWidth={editorWidth}
                         ></TEIEditor>
                     )        
                 } else {
@@ -408,10 +416,14 @@ export default class MainWindow extends Component {
         const onCloseResource = ( resourceID ) => {
             this.onResourceAction( 'close', [resourceID] )
         }
+
+        const onDragSplitPane = debounce((width) => {
+            this.setState({...this.state, leftPaneWidth: width })
+        }, resizeRefreshRate)
    
         return (
             <div ref={(el) => this.el = el} > 
-                <SplitPane split="vertical" minSize={250} maxSize={630} defaultSize={250}>
+                <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                     <ProjectSidebar
                         fairCopyProject={fairCopyProject}    
                         openResources={openResources}

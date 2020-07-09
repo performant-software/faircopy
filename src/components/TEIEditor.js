@@ -133,7 +133,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange } = this.props
+        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
         const { scrollTop, noteID, notePopupAnchorEl } = this.state
 
         const onRef = (el) => {
@@ -144,6 +144,7 @@ export default class TEIEditor extends Component {
         }
 
         const style = hidden ? { display: 'none' } : {}
+        const bodyStyle = { minWidth: editorWidth }
         const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
 
         return (
@@ -163,7 +164,7 @@ export default class TEIEditor extends Component {
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
                     ></EditorToolbar>
-                    <div ref={onRef} className='body'>
+                    <div ref={onRef} style={bodyStyle} className='body'>
                         <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
