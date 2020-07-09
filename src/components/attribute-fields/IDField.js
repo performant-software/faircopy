@@ -12,6 +12,7 @@ export default class IDField extends Component {
         const { value } = props
         this.initialState = {
             valueBuffer: '',
+            initialValue: '',
             error: false,
             errorMessage: null,
             editMode: false
@@ -20,22 +21,29 @@ export default class IDField extends Component {
     }
 
     getID() {
-        const { editMode, valueBuffer } = this.state
+        const { value } = this.props
+        const { editMode, initialValue, valueBuffer } = this.state
         if( editMode ) {
-            return valueBuffer
+            // have to keep initial value because parent component might change selected element
+            if( initialValue !== value ) {
+                return value
+            } else {
+                return valueBuffer
+            }
         } else {
-            return this.props.value
+            return value
         }
     }
 
     onChange = (e) => {
         const {value} = e.target
+        const initialValue = this.props.value 
         if( value !== null && value !== '' ) {
             const validState = idValidator(value)
-            this.setState( { ...validState, valueBuffer: value } )
+            this.setState( { ...validState, initialValue, valueBuffer: value } )
         } else {
             const { editMode } = this.state
-            this.setState( { ...this.initialState, editMode })
+            this.setState( { ...this.initialState, initialValue, editMode })
         }
     }
 
@@ -52,7 +60,7 @@ export default class IDField extends Component {
     renderDisplayMode() {
         const value = this.getID()
 
-        const onClick = () => { this.setState( {...this.state, valueBuffer: value, editMode: true} )}
+        const onClick = () => { this.setState( {...this.state, valueBuffer: value, initialValue: value, editMode: true} )}
 
         const onCopy= () => {
             const value = this.getID()
