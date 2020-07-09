@@ -143,6 +143,13 @@ export default class TEIEditor extends Component {
             }
         }
 
+        const onClickBody = () => {
+            const { editorView } = teiDocument
+            if( editorView && !editorView.hasFocus() ) {
+                editorView.focus()
+            }
+        }
+
         const style = hidden ? { display: 'none' } : {}
         const bodyStyle = { minWidth: editorWidth }
         const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
@@ -164,7 +171,7 @@ export default class TEIEditor extends Component {
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
                     ></EditorToolbar>
-                    <div ref={onRef} style={bodyStyle} className='body'>
+                    <div onClick={onClickBody} ref={onRef} style={bodyStyle} className='body'>
                         <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
