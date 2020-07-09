@@ -108,6 +108,10 @@ export default class MainWindow extends Component {
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null
             })    
+            // a bit of a hack - need to refresh after it renders
+            if( nextResources[nextSelection] instanceof TEIDocument ) {
+                setTimeout( () => { nextResources[nextSelection].refreshView() }, 60 )
+            }
         } else {
             this.setState( {
                 ...this.state, 
