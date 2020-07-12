@@ -58,7 +58,7 @@ function preventOverlap( doc, markType, $from, $to ) {
                 debugger
                 return { from, to: extent.to } 
             }
-            if( extent.from >= from && extent.to > end) {
+            if( extent.from > from && extent.to >= end) {
                 debugger
                 return { from, to: extent.from } 
             }
