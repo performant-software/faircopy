@@ -24,11 +24,12 @@ export function addMark(markType, attrs) {
             } else {
                 const {tr} = state
                 for (let i = 0; i < ranges.length; i++) {
-                    let {$from, $to} = ranges[i]
-                    tr.addMark($from.pos, $to.pos, markType.create(attrs))
+                    const {$from, $to} = ranges[i]
+                    const {from, to} = preventOverlap(state.doc, markType, $from, $to)
+                    tr.addMark(from, to, markType.create(attrs))
                     // change the range to a cursor at the end of the first range
                     if( i === 0 ) {
-                        const cursorPos = tr.doc.resolve($to.pos)
+                        const cursorPos = tr.doc.resolve(to)
                         tr.setSelection(new TextSelection(cursorPos,cursorPos))                
                     }
                 }
@@ -37,6 +38,35 @@ export function addMark(markType, attrs) {
         }
         return true
     }
+}
+
+function preventOverlap( doc, markType, $from, $to ) {   
+    const parentNode = $from.parent
+    const from = $from.pos
+    const parentStartPos = from - $from.parentOffset
+    const parentEndPos = parentStartPos + parentNode.nodeSize
+
+    let end = ($to.pos > parentEndPos) ? parentEndPos : $to.pos
+    let to
+
+    for( to=from; to < end; to++ ) {
+        const $cursor = doc.resolve(to)
+        const marks = $cursor.marks()
+        for( const mark of marks ) {
+            const extent = markExtent($cursor, mark, doc)
+            if( extent.from < from && extent.to < end) {
+                debugger
+                return { from, to: extent.to } 
+            }
+            if( extent.from >= from && extent.to > end) {
+                debugger
+                return { from, to: extent.from } 
+            }
+        }
+    }
+
+    debugger
+    return { from, to }
 }
 
 export function removeMark(markType) {
