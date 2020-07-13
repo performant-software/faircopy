@@ -63,13 +63,6 @@ export default class EditorToolbar extends Component {
                 </div>
                 <div className="rightgroup">
                     <Button
-                        className="toolbar-button"
-                        disabled
-                        {...buttonProps}
-                    >
-                        <i className="fas fa-cloud-upload-alt fa-2x"></i>
-                    </Button>    
-                    <Button
                         onClick={onClickSave}
                         className="toolbar-button"
                         disabled={!changedSinceLastSave}
