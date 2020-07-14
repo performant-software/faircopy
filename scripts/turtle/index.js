@@ -220,7 +220,7 @@ async function run() {
 
     elements.push(...createExamplars(specs))
     elements.push(...createPhraseElements(specs))
-    elements.push(...createDramaElements(specs))
+    // elements.push(...createDramaElements(specs))
 
     const attrs = createAttributes(elements,specs)
 

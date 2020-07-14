@@ -1178,39 +1178,6 @@
 				"xml:space"
 			],
 			"desc": "specifies the type of measurement in any convenient typology."
-		},
-		{
-			"name": "sp",
-			"pmType": "node",
-			"content": "chunk*",
-			"group": "block",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"toWhom",
-				"who",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."
 		}
 	],
 	"attrs": {
@@ -2405,24 +2372,6 @@
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"toWhom": {
-			"ident": "toWhom",
-			"description": "indicates the person, or group of people, to whom a speech act or action is directed.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"who": {
-			"ident": "who",
-			"description": "indicates the person, or group of people, to whom the element content is ascribed.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
 		}
