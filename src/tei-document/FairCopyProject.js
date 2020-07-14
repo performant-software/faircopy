@@ -164,4 +164,21 @@ export default class FairCopyProject {
         this.idMap.save()    
         return { error: false, errorMessage: null }
     }
+
+    updateProjectInfo( projectInfo ) {
+        this.projectName = projectInfo.name
+        this.description = projectInfo.description
+
+        // if this project is in the recent projects list, update its info in localStorage
+        let projects = localStorage.getItem('recentProjects');
+        projects = projects ? JSON.parse(projects) : []
+        const recentProjectData = projects.find( (project) => project.projectFilePath === this.projectFilePath )
+        if( recentProjectData ) {
+            recentProjectData.projectName = this.projectName
+            recentProjectData.description = this.description
+            localStorage.setItem('recentProjects', JSON.stringify(projects));
+        }
+
+        fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
+    }
 }

@@ -141,6 +141,14 @@ class ProjectStore {
         this.writeProjectArchive()
     }
 
+    updateProjectInfo(projectInfoJSON) {
+        const projectInfo = JSON.parse(projectInfoJSON)
+        const { name, description } = projectInfo
+        this.manifestData.projectName = name
+        this.manifestData.description = description    
+        this.saveManifest()
+    }
+
     async openResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {

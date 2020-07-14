@@ -10,6 +10,7 @@ import TEIEditor from './TEIEditor'
 import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 import EditResourceDialog from './EditResourceDialog'
+import EditProjectDialog from './EditProjectDialog'
 import PopupMenu from './PopupMenu'
 import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
@@ -33,6 +34,7 @@ export default class MainWindow extends Component {
             alertOptions: null,
             exitOnClose: false,
             editDialogMode: false,
+            editProjectDialogMode: false,
             openMenuID: null,
             elementMenuAnchorEl: null,
             popupMenuOptions: null, 
@@ -196,6 +198,10 @@ export default class MainWindow extends Component {
 
     onEditResource = () => {
         this.setState({...this.state, editDialogMode: true })
+    }
+
+    onEditProjectInfo = () => {
+        this.setState({...this.state, editProjectDialogMode: true })
     }
 
     onImportResource = () => {
@@ -396,6 +402,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
+        const { editProjectDialogMode } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
         const { menus } = fairCopyProject
@@ -403,6 +410,7 @@ export default class MainWindow extends Component {
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
+        const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
 
         const onSaveResource = (name,localID,type,url) => {
             if( resourceEntry ) {
@@ -411,6 +419,11 @@ export default class MainWindow extends Component {
                 fairCopyProject.newResource(name,localID,type,url)    
             }
             this.setState( {...this.state, editDialogMode: false} )
+        }
+
+        const onSaveProjectInfo = (name,description) => {
+            fairCopyProject.updateProjectInfo({name, description})
+            this.setState( {...this.state, editProjectDialogMode: false} )
         }
 
         const onSelectResource = ( resourceID ) => {
@@ -434,6 +447,7 @@ export default class MainWindow extends Component {
                         selectedResource={selectedResource}
                         onSelectResource={onSelectResource}   
                         onCloseResource={onCloseResource}
+                        onEditProjectInfo={this.onEditProjectInfo}
                         onOpenResourceBrowser={this.onOpenResourceBrowser}                               
                     ></ProjectSidebar>    
                     { this.renderContentPane() }
@@ -444,6 +458,11 @@ export default class MainWindow extends Component {
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }
+                { editProjectDialogMode && <EditProjectDialog
+                    projectInfo={projectInfo}
+                    onSave={onSaveProjectInfo}
+                    onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
+                ></EditProjectDialog> }
                 <ElementMenu
                     teiDocument={teiDocument}
                     menuGroups={openMenu}
