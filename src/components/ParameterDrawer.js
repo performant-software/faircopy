@@ -3,6 +3,7 @@ import { Drawer, Button, Popper, Paper, ClickAwayListener, IconButton } from '@m
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 
 import Typography from '@material-ui/core/Typography'
+import {Node} from 'prosemirror-model'
 
 import AttributeDialog from './AttributeDialog'
 import VocabDialog from './VocabDialog'
@@ -249,7 +250,7 @@ export default class ParameterDrawer extends Component {
             this.setState({...this.state, openElementName: name, attributeDialogOpen: true })
         }
 
-        const headerAction = this.renderIDField(element)
+        const headerAction = (element instanceof Node) ? this.renderIDField(element) : null
 
         return (
             <Card variant="outlined" className="element" key={key} >

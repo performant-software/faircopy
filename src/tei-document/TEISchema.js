@@ -205,7 +205,6 @@ export default class TEISchema {
 
         return {
             attrs,
-            inclusive: false,
             parseDOM: [
                 {
                     tag: name,

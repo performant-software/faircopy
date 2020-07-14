@@ -40,25 +40,26 @@ export function addMark(markType) {
     }
 }
 
-// Prevent creating overlapping hierarchies which are invalid in XML
 function preventOverlap( doc, markType, $from, $to ) {   
     const parentNode = $from.parent
     let from = $from.pos
     const parentStartPos = from - $from.parentOffset
     const parentEndPos = parentStartPos + parentNode.nodeSize
-    let end = ($to.pos > parentEndPos) ? parentEndPos : $to.pos
+
+    // don't allow bounds beyond the current node
+    let to = ($to.pos > parentEndPos) ? parentEndPos : $to.pos
 
     let firstMarkPos = null, firstMark = null
 
-    // first pass: detect marks of markType in this range, adjust bounds to absorb these
-    for( let i=from; i < end; i++ ) {
+    // detect marks of markType in this range, adjust bounds to absorb these
+    for( let i=from; i <= to; i++ ) {
         const $cursor = doc.resolve(i)
         const marks = $cursor.marks()
         for( const mark of marks ) {
             if( mark.type === markType ) {
                 const extent = markExtent($cursor, mark, doc)
                 from = extent.from < from ? extent.from : from
-                end = extent.to > end ? extent.to : end
+                to = extent.to > to ? extent.to : to
                 if( !firstMarkPos || extent.from < firstMarkPos ) {
                     firstMark = mark
                     firstMarkPos = extent.from
@@ -70,31 +71,31 @@ function preventOverlap( doc, markType, $from, $to ) {
     // if we found a mark of this type, use its attrs instead
     const attrs = (firstMarkPos) ? firstMark.attrs : null
 
-    let to
-
-    // second pass: detect overlap with from to end range
-    for( to=from; to < end; to++ ) {
-        const $cursor = doc.resolve(to)
-        const marks = $cursor.marks()
-        for( const mark of marks ) {
-            const extent = markExtent($cursor, mark, doc)
-            if( extent.from < from && extent.to < end) {
-                // overlap found: clip range
-                debugger
-                return { from, to: extent.to } 
-            }
-            if( extent.from > from && extent.to > end) {
-                // overlap found: clip range
-                debugger
-                return { from, to: extent.from } 
-            }
-        }
-    }
-
-    // no overlap with existing marks
-    debugger
     return { from, to, attrs }
 }
+
+    // let to
+
+    // // second pass: detect overlap with from to end range
+    // for( to=from; to < end; to++ ) {
+    //     const $cursor = doc.resolve(to)
+    //     const marks = $cursor.marks()
+    //     for( const mark of marks ) {
+    //         const extent = markExtent($cursor, mark, doc)
+    //         if( extent.from < from && extent.to < end) {
+    //             // overlap found: clip range
+    //             return { from, to: extent.to } 
+    //         }
+    //         if( extent.from > from && extent.to > end) {
+    //             // overlap found: clip range
+    //             return { from, to: extent.from } 
+    //         }
+    //     }
+    // }
+
+    // // no overlap with existing marks
+    // return { from, to, attrs }
+// }
 
 export function removeMark(markType) {
     return function(state, dispatch) {
