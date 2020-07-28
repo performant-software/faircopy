@@ -24,23 +24,26 @@
     padding-top: 5px;
 }
 
-#FacsEditor .prev-nav-button {
+#FacsEditor .top-bar {
     position: absolute;
-    z-index:800;
-    margin-left: 20px;
-    margin-top: 300px;
-    color: white;
+    width: 100%;
+    z-index: 800;
+    top: 63px;
+    border-bottom: 1px solid gray;
+    background: white;
 }
 
-#FacsEditor .next-nav-button {
+#FacsEditor .bottom-bar {
     position: absolute;
-    z-index:800;
-    right: 0px;
+    z-index: 800;
+    bottom: 0px;
+    opacity: 0.8;
+    padding: 10px;
+    margin-left: 20px;
     margin-right: 20px;
-    margin-top: 300px;
-    color: white;
+    margin-bottom: 20px;
 }
 
 #FacsEditor .editor {
-    background: black;
+    background: #ccc;
 }

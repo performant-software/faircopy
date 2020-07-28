@@ -31,9 +31,11 @@ export const facsTemplate = (facsData) => {
 
     const surfaceEls = []
     for( const surface of surfaces ) {
-        const { id, width, height, imageAPIURL, canvasURI } = surface
+        const { id, width, height, imageAPIURL, canvasURI, localLabels } = surface
+        const labelEls = renderLocalLabels(localLabels)
+
         surfaceEls.push(
-            `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" ><graphic url="${imageAPIURL}"/></surface>`
+            `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic url="${imageAPIURL}"/></surface>`
         )
     }
 
@@ -63,4 +65,22 @@ export const facsTemplate = (facsData) => {
     </facsimile>
 </TEI>
 `
+}
+
+function renderLocalLabels(localLabels) {
+    const langKeys = Object.keys(localLabels)
+
+    const labelEls = []
+    for( const langKey of langKeys ) {
+        const labels = localLabels[langKey]
+        for( const label of labels ) {
+            if( langKey === 'none' ) {
+                labelEls.push(`<label>${label}</label>`)
+            } else {
+                labelEls.push(`<label xml:lang="${langKey}">${label}</label>`)
+            }
+        }
+    }
+
+    return labelEls.join('')
 }

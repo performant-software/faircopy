@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import OpenSeadragon from 'openseadragon';
 import axios from 'axios';
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button, Card, CardHeader, CardActions, CardContent } from '@material-ui/core';
 
 import SearchBar from './SearchBar';
-import { getImageInfoURL } from '../tei-document/iiif'
+import { getImageInfoURL, getLocalString } from '../tei-document/iiif'
 
 export default class FacsEditor extends Component {
 
@@ -78,11 +78,29 @@ export default class FacsEditor extends Component {
             this.setState({ ...this.state, surface: nextSurface, surfaceIndex: nextIndex })
         })
     }
+
+    renderSubHeadings(subHeadings) {
+        if( !subHeadings ) return null
+
+        const subHeadingEls = []
+        let n = 0
+        for( const subHeading of subHeadings ) {
+            subHeadingEls.push(
+                <Typography
+                    key={`subheading-${n++}`}
+                >
+                    {subHeading}
+                </Typography>
+            )
+        }
+
+        return ( <div>{ subHeadingEls }</div>)
+    }
     
     render() {
         const { fairCopyProject, hidden } = this.props
         const facsDocument = this.getFacsDocument()
-        const { surfaceIndex } = this.state
+        const { surfaceIndex, surface } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
         const surfaces = facsDocument.getSurfaces()
 
@@ -102,25 +120,62 @@ export default class FacsEditor extends Component {
             }
         }
 
+        const labels = getLocalString(surface.localLabels, 'en')
+        const title = labels[0]
+        const subHeadings = labels.slice(1)
+
         const showSearchBar = !!this.props.facsDocument
+
+        const buttonProps = {
+            disableRipple: true,
+            disableFocusRipple: true
+        }
 
         return (
             <div id="FacsEditor" style={style} >
                 { showSearchBar && 
-                    <div className="titlebar">
-                        <SearchBar></SearchBar>
-                        <Typography component="h1" variant="h6">{resourceName}</Typography>
-                    </div>        
+                    <div>
+                        <div className="titlebar">
+                            <SearchBar></SearchBar>
+                            <Typography component="h1" variant="h6">{resourceName}</Typography>
+                        </div>        
+                        <div className='top-bar' >
+                            <Button
+                                disabled
+                                className="toolbar-button"
+                                {...buttonProps}
+                            >
+                                <i className="fas fa-save fa-2x"></i>
+                            </Button> 
+                        </div>
+                    </div>
                 }
                 <div className="editor">
-                    { enablePrev && <Button onClick={onPrev} className='prev-nav-button'><i className='fas fa-caret-left fa-7x'></i></Button> }
-                    { enableNext && <Button onClick={onNext} className='next-nav-button'><i className='fas fa-caret-right fa-7x'></i></Button> }
+                    <Card className='bottom-bar' >
+                        <CardHeader 
+                            title={title}
+                            subheader={`#${surface.id}`}
+                            className="nav-controls"
+                        >
+                        </CardHeader>
+                        { subHeadings &&
+                            <CardContent>
+                                { this.renderSubHeadings(subHeadings) }
+                            </CardContent>
+                        }
+                        <CardActions>
+                            { enablePrev && <Button onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button> }
+                            { enableNext && <Button onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button> }
+                        </CardActions>
+                    </Card>
                     <SeaDragonComponent showSearchBar={showSearchBar} initViewer={this.initViewer} ></SeaDragonComponent>
                 </div>
             </div>
         )
     }
 }
+
+
 
 class SeaDragonComponent extends Component {
   

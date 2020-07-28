@@ -16,8 +16,7 @@ export function iiifToFacsimile( manifestData ) {
         const image = images[0]
         const { resource } = image
         const imageAPIURL = resource.service ? val('id', resource.service) : val('id', resource)
-        const labels = str( 'label', canvas, 'en' )
-        const label = labels && labels[0] ? labels[0] : ""
+        const localLabels = str( canvas.label )
         let id = getIDfromURI(canvasURI)      
         // fallback to page number if we can't create a unique ID from canvas ID 
         if( !id || surfaceIDs.includes(id) ) {
@@ -28,7 +27,7 @@ export function iiifToFacsimile( manifestData ) {
 
         surfaces.push({
             id,
-            label,
+            localLabels,
             width,
             height,
             imageAPIURL,
@@ -59,9 +58,13 @@ export function teiToFacsimile(xml) {
         const canvasURI = surfaceEl.getAttribute('sameAs')
         const graphicEl = surfaceEl.getElementsByTagName('graphic')[0]
         const imageAPIURL = graphicEl.getAttribute('url')
+        const labelEls = surfaceEl.getElementsByTagName('label')
+        const localLabels = getLocalLabels(labelEls)
+
         surfaces.push({
             id,
             canvasURI,
+            localLabels,
             width,
             height,
             imageAPIURL
@@ -76,6 +79,23 @@ export function teiToFacsimile(xml) {
 
 export function facsimileToTEI(facs) {
    return facsTemplate(facs)
+}
+
+function getLocalLabels(labelEls) {
+    const localLabels = {}
+    for( let i=0; i < labelEls.length; i++ ) {
+        const labelEl = labelEls[i]
+        let langKey = labelEl.getAttribute('xml:lang')
+        if( !langKey ) {
+            langKey = 'none'
+        }
+        const label = labelEl.innerHTML
+        if( !localLabels[langKey] ) {
+            localLabels[langKey] = []
+        }
+        localLabels[langKey].push(label)
+    }
+    return localLabels
 }
 
 function getIDfromURI(uri) {
@@ -98,33 +118,12 @@ function generateOrdinalID( prefix, ordinalID ) {
     return `${prefix}${zeros}${ordinalID}`
 }
 
-// For string value compliance with IIIF v3 (see: https://iiif.io/api/presentation/3.0/#44-language-of-property-values)
-function str( key, obj, lang ) {
-    const values = obj[key]
-    // IIIF v2 doesn't have localized values
+function str(values) {
+    // IIIF v2 doesn't have localized values, convert it to IIIF v3 format
     if( typeof values === 'string' ) {
-        return [ values ]
+        return { 'none': [ values ] }
     } else {
-        const langKeys = Object.keys(values)
-
-        // No values provided
-        if( langKeys.length === 0 ) return []
-
-        // If all of the values are associated with the none key, the client must display all of those values.
-        if( langKeys.includes('none') && langKeys.length === 1) {
-            return values['none']
-        }
-        // If any of the values have a language associated with them, the client must display all of the values associated with the language that best matches the language preference.
-        if( values[lang] ) {
-            return values[lang]
-        } 
-        if( !langKeys.includes('none') ) {
-            // If all of the values have a language associated with them, and none match the language preference, the client must select a language and display all of the values associated with that language.
-            return values['en'] ? values['en'] : values[langKeys[0]]
-        } else {
-            // If some of the values have a language associated with them, but none match the language preference, the client must display all of the values that do not have a language associated with them.
-            return values['none']
-        }
+        return values
     }
 }
 
