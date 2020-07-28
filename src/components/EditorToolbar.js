@@ -37,7 +37,7 @@ export default class EditorToolbar extends Component {
                         onClick={()=>{onOpenElementMenu('structure',this.structureButtonEl)}}
                         {...buttonProps}
                     >
-                        <i className="far fa-file fa-2x"></i>
+                        <i className="far fa-page-break fa-2x"></i>
                     </Button>    
                     <Button
                         className="toolbar-button"
