@@ -80,7 +80,7 @@ export default class FacsEditor extends Component {
     }
 
     renderSubHeadings(subHeadings) {
-        if( !subHeadings ) return null
+        if( subHeadings.length === 0 ) return null
 
         const subHeadingEls = []
         let n = 0
@@ -95,6 +95,53 @@ export default class FacsEditor extends Component {
         }
 
         return ( <div>{ subHeadingEls }</div>)
+    }
+
+    renderToolbar() {
+        const buttonProps = {
+            disableRipple: true,
+            disableFocusRipple: true
+        }
+
+        return (
+            <div className='top-bar' >
+                <Button
+                    disabled
+                    className="toolbar-button"
+                    {...buttonProps}
+                >
+                    <i className="fas fa-mouse-pointer fa-2x"></i>
+                </Button> 
+                <Button
+                    disabled
+                    className="toolbar-button"
+                    {...buttonProps}
+                >
+                    <i className="fas fa-draw-square fa-2x"></i>
+                </Button> 
+                <Button
+                    disabled
+                    className="toolbar-button"
+                    {...buttonProps}
+                >
+                    <i className="fas fa-draw-circle fa-2x"></i>
+                </Button> 
+                <Button
+                    disabled
+                    className="toolbar-button"
+                    {...buttonProps}
+                >
+                    <i className="fas fa-draw-eraser fa-2x"></i>
+                </Button> 
+                <Button
+                    disabled
+                    className="toolbar-button-right"
+                    {...buttonProps}
+                >
+                    <i className="fas fa-save fa-2x"></i>
+                </Button> 
+            </div>
+        )
     }
     
     render() {
@@ -126,11 +173,6 @@ export default class FacsEditor extends Component {
 
         const showSearchBar = !!this.props.facsDocument
 
-        const buttonProps = {
-            disableRipple: true,
-            disableFocusRipple: true
-        }
-
         return (
             <div id="FacsEditor" style={style} >
                 { showSearchBar && 
@@ -139,15 +181,7 @@ export default class FacsEditor extends Component {
                             <SearchBar></SearchBar>
                             <Typography component="h1" variant="h6">{resourceName}</Typography>
                         </div>        
-                        <div className='top-bar' >
-                            <Button
-                                disabled
-                                className="toolbar-button"
-                                {...buttonProps}
-                            >
-                                <i className="fas fa-save fa-2x"></i>
-                            </Button> 
-                        </div>
+                        { this.renderToolbar() }
                     </div>
                 }
                 <div className="editor">

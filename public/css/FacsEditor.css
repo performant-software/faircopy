@@ -24,6 +24,10 @@
     padding-top: 5px;
 }
 
+#FacsEditor .toolbar-button-right {
+    float: right;
+}
+
 #FacsEditor .top-bar {
     position: absolute;
     width: 100%;
