@@ -48,6 +48,12 @@ export default class IDMap {
         this.idMap[localID] = facsIDMap
     }
 
+    addResource( localID ) {
+        if( this.idMap[localID] ) return false;
+        this.idMap[localID] = {}
+        return true
+    }
+
     removeResource( localID ) {
         delete this.idMap[localID]
     }
@@ -73,6 +79,13 @@ export default class IDMap {
         }
     }
 
+    changeID( oldID, newID ) {
+        if( this.idMap[oldID] ) {
+            this.idMap[newID] = this.idMap[oldID]
+            delete this.idMap[oldID]
+        }
+    }
+
     getRelativeURIList( parent ) {
         const uris = []
         for( const resourceID of Object.keys(this.idMap) ) {
@@ -85,6 +98,10 @@ export default class IDMap {
             }
         }
         return uris
+    }
+
+    isUnique(testID) {
+        return this.idMap[testID] === undefined
     }
 
     getUniqueID() {

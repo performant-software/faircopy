@@ -405,7 +405,7 @@ export default class MainWindow extends Component {
         const { editProjectDialogMode } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
-        const { menus } = fairCopyProject
+        const { menus, idMap } = fairCopyProject
         const openMenu = openMenuID ? menus[openMenuID] : null
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
@@ -454,6 +454,7 @@ export default class MainWindow extends Component {
                 </SplitPane>
                 { this.renderAlertDialog() }
                 { editDialogMode && <EditResourceDialog
+                    idMap={idMap}
                     resourceEntry={resourceEntry}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}

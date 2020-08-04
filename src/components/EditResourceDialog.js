@@ -35,7 +35,7 @@ export default class EditResourceDialog extends Component {
         }
 
         const onSaveResource = () => {
-            const { resourceEntry } = this.props
+            const { resourceEntry, idMap } = this.props
             const { name, type, localID, url } = this.state
 
             const nextErrors = {}
@@ -44,8 +44,12 @@ export default class EditResourceDialog extends Component {
 
             if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
             else {
-                const idValid = idValidator(localID)
-                if( idValid.error ) nextErrors['localID'] = idValid.errorMessage    
+                if( !idMap.isUnique(localID) ) {
+                    nextErrors['localID'] = "ID is already in use in this project."
+                } else {
+                    const idValid = idValidator(localID)
+                    if( idValid.error ) nextErrors['localID'] = idValid.errorMessage        
+                }
             }
 
             if( !resourceEntry && type === 'facs') { 

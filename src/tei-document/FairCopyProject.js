@@ -58,6 +58,11 @@ export default class FairCopyProject {
     
     updateResource( resourceEntry ) {
         if( this.resources[resourceEntry.id] ) {
+            const currentLocalID = this.resources[resourceEntry.id].localID
+            if( resourceEntry.localID !== currentLocalID ) {
+                this.idMap.changeID(currentLocalID,resourceEntry.localID)
+                this.idMap.save()
+            }
             this.resources[resourceEntry.id] = resourceEntry
             fairCopy.services.ipcSend('updateResource', JSON.stringify(resourceEntry) )
         } else {
@@ -86,12 +91,17 @@ export default class FairCopyProject {
 
         if( resourceEntry.type === 'text') {
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
+            this.idMap.addResource(localID)
+            this.idMap.save()
         } else {
             importIIIFManifest(url, (xml,facs) => {
                 if( xml ) {
                     fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
                     this.idMap.mapFacsIDs(localID,facs)
                     this.idMap.save()
+                } else {
+                    this.idMap.addResource(localID)
+                    this.idMap.save()                
                 }
             })
         }
