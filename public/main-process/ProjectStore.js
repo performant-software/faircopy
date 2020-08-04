@@ -18,7 +18,7 @@ class ProjectStore {
         this.writeProjectArchive = debounce(() => {
             this.jobsInProgress.push(Date.now())
             writeArchive(this.projectFilePath, this.projectArchive, () => { this.jobsInProgress.pop() })
-        },zipWriteDelay, true)
+        },zipWriteDelay)
     }
 
     async openProject(projectFilePath) {
