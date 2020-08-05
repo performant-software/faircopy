@@ -54,12 +54,12 @@ export default class ParameterDrawer extends Component {
     changeAttributeHandler = ( element, attributeKey ) => {
         return (value,error) => {
             const { teiDocument } = this.props
-            const editorView = teiDocument.getActiveView()
+            const elementName = element.type.name
+            const editorView = (elementName === 'note') ? teiDocument.editorView : teiDocument.getActiveView()
             const { state } = editorView 
             const { $anchor } = state.selection
             let {tr} = state
     
-            const elementName = element.type.name
             const nextErrorStates = this.getNextErrorStates(elementName,attributeKey,error)
             this.setState({...this.state, errorStates: nextErrorStates })
 
@@ -271,28 +271,42 @@ export default class ParameterDrawer extends Component {
     }
 
     render() {
-        const { teiDocument } = this.props
+        const { teiDocument, noteID } = this.props
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
 
         const editorView = teiDocument.getActiveView()
         const selection = (editorView) ? editorView.state.selection : null 
         
         // create a list of the selected phrase level elements 
-        let elements = []
+        let elements = [], count = 0
         if( selection ) {
             if( selection.node ) {
                 // don't display drawer for notes on selection
                 if( selection.node.type.name !== 'note' ) {
-                    elements.push( this.renderElement(selection.node,0,'attr-panel-node') )
+                    elements.push( this.renderElement(selection.node,count++,`attr-panel-${count++}`) )
                 }
             } else {
                 const { doc } = editorView.state
                 const { $anchor } = selection
                 const highlightRanges = getHighlightRanges(doc,$anchor)
-                let count = 0
                 for( const highlightRange of highlightRanges ) {
                     elements.push( this.renderElement(highlightRange.mark,count,`attr-panel-${count++}`) )
                 }     
+            }
+        }
+
+        if( noteID ) {
+            // The note node is sticky while the note is being edited
+            const { doc } = teiDocument.editorView.state
+            let noteNode
+            doc.descendants( (node) => {
+                if( node.attrs['__id__'] === noteID ) {
+                    noteNode = node
+                }
+                if( noteNode ) return false
+            })
+            if( noteNode ) {
+                elements.push( this.renderElement(noteNode,count++,`attr-panel-${count++}`) )
             }
         }
 

@@ -22,6 +22,7 @@ export default class TEIEditor extends Component {
             noteID: null,
             notePopupAnchorEl: null,
             scrollTop: 0,
+            displayNoteAttrs: false,
             ctrlDown: false,
             altDown: false
         }
@@ -81,6 +82,7 @@ export default class TEIEditor extends Component {
             const nextEditorState = editorState.apply(transaction)
             editorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+            this.maintainNoteAnchor()
             onStateChange(nextEditorState)
         }
     }
@@ -92,21 +94,45 @@ export default class TEIEditor extends Component {
         }
     }
 
+    // editing a note's attributes changes the DOM, invalidating notePopupAnchorEl
+    // this function keeps it attached to the right part of the DOM
+    maintainNoteAnchor() {
+        const {teiDocument} = this.props
+        const {editorView} = teiDocument
+        const {noteID, notePopupAnchorEl} = this.state 
+        if( notePopupAnchorEl ) {
+            const { doc } = editorView.state
+            let notePos = null
+            doc.descendants( (node,pos) => {
+                if( node.attrs['__id__'] === noteID ) {
+                    notePos = pos
+                }
+                if( notePos !== null ) return false
+            })
+            if( notePos !== null ) {
+                const domPos = editorView.domAtPos(notePos)
+                const nextNotePopupAnchorEl = domPos.node
+                this.setState({ ...this.state, notePopupAnchorEl: nextNotePopupAnchorEl })
+            }
+        }
+    }
+
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
         if( !direct ) return
 
         if( node.type.name === 'note' ) {
-            const { noteID } = this.state
+            const { noteID, ctrlDown } = this.state
             const nextID = node.attrs['__id__']
             if( noteID !== nextID ) {
                 if( noteID !== null ) {
-                    this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+                    this.setState({...this.state, noteID: null, notePopupAnchorEl: null, displayNoteAttrs: false })
                 } else {
-                    this.setState({...this.state, noteID: nextID, notePopupAnchorEl: event.target })
+                    const displayNoteAttrs = ctrlDown
+                    this.setState({...this.state, noteID: nextID, notePopupAnchorEl: event.target, displayNoteAttrs })
                 }
             }
         } else {
-            this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+            this.setState({...this.state, noteID: null, notePopupAnchorEl: null, displayNoteAttrs: false })
         }
     }
 
@@ -134,7 +160,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -153,6 +179,8 @@ export default class TEIEditor extends Component {
         const style = hidden ? { display: 'none' } : {}
         const bodyStyle = { minWidth: editorWidth }
         const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
+
+        const parameterDrawProps = ( displayNoteAttrs ) ? { noteID } : {}
 
         return (
             <div 
@@ -188,6 +216,7 @@ export default class TEIEditor extends Component {
                 </div>
                 <ParameterDrawer 
                     teiDocument={teiDocument} 
+                    { ...parameterDrawProps }
                 />
                 <NotePopup
                     teiDocument={teiDocument}
