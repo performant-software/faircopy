@@ -27,6 +27,12 @@ export default class ResourceBrowser extends Component {
         action: this.createResourceAction('edit-tags')
       },
       {
+        id: 'compare',
+        label: 'Compare',
+        disabled: true,
+        action: this.createResourceAction('compare')
+      },
+      {
         id: 'export',
         label: 'Export',
         action: this.createResourceAction('export')
