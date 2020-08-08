@@ -178,11 +178,15 @@ class FairCopyApplication {
 
   async createWindow(preload, width, height, resizable, backgroundColor, devTools ) {
 
+    // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
+    const webSecurity = !this.isDebugMode() 
+    
     // Create the browser window.
     const browserWindow = new BrowserWindow({
       width,
       height,
       webPreferences: {
+          webSecurity,
           enableRemoteModule: false,
           preload: `${this.baseDir}/${preload}`,
       },
