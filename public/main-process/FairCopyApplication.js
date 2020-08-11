@@ -65,6 +65,7 @@ class FairCopyApplication {
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
     ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
+    ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
     ipcMain.on('exitApp', (event) => { this.exitApp() })
 
     ipcMain.on('requestImport', (event) => { 
@@ -96,7 +97,7 @@ class FairCopyApplication {
 
   async createProjectWindow() {
 
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, true, '#E6DEF9', true )
 
     ipcMain.on('requestNewPath', (event) => { 
       const targetPath = this.mainMenu.selectPath()
@@ -117,7 +118,10 @@ class FairCopyApplication {
         this.openProject(targetFile)
       }
     })
-  }
+    ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
+  
+    ipcMain.on('exitApp', (event) => { this.projectWindow.close() })
+  }  
 
   async createImageWindow(imageViewInfo) {
     const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
@@ -172,6 +176,12 @@ class FairCopyApplication {
     }
   }
 
+  checkForUpdates( licenseDataJSON ) {
+    console.log('Checking for updates...')
+    // TODO implement autoupdate logic
+    // create a timer to check again every 12h while software is running
+  }
+
   sendToMainWindow(message, params) {
     this.mainWindow.webContents.send(message, params)
   }
@@ -196,7 +206,7 @@ class FairCopyApplication {
 
     // and load the index.html of the app.
     if( this.isDebugMode() ) {
-      await browserWindow.loadURL('http://localhost:3000')
+      await browserWindow.loadURL('http://localhost:4000')
       if(devTools) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {
       await browserWindow.loadFile(indexFilePath)

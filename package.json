@@ -9,7 +9,7 @@
     "predist": "yarn build",
     "dist": "electron-builder -mw",
     "build": "react-scripts build",
-    "start": "BROWSER=none react-scripts start",
+    "start": "BROWSER=none PORT=4000 react-scripts start",
     "test": "react-scripts test"
   },
   "repository": "https://github.com/performant-software/faircopy",
