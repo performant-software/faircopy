@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain } = require('electron')
+const { BrowserWindow, autoUpdater, ipcMain } = require('electron')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -6,6 +6,10 @@ const fs = require('fs')
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
 const distBaseDir = __dirname
+
+// Configuration for Keygen Dist
+const accountID = "8a8d3d6a-ab09-4f51-aea5-090bfd025dd8"
+const productID = "495ce69f-3f29-44aa-aae2-718ed4eeb0d5"
 
 class FairCopyApplication {
 
@@ -18,6 +22,7 @@ class FairCopyApplication {
     this.mainMenu = new MainMenu(this)
     this.exiting = false
     this.returnToProjectWindow = false
+    this.autoUpdaterStarted = false
   }
 
   getVersionNumber() {
@@ -41,17 +46,6 @@ class FairCopyApplication {
       }
       this.mainWindow = null
     }
-    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
-
-    // let render window handle on close (without browser restrictions)
-    this.mainWindow.on('close', (event) => {
-      if( !this.exiting ) {
-        this.sendToMainWindow('requestExitApp')
-        event.preventDefault()
-      } else {
-        this.exiting = false
-      }
-    })
 
     ipcMain.on('requestResource', (event,resourceID) => { 
       this.projectStore.openResource(resourceID).then(()=>{
@@ -93,11 +87,21 @@ class FairCopyApplication {
         console.log(`Opened image view.`)
       })
     })
+
+    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
+
+    // let render window handle on close (without browser restrictions)
+    this.mainWindow.on('close', (event) => {
+      if( !this.exiting ) {
+        this.sendToMainWindow('requestExitApp')
+        event.preventDefault()
+      } else {
+        this.exiting = false
+      }
+    })
   }
 
   async createProjectWindow() {
-
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, true, '#E6DEF9', true )
 
     ipcMain.on('requestNewPath', (event) => { 
       const targetPath = this.mainMenu.selectPath()
@@ -118,9 +122,11 @@ class FairCopyApplication {
         this.openProject(targetFile)
       }
     })
+    
     ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
-  
     ipcMain.on('exitApp', (event) => { this.projectWindow.close() })
+
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, true, '#E6DEF9', true )
   }  
 
   async createImageWindow(imageViewInfo) {
@@ -176,10 +182,34 @@ class FairCopyApplication {
     }
   }
 
-  checkForUpdates( licenseDataJSON ) {
-    console.log('Checking for updates...')
-    // TODO implement autoupdate logic
-    // create a timer to check again every 12h while software is running
+  checkForUpdates( licenseData ) {
+    if( !this.autoUpdaterStarted ) {
+      const { licenseKey, machineID, activated } = licenseData
+
+      // Don't ask for updates if machine isn't activated
+      if( !activated ) return
+
+      autoUpdater.on('error', err => {
+        // TODO if the user isn't authorized, de-activate this computer
+        console.log(`Autoupdate: ${err}`)
+      })
+  
+      autoUpdater.on('update-downloaded', (...args) => {
+        console.log('Autoupdate: update downloaded, ready to restart.')  
+        autoUpdater.quitAndInstall()
+      })
+
+      autoUpdater.on('update-available', () => {
+        console.log('Autoupdate: update available, downloading.')  
+      }) 
+  
+      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/latest/macos/dmg?key=${licenseKey}&fingerprint=${machineID}`
+      autoUpdater.setFeedURL(keygenDistURL)  
+      this.autoUpdaterStarted = true
+
+      console.log('Autoupdate: Checking for updates...')
+      autoUpdater.checkForUpdates()
+    }
   }
 
   sendToMainWindow(message, params) {
