@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -22,7 +22,9 @@
   "homepage": ".",
   "devDependencies": {
     "electron": "^8.1.0",
-    "electron-builder": "^22.3.6"
+    "electron-builder": "^22.3.6",
+    "electron-notarize": "^1.0.0",
+    "dotenv": "^8.2.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",
@@ -58,7 +60,7 @@
   "build": {
     "appId": "com.performantsoftware.faircopy",
     "productName": "FairCopy",
-    "copyright": "Copyright © 2019 ${author}",
+    "copyright": "Copyright © 2020 ${author}",
     "files": [
       "build/**/*",
       "node_modules/**/*"
@@ -67,8 +69,16 @@
       "buildResources": "assets"
     },
     "mac": {
+      "hardenedRuntime" : true,
+      "gatekeeperAssess": false,
+      "entitlements": "scripts/entitlements.mac.plist",
+      "entitlementsInherit": "scripts/entitlements.mac.plist",
       "category": "public.app-category.utilities"
-    }
+    },
+    "dmg": {
+      "sign": false
+    },
+    "afterSign": "scripts/notarize.js"
   },
   "postinstall": "electron-builder install-app-deps",
   "browserslist": {
