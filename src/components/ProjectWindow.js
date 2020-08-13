@@ -164,7 +164,7 @@ export default class ProjectWindow extends Component {
                 </div>
                 { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }
                 <div>
-                    {  mode === 'select' && <Typography className='version'>Version: v0.6.0</Typography> } 
+                    {  mode === 'select' && <Typography className='version'>Version: v0.5.14</Typography> } 
                 </div>
             </div>
         )

@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.5.12",
+  "version": "0.5.14",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -21,10 +21,10 @@
   "author": "Performant Software Solutions LLC",
   "homepage": ".",
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "electron": "^8.1.0",
     "electron-builder": "^22.3.6",
-    "electron-notarize": "^1.0.0",
-    "dotenv": "^8.2.0"
+    "electron-notarize": "^1.0.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",
@@ -32,6 +32,7 @@
     "@material-ui/lab": "^4.0.0-alpha.53",
     "axios": "^0.19.2",
     "debounce": "^1.2.0",
+    "electron-log": "^4.2.3",
     "jszip": "^3.4.0",
     "openseadragon": "^2.4.2",
     "prop-types": "^15.7.2",
@@ -69,7 +70,7 @@
       "buildResources": "assets"
     },
     "mac": {
-      "hardenedRuntime" : true,
+      "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "scripts/entitlements.mac.plist",
       "entitlementsInherit": "scripts/entitlements.mac.plist",

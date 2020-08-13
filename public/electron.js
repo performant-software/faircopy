@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const { app } = require('electron')
 const { FairCopyApplication } = require('./main-process/FairCopyApplication')
+const log = require('electron-log')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -9,14 +10,15 @@ let fairCopyApplication
 function createApplicationWindowManager () {
   const debugMode = false //process.env.FAIRCOPY_DEBUG_MODE
   fairCopyApplication = new FairCopyApplication()
+  log.info(`FairCopy ${app.getVersion()}`)
   if( debugMode ) {
     fairCopyApplication.createMainWindow().then(() => {
-      console.log("TEI Editor Ready - Loading example text.")   
+      log.info("TEI Editor Ready - Loading example text.")   
       fairCopyApplication.projectStore.openProject('test-docs/example.faircopy')
     })
   } else {
     fairCopyApplication.createProjectWindow().then(() => {
-      console.log("Project Window Ready")   
+      log.info("Project Window Ready")   
     })
   }
 }

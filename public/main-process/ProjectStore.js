@@ -2,6 +2,7 @@ const JSZip = require('jszip');
 const fs = require('fs')
 const debounce = require('debounce')
 const format = require('xml-formatter');
+const log = require('electron-log');
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -29,7 +30,7 @@ class ProjectStore {
         this.projectFilePath = projectFilePath
 
         if( !this.projectArchive ) {
-            console.log('Attempted to open invalid project file.')
+            log.info('Attempted to open invalid project file.')
             return
         }
         const fairCopyManifest = await this.readUTF8File(manifestEntryName)
@@ -39,19 +40,19 @@ class ProjectStore {
         const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
 
         if( !teiSchema || !menuGroups ) {
-            console.log('Application data is missing or corrupted.')
+            log.info('Application data is missing or corrupted.')
             return
         }
 
         if( !fairCopyManifest || !fairCopyConfig || !idMap ) {
-            console.log('Project file is missing required entries.')
+            log.info('Project file is missing required entries.')
             return
         }
         
         // project store keeps a copy of the manifest data
         this.manifestData = JSON.parse(fairCopyManifest)
         if( !this.manifestData ) {
-            console.log('Error parsing project manifest.')
+            log.info('Error parsing project manifest.')
             return
         }
 
@@ -123,7 +124,7 @@ class ProjectStore {
             const filePath = `${path}/${resourceEntry.localID}.xml`
             fs.writeFileSync(filePath,xml)
         }
-        console.log(`Export resources to: ${path}`)
+        log.info(`Export resources to: ${path}`)
     }
 
     saveManifest() {
@@ -181,7 +182,7 @@ function writeArchive(zipPath, zipData, whenFinished) {
         })
         .pipe(fs.createWriteStream(zipPath))
         .on('finish', () => {
-            console.log(`${zipPath} written.`);
+            log.info(`${zipPath} written.`);
             if( whenFinished ) whenFinished()
         });
 }

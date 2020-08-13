@@ -1,7 +1,8 @@
-const { BrowserWindow, autoUpdater, ipcMain } = require('electron')
+const { app, BrowserWindow, autoUpdater, ipcMain } = require('electron')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
+const log = require('electron-log')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -49,7 +50,7 @@ class FairCopyApplication {
 
     ipcMain.on('requestResource', (event,resourceID) => { 
       this.projectStore.openResource(resourceID).then(()=>{
-        console.log(`opened resourceID: ${resourceID}`)
+        log.info(`opened resourceID: ${resourceID}`)
       }) 
     })
     ipcMain.on('requestSave', (event,resourceID, resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
@@ -77,14 +78,14 @@ class FairCopyApplication {
       const path = paths ? paths[0] : null
       if( path ) {
         this.projectStore.exportResources(exportOptions,path).then( () => { 
-          console.log(`Resources exported.`)
+          log.info(`Resources exported.`)
         })
       }
     })
 
     ipcMain.on('requestImageView', (event, imageViewInfo) => { 
       this.createImageWindow(imageViewInfo).then( () => { 
-        console.log(`Opened image view.`)
+        log.info(`Opened image view.`)
       })
     })
 
@@ -167,7 +168,7 @@ class FairCopyApplication {
         this.projectWindow = null  
       }
       this.projectStore.openProject(targetFile).then( () => { 
-        console.log(`Opened project: ${targetFile}`)
+        log.info(`Opened project: ${targetFile}`)
       })
     })
   }
@@ -191,23 +192,23 @@ class FairCopyApplication {
 
       autoUpdater.on('error', err => {
         // TODO if the user isn't authorized, de-activate this computer
-        console.log(`Autoupdate: ${err}`)
+        log.info(`Autoupdate: ${err}`)
       })
   
       autoUpdater.on('update-downloaded', (...args) => {
-        console.log('Autoupdate: update downloaded, ready to restart.')  
+        log.info('Autoupdate: update downloaded, ready to restart.')  
         autoUpdater.quitAndInstall()
       })
 
       autoUpdater.on('update-available', () => {
-        console.log('Autoupdate: update available, downloading.')  
+        log.info('Autoupdate: update available, downloading.')  
       }) 
   
-      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/latest/macos/dmg?key=${licenseKey}&fingerprint=${machineID}`
+      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/update/darwin/zip/${app.getVersion()}?key=${licenseKey}&fingerprint=${machineID}`
       autoUpdater.setFeedURL(keygenDistURL)  
       this.autoUpdaterStarted = true
 
-      console.log('Autoupdate: Checking for updates...')
+      log.info('Autoupdate: Checking for updates...')
       autoUpdater.checkForUpdates()
     }
   }
