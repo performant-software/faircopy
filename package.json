@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "predist": "yarn build",
-    "dist": "electron-builder -mw",
+    "dist": "electron-builder -w",
     "build": "react-scripts build",
     "start": "BROWSER=none PORT=4000 react-scripts start",
     "test": "react-scripts test"
@@ -24,8 +24,7 @@
     "dotenv": "^8.2.0",
     "electron": "^8.1.0",
     "electron-builder": "^22.3.6",
-    "electron-notarize": "^1.0.0",
-    "electron-builder-squirrel-windows": "22.8.1"
+    "electron-notarize": "^1.0.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.14",
@@ -81,7 +80,12 @@
       "sign": false
     },
     "win": {
-      "target": "squirrel"
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "license": "LICENSE",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     },
     "afterSign": "scripts/notarize.js"
   },
