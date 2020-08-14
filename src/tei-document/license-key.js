@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid'
 
-const activationEndpoint = 'http://localhost:3000/activation'
+const activationEndpoint = 'https://activate.faircopyeditor.com/activation'
 
 export function activateLicense(license,machine_uuid,onActivate,onError) {
     axios.post(activationEndpoint, {
