@@ -26,7 +26,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const { services, rootComponent } = fairCopy
+    const { services } = fairCopy
     const { licenseData } = this.state
 
     // tell main process to check for updates 
@@ -36,6 +36,12 @@ export default class App extends Component {
       this.setTitle('Activate License')
       return
     }
+
+    this.initRootComponent()
+  }
+
+  initRootComponent() {
+    const { rootComponent, services } = fairCopy
 
     if( rootComponent === 'ProjectWindow' ) {
       this.setTitle('Select Project')
@@ -72,6 +78,7 @@ export default class App extends Component {
   }
 
   onActivate = () => {
+    this.initRootComponent()
     const licenseData = JSON.parse(localStorage.getItem('licenseData'))
     this.setState({...this.state, licenseData })
   }

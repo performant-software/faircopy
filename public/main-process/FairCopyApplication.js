@@ -24,6 +24,7 @@ class FairCopyApplication {
     this.exiting = false
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
+    this.initIPC()
   }
 
   getVersionNumber() {
@@ -38,15 +39,16 @@ class FairCopyApplication {
     return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
   }
 
-  async createMainWindow() {
-    this.projectStore = new ProjectStore(this)
+  initIPC() {
+    
+    // Common events ////
+    ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
+    ipcMain.on('exitApp', (event) => { 
+      if( this.projectWindow ) this.projectWindow.close() 
+      this.exitApp() 
+    })
 
-    if( this.mainWindow ) {
-      if( !this.mainWindow.isDestroyed() ) {
-        this.mainWindow.destroy()
-      }
-      this.mainWindow = null
-    }
+    // Main window events //////
 
     ipcMain.on('requestResource', (event,resourceID) => { 
       this.projectStore.openResource(resourceID).then(()=>{
@@ -60,8 +62,6 @@ class FairCopyApplication {
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
     ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
-    ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
-    ipcMain.on('exitApp', (event) => { this.exitApp() })
 
     ipcMain.on('requestImport', (event) => { 
       const paths = this.mainMenu.openImport()
@@ -89,20 +89,7 @@ class FairCopyApplication {
       })
     })
 
-    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
-
-    // let render window handle on close (without browser restrictions)
-    this.mainWindow.on('close', (event) => {
-      if( !this.exiting ) {
-        this.sendToMainWindow('requestExitApp')
-        event.preventDefault()
-      } else {
-        this.exiting = false
-      }
-    })
-  }
-
-  async createProjectWindow() {
+    // Project Window events ///////
 
     ipcMain.on('requestNewPath', (event) => { 
       const targetPath = this.mainMenu.selectPath()
@@ -123,11 +110,36 @@ class FairCopyApplication {
         this.openProject(targetFile)
       }
     })
-    
-    ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
-    ipcMain.on('exitApp', (event) => { this.projectWindow.close() })
 
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, true, '#E6DEF9', true )
+    // TODO Image Window Events ////
+  
+  }
+
+  async createMainWindow() {
+    this.projectStore = new ProjectStore(this)
+
+    if( this.mainWindow ) {
+      if( !this.mainWindow.isDestroyed() ) {
+        this.mainWindow.destroy()
+      }
+      this.mainWindow = null
+    }
+
+    this.mainWindow = await this.createWindow('main-window-preload.js', 1440, 900, true, '#fff', true )
+
+    // let render window handle on close (without browser restrictions)
+    this.mainWindow.on('close', (event) => {
+      if( !this.exiting ) {
+        this.sendToMainWindow('requestExitApp')
+        event.preventDefault()
+      } else {
+        this.exiting = false
+      }
+    })
+  }
+
+  async createProjectWindow() {
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
   }  
 
   async createImageWindow(imageViewInfo) {
@@ -148,7 +160,6 @@ class FairCopyApplication {
         this.imageViews = []
 
         if( this.returnToProjectWindow ) {
-          ipcMain.removeAllListeners()
           this.createProjectWindow().then(() => {
             this.returnToProjectWindow = false
           })
