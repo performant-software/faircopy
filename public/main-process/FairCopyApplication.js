@@ -3,6 +3,7 @@ const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
 const log = require('electron-log')
+const { platform } = process
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -28,10 +29,8 @@ class FairCopyApplication {
   }
 
   getVersionNumber() {
-    const debugPath = `${process.cwd()}/public/version.txt`
-    const distPath = `${__dirname}/../version.txt`
-    const versionFilePath = this.isDebugMode() ? debugPath : distPath
-    const versionNumber = fs.readFileSync(versionFilePath)
+    const versionFilePath = `${process.cwd()}/public/version.txt`
+    const versionNumber = this.isDebugMode() ? fs.readFileSync(versionFilePath) : app.getVersion()
     return versionNumber
   }
 
@@ -215,7 +214,7 @@ class FairCopyApplication {
         log.info('Autoupdate: update available, downloading.')  
       }) 
   
-      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/update/darwin/zip/${app.getVersion()}?key=${licenseKey}&fingerprint=${machineID}`
+      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/update/${platform}/zip/${this.versionNumber}?key=${licenseKey}&fingerprint=${machineID}`
       autoUpdater.setFeedURL(keygenDistURL)  
       this.autoUpdaterStarted = true
 

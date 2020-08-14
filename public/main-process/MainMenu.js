@@ -1,7 +1,7 @@
 const { Menu, dialog } = require('electron')
+const { platform } = process
 
-// TODO detect PC
-const isMac = true
+const isMac = (platform === 'darwin')
 
 class MainMenu {
 
@@ -79,7 +79,7 @@ class MainMenu {
         } 
   
           return [
-            ...(process.platform === 'darwin' ? [{
+            ...(isMac ? [{
               label: 'FairCopy',
               submenu: [
                 { role: 'about' },
