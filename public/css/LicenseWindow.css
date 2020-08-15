@@ -3,19 +3,8 @@
 }
 
 #LicenseWindow h1 {
-    margin-bottom: 10px;
-}
-
-#LicenseWindow h2 {
+    margin-left: 20px;
     margin-bottom: 20px;
-}
-
-#LicenseWindow ul {
-    list-style: none;
-}
-
-#LicenseWindow li {
-    margin-bottom: 10px;
 }
 
 #LicenseWindow .content {
@@ -26,25 +15,25 @@
     border-radius: 10px;
 }
 
-#LicenseWindow .select-project {
-    display: flex;
-}
-
-#LicenseWindow .recent-project-card {
+#LicenseWindow .license-field {
+    margin-left: 20px;
     margin-bottom: 10px;
 }
 
-#LicenseWindow .new-project-form li {
-    list-style: none;
+#LicenseWindow .word-field {
+    width: 90px;
+    display: inline-block;
+    background: white;
 }
 
-#LicenseWindow .new-project-form h2 {
-    margin-left: 15px;
+#LicenseWindow input {
+    text-transform: uppercase;
 }
 
-#LicenseWindow .new-project-field {
-    width: 300px;
-    margin-bottom: 10px;
+#LicenseWindow .dash {
+    margin: 5px;
+    margin-top: 10px;
+    display: inline-block;
 }
 
 #LicenseWindow .action-button {
@@ -57,7 +46,8 @@
 }
 
 #LicenseWindow .form-actions {
-    margin-left: 520px;
+    margin-left: 430px;
+    margin-top: 20px;
     margin-bottom: 10px;
 }
 
@@ -81,10 +71,6 @@
 #LicenseWindow .save-button-active {
     background: #1976d2;
     margin-right: 10px;
-}
-
-#LicenseWindow .version {
-    margin: 20px;
 }
 
 #ProjectVersion .quit-button {

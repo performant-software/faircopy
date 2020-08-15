@@ -43,8 +43,11 @@ class FairCopyApplication {
     // Common events ////
     ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
     ipcMain.on('exitApp', (event) => { 
-      if( this.projectWindow ) this.projectWindow.close() 
-      this.exitApp() 
+      if( this.projectWindow ) {
+        this.projectWindow.close() 
+      } else {
+        this.exitApp() 
+      }
     })
 
     // Main window events //////
@@ -138,7 +141,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9', true )
   }  
 
   async createImageWindow(imageViewInfo) {
