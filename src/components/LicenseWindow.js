@@ -12,10 +12,15 @@ export default class LicenseWindow extends Component {
         super(props)
     
         const licenseData = JSON.parse(localStorage.getItem('licenseData'))
-    
+
+        const licenseWords = []
+        for( let i=0; i < numberOfWords; i++) {
+            licenseWords[i] = ""
+        }
+
         this.state = {
           licenseData,
-          licenseWords: []
+          licenseWords
         }
     }
 
@@ -45,7 +50,7 @@ export default class LicenseWindow extends Component {
                     onChange={onChange}
                 />
             )
-            if( i < numberOfWords-1 ) {
+             if( i < numberOfWords-1 ) {
                 fieldParts.push(
                     <div className="dash" key={`dash${i}`}>-</div>
                 )    
@@ -75,7 +80,9 @@ export default class LicenseWindow extends Component {
             fairCopy.services.ipcSend('exitApp')
         }
 
-        const saveAllowed = true // TODO only allow if key is complete
+        const { licenseWords } = this.state
+        const licenseKey = licenseWords.join('-')
+        const saveAllowed = licenseKey.length === (numberOfWords * 4) + (numberOfWords-1) 
         const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
 
         return (
@@ -84,8 +91,8 @@ export default class LicenseWindow extends Component {
                     <Typography variant="h6" component="h1">Please enter your license key.</Typography>
                     { this.renderLicenseField() }
                     <div className='form-actions'>
-                        <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickConfirm} color='primary' variant='contained'>Confirm</Button>
-                        <Button className='action-button' onClick={onClickExit} variant='contained'>Quit App</Button>
+                        <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickConfirm} color='primary' variant='contained'>Activate</Button>
+                        <Button className='action-button' onClick={onClickExit} variant='contained'>Exit</Button>
                     </div>
                 </div>
             </div>
