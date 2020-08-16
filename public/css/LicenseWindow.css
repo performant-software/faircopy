@@ -36,6 +36,13 @@
     display: inline-block;
 }
 
+#LicenseWindow .errorMessage {
+    margin-top: 12px;
+    margin-left: 20px;
+    float: left;
+    color: red;
+}
+
 #LicenseWindow .action-button {
     margin-right: 10px;
 }

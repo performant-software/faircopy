@@ -20,7 +20,8 @@ export default class LicenseWindow extends Component {
 
         this.state = {
           licenseData,
-          licenseWords
+          licenseWords,
+          errorMessage: null
         }
     }
 
@@ -70,9 +71,8 @@ export default class LicenseWindow extends Component {
             const { machineID } = licenseData
             const { onActivate } = this.props
             const licenseKey = licenseWords.join('-')
-            activateLicense(licenseKey, machineID, onActivate, (err) => {
-                // TODO improve
-                alert(err)
+            activateLicense(licenseKey, machineID, onActivate, (errorMessage) => {
+                this.setState({...this.state, errorMessage})
             })
         }
 
@@ -80,7 +80,7 @@ export default class LicenseWindow extends Component {
             fairCopy.services.ipcSend('exitApp')
         }
 
-        const { licenseWords } = this.state
+        const { licenseWords, errorMessage } = this.state
         const licenseKey = licenseWords.join('-')
         const saveAllowed = licenseKey.length === (numberOfWords * 4) + (numberOfWords-1) 
         const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
@@ -90,6 +90,11 @@ export default class LicenseWindow extends Component {
                 <div className="content">
                     <Typography variant="h6" component="h1">Please enter your license key.</Typography>
                     { this.renderLicenseField() }
+                    { errorMessage && 
+                        <div className="errorMessage">
+                            <Typography>{errorMessage}</Typography>
+                        </div> 
+                    }
                     <div className='form-actions'>
                         <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickConfirm} color='primary' variant='contained'>Activate</Button>
                         <Button className='action-button' onClick={onClickExit} variant='contained'>Exit</Button>
