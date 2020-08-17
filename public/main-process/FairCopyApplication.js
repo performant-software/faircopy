@@ -141,7 +141,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9', true )
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
   }  
 
   async createImageWindow(imageViewInfo) {

@@ -36,9 +36,6 @@ export default class LicenseWindow extends Component {
                     licenseWords[i] = value
                     this.setState({...this.state, licenseWords })
                 }
-                if( value.length > 4 ) {
-                    // spill into the next field(s)
-                }
             }
     
             fieldParts.push(
