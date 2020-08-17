@@ -1,13 +1,13 @@
 {
   "name": "faircopy",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "predist": "yarn build",
-    "dist": "electron-builder -w",
+    "dist": "electron-builder -mw",
     "build": "react-scripts build",
     "start": "BROWSER=none PORT=4000 react-scripts start",
     "test": "react-scripts test"

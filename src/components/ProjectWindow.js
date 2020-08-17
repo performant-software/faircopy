@@ -163,9 +163,6 @@ export default class ProjectWindow extends Component {
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </div>
                 { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }
-                <div>
-                    {  mode === 'select' && <Typography className='version'>Version: v0.5.14</Typography> } 
-                </div>
             </div>
         )
     }
