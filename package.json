@@ -1,12 +1,14 @@
 {
   "name": "faircopy",
-  "version": "0.5.16",
+  "version": "0.5.17",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "predist": "yarn build",
+    "predist-mac": "yarn build",
+    "predist-win": "yarn build",
     "dist-mac": "electron-builder -m",
     "dist-win": "electron-builder -w",
     "dist": "electron-builder -mw",
@@ -77,11 +79,7 @@
       "gatekeeperAssess": false,
       "entitlements": "scripts/entitlements.mac.plist",
       "entitlementsInherit": "scripts/entitlements.mac.plist",
-      "category": "public.app-category.utilities",
-      "publish": {
-        "provider": "generic",
-        "url": "https://dist.keygen.sh/v1/"
-      }
+      "category": "public.app-category.utilities"
     },
     "dmg": {
       "sign": false
@@ -89,8 +87,7 @@
     "win": {
       "target": [
         "nsis"
-      ],
-      "publish": "generic"
+      ]
     },
     "nsis": {
       "license": "LICENSE",

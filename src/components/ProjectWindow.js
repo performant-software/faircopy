@@ -159,7 +159,7 @@ export default class ProjectWindow extends Component {
         return (
             <div id="ProjectWindow" >
                 <div className='header'>
-                    <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy</Typography>
+        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy v0.5.17</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </div>
                 { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }
