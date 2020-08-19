@@ -1,4 +1,5 @@
-const { app, BrowserWindow, autoUpdater, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -204,7 +205,6 @@ class FairCopyApplication {
       if( !activated ) return
 
       autoUpdater.on('error', err => {
-        // TODO if the user isn't authorized, de-activate this computer
         log.info(`Autoupdate: ${err}`)
       })
   
@@ -217,12 +217,18 @@ class FairCopyApplication {
         log.info('Autoupdate: update available, downloading.')  
       }) 
   
-      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/update/${platform}/zip/${this.versionNumber}?key=${licenseKey}&fingerprint=${machineID}`
-      autoUpdater.setFeedURL(keygenDistURL)  
+      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
+      autoUpdater.setFeedURL({
+        url: keygenDistURL,
+        useMultipleRangeRequest: false,
+        provider: 'generic',
+        channel: 'latest'
+      })  
       this.autoUpdaterStarted = true
 
       log.info('Autoupdate: Checking for updates...')
-      autoUpdater.checkForUpdates()
+      autoUpdater.logger = log
+      autoUpdater.checkForUpdatesAndNotify()
     }
   }
 

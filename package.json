@@ -1,12 +1,14 @@
 {
   "name": "faircopy",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "predist": "yarn build",
+    "dist-mac": "electron-builder -m",
+    "dist-win": "electron-builder -w",
     "dist": "electron-builder -mw",
     "build": "react-scripts build",
     "start": "BROWSER=none PORT=4000 react-scripts start",
@@ -33,6 +35,7 @@
     "axios": "^0.19.2",
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
+    "electron-updater": "^4.3.4",
     "jszip": "^3.4.0",
     "openseadragon": "^2.4.2",
     "prop-types": "^15.7.2",
@@ -74,13 +77,20 @@
       "gatekeeperAssess": false,
       "entitlements": "scripts/entitlements.mac.plist",
       "entitlementsInherit": "scripts/entitlements.mac.plist",
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "publish": {
+        "provider": "generic",
+        "url": "https://dist.keygen.sh/v1/"
+      }
     },
     "dmg": {
       "sign": false
     },
     "win": {
-      "target": ["nsis"]
+      "target": [
+        "nsis"
+      ],
+      "publish": "generic"
     },
     "nsis": {
       "license": "LICENSE",
