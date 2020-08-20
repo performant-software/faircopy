@@ -23,8 +23,12 @@
 .ProseMirror-hideselection *::-moz-selection { background: transparent; }
 .ProseMirror-hideselection { caret-color: transparent; }
 
-.ProseMirror-selectednode {
-  outline: 2px solid #8cf;
+tei-pb.ProseMirror-selectednode {
+  outline: 4px solid yellow;
+}
+
+tei-note.ProseMirror-selectednode {
+  outline: 4px solid yellow;
 }
 
 /* Make sure li selections wrap around markers */

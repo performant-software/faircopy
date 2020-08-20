@@ -54,12 +54,16 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name } = element
+            const { pmType, name, content, group } = element
             const validAttrs = element.validAttrs ? element.validAttrs : []
-            if( pmType === 'mark') {
-                marks[name] = this.createMarkSpec({ name, attrs: validAttrs })
-            } else if( pmType === 'node' ) {
-                nodes[name] = this.createNodeSpec(element)
+            if( pmType === 'mark' || pmType === 'node') {
+                const phraseLvl = (pmType === 'mark')
+                const elSpec = this.createElementSpec({ name, attrs: validAttrs, content, group, phraseLvl })
+                if( pmType === 'mark' ) {
+                    marks[name] = elSpec
+                } else {
+                    nodes[name] = elSpec
+                }
             } else if( pmType === 'inline-node' ) {
                 if( name === 'note' ) {
                     nodes[name] = this.createNoteSpec(validAttrs)
@@ -99,14 +103,30 @@ export default class TEISchema {
         return attrs
     }
 
-    createNodeSpec(teiNodeSpec) {
-        const { name, content, group } = teiNodeSpec
-        // TODO add attrSpec
+    createElementSpec(elSpec) {
+        const { name, content, group, phraseLvl } = elSpec
+        const attrs = this.getAttrSpec(elSpec.attrs)
+
         return {
             content,
             group,
-            parseDOM: [{tag: name}],
-            toDOM: () => this.teiMode ? [name,0] : [`tei-${name}`,0]        
+            attrs,
+            parseDOM: [
+                {
+                    tag: name,
+                    getAttrs: this.getAttrParser(elSpec.attrs)
+                } 
+            ],
+            toDOM: (el) => {
+                if( this.teiMode ) {
+                    let attrs = this.filterOutBlanks(el.attrs)
+                    attrs = this.filterOutErrors(attrs)
+                    return [name,attrs,0]
+                } else {
+                    const displayAttrs = { ...el.attr, phraseLvl }
+                    return [`tei-${name}`,displayAttrs,0]
+                }
+            } 
         }
     }
 
@@ -196,31 +216,5 @@ export default class TEISchema {
             }
             return parsedAttrs    
         }
-    }
-
-    createMarkSpec(teiMarkSpec) {
-        const { name } = teiMarkSpec
-
-        const attrs = this.getAttrSpec(teiMarkSpec.attrs)
-
-        return {
-            attrs,
-            parseDOM: [
-                {
-                    tag: name,
-                    getAttrs: this.getAttrParser(teiMarkSpec.attrs)
-                } 
-            ],
-            toDOM: (mark) => {
-                if( this.teiMode ) {
-                    let attrs = this.filterOutBlanks(mark.attrs)
-                    attrs = this.filterOutErrors(attrs)
-                    return [name,attrs,0]
-                } else {
-                    const displayAttrs = { ...mark.attrs, phraseLvl: true }
-                    return [`tei-${name}`,displayAttrs,0]
-                }
-            } 
-        }       
     }
 }

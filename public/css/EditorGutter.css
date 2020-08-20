@@ -6,13 +6,14 @@
 
 .EditorGutter .marker {
     position: absolute;
-    width: 6px;
+    min-width: 6px;
 }
 
-.EditorGutter .marker.p {
+.EditorGutter .marker {
     background:#e7ddff;
 }
 
-.EditorGutter .marker.lineGroup {
-    background: rgb(133, 248, 148);
+.EditorGutter .marker.highlighted {
+    background: yellow;
+    border: 1px solid black;
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
 const validStructureTags = ['p','lineGroup']
@@ -20,9 +21,17 @@ export default class EditorGutter extends Component {
                 const height = endCoords.bottom - startCoords.top - 8 
                 const markStyle = { top, height }
                 const markKey = `gutter-mark-${gutterMarks.length}`
-                const className = `marker ${structureTag}`
+                const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
+                const className = `marker ${highlighted}`
+
+                const onClick = () => {
+                    const {tr} = editorState
+                    tr.setSelection( NodeSelection.create(tr.doc, pos) )
+                    editorView.dispatch(tr)
+                }
+
                 gutterMarks.push(
-                    <div key={markKey} style={markStyle} className={className}></div>
+                    <div key={markKey} onClick={onClick} style={markStyle} className={className}></div>
                 )                        
                 return false
             }
