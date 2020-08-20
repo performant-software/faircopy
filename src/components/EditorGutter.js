@@ -7,7 +7,7 @@ const validStructureTags = ['p','lineGroup']
 export default class EditorGutter extends Component {
 
     renderGutterMarkers() {
-        const { teiDocument, scrollTop } = this.props
+        const { teiDocument, scrollTop, ctrlDown } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
 
@@ -23,6 +23,7 @@ export default class EditorGutter extends Component {
                 const markKey = `gutter-mark-${gutterMarks.length}`
                 const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
                 const className = `marker ${highlighted}`
+                const displayName = (ctrlDown) ? structureTag : ''
 
                 const onClick = () => {
                     const {tr} = editorState
@@ -31,7 +32,7 @@ export default class EditorGutter extends Component {
                 }
 
                 gutterMarks.push(
-                    <div key={markKey} onClick={onClick} style={markStyle} className={className}></div>
+                    <div key={markKey} onClick={onClick} style={markStyle} className={className}>{displayName}</div>
                 )                        
                 return false
             }

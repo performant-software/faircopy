@@ -160,7 +160,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs, ctrlDown } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -201,6 +201,7 @@ export default class TEIEditor extends Component {
                     ></EditorToolbar>
                     <div onClick={onClickBody} ref={onRef} style={bodyStyle} className='body'>
                         <EditorGutter 
+                            ctrlDown={ctrlDown}
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
                         />                 
