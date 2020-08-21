@@ -76,6 +76,42 @@
 			"desc": "marks paragraphs in prose."
 		},
 		{
+			"name": "l",
+			"pmType": "node",
+			"content": "inline*",
+			"group": "chunk",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"enjamb",
+				"exclude",
+				"facs",
+				"met",
+				"n",
+				"next",
+				"part",
+				"prev",
+				"real",
+				"rend",
+				"rendition",
+				"resp",
+				"rhyme",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "(verse line) contains a single, possibly incomplete, line of verse."
+		},
+		{
 			"name": "pb",
 			"pmType": "inline-node",
 			"validAttrs": [
@@ -1529,6 +1565,32 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
+			"valListType": "open"
+		},
+		"enjamb": {
+			"ident": "enjamb",
+			"description": "the line is strongly enjambed",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "no",
+					"desc": "the line is end-stopped"
+				},
+				{
+					"ident": "yes",
+					"desc": "the line in question runs on into the next"
+				},
+				{
+					"ident": "weak",
+					"desc": "the line is weakly enjambed"
+				},
+				{
+					"ident": "strong",
+					"desc": "the line is strongly enjambed"
+				}
+			],
 			"valListType": "open"
 		},
 		"ed": {

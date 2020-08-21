@@ -44,7 +44,8 @@ const examplarEls = [
     "div",
     "p",
     "pb",
-    "note"
+    "note",
+    "l"
 ]
 
 const dramaEls = [
@@ -124,17 +125,6 @@ function createPhraseElements(specs) {
     return phraseElements
 }
 
-function createDramaElements(specs) {
-    return [{
-        "name": "sp",
-        "pmType": "node",
-        "content": "chunk*",
-        "group": "block",
-        "validAttrs": [],
-        "desc": specs['sp'].description
-    }]
-}
-
 function createExamplars(specs) {
     return [
         {
@@ -152,6 +142,14 @@ function createExamplars(specs) {
             "group": "chunk",
             "validAttrs": [],
             "desc": "marks paragraphs in prose."
+        },
+        {
+            "name": "l",
+            "pmType": "node",
+            "content": "inline*",
+            "group": "chunk",
+            "validAttrs": [],
+            "desc": "(verse line) contains a single, possibly incomplete, line of verse."
         },
         {
             "name": "pb",
@@ -220,7 +218,6 @@ async function run() {
 
     elements.push(...createExamplars(specs))
     elements.push(...createPhraseElements(specs))
-    // elements.push(...createDramaElements(specs))
 
     const attrs = createAttributes(elements,specs)
 
