@@ -29,7 +29,7 @@ export default class EditorToolbar extends Component {
                         className="toolbar-button"
                         {...buttonProps}
                     >
-                        <i className="fa fa-marker fa-2x"></i>
+                        <i className="far fa-marker fa-2x"></i>
                     </Button> 
                     <Button
                         className="toolbar-button"

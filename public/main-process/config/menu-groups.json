@@ -11,14 +11,9 @@
             "members": ["add", "del", "sic", "corr", "orig", "reg", "abbr" ]
         },
         {
-            "id": "correspondence",
-            "label": "Correspondence",
-            "members": ["addrLine","postscript","opener","imprimatur","dateline","byline","closer","salute","signed"]
-        },
-        {
             "id": "segmentation",
             "label": "Sentences",
-            "members": ["rs","seg","s","rhyme","c","w","m","pc","anchor","milestone"]
+            "members": ["rs","seg","s","rhyme","c","w","m","pc"]
         },
         {
             "id": "data",
@@ -26,26 +21,21 @@
             "members": ["person","time","place","address","measure","num","email","idNo","desc"]
         }
     ],
-    "structure": [
+    "chunk": [
         {
             "id": "general",
-            "label": "General Editing",
-            "members": ["note", "pb", "lb"]
+            "label": "General",
+            "members":["p","l","lg","list","item"]
         },
-        {
-            "id": "structure",
-            "label": "Structure",
-            "members": ["div","p","l","lg","list","item","ab"]
-        },        
         {
             "id": "titles",
             "label": "Headers",
             "members": ["title","head","argument","fw","titlePart","trailer"]
         },
         {
-            "id": "bookLayout",
-            "label": "Book Layout",
-            "members": ["front","body","back","floatingtext","titlePage"]
+            "id": "correspondence",
+            "label": "Correspondence",
+            "members": ["addrLine","postscript","opener","imprimatur","dateline","byline","closer","salute","signed"]
         },
         {
             "id": "drama",
@@ -58,11 +48,30 @@
             "members": ["bibl","author","editor","publisher","relatedItem","resp","respStmt"]
         }
     ],
+    "structure": [
+        {
+            "id": "structure",
+            "label": "Structure",
+            "members": ["div","ab"]
+        },        
+        {
+            "id": "layout",
+            "label": "Layout",
+            "members": ["front","body","back","floatingtext","titlePage"]
+        }
+    ],
     "graphic": [
         {
             "id": "figure",
             "label": "Figures and Tables",
             "members": [ "table","figure","formula","quote","code"]
         }
+    ],
+    "inline": [
+        {
+            "id": "inline",
+            "label": "Inline",
+            "members": ["note", "pb", "lb", "milestone", "anchor"]
+        } 
     ]
 }

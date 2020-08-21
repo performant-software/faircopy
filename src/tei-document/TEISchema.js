@@ -160,7 +160,7 @@ export default class TEISchema {
                     const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
                     return teiDocument.serializeSubDocument(attrs)
                 } else {
-                    const noteAttrs = { ...node.attrs, class: "fas fa-xs fa-sticky-note" }
+                    const noteAttrs = { ...node.attrs, class: "far fa-xs fa-comment-alt" }
                     return ["tei-note",noteAttrs,0]
                 }
             }
@@ -186,7 +186,7 @@ export default class TEISchema {
                     attrs = this.filterOutErrors(attrs)
                     return ["pb",attrs]
                 } else {
-                    const pbAttrs = { ...node.attrs, class: "fa fa-file-alt" }
+                    const pbAttrs = { ...node.attrs, class: "far fa-file-alt" }
                     return ["tei-pb",pbAttrs,0]  
                 }
             }  

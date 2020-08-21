@@ -202,6 +202,7 @@ export default class TEIEditor extends Component {
                     <div onClick={onClickBody} ref={onRef} style={bodyStyle} className='body'>
                         <EditorGutter 
                             ctrlDown={ctrlDown}
+                            onOpenElementMenu={onOpenElementMenu}
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
                         />                 

@@ -7,7 +7,7 @@ const validStructureTags = ['p','lineGroup']
 export default class EditorGutter extends Component {
 
     renderGutterMarkers() {
-        const { teiDocument, scrollTop, ctrlDown } = this.props
+        const { teiDocument, scrollTop, ctrlDown, onOpenElementMenu } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
 
@@ -31,8 +31,20 @@ export default class EditorGutter extends Component {
                     editorView.dispatch(tr)
                 }
 
+                const onContextMenu = (e) => {                    
+                    onOpenElementMenu('chunk',e.currentTarget)
+                }
+
                 gutterMarks.push(
-                    <div key={markKey} onClick={onClick} style={markStyle} className={className}>{displayName}</div>
+                    <div 
+                        key={markKey} 
+                        onClick={onClick} 
+                        onContextMenu={onContextMenu} 
+                        style={markStyle} 
+                        className={className}
+                        >
+                        {displayName}
+                    </div>
                 )                        
                 return false
             }
