@@ -8,11 +8,23 @@ export default class EditorToolbar extends Component {
     
     render() {
         const { onOpenElementMenu, onEditResource, teiDocument } = this.props
-        const { changedSinceLastSave } = teiDocument
+        const { changedSinceLastSave, fairCopyProject } = teiDocument
 
         const onClickSave = () => {
             teiDocument.save()
             teiDocument.refreshView()
+        }
+
+        const onClickMarker = () => {
+            const { menus } = fairCopyProject
+            const menuGroups = menus['mark']
+            onOpenElementMenu({ menuGroups, anchorEl: this.markerButtonEl, action: 'create'})
+        }
+
+        const onClickStructure = () => {
+            const { menus } = fairCopyProject
+            const menuGroups = menus['structure']
+            onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: 'create'})
         }
 
         const buttonProps = {
@@ -25,7 +37,7 @@ export default class EditorToolbar extends Component {
                 <div className="leftgroup">
                     <Button
                         ref={(el)=> { this.markerButtonEl = el }}
-                        onClick={()=>{onOpenElementMenu('mark',this.markerButtonEl)}}
+                        onClick={onClickMarker}
                         className="toolbar-button"
                         {...buttonProps}
                     >
@@ -34,7 +46,7 @@ export default class EditorToolbar extends Component {
                     <Button
                         className="toolbar-button"
                         ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{onOpenElementMenu('structure',this.structureButtonEl)}}
+                        onClick={onClickStructure}
                         {...buttonProps}
                     >
                         <i className="far fa-page-break fa-2x"></i>

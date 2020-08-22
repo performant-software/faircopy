@@ -35,8 +35,7 @@ export default class MainWindow extends Component {
             exitOnClose: false,
             editDialogMode: false,
             editProjectDialogMode: false,
-            openMenuID: null,
-            elementMenuAnchorEl: null,
+            elementMenuOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
             leftPaneWidth: initialLeftPaneWidth
@@ -180,12 +179,12 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })
     }
 
-    onOpenElementMenu = (menuID, elementMenuAnchorEl) => {
-        this.setState({...this.state, openMenuID: menuID, elementMenuAnchorEl })
+    onOpenElementMenu = (elementMenuOptions ) => {
+        this.setState({...this.state, elementMenuOptions })
     }
 
     onCloseElementMenu = () => {
-        this.setState({...this.state, openMenuID: null, elementMenuAnchorEl: null })
+        this.setState({...this.state, elementMenuOptions: null })
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl) => {
@@ -401,12 +400,11 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { editDialogMode, openResources, selectedResource, elementMenuAnchorEl, openMenuID } = this.state
+        const { editDialogMode, openResources, selectedResource, elementMenuOptions } = this.state
         const { editProjectDialogMode } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
-        const { menus, idMap } = fairCopyProject
-        const openMenu = openMenuID ? menus[openMenuID] : null
+        const { idMap } = fairCopyProject
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
@@ -466,9 +464,8 @@ export default class MainWindow extends Component {
                 ></EditProjectDialog> }
                 <ElementMenu
                     teiDocument={teiDocument}
-                    menuGroups={openMenu}
-                    anchorEl={elementMenuAnchorEl}
                     onClose={this.onCloseElementMenu}
+                    {...elementMenuOptions}
                 ></ElementMenu>
                 <PopupMenu
                     menuOptions={popupMenuOptions}

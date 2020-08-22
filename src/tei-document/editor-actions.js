@@ -21,11 +21,19 @@ export function createElement( elementID, teiDocument ) {
     }                
 }
 
+// changes the NodeType for a node element at a given pos
+export function replaceElement( elementID, teiDocument, pos ) {
+    const editorView = teiDocument.getActiveView()
+    const { tr } = editorView.state
+    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    tr.setNodeMarkup(pos, nodeType)
+    editorView.dispatch(tr)
+}
+
 export function onClippy() {
     // const html = fairCopy.services.readClipBoardHTML()
     // console.log( `clippy: ${html}`) 
 }
-
 
 export function eraseSelection(teiDocument) {
     const editorView = teiDocument.getActiveView()

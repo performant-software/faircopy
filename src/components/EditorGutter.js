@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
-const validStructureTags = ['p','lineGroup']
+const validStructureTags = ['p','l']
 
 export default class EditorGutter extends Component {
 
     renderGutterMarkers() {
         const { teiDocument, scrollTop, ctrlDown, onOpenElementMenu } = this.props
-        const { editorView } = teiDocument
+        const { editorView, fairCopyProject } = teiDocument
         const editorState = editorView.state
 
         const gutterMarks = []
@@ -31,8 +31,10 @@ export default class EditorGutter extends Component {
                     editorView.dispatch(tr)
                 }
 
-                const onContextMenu = (e) => {                    
-                    onOpenElementMenu('chunk',e.currentTarget)
+                const onContextMenu = (e) => {            
+                    const { menus } = fairCopyProject
+                    const menuGroups = menus['chunk']
+                    onOpenElementMenu({ menuGroups, anchorEl: e.currentTarget, action: 'replace', actionData: { pos }})
                 }
 
                 gutterMarks.push(
