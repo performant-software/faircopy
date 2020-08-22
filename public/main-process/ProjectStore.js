@@ -18,6 +18,10 @@ class ProjectStore {
         // create a debounced function for writing the ZIP
         this.writeProjectArchive = debounce(() => {
             this.jobsInProgress.push(Date.now())
+            // if there was a migration that hasn't been saved yet, save it now
+            if( this.migratedConfig ) {
+                this.saveFairCopyConfig( this.migratedConfig ) 
+            }
             writeArchive(this.projectFilePath, this.projectArchive, () => { this.jobsInProgress.pop() })
         },zipWriteDelay)
     }
@@ -34,12 +38,13 @@ class ProjectStore {
             return
         }
         const fairCopyManifest = await this.readUTF8File(manifestEntryName)
-        const fairCopyConfig = await this.readUTF8File(configSettingsEntryName)
+        let fairCopyConfig = await this.readUTF8File(configSettingsEntryName)
         const idMap = await this.readUTF8File(idMapEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
         const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
+        const baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
-        if( !teiSchema || !menuGroups ) {
+        if( !teiSchema || !menuGroups || !baseConfig ) {
             log.info('Application data is missing or corrupted.')
             return
         }
@@ -47,6 +52,12 @@ class ProjectStore {
         if( !fairCopyManifest || !fairCopyConfig || !idMap ) {
             log.info('Project file is missing required entries.')
             return
+        }
+
+        // if elements changed in config, migrate project config
+        this.migratedConfig = migrateConfig(baseConfig,fairCopyConfig)
+        if( this.migratedConfig ) {
+            fairCopyConfig = this.migratedConfig
         }
         
         // project store keeps a copy of the manifest data
@@ -133,6 +144,7 @@ class ProjectStore {
     }
 
     saveFairCopyConfig( fairCopyConfig ) {
+        this.migratedConfig = null
         this.writeUTF8File( configSettingsEntryName, fairCopyConfig)
         this.writeProjectArchive()
     }
@@ -185,6 +197,23 @@ function writeArchive(zipPath, zipData, whenFinished) {
             log.info(`${zipPath} written.`);
             if( whenFinished ) whenFinished()
         });
+}
+
+function migrateConfig( baseConfigJSON, projectConfigJSON ) {
+    const baseConfig = JSON.parse(baseConfigJSON)
+    const projectConfig = JSON.parse(projectConfigJSON)
+    const baseElements = Object.keys(baseConfig.elements)
+    const projectElements = Object.keys(projectConfig.elements)
+    let changed = false
+
+    for( const baseElement of baseElements ) {
+        if( !projectElements.includes(baseElement) ) {
+            projectConfig.elements[baseElement] = baseConfig.elements[baseElement]
+            changed = true
+        }
+    }
+
+    return ( changed ) ? JSON.stringify(projectConfig) : null
 }
 
 const createProjectArchive = function createProjectArchive(projectInfo,baseDir) {
