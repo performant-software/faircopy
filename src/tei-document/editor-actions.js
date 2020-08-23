@@ -28,6 +28,7 @@ export function replaceElement( elementID, teiDocument, pos ) {
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
     tr.setNodeMarkup(pos, nodeType)
     editorView.dispatch(tr)
+    editorView.focus()
 }
 
 export function onClippy() {
