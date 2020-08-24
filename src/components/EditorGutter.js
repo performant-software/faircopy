@@ -19,7 +19,7 @@ export default class EditorGutter extends Component {
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker col${depth} ${highlighted}`
-        const displayName = (ctrlDown) ? `${node.type.name}-${depth}` : ''
+        const displayName = (ctrlDown) ? <div className={`el-name col${depth}`}>{node.type.name}</div> : ''
 
 
         const onClick = () => {
@@ -53,30 +53,35 @@ export default class EditorGutter extends Component {
         const editorState = editorView.state
         const gutterMarks = []
 
-        const processNode = (node,depth) => {
-            node.forEach( (node,pos) => {
+        const processNode = (node,basePos=0,depth=0) => {
+            node.descendants( (node,relativePos) => {
+                const pos = basePos+relativePos
                 const structureTag = node.type.name    
                 if( validStructureTags.includes( structureTag ) ) {
                     gutterMarks.push( this.renderGutterMark(node,pos,gutterMarks.length,depth) )
-                    processNode(node,depth+1)
+                    processNode(node,pos+1,depth+1)
                 }    
+                return false
             })
         }
 
-        processNode(editorState.doc,0)
+        processNode(editorState.doc)
 
         return gutterMarks
     }
 
     render() {   
-        const { teiDocument } = this.props
+        const { teiDocument, ctrlDown } = this.props
         const { editorView } = teiDocument
 
         if( !editorView ) return null
 
+        const className = `markers ${ctrlDown ? 'thick' : 'thin'}`
         return (
             <div className='EditorGutter'>
-                { this.renderGutterMarkers() }
+                <div className={className}>
+                    { this.renderGutterMarkers() }
+                </div>
             </div>
         ) 
     }

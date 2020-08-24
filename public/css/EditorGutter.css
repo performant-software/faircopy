@@ -1,7 +1,14 @@
-.EditorGutter {
+.EditorGutter .markers {
     margin-left: 8px;
-    margin-right: 16px;
     overflow: hidden;
+}
+
+.EditorGutter .markers.thin {
+    margin-right: 24px;
+}
+
+.EditorGutter .markers.thick {
+    margin-right: 50px;
 }
 
 .EditorGutter .marker {
@@ -11,14 +18,27 @@
 
 .EditorGutter .marker {
     background:#e7ddff;
+    border: 1px solid #ccc;
 }
 
 .EditorGutter .marker.highlighted {
     background: yellow;
-    border: 1px solid black;
 }
 
-
 .EditorGutter .marker.col1 {
-    margin-left: 8px;
+    margin-left: 12px;
+}
+
+.EditorGutter .thick .marker.col1 {
+    margin-left: 26px;   
+}
+
+.EditorGutter .thin .marker.col1 {
+    margin-left: 10px;   
+}
+
+.EditorGutter .el-name {
+    display: inline-block;
+    margin-left: 4px;
+    margin-right: 4px;
 }
