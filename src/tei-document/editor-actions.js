@@ -1,3 +1,4 @@
+import { NodeRange } from 'prosemirror-model'
 import { wrapIn } from 'prosemirror-commands'
 import { addMark } from "./commands"
 
@@ -23,10 +24,23 @@ export function createElement( elementID, teiDocument ) {
 
 // changes the NodeType for a node element at a given pos
 export function replaceElement( elementID, teiDocument, pos ) {
+    wrapElement(elementID,teiDocument,pos)
+    // const editorView = teiDocument.getActiveView()
+    // const { tr } = editorView.state
+    // const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    // tr.setNodeMarkup(pos, nodeType)
+    // editorView.dispatch(tr)
+}
+
+export function wrapElement( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { tr } = editorView.state
+    const { tr, doc } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
-    tr.setNodeMarkup(pos, nodeType)
+    const node = doc.nodeAt(pos)
+    const $start = doc.resolve(pos)
+    const $end = doc.resolve(pos+node.nodeSize)
+    const nodeRange = new NodeRange($start,$end,$start.depth)
+    tr.wrap(nodeRange, [{type: nodeType}])
     editorView.dispatch(tr)
     editorView.focus()
 }

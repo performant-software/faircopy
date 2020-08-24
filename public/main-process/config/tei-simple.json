@@ -112,6 +112,70 @@
 			"desc": "(verse line) contains a single, possibly incomplete, line of verse."
 		},
 		{
+			"name": "sp",
+			"pmType": "node",
+			"content": "speaker? chunk*",
+			"group": "chunk",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"toWhom",
+				"who",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
+		},
+		{
+			"name": "speaker",
+			"pmType": "node",
+			"content": "inline*",
+			"group": "speaker",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
+		},
+		{
 			"name": "pb",
 			"pmType": "inline-node",
 			"validAttrs": [
@@ -1591,6 +1655,24 @@
 					"desc": "the line is strongly enjambed"
 				}
 			],
+			"valListType": "open"
+		},
+		"toWhom": {
+			"ident": "toWhom",
+			"description": "indicates the person, or group of people, to whom a speech act or action is directed.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"who": {
+			"ident": "who",
+			"description": "indicates the person, or group of people, to whom the element content is ascribed.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
 			"valListType": "open"
 		},
 		"ed": {

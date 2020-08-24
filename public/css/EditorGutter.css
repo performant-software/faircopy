@@ -17,3 +17,8 @@
     background: yellow;
     border: 1px solid black;
 }
+
+
+.EditorGutter .marker.col1 {
+    margin-left: 8px;
+}

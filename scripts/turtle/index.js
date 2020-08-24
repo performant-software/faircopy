@@ -55,7 +55,7 @@ const dramaEls = [
     // "castList",
     // "set",
     "sp",
-    // "speaker",
+    "speaker",
     // "stage",
     // "role",
     // "roleDesc"
@@ -150,6 +150,22 @@ function createExamplars(specs) {
             "group": "chunk",
             "validAttrs": [],
             "desc": "(verse line) contains a single, possibly incomplete, line of verse."
+        },
+        {
+            "name": "sp",
+            "pmType": "node",
+            "content": "speaker? chunk*",
+            "group": "chunk",
+            "validAttrs": [],
+            "desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
+        },
+        {
+            "name": "speaker",
+            "pmType": "node",
+            "content": "inline*",
+            "group": "speaker",
+            "validAttrs": [],
+            "desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
         },
         {
             "name": "pb",
