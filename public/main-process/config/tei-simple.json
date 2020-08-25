@@ -3,8 +3,8 @@
 		{
 			"name": "div",
 			"pmType": "node",
-			"content": "(chunk|block)*",
-			"group": "block",
+			"content": "(pLike|divLike)*",
+			"group": "divLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -45,7 +45,7 @@
 			"name": "p",
 			"pmType": "node",
 			"content": "inline*",
-			"group": "chunk",
+			"group": "pLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -79,7 +79,7 @@
 			"name": "l",
 			"pmType": "node",
 			"content": "inline*",
-			"group": "chunk",
+			"group": "lLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -114,8 +114,8 @@
 		{
 			"name": "sp",
 			"pmType": "node",
-			"content": "speaker? chunk*",
-			"group": "chunk",
+			"content": "speaker* (pLike|lLike)*",
+			"group": "divPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -148,7 +148,6 @@
 			"name": "speaker",
 			"pmType": "node",
 			"content": "inline*",
-			"group": "speaker",
 			"validAttrs": [
 				"ana",
 				"cert",

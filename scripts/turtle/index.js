@@ -130,8 +130,8 @@ function createExamplars(specs) {
         {
             "name": "div",
             "pmType": "node",
-            "content": "(chunk|block)*",
-            "group": "block",
+            "content": "(pLike|divLike)*",
+            "group": "divLike",
             "validAttrs": [],
             "desc": specs['div'].description
         },
@@ -139,7 +139,7 @@ function createExamplars(specs) {
             "name": "p",
             "pmType": "node",
             "content": "inline*",
-            "group": "chunk",
+            "group": "pLike",
             "validAttrs": [],
             "desc": "marks paragraphs in prose."
         },
@@ -147,15 +147,15 @@ function createExamplars(specs) {
             "name": "l",
             "pmType": "node",
             "content": "inline*",
-            "group": "chunk",
+            "group": "lLike",
             "validAttrs": [],
             "desc": "(verse line) contains a single, possibly incomplete, line of verse."
         },
         {
             "name": "sp",
             "pmType": "node",
-            "content": "speaker? chunk*",
-            "group": "chunk",
+            "content": "speaker* (pLike|lLike)*",
+            "group": "divPart",
             "validAttrs": [],
             "desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
         },
@@ -163,7 +163,6 @@ function createExamplars(specs) {
             "name": "speaker",
             "pmType": "node",
             "content": "inline*",
-            "group": "speaker",
             "validAttrs": [],
             "desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
         },
