@@ -10,8 +10,6 @@ export function createElement( elementID, teiDocument ) {
     switch( elementID ) {
         case 'div': 
             return createDiv( schema.nodes['div'], editorView )
-        case 'sp': 
-            return createSp( schema.nodes['sp'], editorView )
         case 'pb': 
             return createPb( editorView )
         case 'note': 
@@ -24,15 +22,24 @@ export function createElement( elementID, teiDocument ) {
 
 // changes the NodeType for a node element at a given pos
 export function replaceElement( elementID, teiDocument, pos ) {
+    const editorView = teiDocument.getActiveView()
+    const { tr, doc } = editorView.state
+    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+
+    // 3 possible actions: replace, wrap in, replace + wrap in
+    
     wrapElement(elementID,teiDocument,pos)
-    // const editorView = teiDocument.getActiveView()
-    // const { tr } = editorView.state
-    // const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
-    // tr.setNodeMarkup(pos, nodeType)
-    // editorView.dispatch(tr)
+} 
+
+function changeElement( elementID, teiDocument, pos ) {
+    const editorView = teiDocument.getActiveView()
+    const { tr } = editorView.state
+    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    tr.setNodeMarkup(pos, nodeType)
+    editorView.dispatch(tr)
 }
 
-export function wrapElement( elementID, teiDocument, pos ) {
+function wrapElement( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { tr, doc } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
@@ -72,12 +79,6 @@ function createMark(markType, editorView) {
 
 function createDiv( divNodeType, editorView ) {
     const cmd = wrapIn(divNodeType)
-    cmd( editorView.state, editorView.dispatch )
-    editorView.focus()     
-}
-
-function createSp( spNodeType, editorView ) {
-    const cmd = wrapIn(spNodeType)
     cmd( editorView.state, editorView.dispatch )
     editorView.focus()     
 }
