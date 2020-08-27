@@ -11,7 +11,6 @@ export default class SearchBar extends Component {
                 </Button>
                 <InputBase
                     disabled
-                    placeholder="Search"
                     className="search-input"
                 />
             </div>

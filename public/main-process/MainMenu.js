@@ -149,11 +149,11 @@ class MainMenu {
               label: 'Window',
               submenu: [
                 { role: 'minimize' },
-                { role: 'zoom' },
                 ...(isMac ? [
                   { type: 'separator' },
                   { role: 'front' },
                   { type: 'separator' },
+                  { role: 'zoom' },
                   { role: 'window' }
                 ] : [
                   { role: 'close' }
