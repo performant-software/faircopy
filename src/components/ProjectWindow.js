@@ -13,7 +13,8 @@ export default class ProjectWindow extends Component {
             mode: 'select', 
             projectName: '',
             description: '',
-            filePath: ''
+            filePath: '',
+            appVersion: null
         }
         this.state = this.initialState
     }
@@ -21,6 +22,9 @@ export default class ProjectWindow extends Component {
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('pathSelected', (event, filePath) => this.onPathUpdated(filePath))
+        services.ipcRegisterCallback('appVersion', (event, appVersion) => {
+            this.setState({ ...this.state, appVersion })
+        })
     }
 
     onPathUpdated(filePath) {
@@ -154,12 +158,14 @@ export default class ProjectWindow extends Component {
     }
 
     render() {
-        const { mode } = this.state
-        
+        const { mode, appVersion } = this.state
+
+        if(!appVersion) return null
+
         return (
             <div id="ProjectWindow" >
                 <div className='header'>
-        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy v0.5.17</Typography>
+        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy v{appVersion}</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </div>
                 { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }

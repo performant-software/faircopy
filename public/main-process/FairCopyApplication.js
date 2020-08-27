@@ -31,7 +31,7 @@ class FairCopyApplication {
 
   getVersionNumber() {
     const versionFilePath = `${process.cwd()}/public/version.txt`
-    const versionNumber = this.isDebugMode() ? fs.readFileSync(versionFilePath) : app.getVersion()
+    const versionNumber = this.isDebugMode() ? fs.readFileSync(versionFilePath).toString('utf-8') : app.getVersion()
     return versionNumber
   }
 
@@ -50,7 +50,7 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
-
+  
     // Main window events //////
 
     ipcMain.on('requestResource', (event,resourceID) => { 
@@ -143,6 +143,8 @@ class FairCopyApplication {
 
   async createProjectWindow() {
     this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
+    const appVersion = this.getVersionNumber()
+    this.projectWindow.webContents.send('appVersion', appVersion)
   }  
 
   async createImageWindow(imageViewInfo) {
