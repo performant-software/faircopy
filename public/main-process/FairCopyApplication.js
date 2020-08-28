@@ -212,7 +212,8 @@ class FairCopyApplication {
   
       autoUpdater.on('update-downloaded', (...args) => {
         log.info('Autoupdate: update downloaded, ready to restart.')  
-        autoUpdater.quitAndInstall()
+        // TODO need a button on interface to trigger this
+        // autoUpdater.quitAndInstall()
       })
 
       autoUpdater.on('update-available', () => {

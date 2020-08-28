@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
-import { initLicenseData } from '../tei-document/license-key'
+// import { initLicenseData } from '../tei-document/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -130,10 +130,11 @@ export default class ProjectWindow extends Component {
            this.setState({ ...this.state, mode: 'new' })
         }  
 
-        const onResetKey = () => {
-            initLicenseData()
-            fairCopy.services.ipcSend('exitApp')
-        }
+//                         <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li>
+        // const onResetKey = () => {
+        //     initLicenseData()
+        //     fairCopy.services.ipcSend('exitApp')
+        // }
 
         const projectCards = []
         for( const project of projects ) {
@@ -146,7 +147,6 @@ export default class ProjectWindow extends Component {
                     <ul>
                         <li><Button onClick={onClickNew} variant='contained'>New Project...</Button></li>
                         <li><Button onClick={onClickOpen} variant='contained'>Open Project...</Button></li>
-                        <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li>
                     </ul>
                 </div>
                 <div className="right-side">

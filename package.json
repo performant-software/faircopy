@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.5.19",
+  "version": "0.5.23",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -91,8 +91,7 @@
     },
     "nsis": {
       "license": "LICENSE",
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "createDesktopShortcut": false
     },
     "afterSign": "scripts/notarize.js"
   },
