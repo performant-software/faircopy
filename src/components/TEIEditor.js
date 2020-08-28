@@ -8,7 +8,6 @@ import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
-import SearchBar from './SearchBar';
 import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 
@@ -191,7 +190,6 @@ export default class TEIEditor extends Component {
             > 
                 <div>
                     <div className="titlebar">
-                        <SearchBar></SearchBar>
                         <Typography component="h1" variant="h6">{resourceName}</Typography>
                     </div>
                     <EditorToolbar
