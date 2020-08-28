@@ -3,7 +3,6 @@ import OpenSeadragon from 'openseadragon';
 import axios from 'axios';
 import { Typography, Button, Card, CardHeader, CardActions, CardContent } from '@material-ui/core';
 
-import SearchBar from './SearchBar';
 import { getImageInfoURL, getLocalString } from '../tei-document/iiif'
 
 export default class FacsEditor extends Component {
@@ -178,7 +177,6 @@ export default class FacsEditor extends Component {
                 { showSearchBar && 
                     <div>
                         <div className="titlebar">
-                            <SearchBar></SearchBar>
                             <Typography component="h1" variant="h6">{resourceName}</Typography>
                         </div>        
                         { this.renderToolbar() }

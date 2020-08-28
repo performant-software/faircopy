@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Checkbox } from '@material-ui/core';
-import SearchBar from './SearchBar'
 
 export default class ResourceBrowser extends Component {
 
@@ -183,7 +182,6 @@ export default class ResourceBrowser extends Component {
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
           <div className="titlebar">
-              <SearchBar></SearchBar>
               <Typography component="h1" variant="h6">Browse Resources ({resourceCount} resource{s})</Typography>
           </div>
           { this.renderToolbar() }
