@@ -40,7 +40,7 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { menuGroups, teiDocument, action, actionData } = this.props
+        const { menuGroups, teiDocument, action, actionData, onAlertMessage } = this.props
         const { openSubMenu } = this.state
 
         if( !openSubMenu || !menuGroups[openSubMenu] ) return
@@ -58,7 +58,10 @@ export default class ElementMenu extends Component {
                 if( action === 'create' ) {
                     createElement(member.id, teiDocument) 
                 } else {
-                    replaceElement(member.id, teiDocument, actionData.pos) 
+                    const error = replaceElement(member.id, teiDocument, actionData.pos) 
+                    if( error ) {
+                        onAlertMessage(error)
+                    }
                 }
                 closeSubMenu()    
             }

@@ -1,4 +1,4 @@
-import { NodeRange } from 'prosemirror-model'
+import { NodeRange, Fragment } from 'prosemirror-model'
 import { wrapIn } from 'prosemirror-commands'
 import { addMark } from "./commands"
 
@@ -25,32 +25,32 @@ export function replaceElement( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { tr, doc } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
-
-    // 3 possible actions: replace, wrap in, replace + wrap in
-    
-    wrapElement(elementID,teiDocument,pos)
-} 
-
-function changeElement( elementID, teiDocument, pos ) {
-    const editorView = teiDocument.getActiveView()
-    const { tr } = editorView.state
-    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
-    tr.setNodeMarkup(pos, nodeType)
-    editorView.dispatch(tr)
-}
-
-function wrapElement( elementID, teiDocument, pos ) {
-    const editorView = teiDocument.getActiveView()
-    const { tr, doc } = editorView.state
-    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
     const node = doc.nodeAt(pos)
-    const $start = doc.resolve(pos)
-    const $end = doc.resolve(pos+node.nodeSize)
-    const nodeRange = new NodeRange($start,$end,$start.depth)
-    tr.wrap(nodeRange, [{type: nodeType}])
-    editorView.dispatch(tr)
-    editorView.focus()
-}
+
+    // first, see if we can just change this node to target nodeType
+    if( nodeType.validContent(node.content) ) {
+        try {
+            tr.setNodeMarkup(pos, nodeType)
+            editorView.dispatch(tr)        
+        } catch(err) {
+            return err.message
+        }
+    } else {
+        // if not, can nodeType wrap the node? 
+        const fragment = Fragment.from(node)
+        if( nodeType.validContent(fragment) ) {
+            const $start = doc.resolve(pos)
+            const $end = doc.resolve(pos+node.nodeSize)
+            const nodeRange = new NodeRange($start,$end,$start.depth)
+            tr.wrap(nodeRange, [{type: nodeType}])
+            editorView.dispatch(tr)
+            editorView.focus()        
+        } else {
+            return "can't replace"
+        }
+    }
+    return null
+} 
 
 export function onClippy() {
     // const html = fairCopy.services.readClipBoardHTML()

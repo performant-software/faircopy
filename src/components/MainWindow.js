@@ -14,6 +14,7 @@ import EditProjectDialog from './EditProjectDialog'
 import PopupMenu from './PopupMenu'
 import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
+import SnackAlert from './SnackAlert'
 
 const fairCopy = window.fairCopy
 
@@ -38,6 +39,7 @@ export default class MainWindow extends Component {
             elementMenuOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
+            alertMessage: null,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -205,6 +207,10 @@ export default class MainWindow extends Component {
 
     onImportResource = () => {
         fairCopy.services.ipcSend('requestImport')
+    }
+
+    onAlertMessage = (message) => {
+        this.setState({...this.state, alertMessage: message })
     }
 
     onResourceAction = (actionID, resourceIDs) => {
@@ -401,7 +407,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { editDialogMode, openResources, selectedResource, elementMenuOptions } = this.state
-        const { editProjectDialogMode } = this.state
+        const { editProjectDialogMode, alertMessage } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
@@ -464,6 +470,7 @@ export default class MainWindow extends Component {
                 ></EditProjectDialog> }
                 <ElementMenu
                     teiDocument={teiDocument}
+                    onAlertMessage={this.onAlertMessage}
                     onClose={this.onCloseElementMenu}
                     {...elementMenuOptions}
                 ></ElementMenu>
@@ -472,6 +479,11 @@ export default class MainWindow extends Component {
                     anchorEl={popupMenuAnchorEl}
                     onClose={this.onClosePopupMenu}                
                 ></PopupMenu>
+                <SnackAlert
+                    open={alertMessage !== null}
+                    message={alertMessage}
+                    handleClose={()=>{ this.setState({...this.state, alertMessage: null})}}
+                ></SnackAlert>
             </div>
         )
     }
