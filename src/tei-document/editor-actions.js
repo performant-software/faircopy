@@ -39,12 +39,16 @@ export function replaceElement( elementID, teiDocument, pos ) {
         // if not, can nodeType wrap the node? 
         const fragment = Fragment.from(node)
         if( nodeType.validContent(fragment) ) {
-            const $start = doc.resolve(pos)
-            const $end = doc.resolve(pos+node.nodeSize)
-            const nodeRange = new NodeRange($start,$end,$start.depth)
-            tr.wrap(nodeRange, [{type: nodeType}])
-            editorView.dispatch(tr)
-            editorView.focus()        
+            try {
+                const $start = doc.resolve(pos)
+                const $end = doc.resolve(pos+node.nodeSize)
+                const nodeRange = new NodeRange($start,$end,$start.depth)
+                tr.wrap(nodeRange, [{type: nodeType}])
+                editorView.dispatch(tr)
+                editorView.focus()            
+            } catch(err) {
+                return err.message
+            }
         } else {
             return "can't replace"
         }
