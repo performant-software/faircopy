@@ -6,7 +6,7 @@ const validStructureTags = ['p','l','sp','speaker']
 
 export default class EditorGutter extends Component {
 
-    renderGutterMark(node,pos,index,depth) {
+    renderGutterMark(node,pos,index,column) {
         const { teiDocument, scrollTop, ctrlDown, onOpenElementMenu } = this.props
         const { editorView, fairCopyProject } = teiDocument
         const editorState = editorView.state
@@ -18,8 +18,8 @@ export default class EditorGutter extends Component {
         const markStyle = { top, height }
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
-        const className = `marker col${depth} ${highlighted}`
-        const displayName = (ctrlDown) ? <div className={`el-name col${depth}`}>{node.type.name}</div> : ''
+        const className = `marker col${column} ${highlighted}`
+        const displayName = (ctrlDown) ? <div className={`el-name col${column}`}>{node.type.name}</div> : ''
 
 
         const onClick = () => {
@@ -53,16 +53,19 @@ export default class EditorGutter extends Component {
         const editorState = editorView.state
         const gutterMarks = []
 
-        const processNode = (node,basePos=0,depth=0) => {
-            node.descendants( (node,relativePos) => {
+        const processNode = (parentNode,basePos=0,column=0) => {
+            let relativePos=0
+            for( let i=0; i < parentNode.childCount; i++ ) {
+                const node = parentNode.child(i)
                 const pos = basePos+relativePos
-                const structureTag = node.type.name    
-                if( validStructureTags.includes( structureTag ) ) {
-                    gutterMarks.push( this.renderGutterMark(node,pos,gutterMarks.length,depth) )
-                    processNode(node,pos+1,depth+1)
-                }    
-                return false
-            })
+                if( validStructureTags.includes( node.type.name ) ) {
+                    gutterMarks.push( this.renderGutterMark(node,pos,gutterMarks.length,column) )
+                    processNode(node,pos+1,column+1)                
+                } else {
+                    processNode(node,pos+1,column)                
+                }
+                relativePos = relativePos + node.nodeSize
+            }
         }
 
         processNode(editorState.doc)
