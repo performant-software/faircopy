@@ -46,6 +46,7 @@
 			"pmType": "node",
 			"content": "inline*",
 			"group": "pLike",
+			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -80,6 +81,7 @@
 			"pmType": "node",
 			"content": "inline*",
 			"group": "lLike",
+			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -116,6 +118,7 @@
 			"pmType": "node",
 			"content": "speaker* (pLike|lLike)*",
 			"group": "divPart",
+			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -148,6 +151,7 @@
 			"name": "speaker",
 			"pmType": "node",
 			"content": "inline*",
+			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",

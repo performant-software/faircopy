@@ -140,6 +140,7 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "inline*",
             "group": "pLike",
+            "gutterMark": true,
             "validAttrs": [],
             "desc": "marks paragraphs in prose."
         },
@@ -148,6 +149,7 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "inline*",
             "group": "lLike",
+            "gutterMark": true,
             "validAttrs": [],
             "desc": "(verse line) contains a single, possibly incomplete, line of verse."
         },
@@ -156,6 +158,7 @@ function createExamplars(specs) {
             "pmType": "node",
             "content": "speaker* (pLike|lLike)*",
             "group": "divPart",
+            "gutterMark": true,
             "validAttrs": [],
             "desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
         },
@@ -163,6 +166,7 @@ function createExamplars(specs) {
             "name": "speaker",
             "pmType": "node",
             "content": "inline*",
+            "gutterMark": true,
             "validAttrs": [],
             "desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
         },

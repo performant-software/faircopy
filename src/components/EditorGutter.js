@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
-const validStructureTags = ['p','l','sp','speaker']
 
 export default class EditorGutter extends Component {
 
@@ -58,7 +57,8 @@ export default class EditorGutter extends Component {
             for( let i=0; i < parentNode.childCount; i++ ) {
                 const node = parentNode.child(i)
                 const pos = basePos+relativePos
-                if( validStructureTags.includes( node.type.name ) ) {
+                const element = teiDocument.fairCopyProject.teiSchema.elements[node.type.name]
+                if( element && element.gutterMark ) {
                     gutterMarks.push( this.renderGutterMark(node,pos,gutterMarks.length,column) )
                     processNode(node,pos+1,column+1)                
                 } else {
