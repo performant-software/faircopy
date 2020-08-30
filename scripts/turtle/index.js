@@ -130,7 +130,7 @@ function createExamplars(specs) {
         {
             "name": "div",
             "pmType": "node",
-            "content": "(pLike|divLike)*",
+            "content": "(pLike|lLike|divLike)*",
             "group": "divLike",
             "validAttrs": [],
             "desc": specs['div'].description

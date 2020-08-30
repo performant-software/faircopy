@@ -50,6 +50,7 @@ export function replaceElement( elementID, teiDocument, pos ) {
                 return err.message
             }
         } else {
+            // TODO in the case of lg, need to turn p into l
             return "can't replace"
         }
     }

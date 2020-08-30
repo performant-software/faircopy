@@ -34,6 +34,12 @@ tei-div {
     border-bottom: 1px dotted black;
 }
 
+tei-l {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 /* p */
 tei-p {
     display: block;

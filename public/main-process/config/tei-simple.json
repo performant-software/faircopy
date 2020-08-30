@@ -3,7 +3,7 @@
 		{
 			"name": "div",
 			"pmType": "node",
-			"content": "(pLike|divLike)*",
+			"content": "(pLike|lLike|divLike)*",
 			"group": "divLike",
 			"validAttrs": [
 				"ana",
