@@ -156,7 +156,7 @@ function createExamplars(specs) {
         {
             "name": "sp",
             "pmType": "node",
-            "content": "speaker* (pLike|lLike)*",
+            "content": "speaker? (pLike|lLike)*",
             "group": "divPart",
             "gutterMark": true,
             "validAttrs": [],
