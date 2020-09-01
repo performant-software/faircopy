@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
+const maxGutterMarks = 100
 
 export default class EditorGutter extends Component {
 
@@ -53,6 +54,7 @@ export default class EditorGutter extends Component {
         const gutterMarks = []
 
         const processNode = (parentNode,basePos=0,column=0) => {
+            if( gutterMarks.length >= maxGutterMarks ) return 
             let relativePos=0
             for( let i=0; i < parentNode.childCount; i++ ) {
                 const node = parentNode.child(i)
