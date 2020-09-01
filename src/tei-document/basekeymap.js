@@ -227,12 +227,21 @@ export function newlineInCode(state, dispatch) {
   return true
 }
 
-function defaultBlockAt(match) {
+function defaultBlockAt($pos, match) {
+  const edges = []
   for (let i = 0; i < match.edgeCount; i++) {
     let {type} = match.edge(i)
-    if (type.isTextblock && !type.hasRequiredAttrs()) return type
+    if (type.isTextblock && !type.hasRequiredAttrs()) {
+      edges.push(type)
+    }
   }
-  return null
+  if( edges.length === 0 ) return null
+  const parent = $pos.parent
+  if( edges.includes(parent.type) ) {
+    return parent.type
+  } else {
+    return edges[0]
+  }
 }
 
 // :: (EditorState, ?(tr: Transaction)) → bool
@@ -242,7 +251,7 @@ function defaultBlockAt(match) {
 export function exitCode(state, dispatch) {
   let {$head, $anchor} = state.selection
   if (!$head.parent.type.spec.code || !$head.sameParent($anchor)) return false
-  let above = $head.node(-1), after = $head.indexAfter(-1), type = defaultBlockAt(above.contentMatchAt(after))
+  let above = $head.node(-1), after = $head.indexAfter(-1), type = defaultBlockAt($head, above.contentMatchAt(after))
   if (!above.canReplaceWith(after, after, type)) return false
   if (dispatch) {
     let pos = $head.after(), tr = state.tr.replaceWith(pos, pos, type.createAndFill())
@@ -258,7 +267,7 @@ export function exitCode(state, dispatch) {
 export function createParagraphNear(state, dispatch) {
   let {$from, $to} = state.selection
   if ($from.parent.inlineContent || $to.parent.inlineContent) return false
-  let type = defaultBlockAt($from.parent.contentMatchAt($to.indexAfter()))
+  let type = defaultBlockAt($from, $from.parent.contentMatchAt($to.indexAfter()))
   if (!type || !type.isTextblock) return false
   if (dispatch) {
     let side = (!$from.parentOffset && $to.index() < $to.parent.childCount ? $from : $to).pos
@@ -305,7 +314,7 @@ export function splitBlock(state, dispatch) {
     let atEnd = $to.parentOffset === $to.parent.content.size
     let tr = state.tr
     if (state.selection instanceof TextSelection) tr.deleteSelection()
-    let deflt = $from.depth === 0 ? null : defaultBlockAt($from.node(-1).contentMatchAt($from.indexAfter(-1)))
+    let deflt = $from.depth === 0 ? null : defaultBlockAt($from, $from.node(-1).contentMatchAt($from.indexAfter(-1)))
     let types = atEnd && deflt ? [{type: deflt}] : null
     let can = canSplit(tr.doc, tr.mapping.map($from.pos), 1, types)
     if (!types && !can && canSplit(tr.doc, tr.mapping.map($from.pos), 1, deflt && [{type: deflt}])) {
@@ -567,8 +576,9 @@ let del = chainCommands(deleteSelection, joinForward, selectNodeForward)
 // * **Mod-Delete** to `deleteSelection`, `joinForward`, `selectNodeForward`
 // * **Mod-a** to `selectAll`
 export let pcBaseKeymap = {
-  "Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
-  "Mod-Enter": exitCode,
+  "Enter": splitBlock,
+  "Mod-Enter": liftEmptyBlock,
+  "Ctrl-Enter": liftEmptyBlock,
   "Backspace": backspace,
   "Mod-Backspace": backspace,
   "Delete": del,
