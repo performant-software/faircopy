@@ -6,8 +6,6 @@ import {highlighter} from "./highlighter"
 import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 
-import {buildKeymap} from "./keymap"
-import {buildInputRules} from "./inputrules"
 import {teiTemplate} from "./tei-template"
 
 const fairCopy = window.fairCopy
@@ -21,10 +19,7 @@ export default class TEIDocument {
         this.noteEditorView = null
         this.resourceID = resourceID
         this.fairCopyProject = fairCopyProject
-        const {schema} = fairCopyProject.teiSchema
         this.plugins = [
-            buildInputRules(schema),
-            keymap(buildKeymap(schema)),
             keymap(baseKeymap),
             dropCursor(),
             gapCursor(),
@@ -49,15 +44,6 @@ export default class TEIDocument {
         return EditorState.create({ 
             doc, plugins: this.plugins, selection 
         })
-    }
-
-    // TODO separate module?
-    fairCopyKeyMap() {
-        // "Enter": chainCommands(newlineInCode, createParagraphNear, liftEmptyBlock, splitBlock),
-        // the function of the enter key is dependent upon the current editor mode
-        // need to understand how this presently works and then develop a scheme
-        // to interrupt and put the correct node type in there depending on the circumstance
-        return baseKeymap
     }
 
     issueSubDocumentID = () => {

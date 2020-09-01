@@ -1,6 +1,7 @@
 import {joinPoint, canJoin, findWrapping, liftTarget, canSplit, ReplaceAroundStep} from "prosemirror-transform"
 import {Slice, Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
+import {undo, redo} from "prosemirror-history"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
 // Delete the selection, if there is one.
@@ -332,6 +333,14 @@ export function splitBlock(state, dispatch) {
   return true
 }
 
+export function splitAndWrap(state, dispatch) {
+  // TODO
+}
+
+export function splitAndLift(state, dispatch) {
+  // TODO
+}
+
 // :: (EditorState, ?(tr: Transaction)) → bool
 // Acts like [`splitBlock`](#commands.splitBlock), but without
 // resetting the set of active marks at the cursor.
@@ -577,13 +586,16 @@ let del = chainCommands(deleteSelection, joinForward, selectNodeForward)
 // * **Mod-a** to `selectAll`
 export let pcBaseKeymap = {
   "Enter": splitBlock,
-  "Mod-Enter": liftEmptyBlock,
-  "Ctrl-Enter": liftEmptyBlock,
+  "Mod-Enter": splitAndWrap,
+  "Ctrl-Enter": splitAndLift,
   "Backspace": backspace,
   "Mod-Backspace": backspace,
   "Delete": del,
   "Mod-Delete": del,
-  "Mod-a": selectAll
+  "Mod-a": selectAll,
+  "Mod-z": undo,
+  "Shift-Mod-z": redo,
+  "Mod-y": redo
 }
 
 // :: Object
