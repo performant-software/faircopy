@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
-// import { initLicenseData } from '../tei-document/license-key'
+import { initLicenseData } from '../tei-document/license-key'
 
 const fairCopy = window.fairCopy
+
+const allowReset = false
 
 export default class ProjectWindow extends Component {
 
@@ -130,11 +132,10 @@ export default class ProjectWindow extends Component {
            this.setState({ ...this.state, mode: 'new' })
         }  
 
-//                         <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li>
-        // const onResetKey = () => {
-        //     initLicenseData()
-        //     fairCopy.services.ipcSend('exitApp')
-        // }
+        const onResetKey = () => {
+            initLicenseData()
+            fairCopy.services.ipcSend('exitApp')
+        }
 
         const projectCards = []
         for( const project of projects ) {
@@ -147,6 +148,7 @@ export default class ProjectWindow extends Component {
                     <ul>
                         <li><Button onClick={onClickNew} variant='contained'>New Project...</Button></li>
                         <li><Button onClick={onClickOpen} variant='contained'>Open Project...</Button></li>
+                        { allowReset && <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li> }
                     </ul>
                 </div>
                 <div className="right-side">
@@ -160,12 +162,10 @@ export default class ProjectWindow extends Component {
     render() {
         const { mode, appVersion } = this.state
 
-        if(!appVersion) return null
-
         return (
             <div id="ProjectWindow" >
                 <div className='header'>
-        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy v{appVersion}</Typography>
+        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion ? `v${appVersion}` : ''}</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </div>
                 { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }
