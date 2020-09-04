@@ -49,7 +49,7 @@ function iiifToFacsimile3( manifestData ) {
                 if( !id || surfaceIDs.includes(id) ) {
                     id = generateOrdinalID('page-',n)
                 }
-                localLabels = !localLabels ? id : localLabels
+                localLabels = !localLabels ? { 'none': [ id ] } : localLabels
                 surfaceIDs.push(id)
                 n++ // page count
 
