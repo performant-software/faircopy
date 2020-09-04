@@ -4,12 +4,17 @@ import {iiifToFacsimile, facsimileToTEI} from './convert-facs'
 export function importIIIFManifest( manifestURL, callback ) {
     axios.get(manifestURL).then(
         (resp) => {
-            const facsData = iiifToFacsimile(resp.data)
-            const facsXML = facsimileToTEI(facsData)
-            callback(facsXML,facsData)
+            try {
+                const facsData = iiifToFacsimile(resp.data)
+                const facsXML = facsimileToTEI(facsData)
+                callback(facsXML,facsData)
+            } catch(error) {
+                console.log(`Unable to parse IIIF manifest ${manifestURL} :\n'${error}`)     
+                callback(null)      
+            }
         },
         (error) => {
-            console.log(`Unable to load IIIF manifest ${manifestURL} :\n'${error}`);
+            console.log(`Unable to load IIIF manifest ${manifestURL} :\n'${error}`)
             callback(null)
         }
     );
