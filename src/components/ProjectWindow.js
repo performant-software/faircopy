@@ -5,8 +5,6 @@ import { initLicenseData } from '../tei-document/license-key'
 
 const fairCopy = window.fairCopy
 
-const allowReset = false
-
 export default class ProjectWindow extends Component {
 
     constructor() {
@@ -16,7 +14,7 @@ export default class ProjectWindow extends Component {
             projectName: '',
             description: '',
             filePath: '',
-            appVersion: null
+            appConfig: null
         }
         this.state = this.initialState
     }
@@ -24,8 +22,8 @@ export default class ProjectWindow extends Component {
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('pathSelected', (event, filePath) => this.onPathUpdated(filePath))
-        services.ipcRegisterCallback('appVersion', (event, appVersion) => {
-            this.setState({ ...this.state, appVersion })
+        services.ipcRegisterCallback('appConfig', (event, appConfig) => {
+            this.setState({ ...this.state, appConfig })
         })
     }
 
@@ -120,7 +118,7 @@ export default class ProjectWindow extends Component {
         )
     }
   
-    renderSelectProject() {
+    renderSelectProject(allowKeyReset) {
         let projects = localStorage.getItem('recentProjects')
         projects = projects ? JSON.parse(projects) : []
 
@@ -148,7 +146,7 @@ export default class ProjectWindow extends Component {
                     <ul>
                         <li><Button onClick={onClickNew} variant='contained'>New Project...</Button></li>
                         <li><Button onClick={onClickOpen} variant='contained'>Open Project...</Button></li>
-                        { allowReset && <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li> }
+                        { allowKeyReset && <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li> }
                     </ul>
                 </div>
                 <div className="right-side">
@@ -160,15 +158,18 @@ export default class ProjectWindow extends Component {
     }
 
     render() {
-        const { mode, appVersion } = this.state
+        const { mode, appConfig } = this.state
+
+        const appVersion = appConfig ? `v${appConfig.version}` : ''
+        const allowKeyReset = appConfig ? appConfig.devMode : false
 
         return (
             <div id="ProjectWindow" >
                 <div className='header'>
-        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion ? `v${appVersion}` : ''}</Typography>
+        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion}</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </div>
-                { mode === 'select' ? this.renderSelectProject() : this.renderNewProject() }
+                { mode === 'select' ? this.renderSelectProject(allowKeyReset) : this.renderNewProject() }
             </div>
         )
     }
