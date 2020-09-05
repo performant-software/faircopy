@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -88,7 +88,13 @@
     "win": {
       "icon": "build/icon.ico",
       "target": [
-        "nsis"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
       ]
     },
     "nsis": {

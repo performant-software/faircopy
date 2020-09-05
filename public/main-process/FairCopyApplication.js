@@ -10,10 +10,6 @@ const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
 const distBaseDir = __dirname
 
-// Configuration for Keygen Dist
-const accountID = "8a8d3d6a-ab09-4f51-aea5-090bfd025dd8"
-const productID = "495ce69f-3f29-44aa-aae2-718ed4eeb0d5"
-
 class FairCopyApplication {
 
   constructor() {
@@ -21,7 +17,7 @@ class FairCopyApplication {
     this.imageViews = []
     // this.noteWindows = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
-    this.versionNumber = this.getVersionNumber()
+    this.config = this.getConfig()
     this.mainMenu = new MainMenu(this)
     this.exiting = false
     this.returnToProjectWindow = false
@@ -29,10 +25,11 @@ class FairCopyApplication {
     this.initIPC()
   }
 
-  getVersionNumber() {
-    const versionFilePath = `${process.cwd()}/public/version.txt`
-    const versionNumber = this.isDebugMode() ? fs.readFileSync(versionFilePath).toString('utf-8') : app.getVersion()
-    return versionNumber
+  getConfig() {
+    const distConfigJSON = fs.readFileSync(`${this.baseDir}/config/dist-config.json`).toString('utf-8')
+    const distConfig = JSON.parse(distConfigJSON)
+    distConfig.version = this.isDebugMode() ? "0.0.0" : app.getVersion()
+    return distConfig
   }
 
   isDebugMode() {
@@ -100,7 +97,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive({ ...projectInfo, appVersion: this.versionNumber}, this.baseDir)
+      createProjectArchive({ ...projectInfo, appVersion: this.config.version}, this.baseDir)
       this.openProject(projectInfo.filePath)
     })
 
@@ -143,8 +140,7 @@ class FairCopyApplication {
 
   async createProjectWindow() {
     this.projectWindow = await this.createWindow('project-window-preload.js', 740, 500, false, '#E6DEF9' )
-    const appVersion = this.getVersionNumber()
-    this.projectWindow.webContents.send('appVersion', appVersion)
+    this.projectWindow.webContents.send('appConfig', this.config)
   }  
 
   async createImageWindow(imageViewInfo) {
@@ -220,7 +216,8 @@ class FairCopyApplication {
         log.info('Autoupdate: update available, downloading.')  
       }) 
   
-      const keygenDistURL = `https://dist.keygen.sh/v1/${accountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
+      const productID = this.config.devMode ? this.config.devChannelID : this.config.productionChannelID
+      const keygenDistURL = `https://dist.keygen.sh/v1/${this.config.keyGenAccountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
       autoUpdater.setFeedURL({
         url: keygenDistURL,
         useMultipleRangeRequest: false,
