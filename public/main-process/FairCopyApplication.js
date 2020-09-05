@@ -217,7 +217,7 @@ class FairCopyApplication {
       }) 
   
       const productID = this.config.devMode ? this.config.devChannelID : this.config.productionChannelID
-      const keygenDistURL = `https://dist.keygen.sh/v1/${this.config.accountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
+      const keygenDistURL = `https://dist.keygen.sh/v1/${this.config.keyGenAccountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
       autoUpdater.setFeedURL({
         url: keygenDistURL,
         useMultipleRangeRequest: false,
