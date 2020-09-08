@@ -12,6 +12,7 @@ const {createConfig} = require('./create-config')
 // const teiSimplePrintODD = 'scripts/tei_simplePrint.odd'
 
 const phraseMarks = [
+    "g",
     "ref",
     "name",
     "rs",
@@ -114,11 +115,14 @@ function load(elementIdents) {
 function createPhraseElements(specs) {
     const phraseElements = []
     for( let phraseMark of phraseMarks) {
+        const spec = specs[phraseMark]
         phraseElements.push({
             name: phraseMark,
             pmType: "mark",
             validAttrs: [],
-            desc: specs[phraseMark].description
+            content: spec.content,
+            group: spec.group,
+            desc: spec.description
         })
     }
     return phraseElements

@@ -2,7 +2,7 @@
 function parseGroup(groupEl) {
     const {nodeName} = groupEl
     if( nodeName === 'classRef' || nodeName === 'elementRef' ) {
-        return groupEl.getAttribute('key').replace('.','_')
+        return groupEl.getAttribute('key').replace(/\./g,'_')
     }
     if( nodeName === 'textNode' ) {
         return 'text'
@@ -105,7 +105,7 @@ const parseGroups = function parseGroups(memberships) {
 
     for( const membership of memberships ) {
         if( membership.startsWith('model.') ) {
-            groups.push(membership.replace('.','_'))
+            groups.push(membership.replace(/\./g,'_'))
         }
     }
 
