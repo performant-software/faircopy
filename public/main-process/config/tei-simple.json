@@ -3,8 +3,8 @@
 		{
 			"name": "p",
 			"pmType": "node",
-			"content": "(text|model.gLike|model.phrase|model.inter|model.global|lg|model.lLike)",
-			"group": "model.pLike",
+			"content": "(text|model_gLike|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"group": "model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -38,8 +38,8 @@
 		{
 			"name": "l",
 			"pmType": "node",
-			"content": "(text|model.gLike|model.phrase|model.inter|model.global)",
-			"group": "model.lLike",
+			"content": "(text|model_gLike|model_phrase|model_inter|model_global)*",
+			"group": "model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -75,8 +75,8 @@
 		{
 			"name": "sp",
 			"pmType": "node",
-			"content": "model.global speaker model.global (lg|model.lLike|model.pLike|model.listLike|model.stageLike|model.qLike) model.global",
-			"group": "model.divPart",
+			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_qLike) model_global*)+)",
+			"group": "model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -109,7 +109,7 @@
 		{
 			"name": "speaker",
 			"pmType": "node",
-			"content": "(text|model.gLike|model.qLike|model.phrase|model.global)",
+			"content": "(text|model_gLike|model_qLike|model_phrase|model_global)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [

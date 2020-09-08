@@ -43,8 +43,9 @@ export default class TEISchema {
 
         const nodes = {
             doc: {
-                content: "(pLike|lLike|divPart|divLike)*",
-                group: "divLike"
+                // TODO
+                // content: "(pLike|lLike|divPart|divLike)*",
+                // group: "divLike"
             },
             text: {
                 group: "inline"

@@ -2,7 +2,7 @@
 function parseGroup(groupEl) {
     const {nodeName} = groupEl
     if( nodeName === 'classRef' || nodeName === 'elementRef' ) {
-        return groupEl.getAttribute('key')
+        return groupEl.getAttribute('key').replace('.','_')
     }
     if( nodeName === 'textNode' ) {
         return 'text'
@@ -13,6 +13,11 @@ function parseGroup(groupEl) {
 
 function decodeContent( contentEl ) {
     const contentType = ( contentEl.nodeName === 'sequence' || contentEl.nodeName === 'alternate' ) ? contentEl.nodeName : 'group'
+
+    const minOccursVal  = contentEl.getAttribute('minOccurs')
+    const maxOccursVal = contentEl.getAttribute('maxOccurs')
+    const minOccurs = ( minOccursVal === null ) ? 1 : Number(minOccursVal)
+    const maxOccurs = ( maxOccursVal === null ) ? 1 : (maxOccursVal === "unbounded" ) ? '∞' : Number(maxOccursVal)
 
     const contentArray = []
     if( contentType === 'group' ) {
@@ -28,30 +33,50 @@ function decodeContent( contentEl ) {
     }
     return {
         type: contentType,
-        content: contentArray
+        content: contentArray,
+        minOccurs,
+        maxOccurs
+    }
+}
+
+function encodeOccurence( content ) {
+    const { minOccurs, maxOccurs } = content
+
+    if( minOccurs === 1 && maxOccurs === 1 ) return ''
+    if( minOccurs === 0 && maxOccurs === 1 ) return '?'
+
+    if( maxOccurs === '∞' ) {
+        if( minOccurs === 0 ) return '*'
+        if( minOccurs === 1 ) return '+'
+        return `{${minOccurs},}`
+    } else {
+        if( minOccurs === maxOccurs ) return `{${minOccurs}}`
+        return `{${minOccurs}, ${maxOccurs}}`
     }
 }
 
 // take the completed content array and turn it into a content string
 function encodeContent( content ) {
     if( !content ) return ''
+
+    const occurs = encodeOccurence(content)
     
     if( content.type === 'sequence' ) {
         const seqItems = []
         for( const item of content.content ) {
             seqItems.push(encodeContent(item))
         }
-        return seqItems.join(' ')
+        return `(${seqItems.join(' ')})${occurs}`
     }
     if( content.type === 'alternate' ) {
         const altItems = []
         for( const item of content.content ) {
             altItems.push(encodeContent(item))
         }
-        return `(${altItems.join('|')})`
+        return `(${altItems.join('|')})${occurs}`
     }
     if( content.type === 'group' ) {
-        return content.content
+        return `${content.content}${occurs}`
     }    
     return ''
 }
@@ -80,7 +105,7 @@ const parseGroups = function parseGroups(memberships) {
 
     for( const membership of memberships ) {
         if( membership.startsWith('model.') ) {
-            groups.push(membership)
+            groups.push(membership.replace('.','_'))
         }
     }
 
