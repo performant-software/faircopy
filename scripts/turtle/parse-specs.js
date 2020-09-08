@@ -69,11 +69,11 @@ function parseElementSpec( el ) {
     const gloss = loadLocalizedString(el, "gloss")
     const attListEl = el.getElementsByTagName('attList')[0]
     const attrs = attListEl ? parseAttList(attListEl) : []
-    const groups = parseGroups(memberships)
+    const group = parseGroups(memberships)
     const contentEl = el.getElementsByTagName('content')[0]
     const content = parseContent(contentEl)
 
-    return { ident, gloss, memberships, description, attrs, content, groups }
+    return { ident, gloss, memberships, description, attrs, content, group }
 }
 
 function parseMacroSpec( el ) {

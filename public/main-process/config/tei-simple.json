@@ -1,6 +1,144 @@
 {
 	"elements": [
 		{
+			"name": "p",
+			"pmType": "node",
+			"content": "(text|model.gLike|model.phrase|model.inter|model.global|lg|model.lLike)",
+			"group": "model.pLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"decls",
+				"exclude",
+				"facs",
+				"hand",
+				"n",
+				"next",
+				"part",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "marks paragraphs in prose."
+		},
+		{
+			"name": "l",
+			"pmType": "node",
+			"content": "(text|model.gLike|model.phrase|model.inter|model.global)",
+			"group": "model.lLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"enjamb",
+				"exclude",
+				"facs",
+				"met",
+				"n",
+				"next",
+				"part",
+				"prev",
+				"real",
+				"rend",
+				"rendition",
+				"resp",
+				"rhyme",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains a single, possibly incomplete, line of verse."
+		},
+		{
+			"name": "sp",
+			"pmType": "node",
+			"content": "model.global speaker model.global (lg|model.lLike|model.pLike|model.listLike|model.stageLike|model.qLike) model.global",
+			"group": "model.divPart",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"toWhom",
+				"who",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."
+		},
+		{
+			"name": "speaker",
+			"pmType": "node",
+			"content": "(text|model.gLike|model.qLike|model.phrase|model.global)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a\n        dramatic text or fragment."
+		},
+		{
 			"name": "div",
 			"pmType": "node",
 			"content": "(pLike|lLike|divLike|divPart)*",
@@ -40,143 +178,6 @@
 				"xml:space"
 			],
 			"desc": "contains a subdivision of the front, body, or back of a text."
-		},
-		{
-			"name": "p",
-			"pmType": "node",
-			"content": "inline*",
-			"group": "pLike",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"decls",
-				"exclude",
-				"facs",
-				"hand",
-				"n",
-				"next",
-				"part",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "marks paragraphs in prose."
-		},
-		{
-			"name": "l",
-			"pmType": "node",
-			"content": "inline*",
-			"group": "lLike",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"enjamb",
-				"exclude",
-				"facs",
-				"met",
-				"n",
-				"next",
-				"part",
-				"prev",
-				"real",
-				"rend",
-				"rendition",
-				"resp",
-				"rhyme",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "(verse line) contains a single, possibly incomplete, line of verse."
-		},
-		{
-			"name": "sp",
-			"pmType": "node",
-			"content": "speaker? (pLike|lLike)*",
-			"group": "divPart",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"toWhom",
-				"who",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
-		},
-		{
-			"name": "speaker",
-			"pmType": "node",
-			"content": "inline*",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
 		},
 		{
 			"name": "pb",
@@ -1493,6 +1494,125 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"decls": {
+			"ident": "decls",
+			"description": "identifies one or more <term>declarable elements</term> within the\nheader, which are understood to apply to the element bearing this\nattribute and its content.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"part": {
+			"ident": "part",
+			"description": "this is the final part of a fragmented element",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "Y",
+					"desc": "the element is fragmented in some (unspecified) respect"
+				},
+				{
+					"ident": "N",
+					"desc": "the element is not fragmented, or no claim is made as to its completeness"
+				},
+				{
+					"ident": "I",
+					"desc": "this is the initial part of a fragmented element"
+				},
+				{
+					"ident": "M",
+					"desc": "this is a medial part of a fragmented element"
+				},
+				{
+					"ident": "F",
+					"desc": "this is the final part of a fragmented element"
+				}
+			],
+			"valListType": "closed"
+		},
+		"hand": {
+			"ident": "hand",
+			"description": "points to a <gi>handNote</gi> element describing the hand considered responsible for the\n  \t    content of the element concerned.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"met": {
+			"ident": "met",
+			"description": "contains a user-specified encoding for the conventional\nmetrical structure of the element.",
+			"dataType": "token",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"real": {
+			"ident": "real",
+			"description": "contains a user-specified encoding for the actual realization\nof the conventional metrical structure applicable to the element.",
+			"dataType": "token",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"rhyme": {
+			"ident": "rhyme",
+			"description": "specifies the rhyme scheme applicable to a group of verse lines.",
+			"dataType": "token",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"enjamb": {
+			"ident": "enjamb",
+			"description": "the line is strongly enjambed",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "no",
+					"desc": "the line is end-stopped"
+				},
+				{
+					"ident": "yes",
+					"desc": "the line in question runs on into the next"
+				},
+				{
+					"ident": "weak",
+					"desc": "the line is weakly enjambed"
+				},
+				{
+					"ident": "strong",
+					"desc": "the line is strongly enjambed"
+				}
+			],
+			"valListType": "open"
+		},
+		"toWhom": {
+			"ident": "toWhom",
+			"description": "indicates the person, or group of people, to whom a speech act or action is directed.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"who": {
+			"ident": "who",
+			"description": "indicates the person, or group of people, to whom the element content is ascribed.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
 		"org": {
 			"ident": "org",
 			"description": "the immediate contents of this\n\t\t  element are regarded as forming a logical unit, to be\n\t\t  processed in sequence.",
@@ -1541,63 +1661,6 @@
 			],
 			"valListType": "closed"
 		},
-		"met": {
-			"ident": "met",
-			"description": "contains a user-specified encoding for the conventional\nmetrical structure of the element.",
-			"dataType": "token",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"real": {
-			"ident": "real",
-			"description": "contains a user-specified encoding for the actual realization\nof the conventional metrical structure applicable to the element.",
-			"dataType": "token",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"rhyme": {
-			"ident": "rhyme",
-			"description": "specifies the rhyme scheme applicable to a group of verse lines.",
-			"dataType": "token",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"part": {
-			"ident": "part",
-			"description": "this is the final part of a fragmented element",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "Y",
-					"desc": "the element is fragmented in some (unspecified) respect"
-				},
-				{
-					"ident": "N",
-					"desc": "the element is not fragmented, or no claim is made as to its completeness"
-				},
-				{
-					"ident": "I",
-					"desc": "this is the initial part of a fragmented element"
-				},
-				{
-					"ident": "M",
-					"desc": "this is a medial part of a fragmented element"
-				},
-				{
-					"ident": "F",
-					"desc": "this is the final part of a fragmented element"
-				}
-			],
-			"valListType": "closed"
-		},
 		"type": {
 			"ident": "type",
 			"description": "characterizes the element in some sense, using any convenient\n classification scheme or typology.",
@@ -1613,68 +1676,6 @@
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"decls": {
-			"ident": "decls",
-			"description": "identifies one or more <term>declarable elements</term> within the\nheader, which are understood to apply to the element bearing this\nattribute and its content.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"hand": {
-			"ident": "hand",
-			"description": "points to a <gi>handNote</gi> element describing the hand considered responsible for the\n  \t    content of the element concerned.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"enjamb": {
-			"ident": "enjamb",
-			"description": "the line is strongly enjambed",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "no",
-					"desc": "the line is end-stopped"
-				},
-				{
-					"ident": "yes",
-					"desc": "the line in question runs on into the next"
-				},
-				{
-					"ident": "weak",
-					"desc": "the line is weakly enjambed"
-				},
-				{
-					"ident": "strong",
-					"desc": "the line is strongly enjambed"
-				}
-			],
-			"valListType": "open"
-		},
-		"toWhom": {
-			"ident": "toWhom",
-			"description": "indicates the person, or group of people, to whom a speech act or action is directed.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"who": {
-			"ident": "who",
-			"description": "indicates the person, or group of people, to whom the element content is ascribed.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
 		},

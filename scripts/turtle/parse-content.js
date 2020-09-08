@@ -1,33 +1,35 @@
-const { getKeys } = require("./parse-util")
-
 
 function parseGroup(groupEl) {
-    if( groupEl.nodeName === 'classRef' ) {
+    const {nodeName} = groupEl
+    if( nodeName === 'classRef' || nodeName === 'elementRef' ) {
         return groupEl.getAttribute('key')
     }
+    if( nodeName === 'textNode' ) {
+        return 'text'
+    }
+    // return null for the 'empty' nodeName and all unsupported elements
+    return null
 }
 
 function decodeContent( contentEl ) {
-    const contentType = ( contentEl.nodeName === 'sequence' || contentEl.nodeName === 'alternate' ) ? contentEl.nodeName : 
-        ( contentEl.nodeName === 'classRef' ) ? 'group' : null
+    const contentType = ( contentEl.nodeName === 'sequence' || contentEl.nodeName === 'alternate' ) ? contentEl.nodeName : 'group'
 
-    if( contentType ) {
-        const contentArray = []
-        if( contentType === 'group' ) {
-            contentArray.push( parseGroup(contentEl) )
-        } else {
-            const children = contentEl.children
-            for( let i=0; i < children.length; i++ ) {
-                const childEl = children.item(i)
-                contentArray.push( decodeContent(childEl) )
-            }        
-        }
-        return {
-            type: contentType,
-            content: contentArray
-        }
+    const contentArray = []
+    if( contentType === 'group' ) {
+        const group = parseGroup(contentEl)
+        if( !group ) return null
+        contentArray.push( group )
+    } else {
+        const children = contentEl.children
+        for( let i=0; i < children.length; i++ ) {
+            const childEl = children.item(i)
+            contentArray.push( decodeContent(childEl) )
+        }        
     }
-    return null
+    return {
+        type: contentType,
+        content: contentArray
+    }
 }
 
 // take the completed content array and turn it into a content string
@@ -68,7 +70,8 @@ const parseContent = function parseContent( contentEl ) {
             }    
         }
     }
-    return ""
+    // return null (empty content) for unsupported content
+    return null
 }
 
 

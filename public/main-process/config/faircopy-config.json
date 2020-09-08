@@ -1,111 +1,5 @@
 {
 	"elements": {
-		"div": {
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"decls": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"hand": {
-					"active": false
-				},
-				"met": {
-					"active": false
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"org": {
-					"active": false,
-					"vocabID": "*[org]"
-				},
-				"part": {
-					"active": false,
-					"vocabID": "*[part]"
-				},
-				"prev": {
-					"active": false
-				},
-				"real": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"rhyme": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"sample": {
-					"active": false,
-					"vocabID": "*[sample]"
-				},
-				"select": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"style": {
-					"active": false
-				},
-				"subtype": {
-					"active": false,
-					"vocabID": "div[subtype]"
-				},
-				"synch": {
-					"active": false
-				},
-				"type": {
-					"active": false,
-					"vocabID": "div[type]"
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
 		"p": {
 			"attrState": {
 				"ana": {
@@ -407,6 +301,112 @@
 				},
 				"synch": {
 					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"div": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"decls": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"hand": {
+					"active": false
+				},
+				"met": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"org": {
+					"active": false,
+					"vocabID": "*[org]"
+				},
+				"part": {
+					"active": false,
+					"vocabID": "*[part]"
+				},
+				"prev": {
+					"active": false
+				},
+				"real": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"rhyme": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"sample": {
+					"active": false,
+					"vocabID": "*[sample]"
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "div[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "div[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -3277,6 +3277,28 @@
 				false
 			]
 		],
+		"*[part]": [
+			[
+				"Y",
+				false
+			],
+			[
+				"N",
+				false
+			],
+			[
+				"I",
+				false
+			],
+			[
+				"M",
+				false
+			],
+			[
+				"F",
+				false
+			]
+		],
 		"*[org]": [
 			[
 				"composite",
@@ -3306,28 +3328,6 @@
 			],
 			[
 				"complete",
-				false
-			]
-		],
-		"*[part]": [
-			[
-				"Y",
-				false
-			],
-			[
-				"N",
-				false
-			],
-			[
-				"I",
-				false
-			],
-			[
-				"M",
-				false
-			],
-			[
-				"F",
 				false
 			]
 		],

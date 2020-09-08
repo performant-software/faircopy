@@ -92,6 +92,7 @@ function load(elementIdents) {
                     }                    
                 }
                 // parse and replace content macros
+                console.log('parsing '+specName)
                 if( moduleSpec.content && moduleSpec.content.startsWith('macro.') ) {
                     const macroIdent = moduleSpec.content
                     loadSpec(macroIdent)
@@ -246,13 +247,13 @@ function createAttributes( elements, specs ) {
 }
 
 async function run() {
-    // const specs = load([ ...phraseMarks, ...examplarEls, ...chunkEls ])
-    const specs = load([ ...chunkEls ])
+    const specs = load([ ...phraseMarks, ...examplarEls, ...chunkEls ])
+    // const specs = load([ 'pb' ])
 
     const elements = []
 
-    elements.push(...createExamplars(specs))
     elements.push(...createChunks(specs))
+    elements.push(...createExamplars(specs))
     elements.push(...createPhraseElements(specs))
 
     const attrs = createAttributes(elements,specs)
