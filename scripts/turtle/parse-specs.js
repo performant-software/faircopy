@@ -1,35 +1,8 @@
 const fs = require('fs');
 const jsdom = require("jsdom");
+const { parseContent, parseGroups } = require('./parse-content');
+const { getKeys, loadLocalizedString } = require('./parse-util')
 const { JSDOM } = jsdom;
-
-// This module knows how to parse ODD XML specs and definitions into useful JSON objects
-
-const getKeys = (el,keyTag) => {
-    const keys = []
-    const tags = el ? el.getElementsByTagName(keyTag) : []
-
-    for (let i = 0; i < tags.length; i++) {
-        const tagEl = tags[i]
-        if( keyTag === tagEl.localName )  {
-            keys.push( tagEl.getAttribute('key') )    
-        }
-    } 
-    return keys   
-}
-
-function loadLocalizedString(el, tagName, lang="en") {
-    // Load the description of this element
-    let str = ""
-    const tagEls = el.getElementsByTagName(tagName)
-    for( let i=0; i < tagEls.length; i++ ) {
-        const tagEl = tagEls[i]
-        if( tagEl.getAttribute("xml:lang") === lang ) {
-            // TODO flatten out newlines and runs of whitespace
-            str = tagEl.innerHTML
-        }
-    }
-    return str
-}
 
 function parseClassSpec( el ) {
     const ident = el.getAttribute('ident')
@@ -96,20 +69,18 @@ function parseElementSpec( el ) {
     const gloss = loadLocalizedString(el, "gloss")
     const attListEl = el.getElementsByTagName('attList')[0]
     const attrs = attListEl ? parseAttList(attListEl) : []
+    const groups = parseGroups(memberships)
+    const contentEl = el.getElementsByTagName('content')[0]
+    const content = parseContent(contentEl)
 
-    // const contentEl = el.getElementsByTagName('content')[0]
-    // const refs = [ 
-    //     ...getKeys(contentEl,'classRef'),
-    //     ...getKeys(contentEl,'elementRef'),
-    //     ...getKeys(contentEl,'macroRef') 
-    // ]
-
-    return { ident, gloss, memberships, description, attrs }
+    return { ident, gloss, memberships, description, attrs, content, groups }
 }
 
 function parseMacroSpec( el ) {
     const ident = el.getAttribute('ident')
-    return { ident }
+    const contentEl = el.getElementsByTagName('content')[0]
+    const content = parseContent(contentEl)
+    return { ident, content }
 }
 
 function parseDataSpec( el ) {
@@ -117,6 +88,7 @@ function parseDataSpec( el ) {
     return { ident }
 }
 
+// This module knows how to parse ODD XML specs and definitions into useful JSON objects
 const parseSpecs = function parseSpecs( specPath ) {
     const specXML = fs.readFileSync(specPath, "utf8")
     const specDOM = new JSDOM(specXML, { contentType: "text/xml" })

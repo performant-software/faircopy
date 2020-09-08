@@ -40,27 +40,18 @@ const phraseMarks = [
     "measure"
 ]
 
-const examplarEls = [
-    "div",
+const chunkEls = [
     "p",
-    "pb",
-    "note",
-    "l"
-]
-
-const dramaEls = [
-    // "actor",
-    // "castGroup",
-    // "castItem",
-    // "castList",
-    // "set",
+    "l",
     "sp",
     "speaker",
-    // "stage",
-    // "role",
-    // "roleDesc"
 ]
 
+const examplarEls = [
+    "div",
+    "pb",
+    "note",
+]
 
 // load simple file, locate body els, make a list of their modules
 // function loadTEISimpleElements() {
@@ -94,10 +85,17 @@ function load(elementIdents) {
             const moduleSpecs = parseSpecs(specPath)
             for( const moduleSpec of moduleSpecs ) {
                 specs[moduleSpec.ident] = moduleSpec
+                // load membership dependencies
                 if( moduleSpec.memberships ) {
                     for( const membership of moduleSpec.memberships ) {
                         loadSpec(membership)
                     }                    
+                }
+                // parse and replace content macros
+                if( moduleSpec.content && moduleSpec.content.startsWith('macro.') ) {
+                    const macroIdent = moduleSpec.content
+                    loadSpec(macroIdent)
+                    moduleSpec.content = specs[macroIdent].content
                 }
                 // TODO resolve attrRefs
             }
@@ -125,6 +123,23 @@ function createPhraseElements(specs) {
     return phraseElements
 }
 
+function createChunks(specs) {
+    const chunkElements = []
+    for( let chunk of chunkEls) {
+        const spec = specs[chunk]
+        chunkElements.push({
+            name: chunk,
+            pmType: "node",
+            content: spec.content,
+            group: spec.group,
+            gutterMark: true,
+            validAttrs: [],
+            desc: spec.description
+        })
+    }
+    return chunkElements
+}
+
 function createExamplars(specs) {
     return [
         {
@@ -135,41 +150,41 @@ function createExamplars(specs) {
             "validAttrs": [],
             "desc": specs['div'].description
         },
-        {
-            "name": "p",
-            "pmType": "node",
-            "content": "inline*",
-            "group": "pLike",
-            "gutterMark": true,
-            "validAttrs": [],
-            "desc": "marks paragraphs in prose."
-        },
-        {
-            "name": "l",
-            "pmType": "node",
-            "content": "inline*",
-            "group": "lLike",
-            "gutterMark": true,
-            "validAttrs": [],
-            "desc": "(verse line) contains a single, possibly incomplete, line of verse."
-        },
-        {
-            "name": "sp",
-            "pmType": "node",
-            "content": "speaker? (pLike|lLike)*",
-            "group": "divPart",
-            "gutterMark": true,
-            "validAttrs": [],
-            "desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
-        },
-        {
-            "name": "speaker",
-            "pmType": "node",
-            "content": "inline*",
-            "gutterMark": true,
-            "validAttrs": [],
-            "desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
-        },
+        // {
+        //     "name": "p",
+        //     "pmType": "node",
+        //     "content": "inline*",
+        //     "group": "pLike",
+        //     "gutterMark": true,
+        //     "validAttrs": [],
+        //     "desc": "marks paragraphs in prose."
+        // },
+        // {
+        //     "name": "l",
+        //     "pmType": "node",
+        //     "content": "inline*",
+        //     "group": "lLike",
+        //     "gutterMark": true,
+        //     "validAttrs": [],
+        //     "desc": "(verse line) contains a single, possibly incomplete, line of verse."
+        // },
+        // {
+        //     "name": "sp",
+        //     "pmType": "node",
+        //     "content": "speaker? (pLike|lLike)*",
+        //     "group": "divPart",
+        //     "gutterMark": true,
+        //     "validAttrs": [],
+        //     "desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
+        // },
+        // {
+        //     "name": "speaker",
+        //     "pmType": "node",
+        //     "content": "inline*",
+        //     "gutterMark": true,
+        //     "validAttrs": [],
+        //     "desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
+        // },
         {
             "name": "pb",
             "pmType": "inline-node",
@@ -231,11 +246,13 @@ function createAttributes( elements, specs ) {
 }
 
 async function run() {
-    const specs = load([ ...phraseMarks, ...examplarEls, ...dramaEls ])
+    // const specs = load([ ...phraseMarks, ...examplarEls, ...chunkEls ])
+    const specs = load([ ...chunkEls ])
 
     const elements = []
 
     elements.push(...createExamplars(specs))
+    elements.push(...createChunks(specs))
     elements.push(...createPhraseElements(specs))
 
     const attrs = createAttributes(elements,specs)
