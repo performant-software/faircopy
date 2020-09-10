@@ -4,6 +4,46 @@ const { parseContent, parseGroups } = require('./parse-content');
 const { getKeys, loadLocalizedString } = require('./parse-util')
 const { JSDOM } = jsdom;
 
+// This module knows how to parse ODD XML specs and definitions into useful JSON objects
+const load = function load(teiSpecsDir, elementGroups) {
+    const specs = {}
+
+    // recursively load module dependencies
+    // assumes 1-1 spec files to specifications
+    const loadSpec = (specName) => {
+        if( !specs[specName] ) {
+            const specPath = `${teiSpecsDir}/${specName}.xml`
+            const moduleSpecs = parseSpecs(specPath)
+            for( const moduleSpec of moduleSpecs ) {
+                specs[moduleSpec.ident] = moduleSpec
+                // load membership dependencies
+                if( moduleSpec.memberships ) {
+                    for( const membership of moduleSpec.memberships ) {
+                        loadSpec(membership)
+                    }                    
+                }
+                // parse and replace content macros
+                console.log('parsing '+specName)
+                if( moduleSpec.content && typeof moduleSpec.content === 'string' && moduleSpec.content.startsWith('macro.') ) {
+                    const macroIdent = moduleSpec.content
+                    loadSpec(macroIdent)
+                    moduleSpec.content = specs[macroIdent].content
+                }
+                // TODO resolve attrRefs
+            }
+        }
+    }
+
+    // load the element specs and their dependencies
+    for( const elementGroup of Object.values(elementGroups) ) {
+        for( const ident of elementGroup ) {
+            loadSpec(ident)
+        }
+    }
+
+    return specs
+}
+
 function parseClassSpec( el ) {
     const ident = el.getAttribute('ident')
     const classesEl = el.getElementsByTagName('classes')[0]
@@ -88,8 +128,7 @@ function parseDataSpec( el ) {
     return { ident }
 }
 
-// This module knows how to parse ODD XML specs and definitions into useful JSON objects
-const parseSpecs = function parseSpecs( specPath ) {
+function parseSpecs( specPath ) {
     const specXML = fs.readFileSync(specPath, "utf8")
     const specDOM = new JSDOM(specXML, { contentType: "text/xml" })
     const xmlDoc = specDOM.window.document;
@@ -124,4 +163,4 @@ const parseSpecs = function parseSpecs( specPath ) {
 }
 
 // EXPORTS /////////////
-module.exports.parseSpecs = parseSpecs;
+module.exports.load = load;

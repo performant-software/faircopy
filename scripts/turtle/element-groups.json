@@ -1,0 +1,42 @@
+{
+    "marks": [
+        "g",
+        "ref",
+        "name",
+        "rs",
+        "num",
+        "measure",
+        "time",
+        "date",
+        "email",
+        "expan",
+        "abbr",
+        "orig",
+        "supplied",
+        "corr",
+        "reg",
+        "unclear",
+        "del",
+        "sic",
+        "add",
+        "term",
+        "foreign",
+        "title",
+        "hi",
+        "rhyme",
+        "seg",
+        "s",
+        "measure"
+    ],
+    "nodes": [
+        "p",
+        "l",
+        "sp",
+        "speaker"
+    ],
+    "inlines": [
+        "pb",
+        "note"    
+    ],
+    "structures": [ "div" ]
+}

@@ -56,7 +56,7 @@ function encodeOccurence( content ) {
 }
 
 // take the completed content array and turn it into a content string
-function encodeContent( content ) {
+const encodeContent = function encodeContent( content ) {
     if( !content ) return ''
 
     const occurs = encodeOccurence(content)
@@ -88,17 +88,13 @@ const parseContent = function parseContent( contentEl ) {
         if( rootEl.nodeName === 'macroRef' ) {
             return rootEl.getAttribute('key')
         } else {
-            // tranform ODD XML description of content into a ProseMirror content expression
-            const content = decodeContent(rootEl)
-            if( content ) {
-                return encodeContent(content)
-            }    
+            // transform ODD XML description of content into a ProseMirror content expression
+            return decodeContent(rootEl)
         }
     }
     // return null (empty content) for unsupported content
     return null
 }
-
 
 const parseGroups = function parseGroups(memberships) {
     const groups = []
@@ -116,3 +112,4 @@ const parseGroups = function parseGroups(memberships) {
 // EXPORTS /////////////
 module.exports.parseContent = parseContent
 module.exports.parseGroups = parseGroups
+module.exports.encodeContent = encodeContent
