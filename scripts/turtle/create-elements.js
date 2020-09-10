@@ -2,141 +2,120 @@ const { encodeContent } = require('./parse-content');
 
 const createElements = function createElements(elGroups,specs) {
     const elements = []
-    elements.push( ...createMarks(elGroups.marks,specs) )
-    elements.push( ...createInlineNodes(elGroups.inlines,specs) )
-    elements.push( ...createNodes(elGroups.nodes,specs) )
-    elements.push( ...createStructureNodes(elGroups.structures,specs) )
+    elements.push( ...createMarks(elGroups,specs) )
+    elements.push( ...createInlineNodes(elGroups,specs) )
+    elements.push( ...createNodes(elGroups,specs) )
+    elements.push( ...createStructureNodes(elGroups,specs) )
     return elements
 }
 
-function createMarks(phraseMarks,specs) {
+function createMarks(elGroups,specs) {
+    const { marks } = elGroups
 
     // TODO filter nodes out of mark group
-    const phraseElements = []
-    for( let phraseMark of phraseMarks) {
-        const spec = specs[phraseMark]
-        phraseElements.push({
-            name: phraseMark,
+    const markElements = []
+    for( let mark of marks) {
+        const spec = specs[mark]
+        markElements.push({
+            name: mark,
             pmType: "mark",
             validAttrs: [],
             group: spec.group,
             desc: spec.description
         })
     }
-    return phraseElements
+    return markElements
 }
 
-function createInlineNodes(inlines,specs) {
+function createInlineNodes(elGroups,specs) {
     return [  
         {
             "name": "pb",
             "pmType": "inline-node",
-            "validAttrs": [], 
-            "desc": "marks the beginning of a new page in a paginated document."
+            "validAttrs": [],
+            "group": specs['pb'].group,
+            "desc": specs['pb'].description
         },
         {
             "name": "note",
             "pmType": "inline-node",
             "validAttrs": [], 
-            "desc": "contains a note or annotation."
+            "group": specs['note'].group,
+            "desc": specs['note'].description
         }
     ]
 }
 
-function createStructureNodes(structures,specs) {
+function createStructureNodes(elGroups,specs) {
+    const nodeGroups = getNodeGroups( elGroups, specs )
+    const spec = specs['div']
+    const nodeContent = onlyGroups( nodeGroups, spec.content )
+
     return [
          {
             "name": "div",
             "pmType": "node",
-            "content": "(pLike|lLike|divLike|divPart)*",
-            "group": "divLike",
+            "content": encodeContent(nodeContent),
+            "group": spec.group,
             "validAttrs": [],
-            "desc": specs['div'].description
+            "desc": spec.description
         }   
     ]
 }
 
-function createNodes(chunkEls,specs) {
+function getNodeGroups(elGroups,specs) {
+    const nodeIdents = [ elGroups.nodes, elGroups.inlines, elGroups.structures ].flat()
+    const groups = getGroups( nodeIdents, specs )
+    return [ nodeIdents, groups ].flat()
+}
 
-    // TODO filter marks them out of node content and group
-    // TODO encode content to PM syntax
+function getGroups( idents, specs ) {
+    const uniqueGroups = []
+    for( const ident of idents ) {
+        const spec = specs[ident]
+        const groups = spec.group.split(' ')    
+        for( const group of groups ) {
+            if( !uniqueGroups.includes(group) ) uniqueGroups.push(group)
+        }
+    }
+    return uniqueGroups
+}
 
-    const chunkElements = []
-    for( let chunk of chunkEls) {
-        const spec = specs[chunk]
-        chunkElements.push({
-            name: chunk,
+// recurse content and remove targetGroups 
+function onlyGroups( targetGroups, content ) {
+    const filteredContent = { ...content }
+    if( content.type === 'group' ) {
+        filteredContent.content = content.content.filter( group => targetGroups.includes(group) )
+    } else {
+        const contents = []
+        for( const item of content.content ) {
+            contents.push( onlyGroups( targetGroups, item ) )
+        }
+        filteredContent.content = contents
+    }    
+    return filteredContent
+}
+
+function createNodes(elGroups,specs) {
+    const { nodes } = elGroups 
+    const nodeGroups = getNodeGroups( elGroups, specs )
+
+    const nodeElements = []
+    for( let node of nodes) {
+        const spec = specs[node]
+        const nodeContent = onlyGroups( nodeGroups, spec.content )
+        nodeElements.push({
+            name: node,
             pmType: "node",
-            content: encodeContent(spec.content),
+            content: encodeContent(nodeContent),
             group: spec.group,
             gutterMark: true,
             validAttrs: [],
             desc: spec.description
         })
     }
-    return chunkElements
+    return nodeElements
 }
-
-
-// function createExamplars(specs) {
-//     return [
-//         {
-//             "name": "div",
-//             "pmType": "node",
-//             "content": "(pLike|lLike|divLike|divPart)*",
-//             "group": "divLike",
-//             "validAttrs": [],
-//             "desc": specs['div'].description
-//         },
-        // {
-        //     "name": "p",
-        //     "pmType": "node",
-        //     "content": "inline*",
-        //     "group": "pLike",
-        //     "gutterMark": true,
-        //     "validAttrs": [],
-        //     "desc": "marks paragraphs in prose."
-        // },
-        // {
-        //     "name": "l",
-        //     "pmType": "node",
-        //     "content": "inline*",
-        //     "group": "lLike",
-        //     "gutterMark": true,
-        //     "validAttrs": [],
-        //     "desc": "(verse line) contains a single, possibly incomplete, line of verse."
-        // },
-        // {
-        //     "name": "sp",
-        //     "pmType": "node",
-        //     "content": "speaker? (pLike|lLike)*",
-        //     "group": "divPart",
-        //     "gutterMark": true,
-        //     "validAttrs": [],
-        //     "desc": "(speech) contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
-        // },
-        // {
-        //     "name": "speaker",
-        //     "pmType": "node",
-        //     "content": "inline*",
-        //     "gutterMark": true,
-        //     "validAttrs": [],
-        //     "desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
-        // },
-//         {
-//             "name": "pb",
-//             "pmType": "inline-node",
-//             "validAttrs": [], 
-//             "desc": "marks the beginning of a new page in a paginated document."
-//         },
-//         {
-//             "name": "note",
-//             "pmType": "inline-node",
-//             "validAttrs": [], 
-//             "desc": "contains a note or annotation."
-//         }
-//     ]
-// }
 
 // EXPORTS /////////////
 module.exports.createElements = createElements

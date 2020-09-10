@@ -1123,6 +1123,7 @@
 				"xml:lang",
 				"xml:space"
 			],
+			"group": "model_milestoneLike",
 			"desc": "marks the beginning of a new page in a paginated document."
 		},
 		{
@@ -1161,12 +1162,13 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a note or annotation."
+			"group": "model_noteLike model_correspDescPart model_correspActionPart model_correspContextPart",
+			"desc": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point."
 		},
 		{
 			"name": "p",
 			"pmType": "node",
-			"content": "(text|model_gLike|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(||||||model_lLike)*",
 			"group": "model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1201,7 +1203,7 @@
 		{
 			"name": "l",
 			"pmType": "node",
-			"content": "(text|model_gLike|model_phrase|model_inter|model_global)*",
+			"content": "(||||)*",
 			"group": "model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1238,7 +1240,7 @@
 		{
 			"name": "sp",
 			"pmType": "node",
-			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_qLike) model_global*)+)",
+			"content": "(* ( *)? ((|model_lLike|model_pLike|||) *)+)",
 			"group": "model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1272,7 +1274,7 @@
 		{
 			"name": "speaker",
 			"pmType": "node",
-			"content": "(text|model_gLike|model_qLike|model_phrase|model_global)*",
+			"content": "(||||)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1304,8 +1306,8 @@
 		{
 			"name": "div",
 			"pmType": "node",
-			"content": "(pLike|lLike|divLike|divPart)*",
-			"group": "divLike",
+			"content": "((|)* ((((model_divLike|) *)+|(( *)+ ((model_divLike|) *)*)) ( *)*)?)",
+			"group": "model_divLike",
 			"validAttrs": [
 				"ana",
 				"cert",
