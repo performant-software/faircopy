@@ -5,7 +5,7 @@ function parseGroup(groupEl) {
         return groupEl.getAttribute('key').replace(/\./g,'_')
     }
     if( nodeName === 'textNode' ) {
-        return 'text'
+        return 'textNode'
     }
     // return null for the 'empty' nodeName and all unsupported elements
     return null

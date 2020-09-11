@@ -76,7 +76,7 @@ function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
     const nodeIdents = [ elGroups.nodes, elGroups.structures ].flat()
     const groups = getGroups( nodeIdents, specs )
-    return [ nodeIdents, groups, "text" ].flat()
+    return [ nodeIdents, groups, "textNode" ].flat()
 }
 
 function getGroups( idents, specs ) {
@@ -135,7 +135,7 @@ function createNodes(elGroups,specs) {
     }
 
     // hack to remove lLike from p
-    pEl.content = "(text)*"    
+    // pEl.content = "(text)*"    
 
     return nodeElements
 }

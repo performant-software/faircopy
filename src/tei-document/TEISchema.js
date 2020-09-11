@@ -41,10 +41,28 @@ export default class TEISchema {
             "__id__": { hidden: true }
         }
 
-        // Text node must always be present.
+        // These nodes must always be present.
         const nodes = {
             text: {
                 inline: true
+            },
+            textNode: {
+                content: "text*",
+                selectable: false,
+                draggable: false,
+                parseDOM: [
+                    {
+                        tag: "textNode"
+                    } 
+                ],
+                toDOM: (el) => {
+                    if( this.teiMode ) {
+                        // TODO, don't emit textnode
+                        return ["textNode",0]
+                    } else {
+                        return ["textNode",0]
+                    }
+                }   
             }
         }
         

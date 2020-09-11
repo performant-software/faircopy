@@ -1168,7 +1168,7 @@
 		{
 			"name": "p",
 			"pmType": "node",
-			"content": "(text)*",
+			"content": "(textNode|model_inter|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1203,7 +1203,7 @@
 		{
 			"name": "l",
 			"pmType": "node",
-			"content": "(text|model_inter)*",
+			"content": "(textNode|model_inter)*",
 			"group": "model_common model_divPart model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1274,7 +1274,7 @@
 		{
 			"name": "speaker",
 			"pmType": "node",
-			"content": "(text)*",
+			"content": "(textNode)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1306,7 +1306,7 @@
 		{
 			"name": "stage",
 			"pmType": "node",
-			"content": "(text|model_inter|model_divPart)*",
+			"content": "(textNode|model_inter|model_divPart)*",
 			"group": "model_common model_inter model_stageLike",
 			"gutterMark": true,
 			"validAttrs": [
