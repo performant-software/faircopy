@@ -105,11 +105,11 @@ function createNodes(elGroups,specs) {
     const nodeElements = []
     for( let node of nodes) {
         const spec = specs[node]
-        //const nodeContent = onlyGroups( nodeGroups, spec.content )
+        const nodeContent = onlyGroups( nodeGroups, spec.content )
         nodeElements.push({
             name: node,
             pmType: "node",
-            content: encodeContent(spec.content),
+            content: encodeContent(nodeContent),
             group: spec.group,
             gutterMark: true,
             validAttrs: [],

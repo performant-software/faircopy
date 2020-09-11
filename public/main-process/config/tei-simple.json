@@ -68,7 +68,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_ptrLike",
+			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"desc": "defines a reference to another location, possibly modified by additional text or comment."
 		},
 		{
@@ -127,7 +127,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_nameLike_agent model_personPart",
+			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
 			"desc": "contains a proper noun or noun phrase."
 		},
 		{
@@ -163,7 +163,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_nameLike",
+			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
 			"desc": "contains a general purpose name or referring string."
 		},
 		{
@@ -202,7 +202,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_measureLike",
+			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"desc": "supplies the value of the number in standard form."
 		},
 		{
@@ -239,7 +239,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_measureLike",
+			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"desc": "specifies the type of measurement in any convenient typology."
 		},
 		{
@@ -306,7 +306,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_dateLike",
+			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike",
 			"desc": "contains a phrase defining a time of day in any format."
 		},
 		{
@@ -373,7 +373,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_dateLike model_publicationStmtPart_detail",
+			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike model_publicationStmtPart_detail",
 			"desc": "contains a date in any format."
 		},
 		{
@@ -403,7 +403,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addressLike",
+			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike",
 			"desc": "contains an email address identifying a location to which\n        email messages can be delivered."
 		},
 		{
@@ -435,7 +435,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_editorial model_choicePart",
+			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
 			"desc": "contains the expansion of an abbreviation."
 		},
 		{
@@ -468,7 +468,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_editorial model_choicePart",
+			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
 			"desc": "the abbreviation is for a geographic name."
 		},
 		{
@@ -498,7 +498,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_choicePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains a reading which is marked as following the original, rather than being normalized\n        or corrected."
 		},
 		{
@@ -541,7 +541,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_choicePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>."
 		},
 		{
@@ -575,7 +575,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_choicePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains the correct form of a passage apparently erroneous in the copy text."
 		},
 		{
@@ -609,7 +609,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_choicePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains a reading which has been regularized or normalized in some sense."
 		},
 		{
@@ -653,7 +653,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_linePart model_choicePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
 			"desc": "damage results from smoke"
 		},
 		{
@@ -701,7 +701,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_linePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as\n    superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
 		},
 		{
@@ -731,7 +731,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_choicePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains text reproduced although apparently incorrect or inaccurate."
 		},
 		{
@@ -780,7 +780,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_pPart_transcriptional model_linePart",
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "contains letters, words, or phrases inserted in the source\n  text by an author, scribe, or a previous annotator or corrector."
 		},
 		{
@@ -820,7 +820,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_emphLike",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "contains a single-word, multi-word, or symbolic\n    designation which is regarded as a technical term."
 		},
 		{
@@ -850,7 +850,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_emphLike",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "identifies a word or phrase as belonging to some language other than that of the\n                surrounding text."
 		},
 		{
@@ -905,7 +905,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_emphLike model_msQuoteLike",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
 			"desc": "descriptive paraphrase of the work\nfunctioning as a title"
 		},
 		{
@@ -936,7 +936,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_hiLike",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"desc": "marks a word or phrase as graphically distinct from the\n        surrounding text, for reasons concerning which no claim is\n        made."
 		},
 		{
@@ -969,7 +969,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_lPart",
+			"group": "model_phrase model_lPart",
 			"desc": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates."
 		},
 		{
@@ -1010,7 +1010,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_segLike model_choicePart model_linePart model_standOffPart",
+			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
 			"desc": "represents any segmentation of text below the <soCalled>chunk</soCalled> level."
 		},
 		{
@@ -1050,7 +1050,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_segLike",
+			"group": "model_phrase model_segLike",
 			"desc": "contains a sentence-like division of a text."
 		},
 		{
@@ -1087,7 +1087,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_measureLike",
+			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"desc": "specifies the type of measurement in any convenient typology."
 		},
 		{
@@ -1123,7 +1123,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_milestoneLike",
+			"group": "model_global model_milestoneLike",
 			"desc": "marks the beginning of a new page in a paginated document."
 		},
 		{
@@ -1162,14 +1162,14 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_noteLike model_correspDescPart model_correspActionPart model_correspContextPart",
+			"group": "model_global model_noteLike model_correspDescPart model_correspActionPart model_correspContextPart",
 			"desc": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point."
 		},
 		{
 			"name": "p",
 			"pmType": "node",
-			"content": "(text|model_gLike|model_phrase|model_inter|model_global|lg|model_lLike)*",
-			"group": "model_pLike",
+			"content": "(||||model_global||model_lLike)*",
+			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -1203,8 +1203,8 @@
 		{
 			"name": "l",
 			"pmType": "node",
-			"content": "(text|model_gLike|model_phrase|model_inter|model_global)*",
-			"group": "model_lLike",
+			"content": "(||||model_global)*",
+			"group": "model_common model_divPart model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -1240,8 +1240,8 @@
 		{
 			"name": "sp",
 			"pmType": "node",
-			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_qLike) model_global*)+)",
-			"group": "model_divPart",
+			"content": "(model_global* (speaker model_global*)? ((|model_lLike|model_pLike|||) model_global*)+)",
+			"group": "model_common model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -1274,7 +1274,7 @@
 		{
 			"name": "speaker",
 			"pmType": "node",
-			"content": "(text|model_gLike|model_qLike|model_phrase|model_global)*",
+			"content": "(||||model_global)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1306,7 +1306,7 @@
 		{
 			"name": "div",
 			"pmType": "node",
-			"content": "((|)* ((((model_divLike|) *)+|(( *)+ ((model_divLike|) *)*)) ( *)*)?)",
+			"content": "((|model_global)* ((((model_divLike|) model_global*)+|((model_common model_global*)+ ((model_divLike|) model_global*)*)) ( model_global*)*)?)",
 			"group": "model_divLike",
 			"validAttrs": [
 				"ana",

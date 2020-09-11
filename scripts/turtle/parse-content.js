@@ -99,22 +99,23 @@ const parseContent = function parseContent( contentEl ) {
 const parseGroups = function parseGroups(specs) {
 
     function findModels( model ) {
-        
-
-        return []
+        const models = []
+        const memberships = specs[model].memberships
+        if( memberships ) {
+            for( const membership of memberships ) {
+                if( membership.startsWith('model.') ) {
+                    models.push( ...findModels(membership), membership)
+                }
+            }    
+        }
+        return models
     }
 
     for( const spec of Object.values(specs) ) {
-        const { memberships, ident } = spec
-        // only applies to classes and elements, which have memberships
-        if( memberships && !ident.startsWith('att.') && !ident.startsWith('macro.') ) {
-            const groups = []
-            for( const membership of memberships ) {
-                // only concerned with content models
-                if( membership.startsWith('model.') ) {
-                    groups.push( ...findModels(membership), membership )
-                }
-            }
+        const { ident } = spec
+        // group only needed for element specs 
+        if( !ident.startsWith('att.') && !ident.startsWith('macro.') && !ident.startsWith('model.') ) {
+            const groups = findModels(ident)
             const groupExpression = groups.join(' ').replace(/\./g,'_')
             spec.group = groupExpression
         }
