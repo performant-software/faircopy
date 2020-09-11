@@ -41,6 +41,9 @@ const load = function load(teiSpecsDir, elementGroups) {
         }
     }
 
+    // now resolve the memberships into groups
+    parseGroups(specs)
+
     return specs
 }
 
@@ -109,11 +112,10 @@ function parseElementSpec( el ) {
     const gloss = loadLocalizedString(el, "gloss")
     const attListEl = el.getElementsByTagName('attList')[0]
     const attrs = attListEl ? parseAttList(attListEl) : []
-    const group = parseGroups(memberships)
     const contentEl = el.getElementsByTagName('content')[0]
     const content = parseContent(contentEl)
 
-    return { ident, gloss, memberships, description, attrs, content, group }
+    return { ident, gloss, memberships, description, attrs, content }
 }
 
 function parseMacroSpec( el ) {

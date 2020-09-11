@@ -64,6 +64,7 @@ function createStructureNodes(elGroups,specs) {
 }
 
 function getNodeGroups(elGroups,specs) {
+    // these are elements that translate into ProseMirror nodes
     const nodeIdents = [ elGroups.nodes, elGroups.inlines, elGroups.structures ].flat()
     const groups = getGroups( nodeIdents, specs )
     return [ nodeIdents, groups ].flat()
@@ -92,6 +93,7 @@ function onlyGroups( targetGroups, content ) {
             contents.push( onlyGroups( targetGroups, item ) )
         }
         filteredContent.content = contents
+        // TODO remove empty sequences and alternates
     }    
     return filteredContent
 }
@@ -103,11 +105,11 @@ function createNodes(elGroups,specs) {
     const nodeElements = []
     for( let node of nodes) {
         const spec = specs[node]
-        const nodeContent = onlyGroups( nodeGroups, spec.content )
+        //const nodeContent = onlyGroups( nodeGroups, spec.content )
         nodeElements.push({
             name: node,
             pmType: "node",
-            content: encodeContent(nodeContent),
+            content: encodeContent(spec.content),
             group: spec.group,
             gutterMark: true,
             validAttrs: [],

@@ -96,16 +96,29 @@ const parseContent = function parseContent( contentEl ) {
     return null
 }
 
-const parseGroups = function parseGroups(memberships) {
-    const groups = []
+const parseGroups = function parseGroups(specs) {
 
-    for( const membership of memberships ) {
-        if( membership.startsWith('model.') ) {
-            groups.push(membership.replace(/\./g,'_'))
-        }
+    function findModels( model ) {
+        
+
+        return []
     }
 
-    return groups.join(' ')
+    for( const spec of Object.values(specs) ) {
+        const { memberships, ident } = spec
+        // only applies to classes and elements, which have memberships
+        if( memberships && !ident.startsWith('att.') && !ident.startsWith('macro.') ) {
+            const groups = []
+            for( const membership of memberships ) {
+                // only concerned with content models
+                if( membership.startsWith('model.') ) {
+                    groups.push( ...findModels(membership), membership )
+                }
+            }
+            const groupExpression = groups.join(' ').replace(/\./g,'_')
+            spec.group = groupExpression
+        }
+    }
 }
 
 
