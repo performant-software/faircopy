@@ -48,26 +48,35 @@ function createInlineNodes(elGroups,specs) {
 
 function createStructureNodes(elGroups,specs) {
     const nodeGroups = getNodeGroups( elGroups, specs )
-    const spec = specs['div']
-    const nodeContent = onlyGroups( nodeGroups, spec.content )
+    const divSpec = specs['div']
+    const divContent = onlyGroups( nodeGroups, divSpec.content )
+    const bodySpec = specs['body']
+    const bodyContent = onlyGroups( nodeGroups, bodySpec.content )
 
     return [
          {
             "name": "div",
             "pmType": "node",
-            "content": encodeContent(nodeContent),
-            "group": spec.group,
+            "content": encodeContent(divContent),
+            "group": divSpec.group,
             "validAttrs": [],
-            "desc": spec.description
-        }   
+            "desc": divSpec.description
+        },
+        // special top level node, has properties of body but is called "doc"
+        {
+            "name": "doc",
+            "pmType": "node",
+            "group": `body ${bodySpec.group}`,
+            "content": encodeContent(bodyContent)
+        }
     ]
 }
 
 function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
-    const nodeIdents = [ elGroups.nodes, elGroups.inlines, elGroups.structures ].flat()
+    const nodeIdents = [ elGroups.nodes, elGroups.structures ].flat()
     const groups = getGroups( nodeIdents, specs )
-    return [ nodeIdents, groups ].flat()
+    return [ nodeIdents, groups, "text" ].flat()
 }
 
 function getGroups( idents, specs ) {
@@ -87,13 +96,18 @@ function onlyGroups( targetGroups, content ) {
     const filteredContent = { ...content }
     if( content.type === 'group' ) {
         filteredContent.content = content.content.filter( group => targetGroups.includes(group) )
+        if( filteredContent.content.length === 0 ) return null
     } else {
         const contents = []
         for( const item of content.content ) {
-            contents.push( onlyGroups( targetGroups, item ) )
+            const only = onlyGroups( targetGroups, item )
+            if( only ) {
+                contents.push( only )
+            }
         }
+        // remove empty sequences and alternates
+        if( contents.length === 0 ) return null
         filteredContent.content = contents
-        // TODO remove empty sequences and alternates
     }    
     return filteredContent
 }
@@ -102,11 +116,12 @@ function createNodes(elGroups,specs) {
     const { nodes } = elGroups 
     const nodeGroups = getNodeGroups( elGroups, specs )
 
+    let pEl
     const nodeElements = []
     for( let node of nodes) {
         const spec = specs[node]
         const nodeContent = onlyGroups( nodeGroups, spec.content )
-        nodeElements.push({
+        const nodeEl = {
             name: node,
             pmType: "node",
             content: encodeContent(nodeContent),
@@ -114,8 +129,14 @@ function createNodes(elGroups,specs) {
             gutterMark: true,
             validAttrs: [],
             desc: spec.description
-        })
+        }
+        if( node === 'p' ) pEl = nodeEl
+        nodeElements.push(nodeEl)
     }
+
+    // hack to remove lLike from p
+    pEl.content = "(text)*"    
+
     return nodeElements
 }
 

@@ -18,6 +18,8 @@ const createAttributes = function createAttributes( elements, specs ) {
 
     // create a global dictionary of attr definitions and record attrs for each element
     for( const element of elements ) {
+        // skip over special prosemirror root node
+        if( element.name === 'doc' ) continue
         const attrs = findAttrs(element.name)
         const validAttrs = []
         for( const attr of attrs ) {

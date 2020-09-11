@@ -1168,7 +1168,7 @@
 		{
 			"name": "p",
 			"pmType": "node",
-			"content": "(||||model_global||model_lLike)*",
+			"content": "(text)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1203,7 +1203,7 @@
 		{
 			"name": "l",
 			"pmType": "node",
-			"content": "(||||model_global)*",
+			"content": "(text|model_inter)*",
 			"group": "model_common model_divPart model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1240,7 +1240,7 @@
 		{
 			"name": "sp",
 			"pmType": "node",
-			"content": "(model_global* (speaker model_global*)? ((|model_lLike|model_pLike|||) model_global*)+)",
+			"content": "((speaker)? ((model_lLike|model_pLike|model_stageLike))+)",
 			"group": "model_common model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1274,7 +1274,7 @@
 		{
 			"name": "speaker",
 			"pmType": "node",
-			"content": "(||||model_global)*",
+			"content": "(text)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1304,9 +1304,45 @@
 			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a\n        dramatic text or fragment."
 		},
 		{
+			"name": "stage",
+			"pmType": "node",
+			"content": "(text|model_inter|model_divPart)*",
+			"group": "model_common model_inter model_stageLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"place",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"toWhom",
+				"type",
+				"who",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "more than one of the above"
+		},
+		{
 			"name": "div",
 			"pmType": "node",
-			"content": "((|model_global)* ((((model_divLike|) model_global*)+|((model_common model_global*)+ ((model_divLike|) model_global*)*)) ( model_global*)*)?)",
+			"content": "(((((model_divLike))+|((model_common)+ ((model_divLike))*)))?)",
 			"group": "model_divLike",
 			"validAttrs": [
 				"ana",
@@ -1343,6 +1379,12 @@
 				"xml:space"
 			],
 			"desc": "contains a subdivision of the front, body, or back of a text."
+		},
+		{
+			"name": "doc",
+			"pmType": "node",
+			"group": "body ",
+			"content": "(((model_divLike)+|((model_common)+ ((model_divLike)+)?)))"
 		}
 	],
 	"attrs": {

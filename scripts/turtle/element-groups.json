@@ -32,11 +32,12 @@
         "p",
         "l",
         "sp",
-        "speaker"
+        "speaker",
+        "stage"
     ],
     "inlines": [
         "pb",
         "note"    
     ],
-    "structures": [ "div" ]
+    "structures": [ "div", "body" ]
 }

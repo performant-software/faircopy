@@ -41,14 +41,10 @@ export default class TEISchema {
             "__id__": { hidden: true }
         }
 
+        // Text node must always be present.
         const nodes = {
-            doc: {
-                // TODO
-                // content: "(pLike|lLike|divPart|divLike)*",
-                // group: "divLike"
-            },
             text: {
-                group: "inline"
+                inline: true
             }
         }
         
@@ -67,9 +63,9 @@ export default class TEISchema {
                 }
             } else if( pmType === 'inline-node' ) {
                 if( name === 'note' ) {
-                    nodes[name] = this.createNoteSpec(validAttrs)
+                    nodes[name] = this.createNoteSpec(validAttrs, content, group)
                 } else if( name === 'pb') {
-                    nodes[name] = this.createPbSpec(validAttrs)
+                    nodes[name] = this.createPbSpec(validAttrs, content, group)
                 }
             } else {
                 console.log('unrecognized pmType')
@@ -131,7 +127,7 @@ export default class TEISchema {
         }
     }
 
-    createNoteSpec(validAttrs) {
+    createNoteSpec(validAttrs, content, group) {
 
         let attrs = this.getAttrSpec(validAttrs)
         attrs['__id__'] = {}
@@ -139,7 +135,8 @@ export default class TEISchema {
         return {
             inline: true,
             atom: true,
-            group: "inline",
+            content,
+            group,
             attrs,
             parseDOM: [
                 {
@@ -168,14 +165,15 @@ export default class TEISchema {
         }          
     }
 
-    createPbSpec(validAttrs) {
+    createPbSpec(validAttrs, content, group) {
 
         const attrs = this.getAttrSpec(validAttrs)
 
         return {
             inline: true,
             atom: true,
-            group: "inline",
+            content,
+            group,
             attrs: attrs,
             parseDOM: [{
                 tag: "pb",
