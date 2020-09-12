@@ -1,3 +1,9 @@
+
+
+/////////////
+//// NOTE: This module is obsolete and will need to be refactored in order to run
+////////////
+
 const fairCopy = window.fairCopy
 
 const teiSimplePrintODD = 'scripts/tei_simplePrint.odd'

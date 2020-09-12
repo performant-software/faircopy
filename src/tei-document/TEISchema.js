@@ -28,8 +28,23 @@ export default class TEISchema {
         this.teiDocuments.push(teiDocument)
         const domSerializer = DOMSerializer.fromSchema( this.schema )
         const domFragment = domSerializer.serializeFragment(content)
+        this.processTextNodes(domFragment)
         this.teiDocuments.pop()
         return domFragment
+    }
+
+    // remove textNodes from the DOM and replace each with its children
+    processTextNodes(documentFragment) {
+        const textNodes = documentFragment.querySelectorAll("textNode")
+        for( let i=0; i < textNodes.length; i++ ) {
+            const textNode = textNodes[i]
+            const texts = []
+            for( let j=0; j < textNode.childNodes.length; j++ ) {
+                texts.push(textNode.childNodes.item(j))
+            } 
+            textNode.before(...texts)
+            textNode.remove()
+        }
     }
 
     parseSchemaConfig(json) {
@@ -42,6 +57,8 @@ export default class TEISchema {
         }
 
         // These nodes must always be present.
+        // ProseMirror cannot mix inline and block types in content expressions, so we have to 
+        // wrap text in a block and then unwrap it when we save the file. see processTextNodes()
         const nodes = {
             text: {
                 inline: true
@@ -55,14 +72,7 @@ export default class TEISchema {
                         tag: "textNode"
                     } 
                 ],
-                toDOM: (el) => {
-                    if( this.teiMode ) {
-                        // TODO, don't emit textnode
-                        return ["textNode",0]
-                    } else {
-                        return ["textNode",0]
-                    }
-                }   
+                toDOM: () => ["textNode",0]   
             }
         }
         
