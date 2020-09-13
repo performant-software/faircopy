@@ -316,14 +316,9 @@ export function splitBlock(state, dispatch) {
     let tr = state.tr
     if (state.selection instanceof TextSelection) tr.deleteSelection()
     let deflt = $from.depth === 0 ? null : defaultBlockAt($from, $from.node(-1).contentMatchAt($from.indexAfter(-1)))
-    let types = atEnd && deflt ? [{type: deflt}] : null
-    let can = canSplit(tr.doc, tr.mapping.map($from.pos), 1, types)
-    if (!types && !can && canSplit(tr.doc, tr.mapping.map($from.pos), 1, deflt && [{type: deflt}])) {
-      types = [{type: deflt}]
-      can = true
-    }
+    let can = canSplit(tr.doc, tr.mapping.map($from.pos), 2) // depth of 2 to pick up textNode
     if (can) {
-      tr.split(tr.mapping.map($from.pos), 1, types)
+      tr.split(tr.mapping.map($from.pos), 2)
       if (!atEnd && !$from.parentOffset && $from.parent.type !== deflt &&
           $from.node(-1).canReplace($from.index(-1), $from.indexAfter(-1), Fragment.from(deflt.create(), $from.parent)))
         tr.setNodeMarkup(tr.mapping.map($from.before()), deflt)
@@ -578,7 +573,7 @@ let del = chainCommands(deleteSelection, joinForward, selectNodeForward)
 // Binds the following keys (when multiple commands are listed, they
 // are chained with [`chainCommands`](#commands.chainCommands)):
 //
-// * **Enter** to `newlineInCode`, `createParagraphNear`, `liftEmptyBlock`, `splitBlock`
+// * **Enter** to `splitBlock`
 // * **Mod-Enter** to `exitCode`
 // * **Backspace** and **Mod-Backspace** to `deleteSelection`, `joinBackward`, `selectNodeBackward`
 // * **Delete** and **Mod-Delete** to `deleteSelection`, `joinForward`, `selectNodeForward`
