@@ -1,6 +1,7 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { wrapIn } from 'prosemirror-commands'
 import { addMark } from "./commands"
+import { findWrapping } from "prosemirror-transform"
 
 export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
@@ -36,13 +37,14 @@ export function replaceElement( elementID, teiDocument, pos ) {
             return err.message
         }
     } else {
-        // if not, can nodeType wrap the node? 
         const fragment = Fragment.from(node)
+        const $start = doc.resolve(pos)
+        const $end = doc.resolve(pos+node.nodeSize)
+        const nodeRange = new NodeRange($start,$end,$start.depth)
+
+        // if not, can nodeType wrap the node?         
         if( nodeType.validContent(fragment) ) {
             try {
-                const $start = doc.resolve(pos)
-                const $end = doc.resolve(pos+node.nodeSize)
-                const nodeRange = new NodeRange($start,$end,$start.depth)
                 tr.wrap(nodeRange, [{type: nodeType}])
                 editorView.dispatch(tr)
                 editorView.focus()            
@@ -50,8 +52,15 @@ export function replaceElement( elementID, teiDocument, pos ) {
                 return err.message
             }
         } else {
-            // TODO in the case of lg, need to turn p into l
-            return "can't replace"
+            // if not, find a wrapper that allows the element to wrap nodeRange, if there is one
+            try {
+                const wrapper = findWrapping(nodeRange,nodeType)
+                tr.wrap(nodeRange, wrapper)
+                editorView.dispatch(tr)
+                editorView.focus()            
+            } catch(err) {
+                return err.message
+            }
         }
     }
     return null
