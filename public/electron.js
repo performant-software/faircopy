@@ -8,19 +8,11 @@ const log = require('electron-log')
 let fairCopyApplication
 
 function createApplicationWindowManager () {
-  const debugMode = false //process.env.FAIRCOPY_DEBUG_MODE
   fairCopyApplication = new FairCopyApplication()
   log.info(`FairCopy ${app.getVersion()}`)
-  if( debugMode ) {
-    fairCopyApplication.createMainWindow().then(() => {
-      log.info("TEI Editor Ready - Loading example text.")   
-      fairCopyApplication.projectStore.openProject('test-docs/example.faircopy')
-    })
-  } else {
-    fairCopyApplication.createProjectWindow().then(() => {
-      log.info("Project Window Ready")   
-    })
-  }
+  fairCopyApplication.createProjectWindow().then(() => {
+    log.info("Project Window Ready")   
+  })
 }
 
 // This method will be called when Electron has finished

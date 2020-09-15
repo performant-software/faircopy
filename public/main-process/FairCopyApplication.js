@@ -132,9 +132,7 @@ class FairCopyApplication {
       if( !this.exiting ) {
         this.sendToMainWindow('requestExitApp')
         event.preventDefault()
-      } else {
-        this.exiting = false
-      }
+      }     
     })
   }
 
