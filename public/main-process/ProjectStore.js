@@ -1,8 +1,9 @@
-const JSZip = require('jszip');
+const JSZip = require('jszip')
 const fs = require('fs')
+const os = require('os')
 const debounce = require('debounce')
-const format = require('xml-formatter');
-const log = require('electron-log');
+const format = require('xml-formatter')
+const log = require('electron-log')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -17,13 +18,28 @@ class ProjectStore {
 
         // create a debounced function for writing the ZIP
         this.writeProjectArchive = debounce(() => {
-            this.jobsInProgress.push(Date.now())
+            const jobNumber = Date.now()
+            this.jobsInProgress.push(jobNumber)
+
             // if there was a migration that hasn't been saved yet, save it now
             if( this.migratedConfig ) {
                 this.saveFairCopyConfig( this.migratedConfig ) 
             }
-            writeArchive(this.projectFilePath, this.projectArchive, () => { this.jobsInProgress.pop() })
+
+            // write to a temp file first, to avoid corrupting the ZIP if we can't finish for some reason.
+            const tempPath = `${this.tempDir}/${jobNumber}.zip`
+            writeArchive( tempPath, this.projectArchive, () => { 
+                fs.copyFileSync( tempPath, this.projectFilePath )
+                fs.unlinkSync( tempPath )
+                this.jobsInProgress.pop() 
+            })
         },zipWriteDelay)
+    }
+
+    setupTempFolder() {
+        const tempFolderBase = `${os.tmpdir()}/faircopy/`
+        if( !fs.existsSync(tempFolderBase) ) fs.mkdirSync(tempFolderBase)
+        this.tempDir = fs.mkdtempSync(tempFolderBase)
     }
 
     async openProject(projectFilePath) {
@@ -67,6 +83,9 @@ class ProjectStore {
             return
         }
 
+        // temp folder for streaming zip data
+        this.setupTempFolder()
+
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
@@ -86,11 +105,14 @@ class ProjectStore {
     }
 
     quitSafely = (quitCallback) => {
+        // execute any pending write jobs
+        this.writeProjectArchive.flush()
+
         if( this.jobsInProgress.length > 0 ) {
             // write jobs still active, wait a moment and then try again 
             setTimeout( () => { this.quitSafely(quitCallback) }, zipWriteDelay*2 )
         } else {
-            // if we aren't writing now, quit 
+            // when we are done with jobs, quit 
             quitCallback()
         }
     }
@@ -182,7 +204,7 @@ class ProjectStore {
     }
 }
 
-function writeArchive(zipPath, zipData, whenFinished) {
+function writeArchive(zipPath, zipData, whenFinished=null) {
     zipData
         .generateNodeStream({
             type:'nodebuffer',
@@ -194,8 +216,10 @@ function writeArchive(zipPath, zipData, whenFinished) {
         })
         .pipe(fs.createWriteStream(zipPath))
         .on('finish', () => {
-            log.info(`${zipPath} written.`);
-            if( whenFinished ) whenFinished()
+            if( whenFinished ) {
+                log.info(`${zipPath} written.`);
+                whenFinished()
+            }
         });
 }
 
