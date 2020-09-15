@@ -405,16 +405,17 @@ export default class MainWindow extends Component {
         )
     }
 
-    render() {
+    renderDialogs() {
         const { editDialogMode, openResources, selectedResource, elementMenuOptions } = this.state
-        const { editProjectDialogMode, alertMessage } = this.state
-        const { popupMenuOptions, popupMenuAnchorEl } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
 
         const teiDocument = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
         const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
+
+        const { editProjectDialogMode, alertMessage } = this.state
+        const { popupMenuOptions, popupMenuAnchorEl } = this.state
 
         const onSaveResource = (name,localID,type,url) => {
             if( resourceEntry ) {
@@ -430,32 +431,8 @@ export default class MainWindow extends Component {
             this.setState( {...this.state, editProjectDialogMode: false} )
         }
 
-        const onSelectResource = ( resourceID ) => {
-            this.onResourceAction( 'open', [resourceID] )
-        }
-
-        const onCloseResource = ( resourceID ) => {
-            this.onResourceAction( 'close', [resourceID] )
-        }
-
-        const onDragSplitPane = debounce((width) => {
-            this.setState({...this.state, leftPaneWidth: width })
-        }, resizeRefreshRate)
-   
         return (
-            <div ref={(el) => this.el = el} > 
-                <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
-                    <ProjectSidebar
-                        fairCopyProject={fairCopyProject}    
-                        openResources={openResources}
-                        selectedResource={selectedResource}
-                        onSelectResource={onSelectResource}   
-                        onCloseResource={onCloseResource}
-                        onEditProjectInfo={this.onEditProjectInfo}
-                        onOpenResourceBrowser={this.onOpenResourceBrowser}                               
-                    ></ProjectSidebar>    
-                    { this.renderContentPane() }
-                </SplitPane>
+            <div>
                 { this.renderAlertDialog() }
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
@@ -484,6 +461,48 @@ export default class MainWindow extends Component {
                     message={alertMessage}
                     handleClose={()=>{ this.setState({...this.state, alertMessage: null})}}
                 ></SnackAlert>
+            </div>
+        )
+    }
+
+    renderProjectSidebar() {
+        const { openResources, selectedResource } = this.state
+        const { fairCopyProject } = this.props
+
+        const onSelectResource = ( resourceID ) => {
+            this.onResourceAction( 'open', [resourceID] )
+        }
+
+        const onCloseResource = ( resourceID ) => {
+            this.onResourceAction( 'close', [resourceID] )
+        }
+
+        return (
+            <ProjectSidebar
+                fairCopyProject={fairCopyProject}    
+                openResources={openResources}
+                selectedResource={selectedResource}
+                onSelectResource={onSelectResource}   
+                onCloseResource={onCloseResource}
+                onEditProjectInfo={this.onEditProjectInfo}
+                onOpenResourceBrowser={this.onOpenResourceBrowser}                               
+            ></ProjectSidebar>    
+        )
+    }
+
+    render() {
+
+        const onDragSplitPane = debounce((width) => {
+            this.setState({...this.state, leftPaneWidth: width })
+        }, resizeRefreshRate)
+   
+        return (
+            <div ref={(el) => this.el = el} > 
+                <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
+                    { this.renderProjectSidebar() }
+                    { this.renderContentPane() }
+                </SplitPane>
+                { this.renderDialogs() }
             </div>
         )
     }
