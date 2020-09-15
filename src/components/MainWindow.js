@@ -40,6 +40,7 @@ export default class MainWindow extends Component {
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
             alertMessage: null,
+            expandedGutter: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -235,7 +236,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth } = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter } = this.state
         const { fairCopyProject } = this.props
 
         const editors = []
@@ -259,6 +260,7 @@ export default class MainWindow extends Component {
                             onOpenNote={this.onOpenNote}
                             onCloseNote={this.onCloseNote}
                             editorWidth={editorWidth}
+                            expandedGutter={expandedGutter}
                         ></TEIEditor>
                     )        
                 } else {
@@ -495,9 +497,19 @@ export default class MainWindow extends Component {
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
+
+        const onKeyDown = ( event ) => {
+            const {expandedGutter} = this.state
+            if( event.ctrlKey && event.key === '.' ) {
+                this.setState({...this.state, expandedGutter: !expandedGutter })            
+            }
+        }
    
         return (
-            <div ref={(el) => this.el = el} > 
+            <div 
+                ref={(el) => this.el = el} 
+                onKeyDown={onKeyDown} 
+            > 
                 <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                     { this.renderProjectSidebar() }
                     { this.renderContentPane() }

@@ -7,7 +7,7 @@ const maxGutterMarks = 100
 export default class EditorGutter extends Component {
 
     renderGutterMark(node,pos,index,column) {
-        const { teiDocument, scrollTop, ctrlDown, onOpenElementMenu } = this.props
+        const { teiDocument, scrollTop, expanded, onOpenElementMenu } = this.props
         const { editorView, fairCopyProject } = teiDocument
         const editorState = editorView.state
 
@@ -19,7 +19,7 @@ export default class EditorGutter extends Component {
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker col${column} ${highlighted}`
-        const displayName = (ctrlDown) ? <div className={`el-name col${column}`}>{node.type.name}</div> : ''
+        const displayName = (expanded) ? <div className={`el-name col${column}`}>{node.type.name}</div> : ''
 
 
         const onClick = () => {
@@ -76,12 +76,12 @@ export default class EditorGutter extends Component {
     }
 
     render() {   
-        const { teiDocument, ctrlDown } = this.props
+        const { teiDocument, expanded } = this.props
         const { editorView } = teiDocument
 
         if( !editorView ) return null
 
-        const className = `markers ${ctrlDown ? 'thick' : 'thin'}`
+        const className = `markers ${expanded ? 'thick' : 'thin'}`
         return (
             <div className='EditorGutter'>
                 <div className={className}>
