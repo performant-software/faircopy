@@ -15,11 +15,13 @@ export default class EditorGutter extends Component {
         const endCoords = editorView.coordsAtPos(pos + node.nodeSize)
         const top = startCoords.top - gutterTop + scrollTop
         const height = endCoords.bottom - startCoords.top - 8 
-        const markStyle = { top, height }
+        const thickness = expanded ? 26 : 10
+        const marginLeft = (column*thickness)
+        const markStyle = { top, height, marginLeft }
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
-        const className = `marker col${column} ${highlighted}`
-        const displayName = (expanded) ? <div className={`el-name col${column}`}>{node.type.name}</div> : ''
+        const className = `marker ${highlighted}`
+        const displayName = (expanded) ? <div className={`el-name`}>{node.type.name}</div> : ''
 
 
         const onClick = () => {

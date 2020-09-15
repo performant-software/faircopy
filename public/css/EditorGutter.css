@@ -25,18 +25,6 @@
     background: yellow;
 }
 
-.EditorGutter .marker.col1 {
-    margin-left: 12px;
-}
-
-.EditorGutter .thick .marker.col1 {
-    margin-left: 26px;   
-}
-
-.EditorGutter .thin .marker.col1 {
-    margin-left: 10px;   
-}
-
 .EditorGutter .el-name {
     display: inline-block;
     margin-left: 4px;
