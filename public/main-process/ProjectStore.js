@@ -20,6 +20,7 @@ class ProjectStore {
         this.writeProjectArchive = debounce(() => {
             const jobNumber = Date.now()
             this.jobsInProgress.push(jobNumber)
+            // write to a temp file first, to avoid corrupting the ZIP if we can't finish for some reason.
             const tempPath = `${this.tempDir}/${jobNumber}.zip`
             writeArchive( tempPath, this.projectArchive, () => { 
                 fs.copyFileSync( tempPath, this.projectFilePath )
@@ -91,11 +92,14 @@ class ProjectStore {
     }
 
     quitSafely = (quitCallback) => {
+        // execute any pending write jobs
+        this.writeProjectArchive.flush()
+
         if( this.jobsInProgress.length > 0 ) {
             // write jobs still active, wait a moment and then try again 
             setTimeout( () => { this.quitSafely(quitCallback) }, zipWriteDelay*2 )
         } else {
-            // if we aren't writing now, quit 
+            // when we are done with jobs, quit 
             quitCallback()
         }
     }
