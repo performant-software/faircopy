@@ -24,7 +24,8 @@ export default class TEIEditor extends Component {
             scrollTop: 0,
             displayNoteAttrs: false,
             ctrlDown: false,
-            altDown: false
+            altDown: false,
+            latest: null
         }
     }
 
@@ -74,7 +75,7 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { teiDocument, onStateChange } = this.props
+        const { teiDocument } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -83,7 +84,7 @@ export default class TEIEditor extends Component {
             editorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
             this.maintainNoteAnchor()
-            onStateChange(nextEditorState)
+            this.setState({...this.state, latest: Date.now() })
         }
     }
 

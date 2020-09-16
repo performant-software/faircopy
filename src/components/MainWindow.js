@@ -28,7 +28,6 @@ export default class MainWindow extends Component {
         this.state = {
             selectedResource: null,
             openResources: {},
-            latest: null,
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -79,10 +78,6 @@ export default class MainWindow extends Component {
         } else {
             this.setState({...this.state})
         }
-    }
-
-    onStateChange = (nextState) => {
-        this.setState({...this.state,latest:nextState})
     }
 
     selectResources(resourceIDs) {
@@ -248,7 +243,6 @@ export default class MainWindow extends Component {
                             hidden={hidden}
                             teiDocument={resource}
                             fairCopyProject={fairCopyProject}
-                            onStateChange={this.onStateChange}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onEditResource={this.onEditResource}
                             onOpenNote={this.onOpenNote}
@@ -263,7 +257,6 @@ export default class MainWindow extends Component {
                             hidden={hidden}
                             facsDocument={resource}
                             fairCopyProject={fairCopyProject}
-                            onStateChange={this.onStateChange}       
                             onEditResource={this.onEditResource}                 
                         ></FacsEditor>
                     )                     
