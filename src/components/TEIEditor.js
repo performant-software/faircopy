@@ -10,6 +10,7 @@ import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
+import { getHighlightRanges } from "../tei-document/highlighter"
 
 const resizeRefreshRate = 100
 
@@ -157,6 +158,49 @@ export default class TEIEditor extends Component {
         }
     }
 
+    getSelectedElements() {
+        const { teiDocument } = this.props
+        const { noteID } = this.state
+
+        const editorView = teiDocument.getActiveView()
+        const selection = (editorView) ? editorView.state.selection : null 
+        
+        // create a list of the selected phrase level elements 
+        let elements = []
+        if( selection ) {
+            if( selection.node ) {
+                // don't display drawer for notes on selection
+                if( selection.node.type.name !== 'note' ) {
+                    elements.push( selection.node )
+                }
+            } else {
+                const { doc } = editorView.state
+                const { $anchor } = selection
+                const highlightRanges = getHighlightRanges(doc,$anchor)
+                for( const highlightRange of highlightRanges ) {
+                    elements.push( highlightRange.mark )
+                }     
+            }
+        }
+
+        if( noteID ) {
+            // The note node is sticky while the note is being edited
+            const { doc } = teiDocument.editorView.state
+            let noteNode
+            doc.descendants( (node) => {
+                if( node.attrs['__id__'] === noteID ) {
+                    noteNode = node
+                }
+                if( noteNode ) return false
+            })
+            if( noteNode ) {
+                elements.push( noteNode )
+            }
+        }
+
+        return elements
+    }
+
     render() {    
         const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs } = this.state
@@ -175,8 +219,11 @@ export default class TEIEditor extends Component {
             }
         }
 
+        const selectedElements = this.getSelectedElements()
+        const editorHeight = selectedElements.length > 0 ? "calc(100% - 460px)" : "calc(100% - 155px)"
+        const editorStyle = { minWidth: editorWidth, maxHeight: editorHeight }
+
         const style = hidden ? { display: 'none' } : {}
-        const bodyStyle = { minWidth: editorWidth }
         const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
 
         const parameterDrawProps = ( displayNoteAttrs ) ? { noteID } : {}
@@ -197,11 +244,11 @@ export default class TEIEditor extends Component {
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
                     ></EditorToolbar>
-                    <div onClick={onClickBody} ref={onRef} style={bodyStyle} className='body'>
+                    <div onClick={onClickBody} ref={onRef} style={editorStyle} className='body'>
                         <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
-                        />                 
+                        />               
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
@@ -214,6 +261,7 @@ export default class TEIEditor extends Component {
                 </div>
                 <ParameterDrawer 
                     teiDocument={teiDocument} 
+                    elements={selectedElements}
                     { ...parameterDrawProps }
                 />
                 <NotePopup
