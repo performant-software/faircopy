@@ -464,17 +464,17 @@ export default class MainWindow extends Component {
                     onSave={onSaveProjectInfo}
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }
-                <ElementMenu
+                { elementMenuAnchorEl && <ElementMenu
                     teiDocument={teiDocument}
                     menuGroups={openMenu}
                     anchorEl={elementMenuAnchorEl}
                     onClose={this.onCloseElementMenu}
-                ></ElementMenu>
-                <PopupMenu
+                ></ElementMenu> }
+                { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}
                     anchorEl={popupMenuAnchorEl}
                     onClose={this.onClosePopupMenu}                
-                ></PopupMenu>
+                ></PopupMenu> }
             </div>
         )
     }

@@ -236,40 +236,40 @@ export default class TEIEditor extends Component {
                 className='TEIEditor'
             > 
                 <div>
-                    <div className="titlebar">
+                    { !hidden && <div className="titlebar">
                         <Typography component="h1" variant="h6">{resourceName}</Typography>
-                    </div>
-                    <EditorToolbar
+                    </div> }
+                    { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
-                    ></EditorToolbar>
+                    ></EditorToolbar> }
                     <div onClick={onClickBody} ref={onRef} style={editorStyle} className='body'>
-                        <EditorGutter 
+                        { !hidden && <EditorGutter 
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
-                        />               
+                        /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                         />
-                        <ThumbnailMargin
+                        { !hidden && <ThumbnailMargin
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
-                        />                 
+                        /> }      
                     </div>
                 </div>
-                <ParameterDrawer 
+                { !hidden && <ParameterDrawer 
                     teiDocument={teiDocument} 
                     elements={selectedElements}
                     { ...parameterDrawProps }
-                />
-                <NotePopup
+                /> }
+                { !hidden && <NotePopup
                     teiDocument={teiDocument}
                     noteID={noteID}
                     anchorEl={notePopupAnchorEl}
                     onStateChange={onStateChange}
-                ></NotePopup>
+                ></NotePopup> }
             </div>
         )
     }
