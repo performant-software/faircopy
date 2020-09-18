@@ -270,8 +270,8 @@ export default class ParameterDrawer extends Component {
         )    
     }
 
-    render() {
-        const { teiDocument, elements } = this.props
+    renderDialogs() {
+        const { teiDocument } = this.props
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
 
         const onCloseAttributeDialog = () => {
@@ -281,6 +281,29 @@ export default class ParameterDrawer extends Component {
         const onCloseVocabDialog = () => {
             this.setState({...this.state, openAttributeName: null, vocabDialogOpen: false })
         }
+
+        return (
+            <div>
+                { attributeDialogOpen && <AttributeDialog 
+                    elementName={openElementName} 
+                    teiDocument={teiDocument} 
+                    open={attributeDialogOpen} 
+                    onClose={onCloseAttributeDialog} 
+                ></AttributeDialog> }
+                { vocabDialogOpen && <VocabDialog 
+                    teiDocument={teiDocument}
+                    elementName={openElementName}
+                    attrName={openAttrName}
+                    open={vocabDialogOpen} 
+                    onClose={onCloseVocabDialog}
+                ></VocabDialog> }
+                { this.renderAttributeInfoPopper() }
+            </div>
+        )
+    }
+
+    render() {
+        const { elements, height } = this.props
 
         const elementEls = []
         let count = 0
@@ -298,7 +321,8 @@ export default class ParameterDrawer extends Component {
                 id="ParameterDrawer"
                 variant="persistent"
                 anchor="bottom"
-                open={true}            
+                open={true}        
+                PaperProps={{ style: { height, background: '#FFF9DD' } }}
             >
                 <div className="header">
                     <Typography>{headerMessage}</Typography>
@@ -309,20 +333,7 @@ export default class ParameterDrawer extends Component {
                     </div>
                     : null
                 }
-                { attributeDialogOpen && <AttributeDialog 
-                    elementName={openElementName} 
-                    teiDocument={teiDocument} 
-                    open={attributeDialogOpen} 
-                    onClose={onCloseAttributeDialog} 
-                ></AttributeDialog> }
-                { vocabDialogOpen && <VocabDialog 
-                    teiDocument={teiDocument}
-                    elementName={openElementName}
-                    attrName={openAttrName}
-                    open={vocabDialogOpen} 
-                    onClose={onCloseVocabDialog}
-                ></VocabDialog> }
-                { this.renderAttributeInfoPopper() }
+                { this.renderDialogs() }                
             </Drawer>
         )
     }

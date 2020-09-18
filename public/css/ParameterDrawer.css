@@ -24,13 +24,16 @@
 #ParameterDrawer .header {
     padding: 5px;
     background: #ffea8a;
+    height: 25px;
+    width: 100%;
+    z-index: 999;
+    position: fixed;
 }
 
 #ParameterDrawer .attribute-list {
     background: #FFF9DD;
     padding: 10px;
-    max-height: 300px;
-    overflow-y: scroll;
+    padding-top: 50px;
 }
 
 #ParameterDrawer .legend-box {
