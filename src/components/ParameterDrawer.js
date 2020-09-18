@@ -309,19 +309,19 @@ export default class ParameterDrawer extends Component {
                     </div>
                     : null
                 }
-                <AttributeDialog 
+                { attributeDialogOpen && <AttributeDialog 
                     elementName={openElementName} 
                     teiDocument={teiDocument} 
                     open={attributeDialogOpen} 
                     onClose={onCloseAttributeDialog} 
-                ></AttributeDialog>
-                <VocabDialog 
+                ></AttributeDialog> }
+                { vocabDialogOpen && <VocabDialog 
                     teiDocument={teiDocument}
                     elementName={openElementName}
                     attrName={openAttrName}
                     open={vocabDialogOpen} 
                     onClose={onCloseVocabDialog}
-                ></VocabDialog>
+                ></VocabDialog> }
                 { this.renderAttributeInfoPopper() }
             </Drawer>
         )

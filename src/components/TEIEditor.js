@@ -25,7 +25,7 @@ export default class TEIEditor extends Component {
             displayNoteAttrs: false,
             ctrlDown: false,
             altDown: false,
-            latest: null
+            selectedElements: []
         }
     }
 
@@ -84,7 +84,8 @@ export default class TEIEditor extends Component {
             editorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
             this.maintainNoteAnchor()
-            this.setState({...this.state, latest: Date.now() })
+            const selectedElements = this.getSelectedElements()
+            this.setState({...this.state, selectedElements })
         }
     }
 
@@ -204,7 +205,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs } = this.state
+        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs, selectedElements } = this.state
 
         const onRef = (el) => {
             this.el = el
@@ -220,7 +221,6 @@ export default class TEIEditor extends Component {
             }
         }
 
-        const selectedElements = this.getSelectedElements()
         const editorHeight = selectedElements.length > 0 ? "calc(100% - 460px)" : "calc(100% - 155px)"
         const editorStyle = { minWidth: editorWidth, maxHeight: editorHeight }
 
