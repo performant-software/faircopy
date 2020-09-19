@@ -85,6 +85,14 @@ export default class TEIEditor extends Component {
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
             this.maintainNoteAnchor()
             const selectedElements = this.getSelectedElements()
+
+            if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
+                setTimeout( () => {
+                    const { tr } = editorView.state
+                    tr.scrollIntoView()
+                    editorView.dispatch(tr)
+                }, 100 )        
+            }
             this.setState({...this.state, selectedElements })
         }
     }
