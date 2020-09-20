@@ -121,6 +121,11 @@ export default class TEIEditor extends Component {
         }
     }
 
+    onNoteStateChange = () => {
+        const selectedElements = this.getSelectedElements()
+        this.setState({...this.state, selectedElements })
+    }
+
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
         if( !direct ) return
 
@@ -164,7 +169,7 @@ export default class TEIEditor extends Component {
 
     getSelectedElements() {
         const { teiDocument } = this.props
-        const { noteID } = this.state
+        const { noteID, displayNoteAttrs } = this.state
 
         const editorView = teiDocument.getActiveView()
         const selection = (editorView) ? editorView.state.selection : null 
@@ -173,7 +178,7 @@ export default class TEIEditor extends Component {
         let elements = []
         if( selection ) {
             if( selection.node ) {
-                // don't display drawer for notes on selection
+                // don't display drawer for notes here, see below
                 if( selection.node.type.name !== 'note' ) {
                     elements.push( selection.node )
                 }
@@ -187,8 +192,8 @@ export default class TEIEditor extends Component {
             }
         }
 
-        if( noteID ) {
-            // The note node is sticky while the note is being edited
+        // The note node is sticky while the note is being edited
+        if( noteID && displayNoteAttrs ) {
             const { doc } = teiDocument.editorView.state
             let noteNode
             doc.descendants( (node) => {
@@ -206,8 +211,8 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs, selectedElements } = this.state
+        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, editorWidth } = this.props
+        const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
 
         // used to update scroll position when document changes
         const onRef = (el) => {
@@ -227,8 +232,6 @@ export default class TEIEditor extends Component {
 
         const style = hidden ? { display: 'none' } : {}
         const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
-
-        const parameterDrawProps = ( displayNoteAttrs ) ? { noteID } : {}
 
         return (
             <div 
@@ -265,13 +268,12 @@ export default class TEIEditor extends Component {
                     teiDocument={teiDocument} 
                     elements={selectedElements}
                     height={drawerHeight}
-                    { ...parameterDrawProps }
                 /> }
                 { !hidden && <NotePopup
                     teiDocument={teiDocument}
                     noteID={noteID}
                     anchorEl={notePopupAnchorEl}
-                    onStateChange={onStateChange}
+                    onStateChange={this.onNoteStateChange}
                 ></NotePopup> }
             </div>
         )
