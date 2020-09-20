@@ -247,6 +247,7 @@ class FairCopyApplication {
           webSecurity,
           enableRemoteModule: false,
           preload: `${this.baseDir}/${preload}`,
+          spellcheck: false
       },
       resizable,
       backgroundColor

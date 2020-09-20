@@ -93,14 +93,8 @@ export default class TEIEditor extends Component {
                     editorView.dispatch(tr)
                 }, 100 )        
             }
-            this.setState({...this.state, selectedElements })
-        }
-    }
-
-    onScroll = () => {
-        if( this.el ) {
-            const scrollTop = this.el.scrollTop
-            this.setState({...this.state,scrollTop})    
+            const scrollTop = (this.el) ? this.el.scrollTop : 0
+            this.setState({...this.state, selectedElements, scrollTop })
         }
     }
 
@@ -215,11 +209,9 @@ export default class TEIEditor extends Component {
         const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs, selectedElements } = this.state
 
+        // used to update scroll position when document changes
         const onRef = (el) => {
             this.el = el
-            if( el ) {
-                el.addEventListener("scroll", debounce(this.onScroll,resizeRefreshRate))
-            }
         }
 
         const onClickBody = () => {
