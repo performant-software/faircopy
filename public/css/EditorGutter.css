@@ -1,19 +1,12 @@
 .EditorGutter .markers {
     margin-left: 8px;
     overflow: hidden;
-}
-
-.EditorGutter .markers.thin {
-    margin-right: 24px;
-}
-
-.EditorGutter .markers.thick {
-    margin-right: 100px;
+    font: 12pt sans-serif;
 }
 
 .EditorGutter .marker {
     position: absolute;
-    min-width: 6px;
+    min-width: 10px;
 }
 
 .EditorGutter .marker {
