@@ -10,6 +10,7 @@ import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
+import { getHighlightRanges } from "../tei-document/highlighter"
 
 const resizeRefreshRate = 100
 
@@ -23,7 +24,8 @@ export default class TEIEditor extends Component {
             scrollTop: 0,
             displayNoteAttrs: false,
             ctrlDown: false,
-            altDown: false
+            altDown: false,
+            selectedElements: []
         }
     }
 
@@ -73,7 +75,7 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { teiDocument, onStateChange } = this.props
+        const { teiDocument } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -82,14 +84,17 @@ export default class TEIEditor extends Component {
             editorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
             this.maintainNoteAnchor()
-            onStateChange(nextEditorState)
-        }
-    }
+            const selectedElements = this.getSelectedElements()
 
-    onScroll = () => {
-        if( this.el ) {
-            const scrollTop = this.el.scrollTop
-            this.setState({...this.state,scrollTop})    
+            if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
+                setTimeout( () => {
+                    const { tr } = editorView.state
+                    tr.scrollIntoView()
+                    editorView.dispatch(tr)
+                }, 100 )        
+            }
+            const scrollTop = (this.el) ? this.el.scrollTop : 0
+            this.setState({...this.state, selectedElements, scrollTop })
         }
     }
 
@@ -114,6 +119,11 @@ export default class TEIEditor extends Component {
                 this.setState({ ...this.state, notePopupAnchorEl: nextNotePopupAnchorEl })
             }
         }
+    }
+
+    onNoteStateChange = () => {
+        const selectedElements = this.getSelectedElements()
+        this.setState({...this.state, selectedElements })
     }
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
@@ -157,15 +167,56 @@ export default class TEIEditor extends Component {
         }
     }
 
-    render() {    
-        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, onStateChange, editorWidth, expandedGutter } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl, displayNoteAttrs } = this.state
+    getSelectedElements() {
+        const { teiDocument } = this.props
+        const { noteID, displayNoteAttrs } = this.state
 
+        const editorView = teiDocument.getActiveView()
+        const selection = (editorView) ? editorView.state.selection : null 
+        
+        // create a list of the selected phrase level elements 
+        let elements = []
+        if( selection ) {
+            if( selection.node ) {
+                // don't display drawer for notes here, see below
+                if( selection.node.type.name !== 'note' ) {
+                    elements.push( selection.node )
+                }
+            } else {
+                const { doc } = editorView.state
+                const { $anchor } = selection
+                const highlightRanges = getHighlightRanges(doc,$anchor)
+                for( const highlightRange of highlightRanges ) {
+                    elements.push( highlightRange.mark )
+                }     
+            }
+        }
+
+        // The note node is sticky while the note is being edited
+        if( noteID && displayNoteAttrs ) {
+            const { doc } = teiDocument.editorView.state
+            let noteNode
+            doc.descendants( (node) => {
+                if( node.attrs['__id__'] === noteID ) {
+                    noteNode = node
+                }
+                if( noteNode ) return false
+            })
+            if( noteNode ) {
+                elements.push( noteNode )
+            }
+        }
+
+        return elements
+    }
+
+    render() {    
+        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, editorWidth, expandedGutter } = this.props
+        const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
+
+        // used to update scroll position when document changes
         const onRef = (el) => {
             this.el = el
-            if( el ) {
-                el.addEventListener("scroll", debounce(this.onScroll,resizeRefreshRate))
-            }
         }
 
         const onClickBody = () => {
@@ -175,11 +226,12 @@ export default class TEIEditor extends Component {
             }
         }
 
-        const style = hidden ? { display: 'none' } : {}
-        const bodyStyle = { minWidth: editorWidth }
-        const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
+        const drawerHeight = selectedElements.length > 0 ? 335 : 35
+        const editorHeight = `calc(100% - ${drawerHeight + 130}px)`
+        const editorStyle = { minWidth: editorWidth, maxHeight: editorHeight }
 
-        const parameterDrawProps = ( displayNoteAttrs ) ? { noteID } : {}
+        const style = hidden ? { display: 'none' } : {}
+        const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
 
         return (
             <div 
@@ -189,41 +241,42 @@ export default class TEIEditor extends Component {
                 className='TEIEditor'
             > 
                 <div>
-                    <div className="titlebar">
+                    { !hidden && <div className="titlebar">
                         <Typography component="h1" variant="h6">{resourceName}</Typography>
-                    </div>
-                    <EditorToolbar
+                    </div> }
+                    { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
-                    ></EditorToolbar>
-                    <div onClick={onClickBody} ref={onRef} style={bodyStyle} className='body'>
-                        <EditorGutter 
+                    ></EditorToolbar> }
+                    <div onClick={onClickBody} ref={onRef} style={editorStyle} className='body'>
+                        { !hidden && <EditorGutter 
                             expanded={expandedGutter}
                             onOpenElementMenu={onOpenElementMenu}
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
-                        />                 
+                        /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                         />
-                        <ThumbnailMargin
+                        { !hidden && <ThumbnailMargin
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
-                        />                 
+                        /> }      
                     </div>
                 </div>
-                <ParameterDrawer 
+                { !hidden && <ParameterDrawer 
                     teiDocument={teiDocument} 
-                    { ...parameterDrawProps }
-                />
-                <NotePopup
+                    elements={selectedElements}
+                    height={drawerHeight}
+                /> }
+                { !hidden && <NotePopup
                     teiDocument={teiDocument}
                     noteID={noteID}
                     anchorEl={notePopupAnchorEl}
-                    onStateChange={onStateChange}
-                ></NotePopup>
+                    onStateChange={this.onNoteStateChange}
+                ></NotePopup> }
             </div>
         )
     }

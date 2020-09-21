@@ -8,7 +8,7 @@ import {Node} from 'prosemirror-model'
 import AttributeDialog from './AttributeDialog'
 import VocabDialog from './VocabDialog'
 import { changeAttribute } from "../tei-document/commands"
-import { getHighlightColor, getHighlightRanges } from "../tei-document/highlighter"
+import { getHighlightColor } from "../tei-document/highlighter"
 
 import TokenField from './attribute-fields/TokenField'
 import TEIDataTextField from './attribute-fields/TEIDataTextField'
@@ -270,45 +270,9 @@ export default class ParameterDrawer extends Component {
         )    
     }
 
-    render() {
-        const { teiDocument, noteID } = this.props
+    renderDialogs() {
+        const { teiDocument } = this.props
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
-
-        const editorView = teiDocument.getActiveView()
-        const selection = (editorView) ? editorView.state.selection : null 
-        
-        // create a list of the selected phrase level elements 
-        let elements = [], count = 0
-        if( selection ) {
-            if( selection.node ) {
-                // don't display drawer for notes on selection
-                if( selection.node.type.name !== 'note' ) {
-                    elements.push( this.renderElement(selection.node,count++,`attr-panel-${count++}`) )
-                }
-            } else {
-                const { doc } = editorView.state
-                const { $anchor } = selection
-                const highlightRanges = getHighlightRanges(doc,$anchor)
-                for( const highlightRange of highlightRanges ) {
-                    elements.push( this.renderElement(highlightRange.mark,count,`attr-panel-${count++}`) )
-                }     
-            }
-        }
-
-        if( noteID ) {
-            // The note node is sticky while the note is being edited
-            const { doc } = teiDocument.editorView.state
-            let noteNode
-            doc.descendants( (node) => {
-                if( node.attrs['__id__'] === noteID ) {
-                    noteNode = node
-                }
-                if( noteNode ) return false
-            })
-            if( noteNode ) {
-                elements.push( this.renderElement(noteNode,count++,`attr-panel-${count++}`) )
-            }
-        }
 
         const onCloseAttributeDialog = () => {
             this.setState({...this.state, openElementName: null, attributeDialogOpen: false })
@@ -316,6 +280,35 @@ export default class ParameterDrawer extends Component {
 
         const onCloseVocabDialog = () => {
             this.setState({...this.state, openAttributeName: null, vocabDialogOpen: false })
+        }
+
+        return (
+            <div>
+                { attributeDialogOpen && <AttributeDialog 
+                    elementName={openElementName} 
+                    teiDocument={teiDocument} 
+                    open={attributeDialogOpen} 
+                    onClose={onCloseAttributeDialog} 
+                ></AttributeDialog> }
+                { vocabDialogOpen && <VocabDialog 
+                    teiDocument={teiDocument}
+                    elementName={openElementName}
+                    attrName={openAttrName}
+                    open={vocabDialogOpen} 
+                    onClose={onCloseVocabDialog}
+                ></VocabDialog> }
+                { this.renderAttributeInfoPopper() }
+            </div>
+        )
+    }
+
+    render() {
+        const { elements, height } = this.props
+
+        const elementEls = []
+        let count = 0
+        for( const element of elements ) {
+            elementEls.push( this.renderElement(element,count,`attr-panel-${count++}`) )
         }
 
         const s = (elements.length !== 1) ? 's' : ''
@@ -328,31 +321,19 @@ export default class ParameterDrawer extends Component {
                 id="ParameterDrawer"
                 variant="persistent"
                 anchor="bottom"
-                open={true}            
+                open={true}        
+                PaperProps={{ style: { height, background: '#FFF9DD' } }}
             >
                 <div className="header">
                     <Typography>{headerMessage}</Typography>
                 </div>
-                { elements.length > 0 ? 
+                { elementEls.length > 0 ? 
                     <div className="attribute-list">
-                        { elements }
+                        { elementEls }
                     </div>
                     : null
                 }
-                <AttributeDialog 
-                    elementName={openElementName} 
-                    teiDocument={teiDocument} 
-                    open={attributeDialogOpen} 
-                    onClose={onCloseAttributeDialog} 
-                ></AttributeDialog>
-                <VocabDialog 
-                    teiDocument={teiDocument}
-                    elementName={openElementName}
-                    attrName={openAttrName}
-                    open={vocabDialogOpen} 
-                    onClose={onCloseVocabDialog}
-                ></VocabDialog>
-                { this.renderAttributeInfoPopper() }
+                { this.renderDialogs() }                
             </Drawer>
         )
     }
