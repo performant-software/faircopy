@@ -34,21 +34,10 @@ tei-div {
     border-bottom: 1px dotted black;
 }
 
-tei-speaker {
-    text-transform: uppercase;
-}
-
-tei-l {
+textnode {
     display: block;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-/* p */
-tei-p {
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 tei-pb {
@@ -78,7 +67,6 @@ tei-del {
 
 .ProseMirror {
     font-family: Arial, Helvetica, sans-serif;
-    /* font-family: "Lucida Grande", "Cardo", "Arial Unicode MS","Galilee Unicode Gk", "New Athena Unicode", "Athena Unicode", "Palatino Linotype", "Titus Cyberbit Basic", "Vusillus Old Face", "Alphabetum", "Galatia SIL", "Code 2000", "GentiumAlt", "Gentium", "Minion Pro", "GeorgiaGreek", "Vusillus Old Face Italic", "Everson Mono", "Aristarcoj", "Porson", "Legendum", "Aisa Unicode", "Hindsight Unicode", "Caslon", "Verdana", "Tahoma"; */
     font-size: 14pt;
     line-height: 1.5em;
 }
