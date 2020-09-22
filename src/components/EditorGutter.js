@@ -6,15 +6,15 @@ const maxGutterMarks = 100
 
 export default class EditorGutter extends Component {
 
-    renderGutterMark(node,pos,index,column,columnPositions) {
+    renderGutterMark(node,startPos,endPos,index,column,columnPositions) {
         const { teiDocument, scrollTop, expanded, onOpenElementMenu } = this.props
         const { editorView, fairCopyProject } = teiDocument
         const editorState = editorView.state
 
-        const startCoords = editorView.coordsAtPos(pos)
-        const endCoords = editorView.coordsAtPos(pos + node.nodeSize)
+        const startCoords = editorView.coordsAtPos(startPos)
+        const endCoords = editorView.coordsAtPos(endPos)
         const top = startCoords.top - gutterTop + scrollTop
-        const height = endCoords.bottom - startCoords.top - 8 
+        const height = endCoords.bottom - startCoords.top 
         const markStyle = { top, height, marginLeft: columnPositions[column] }
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
@@ -24,14 +24,14 @@ export default class EditorGutter extends Component {
 
         const onClick = () => {
             const {tr,doc} = editorState
-            tr.setSelection( new NodeSelection(doc.resolve(pos)) )
+            tr.setSelection( new NodeSelection(doc.resolve(startPos)) )
             editorView.dispatch(tr)
         }
 
         const onContextMenu = (e) => {            
             const { menus } = fairCopyProject
             const menuGroups = menus['chunk']
-            onOpenElementMenu({ menuGroups, anchorEl: e.currentTarget, action: 'replace', actionData: { pos }})
+            onOpenElementMenu({ menuGroups, anchorEl: e.currentTarget, action: 'replace', actionData: { pos: startPos }})
         }
 
         return (
@@ -78,22 +78,22 @@ export default class EditorGutter extends Component {
         }
 
         function processNode(parentNode,basePos=0,column=0) {
-            if( gutterMarks.length >= maxGutterMarks ) return 
             let relativePos=0
             for( let i=0; i < parentNode.childCount; i++ ) {
                 const node = parentNode.child(i)
-                const pos = basePos+relativePos
-                const element = teiDocument.fairCopyProject.teiSchema.elements[node.type.name]
+                const startPos = basePos+relativePos
+                const name = node.type.name
+                const element = teiDocument.fairCopyProject.teiSchema.elements[name]
                 if( element && element.gutterMark ) {
-                    const name = node.type.name
                     gatherColumnThickness(name,column)
-                    gutterMarks.push( [ node,pos,gutterMarks.length,column] )
-                    processNode(node,pos+1,column+1)                
+                    const endPos = startPos + processNode(node,startPos+1,column+1)                
+                    gutterMarks.push( [ node,startPos,endPos,gutterMarks.length,column] )
                 } else {
-                    processNode(node,pos+1,column)                
+                    processNode(node,startPos+1,column)                
                 }
                 relativePos = relativePos + node.nodeSize
             }
+            return relativePos
         }
 
         // turn PM nodes into gutter mark properties
@@ -107,7 +107,7 @@ export default class EditorGutter extends Component {
         }
 
         // render the components 
-        for( const gutterMark of gutterMarks ) {
+        for( const gutterMark of gutterMarks.slice(0,maxGutterMarks) ) {
             gutterMarkEls.push( this.renderGutterMark(...gutterMark, columnPositions) )
         }
 
