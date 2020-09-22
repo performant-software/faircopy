@@ -149,13 +149,19 @@ class ProjectStore {
         for( const resourceID of resourceIDs ) {
             const resourceEntry = this.manifestData.resources[resourceID]
             const resource = await this.readUTF8File(resourceID)
-            const xml = format(resource, {
-                indentation: '\t', 
-                collapseContent: true, 
-                lineSeparator: '\n'
-            })
             const filePath = `${path}/${resourceEntry.localID}.xml`
-            fs.writeFileSync(filePath,xml)
+            try {
+                const xml = format(resource, {
+                    indentation: '\t', 
+                    collapseContent: true, 
+                    lineSeparator: '\n'
+                })
+                fs.writeFileSync(filePath,xml)    
+            } catch(e) {
+                log.error(e)
+                // if formatting fails, try to write the file without it
+                fs.writeFileSync(filePath,resource)    
+            }
         }
         log.info(`Export resources to: ${path}`)
     }
