@@ -378,7 +378,7 @@ function joinMaybeClear(state, $pos, dispatch) {
   if (dispatch)
     dispatch(state.tr
              .clearIncompatible($pos.pos, before.type, before.contentMatchAt(before.childCount))
-             .join($pos.pos)
+             .join($pos.pos)  // depth=2 to capture the textNode
              .scrollIntoView())
   return true
 }

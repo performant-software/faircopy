@@ -112,11 +112,10 @@ function onlyGroups( targetGroups, content ) {
     return filteredContent
 }
 
-function createNodes(elGroups,specs) {
+const createNodes = function createNodes(elGroups,specs) {
     const { nodes } = elGroups 
     const nodeGroups = getNodeGroups( elGroups, specs )
 
-    let pEl
     const nodeElements = []
     for( let node of nodes) {
         const spec = specs[node]
@@ -130,15 +129,12 @@ function createNodes(elGroups,specs) {
             validAttrs: [],
             desc: spec.description
         }
-        if( node === 'p' ) pEl = nodeEl
         nodeElements.push(nodeEl)
     }
-
-    // hack to remove lLike from p
-    // pEl.content = "(text)*"    
 
     return nodeElements
 }
 
 // EXPORTS /////////////
 module.exports.createElements = createElements
+module.exports.createNodes = createNodes

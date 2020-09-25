@@ -5,7 +5,7 @@ const { getKeys, loadLocalizedString } = require('./parse-util')
 const { JSDOM } = jsdom;
 
 // This module knows how to parse ODD XML specs and definitions into useful JSON objects
-const load = function load(teiSpecsDir, elementGroups) {
+const load = function load(teiSpecsDir, elementIdents) {
     const specs = {}
 
     // recursively load module dependencies
@@ -35,10 +35,8 @@ const load = function load(teiSpecsDir, elementGroups) {
     }
 
     // load the element specs and their dependencies
-    for( const elementGroup of Object.values(elementGroups) ) {
-        for( const ident of elementGroup ) {
-            loadSpec(ident)
-        }
+    for( const ident of elementIdents ) {
+        loadSpec(ident)
     }
 
     // now resolve the memberships into groups
