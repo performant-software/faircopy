@@ -2,9 +2,13 @@ const { encodeContent } = require('./parse-content');
 
 const createElements = function createElements(elGroups,specs) {
     const elements = []
-    elements.push( ...createMarks(elGroups,specs) )
+    // TODO embeds
+    elements.push( ...createNodes(elGroups,true,specs) )
     elements.push( ...createInlineNodes(elGroups,specs) )
-    elements.push( ...createNodes(elGroups,specs) )
+    // TODO inter
+    // TODO limited-marks
+    elements.push( ...createMarks(elGroups,specs) )
+    elements.push( ...createNodes(elGroups,false,specs) )
     elements.push( ...createStructureNodes(elGroups,specs) )
     return elements
 }
@@ -74,7 +78,7 @@ const createStructureNodes = function createStructureNodes(elGroups,specs) {
 
 function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
-    const nodeIdents = [ elGroups.nodes, elGroups.structures ].flat()
+    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.structures ].flat()
     const groups = getGroups( nodeIdents, specs )
     return [ nodeIdents, groups, "textNode" ].flat()
 }
@@ -113,8 +117,8 @@ function onlyGroups( targetGroups, content ) {
     return filteredContent
 }
 
-const createNodes = function createNodes(elGroups,specs) {
-    const { nodes } = elGroups 
+const createNodes = function createNodes(elGroups,hard,specs) {
+    const nodes = hard ? elGroups.hard : elGroups.soft 
     const nodeGroups = getNodeGroups( elGroups, specs )
 
     const nodeElements = []
@@ -124,6 +128,7 @@ const createNodes = function createNodes(elGroups,specs) {
         const nodeEl = {
             name: node,
             pmType: "node",
+            isolating: hard,
             content: encodeContent(nodeContent),
             group: spec.group,
             gutterMark: true,

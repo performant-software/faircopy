@@ -79,11 +79,11 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name, content, group } = element
+            const { pmType, name, content, group, isolating } = element
             const validAttrs = element.validAttrs ? element.validAttrs : []
             if( pmType === 'mark' || pmType === 'node') {
                 const phraseLvl = (pmType === 'mark')
-                const elSpec = this.createElementSpec({ name, attrs: validAttrs, content, group, phraseLvl })
+                const elSpec = this.createElementSpec({ name, attrs: validAttrs, content, group, phraseLvl, isolating })
                 if( pmType === 'mark' ) {
                     marks[name] = elSpec
                 } else {
@@ -129,13 +129,13 @@ export default class TEISchema {
     }
 
     createElementSpec(elSpec) {
-        const { name, content, group, phraseLvl } = elSpec
+        const { name, content, group, phraseLvl, isolating } = elSpec
         const attrs = this.getAttrSpec(elSpec.attrs)
-
         return {
             content,
             group,
             attrs,
+            isolating,
             parseDOM: [
                 {
                     tag: name,

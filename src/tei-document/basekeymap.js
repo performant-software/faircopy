@@ -34,7 +34,6 @@ export function joinBackward(state, dispatch, view) {
     if (dispatch) dispatch(state.tr.lift(range, target).scrollIntoView())
     return true
   }
-
   let before = $cut.nodeBefore
   // Apply the joining algorithm
   if (!before.type.spec.isolating && deleteBarrier(state, $cut, dispatch))

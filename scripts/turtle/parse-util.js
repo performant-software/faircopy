@@ -27,9 +27,11 @@ const loadLocalizedString = function loadLocalizedString(el, tagName, lang="en")
 
 const getAllElements = function getAllElements(elementGroups) {
     const allElements = []
-    for( const elementGroup of Object.values(elementGroups) ) {
-        for( const ident of elementGroup ) {
-            allElements.push(ident)
+    for( const elementGroupName of Object.keys(elementGroups) ) {
+        if( elementGroupName !== 'exclude' ) {
+            for( const ident of elementGroups[elementGroupName] ) {
+                allElements.push(ident)
+            }    
         }
     }
     return allElements
