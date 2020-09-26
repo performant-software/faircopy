@@ -58,14 +58,16 @@ function parseAttDef( el ) {
     const ident = el.getAttribute('ident')
     const description = loadLocalizedString(el, "desc")
     const datatypeEl = el.getElementsByTagName('datatype')[0]
-    const minOccurs = datatypeEl.getAttribute('minOccurs')
-    const maxOccurs = datatypeEl.getAttribute('maxOccurs')
-    const dataRefEl = datatypeEl ? datatypeEl.getElementsByTagName('dataRef')[0] : null
-    let dataType = dataRefEl ? dataRefEl.getAttribute('key') : null
-    if( dataRefEl && !dataType ) {
-        dataType = dataRefEl.getAttribute('name') 
+    let dataType = null, minOccurs = null, maxOccurs = null
+    if( datatypeEl ) {
+        minOccurs = datatypeEl.getAttribute('minOccurs')
+        maxOccurs = datatypeEl.getAttribute('maxOccurs')
+        const dataRefEl = datatypeEl ? datatypeEl.getElementsByTagName('dataRef')[0] : null
+        dataType = dataRefEl ? dataRefEl.getAttribute('key') : null
+        if( dataRefEl && !dataType ) {
+            dataType = dataRefEl.getAttribute('name') 
+        }    
     }
-
     const valListEl = el.getElementsByTagName('valList')[0]
     let valListType = valListEl ? valListEl.getAttribute('type') : null
     valListType = valListType ? valListType : 'open'

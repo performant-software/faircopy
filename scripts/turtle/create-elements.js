@@ -46,7 +46,7 @@ function createInlineNodes(elGroups,specs) {
     ]
 }
 
-function createStructureNodes(elGroups,specs) {
+const createStructureNodes = function createStructureNodes(elGroups,specs) {
     const nodeGroups = getNodeGroups( elGroups, specs )
     const divSpec = specs['div']
     const divContent = onlyGroups( nodeGroups, divSpec.content )
@@ -94,6 +94,7 @@ function getGroups( idents, specs ) {
 // recurse content and remove targetGroups 
 function onlyGroups( targetGroups, content ) {
     const filteredContent = { ...content }
+    if( !content ) return null
     if( content.type === 'group' ) {
         filteredContent.content = content.content.filter( group => targetGroups.includes(group) )
         if( filteredContent.content.length === 0 ) return null
@@ -138,3 +139,4 @@ const createNodes = function createNodes(elGroups,specs) {
 // EXPORTS /////////////
 module.exports.createElements = createElements
 module.exports.createNodes = createNodes
+module.exports.createStructureNodes = createStructureNodes

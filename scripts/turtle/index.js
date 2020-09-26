@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const {load} = require('./parse-specs')
 const {createConfig} = require('./create-config')
-const {createElements,createNodes} = require('./create-elements')
+const {createElements,createNodes,createStructureNodes} = require('./create-elements')
 const {createAttributes} = require('./create-attributes')
 
 // this is https://github.com/TEIC/TEI
@@ -39,7 +39,7 @@ async function run() {
 
 // run report for determining how to categorize TEI elements
 async function runReport() {
-    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/element-groups.json`).toString('utf-8'))
+    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/exp-element-groups.json`).toString('utf-8'))
     const allElements = getAllElements(elementGroups)
     const specs = load( teiSpecsDir, allElements )
 
@@ -48,12 +48,12 @@ async function runReport() {
     elementGroups.marks = []
 
     // create a table of the name, content, and group data
-    const elements = createNodes(elementGroups,specs)
+    const elements = [...createNodes(elementGroups,specs), ...createStructureNodes(elementGroups,specs)]
     const reportRows = []
     for( const element of elements ) {
         const { name, content, group, pmType } = element
         if( pmType === 'node' ) {
-            reportRows.push(`${name},${content},${group}`)    
+            reportRows.push(`${name}:${content}:${group}`)    
         }
     }    
 
