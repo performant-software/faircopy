@@ -25,7 +25,18 @@ const loadLocalizedString = function loadLocalizedString(el, tagName, lang="en")
     return str
 }
 
+const getAllElements = function getAllElements(elementGroups) {
+    const allElements = []
+    for( const elementGroup of Object.values(elementGroups) ) {
+        for( const ident of elementGroup ) {
+            allElements.push(ident)
+        }
+    }
+    return allElements
+}
+
 
 // EXPORTS /////////////
 module.exports.getKeys = getKeys;
 module.exports.loadLocalizedString = loadLocalizedString;
+module.exports.getAllElements = getAllElements;
