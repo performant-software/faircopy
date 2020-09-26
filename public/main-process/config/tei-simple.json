@@ -790,6 +790,571 @@
 			"desc": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point."
 		},
 		{
+			"name": "add",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"atLeast",
+				"atMost",
+				"cause",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"hand",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"place",
+				"precision",
+				"prev",
+				"quantity",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"seq",
+				"source",
+				"status",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"desc": "contains letters, words, or phrases inserted in the source\n  text by an author, scribe, or a previous annotator or corrector."
+		},
+		{
+			"name": "corr",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"facs",
+				"instant",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"desc": "contains the correct form of a passage apparently erroneous in the copy text."
+		},
+		{
+			"name": "del",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"atLeast",
+				"atMost",
+				"cause",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"hand",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"precision",
+				"prev",
+				"quantity",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"seq",
+				"source",
+				"status",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as\n    superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
+		},
+		{
+			"name": "hi",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"hand",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
+			"desc": "marks a word or phrase as graphically distinct from the\n        surrounding text, for reasons concerning which no claim is\n        made."
+		},
+		{
+			"name": "orig",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"desc": "contains a reading which is marked as following the original, rather than being normalized\n        or corrected."
+		},
+		{
+			"name": "ref",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cRef",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"decls",
+				"evaluate",
+				"exclude",
+				"facs",
+				"mimeType",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"target",
+				"targetLang",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
+			"desc": "defines a reference to another location, possibly modified by additional text or comment."
+		},
+		{
+			"name": "reg",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"facs",
+				"instant",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"desc": "contains a reading which has been regularized or normalized in some sense."
+		},
+		{
+			"name": "rhyme",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"label",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_lPart",
+			"desc": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates."
+		},
+		{
+			"name": "seg",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"datcat",
+				"exclude",
+				"facs",
+				"function",
+				"hand",
+				"met",
+				"n",
+				"next",
+				"notation",
+				"part",
+				"prev",
+				"real",
+				"rend",
+				"rendition",
+				"resp",
+				"rhyme",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"valueDatcat",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
+			"desc": "represents any segmentation of text below the <soCalled>chunk</soCalled> level."
+		},
+		{
+			"name": "sic",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"desc": "contains text reproduced although apparently incorrect or inaccurate."
+		},
+		{
+			"name": "supplied",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"atLeast",
+				"atMost",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"precision",
+				"prev",
+				"quantity",
+				"reason",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"desc": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>."
+		},
+		{
+			"name": "title",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"calendar",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"datingMethod",
+				"datingPoint",
+				"exclude",
+				"facs",
+				"from",
+				"from-custom",
+				"from-iso",
+				"key",
+				"level",
+				"n",
+				"next",
+				"notAfter",
+				"notAfter-custom",
+				"notAfter-iso",
+				"notBefore",
+				"notBefore-custom",
+				"notBefore-iso",
+				"period",
+				"prev",
+				"ref",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"to",
+				"to-custom",
+				"to-iso",
+				"type",
+				"type",
+				"when",
+				"when-custom",
+				"when-iso",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
+			"desc": "descriptive paraphrase of the work\nfunctioning as a title"
+		},
+		{
+			"name": "title",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"calendar",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"datingMethod",
+				"datingPoint",
+				"exclude",
+				"facs",
+				"from",
+				"from-custom",
+				"from-iso",
+				"key",
+				"level",
+				"n",
+				"next",
+				"notAfter",
+				"notAfter-custom",
+				"notAfter-iso",
+				"notBefore",
+				"notBefore-custom",
+				"notBefore-iso",
+				"period",
+				"prev",
+				"ref",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"to",
+				"to-custom",
+				"to-iso",
+				"type",
+				"type",
+				"when",
+				"when-custom",
+				"when-iso",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
+			"desc": "descriptive paraphrase of the work\nfunctioning as a title"
+		},
+		{
+			"name": "unclear",
+			"pmType": "mark",
+			"validAttrs": [
+				"agent",
+				"ana",
+				"atLeast",
+				"atMost",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"precision",
+				"prev",
+				"quantity",
+				"reason",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
+			"desc": "damage results from smoke"
+		},
+		{
 			"name": "abbr",
 			"pmType": "mark",
 			"validAttrs": [
@@ -3370,6 +3935,292 @@
 			],
 			"valListType": "closed"
 		},
+		"status": {
+			"ident": "status",
+			"description": "the deletion is not faulty.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "duplicate",
+					"desc": "all of the text indicated as an addition duplicates\n\t  some text that is in the original, whether the duplication\n\t  is word-for-word or less exact."
+				},
+				{
+					"ident": "duplicate-partial",
+					"desc": "part of the text indicated as an addition duplicates\n\t  some text that is in the original"
+				},
+				{
+					"ident": "excessStart",
+					"desc": "some text at the beginning of the deletion is marked\n          as deleted even though it clearly should not be\n          deleted."
+				},
+				{
+					"ident": "excessEnd",
+					"desc": "some text at the end of the deletion is marked as\n          deleted even though it clearly should not be\n          deleted."
+				},
+				{
+					"ident": "shortStart",
+					"desc": "some text at the beginning of the deletion is not\n          marked as deleted even though it clearly should be."
+				},
+				{
+					"ident": "shortEnd",
+					"desc": "some text at the end of the deletion is not marked as\n          deleted even though it clearly should be."
+				},
+				{
+					"ident": "partial",
+					"desc": "some text in the deletion is not marked as deleted\n\t  even though it clearly should be."
+				},
+				{
+					"ident": "unremarkable",
+					"desc": "the deletion is not faulty."
+				}
+			],
+			"valListType": "open"
+		},
+		"cause": {
+			"ident": "cause",
+			"description": "documents the presumed cause for the intervention.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"seq": {
+			"ident": "seq",
+			"description": "assigns a sequence number related to the order in which\n      the encoded features carrying this attribute are believed to have occurred.",
+			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": "1",
+			"valList": null,
+			"valListType": "open"
+		},
+		"unit": {
+			"ident": "unit",
+			"description": "characters of text",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "cm",
+					"desc": ""
+				},
+				{
+					"ident": "mm",
+					"desc": ""
+				},
+				{
+					"ident": "in",
+					"desc": ""
+				},
+				{
+					"ident": "line",
+					"desc": "lines of text"
+				},
+				{
+					"ident": "char",
+					"desc": "characters of text"
+				}
+			],
+			"valListType": "semi"
+		},
+		"quantity": {
+			"ident": "quantity",
+			"description": "specifies the length in the units specified",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"extent": {
+			"ident": "extent",
+			"description": "indicates the size of the object concerned using a project-specific vocabulary combining\n        quantity and units in a single string of words.",
+			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"precision": {
+			"ident": "precision",
+			"description": "characterizes the precision of the values specified by the other attributes.",
+			"dataType": "teidata.certainty",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"scope": {
+			"ident": "scope",
+			"description": "measurement applies to only the specified range of instances.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "all",
+					"desc": "measurement applies to all instances."
+				},
+				{
+					"ident": "most",
+					"desc": "measurement applies to most of the instances inspected."
+				},
+				{
+					"ident": "range",
+					"desc": "measurement applies to only the specified range of instances."
+				}
+			],
+			"valListType": "open"
+		},
+		"atLeast": {
+			"ident": "atLeast",
+			"description": "gives a minimum estimated value for the approximate measurement.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"atMost": {
+			"ident": "atMost",
+			"description": "gives a maximum estimated value for the approximate measurement.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"min": {
+			"ident": "min",
+			"description": "where the measurement summarizes more than one observation\n      or a range, supplies the minimum value\n        observed.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"max": {
+			"ident": "max",
+			"description": "where the measurement summarizes more than one observation\n        or a range, supplies the maximum value\n        observed.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"confidence": {
+			"ident": "confidence",
+			"description": "specifies the degree of statistical confidence (between zero and one) that a value falls within the range\n        specified by <att>min</att> and <att>max</att>, or the proportion of observed values that fall within that range.",
+			"dataType": "teidata.probability",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"mimeType": {
+			"ident": "mimeType",
+			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"cRef": {
+			"ident": "cRef",
+			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the\n        scheme defined in a <gi>refsDecl</gi> element in the TEI header",
+			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": "1",
+			"valList": null,
+			"valListType": "open"
+		},
+		"label": {
+			"ident": "label",
+			"description": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates.",
+			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"function": {
+			"ident": "function",
+			"description": "characterizes the function of the segment.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"datcat": {
+			"ident": "datcat",
+			"description": "contains a PID (persistent identifier) that aligns the given element with the appropriate \n        Data Category (or categories) in ISOcat.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"valueDatcat": {
+			"ident": "valueDatcat",
+			"description": "contains a PID (persistent identifier) that aligns the content of the given\n        element or the value of the given attribute with the appropriate simple Data\n        Category (or categories) in ISOcat.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"notation": {
+			"ident": "notation",
+			"description": "names the notation used for the content of the element.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"reason": {
+			"ident": "reason",
+			"description": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>.",
+			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"level": {
+			"ident": "level",
+			"description": "the title applies to any unpublished material (including\n                                                  theses and dissertations unless\n                                                  published by a commercial press)",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "a",
+					"desc": "the title applies to an analytic item, such as an\n\t  article, poem, or other work published as part of a larger item."
+				},
+				{
+					"ident": "m",
+					"desc": "the title applies to a monograph such as a book or\n          other item considered to be a distinct publication, including single\n          volumes of multi-volume works"
+				},
+				{
+					"ident": "j",
+					"desc": "the title applies to any serial or periodical\n\t  publication such as a journal, magazine, or newspaper"
+				},
+				{
+					"ident": "s",
+					"desc": "the title applies to a series of otherwise distinct\n\t  publications such as a collection"
+				},
+				{
+					"ident": "u",
+					"desc": "the title applies to any unpublished material (including\n                                                  theses and dissertations unless\n                                                  published by a commercial press)"
+				}
+			],
+			"valListType": "closed"
+		},
 		"calendar": {
 			"ident": "calendar",
 			"description": "indicates the system or calendar to which the\n        date represented by the content of this element belongs.",
@@ -3541,6 +4392,28 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"agent": {
+			"ident": "agent",
+			"description": "damage results from smoke",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "rubbing",
+					"desc": "damage results from rubbing of the leaf edges"
+				},
+				{
+					"ident": "mildew",
+					"desc": "damage results from mildew on the leaf surface"
+				},
+				{
+					"ident": "smoke",
+					"desc": "damage results from smoke"
+				}
+			],
+			"valListType": "open"
+		},
 		"dur": {
 			"ident": "dur",
 			"description": "indicates the length of this element in time.",
@@ -3554,130 +4427,6 @@
 			"ident": "dur-iso",
 			"description": "indicates the length of this element in time.",
 			"dataType": "teidata.duration.iso",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"unit": {
-			"ident": "unit",
-			"description": "characters of text",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "cm",
-					"desc": ""
-				},
-				{
-					"ident": "mm",
-					"desc": ""
-				},
-				{
-					"ident": "in",
-					"desc": ""
-				},
-				{
-					"ident": "line",
-					"desc": "lines of text"
-				},
-				{
-					"ident": "char",
-					"desc": "characters of text"
-				}
-			],
-			"valListType": "semi"
-		},
-		"quantity": {
-			"ident": "quantity",
-			"description": "specifies the length in the units specified",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"extent": {
-			"ident": "extent",
-			"description": "indicates the size of the object concerned using a project-specific vocabulary combining\n        quantity and units in a single string of words.",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"precision": {
-			"ident": "precision",
-			"description": "characterizes the precision of the values specified by the other attributes.",
-			"dataType": "teidata.certainty",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"scope": {
-			"ident": "scope",
-			"description": "measurement applies to only the specified range of instances.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "all",
-					"desc": "measurement applies to all instances."
-				},
-				{
-					"ident": "most",
-					"desc": "measurement applies to most of the instances inspected."
-				},
-				{
-					"ident": "range",
-					"desc": "measurement applies to only the specified range of instances."
-				}
-			],
-			"valListType": "open"
-		},
-		"atLeast": {
-			"ident": "atLeast",
-			"description": "gives a minimum estimated value for the approximate measurement.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"atMost": {
-			"ident": "atMost",
-			"description": "gives a maximum estimated value for the approximate measurement.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"min": {
-			"ident": "min",
-			"description": "where the measurement summarizes more than one observation\n      or a range, supplies the minimum value\n        observed.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"max": {
-			"ident": "max",
-			"description": "where the measurement summarizes more than one observation\n        or a range, supplies the maximum value\n        observed.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"confidence": {
-			"ident": "confidence",
-			"description": "specifies the degree of statistical confidence (between zero and one) that a value falls within the range\n        specified by <att>min</att> and <att>max</att>, or the proportion of observed values that fall within that range.",
-			"dataType": "teidata.probability",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -3748,121 +4497,6 @@
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
-			"valListType": "open"
-		},
-		"function": {
-			"ident": "function",
-			"description": "characterizes the function of the segment.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"datcat": {
-			"ident": "datcat",
-			"description": "contains a PID (persistent identifier) that aligns the given element with the appropriate \n        Data Category (or categories) in ISOcat.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"valueDatcat": {
-			"ident": "valueDatcat",
-			"description": "contains a PID (persistent identifier) that aligns the content of the given\n        element or the value of the given attribute with the appropriate simple Data\n        Category (or categories) in ISOcat.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"notation": {
-			"ident": "notation",
-			"description": "names the notation used for the content of the element.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"cRef": {
-			"ident": "cRef",
-			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the\n        scheme defined in a <gi>refsDecl</gi> element in the TEI header",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": "1",
-			"valList": null,
-			"valListType": "open"
-		},
-		"status": {
-			"ident": "status",
-			"description": "describes the status of a document either currently or, when\nassociated with a dated element, at the time indicated.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "approved",
-					"desc": ""
-				},
-				{
-					"ident": "candidate",
-					"desc": ""
-				},
-				{
-					"ident": "cleared",
-					"desc": ""
-				},
-				{
-					"ident": "deprecated",
-					"desc": ""
-				},
-				{
-					"ident": "draft",
-					"desc": ""
-				},
-				{
-					"ident": "embargoed",
-					"desc": ""
-				},
-				{
-					"ident": "expired",
-					"desc": ""
-				},
-				{
-					"ident": "frozen",
-					"desc": ""
-				},
-				{
-					"ident": "galley",
-					"desc": ""
-				},
-				{
-					"ident": "proposed",
-					"desc": ""
-				},
-				{
-					"ident": "published",
-					"desc": ""
-				},
-				{
-					"ident": "recommendation",
-					"desc": ""
-				},
-				{
-					"ident": "submitted",
-					"desc": ""
-				},
-				{
-					"ident": "unfinished",
-					"desc": ""
-				},
-				{
-					"ident": "withdrawn",
-					"desc": ""
-				}
-			],
 			"valListType": "open"
 		},
 		"versionDate": {

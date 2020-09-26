@@ -5,20 +5,21 @@ const createElements = function createElements(elGroups,specs) {
     // TODO embeds
     elements.push( ...createNodes(elGroups,true,specs) )
     elements.push( ...createInlineNodes(elGroups,specs) )
-    // TODO inter
+    elements.push( ...createMarks(elGroups,true,specs) )
     // TODO limited-marks
-    elements.push( ...createMarks(elGroups,specs) )
+    // TODO inter as soft nodes
+    elements.push( ...createMarks(elGroups,false,specs) )
     elements.push( ...createNodes(elGroups,false,specs) )
     elements.push( ...createStructureNodes(elGroups,specs) )
     return elements
 }
 
-function createMarks(elGroups,specs) {
-    const { marks } = elGroups
+function createMarks(elGroups,inter,specs) {
+    const marks = inter ? elGroups.inter : elGroups.marks
 
     // TODO filter nodes out of mark group
     const markElements = []
-    for( let mark of marks) {
+    for(let mark of marks) {
         const spec = specs[mark]
         markElements.push({
             name: mark,
