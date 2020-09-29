@@ -136,6 +136,7 @@ export default class TEISchema {
             group,
             attrs,
             isolating,
+            marks: "",
             parseDOM: [
                 {
                     tag: name,

@@ -39,7 +39,7 @@ export default class MainWindow extends Component {
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
             alertMessage: null,
-            expandedGutter: false,
+            expandedGutter: true,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }

@@ -377,7 +377,7 @@ function joinMaybeClear(state, $pos, dispatch) {
   if (dispatch)
     dispatch(state.tr
              .clearIncompatible($pos.pos, before.type, before.contentMatchAt(before.childCount))
-             .join($pos.pos)  // depth=2 to capture the textNode
+             .join($pos.pos,2)  // depth=2 to capture the textNode
              .scrollIntoView())
   return true
 }
@@ -401,6 +401,19 @@ function deleteBarrier(state, $cut, dispatch) {
       dispatch(tr.scrollIntoView())
     }
     return true
+  }
+
+  // take content of soft node and move it into the text node before it
+  if( before.type.name === 'textNode' && after.childCount > 0 ) {
+    const afterChild = after.child(0)
+    if( afterChild.type.name === 'textNode' ) {      
+      if (dispatch) dispatch(state.tr
+        .insert($cut.pos - 1,afterChild.content)
+        .delete($cut.pos, $cut.pos + after.nodeSize)  
+        .scrollIntoView()
+      )
+      return true
+    }
   }
 
   let selAfter = Selection.findFrom($cut, 1)
