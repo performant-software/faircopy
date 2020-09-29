@@ -26,8 +26,7 @@
         "relatedItem",
         "respStmt",
         "set",
-        "sp",
-        "titlePage"
+        "sp"
     ],
     "inlines": [
         "address",
@@ -53,7 +52,6 @@
         "seg",
         "sic",
         "supplied",
-        "title",
         "title",
         "unclear"
     ],
@@ -130,6 +128,7 @@
         "body",
         "div",
         "floatingText",
-        "front"
+        "front",
+        "titlePage"
     ]
 }

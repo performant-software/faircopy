@@ -3,75 +3,75 @@
         {
             "id": "general",
             "label": "General Editing",
-            "members": ["hi", "ref", "name", "date"]
+            "members": ["hi", "date", "name", "ref", "title"]
         },
         {
             "id": "transcription",
             "label": "Transcription",
-            "members": ["add", "del", "sic", "corr", "orig", "reg", "abbr" ]
+            "members": ["abbr", "add", "corr", "del", "orig", "reg", "rhyme", "sic", "supplied" ]
         },
         {
             "id": "segmentation",
             "label": "Sentences",
-            "members": ["rs","seg","s","rhyme","c","w","m","pc"]
+            "members": ["c","m","pc","rhyme","rs","s","seg","w"]
         },
         {
             "id": "data",
             "label": "Data",
-            "members": ["person","time","place","address","measure","num","email","idNo","desc"]
+            "members": ["address","desc","email","measure","num","person","place","time"]
         }
     ],
     "chunk": [
         {
             "id": "general",
             "label": "General",
-            "members":["p","l","lg","list","item"]
+            "members":["ab","item","l","lg","list","p"]
         },
         {
             "id": "titles",
             "label": "Headers",
-            "members": ["title","head","argument","fw","titlePart","trailer"]
+            "members": ["argument","head","titlePart","trailer"]
         },
         {
             "id": "correspondence",
             "label": "Correspondence",
-            "members": ["addrLine","postscript","opener","imprimatur","dateline","byline","closer","salute","signed"]
+            "members": ["addrLine","byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
         },
         {
             "id": "drama",
             "label": "Drama",
-            "members": ["sp","stage","actor","castGroup","castItem","castList","set","speaker","role","roleDesc"]
+            "members": ["actor","castGroup","castItem","castList","role","roleDesc","set","sp","speaker","stage"]
         },
         {
             "id": "bilbiography",
             "label": "Bibliography",
-            "members": ["bibl","author","editor","publisher","relatedItem","resp","respStmt"]
+            "members": ["author","bibl","editor","publisher","relatedItem","resp","respStmt"]
         }
     ],
     "structure": [
         {
             "id": "structure",
             "label": "Structure",
-            "members": ["div","ab"]
+            "members": ["div"]
         },        
         {
             "id": "layout",
             "label": "Layout",
-            "members": ["front","body","back","floatingtext","titlePage"]
+            "members": ["back","body","floatingtext","front","titlePage"]
         }
     ],
     "graphic": [
         {
             "id": "figure",
             "label": "Figures and Tables",
-            "members": [ "table","figure","formula","quote","code"]
+            "members": [ "code","figure","formula","quote","table"]
         }
     ],
     "inline": [
         {
             "id": "inline",
             "label": "Inline",
-            "members": ["note", "pb", "lb", "milestone", "anchor"]
+            "members": ["anchor","lb", "milestone", "note", "pb"]
         } 
     ]
 }
