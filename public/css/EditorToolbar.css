@@ -14,6 +14,10 @@
     float: right;
 }
 
+#EditorToolbar .selected-action {
+    color: rgb(101, 177, 210);
+}
+
 #EditorToolbar button {
     -webkit-app-region: no-drag;
 }

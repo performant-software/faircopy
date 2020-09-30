@@ -493,7 +493,7 @@ export default class MainWindow extends Component {
 
         const onKeyDown = ( event ) => {
             const {expandedGutter} = this.state
-            if( event.ctrlKey && event.key === '.' ) {
+            if( event.ctrlKey && event.key === '/' ) {
                 this.setState({...this.state, expandedGutter: !expandedGutter })            
             }
         }

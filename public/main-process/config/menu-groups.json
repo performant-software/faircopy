@@ -21,7 +21,7 @@
             "members": ["address","desc","email","measure","num","person","place","rs","time"]
         }
     ],
-    "chunk": [
+    "structure": [
         {
             "id": "structure",
             "label": "Structure",
@@ -29,7 +29,7 @@
         },        
         {
             "id": "general",
-            "label": "Paragraphs and Lists",
+            "label": "Paragraphs",
             "members":["ab","item","l","lg","list","p"]
         },
         {

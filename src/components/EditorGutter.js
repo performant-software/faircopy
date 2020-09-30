@@ -7,8 +7,8 @@ const maxGutterMarks = 100
 export default class EditorGutter extends Component {
 
     renderGutterMark(node,startPos,endPos,index,column,columnPositions) {
-        const { teiDocument, scrollTop, expanded, onOpenElementMenu } = this.props
-        const { editorView, fairCopyProject } = teiDocument
+        const { teiDocument, scrollTop, expanded } = this.props
+        const { editorView } = teiDocument
         const editorState = editorView.state
 
         const startCoords = editorView.coordsAtPos(startPos)
@@ -28,17 +28,10 @@ export default class EditorGutter extends Component {
             editorView.dispatch(tr)
         }
 
-        const onContextMenu = (e) => {            
-            const { menus } = fairCopyProject
-            const menuGroups = menus['chunk']
-            onOpenElementMenu({ menuGroups, anchorEl: e.currentTarget, action: 'replace', actionData: { pos: startPos }})
-        }
-
         return (
             <div 
                 key={markKey} 
                 onClick={onClick} 
-                onContextMenu={onContextMenu} 
                 style={markStyle} 
                 className={className}
                 >

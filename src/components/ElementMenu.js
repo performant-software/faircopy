@@ -58,9 +58,13 @@ export default class ElementMenu extends Component {
                 if( action === 'create' ) {
                     createElement(member.id, teiDocument) 
                 } else {
-                    const error = replaceElement(member.id, teiDocument, actionData.pos) 
-                    if( error ) {
-                        onAlertMessage(error)
+                    const editorView = teiDocument.getActiveView()
+                    const selection = (editorView) ? editorView.state.selection : null 
+                    if( selection && selection.node ) {
+                        const error = replaceElement(member.id, teiDocument, selection.anchor) 
+                        if( error ) {
+                            onAlertMessage(error)
+                        }
                     }
                 }
                 closeSubMenu()    

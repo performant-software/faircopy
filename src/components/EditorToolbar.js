@@ -26,7 +26,7 @@ export default class EditorToolbar extends Component {
                 <Button
                     {...this.buttonProps}
                 >
-                    <i className="far fa-crosshairs fa-2x"></i>
+                    <i className="far selected-action fa-crosshairs fa-2x"></i>
                 </Button>  
                 <Button
                     {...this.buttonProps}
@@ -71,7 +71,7 @@ export default class EditorToolbar extends Component {
         const onClickStructure = () => {
             const { menus } = fairCopyProject
             const menuGroups = menus['structure']
-            onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: 'create'})
+            onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: 'replace' })
         }
 
         return (
