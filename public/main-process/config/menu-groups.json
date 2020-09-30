@@ -3,7 +3,7 @@
         {
             "id": "general",
             "label": "General",
-            "members": ["date", "hi", "name", "ref", "seg", "title"]
+            "members": ["date", "hi", "name", "ref", "s", "seg", "title"]
         },
         {
             "id": "transcription",
@@ -12,8 +12,8 @@
         },
         {
             "id": "segmentation",
-            "label": "Words and Characters",
-            "members": ["c","g","m","pc","s","w"]
+            "label": "Characters",
+            "members": ["c","g","m","pc","w"]
         },
         {
             "id": "data",

@@ -6,14 +6,61 @@ import { eraseSelection } from "../tei-document/editor-actions"
 
 export default class EditorToolbar extends Component {
     
-    render() {
-        const { onOpenElementMenu, onEditResource, teiDocument } = this.props
-        const { changedSinceLastSave, fairCopyProject } = teiDocument
-
-        const onClickSave = () => {
-            teiDocument.save()
-            teiDocument.refreshView()
+    constructor() {
+        super()
+        this.state = {
         }
+
+        this.buttonProps = {
+            className: 'toolbar-button',
+            disableRipple: true,
+            disableFocusRipple: true
+        }
+    }
+
+    renderActionButtons() {
+        const { teiDocument } = this.props
+
+        return (
+            <div style={{display: 'inline-block'}}>
+                <Button
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-crosshairs fa-2x"></i>
+                </Button>  
+                <Button
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-arrow-to-top fa-2x"></i>
+                </Button>  
+                <Button
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-arrow-to-bottom fa-2x"></i>
+                </Button>  
+                <Button
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-arrow-to-left fa-2x"></i>
+                </Button>  
+                <Button
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-arrow-to-right fa-2x"></i>
+                </Button>  
+                <Button
+                    onClick={()=>{eraseSelection(teiDocument)}}
+                    {...this.buttonProps}
+                >
+                    <i className="fas fa-eraser fa-2x"></i>
+                </Button>  
+            </div>
+        )
+    }
+
+    renderElementMenuButtons() {
+        const { onOpenElementMenu, teiDocument } = this.props
+        const { fairCopyProject } = teiDocument
 
         const onClickMarker = () => {
             const { menus } = fairCopyProject
@@ -27,89 +74,48 @@ export default class EditorToolbar extends Component {
             onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: 'create'})
         }
 
-        const buttonProps = {
-            disableRipple: true,
-            disableFocusRipple: true
+        return (
+            <div style={{display: 'inline-block'}}>
+                <Button
+                    ref={(el)=> { this.markerButtonEl = el }}
+                    onClick={onClickMarker}
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-marker fa-2x"></i>
+                </Button> 
+                <Button
+                    ref={(el)=> { this.structureButtonEl = el }}
+                    onClick={onClickStructure}
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-page-break fa-2x"></i>
+                </Button>    
+                <Button
+                    {...this.buttonProps}
+                >
+                    <i className="far fa-anchor fa-2x"></i>
+                </Button>  
+            </div>
+        )
+    }
+
+    render() {
+        const { onEditResource, teiDocument } = this.props
+        const { changedSinceLastSave } = teiDocument
+
+        const onClickSave = () => {
+            teiDocument.save()
+            teiDocument.refreshView()
         }
 
         return (
             <div id="EditorToolbar">
                 <div className="leftgroup">
-                    <Button
-                        ref={(el)=> { this.markerButtonEl = el }}
-                        onClick={onClickMarker}
-                        className="toolbar-button"
-                        {...buttonProps}
-                    >
-                        <i className="far fa-marker fa-2x"></i>
-                    </Button> 
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={onClickStructure}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-page-break fa-2x"></i>
-                    </Button>    
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-anchor fa-2x"></i>
-                    </Button>  
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-crosshairs fa-2x"></i>
-                    </Button>  
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-arrow-to-top fa-2x"></i>
-                    </Button>  
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-arrow-to-bottom fa-2x"></i>
-                    </Button>  
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-arrow-to-left fa-2x"></i>
-                    </Button>  
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-arrow-to-right fa-2x"></i>
-                    </Button>  
-                    <Button
-                        onClick={()=>{eraseSelection(teiDocument)}}
-                        className="toolbar-button"
-                        {...buttonProps}
-                    >
-                        <i className="fas fa-eraser fa-2x"></i>
-                    </Button>  
+                    { this.renderElementMenuButtons() }
+                    { this.renderActionButtons() }
                     <Button
                         onClick={onEditResource}
-                        className="toolbar-button"
-                        {...buttonProps}
+                        {...this.buttonProps}
                     >
                         <i className="far fa-edit fa-2x"></i>
                     </Button>                   
@@ -117,9 +123,8 @@ export default class EditorToolbar extends Component {
                 <div className="rightgroup">
                     <Button
                         onClick={onClickSave}
-                        className="toolbar-button"
                         disabled={!changedSinceLastSave}
-                        {...buttonProps}
+                        {...this.buttonProps}
                     >
                         <i className="fas fa-save fa-2x"></i>
                     </Button>  
