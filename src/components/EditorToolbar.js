@@ -46,14 +46,6 @@ export default class EditorToolbar extends Component {
                     <Button
                         className="toolbar-button"
                         ref={(el)=> { this.structureButtonEl = el }}
-                        onClick={()=>{}}
-                        {...buttonProps}
-                    >
-                        <i className="far fa-paragraph fa-2x"></i>
-                    </Button>    
-                    <Button
-                        className="toolbar-button"
-                        ref={(el)=> { this.structureButtonEl = el }}
                         onClick={onClickStructure}
                         {...buttonProps}
                     >
