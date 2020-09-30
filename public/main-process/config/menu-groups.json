@@ -3,7 +3,7 @@
         {
             "id": "general",
             "label": "General Editing",
-            "members": ["hi", "date", "name", "ref", "title"]
+            "members": ["date", "hi", "name", "ref", "seg", "title"]
         },
         {
             "id": "transcription",
@@ -12,13 +12,13 @@
         },
         {
             "id": "segmentation",
-            "label": "Sentences",
-            "members": ["c","m","pc","rhyme","rs","s","seg","w"]
+            "label": "Words and Characters",
+            "members": ["c","g","m","pc","s","w"]
         },
         {
             "id": "data",
             "label": "Data",
-            "members": ["address","desc","email","measure","num","person","place","time"]
+            "members": ["address","desc","email","measure","num","person","place","rs","time"]
         }
     ],
     "chunk": [
@@ -52,26 +52,29 @@
         {
             "id": "structure",
             "label": "Structure",
-            "members": ["div"]
+            "members": ["back","body","div","front"]
         },        
         {
             "id": "layout",
             "label": "Layout",
-            "members": ["back","body","floatingtext","front","titlePage"]
-        }
-    ],
-    "graphic": [
-        {
-            "id": "figure",
-            "label": "Figures and Tables",
-            "members": [ "code","figure","formula","quote","table"]
+            "members": ["floatingtext","titlePage"]
         }
     ],
     "inline": [
         {
-            "id": "inline",
-            "label": "Inline",
-            "members": ["anchor","lb", "milestone", "note", "pb"]
+            "id": "anchors",
+            "label": "Anchors",
+            "members": ["anchor", "milestone"]
+        },
+        {
+            "id": "breaks",
+            "label": "Breaks",
+            "members": ["lb","pb"]
+        },
+        {
+            "id": "figure",
+            "label": "Figures, Notes, and Tables",
+            "members": [ "code","figure","formula","note","quote","table"]
         } 
     ]
 }

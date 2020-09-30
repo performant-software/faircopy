@@ -46,6 +46,14 @@ export default class EditorToolbar extends Component {
                     <Button
                         className="toolbar-button"
                         ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
+                        {...buttonProps}
+                    >
+                        <i className="far fa-paragraph fa-2x"></i>
+                    </Button>    
+                    <Button
+                        className="toolbar-button"
+                        ref={(el)=> { this.structureButtonEl = el }}
                         onClick={onClickStructure}
                         {...buttonProps}
                     >
@@ -53,10 +61,51 @@ export default class EditorToolbar extends Component {
                     </Button>    
                     <Button
                         className="toolbar-button"
-                        disabled
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
                         {...buttonProps}
                     >
-                        <i className="far fa-image fa-2x"></i>
+                        <i className="far fa-anchor fa-2x"></i>
+                    </Button>  
+                    <Button
+                        className="toolbar-button"
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
+                        {...buttonProps}
+                    >
+                        <i className="far fa-crosshairs fa-2x"></i>
+                    </Button>  
+                    <Button
+                        className="toolbar-button"
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
+                        {...buttonProps}
+                    >
+                        <i className="far fa-arrow-to-top fa-2x"></i>
+                    </Button>  
+                    <Button
+                        className="toolbar-button"
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
+                        {...buttonProps}
+                    >
+                        <i className="far fa-arrow-to-bottom fa-2x"></i>
+                    </Button>  
+                    <Button
+                        className="toolbar-button"
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
+                        {...buttonProps}
+                    >
+                        <i className="far fa-arrow-to-left fa-2x"></i>
+                    </Button>  
+                    <Button
+                        className="toolbar-button"
+                        ref={(el)=> { this.structureButtonEl = el }}
+                        onClick={()=>{}}
+                        {...buttonProps}
+                    >
+                        <i className="far fa-arrow-to-right fa-2x"></i>
                     </Button>  
                     <Button
                         onClick={()=>{eraseSelection(teiDocument)}}
