@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
 
-import { createElement, replaceElement } from "../tei-document/editor-actions"
+import { createElement, addInside, replaceElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -61,10 +61,29 @@ export default class ElementMenu extends Component {
                     const editorView = teiDocument.getActiveView()
                     const selection = (editorView) ? editorView.state.selection : null 
                     if( selection && selection.node ) {
-                        const error = replaceElement(member.id, teiDocument, selection.anchor) 
+                        let error
+                        switch(action) {
+                            case 'replace':
+                                error = replaceElement(member.id, teiDocument, selection.anchor) 
+                                break
+                            case 'addAbove':
+                                // TODO
+                                break
+                            case 'addBelow':
+                                // TODO
+                                break
+                            case 'addInside':
+                                error = addInside(member.id, teiDocument, selection.anchor) 
+                                break
+                            case 'addOutside':
+                                // TODO
+                                break
+                            default:
+                                error = 'Unknown action type selected in ElementMenu'
+                        }
                         if( error ) {
                             onAlertMessage(error)
-                        }
+                        }    
                     }
                 }
                 closeSubMenu()    

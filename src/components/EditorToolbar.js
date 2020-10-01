@@ -9,6 +9,7 @@ export default class EditorToolbar extends Component {
     constructor() {
         super()
         this.state = {
+            selectedAction: "replace"
         }
 
         this.buttonProps = {
@@ -20,33 +21,46 @@ export default class EditorToolbar extends Component {
 
     renderActionButtons() {
         const { teiDocument } = this.props
+        const { selectedAction } = this.state
+
+        const selectionClass = {}
+        selectionClass.replace = selectedAction === 'replace' ? 'selected-action' : ''
+        selectionClass.addAbove = selectedAction === 'addAbove' ? 'selected-action' : ''
+        selectionClass.addBelow = selectedAction === 'addBelow' ? 'selected-action' : ''
+        selectionClass.addOutside = selectedAction === 'addOutside' ? 'selected-action' : ''
+        selectionClass.addInside = selectedAction === 'addInside' ? 'selected-action' : ''
 
         return (
             <div style={{display: 'inline-block'}}>
                 <Button
+                    onClick={()=>{this.setState({...this.state, selectedAction: 'replace'})}}
                     {...this.buttonProps}
                 >
-                    <i className="far selected-action fa-crosshairs fa-2x"></i>
+                    <i className={`far ${selectionClass.replace} fa-crosshairs fa-2x`}></i>
                 </Button>  
                 <Button
+                    onClick={()=>{this.setState({...this.state, selectedAction: 'addAbove'})}}
                     {...this.buttonProps}
                 >
-                    <i className="far fa-arrow-to-top fa-2x"></i>
+                    <i className={`far ${selectionClass.addAbove} fa-arrow-to-top fa-2x`}></i>
                 </Button>  
                 <Button
+                    onClick={()=>{this.setState({...this.state, selectedAction: 'addBelow'})}}
                     {...this.buttonProps}
                 >
-                    <i className="far fa-arrow-to-bottom fa-2x"></i>
+                    <i className={`far ${selectionClass.addBelow} fa-arrow-to-bottom fa-2x`}></i>
                 </Button>  
                 <Button
+                    onClick={()=>{this.setState({...this.state, selectedAction: 'addOutside'})}}
                     {...this.buttonProps}
                 >
-                    <i className="far fa-arrow-to-left fa-2x"></i>
+                    <i className={`far ${selectionClass.addOutside} fa-arrow-to-left fa-2x`}></i>
                 </Button>  
                 <Button
+                    onClick={()=>{this.setState({...this.state, selectedAction: 'addInside'})}}
                     {...this.buttonProps}
                 >
-                    <i className="far fa-arrow-to-right fa-2x"></i>
+                    <i className={`far ${selectionClass.addInside} fa-arrow-to-right fa-2x`}></i>
                 </Button>  
                 <Button
                     onClick={()=>{eraseSelection(teiDocument)}}
@@ -60,6 +74,7 @@ export default class EditorToolbar extends Component {
 
     renderElementMenuButtons() {
         const { onOpenElementMenu, teiDocument } = this.props
+        const { selectedAction } = this.state
         const { fairCopyProject } = teiDocument
 
         const onClickMarker = () => {
@@ -71,7 +86,7 @@ export default class EditorToolbar extends Component {
         const onClickStructure = () => {
             const { menus } = fairCopyProject
             const menuGroups = menus['structure']
-            onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: 'replace' })
+            onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: selectedAction })
         }
 
         return (

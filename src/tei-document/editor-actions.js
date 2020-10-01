@@ -9,8 +9,6 @@ export function createElement( elementID, teiDocument ) {
     const {schema} = fairCopyProject.teiSchema
 
     switch( elementID ) {
-        case 'div': 
-            return createDiv( schema.nodes['div'], editorView )
         case 'pb': 
             return createPb( editorView )
         case 'note': 
@@ -28,11 +26,40 @@ export function replaceElement( elementID, teiDocument, pos ) {
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
     const node = doc.nodeAt(pos)
 
-    // first, see if we can just change this node to target nodeType
+    // change this node to target nodeType
     if( nodeType.validContent(node.content) ) {
         try {
             tr.setNodeMarkup(pos, nodeType)
             editorView.dispatch(tr)        
+        } catch(err) {
+            return err.message
+        }
+    }
+    return null 
+}
+
+export function addInside( elementID, teiDocument, pos ) {
+    const editorView = teiDocument.getActiveView()
+    const { tr, doc } = editorView.state
+
+    const parentNode = doc.nodeAt(pos)
+    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const fragment = parentNode.content
+
+    // if this is a valid action
+    if( parentNode.type.validContent(nodeType) && 
+        nodeType.validContent(fragment) ) {
+        try {
+            const $start = doc.resolve(pos+1)
+            const $end = doc.resolve(pos+1+fragment.size)
+            const nodeRange = new NodeRange($start,$end,$start.depth)
+        
+            // take the content of the parent and put it inside the new node
+            editorView.dispatch(tr
+                .wrap(nodeRange, [{type: nodeType}])
+                .scrollIntoView()
+            )
+            editorView.focus()            
         } catch(err) {
             return err.message
         }
@@ -69,6 +96,18 @@ export function replaceElement( elementID, teiDocument, pos ) {
 //     }
 //     return null
 // } 
+
+export function addOutside( elementID, teiDocument, pos ) {
+// TODO
+}
+
+export function addAbove( elementID, teiDocument, pos ) {
+// TODO
+}
+
+export function addBelow( elementID, teiDocument, pos ) {
+// TODO
+}
 
 export function onClippy() {
     // const html = fairCopy.services.readClipBoardHTML()
