@@ -3172,6 +3172,7 @@
 			"pmType": "node",
 			"content": "((model_divTop)* ((((model_divLike))+|((model_common)+ ((model_divLike))*)) (model_divBottom)*)?)",
 			"group": "model_divLike",
+			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",

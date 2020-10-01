@@ -28,12 +28,6 @@
     border-bottom: dotted red;
 }
 
-tei-div {
-    display: block;
-    border-top: 1px dotted black;
-    border-bottom: 1px dotted black;
-}
-
 textnode {
     display: block;
     margin-top: 5px;

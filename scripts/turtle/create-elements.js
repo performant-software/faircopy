@@ -64,6 +64,7 @@ const createStructureNodes = function createStructureNodes(elGroups,specs) {
             "pmType": "node",
             "content": encodeContent(divContent),
             "group": divSpec.group,
+            "gutterMark": true,
             "validAttrs": [],
             "desc": divSpec.description
         },
