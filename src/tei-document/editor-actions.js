@@ -102,11 +102,64 @@ export function addOutside( elementID, teiDocument, pos ) {
 }
 
 export function addAbove( elementID, teiDocument, pos ) {
-// TODO
+    const editorView = teiDocument.getActiveView()
+    const { schema } = teiDocument.fairCopyProject.teiSchema
+    const { doc } = editorView.state
+
+    const nodeType = schema.nodes[elementID]
+    const $targetPos = doc.resolve(pos)
+    const parentNode = $targetPos.parent
+
+    if( parentNode.type.validContent(nodeType) ) {
+        return addAt(nodeType, pos, editorView, schema )
+    } else {
+        return "Cannot place here"
+    }
 }
 
 export function addBelow( elementID, teiDocument, pos ) {
-// TODO
+    const editorView = teiDocument.getActiveView()
+    const { schema } = teiDocument.fairCopyProject.teiSchema
+    const { doc } = editorView.state
+
+    const nodeType = schema.nodes[elementID]
+    const $targetPos = doc.resolve(pos)
+    const parentNode = $targetPos.parent
+
+    if( parentNode.type.validContent(nodeType) ) {
+        const targetNode = doc.nodeAt(pos)
+        const insertPos = pos + targetNode.nodeSize
+        return addAt(nodeType, insertPos, editorView, schema )
+    } else {
+        return "Cannot place here"
+    }
+}
+
+function addAt( nodeType, insertPos, editorView, schema ) {
+    try {  
+        const { tr } = editorView.state
+
+        // element must ultimately wrap a textNode, so find wrapping 
+        const textNodeType = schema.nodes['textNode']
+        const connective = nodeType.contentMatch.findWrapping(textNodeType)
+        if( connective ) {
+            let wrap = textNodeType.create()
+            for (let i = connective.length - 1; i >= 0; i--) {
+                wrap = Fragment.from(connective[i].create(null, wrap))
+            }
+            const node = nodeType.create({},wrap)
+            tr.insert(insertPos,node)
+            tr.scrollIntoView()
+            editorView.dispatch(tr)
+            editorView.focus()                
+        } else {
+            return "No path to textnode"
+        }
+    } catch(err) {
+        return err.message
+    }
+
+    return null 
 }
 
 export function onClippy() {

@@ -30,7 +30,7 @@
         {
             "id": "general",
             "label": "Paragraphs",
-            "members":["ab","item","l","lg","list","p"]
+            "members":["p","lg","ab","item","l","list"]
         },
         {
             "id": "titles",

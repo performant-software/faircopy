@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
 
-import { createElement, addInside, replaceElement } from "../tei-document/editor-actions"
+import { createElement, addInside, addBelow, addAbove, replaceElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -40,7 +40,7 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { menuGroups, teiDocument, action, actionData, onAlertMessage } = this.props
+        const { menuGroups, teiDocument, action, onAlertMessage } = this.props
         const { openSubMenu } = this.state
 
         if( !openSubMenu || !menuGroups[openSubMenu] ) return
@@ -67,10 +67,10 @@ export default class ElementMenu extends Component {
                                 error = replaceElement(member.id, teiDocument, selection.anchor) 
                                 break
                             case 'addAbove':
-                                // TODO
+                                error = addAbove(member.id, teiDocument, selection.anchor) 
                                 break
                             case 'addBelow':
-                                // TODO
+                                error = addBelow(member.id, teiDocument, selection.anchor) 
                                 break
                             case 'addInside':
                                 error = addInside(member.id, teiDocument, selection.anchor) 
