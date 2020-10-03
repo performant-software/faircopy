@@ -1,5 +1,5 @@
 import { TextSelection, NodeSelection } from "prosemirror-state"
-import { Node } from "prosemirror-model"
+import { Node, Fragment } from "prosemirror-model"
 
 function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {
@@ -119,6 +119,33 @@ export function removeMark(markType) {
         }
         return true
     }
+}
+
+export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
+    try {  
+        const { tr } = editorView.state
+
+        // element must ultimately wrap a textNode, so find wrapping 
+        const textNodeType = schema.nodes['textNode']
+        const connective = nodeType.contentMatch.findWrapping(textNodeType)
+        if( connective ) {
+            let wrap = textNodeType.create()
+            for (let i = connective.length - 1; i >= 0; i--) {
+                wrap = Fragment.from(connective[i].create(null, wrap))
+            }
+            const node = nodeType.create({},wrap)
+            tr.insert(insertPos,node)
+            tr.scrollIntoView()
+            editorView.dispatch(tr)
+            editorView.focus()                
+        } else {
+            return "No path to textnode"
+        }
+    } catch(err) {
+        return err.message
+    }
+
+    return null 
 }
 
 export function changeAttribute( element, attributeKey, value, $anchor, tr ) {

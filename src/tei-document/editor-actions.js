@@ -1,7 +1,5 @@
-import { NodeRange, Fragment } from 'prosemirror-model'
-import { wrapIn } from 'prosemirror-commands'
-import { addMark } from "./commands"
-import { findWrapping } from "prosemirror-transform"
+import { NodeRange } from 'prosemirror-model'
+import { addMark, insertNodeAt } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
@@ -67,36 +65,6 @@ export function addInside( elementID, teiDocument, pos ) {
     return null 
 }
     
-//     else {
-//         const fragment = Fragment.from(node)
-//         const $start = doc.resolve(pos)
-//         const $end = doc.resolve(pos+node.nodeSize)
-//         const nodeRange = new NodeRange($start,$end,$start.depth)
-
-//         // if not, can nodeType wrap the node?         
-//         if( nodeType.validContent(fragment) ) {
-//             try {
-//                 tr.wrap(nodeRange, [{type: nodeType}])
-//                 editorView.dispatch(tr)
-//                 editorView.focus()            
-//             } catch(err) {
-//                 return err.message
-//             }
-//         } else {
-//             // if not, find a wrapper that allows the element to wrap nodeRange, if there is one
-//             try {
-//                 const wrapper = findWrapping(nodeRange,nodeType)
-//                 tr.wrap(nodeRange, wrapper)
-//                 editorView.dispatch(tr)
-//                 editorView.focus()            
-//             } catch(err) {
-//                 return err.message
-//             }
-//         }
-//     }
-//     return null
-// } 
-
 export function addOutside( elementID, teiDocument, pos ) {
 // TODO
 }
@@ -111,7 +79,7 @@ export function addAbove( elementID, teiDocument, pos ) {
     const parentNode = $targetPos.parent
 
     if( parentNode.type.validContent(nodeType) ) {
-        return addAt(nodeType, pos, editorView, schema )
+        return insertNodeAt(nodeType, pos, editorView, schema )
     } else {
         return "Cannot place here"
     }
@@ -129,37 +97,10 @@ export function addBelow( elementID, teiDocument, pos ) {
     if( parentNode.type.validContent(nodeType) ) {
         const targetNode = doc.nodeAt(pos)
         const insertPos = pos + targetNode.nodeSize
-        return addAt(nodeType, insertPos, editorView, schema )
+        return insertNodeAt(nodeType, insertPos, editorView, schema )
     } else {
         return "Cannot place here"
     }
-}
-
-function addAt( nodeType, insertPos, editorView, schema ) {
-    try {  
-        const { tr } = editorView.state
-
-        // element must ultimately wrap a textNode, so find wrapping 
-        const textNodeType = schema.nodes['textNode']
-        const connective = nodeType.contentMatch.findWrapping(textNodeType)
-        if( connective ) {
-            let wrap = textNodeType.create()
-            for (let i = connective.length - 1; i >= 0; i--) {
-                wrap = Fragment.from(connective[i].create(null, wrap))
-            }
-            const node = nodeType.create({},wrap)
-            tr.insert(insertPos,node)
-            tr.scrollIntoView()
-            editorView.dispatch(tr)
-            editorView.focus()                
-        } else {
-            return "No path to textnode"
-        }
-    } catch(err) {
-        return err.message
-    }
-
-    return null 
 }
 
 export function onClippy() {
@@ -185,12 +126,6 @@ function createMark(markType, editorView) {
     const cmd = addMark( markType )
     cmd( editorView.state, editorView.dispatch ) 
     editorView.focus()
-}
-
-function createDiv( divNodeType, editorView ) {
-    const cmd = wrapIn(divNodeType)
-    cmd( editorView.state, editorView.dispatch )
-    editorView.focus()     
 }
 
 function createPb( editorView ) {
