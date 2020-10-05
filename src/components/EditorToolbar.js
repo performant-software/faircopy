@@ -41,12 +41,14 @@ export default class EditorToolbar extends Component {
         const selectionClass = selected ? 'selected-action' : ''
         return (
             <Tooltip title={toolTip}>
-                <Button
-                    onClick={onClick}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${selectionClass} ${icon} fa-2x`}></i>
-                </Button>  
+                <span>
+                    <Button
+                        onClick={onClick}
+                        {...this.buttonProps}
+                    >
+                        <i className={`far ${selectionClass} ${icon} fa-2x`}></i>
+                    </Button>  
+                </span>
             </Tooltip>            
         )
     }
@@ -88,13 +90,15 @@ export default class EditorToolbar extends Component {
                     ()=>{this.setState({...this.state, selectedAction: 'addInside'})}) 
                 }
                 <Tooltip title="Erase Marks">
-                    <Button
-                        disabled={this.getEnabledMenu() !== 'marks'}
-                        onClick={()=>{eraseSelection(teiDocument)}}
-                        {...this.buttonProps}
-                    >
-                        <i className="fas fa-eraser fa-2x"></i>
-                    </Button>  
+                    <span>
+                        <Button
+                            disabled={this.getEnabledMenu() !== 'marks'}
+                            onClick={()=>{eraseSelection(teiDocument)}}
+                            {...this.buttonProps}
+                        >
+                            <i className="fas fa-eraser fa-2x"></i>
+                        </Button>                          
+                    </span>
                 </Tooltip>
             </div>
         )
@@ -103,14 +107,16 @@ export default class EditorToolbar extends Component {
     renderElementMenuButton( toolTip, icon, disabled, onRef, onClick ) {
         return (
             <Tooltip title={toolTip}>
-                <Button
-                    disabled={disabled}
-                    ref={onRef}
-                    onClick={onClick}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${icon} fa-2x`}></i>
-                </Button> 
+                <span>
+                    <Button
+                        disabled={disabled}
+                        ref={onRef}
+                        onClick={onClick}
+                        {...this.buttonProps}
+                    >
+                        <i className={`far ${icon} fa-2x`}></i>
+                    </Button> 
+                </span>
             </Tooltip>
         )
     }
@@ -176,23 +182,27 @@ export default class EditorToolbar extends Component {
                     { this.renderElementMenuButtons() }
                     { this.renderActionButtons() }
                     <Tooltip title="Edit Document Properties">
-                        <Button
-                            onClick={onEditResource}
-                            {...this.buttonProps}
-                        >
-                            <i className="far fa-edit fa-2x"></i>
-                        </Button>                   
+                        <span>
+                            <Button
+                                onClick={onEditResource}
+                                {...this.buttonProps}
+                            >
+                                <i className="far fa-edit fa-2x"></i>
+                            </Button>                   
+                        </span>
                     </Tooltip>
                 </div>
                 <div className="rightgroup">
                     <Tooltip title={"Save Document"}>
-                        <Button
-                            onClick={onClickSave}
-                            disabled={!changedSinceLastSave}
-                            {...this.buttonProps}
-                        >
-                            <i className="fas fa-save fa-2x"></i>
-                        </Button>  
+                        <span>
+                            <Button
+                                onClick={onClickSave}
+                                disabled={!changedSinceLastSave}
+                                {...this.buttonProps}
+                            >
+                                <i className="fas fa-save fa-2x"></i>
+                            </Button>  
+                        </span>
                     </Tooltip>
                 </div>
             </div>
