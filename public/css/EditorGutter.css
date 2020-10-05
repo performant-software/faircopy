@@ -20,6 +20,7 @@
 
 .EditorGutter .el-name {
     display: inline-block;
+    user-select: none;
     margin-top: 2px;
     margin-left: 4px;
     margin-right: 4px;

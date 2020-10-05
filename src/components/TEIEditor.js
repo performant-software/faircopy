@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 import { Typography } from '@material-ui/core';
+import applyDevTools from "prosemirror-dev-tools";
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
@@ -69,6 +70,7 @@ export default class TEIEditor extends Component {
                 clipboardSerializer: createClipboardSerializer(teiSchema,teiDocument)
             }
         )
+        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.editorView = editorView
         teiDocument.refreshView()

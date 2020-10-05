@@ -1,4 +1,4 @@
-import { NodeRange } from 'prosemirror-model'
+import { NodeRange, Fragment } from 'prosemirror-model'
 import { addMark, insertNodeAt } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
@@ -66,7 +66,28 @@ export function addInside( elementID, teiDocument, pos ) {
 }
     
 export function addOutside( elementID, teiDocument, pos ) {
-// TODO
+    const editorView = teiDocument.getActiveView()
+    const { doc, tr } = editorView.state
+
+    const $pos = doc.resolve(pos)
+    const targetNode = doc.nodeAt(pos)
+    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+
+    // if this is a valid action
+    if( nodeType.validContent(Fragment.from(targetNode)) ) {
+        try {
+            const $start = doc.resolve($pos.start($pos.depth+1))
+            const $end = doc.resolve($start.end($start.depth)+1)
+            const nodeRange = new NodeRange($start,$end,$pos.depth)
+            tr.wrap(nodeRange,[{type: nodeType}])
+            tr.scrollIntoView()
+            editorView.dispatch(tr)
+            editorView.focus()        
+        } catch(err) {
+            return err.message
+        }
+    }
+    return null 
 }
 
 export function addAbove( elementID, teiDocument, pos ) {

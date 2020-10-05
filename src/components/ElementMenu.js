@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
 
-import { createElement, addInside, addBelow, addAbove, replaceElement } from "../tei-document/editor-actions"
+import { createElement, addInside, addBelow, addAbove, addOutside, replaceElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -76,7 +76,7 @@ export default class ElementMenu extends Component {
                                 error = addInside(member.id, teiDocument, selection.anchor) 
                                 break
                             case 'addOutside':
-                                // TODO
+                                error = addOutside(member.id, teiDocument, selection.anchor) 
                                 break
                             default:
                                 error = 'Unknown action type selected in ElementMenu'
