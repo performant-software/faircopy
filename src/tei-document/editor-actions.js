@@ -98,8 +98,9 @@ export function addAbove( elementID, teiDocument, pos ) {
     const nodeType = schema.nodes[elementID]
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
+    const testFragment = Fragment.from(nodeType.create())
 
-    if( parentNode.type.validContent(nodeType) ) {
+    if( parentNode.type.validContent(testFragment) ) {
         return insertNodeAt(nodeType, pos, editorView, schema )
     } else {
         return "Cannot place here"
@@ -114,8 +115,9 @@ export function addBelow( elementID, teiDocument, pos ) {
     const nodeType = schema.nodes[elementID]
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
+    const testFragment = Fragment.from(nodeType.create())
 
-    if( parentNode.type.validContent(nodeType) ) {
+    if( parentNode.type.validContent(testFragment) ) {
         const targetNode = doc.nodeAt(pos)
         const insertPos = pos + targetNode.nodeSize
         return insertNodeAt(nodeType, insertPos, editorView, schema )

@@ -30,7 +30,12 @@
         {
             "id": "general",
             "label": "Paragraphs",
-            "members":["p","lg","ab","item","l","list"]
+            "members":["p","ab"]
+        },
+        {
+            "id": "lines",
+            "label": "Lines and lists",
+            "members":["item","l","lg","list"]
         },
         {
             "id": "titles",
