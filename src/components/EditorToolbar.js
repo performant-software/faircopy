@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button } from '@material-ui/core'
+import { Button, Tooltip } from '@material-ui/core'
 
 import { eraseSelection } from "../tei-document/editor-actions"
 
@@ -37,56 +37,81 @@ export default class EditorToolbar extends Component {
         return null
     }
 
+    renderActionButton(toolTip, icon, selected, onClick ) {
+        const selectionClass = selected ? 'selected-action' : ''
+        return (
+            <Tooltip title={toolTip}>
+                <Button
+                    onClick={onClick}
+                    {...this.buttonProps}
+                >
+                    <i className={`far ${selectionClass} ${icon} fa-2x`}></i>
+                </Button>  
+            </Tooltip>            
+        )
+    }
+
     renderActionButtons() {
         const { teiDocument } = this.props
         const { selectedAction } = this.state
-
-        const selectionClass = {}
-        selectionClass.replace = selectedAction === 'replace' ? 'selected-action' : ''
-        selectionClass.addAbove = selectedAction === 'addAbove' ? 'selected-action' : ''
-        selectionClass.addBelow = selectedAction === 'addBelow' ? 'selected-action' : ''
-        selectionClass.addOutside = selectedAction === 'addOutside' ? 'selected-action' : ''
-        selectionClass.addInside = selectedAction === 'addInside' ? 'selected-action' : ''
-        
+       
         return (
             <div style={{display: 'inline-block'}}>
-                <Button
-                    onClick={()=>{this.setState({...this.state, selectedAction: 'replace'})}}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${selectionClass.replace} fa-crosshairs fa-2x`}></i>
-                </Button>  
-                <Button
-                    onClick={()=>{this.setState({...this.state, selectedAction: 'addAbove'})}}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${selectionClass.addAbove} fa-arrow-to-top fa-2x`}></i>
-                </Button>  
-                <Button
-                    onClick={()=>{this.setState({...this.state, selectedAction: 'addBelow'})}}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${selectionClass.addBelow} fa-arrow-to-bottom fa-2x`}></i>
-                </Button>  
-                <Button
-                    onClick={()=>{this.setState({...this.state, selectedAction: 'addOutside'})}}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${selectionClass.addOutside} fa-arrow-to-left fa-2x`}></i>
-                </Button>  
-                <Button
-                    onClick={()=>{this.setState({...this.state, selectedAction: 'addInside'})}}
-                    {...this.buttonProps}
-                >
-                    <i className={`far ${selectionClass.addInside} fa-arrow-to-right fa-2x`}></i>
-                </Button>  
-                <Button
-                    onClick={()=>{eraseSelection(teiDocument)}}
-                    {...this.buttonProps}
-                >
-                    <i className="fas fa-eraser fa-2x"></i>
-                </Button>  
+                { this.renderActionButton(
+                    "Replace Element", 
+                    'fa-crosshairs', 
+                    (selectedAction === 'replace'), 
+                    ()=>{this.setState({...this.state, selectedAction: 'replace'})}) 
+                }
+                { this.renderActionButton(
+                    "Add Element Above", 
+                    'fa-arrow-to-top', 
+                    (selectedAction === 'addAbove'), 
+                    ()=>{this.setState({...this.state, selectedAction: 'addAbove'})}) 
+                }
+                { this.renderActionButton(
+                    "Add Element Below", 
+                    'fa-arrow-to-bottom', 
+                    (selectedAction === 'addBelow'), 
+                    ()=>{this.setState({...this.state, selectedAction: 'addBelow'})}) 
+                }
+                { this.renderActionButton(
+                    "Add Element Outside", 
+                    'fa-arrow-to-left', 
+                    (selectedAction === 'addOutside'), 
+                    ()=>{this.setState({...this.state, selectedAction: 'addOutside'})}) 
+                }
+                { this.renderActionButton(
+                    "Add Element Inside", 
+                    'fa-arrow-to-right', 
+                    (selectedAction === 'addInside'), 
+                    ()=>{this.setState({...this.state, selectedAction: 'addInside'})}) 
+                }
+                <Tooltip title="Erase Marks">
+                    <Button
+                        disabled={this.getEnabledMenu() !== 'marks'}
+                        onClick={()=>{eraseSelection(teiDocument)}}
+                        {...this.buttonProps}
+                    >
+                        <i className="fas fa-eraser fa-2x"></i>
+                    </Button>  
+                </Tooltip>
             </div>
+        )
+    }
+
+    renderElementMenuButton( toolTip, icon, disabled, onRef, onClick ) {
+        return (
+            <Tooltip title={toolTip}>
+                <Button
+                    disabled={disabled}
+                    ref={onRef}
+                    onClick={onClick}
+                    {...this.buttonProps}
+                >
+                    <i className={`far ${icon} fa-2x`}></i>
+                </Button> 
+            </Tooltip>
         )
     }
 
@@ -111,28 +136,27 @@ export default class EditorToolbar extends Component {
 
         return (
             <div style={{display: 'inline-block'}}>
-                <Button
-                    disabled={enabledMenu !== 'marks'}
-                    ref={(el)=> { this.markerButtonEl = el }}
-                    onClick={onClickMarker}
-                    {...this.buttonProps}
-                >
-                    <i className="far fa-marker fa-2x"></i>
-                </Button> 
-                <Button
-                    disabled={enabledMenu !== 'structures'}
-                    ref={(el)=> { this.structureButtonEl = el }}
-                    onClick={onClickStructure}
-                    {...this.buttonProps}
-                >
-                    <i className="far fa-page-break fa-2x"></i>
-                </Button>    
-                <Button
-                    disabled={enabledMenu !== 'inlines'}
-                    {...this.buttonProps}
-                >
-                    <i className="far fa-anchor fa-2x"></i>
-                </Button>  
+                { this.renderElementMenuButton(
+                    "Marks",
+                    "fa-marker",
+                    (enabledMenu !== 'marks'),
+                    (el)=> { this.markerButtonEl = el },
+                    onClickMarker
+                )}
+                { this.renderElementMenuButton(
+                    "Structures",
+                    "fa-page-break",
+                    (enabledMenu !== 'structures'),
+                    (el)=> { this.structureButtonEl = el },
+                    onClickStructure
+                )}
+                { this.renderElementMenuButton(
+                    "Inlines",
+                    "fa-anchor",
+                    (enabledMenu !== 'inlines'),
+                    ()=> {},
+                    ()=> {},
+                )}
             </div>
         )
     }
@@ -151,21 +175,25 @@ export default class EditorToolbar extends Component {
                 <div className="leftgroup">
                     { this.renderElementMenuButtons() }
                     { this.renderActionButtons() }
-                    <Button
-                        onClick={onEditResource}
-                        {...this.buttonProps}
-                    >
-                        <i className="far fa-edit fa-2x"></i>
-                    </Button>                   
+                    <Tooltip title="Edit Document Properties">
+                        <Button
+                            onClick={onEditResource}
+                            {...this.buttonProps}
+                        >
+                            <i className="far fa-edit fa-2x"></i>
+                        </Button>                   
+                    </Tooltip>
                 </div>
                 <div className="rightgroup">
-                    <Button
-                        onClick={onClickSave}
-                        disabled={!changedSinceLastSave}
-                        {...this.buttonProps}
-                    >
-                        <i className="fas fa-save fa-2x"></i>
-                    </Button>  
+                    <Tooltip title={"Save Document"}>
+                        <Button
+                            onClick={onClickSave}
+                            disabled={!changedSinceLastSave}
+                            {...this.buttonProps}
+                        >
+                            <i className="fas fa-save fa-2x"></i>
+                        </Button>  
+                    </Tooltip>
                 </div>
             </div>
         )
