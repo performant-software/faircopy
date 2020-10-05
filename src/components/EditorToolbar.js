@@ -19,6 +19,24 @@ export default class EditorToolbar extends Component {
         }
     }
 
+    getEnabledMenu() {
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
+        if( editorView ) {
+            const { selection } = editorView.state
+            if( selection.node ) {
+                return "structures"
+            } else {
+                if( selection.empty ) {
+                    return "inlines"
+                } else {
+                    return "marks"
+                }
+            }    
+        } 
+        return null
+    }
+
     renderActionButtons() {
         const { teiDocument } = this.props
         const { selectedAction } = this.state
@@ -29,7 +47,7 @@ export default class EditorToolbar extends Component {
         selectionClass.addBelow = selectedAction === 'addBelow' ? 'selected-action' : ''
         selectionClass.addOutside = selectedAction === 'addOutside' ? 'selected-action' : ''
         selectionClass.addInside = selectedAction === 'addInside' ? 'selected-action' : ''
-
+        
         return (
             <div style={{display: 'inline-block'}}>
                 <Button
@@ -89,9 +107,12 @@ export default class EditorToolbar extends Component {
             onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: selectedAction })
         }
 
+        const enabledMenu = this.getEnabledMenu()
+
         return (
             <div style={{display: 'inline-block'}}>
                 <Button
+                    disabled={enabledMenu !== 'marks'}
                     ref={(el)=> { this.markerButtonEl = el }}
                     onClick={onClickMarker}
                     {...this.buttonProps}
@@ -99,6 +120,7 @@ export default class EditorToolbar extends Component {
                     <i className="far fa-marker fa-2x"></i>
                 </Button> 
                 <Button
+                    disabled={enabledMenu !== 'structures'}
                     ref={(el)=> { this.structureButtonEl = el }}
                     onClick={onClickStructure}
                     {...this.buttonProps}
@@ -106,6 +128,7 @@ export default class EditorToolbar extends Component {
                     <i className="far fa-page-break fa-2x"></i>
                 </Button>    
                 <Button
+                    disabled={enabledMenu !== 'inlines'}
                     {...this.buttonProps}
                 >
                     <i className="far fa-anchor fa-2x"></i>
