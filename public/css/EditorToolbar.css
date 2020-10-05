@@ -13,7 +13,7 @@
     display: inline-block;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1050px) {
     #EditorToolbar .rightgroup {
         float: right;
     }    

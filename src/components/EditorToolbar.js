@@ -21,8 +21,10 @@ export default class EditorToolbar extends Component {
 
     getEnabledMenu() {
         const { teiDocument } = this.props
+        const { selectedAction } = this.state
         const editorView = teiDocument.getActiveView()
         if( editorView ) {
+            if( selectedAction === 'info' ) return "all"
             const { selection } = editorView.state
             if( selection.node ) {
                 return "structures"
@@ -37,8 +39,11 @@ export default class EditorToolbar extends Component {
         return null
     }
 
-    renderActionButton(toolTip, icon, selected, onClick ) {
-        const selectionClass = selected ? 'selected-action' : ''
+    renderActionButton( toolTip, icon, action ) {
+        const { selectedAction } = this.state
+        const selectionClass = selectedAction === action ? 'selected-action' : ''
+        const onClick = ()=>{this.setState({...this.state, selectedAction: action})} 
+
         return (
             <Tooltip title={toolTip}>
                 <span>
@@ -56,43 +61,20 @@ export default class EditorToolbar extends Component {
     renderActionButtons() {
         const { teiDocument } = this.props
         const { selectedAction } = this.state
-       
+        const eraseDisabled = selectedAction !== 'marks' 
+
         return (
             <div style={{display: 'inline-block'}}>
-                { this.renderActionButton(
-                    "Replace Element", 
-                    'fa-crosshairs', 
-                    (selectedAction === 'replace'), 
-                    ()=>{this.setState({...this.state, selectedAction: 'replace'})}) 
-                }
-                { this.renderActionButton(
-                    "Add Element Above", 
-                    'fa-arrow-to-top', 
-                    (selectedAction === 'addAbove'), 
-                    ()=>{this.setState({...this.state, selectedAction: 'addAbove'})}) 
-                }
-                { this.renderActionButton(
-                    "Add Element Below", 
-                    'fa-arrow-to-bottom', 
-                    (selectedAction === 'addBelow'), 
-                    ()=>{this.setState({...this.state, selectedAction: 'addBelow'})}) 
-                }
-                { this.renderActionButton(
-                    "Add Element Outside", 
-                    'fa-arrow-to-left', 
-                    (selectedAction === 'addOutside'), 
-                    ()=>{this.setState({...this.state, selectedAction: 'addOutside'})}) 
-                }
-                { this.renderActionButton(
-                    "Add Element Inside", 
-                    'fa-arrow-to-right', 
-                    (selectedAction === 'addInside'), 
-                    ()=>{this.setState({...this.state, selectedAction: 'addInside'})}) 
-                }
+                { this.renderActionButton("Replace Element", 'fa-crosshairs', 'replace' ) }
+                { this.renderActionButton("Add Element Above", 'fa-arrow-to-top', 'addAbove') }
+                { this.renderActionButton("Add Element Below",  'fa-arrow-to-bottom', 'addBelow') }
+                { this.renderActionButton("Add Element Outside", 'fa-arrow-to-left', 'addOutside') }
+                { this.renderActionButton("Add Element Inside", 'fa-arrow-to-right', 'addInside') }
+                { this.renderActionButton("View Element Description", 'fa-info-circle', 'info') }
                 <Tooltip title="Erase Marks">
                     <span>
                         <Button
-                            disabled={this.getEnabledMenu() !== 'marks'}
+                            disabled={eraseDisabled}
                             onClick={()=>{eraseSelection(teiDocument)}}
                             {...this.buttonProps}
                         >
@@ -145,21 +127,21 @@ export default class EditorToolbar extends Component {
                 { this.renderElementMenuButton(
                     "Marks",
                     "fa-marker",
-                    (enabledMenu !== 'marks'),
+                    (enabledMenu !== 'all' && enabledMenu !== 'marks'),
                     (el)=> { this.markerButtonEl = el },
                     onClickMarker
                 )}
                 { this.renderElementMenuButton(
                     "Structures",
                     "fa-page-break",
-                    (enabledMenu !== 'structures'),
+                    (enabledMenu !== 'all' && enabledMenu !== 'structures'),
                     (el)=> { this.structureButtonEl = el },
                     onClickStructure
                 )}
                 { this.renderElementMenuButton(
                     "Inlines",
                     "fa-anchor",
-                    (enabledMenu !== 'inlines'),
+                    (enabledMenu !== 'all' && enabledMenu !== 'inlines'),
                     ()=> {},
                     ()=> {},
                 )}

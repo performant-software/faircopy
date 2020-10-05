@@ -24,7 +24,7 @@
     "structure": [
         {
             "id": "structure",
-            "label": "Structure",
+            "label": "Sections",
             "members": ["back","body","div","floatingtext","front"]
         },        
         {
