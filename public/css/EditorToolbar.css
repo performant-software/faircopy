@@ -2,7 +2,6 @@
 #EditorToolbar {
     border: 2px solid #EAEAEA;
     border-radius: 10px;
-    height: 40px;
     margin: 10px;
 }
 
@@ -11,7 +10,13 @@
 }
 
 #EditorToolbar .rightgroup {
-    float: right;
+    display: inline-block;
+}
+
+@media (min-width: 1000px) {
+    #EditorToolbar .rightgroup {
+        float: right;
+    }    
 }
 
 #EditorToolbar .selected-action {
