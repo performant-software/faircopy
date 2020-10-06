@@ -1,3 +1,4 @@
+const { joinBackward } = require('prosemirror-commands');
 const { encodeContent } = require('./parse-content');
 
 const createElements = function createElements(elGroups,specs) {
@@ -64,6 +65,7 @@ const createStructureNodes = function createStructureNodes(elGroups,specs) {
             "pmType": "node",
             "content": encodeContent(divContent),
             "group": divSpec.group,
+            "isolating": true,
             "gutterMark": true,
             "validAttrs": [],
             "desc": divSpec.description
@@ -72,7 +74,9 @@ const createStructureNodes = function createStructureNodes(elGroups,specs) {
         {
             "name": "doc",
             "pmType": "node",
-            "group": `body ${bodySpec.group}`,
+            "isolating": true,
+            "gutterMark": true,
+            "group": ['body',bodySpec.group].join(' '),
             "content": encodeContent(bodyContent)
         }
     ]

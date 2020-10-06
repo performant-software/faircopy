@@ -3172,6 +3172,7 @@
 			"pmType": "node",
 			"content": "((model_divTop)* ((((model_divLike))+|((model_common)+ ((model_divLike))*)) (model_divBottom)*)?)",
 			"group": "model_divLike",
+			"isolating": true,
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -3212,6 +3213,8 @@
 		{
 			"name": "doc",
 			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
 			"group": "body ",
 			"content": "((model_divTop (model_divTop)*)? ((model_divLike)+|((model_common)+ ((model_divLike)+)?)) (model_divBottom)*)"
 		}
