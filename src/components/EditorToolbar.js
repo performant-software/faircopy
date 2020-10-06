@@ -60,8 +60,7 @@ export default class EditorToolbar extends Component {
 
     renderActionButtons() {
         const { teiDocument } = this.props
-        const { selectedAction } = this.state
-        const eraseDisabled = selectedAction !== 'marks' 
+        const eraseDisabled = this.getEnabledMenu() !== 'marks'
 
         return (
             <div style={{display: 'inline-block'}}>
