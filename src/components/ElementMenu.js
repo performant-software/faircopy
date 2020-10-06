@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
 
-import { createElement, addInside, addBelow, addAbove, addOutside, replaceElement } from "../tei-document/editor-actions"
+import { validAction, createElement, addInside, addBelow, addAbove, addOutside, replaceElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -54,43 +54,46 @@ export default class ElementMenu extends Component {
 
         const menuItems = []
         for( const member of members ) {
+            const editorView = teiDocument.getActiveView()
+            const selection = (editorView) ? editorView.state.selection : null 
+
             const onClick = () => { 
                 if( action === 'create' ) {
                     createElement(member.id, teiDocument) 
                 } else {
-                    const editorView = teiDocument.getActiveView()
-                    const selection = (editorView) ? editorView.state.selection : null 
                     if( selection && selection.node ) {
-                        let error
-                        switch(action) {
-                            case 'replace':
-                                error = replaceElement(member.id, teiDocument, selection.anchor) 
-                                break
-                            case 'addAbove':
-                                error = addAbove(member.id, teiDocument, selection.anchor) 
-                                break
-                            case 'addBelow':
-                                error = addBelow(member.id, teiDocument, selection.anchor) 
-                                break
-                            case 'addInside':
-                                error = addInside(member.id, teiDocument, selection.anchor) 
-                                break
-                            case 'addOutside':
-                                error = addOutside(member.id, teiDocument, selection.anchor) 
-                                break
-                            default:
-                                error = 'Unknown action type selected in ElementMenu'
+                        try {
+                            switch(action) {
+                                case 'replace':
+                                    replaceElement(member.id, teiDocument, selection.anchor) 
+                                    break
+                                case 'addAbove':
+                                    addAbove(member.id, teiDocument, selection.anchor) 
+                                    break
+                                case 'addBelow':
+                                    addBelow(member.id, teiDocument, selection.anchor) 
+                                    break
+                                case 'addInside':
+                                    addInside(member.id, teiDocument, selection.anchor) 
+                                    break
+                                case 'addOutside':
+                                    addOutside(member.id, teiDocument, selection.anchor) 
+                                    break
+                                default:
+                                    throw new Error('Unknown action type selected in ElementMenu')
+                            }    
+                        } catch(err) {
+                            onAlertMessage(err.message)
                         }
-                        if( error ) {
-                            onAlertMessage(error)
-                        }    
                     }
                 }
                 closeSubMenu()    
             }
+            const valid = member.enabled ? validAction(action, member.id, teiDocument, selection.anchor ) : false
+
             menuItems.push(
                 <MenuItem 
-                    disabled={!member.enabled} 
+                    disabled={!valid} 
                     onClick={onClick} 
                     key={`submenu-${member.id}`}
                     disableRipple={true}

@@ -17,23 +17,38 @@ export function createElement( elementID, teiDocument ) {
     }                
 }
 
+export function validAction( actionType, elementID, teiDocument, pos ) {
+    const editorView = teiDocument.getActiveView()
+    const { doc } = editorView.state
+    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const node = doc.nodeAt(pos)
+    const $targetPos = doc.resolve(pos)
+    const parentNode = $targetPos.parent
+    const testFragment = Fragment.from(nodeType.create())
+
+    switch(actionType) {
+        case 'replace':
+            return nodeType.validContent(node.content) && parentNode.type.validContent(testFragment)
+        case 'addInside':
+            return nodeType.validContent(node.content) && node.type.validContent(testFragment) 
+        case 'addOutside':
+            return nodeType.validContent(Fragment.from(node)) && parentNode.type.validContent(testFragment)
+        case 'addAbove':
+        case 'addBelow':
+            return parentNode.type.validContent(testFragment)
+        default:
+            return true
+    }
+}
+
 // changes the NodeType for a node element at a given pos
 export function replaceElement( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { tr, doc } = editorView.state
+    const { tr } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
-    const node = doc.nodeAt(pos)
 
-    // change this node to target nodeType
-    if( nodeType.validContent(node.content) ) {
-        try {
-            tr.setNodeMarkup(pos, nodeType)
-            editorView.dispatch(tr)        
-        } catch(err) {
-            return err.message
-        }
-    }
-    return null 
+    tr.setNodeMarkup(pos, nodeType)
+    editorView.dispatch(tr)        
 }
 
 export function addInside( elementID, teiDocument, pos ) {
@@ -44,25 +59,16 @@ export function addInside( elementID, teiDocument, pos ) {
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
     const fragment = parentNode.content
 
-    // if this is a valid action
-    if( parentNode.type.validContent(nodeType) && 
-        nodeType.validContent(fragment) ) {
-        try {
-            const $start = doc.resolve(pos+1)
-            const $end = doc.resolve(pos+1+fragment.size)
-            const nodeRange = new NodeRange($start,$end,$start.depth)
-        
-            // take the content of the parent and put it inside the new node
-            editorView.dispatch(tr
-                .wrap(nodeRange, [{type: nodeType}])
-                .scrollIntoView()
-            )
-            editorView.focus()            
-        } catch(err) {
-            return err.message
-        }
-    }
-    return null 
+    const $start = doc.resolve(pos+1)
+    const $end = doc.resolve(pos+1+fragment.size)
+    const nodeRange = new NodeRange($start,$end,$start.depth)
+
+    // take the content of the parent and put it inside the new node
+    editorView.dispatch(tr
+        .wrap(nodeRange, [{type: nodeType}])
+        .scrollIntoView()
+    )
+    editorView.focus()            
 }
     
 export function addOutside( elementID, teiDocument, pos ) {
@@ -70,41 +76,23 @@ export function addOutside( elementID, teiDocument, pos ) {
     const { doc, tr } = editorView.state
 
     const $pos = doc.resolve(pos)
-    const targetNode = doc.nodeAt(pos)
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
 
-    // if this is a valid action
-    if( nodeType.validContent(Fragment.from(targetNode)) ) {
-        try {
-            const $start = doc.resolve($pos.start($pos.depth+1))
-            const $end = doc.resolve($start.end($start.depth)+1)
-            const nodeRange = new NodeRange($start,$end,$pos.depth)
-            tr.wrap(nodeRange,[{type: nodeType}])
-            tr.scrollIntoView()
-            editorView.dispatch(tr)
-            editorView.focus()        
-        } catch(err) {
-            return err.message
-        }
-    }
-    return null 
+    const $start = doc.resolve($pos.start($pos.depth+1))
+    const $end = doc.resolve($start.end($start.depth)+1)
+    const nodeRange = new NodeRange($start,$end,$pos.depth)
+    tr.wrap(nodeRange,[{type: nodeType}])
+    tr.scrollIntoView()
+    editorView.dispatch(tr)
+    editorView.focus()        
 }
 
 export function addAbove( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = teiDocument.fairCopyProject.teiSchema
-    const { doc } = editorView.state
 
     const nodeType = schema.nodes[elementID]
-    const $targetPos = doc.resolve(pos)
-    const parentNode = $targetPos.parent
-    const testFragment = Fragment.from(nodeType.create())
-
-    if( parentNode.type.validContent(testFragment) ) {
-        return insertNodeAt(nodeType, pos, editorView, schema )
-    } else {
-        return "Cannot place here"
-    }
+    insertNodeAt(nodeType, pos, editorView, schema )
 }
 
 export function addBelow( elementID, teiDocument, pos ) {
@@ -113,17 +101,9 @@ export function addBelow( elementID, teiDocument, pos ) {
     const { doc } = editorView.state
 
     const nodeType = schema.nodes[elementID]
-    const $targetPos = doc.resolve(pos)
-    const parentNode = $targetPos.parent
-    const testFragment = Fragment.from(nodeType.create())
-
-    if( parentNode.type.validContent(testFragment) ) {
-        const targetNode = doc.nodeAt(pos)
-        const insertPos = pos + targetNode.nodeSize
-        return insertNodeAt(nodeType, insertPos, editorView, schema )
-    } else {
-        return "Cannot place here"
-    }
+    const targetNode = doc.nodeAt(pos)
+    const insertPos = pos + targetNode.nodeSize
+    insertNodeAt(nodeType, insertPos, editorView, schema )
 }
 
 export function onClippy() {

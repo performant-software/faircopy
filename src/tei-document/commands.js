@@ -122,30 +122,24 @@ export function removeMark(markType) {
 }
 
 export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
-    try {  
-        const { tr } = editorView.state
+    const { tr } = editorView.state
 
-        // element must ultimately wrap a textNode, so find wrapping 
-        const textNodeType = schema.nodes['textNode']
-        const connective = nodeType.contentMatch.findWrapping(textNodeType)
-        if( connective ) {
-            let wrap = textNodeType.create()
-            for (let i = connective.length - 1; i >= 0; i--) {
-                wrap = Fragment.from(connective[i].create(null, wrap))
-            }
-            const node = nodeType.create({},wrap)
-            tr.insert(insertPos,node)
-            tr.scrollIntoView()
-            editorView.dispatch(tr)
-            editorView.focus()                
-        } else {
-            return "No path to textnode"
+    // element must ultimately wrap a textNode, so find wrapping 
+    const textNodeType = schema.nodes['textNode']
+    const connective = nodeType.contentMatch.findWrapping(textNodeType)
+    if( connective ) {
+        let wrap = textNodeType.create()
+        for (let i = connective.length - 1; i >= 0; i--) {
+            wrap = Fragment.from(connective[i].create(null, wrap))
         }
-    } catch(err) {
-        return err.message
+        const node = nodeType.create({},wrap)
+        tr.insert(insertPos,node)
+        tr.scrollIntoView()
+        editorView.dispatch(tr)
+        editorView.focus()                
+    } else {
+        throw new Error("No path to textnode")
     }
-
-    return null 
 }
 
 export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
