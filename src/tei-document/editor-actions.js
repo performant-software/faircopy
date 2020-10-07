@@ -18,6 +18,7 @@ export function createElement( elementID, teiDocument ) {
 }
 
 export function validAction( actionType, elementID, teiDocument, pos ) {
+    if( actionType === 'create' ) return true
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
@@ -99,6 +100,7 @@ export function addBelow( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = teiDocument.fairCopyProject.teiSchema
     const { doc } = editorView.state
+    debugger
 
     const nodeType = schema.nodes[elementID]
     const targetNode = doc.nodeAt(pos)
