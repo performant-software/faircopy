@@ -300,7 +300,7 @@ export function liftEmptyBlock(state, dispatch) {
 // :: (EditorState, ?(tr: Transaction)) → bool
 // Split the parent block of the selection. If the selection is a text
 // selection, also delete its content.
-export function splitBlock(state, dispatch) {
+export function splitBlock(state, dispatch, editorView, splitParent ) {
   let {$from, $to} = state.selection
   if (state.selection instanceof NodeSelection && state.selection.node.isBlock) {
     if (!$from.parentOffset || !canSplit(state.doc, $from.pos)) return false
@@ -317,7 +317,8 @@ export function splitBlock(state, dispatch) {
     let deflt = $from.depth === 0 ? null : defaultBlockAt($from, $from.node(-1).contentMatchAt($from.indexAfter(-1)))
     let can = canSplit(tr.doc, tr.mapping.map($from.pos), 2) // depth of 2 to pick up textNode
     if (can) {
-      tr.split(tr.mapping.map($from.pos), 2)
+      const splitDepth = (splitParent && $from.depth >= 3) ? 3 : 2
+      tr.split(tr.mapping.map($from.pos), splitDepth)
       if (!atEnd && !$from.parentOffset && $from.parent.type !== deflt &&
           $from.node(-1).canReplace($from.index(-1), $from.indexAfter(-1), Fragment.from(deflt.create(), $from.parent)))
         tr.setNodeMarkup(tr.mapping.map($from.before()), deflt)
@@ -327,12 +328,9 @@ export function splitBlock(state, dispatch) {
   return true
 }
 
-export function splitAndWrap(state, dispatch) {
-  // TODO
-}
 
-export function splitAndLift(state, dispatch) {
-  // TODO
+export function splitParent(state, dispatch) {
+  return splitBlock(state,dispatch,null,true)
 }
 
 // :: (EditorState, ?(tr: Transaction)) → bool
@@ -593,8 +591,8 @@ let del = chainCommands(deleteSelection, joinForward, selectNodeForward)
 // * **Mod-a** to `selectAll`
 export let pcBaseKeymap = {
   "Enter": splitBlock,
-  "Mod-Enter": splitAndWrap,
-  "Ctrl-Enter": splitAndLift,
+  "Mod-Enter": splitParent,
+  "Ctrl-Enter": splitParent,
   "Backspace": backspace,
   "Mod-Backspace": backspace,
   "Delete": del,
