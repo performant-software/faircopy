@@ -18,14 +18,38 @@ export function createElement( elementID, teiDocument ) {
 }
 
 export function validAction( actionType, elementID, teiDocument, pos ) {
-    if( actionType === 'create' ) return true
+    if( actionType === 'create' || actionType === 'info') return true
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
     const node = doc.nodeAt(pos)
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
-    const testFragment = Fragment.from(nodeType.create())
+    const nodeIndex = $targetPos.index()
+    const testNode = nodeType.create() 
+
+    // create a fragment that places the created node in position with its future siblings
+    let testFragment
+    if( actionType === 'addAbove' || actionType === 'addBelow' ) {
+        const { content } = parentNode
+        let siblings = []
+        for( let i=0; i < content.childCount; i++ ) { siblings.push( content.child(i) ) }
+        let before, after
+        if( actionType === 'addAbove' ) {
+            before = siblings.slice(0,nodeIndex)
+            after = siblings.slice(nodeIndex)
+        } else {
+            before = siblings.slice(0,nodeIndex+1)
+            after = siblings.slice(nodeIndex+1)
+        }   
+        siblings = before.concat([testNode]).concat(after)
+        testFragment = Fragment.from(siblings)  
+    } else if( actionType === 'replace' || actionType === 'addOutside' ) {
+        testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
+    } else {
+        // addInside
+        testFragment = Fragment.from(testNode)
+    }
 
     switch(actionType) {
         case 'replace':
@@ -38,17 +62,18 @@ export function validAction( actionType, elementID, teiDocument, pos ) {
         case 'addBelow':
             return parentNode.type.validContent(testFragment)
         default:
-            return true
+            throw new Error('Unrecognized action type.')
     }
 }
 
 // changes the NodeType for a node element at a given pos
 export function replaceElement( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { tr } = editorView.state
+    const { doc, tr } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const node = doc.nodeAt(pos)
 
-    tr.setNodeMarkup(pos, nodeType)
+    tr.setNodeMarkup(pos, nodeType, node.attrs)
     editorView.dispatch(tr)        
 }
 
@@ -100,7 +125,6 @@ export function addBelow( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = teiDocument.fairCopyProject.teiSchema
     const { doc } = editorView.state
-    debugger
 
     const nodeType = schema.nodes[elementID]
     const targetNode = doc.nodeAt(pos)
