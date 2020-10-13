@@ -57,7 +57,7 @@ export default class TEISchema {
             const contentExp = node.type.spec.content
             // if an element could have a textnode, but is instead empty, add a textnode to it
             if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
-                const $start = doc.resolve(pos+1)
+                const $start = tr.doc.resolve(tr.mapping.map(pos+1))
                 const nodeRange = new NodeRange($start,$start,$start.depth)
                 tr.wrap(nodeRange, [{type: textNodeType}])
             }
