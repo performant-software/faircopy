@@ -21,7 +21,7 @@ export const teiTemplate = `<?xml version="1.0" encoding="UTF-8"?>
         </fileDesc>
     </teiHeader>
 <text>
-    <body><ab><textNode></textNode></ab></body>
+    <body><ab></ab></body>
 </text>
 </TEI>
 `

@@ -97,6 +97,12 @@ export default class TEIDocument {
         return found
     }
 
+    finalizeEditorView(editorView) {
+        const {teiSchema} = this.fairCopyProject
+        this.editorView = editorView
+        teiSchema.addTextNodes(editorView)
+    }
+
     refreshView = () => {
         // dispatch a blank transaction to force a display update of the subcomponents
         if( this.editorView ) {

@@ -1,6 +1,7 @@
 import {Schema} from "prosemirror-model"
 import {DOMParser as PMDOMParser } from "prosemirror-model"
 import {DOMSerializer} from "prosemirror-model"
+import { NodeRange } from 'prosemirror-model'
 
 export default class TEISchema {
 
@@ -28,13 +29,13 @@ export default class TEISchema {
         this.teiDocuments.push(teiDocument)
         const domSerializer = DOMSerializer.fromSchema( this.schema )
         const domFragment = domSerializer.serializeFragment(content)
-        this.processTextNodes(domFragment)
+        this.removeTextNodes(domFragment)
         this.teiDocuments.pop()
         return domFragment
     }
 
     // remove textNodes from the DOM and replace each with its children
-    processTextNodes(documentFragment) {
+    removeTextNodes(documentFragment) {
         const textNodes = documentFragment.querySelectorAll("textNode")
         for( let i=0; i < textNodes.length; i++ ) {
             const textNode = textNodes[i]
@@ -45,6 +46,24 @@ export default class TEISchema {
             textNode.before(...texts)
             textNode.remove()
         }
+    }
+
+    addTextNodes(editorView) {
+        const { state } = editorView
+        const { tr, doc } = state
+        const textNodeType = this.schema.nodes['textNode'] 
+
+        doc.descendants((node,pos) => {
+            const contentExp = node.type.spec.content
+            // if an element could have a textnode, but is instead empty, add a textnode to it
+            if( node.childCount === 0 && contentExp.includes('textNode') ) {
+                const $start = doc.resolve(pos+1)
+                const nodeRange = new NodeRange($start,$start,$start.depth)
+                tr.wrap(nodeRange, [{type: textNodeType}])
+            }
+            return true
+        })
+        editorView.dispatch(tr)
     }
 
     parseSchemaConfig(json) {
@@ -58,7 +77,7 @@ export default class TEISchema {
 
         // These nodes must always be present.
         // ProseMirror cannot mix inline and block types in content expressions, so we have to 
-        // wrap text in a block and then unwrap it when we save the file. see processTextNodes()
+        // wrap text in a block and then unwrap it when we save the file. see renoveTextNodes()
         const nodes = {
             text: {
                 inline: true

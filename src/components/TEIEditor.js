@@ -72,8 +72,7 @@ export default class TEIEditor extends Component {
         )
         if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
-        teiDocument.editorView = editorView
-        teiDocument.refreshView()
+        teiDocument.finalizeEditorView(editorView)
     }
 
     dispatchTransaction = (transaction) => {
