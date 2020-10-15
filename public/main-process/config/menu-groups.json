@@ -3,7 +3,7 @@
         {
             "id": "general",
             "label": "General",
-            "members": ["date", "hi", "name", "ref", "s", "seg", "title"]
+            "members": ["date", "hi", "name", "q", "quote", "ref", "s", "seg", "title"]
         },
         {
             "id": "transcription",

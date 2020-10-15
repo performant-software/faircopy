@@ -2217,6 +2217,173 @@
 				}
 			}
 		},
+		"q": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"toWhom": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "q[type]"
+				},
+				"who": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"quote": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"defective": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"notation": {
+					"active": false,
+					"vocabID": "quote[notation]"
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "quote[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "quote[type]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
 		"ref": {
 			"attrState": {
 				"ana": {
@@ -5682,81 +5849,6 @@
 				}
 			}
 		},
-		"formula": {
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"notation": {
-					"active": false,
-					"vocabID": "formula[notation]"
-				},
-				"prev": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"select": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"style": {
-					"active": false
-				},
-				"synch": {
-					"active": false
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
 		"head": {
 			"attrState": {
 				"ana": {
@@ -6462,173 +6554,6 @@
 				},
 				"synch": {
 					"active": false
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
-		"q": {
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"prev": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"select": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"style": {
-					"active": false
-				},
-				"synch": {
-					"active": false
-				},
-				"toWhom": {
-					"active": false
-				},
-				"type": {
-					"active": false,
-					"vocabID": "q[type]"
-				},
-				"who": {
-					"active": false
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
-		"quote": {
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"defective": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"notation": {
-					"active": false,
-					"vocabID": "quote[notation]"
-				},
-				"prev": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"select": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"style": {
-					"active": false
-				},
-				"subtype": {
-					"active": false,
-					"vocabID": "quote[subtype]"
-				},
-				"synch": {
-					"active": false
-				},
-				"type": {
-					"active": false,
-					"vocabID": "quote[type]"
 				},
 				"xml:base": {
 					"active": false

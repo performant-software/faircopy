@@ -946,6 +946,73 @@
 			"desc": "contains a reading which is marked as following the original, rather than being normalized\n        or corrected."
 		},
 		{
+			"name": "q",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"toWhom",
+				"type",
+				"who",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_common model_inter model_qLike",
+			"desc": "refering to itself, not its normal referent"
+		},
+		{
+			"name": "quote",
+			"pmType": "mark",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"defective",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"notation",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
+			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external\n        to the text."
+		},
+		{
 			"name": "ref",
 			"pmType": "mark",
 			"validAttrs": [
@@ -1817,7 +1884,7 @@
 			"name": "ab",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1855,7 +1922,7 @@
 			"name": "actor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1890,7 +1957,7 @@
 			"name": "addrLine",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_addrPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1923,7 +1990,7 @@
 			"name": "author",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1998,7 +2065,7 @@
 			"name": "biblScope",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_biblPart model_imprintPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2034,7 +2101,7 @@
 			"name": "byline",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|docAuthor)*",
+			"content": "(textNode|docAuthor)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2067,7 +2134,7 @@
 			"name": "castItem",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_castItemPart|model_phrase)*",
+			"content": "(textNode|model_castItemPart)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2103,7 +2170,7 @@
 			"name": "closer",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|signed|dateline|salute|model_phrase)*",
+			"content": "(textNode|signed|dateline|salute)*",
 			"group": "model_divBottom model_divBottomPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2137,7 +2204,7 @@
 			"name": "dateline",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|docDate)*",
+			"content": "(textNode|docDate)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2207,7 +2274,7 @@
 			"name": "docAuthor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2242,7 +2309,7 @@
 			"name": "docDate",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2276,7 +2343,7 @@
 			"name": "docEdition",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2309,7 +2376,7 @@
 			"name": "docImprint",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|pubPlace|docDate|publisher)*",
+			"content": "(textNode|pubPlace|docDate|publisher)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2342,7 +2409,7 @@
 			"name": "editor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2409,44 +2476,10 @@
 			"desc": "contains a brief prose description of the appearance or content\nof a graphic figure, for use when documenting an image without\ndisplaying it."
 		},
 		{
-			"name": "formula",
-			"pmType": "node",
-			"isolating": false,
-			"content": "(textNode|model_graphicLike)*",
-			"group": "model_phrase model_graphicLike",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"notation",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains a mathematical or other formula."
-		},
-		{
 			"name": "head",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|lg|model_phrase|model_inter|model_lLike)*",
+			"content": "(textNode|lg|model_inter|model_lLike)*",
 			"group": "model_divTop model_divTopPart model_headLike model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2483,7 +2516,7 @@
 			"name": "imprimatur",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_titlepagePart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2516,7 +2549,7 @@
 			"name": "item",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|model_divPart)*",
+			"content": "(textNode|model_inter|model_divPart)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2550,7 +2583,7 @@
 			"name": "l",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter)*",
+			"content": "(textNode|model_inter)*",
 			"group": "model_common model_divPart model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2588,7 +2621,7 @@
 			"name": "label",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_common model_inter model_labelLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2625,7 +2658,7 @@
 			"name": "opener",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|argument|byline|dateline|epigraph|salute|signed)*",
+			"content": "(textNode|argument|byline|dateline|epigraph|salute|signed)*",
 			"group": "model_divTop model_divTopPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2659,7 +2692,7 @@
 			"name": "p",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2695,7 +2728,7 @@
 			"name": "publisher",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2730,7 +2763,7 @@
 			"name": "pubPlace",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_detail",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2762,79 +2795,6 @@
 				"xml:space"
 			],
 			"desc": "contains the name of the place where a bibliographic item was published."
-		},
-		{
-			"name": "q",
-			"pmType": "node",
-			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|model_divPart)*",
-			"group": "model_common model_inter model_qLike",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"toWhom",
-				"type",
-				"who",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "refering to itself, not its normal referent"
-		},
-		{
-			"name": "quote",
-			"pmType": "node",
-			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|model_divPart)*",
-			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"defective",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"notation",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external\n        to the text."
 		},
 		{
 			"name": "resp",
@@ -2894,7 +2854,7 @@
 			"name": "role",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2927,7 +2887,7 @@
 			"name": "roleDesc",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2960,7 +2920,7 @@
 			"name": "salute",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_divTop model_divBottom model_divWrapper",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2994,7 +2954,7 @@
 			"name": "signed",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_divBottom model_divBottomPart model_divTop model_divTopPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -3028,7 +2988,7 @@
 			"name": "speaker",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_qLike|model_phrase)*",
+			"content": "(textNode|model_qLike)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -3061,7 +3021,7 @@
 			"name": "stage",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|model_divPart)*",
+			"content": "(textNode|model_inter|model_divPart)*",
 			"group": "model_common model_inter model_stageLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -3098,7 +3058,7 @@
 			"name": "titlePart",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|lg|model_lLike)*",
+			"content": "(textNode|model_inter|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -3134,7 +3094,7 @@
 			"name": "trailer",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode|lg|model_phrase|model_inter|model_lLike)*",
+			"content": "(textNode|lg|model_inter|model_lLike)*",
 			"group": "model_divBottom model_divBottomPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -4032,6 +3992,24 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"defective": {
+			"ident": "defective",
+			"description": "indicates whether the passage being quoted is defective,\n      i.e. incomplete through loss or damage.",
+			"dataType": "teidata.xTruthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"notation": {
+			"ident": "notation",
+			"description": "names the notation used for the content of the element.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
 		"mimeType": {
 			"ident": "mimeType",
 			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
@@ -4083,15 +4061,6 @@
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"notation": {
-			"ident": "notation",
-			"description": "names the notation used for the content of the element.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
 			"valList": null,
 			"valListType": "open"
 		},
@@ -4445,15 +4414,6 @@
 					"desc": "the line is strongly enjambed"
 				}
 			],
-			"valListType": "open"
-		},
-		"defective": {
-			"ident": "defective",
-			"description": "indicates whether the passage being quoted is defective,\n      i.e. incomplete through loss or damage.",
-			"dataType": "teidata.xTruthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
 			"valListType": "open"
 		}
 	}
