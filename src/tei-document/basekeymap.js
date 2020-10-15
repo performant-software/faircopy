@@ -1,5 +1,5 @@
-import {joinPoint, canJoin, findWrapping, liftTarget, canSplit, ReplaceAroundStep} from "prosemirror-transform"
-import {Slice, Fragment} from "prosemirror-model"
+import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirror-transform"
+import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
 import {undo, redo} from "prosemirror-history"
 
@@ -363,23 +363,6 @@ export function selectAll(state, dispatch) {
   return true
 }
 
-function oldjoinMaybeClear(state, $pos, dispatch) {
-  let before = $pos.nodeBefore, after = $pos.nodeAfter, index = $pos.index()
-  if (!before || !after || !before.type.compatibleContent(after.type)) return false
-  if (!before.content.size && $pos.parent.canReplace(index - 1, index)) {
-    if (dispatch) dispatch(state.tr.delete($pos.pos - before.nodeSize, $pos.pos).scrollIntoView())
-    return true
-  }
-  if (!$pos.parent.canReplace(index, index + 1) || !(after.isTextblock || canJoin(state.doc, $pos.pos)))
-    return false
-  if (dispatch)
-    dispatch(state.tr
-             .clearIncompatible($pos.pos, before.type, before.contentMatchAt(before.childCount))
-             .join($pos.pos,2)  // depth=2 to capture the textNode
-             .scrollIntoView())
-  return true
-}
-
 function deleteBarrier(state, $cut, dispatch) {
   const { tr } = state
   const before = $cut.nodeBefore, after = $cut.nodeAfter
@@ -415,48 +398,6 @@ function deleteBarrier(state, $cut, dispatch) {
       .insert(nestedPos-1, nestedNode.content )
       .setSelection(new TextSelection(tr.doc.resolve(nestedPos)))
       .scrollIntoView())
-    return true
-  }
-
-  return false
-}
-
-function olddeleteBarrier(state, $cut, dispatch) {
-  let before = $cut.nodeBefore, after = $cut.nodeAfter, conn, match
-  if (before.type.spec.isolating || after.type.spec.isolating) return false
-  if (oldjoinMaybeClear(state, $cut, dispatch)) return true
-  if ($cut.parent.canReplace($cut.index(), $cut.index() + 1) &&
-      (conn = (match = before.contentMatchAt(before.childCount)).findWrapping(after.type)) &&
-      match.matchType(conn[0] || after.type).validEnd) {
-    if (dispatch) {
-      let end = $cut.pos + after.nodeSize, wrap = Fragment.empty
-      for (let i = conn.length - 1; i >= 0; i--)
-        wrap = Fragment.from(conn[i].create(null, wrap))
-      wrap = Fragment.from(before.copy(wrap))
-      let tr = state.tr.step(new ReplaceAroundStep($cut.pos - 1, end, $cut.pos, end, new Slice(wrap, 1, 0), conn.length, true))
-      let joinAt = end + 2 * conn.length
-      if (canJoin(tr.doc, joinAt)) tr.join(joinAt)
-      dispatch(tr.scrollIntoView())
-    }
-    return true
-  }
-  // take content of soft node and move it into the text node before it
-  if( before.type.name === 'textNode' && after.childCount > 0 ) {
-    const afterChild = after.child(0)
-    if( afterChild.type.name === 'textNode' ) {      
-      if (dispatch) dispatch(state.tr
-        .insert($cut.pos - 1,afterChild.content)
-        .delete($cut.pos, $cut.pos + after.nodeSize)  
-        .scrollIntoView()
-      )
-      return true
-    }
-  }
-
-  let selAfter = Selection.findFrom($cut, 1)
-  let range = selAfter && selAfter.$from.blockRange(selAfter.$to), target = range && liftTarget(range)
-  if (target != null && target >= $cut.depth) {
-    if (dispatch) dispatch(state.tr.lift(range, target).scrollIntoView())
     return true
   }
 
