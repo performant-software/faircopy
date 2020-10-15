@@ -363,7 +363,7 @@ export function selectAll(state, dispatch) {
   return true
 }
 
-function joinMaybeClear(state, $pos, dispatch) {
+function oldjoinMaybeClear(state, $pos, dispatch) {
   let before = $pos.nodeBefore, after = $pos.nodeAfter, index = $pos.index()
   if (!before || !after || !before.type.compatibleContent(after.type)) return false
   if (!before.content.size && $pos.parent.canReplace(index - 1, index)) {
@@ -381,10 +381,50 @@ function joinMaybeClear(state, $pos, dispatch) {
 }
 
 function deleteBarrier(state, $cut, dispatch) {
+  const { tr } = state
+  const before = $cut.nodeBefore, after = $cut.nodeAfter
+
+  // this function only deals with non-isolating nodes
+  if (before.type.spec.isolating || after.type.spec.isolating) return false
+
+  // check depth of textNodes
+  const beforeNested = ( before.childCount > 0 && before.child(0).type.name !== 'textNode' ) 
+  const afterNested = ( after.childCount > 0 && after.child(0).type.name !== 'textNode' ) 
+
+  if( !beforeNested && !afterNested ) {
+    // both textNodes at same depth
+    dispatch(tr
+      .clearIncompatible($cut.pos, before.type, before.contentMatchAt(before.childCount))
+      .join($cut.pos,2)  // depth=2 to capture the textNode
+      .scrollIntoView())    
+    return true
+  } else if( beforeNested && !afterNested ) {
+    // move after's textNode into before and join with before's textNode
+    dispatch( tr
+      .delete($cut.pos,$cut.pos+after.nodeSize)
+      .insert($cut.pos-2, after.content )
+      .join($cut.pos-2)
+      .scrollIntoView())
+    return true
+  } else if( !beforeNested && afterNested ) {
+    // delete nested soft node in after 
+    const nestedNode = after.child(0)
+    const nestedPos = $cut.pos + 2
+    dispatch( tr
+      .deleteRange(nestedPos,nestedPos + nestedNode.nodeSize - 1)
+      .insert(nestedPos-1, nestedNode.content )
+      .setSelection(new TextSelection(tr.doc.resolve(nestedPos)))
+      .scrollIntoView())
+    return true
+  }
+
+  return false
+}
+
+function olddeleteBarrier(state, $cut, dispatch) {
   let before = $cut.nodeBefore, after = $cut.nodeAfter, conn, match
   if (before.type.spec.isolating || after.type.spec.isolating) return false
-  if (joinMaybeClear(state, $cut, dispatch)) return true
-
+  if (oldjoinMaybeClear(state, $cut, dispatch)) return true
   if ($cut.parent.canReplace($cut.index(), $cut.index() + 1) &&
       (conn = (match = before.contentMatchAt(before.childCount)).findWrapping(after.type)) &&
       match.matchType(conn[0] || after.type).validEnd) {
@@ -400,7 +440,6 @@ function deleteBarrier(state, $cut, dispatch) {
     }
     return true
   }
-
   // take content of soft node and move it into the text node before it
   if( before.type.name === 'textNode' && after.childCount > 0 ) {
     const afterChild = after.child(0)
