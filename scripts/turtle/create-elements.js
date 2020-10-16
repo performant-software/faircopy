@@ -1,4 +1,3 @@
-const { joinBackward } = require('prosemirror-commands');
 const { encodeContent } = require('./parse-content');
 
 const createElements = function createElements(elGroups,specs) {

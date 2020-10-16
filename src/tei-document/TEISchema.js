@@ -77,7 +77,7 @@ export default class TEISchema {
 
         // These nodes must always be present.
         // ProseMirror cannot mix inline and block types in content expressions, so we have to 
-        // wrap text in a block and then unwrap it when we save the file. see renoveTextNodes()
+        // wrap text in a block and then unwrap it when we save the file. see removeTextNodes()
         const nodes = {
             text: {
                 inline: true
