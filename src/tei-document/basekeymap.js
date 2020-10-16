@@ -363,6 +363,12 @@ export function selectAll(state, dispatch) {
   return true
 }
 
+function depthToLast(node,type,depth=0) {
+  if( node.type.name === type ) return depth
+  if( node.childCount === 0 ) return null
+  return depthToLast(node.lastChild,type,depth+1) 
+}
+
 function deleteBarrier(state, $cut, dispatch) {
   const { tr } = state
   const before = $cut.nodeBefore, after = $cut.nodeAfter
@@ -371,28 +377,30 @@ function deleteBarrier(state, $cut, dispatch) {
   if (before.type.spec.isolating || after.type.spec.isolating) return false
 
   // check depth of textNodes
-  const beforeNested = ( before.childCount > 0 && before.child(0).type.name !== 'textNode' ) 
-  const afterNested = ( after.childCount > 0 && after.child(0).type.name !== 'textNode' ) 
+  const beforeDepth = depthToLast(before,'textNode')
+  const afterDepth = depthToLast(after,'textNode')
+  if( beforeDepth === null || afterDepth === null ) throw new Error('Expected textNode in deleteBarrier')
 
-  if( !beforeNested && !afterNested ) {
+  if( beforeDepth === afterDepth ) {
     // both textNodes at same depth
     dispatch(tr
       .clearIncompatible($cut.pos, before.type, before.contentMatchAt(before.childCount))
-      .join($cut.pos,2)  // depth=2 to capture the textNode
+      .join($cut.pos,beforeDepth + 1)  // to capture the textNode
       .scrollIntoView())    
     return true
-  } else if( beforeNested && !afterNested ) {
+  } else if( afterDepth <= 1 ) {
     // move after's textNode into before and join with before's textNode
+    const joinPos = $cut.pos-beforeDepth
     dispatch( tr
       .delete($cut.pos,$cut.pos+after.nodeSize)
-      .insert($cut.pos-2, after.content )
-      .join($cut.pos-2)
+      .insert(joinPos, after.content )
+      .join(joinPos)
       .scrollIntoView())
     return true
-  } else if( !beforeNested && afterNested ) {
+  } else {
     // delete nested soft node in after 
-    const nestedNode = after.child(0)
-    const nestedPos = $cut.pos + 2
+    const nestedPos = $cut.pos+afterDepth
+    const nestedNode = tr.doc.resolve(nestedPos).node()
     dispatch( tr
       .deleteRange(nestedPos,nestedPos + nestedNode.nodeSize - 1)
       .insert(nestedPos-1, nestedNode.content )
@@ -400,8 +408,6 @@ function deleteBarrier(state, $cut, dispatch) {
       .scrollIntoView())
     return true
   }
-
-  return false
 }
 
 // Parameterized commands
