@@ -101,6 +101,7 @@ export default class TEIDocument {
         const {teiSchema} = this.fairCopyProject
         this.editorView = editorView
         teiSchema.addTextNodes(editorView)
+        this.changedSinceLastSave = false
     }
 
     refreshView = () => {
