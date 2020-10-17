@@ -212,7 +212,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onOpenElementMenu, onEditResource, fairCopyProject, editorWidth, expandedGutter } = this.props
+        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, fairCopyProject, editorWidth, expandedGutter } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
 
         // used to update scroll position when document changes
@@ -247,6 +247,7 @@ export default class TEIEditor extends Component {
                     </div> }
                     { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
+                        onSave={onSave}
                         onOpenElementMenu={onOpenElementMenu}
                         onEditResource={onEditResource}
                     ></EditorToolbar> }

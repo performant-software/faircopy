@@ -173,6 +173,17 @@ export default class MainWindow extends Component {
         }    
     }
 
+    saveResources(resourceIDs) {
+        const { openResources } = this.state
+        for( const resourceID of resourceIDs ) {
+            const resource = openResources[resourceID]
+            if( resource && resource.changedSinceLastSave ) {
+                resource.save()
+                resource.refreshView()         
+            }            
+        }
+    }
+
     onOpenResourceBrowser = () => {
         this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })
     }
@@ -217,6 +228,9 @@ export default class MainWindow extends Component {
             case 'close':
                 this.closeResources(resourceIDs)
                 return false
+            case 'save':
+                this.saveResources(resourceIDs)
+                return false
             case 'delete':
                 const alertOptions = { resourceIDs }
                 this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions })
@@ -239,6 +253,9 @@ export default class MainWindow extends Component {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
             const editorWidth = `calc(100vw - 10px - ${leftPaneWidth}px)`
+
+            const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
+        
             if( resource.loading ) {
                 editors.push(<div key={key}></div>)
             } else {
@@ -251,8 +268,7 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onEditResource={this.onEditResource}
-                            onOpenNote={this.onOpenNote}
-                            onCloseNote={this.onCloseNote}
+                            onSave={onSave}
                             editorWidth={editorWidth}
                             expandedGutter={expandedGutter}
                         ></TEIEditor>
@@ -485,23 +501,39 @@ export default class MainWindow extends Component {
         )
     }
 
+    onKeyDown = ( event ) => {
+        const ctrlDown = event.ctrlKey
+        const commandDown = event.metaKey
+        const {key} = event
+
+        if( ctrlDown || commandDown ) {
+            switch(key) {
+                case '/':
+                    const {expandedGutter} = this.state
+                    this.setState({...this.state, expandedGutter: !expandedGutter })    
+                    break
+                case 's':
+                    const { selectedResource } = this.state
+                    if( selectedResource ) {
+                        this.onResourceAction('save',[selectedResource])
+                    }
+                    break
+                default:
+                    break
+            }
+        }
+    }
+
     render() {
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
-
-        const onKeyDown = ( event ) => {
-            const {expandedGutter} = this.state
-            if( event.ctrlKey && event.key === '/' ) {
-                this.setState({...this.state, expandedGutter: !expandedGutter })            
-            }
-        }
    
         return (
             <div 
                 ref={(el) => this.el = el} 
-                onKeyDown={onKeyDown} 
+                onKeyDown={this.onKeyDown} 
             > 
                 <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                     { this.renderProjectSidebar() }

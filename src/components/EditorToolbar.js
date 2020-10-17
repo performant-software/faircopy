@@ -149,14 +149,9 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { onEditResource, teiDocument } = this.props
+        const { onEditResource, onSave, teiDocument } = this.props
         const { changedSinceLastSave } = teiDocument
-
-        const onClickSave = () => {
-            teiDocument.save()
-            teiDocument.refreshView()
-        }
-
+        
         return (
             <div id="EditorToolbar">
                 <div className="leftgroup">
@@ -177,7 +172,7 @@ export default class EditorToolbar extends Component {
                     <Tooltip title={"Save Document"}>
                         <span>
                             <Button
-                                onClick={onClickSave}
+                                onClick={onSave}
                                 disabled={!changedSinceLastSave}
                                 {...this.buttonProps}
                             >
