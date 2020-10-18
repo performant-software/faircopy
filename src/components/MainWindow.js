@@ -515,6 +515,11 @@ export default class MainWindow extends Component {
                     const {expandedGutter} = this.state
                     this.setState({...this.state, expandedGutter: !expandedGutter })    
                     break
+                // TODO
+                // case ' ':
+                //     const activeMenu = 'structure'
+                //     this.onOpenElementMenu({ menuGroup: activeMenu, action: 'replace' })
+                //     break
                 case 's':
                     const { selectedResource } = this.state
                     if( selectedResource ) {

@@ -33,11 +33,21 @@ export default class ElementMenu extends Component {
             elevation = 6
         }
 
+        // TODO use this to navigate submenus
+        const onKeyDown = (event) => {
+            if( event.key === 'ArrowRight' ) {
+                console.log('arrow right')
+            }
+            if( event.key === 'ArrowLeft' ) {
+                console.log('Arrow left')
+            }
+        }
+
         return (
             <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
                 <Paper elevation={elevation}>
                     <ClickAwayListener onClickAway={onClose}>
-                        <MenuList id={menuID}>
+                        <MenuList autoFocusItem={true} id={menuID} onKeyDown={onKeyDown}>
                             { menuItems }
                         </MenuList>
                     </ClickAwayListener>
