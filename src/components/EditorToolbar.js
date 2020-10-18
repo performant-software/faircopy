@@ -103,20 +103,15 @@ export default class EditorToolbar extends Component {
     }
 
     renderElementMenuButtons() {
-        const { onOpenElementMenu, teiDocument } = this.props
+        const { onOpenElementMenu, elementMenuAnchors } = this.props
         const { selectedAction } = this.state
-        const { fairCopyProject } = teiDocument
 
         const onClickMarker = () => {
-            const { menus } = fairCopyProject
-            const menuGroups = menus['mark']
-            onOpenElementMenu({ menuGroups, anchorEl: this.markerButtonEl, action: 'create'})
+            onOpenElementMenu({ menuGroup: 'mark', action: 'create'})
         }
 
         const onClickStructure = () => {
-            const { menus } = fairCopyProject
-            const menuGroups = menus['structure']
-            onOpenElementMenu({ menuGroups, anchorEl: this.structureButtonEl, action: selectedAction })
+            onOpenElementMenu({ menuGroup: 'structure', action: selectedAction })
         }
 
         const enabledMenu = this.getEnabledMenu()
@@ -127,14 +122,14 @@ export default class EditorToolbar extends Component {
                     "Marks",
                     "fa-marker",
                     (enabledMenu !== 'all' && enabledMenu !== 'marks'),
-                    (el)=> { this.markerButtonEl = el },
+                    (el)=> { elementMenuAnchors.mark = el },
                     onClickMarker
                 )}
                 { this.renderElementMenuButton(
                     "Structures",
                     "fa-page-break",
                     (enabledMenu !== 'all' && enabledMenu !== 'structures'),
-                    (el)=> { this.structureButtonEl = el },
+                    (el)=> { elementMenuAnchors.structure = el },
                     onClickStructure
                 )}
                 { this.renderElementMenuButton(

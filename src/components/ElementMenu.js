@@ -13,6 +13,13 @@ export default class ElementMenu extends Component {
         this.subMenuEls = {}
     }
 
+    getMenuGroups() {
+        const { teiDocument, menuGroup } = this.props
+        if(!teiDocument) return null
+        const { menus } = teiDocument.fairCopyProject
+        return menus[menuGroup]
+    }
+
     renderMenu( menuID, menuItems, subMenu, anchorEl, onClose ) {
 
         if( !anchorEl ) return null
@@ -40,9 +47,10 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { menuGroups, teiDocument, action, onAlertMessage } = this.props
+        const { teiDocument, action, onAlertMessage } = this.props
         const { openSubMenu } = this.state
-
+        const menuGroups = this.getMenuGroups()
+        
         if( !openSubMenu || !menuGroups[openSubMenu] ) return
 
         const members = menuGroups[openSubMenu].members
@@ -106,8 +114,11 @@ export default class ElementMenu extends Component {
     }
 
     render() {
-        const { anchorEl, onClose, menuGroups } = this.props
+        const { onClose, menuGroup, elementMenuAnchors } = this.props
 
+        const menuGroups = this.getMenuGroups()
+        if( !menuGroups ) return null
+        const anchorEl = elementMenuAnchors[menuGroup]
         if( !anchorEl ) return null
 
         const onClick = (menuGroupID) => { this.setState({...this.state, openSubMenu: menuGroupID })}

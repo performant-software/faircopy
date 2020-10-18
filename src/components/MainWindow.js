@@ -42,6 +42,7 @@ export default class MainWindow extends Component {
             expandedGutter: true,
             leftPaneWidth: initialLeftPaneWidth
         }	
+        this.elementMenuAnchors = {}
     }
 
     componentDidMount() {
@@ -174,12 +175,12 @@ export default class MainWindow extends Component {
     }
 
     saveResources(resourceIDs) {
-        const { openResources } = this.state
+        const { openResources, selectedResource } = this.state
         for( const resourceID of resourceIDs ) {
             const resource = openResources[resourceID]
             if( resource && resource.changedSinceLastSave ) {
                 resource.save()
-                resource.refreshView()         
+                if( resource.resourceID === selectedResource ) resource.refreshView()         
             }            
         }
     }
@@ -268,6 +269,7 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onEditResource={this.onEditResource}
+                            elementMenuAnchors={this.elementMenuAnchors}
                             onSave={onSave}
                             editorWidth={editorWidth}
                             expandedGutter={expandedGutter}
@@ -460,6 +462,7 @@ export default class MainWindow extends Component {
                     teiDocument={teiDocument}
                     onAlertMessage={this.onAlertMessage}
                     onClose={this.onCloseElementMenu}
+                    elementMenuAnchors={this.elementMenuAnchors}
                     {...elementMenuOptions}
                 ></ElementMenu>
                 { popupMenuAnchorEl && <PopupMenu
