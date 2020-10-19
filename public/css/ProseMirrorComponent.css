@@ -26,12 +26,6 @@
   outline: 4px solid yellow;
 }
 
-/* Make sure li selections wrap around markers */
-
-li.ProseMirror-selectednode {
-  outline: none;
-}
-
 .ProseMirror-gapcursor {
   display: none;
   pointer-events: none;
@@ -56,16 +50,6 @@ li.ProseMirror-selectednode {
 
 .ProseMirror-focused .ProseMirror-gapcursor {
   display: block;
-}
-
-.ProseMirror blockquote {
-  padding-left: 1em;
-  border-left: 3px solid #eee;
-  margin-left: 0; margin-right: 0;
-}
-
-.ProseMirror-example-setup-style img {
-  cursor: default;
 }
 
 .ProseMirror-prompt {
@@ -116,8 +100,3 @@ li.ProseMirror-selectednode {
   position: absolute;
   min-width: 10em;
 }
-
-.ProseMirror-prompt-buttons {
-  margin-top: 5px;
-  display: none;
-}  
