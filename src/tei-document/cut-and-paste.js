@@ -12,34 +12,42 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
         // so we can parse as XML. Put it back at the end.
         const metaRegex = /(<meta [^>]*>)/
         const matches = html.match(metaRegex)
+        const parser = new DOMParser();
         let metaTag = matches && matches[1] ? matches[1]: ""
         let xml = html.replace(metaRegex,"")
-        const parser = new DOMParser();
-        // xml might be an array of elements, need to wrap them to form a valid document
-        const xmlDom = parser.parseFromString(`<xml>${xml}</xml>`,'text/xml');
-
-        let noteEls = xmlDom.getElementsByTagName('note');
-        for( let i=0; i< noteEls.length; i++ ) {
-            const el = noteEls[i]
-            const noteID = teiDocument.issueSubDocumentID()
-            const noteEl = el.cloneNode(true)
-            noteEl.setAttribute('__id__',noteID)
-            const emptyEl = el.cloneNode()
-            emptyEl.setAttribute('__id__',noteID)
-            // blank is necessary so that serializer doesn't collapse element
-            emptyEl.innerHTML = ' '
-            el.parentNode.replaceChild(emptyEl,el)
-            pastedNoteBuffer.push(noteEl)
+        // detect if this is an internal cut and paste
+        if( xml.includes('data-pm-slice') ) {
+            // xml might be an array of elements, need to wrap them to form a valid document
+            const xmlDom = parser.parseFromString(`<xml>${xml}</xml>`,'text/xml');
+    
+            let noteEls = xmlDom.getElementsByTagName('note');
+            for( let i=0; i< noteEls.length; i++ ) {
+                const el = noteEls[i]
+                const noteID = teiDocument.issueSubDocumentID()
+                const noteEl = el.cloneNode(true)
+                noteEl.setAttribute('__id__',noteID)
+                const emptyEl = el.cloneNode()
+                emptyEl.setAttribute('__id__',noteID)
+                // blank is necessary so that serializer doesn't collapse element
+                emptyEl.innerHTML = ' '
+                el.parentNode.replaceChild(emptyEl,el)
+                pastedNoteBuffer.push(noteEl)
+            }
+    
+            // schema needs access to this document while running parseSlice()
+            // pops off in transformPastedHandler()
+            teiSchema.teiDocuments.push(teiDocument)
+    
+            let xhtml = new XMLSerializer().serializeToString(xmlDom);
+            xhtml = xhtml.replace('<xml>','').replace('</xml>','')
+            const nextHTML = `${metaTag}${xhtml}`
+            return nextHTML
+        } else {
+            // this is from an external source, drop markup
+            const xmlDom = parser.parseFromString(`<xml>${xml}</xml>`,'text/xml');
+            const nextHTML = `<html><head>${metaTag}</head><body>${xmlDom.documentElement.textContent}</body></html>`
+            return nextHTML
         }
-
-        // schema needs access to this document while running parseSlice()
-        // pops off in transformPastedHandler()
-        teiSchema.teiDocuments.push(teiDocument)
-
-        let xhtml = new XMLSerializer().serializeToString(xmlDom);
-        xhtml = xhtml.replace('<xml>','').replace('</xml>','')
-        const nextHTML = `${metaTag}${xhtml}`
-        return nextHTML
     }
 }
 
