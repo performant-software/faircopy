@@ -22,11 +22,7 @@
 .ProseMirror-hideselection *::-moz-selection { background: transparent; }
 .ProseMirror-hideselection { caret-color: transparent; }
 
-tei-pb.ProseMirror-selectednode {
-  outline: 4px solid yellow;
-}
-
-tei-note.ProseMirror-selectednode {
+.inline-node.ProseMirror-selectednode {
   outline: 4px solid yellow;
 }
 

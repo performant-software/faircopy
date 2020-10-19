@@ -83,7 +83,7 @@ export default class TEISchema {
                 inline: true
             },
             textNode: {
-                content: "text*",
+                content: "(model_global|text)*",
                 selectable: false,
                 draggable: false,
                 parseDOM: [
@@ -98,7 +98,7 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name, content, group, isolating } = element
+            const { pmType, name, content, group, isolating, icon } = element
             const validAttrs = element.validAttrs ? element.validAttrs : []
             if( pmType === 'mark' || pmType === 'node') {
                 const phraseLvl = (pmType === 'mark')
@@ -111,8 +111,8 @@ export default class TEISchema {
             } else if( pmType === 'inline-node' ) {
                 if( name === 'note' ) {
                     nodes[name] = this.createNoteSpec(validAttrs, content, group)
-                } else if( name === 'pb') {
-                    nodes[name] = this.createPbSpec(validAttrs, content, group)
+                } else {
+                    nodes[name] = this.createAtomSpec(name, icon, validAttrs, group)
                 }
             } else {
                 console.log('unrecognized pmType')
@@ -206,35 +206,34 @@ export default class TEISchema {
                     const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
                     return teiDocument.serializeSubDocument(attrs)
                 } else {
-                    const noteAttrs = { ...node.attrs, class: "far fa-xs fa-comment-alt" }
-                    return ["tei-note",noteAttrs,0]
+                    const noteAttrs = { ...node.attrs, class: "far fa-xs fa-comment-alt inline-node" }
+                    return ["tei-note",noteAttrs]
                 }
             }
         }          
     }
 
-    createPbSpec(validAttrs, content, group) {
-
+    createAtomSpec(name, icon, validAttrs, group) {
         const attrs = this.getAttrSpec(validAttrs)
 
         return {
             inline: true,
             atom: true,
-            content,
+            content: "",
             group,
             attrs: attrs,
             parseDOM: [{
-                tag: "pb",
+                tag: name,
                 getAttrs: this.getAttrParser(validAttrs)
             }],
             toDOM: (node) => {
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(node.attrs)
                     attrs = this.filterOutErrors(attrs)
-                    return ["pb",attrs]
+                    return [name,attrs]
                 } else {
-                    const pbAttrs = { ...node.attrs, class: "far fa-file-alt" }
-                    return ["tei-pb",pbAttrs,0]  
+                    const atomAttrs = { ...node.attrs, class: `far ${icon} inline-node` }
+                    return [`tei-${name}`,atomAttrs]  
                 }
             }  
         }

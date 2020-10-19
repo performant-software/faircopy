@@ -65,14 +65,14 @@
             "members": ["anchor", "milestone"]
         },
         {
-            "id": "breaks",
-            "label": "Breaks",
-            "members": ["lb","pb"]
+            "id": "asides",
+            "label": "Asides",
+            "members": ["choice","fw","note","subst"]
         },
         {
-            "id": "figure",
-            "label": "Figures, Notes, and Tables",
-            "members": [ "code","figure","formula","note","quote","table"]
-        } 
+            "id": "breaks",
+            "label": "Breaks",
+            "members": ["cb","gap","lb","pb"]
+        }
     ]
 }

@@ -5,16 +5,19 @@ export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
     const {schema} = fairCopyProject.teiSchema
+    const {pmType} = fairCopyProject.teiSchema.elements[elementID]
 
-    switch( elementID ) {
-        case 'pb': 
-            return createPb( editorView )
-        case 'note': 
+    if( pmType === 'inline-node' ) {
+        if( elementID === 'note' ) {
             return createNote( teiDocument, editorView )
-        default: 
-            const markType = schema.marks[elementID]
-            return createMark( markType, editorView )
-    }                
+        } else {
+            const inlineType = schema.nodes[elementID]
+            return createInline( inlineType, editorView )
+        }    
+    } else {
+        const markType = schema.marks[elementID]
+        return createMark( markType, editorView )
+    }              
 }
 
 export function validAction( actionType, elementID, teiDocument, pos ) {
@@ -157,12 +160,12 @@ function createMark(markType, editorView) {
     editorView.focus()
 }
 
-function createPb( editorView ) {
+function createInline( nodeType, editorView ) {
     const { state } = editorView
     const { tr, selection } = state
     const { $anchor } = selection
-    const pbNode = state.schema.node('pb')
-    tr.insert($anchor.pos, pbNode) 
+    const node = nodeType.create()
+    tr.insert($anchor.pos, node) 
     editorView.dispatch(tr)
     editorView.focus()
 }

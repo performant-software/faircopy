@@ -1,5 +1,6 @@
 {
     "embed": [
+        "address",
         "cell",
         "code",
         "figure",
@@ -29,13 +30,13 @@
         "sp"
     ],
     "inlines": [
-        "address",
         "anchor",
         "cb",
         "choice",
         "fw",
         "gap",
         "lb",
+        "milestone",
         "note",
         "pb",
         "subst"

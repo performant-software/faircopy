@@ -30,7 +30,7 @@ export default class EditorToolbar extends Component {
                 return "structures"
             } else {
                 if( selection.empty ) {
-                    return "inlines"
+                    return "inline"
                 } else {
                     return "marks"
                 }
@@ -105,15 +105,6 @@ export default class EditorToolbar extends Component {
     renderElementMenuButtons() {
         const { onOpenElementMenu, elementMenuAnchors } = this.props
         const { selectedAction } = this.state
-
-        const onClickMarker = () => {
-            onOpenElementMenu({ menuGroup: 'mark', action: 'create'})
-        }
-
-        const onClickStructure = () => {
-            onOpenElementMenu({ menuGroup: 'structure', action: selectedAction })
-        }
-
         const enabledMenu = this.getEnabledMenu()
 
         return (
@@ -123,21 +114,21 @@ export default class EditorToolbar extends Component {
                     "fa-marker",
                     (enabledMenu !== 'all' && enabledMenu !== 'marks'),
                     (el)=> { elementMenuAnchors.mark = el },
-                    onClickMarker
+                    () => { onOpenElementMenu({ menuGroup: 'mark', action: 'create'}) }
                 )}
                 { this.renderElementMenuButton(
                     "Structures",
                     "fa-page-break",
                     (enabledMenu !== 'all' && enabledMenu !== 'structures'),
                     (el)=> { elementMenuAnchors.structure = el },
-                    onClickStructure
+                    () => { onOpenElementMenu({ menuGroup: 'structure', action: selectedAction }) }
                 )}
                 { this.renderElementMenuButton(
                     "Inlines",
                     "fa-anchor",
-                    (enabledMenu !== 'all' && enabledMenu !== 'inlines'),
-                    ()=> {},
-                    ()=> {},
+                    (enabledMenu !== 'all' && enabledMenu !== 'inline'),
+                    (el)=> { elementMenuAnchors.inline = el },
+                    () => { onOpenElementMenu({ menuGroup: 'inline', action: 'create' }) }
                 )}
             </div>
         )

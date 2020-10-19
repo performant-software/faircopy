@@ -1,10 +1,13 @@
 const { encodeContent } = require('./parse-content');
+const fs = require('fs');
 
 const createElements = function createElements(elGroups,specs) {
     const elements = []
+    const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons.json`).toString('utf-8'))
+
     // TODO embeds
     elements.push( ...createNodes(elGroups,true,specs) )
-    elements.push( ...createInlineNodes(elGroups,specs) )
+    elements.push( ...createInlineNodes(elGroups,icons,specs) )
     elements.push( ...createMarks(elGroups,true,specs) )
     // TODO limited-marks
     // TODO inter as soft nodes
@@ -32,23 +35,22 @@ function createMarks(elGroups,inter,specs) {
     return markElements
 }
 
-function createInlineNodes(elGroups,specs) {
-    return [  
-        {
-            "name": "pb",
-            "pmType": "inline-node",
-            "validAttrs": [],
-            "group": specs['pb'].group,
-            "desc": specs['pb'].description
-        },
-        {
-            "name": "note",
-            "pmType": "inline-node",
-            "validAttrs": [], 
-            "group": specs['note'].group,
-            "desc": specs['note'].description
-        }
-    ]
+function createInlineNodes(elGroups,icons,specs) {
+    const {inlines} = elGroups
+
+    const inlineElements = []
+    for(let inline of inlines ) {
+        const spec = specs[inline]
+        inlineElements.push( {
+            name: inline,
+            pmType: "inline-node",
+            validAttrs: [],
+            icon: icons[inline],
+            group: spec.group,
+            desc: spec.description
+        } )
+    }
+    return inlineElements
 }
 
 const createStructureNodes = function createStructureNodes(elGroups,specs) {

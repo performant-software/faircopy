@@ -1,0 +1,12 @@
+{
+    "anchor": "fa-anchor",
+    "cb": "fa-line-columns",
+    "choice": "fa-question-circle",
+    "fw": "fa-heading",
+    "gap": "fa-dot-circle",
+    "lb": "fa-angle-double-right",
+    "milestone": "fa-map-marker",
+    "note": "fa-comment-alt",
+    "pb": "fa-file-alt",
+    "subst": "fa-random"
+}

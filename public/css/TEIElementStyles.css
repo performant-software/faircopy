@@ -34,12 +34,7 @@ textnode {
     margin-bottom: 5px;
 }
 
-tei-pb {
-    margin-right: 3px;
-    margin-left: 3px;
-}  
-
-tei-note {
+.inline-node {
     margin-right: 3px;
     margin-left: 3px;
 }  

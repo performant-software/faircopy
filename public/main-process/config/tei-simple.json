@@ -679,7 +679,40 @@
 			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."
 		},
 		{
-			"name": "pb",
+			"name": "anchor",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-anchor",
+			"group": "model_global model_milestoneLike",
+			"desc": "attaches an identifier to a point within a text, whether or not it corresponds with a textual element."
+		},
+		{
+			"name": "cb",
 			"pmType": "inline-node",
 			"validAttrs": [
 				"ana",
@@ -711,8 +744,200 @@
 				"xml:lang",
 				"xml:space"
 			],
+			"icon": "fa-line-columns",
 			"group": "model_global model_milestoneLike",
-			"desc": "marks the beginning of a new page in a paginated document."
+			"desc": "marks the beginning of a new column of a text on a\n  multi-column page."
+		},
+		{
+			"name": "choice",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-question-circle",
+			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_linePart",
+			"desc": "groups a number of alternative encodings for the same point in\n        a text."
+		},
+		{
+			"name": "fw",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"hand",
+				"n",
+				"next",
+				"place",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-heading",
+			"group": "model_global model_milestoneLike",
+			"desc": "a catch-word"
+		},
+		{
+			"name": "gap",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"agent",
+				"ana",
+				"atLeast",
+				"atMost",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"dur",
+				"dur-iso",
+				"end",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"precision",
+				"prev",
+				"quantity",
+				"reason",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"source",
+				"start",
+				"style",
+				"synch",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-dot-circle",
+			"group": "model_global model_global_edit",
+			"desc": "damage results from smoke"
+		},
+		{
+			"name": "lb",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"break",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"ed",
+				"edRef",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"spanTo",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-angle-double-right",
+			"group": "model_global model_milestoneLike",
+			"desc": "marks the beginning of a new (typographic) line in some edition or version of a text."
+		},
+		{
+			"name": "milestone",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"break",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"ed",
+				"edRef",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"spanTo",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-map-marker",
+			"group": "model_global model_milestoneLike",
+			"desc": "marks a boundary point separating any kind of section of a text, typically but not\n    necessarily indicating a point at which some part of a standard reference system changes, where\n    the change is not represented by a structural element."
 		},
 		{
 			"name": "note",
@@ -750,8 +975,93 @@
 				"xml:lang",
 				"xml:space"
 			],
+			"icon": "fa-comment-alt",
 			"group": "model_global model_noteLike model_correspDescPart model_correspActionPart model_correspContextPart",
 			"desc": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point."
+		},
+		{
+			"name": "pb",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"break",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"ed",
+				"edRef",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"spanTo",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-file-alt",
+			"group": "model_global model_milestoneLike",
+			"desc": "marks the beginning of a new page in a paginated document."
+		},
+		{
+			"name": "subst",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"atLeast",
+				"atMost",
+				"cause",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"hand",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"precision",
+				"prev",
+				"quantity",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"seq",
+				"source",
+				"status",
+				"style",
+				"synch",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-random",
+			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial",
+			"desc": "groups one or more deletions with one or more additions when\n  the combination is to be regarded as a single intervention in the text."
 		},
 		{
 			"name": "add",
@@ -3709,24 +4019,6 @@
 			],
 			"valListType": "open"
 		},
-		"anchored": {
-			"ident": "anchored",
-			"description": "indicates whether the copy text shows the exact place of reference for the note.",
-			"dataType": "teidata.truthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"targetEnd": {
-			"ident": "targetEnd",
-			"description": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
 		"place": {
 			"ident": "place",
 			"description": " in a predefined space, for example left by an earlier scribe.",
@@ -3777,94 +4069,99 @@
 			],
 			"valListType": "semi"
 		},
-		"targetLang": {
-			"ident": "targetLang",
-			"description": "specifies the language of the content to be found at the destination referenced by <att>target</att>, using a <soCalled>language tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
-			"dataType": "teidata.language",
+		"reason": {
+			"ident": "reason",
+			"description": "for features omitted from\n\t  transcription due to editorial policy",
+			"dataType": "teidata.enumerated",
 			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
+			"maxOccurs": "unbounded",
+			"valList": [
+				{
+					"ident": "cancelled",
+					"desc": ""
+				},
+				{
+					"ident": "deleted",
+					"desc": ""
+				},
+				{
+					"ident": "editorial",
+					"desc": "for features omitted from\n\t  transcription due to editorial policy"
+				},
+				{
+					"ident": "illegible",
+					"desc": ""
+				},
+				{
+					"ident": "inaudible",
+					"desc": ""
+				},
+				{
+					"ident": "irrelevant",
+					"desc": ""
+				},
+				{
+					"ident": "sampling",
+					"desc": ""
+				}
+			],
+			"valListType": "semi"
 		},
-		"evaluate": {
-			"ident": "evaluate",
-			"description": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target.",
+		"agent": {
+			"ident": "agent",
+			"description": "damage results from smoke",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": [
 				{
-					"ident": "all",
-					"desc": "if the element pointed to is itself a pointer, then\n\t  the target of that pointer will be taken, and so on, until\n\t  an element is found which is not a pointer."
+					"ident": "rubbing",
+					"desc": "damage results from rubbing of the leaf edges"
 				},
 				{
-					"ident": "one",
-					"desc": "if the element pointed to is itself a pointer, then\n\t  its target (whether a pointer or not) is taken as the target\n\t  of this pointer."
+					"ident": "mildew",
+					"desc": "damage results from mildew on the leaf surface"
 				},
 				{
-					"ident": "none",
-					"desc": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target."
-				}
-			],
-			"valListType": "closed"
-		},
-		"status": {
-			"ident": "status",
-			"description": "the deletion is not faulty.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "duplicate",
-					"desc": "all of the text indicated as an addition duplicates\n\t  some text that is in the original, whether the duplication\n\t  is word-for-word or less exact."
-				},
-				{
-					"ident": "duplicate-partial",
-					"desc": "part of the text indicated as an addition duplicates\n\t  some text that is in the original"
-				},
-				{
-					"ident": "excessStart",
-					"desc": "some text at the beginning of the deletion is marked\n          as deleted even though it clearly should not be\n          deleted."
-				},
-				{
-					"ident": "excessEnd",
-					"desc": "some text at the end of the deletion is marked as\n          deleted even though it clearly should not be\n          deleted."
-				},
-				{
-					"ident": "shortStart",
-					"desc": "some text at the beginning of the deletion is not\n          marked as deleted even though it clearly should be."
-				},
-				{
-					"ident": "shortEnd",
-					"desc": "some text at the end of the deletion is not marked as\n          deleted even though it clearly should be."
-				},
-				{
-					"ident": "partial",
-					"desc": "some text in the deletion is not marked as deleted\n\t  even though it clearly should be."
-				},
-				{
-					"ident": "unremarkable",
-					"desc": "the deletion is not faulty."
+					"ident": "smoke",
+					"desc": "damage results from smoke"
 				}
 			],
 			"valListType": "open"
 		},
-		"cause": {
-			"ident": "cause",
-			"description": "documents the presumed cause for the intervention.",
-			"dataType": "teidata.enumerated",
+		"start": {
+			"ident": "start",
+			"description": "indicates the location within a temporal alignment at\n      which this element begins.",
+			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
 			"valListType": "open"
 		},
-		"seq": {
-			"ident": "seq",
-			"description": "assigns a sequence number related to the order in which\n      the encoded features carrying this attribute are believed to have occurred.",
-			"dataType": "teidata.count",
+		"end": {
+			"ident": "end",
+			"description": "indicates the location within a temporal alignment at\n      which this element ends.",
+			"dataType": "teidata.pointer",
 			"minOccurs": null,
-			"maxOccurs": "1",
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"dur": {
+			"ident": "dur",
+			"description": "indicates the length of this element in time.",
+			"dataType": "teidata.duration.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"dur-iso": {
+			"ident": "dur-iso",
+			"description": "indicates the length of this element in time.",
+			"dataType": "teidata.duration.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"valList": null,
 			"valListType": "open"
 		},
@@ -3992,6 +4289,115 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"anchored": {
+			"ident": "anchored",
+			"description": "indicates whether the copy text shows the exact place of reference for the note.",
+			"dataType": "teidata.truthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"targetEnd": {
+			"ident": "targetEnd",
+			"description": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"targetLang": {
+			"ident": "targetLang",
+			"description": "specifies the language of the content to be found at the destination referenced by <att>target</att>, using a <soCalled>language tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
+			"dataType": "teidata.language",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"evaluate": {
+			"ident": "evaluate",
+			"description": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "all",
+					"desc": "if the element pointed to is itself a pointer, then\n\t  the target of that pointer will be taken, and so on, until\n\t  an element is found which is not a pointer."
+				},
+				{
+					"ident": "one",
+					"desc": "if the element pointed to is itself a pointer, then\n\t  its target (whether a pointer or not) is taken as the target\n\t  of this pointer."
+				},
+				{
+					"ident": "none",
+					"desc": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target."
+				}
+			],
+			"valListType": "closed"
+		},
+		"status": {
+			"ident": "status",
+			"description": "the deletion is not faulty.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "duplicate",
+					"desc": "all of the text indicated as an addition duplicates\n\t  some text that is in the original, whether the duplication\n\t  is word-for-word or less exact."
+				},
+				{
+					"ident": "duplicate-partial",
+					"desc": "part of the text indicated as an addition duplicates\n\t  some text that is in the original"
+				},
+				{
+					"ident": "excessStart",
+					"desc": "some text at the beginning of the deletion is marked\n          as deleted even though it clearly should not be\n          deleted."
+				},
+				{
+					"ident": "excessEnd",
+					"desc": "some text at the end of the deletion is marked as\n          deleted even though it clearly should not be\n          deleted."
+				},
+				{
+					"ident": "shortStart",
+					"desc": "some text at the beginning of the deletion is not\n          marked as deleted even though it clearly should be."
+				},
+				{
+					"ident": "shortEnd",
+					"desc": "some text at the end of the deletion is not marked as\n          deleted even though it clearly should be."
+				},
+				{
+					"ident": "partial",
+					"desc": "some text in the deletion is not marked as deleted\n\t  even though it clearly should be."
+				},
+				{
+					"ident": "unremarkable",
+					"desc": "the deletion is not faulty."
+				}
+			],
+			"valListType": "open"
+		},
+		"cause": {
+			"ident": "cause",
+			"description": "documents the presumed cause for the intervention.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"seq": {
+			"ident": "seq",
+			"description": "assigns a sequence number related to the order in which\n      the encoded features carrying this attribute are believed to have occurred.",
+			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": "1",
+			"valList": null,
+			"valListType": "open"
+		},
 		"defective": {
 			"ident": "defective",
 			"description": "indicates whether the passage being quoted is defective,\n      i.e. incomplete through loss or damage.",
@@ -4059,15 +4465,6 @@
 			"ident": "valueDatcat",
 			"description": "contains a PID (persistent identifier) that aligns the content of the given\n        element or the value of the given attribute with the appropriate simple Data\n        Category (or categories) in ISOcat.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"reason": {
-			"ident": "reason",
-			"description": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>.",
-			"dataType": "teidata.word",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
@@ -4269,46 +4666,6 @@
 			"ident": "datingMethod",
 			"description": "supplies a pointer to a <gi>calendar</gi> element or other\n        means of interpreting the values of the custom dating attributes.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"agent": {
-			"ident": "agent",
-			"description": "damage results from smoke",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "rubbing",
-					"desc": "damage results from rubbing of the leaf edges"
-				},
-				{
-					"ident": "mildew",
-					"desc": "damage results from mildew on the leaf surface"
-				},
-				{
-					"ident": "smoke",
-					"desc": "damage results from smoke"
-				}
-			],
-			"valListType": "open"
-		},
-		"dur": {
-			"ident": "dur",
-			"description": "indicates the length of this element in time.",
-			"dataType": "teidata.duration.w3c",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"dur-iso": {
-			"ident": "dur-iso",
-			"description": "indicates the length of this element in time.",
-			"dataType": "teidata.duration.iso",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
