@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
 
+import ElementInfoPopup from './ElementInfoPopup'
+
 import { validAction, createElement, addInside, addBelow, addAbove, addOutside, replaceElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
@@ -8,7 +10,8 @@ export default class ElementMenu extends Component {
     constructor() {
         super()
         this.state = {
-            openSubMenu: null
+            openSubMenu: null,
+            elementInfoID: null
         }
         this.subMenuEls = {}
     }
@@ -56,6 +59,22 @@ export default class ElementMenu extends Component {
         )
     }
 
+    renderElementInfo() {
+        const { openSubMenu, elementInfoID } = this.state
+        
+        if( !elementInfoID || !openSubMenu ) return null
+
+        const anchorEl = this.subMenuEls[openSubMenu]
+        if( !anchorEl ) return null
+
+        return (
+            <ElementInfoPopup
+                elementID={elementInfoID}
+                anchorEl={anchorEl}            
+            ></ElementInfoPopup>
+        )
+    }
+
     renderSubMenu() {
         const { teiDocument, action, onAlertMessage } = this.props
         const { openSubMenu } = this.state
@@ -64,10 +83,10 @@ export default class ElementMenu extends Component {
         if( !openSubMenu || !menuGroups[openSubMenu] ) return
 
         const members = menuGroups[openSubMenu].members
-       
+
         const closeSubMenu = () => {
             this.subMenuEls[openSubMenu] = null
-            this.setState({...this.state, openSubMenu: null })
+            this.setState({...this.state, openSubMenu: null, elementInfoID: null })
         }
 
         const menuItems = []
@@ -78,6 +97,10 @@ export default class ElementMenu extends Component {
             const onClick = () => { 
                 if( action === 'create' ) {
                     createElement(member.id, teiDocument) 
+                    closeSubMenu()    
+                } else if( action === 'info' ) {
+                    // TODO
+                    // this.setState({...this.state, elementInfoID: member.id })
                 } else {
                     if( selection && selection.node ) {
                         try {
@@ -104,8 +127,8 @@ export default class ElementMenu extends Component {
                             onAlertMessage(err.message)
                         }
                     }
+                    closeSubMenu()    
                 }
-                closeSubMenu()    
             }
             const valid = member.enabled ? validAction(action, member.id, teiDocument, selection.anchor ) : false
 
@@ -155,6 +178,7 @@ export default class ElementMenu extends Component {
             <div id="ElementMenu">
                 { this.renderMenu( 'menu', menuItems, false, anchorEl, onClose) }
                 { this.renderSubMenu() }
+                { this.renderElementInfo() }
             </div>
         )
     }
