@@ -44,7 +44,7 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
             return nextHTML
         } else {
             // this is from an external source, drop markup
-            const xmlDom = parser.parseFromString(`<xml>${xml}</xml>`,'text/xml');
+            const xmlDom = parser.parseFromString(xml,'text/html');
             const nextHTML = `<html><head>${metaTag}</head><body>${xmlDom.documentElement.textContent}</body></html>`
             return nextHTML
         }
