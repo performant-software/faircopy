@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
+import { Popper, MenuItem, MenuList, Paper } from '@material-ui/core'
 
 import ElementInfoPopup from './ElementInfoPopup'
 
@@ -11,6 +11,7 @@ export default class ElementMenu extends Component {
         super()
         this.state = {
             openSubMenu: null,
+            activeMenu: 'menu',
             elementInfoID: null
         }
         this.subMenuEls = {}
@@ -24,41 +25,63 @@ export default class ElementMenu extends Component {
         return menus[menuGroup]
     }
 
-    renderMenu( menuID, menuItems, subMenu, anchorEl, onClose ) {
+    checkActiveMenu() {
+        setTimeout(()=>{
+            const { onClose } = this.props 
+            const { activeMenu } = this.state
+            if( !activeMenu ) onClose()    
+        }, 250)
+    }
 
-        if( !anchorEl ) return null
+    renderMenu() {
+        const { elementMenuAnchors, menuGroup } = this.props
+        const menuGroups = this.getMenuGroups()
+        const anchorEl = elementMenuAnchors[menuGroup]
 
-        let placement, elevation
-        if( subMenu ) {
-            placement = 'right-start'
-            elevation = 12
-        } else {
-            placement = 'bottom-start'
-            elevation = 6
+        if( !anchorEl || !menuGroups ) return null
+
+        // main menu mouse events
+        const onMouseOver = (menuGroupID) => { this.setState({...this.state, activeMenu: 'menu', openSubMenu: menuGroupID })}
+        const onMouseLeave = () => { 
+            this.setState({...this.state, activeMenu: null })
+            this.checkActiveMenu()
         }
 
-        // TODO use this to navigate submenus
+        // generate the menu items
+        const menuItems = []
+        for( const menuGroup of Object.values(menuGroups) ) {
+            const menuGroupID = menuGroup.id
+            const key = `menugroup-${menuGroupID}`
+            menuItems.push(
+                <MenuItem 
+                    onMouseOver={()=>{onMouseOver(menuGroupID)}}
+                    ref={(el)=> { this.subMenuEls[menuGroupID] = el }}
+                    key={key} 
+                    disableRipple={true}
+                    className="menu-item"
+                    value={menuGroupID}
+                >
+                    {menuGroup.label} <i className="menu-chevron fas fa-chevron-right"></i>
+                </MenuItem>
+            )
+        }
+
+        const placement = 'bottom-start'
+        const elevation = 6
+        
+        // main menu keyboard events
         const onKeyDown = (event) => {
             if( event.key === 'ArrowRight' ) {
                 console.log('arrow right')
             }
-            if( event.key === 'ArrowLeft' ) {
-                console.log('Arrow left')
-            }
-        }
-
-        const onClickAway = () => {
-            // onClose()
         }
 
         return (
             <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
                 <Paper elevation={elevation}>
-                    <ClickAwayListener onClickAway={onClickAway}>
-                        <MenuList autoFocusItem={true} id={menuID} onKeyDown={onKeyDown}>
-                            { menuItems }
-                        </MenuList>
-                    </ClickAwayListener>
+                    <MenuList autoFocusItem={true} id='menu' onMouseLeave={onMouseLeave} onKeyDown={onKeyDown}>
+                        { menuItems }
+                    </MenuList>
                 </Paper>
             </Popper>
         )
@@ -66,11 +89,9 @@ export default class ElementMenu extends Component {
 
     renderElementInfo() {
         const { elementInfoID } = this.state
-        
-        if( !elementInfoID ) return null
-
         const anchorEl = this.itemEls[elementInfoID]
-        if( !anchorEl ) return null
+
+        if( !elementInfoID || !anchorEl ) return null
         
         return (
             <ElementInfoPopup
@@ -80,13 +101,13 @@ export default class ElementMenu extends Component {
         )
     }
 
-    createMenuAction(selection,member,closeSubMenu) {
-        const { action, teiDocument, onAlertMessage } = this.props
+    createMenuAction(selection,member) {
+        const { action, teiDocument, onAlertMessage, onClose } = this.props
 
         return () => {
             if( action === 'create' ) {
                 createElement(member.id, teiDocument) 
-                closeSubMenu()    
+                onClose()    
             } else if( action === 'info' ) {
                 this.setState({...this.state, elementInfoID: member.id })
             } else {
@@ -115,7 +136,7 @@ export default class ElementMenu extends Component {
                         onAlertMessage(err.message)
                     }
                 }
-                closeSubMenu()    
+                onClose()    
             }
         }
     }
@@ -127,19 +148,21 @@ export default class ElementMenu extends Component {
         
         if( !openSubMenu || !menuGroups[openSubMenu] ) return
 
+        const anchorEl = this.subMenuEls[openSubMenu]
+        if( !anchorEl ) return null
+
+        const placement = 'right-start'
+        const elevation = 12
+
         const members = menuGroups[openSubMenu].members
 
-        const closeSubMenu = () => {
-            this.subMenuEls[openSubMenu] = null
-            this.setState({...this.state, openSubMenu: null, elementInfoID: null })
-        }
-
+        // generate the sub menu items
         const menuItems = []
         for( const member of members ) {
             const editorView = teiDocument.getActiveView()
             const selection = (editorView) ? editorView.state.selection : null 
 
-            const onClick = this.createMenuAction(selection, member, closeSubMenu)
+            const onClick = this.createMenuAction(selection, member)
             const valid = member.enabled ? validAction(action, member.id, teiDocument, selection.anchor ) : false
 
             menuItems.push(
@@ -154,40 +177,41 @@ export default class ElementMenu extends Component {
             )
         }
 
-        return this.renderMenu( 'submenu', menuItems, true, this.subMenuEls[openSubMenu], closeSubMenu)
-    }
+        // sub menu keyboard events
+        const onKeyDown = (event) => {
+            if( event.key === 'ArrowLeft' ) {
+                console.log('Arrow left')
+            }
+        }
 
-    render() {
-        const { onClose, menuGroup, elementMenuAnchors } = this.props
-
-        const menuGroups = this.getMenuGroups()
-        if( !menuGroups ) return null
-        const anchorEl = elementMenuAnchors[menuGroup]
-        if( !anchorEl ) return null
-
-        const onClick = (menuGroupID) => { this.setState({...this.state, openSubMenu: menuGroupID })}
-
-        const menuItems = []
-        for( const menuGroup of Object.values(menuGroups) ) {
-            const menuGroupID = menuGroup.id
-            const key = `menugroup-${menuGroupID}`
-            menuItems.push(
-                <MenuItem 
-                    onClick={()=>onClick(menuGroupID)}
-                    ref={(el)=> { this.subMenuEls[menuGroupID] = el }}
-                    key={key} 
-                    disableRipple={true}
-                    className="menu-item"
-                    value={menuGroupID}
-                >
-                    {menuGroup.label} <i className="menu-chevron fas fa-chevron-right"></i>
-                </MenuItem>
-            )
+        // sub menu mouse events
+        const onMouseOver = () => {
+            this.setState({...this.state, activeMenu: 'submenu' })
+        }
+        const onMouseLeave = () => {
+            this.subMenuEls[openSubMenu] = null
+            this.setState({...this.state, activeMenu: null })
+            this.checkActiveMenu()
         }
 
         return (
+            <Popper className="element-menu-popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
+                <Paper elevation={elevation}>
+                    <MenuList autoFocusItem={true} id='submenu' onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} onKeyDown={onKeyDown}>
+                        { menuItems }
+                    </MenuList>
+                </Paper>
+            </Popper>
+        )
+    }
+
+    render() {        
+        const menu = this.renderMenu()
+        if( !menu ) return null
+
+        return (
             <div id="ElementMenu">
-                { this.renderMenu( 'menu', menuItems, false, anchorEl, onClose) }
+                { menu }
                 { this.renderSubMenu() }
                 { this.renderElementInfo() }
             </div>
