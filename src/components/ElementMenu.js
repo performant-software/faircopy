@@ -41,7 +41,10 @@ export default class ElementMenu extends Component {
         if( !anchorEl || !menuGroups ) return null
 
         // main menu mouse events
-        const onMouseOver = (menuGroupID) => { this.setState({...this.state, activeMenu: 'menu', openSubMenu: menuGroupID })}
+        const onMouseOver = (menuGroupID) => { 
+            this.itemEls = {}
+            this.setState({...this.state, activeMenu: 'menu', openSubMenu: menuGroupID })
+        }
         const onMouseLeave = () => { 
             this.setState({...this.state, activeMenu: null })
             this.checkActiveMenu()
@@ -92,9 +95,20 @@ export default class ElementMenu extends Component {
         const anchorEl = this.itemEls[elementInfoID]
 
         if( !elementInfoID || !anchorEl ) return null
+
+        // element info mouse events
+        const onMouseOver = () => {
+            this.setState({...this.state, activeMenu: 'info' })
+        }
+        const onMouseLeave = () => {
+            this.setState({...this.state, activeMenu: null })
+            this.checkActiveMenu()
+        }
         
         return (
             <ElementInfoPopup
+                onMouseOver={onMouseOver}
+                onMouseLeave={onMouseLeave}
                 elementID={elementInfoID}
                 anchorEl={anchorEl}            
             ></ElementInfoPopup>
@@ -102,15 +116,13 @@ export default class ElementMenu extends Component {
     }
 
     createMenuAction(selection,member) {
-        const { action, teiDocument, onAlertMessage, onClose } = this.props
+        const { action, menuGroup, teiDocument, onAlertMessage, onClose } = this.props
 
         return () => {
-            if( action === 'create' ) {
+            if( menuGroup === 'mark' || menuGroup === 'inline' ) {
                 createElement(member.id, teiDocument) 
                 onClose()    
-            } else if( action === 'info' ) {
-                this.setState({...this.state, elementInfoID: member.id })
-            } else {
+            } else if( action !== 'info' ) {
                 if( selection && selection.node ) {
                     try {
                         switch(action) {
@@ -142,7 +154,7 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { teiDocument, action } = this.props
+        const { teiDocument, action, menuGroup } = this.props
         const { openSubMenu } = this.state
         const menuGroups = this.getMenuGroups()
         
@@ -163,13 +175,32 @@ export default class ElementMenu extends Component {
             const selection = (editorView) ? editorView.state.selection : null 
 
             const onClick = this.createMenuAction(selection, member)
-            const valid = member.enabled ? validAction(action, member.id, teiDocument, selection.anchor ) : false
+            const valid = action === 'info' || menuGroup !== 'structure' ? true : member.enabled ? validAction(action, member.id, teiDocument, selection.anchor ) : false
+
+            const onMenuItemMouseOver = () => {
+                if( action === 'info' ) {
+                    setTimeout( () => {
+                        this.setState({...this.state, elementInfoID: member.id })
+                    }, 250 )
+                }
+            }
+
+            const onMenuItemMouseLeave = () => {
+                this.itemEls[member.id] = null
+                this.setState({...this.state, elementInfoID: null })
+            }
+
+            const setItemElRef = (el) => {
+               this.itemEls[member.id] = el
+            }
 
             menuItems.push(
                 <MenuItem 
                     disabled={!valid} 
                     onClick={onClick} 
-                    ref={(el)=> { this.itemEls[member.id] = el }}
+                    onMouseOver={onMenuItemMouseOver}
+                    onMouseLeave={onMenuItemMouseLeave}
+                    ref={setItemElRef}
                     key={`submenu-${member.id}`}
                     disableRipple={true}
                 >
@@ -190,6 +221,7 @@ export default class ElementMenu extends Component {
         }
         const onMouseLeave = () => {
             this.subMenuEls[openSubMenu] = null
+            this.itemEls = {}
             this.setState({...this.state, activeMenu: null })
             this.checkActiveMenu()
         }

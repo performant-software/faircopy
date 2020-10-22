@@ -114,7 +114,7 @@ export default class EditorToolbar extends Component {
                     "fa-marker",
                     (enabledMenu !== 'all' && enabledMenu !== 'marks'),
                     (el)=> { elementMenuAnchors.mark = el },
-                    () => { onOpenElementMenu({ menuGroup: 'mark', action: 'create'}) }
+                    () => { onOpenElementMenu({ menuGroup: 'mark', action: selectedAction}) }
                 )}
                 { this.renderElementMenuButton(
                     "Structures",
@@ -128,7 +128,7 @@ export default class EditorToolbar extends Component {
                     "fa-anchor",
                     (enabledMenu !== 'all' && enabledMenu !== 'inline'),
                     (el)=> { elementMenuAnchors.inline = el },
-                    () => { onOpenElementMenu({ menuGroup: 'inline', action: 'create' }) }
+                    () => { onOpenElementMenu({ menuGroup: 'inline', action: selectedAction }) }
                 )}
             </div>
         )
