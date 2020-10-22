@@ -91,10 +91,16 @@ export default class ElementMenu extends Component {
     }
 
     renderElementInfo() {
+        const { teiDocument } = this.props
         const { elementInfoID } = this.state
         const anchorEl = this.itemEls[elementInfoID]
 
         if( !elementInfoID || !anchorEl ) return null
+
+        const { elements } = teiDocument.fairCopyProject.teiSchema
+        const elementSpec = elements[elementInfoID]
+
+        if(!elementSpec) return null
 
         // element info mouse events
         const onMouseOver = () => {
@@ -109,7 +115,7 @@ export default class ElementMenu extends Component {
             <ElementInfoPopup
                 onMouseOver={onMouseOver}
                 onMouseLeave={onMouseLeave}
-                elementID={elementInfoID}
+                elementSpec={elementSpec}
                 anchorEl={anchorEl}            
             ></ElementInfoPopup>
         )
