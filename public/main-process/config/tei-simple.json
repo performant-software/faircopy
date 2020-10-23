@@ -31,7 +31,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a formal list or prose description of the topics addressed by\n\ta subdivision of a text."
+			"desc": "contains a formal list or prose description of the topics addressed by a subdivision of a text."
 		},
 		{
 			"name": "castGroup",
@@ -64,7 +64,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "groups one or more individual <gi>castItem</gi>\nelements within a cast list."
+			"desc": "groups one or more individual castItem elements within a cast list."
 		},
 		{
 			"name": "castList",
@@ -132,7 +132,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a quotation from some other document, together with a bibliographic reference to\n    its source. In a dictionary it may contain an example text with at least one occurrence of the\n    word form, used in the sense being described, or a translation of the headword, or an example."
+			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example."
 		},
 		{
 			"name": "docTitle",
@@ -167,7 +167,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the title of a document, including all its\nconstituents, as given on a title page."
+			"desc": "contains the title of a document, including all its constituents, as given on a title page."
 		},
 		{
 			"name": "epigraph",
@@ -200,7 +200,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a quotation, anonymous or attributed, appearing at\n  the start or end of a section or on a title page."
+			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page."
 		},
 		{
 			"name": "group",
@@ -236,7 +236,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the body of a composite text, grouping together a sequence of distinct texts (or\n    groups of such texts) which are regarded as a unit for some purpose, for example the collected\n    works of an author, a sequence of prose essays, etc."
+			"desc": "contains the body of a composite text, grouping together a sequence of distinct texts (or groups of such texts) which are regarded as a unit for some purpose, for example the collected works of an author, a sequence of prose essays, etc."
 		},
 		{
 			"name": "lg",
@@ -278,7 +278,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains one or more verse lines functioning as a formal unit, e.g. a stanza, refrain,\n        verse paragraph, etc."
+			"desc": "contains one or more verse lines functioning as a formal unit, e.g. a stanza, refrain, verse paragraph, etc."
 		},
 		{
 			"name": "list",
@@ -315,7 +315,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "each list item is part of an argument consisting of two or more propositions \n            and a final conclusion derived from them."
+			"desc": "contains any sequence of items organized as a list."
 		},
 		{
 			"name": "listBibl",
@@ -389,7 +389,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a list of descriptions, each of which provides information about an identifiable\n    person or a group of people, for example the participants in a language interaction, or the\n    people referred to in a historical source."
+			"desc": "contains a list of descriptions, each of which provides information about an identifiable person or a group of people, for example the participants in a language interaction, or the people referred to in a historical source."
 		},
 		{
 			"name": "listPlace",
@@ -426,7 +426,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a list of places, optionally followed by a list of relationships (other than\n        containment) defined amongst them."
+			"desc": "contains a list of places, optionally followed by a list of relationships (other than containment) defined amongst them."
 		},
 		{
 			"name": "person",
@@ -465,7 +465,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "specifies an age group for the person."
+			"desc": "provides information about an identifiable individual, for example a participant in a language interaction, or a person referred to in a historical source."
 		},
 		{
 			"name": "place",
@@ -573,7 +573,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "points to the related bibliographic element by means of an\n      absolute or relative URI reference"
+			"desc": "contains or references some other bibliographic item which is related to the present one in some specified manner, for example as a constituent or alternative version of it."
 		},
 		{
 			"name": "respStmt",
@@ -608,7 +608,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition,\n    recording, or series, where the specialized elements for authors, editors, etc. do not suffice\n    or do not apply. May also be used to encode information about individuals or organizations \n    which have played a role in the production or distribution of a bibliographic work."
+			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition, recording, or series, where the specialized elements for authors, editors, etc. do not suffice or do not apply. May also be used to encode information about individuals or organizations which have played a role in the production or distribution of a bibliographic work."
 		},
 		{
 			"name": "set",
@@ -641,7 +641,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a\n    play, typically found in the front matter of a printed performance text (not a stage direction)."
+			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a play, typically found in the front matter of a printed performance text (not a stage direction)."
 		},
 		{
 			"name": "sp",
@@ -676,7 +676,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or\n    verse text."
+			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
 		},
 		{
 			"name": "anchor",
@@ -746,74 +746,7 @@
 			],
 			"icon": "fa-line-columns",
 			"group": "model_global model_milestoneLike",
-			"desc": "marks the beginning of a new column of a text on a\n  multi-column page."
-		},
-		{
-			"name": "choice",
-			"pmType": "inline-node",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"icon": "fa-question-circle",
-			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_linePart",
-			"desc": "groups a number of alternative encodings for the same point in\n        a text."
-		},
-		{
-			"name": "fw",
-			"pmType": "inline-node",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"hand",
-				"n",
-				"next",
-				"place",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"type",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"icon": "fa-heading",
-			"group": "model_global model_milestoneLike",
-			"desc": "a catch-word"
+			"desc": "marks the beginning of a new column of a text on a multi-column page."
 		},
 		{
 			"name": "gap",
@@ -862,7 +795,7 @@
 			],
 			"icon": "fa-dot-circle",
 			"group": "model_global model_global_edit",
-			"desc": "damage results from smoke"
+			"desc": "indicates a point where material has been omitted in a transcription, whether for editorial reasons described in the TEI header, as part of sampling practice, or because the material is illegible, invisible, or inaudible."
 		},
 		{
 			"name": "lb",
@@ -937,7 +870,7 @@
 			],
 			"icon": "fa-map-marker",
 			"group": "model_global model_milestoneLike",
-			"desc": "marks a boundary point separating any kind of section of a text, typically but not\n    necessarily indicating a point at which some part of a standard reference system changes, where\n    the change is not represented by a structural element."
+			"desc": "marks a boundary point separating any kind of section of a text, typically but not necessarily indicating a point at which some part of a standard reference system changes, where the change is not represented by a structural element."
 		},
 		{
 			"name": "note",
@@ -977,7 +910,7 @@
 			],
 			"icon": "fa-comment-alt",
 			"group": "model_global model_noteLike model_correspDescPart model_correspActionPart model_correspContextPart",
-			"desc": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point."
+			"desc": "contains a note or annotation."
 		},
 		{
 			"name": "pb",
@@ -1015,53 +948,6 @@
 			"icon": "fa-file-alt",
 			"group": "model_global model_milestoneLike",
 			"desc": "marks the beginning of a new page in a paginated document."
-		},
-		{
-			"name": "subst",
-			"pmType": "inline-node",
-			"validAttrs": [
-				"ana",
-				"atLeast",
-				"atMost",
-				"cause",
-				"cert",
-				"change",
-				"confidence",
-				"copyOf",
-				"corresp",
-				"evidence",
-				"exclude",
-				"extent",
-				"facs",
-				"hand",
-				"instant",
-				"max",
-				"min",
-				"n",
-				"next",
-				"precision",
-				"prev",
-				"quantity",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"scope",
-				"select",
-				"seq",
-				"source",
-				"status",
-				"style",
-				"synch",
-				"unit",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"icon": "fa-random",
-			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial",
-			"desc": "groups one or more deletions with one or more additions when\n  the combination is to be regarded as a single intervention in the text."
 		},
 		{
 			"name": "add",
@@ -1110,7 +996,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"desc": "contains letters, words, or phrases inserted in the source\n  text by an author, scribe, or a previous annotator or corrector."
+			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector."
 		},
 		{
 			"name": "corr",
@@ -1192,7 +1078,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as\n    superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
+			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
 		},
 		{
 			"name": "hi",
@@ -1223,7 +1109,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
-			"desc": "marks a word or phrase as graphically distinct from the\n        surrounding text, for reasons concerning which no claim is\n        made."
+			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made."
 		},
 		{
 			"name": "orig",
@@ -1253,7 +1139,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "contains a reading which is marked as following the original, rather than being normalized\n        or corrected."
+			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected."
 		},
 		{
 			"name": "q",
@@ -1286,7 +1172,7 @@
 				"xml:space"
 			],
 			"group": "model_common model_inter model_qLike",
-			"desc": "refering to itself, not its normal referent"
+			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used."
 		},
 		{
 			"name": "quote",
@@ -1320,7 +1206,7 @@
 				"xml:space"
 			],
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
-			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external\n        to the text."
+			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text."
 		},
 		{
 			"name": "ref",
@@ -1425,7 +1311,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_lPart",
-			"desc": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates."
+			"desc": "marks the rhyming part of a metrical line."
 		},
 		{
 			"name": "seg",
@@ -1466,7 +1352,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
-			"desc": "represents any segmentation of text below the <soCalled>chunk</soCalled> level."
+			"desc": "represents any segmentation of text below the chunk level."
 		},
 		{
 			"name": "sic",
@@ -1539,7 +1425,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "one or more words indicating why the text has had to be supplied, e.g.\n      <mentioned>overbinding</mentioned>, <mentioned>faded-ink</mentioned>, <mentioned>lost-folio</mentioned>, <mentioned>omitted-in-original</mentioned>."
+			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe."
 		},
 		{
 			"name": "title",
@@ -1594,7 +1480,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
-			"desc": "descriptive paraphrase of the work\nfunctioning as a title"
+			"desc": "contains a title for any kind of work."
 		},
 		{
 			"name": "unclear",
@@ -1638,7 +1524,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
-			"desc": "damage results from smoke"
+			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source."
 		},
 		{
 			"name": "abbr",
@@ -1671,7 +1557,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
-			"desc": "the abbreviation is for a geographic name."
+			"desc": "contains an abbreviation of any sort."
 		},
 		{
 			"name": "date",
@@ -1768,7 +1654,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike",
-			"desc": "contains an email address identifying a location to which\n        email messages can be delivered."
+			"desc": "contains an email address identifying a location to which email messages can be delivered."
 		},
 		{
 			"name": "expan",
@@ -1830,7 +1716,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"desc": "identifies a word or phrase as belonging to some language other than that of the\n                surrounding text."
+			"desc": "identifies a word or phrase as belonging to some language other than that of the surrounding text."
 		},
 		{
 			"name": "measure",
@@ -1867,7 +1753,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
-			"desc": "specifies the type of measurement in any convenient typology."
+			"desc": "contains a word or phrase referring to some quantity of an object or commodity, usually comprising a number, a unit, and a commodity name."
 		},
 		{
 			"name": "name",
@@ -1965,7 +1851,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
-			"desc": "supplies the value of the number in standard form."
+			"desc": "contains a number, written in any form."
 		},
 		{
 			"name": "rs",
@@ -2081,7 +1967,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"desc": "contains a single-word, multi-word, or symbolic\n    designation which is regarded as a technical term."
+			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term."
 		},
 		{
 			"name": "term",
@@ -2121,7 +2007,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"desc": "contains a single-word, multi-word, or symbolic\n    designation which is regarded as a technical term."
+			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term."
 		},
 		{
 			"name": "time",
@@ -2294,7 +2180,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains one line of a postal<!-- or other--> address."
+			"desc": "contains one line of a postal address."
 		},
 		{
 			"name": "author",
@@ -2331,7 +2217,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "in a bibliographic reference, contains the name(s) of an\n  author, personal or corporate, of a work; for example in the same\n  form as that provided by a recognized bibliographic name authority."
+			"desc": "in a bibliographic reference, contains the name(s) of an author, personal or corporate, of a work; for example in the same form as that provided by a recognized bibliographic name authority."
 		},
 		{
 			"name": "bibl",
@@ -2369,7 +2255,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a loosely-structured bibliographic citation of which the sub-components may or may\n    not be explicitly tagged."
+			"desc": "contains a loosely-structured bibliographic citation of which the sub-components may or may not be explicitly tagged."
 		},
 		{
 			"name": "biblScope",
@@ -2405,7 +2291,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "defines the scope of a bibliographic reference, for\n    example as a list of page numbers, or a named subdivision of a larger work."
+			"desc": "defines the scope of a bibliographic reference, for example as a list of page numbers, or a named subdivision of a larger work."
 		},
 		{
 			"name": "byline",
@@ -2438,7 +2324,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the primary statement of responsibility given for a work\non its title page or at the head or end of the work."
+			"desc": "contains the primary statement of responsibility given for a work on its title page or at the head or end of the work."
 		},
 		{
 			"name": "castItem",
@@ -2474,7 +2360,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "the item describes a list of non-speaking roles."
+			"desc": "contains a single entry within a cast list, describing either a single role or a list of non-speaking roles."
 		},
 		{
 			"name": "closer",
@@ -2508,7 +2394,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at\n    the end of a division, especially of a letter."
+			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at the end of a division, especially of a letter."
 		},
 		{
 			"name": "dateline",
@@ -2541,7 +2427,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a brief description of the place, date, time, etc. of production of a letter,\n    newspaper story, or other work, prefixed or suffixed to it as a kind of heading or trailer."
+			"desc": "contains a brief description of the place, date, time, etc. of production of a letter, newspaper story, or other work, prefixed or suffixed to it as a kind of heading or trailer."
 		},
 		{
 			"name": "desc",
@@ -2578,7 +2464,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "Several standards bodies, including NIST in the USA,\n            strongly recommend against ending the representation of a number\n            with a decimal point. So instead of <q>3.</q> use either <q>3</q>\n            or <q>3.0</q>."
+			"desc": "contains a brief description of the object documented by its parent element, typically a documentation element or an entity."
 		},
 		{
 			"name": "docAuthor",
@@ -2613,7 +2499,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the name of the author of the document, as given on the\ntitle page (often but not always contained in a byline)."
+			"desc": "contains the name of the author of the document, as given on the title page (often but not always contained in a byline)."
 		},
 		{
 			"name": "docDate",
@@ -2647,7 +2533,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "gives the value of the date in standard form, i.e. YYYY-MM-DD."
+			"desc": "contains the date of a document, as given on a title page or in a dateline."
 		},
 		{
 			"name": "docEdition",
@@ -2680,7 +2566,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains an edition statement as presented on a title page of a\ndocument."
+			"desc": "contains an edition statement as presented on a title page of a document."
 		},
 		{
 			"name": "docImprint",
@@ -2713,7 +2599,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the imprint statement (place and date of publication,\npublisher name), as given\n(usually) at the foot of a title page."
+			"desc": "contains the imprint statement (place and date of publication, publisher name), as given (usually) at the foot of a title page."
 		},
 		{
 			"name": "editor",
@@ -2750,7 +2636,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an\n    individual, institution or organization, (or of several such) acting as editor, compiler,\n    translator, etc."
+			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an individual, institution or organization, (or of several such) acting as editor, compiler, translator, etc."
 		},
 		{
 			"name": "figDesc",
@@ -2783,7 +2669,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a brief prose description of the appearance or content\nof a graphic figure, for use when documenting an image without\ndisplaying it."
+			"desc": "contains a brief prose description of the appearance or content of a graphic figure, for use when documenting an image without displaying it."
 		},
 		{
 			"name": "head",
@@ -2820,7 +2706,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains any type of heading, for example the title of a section, or the heading of a list,\n    glossary, manuscript description, etc."
+			"desc": "contains any type of heading, for example the title of a section, or the heading of a list, glossary, manuscript description, etc."
 		},
 		{
 			"name": "imprimatur",
@@ -2853,7 +2739,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a formal statement authorizing the publication of a work, sometimes required to\n    appear on a title page or its verso."
+			"desc": "contains a formal statement authorizing the publication of a work, sometimes required to appear on a title page or its verso."
 		},
 		{
 			"name": "item",
@@ -2962,7 +2848,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains any label or heading used to identify part of a text,\n  typically but not exclusively in a list or glossary."
+			"desc": "contains any label or heading used to identify part of a text, typically but not exclusively in a list or glossary."
 		},
 		{
 			"name": "opener",
@@ -2996,7 +2882,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "groups together dateline, byline, salutation, and similar phrases appearing as a preliminary\n    group at the start of a division, especially of a letter."
+			"desc": "groups together dateline, byline, salutation, and similar phrases appearing as a preliminary group at the start of a division, especially of a letter."
 		},
 		{
 			"name": "p",
@@ -3067,7 +2953,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "provides the name of the organization responsible for the publication or distribution of a\n        bibliographic item."
+			"desc": "provides the name of the organization responsible for the publication or distribution of a bibliographic item."
 		},
 		{
 			"name": "pubPlace",
@@ -3158,7 +3044,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a phrase describing the nature of a person's intellectual responsibility, or an organization's role \n    in the production or distribution of a work."
+			"desc": "contains a phrase describing the nature of a person's intellectual responsibility, or an organization's role in the production or distribution of a work."
 		},
 		{
 			"name": "role",
@@ -3258,7 +3144,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a salutation or greeting prefixed to a foreword, dedicatory epistle, or other\n    division of a text, or the salutation in the closing of a letter, preface, etc."
+			"desc": "contains a salutation or greeting prefixed to a foreword, dedicatory epistle, or other division of a text, or the salutation in the closing of a letter, preface, etc."
 		},
 		{
 			"name": "signed",
@@ -3292,7 +3178,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the closing salutation, etc., appended to a foreword,\ndedicatory epistle, or other division of a text."
+			"desc": "contains the closing salutation, etc., appended to a foreword, dedicatory epistle, or other division of a text."
 		},
 		{
 			"name": "speaker",
@@ -3325,7 +3211,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a\n        dramatic text or fragment."
+			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
 		},
 		{
 			"name": "stage",
@@ -3362,7 +3248,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "more than one of the above"
+			"desc": "contains any kind of stage direction within a dramatic text or fragment."
 		},
 		{
 			"name": "titlePart",
@@ -3398,7 +3284,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "descriptive paraphrase of the work"
+			"desc": "contains a subsection or division of the title of a work, as indicated on a title page."
 		},
 		{
 			"name": "trailer",
@@ -3502,7 +3388,7 @@
 		},
 		"n": {
 			"ident": "n",
-			"description": "gives a number (or other label) for an element, which is not necessarily unique within\n        the document.",
+			"description": "gives a number (or other label) for an element, which is not necessarily unique within the document.",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": "1",
@@ -3511,7 +3397,7 @@
 		},
 		"xml:lang": {
 			"ident": "xml:lang",
-			"description": "indicates the language of the element content using a <soCalled>tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
+			"description": "indicates the language of the element content using a tag generated according to BCP 47.",
 			"dataType": "teidata.language",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3520,7 +3406,7 @@
 		},
 		"xml:base": {
 			"ident": "xml:base",
-			"description": "provides a base URI reference with which applications can resolve relative URI\n        references into absolute URI references.",
+			"description": "provides a base URI reference with which applications can resolve relative URI references into absolute URI references.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3530,7 +3416,7 @@
 		},
 		"xml:space": {
 			"ident": "xml:space",
-			"description": "indicates the intent that applications preserve all white space",
+			"description": "signals an intention about how white space should be managed by applications.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3557,7 +3443,7 @@
 		},
 		"style": {
 			"ident": "style",
-			"description": "contains an expression in some formal style definition language\nwhich defines the rendering or presentation\nused for this element in the source text",
+			"description": "contains an expression in some formal style definition language which defines the rendering or presentation used for this element in the source text",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": "1",
@@ -3566,7 +3452,7 @@
 		},
 		"rendition": {
 			"ident": "rendition",
-			"description": "points to a description of the rendering or presentation used for this element in the\n        source text.",
+			"description": "points to a description of the rendering or presentation used for this element in the source text.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3575,7 +3461,7 @@
 		},
 		"corresp": {
 			"ident": "corresp",
-			"description": "points to elements that correspond to the current\n      element in some way.",
+			"description": "points to elements that correspond to the current element in some way.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3584,7 +3470,7 @@
 		},
 		"synch": {
 			"ident": "synch",
-			"description": "points to elements that are synchronous with the current\n      element.",
+			"description": "points to elements that are synchronous with the current element.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3593,7 +3479,7 @@
 		},
 		"sameAs": {
 			"ident": "sameAs",
-			"description": "points to an element that is the same as the current\n      element.",
+			"description": "points to an element that is the same as the current element.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3602,7 +3488,7 @@
 		},
 		"copyOf": {
 			"ident": "copyOf",
-			"description": "points to an element of which the current element is a\n\tcopy.",
+			"description": "points to an element of which the current element is a copy.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3611,7 +3497,7 @@
 		},
 		"next": {
 			"ident": "next",
-			"description": "points to the next element of a virtual aggregate of which\n      the current element is part.",
+			"description": "points to the next element of a virtual aggregate of which the current element is part.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3620,7 +3506,7 @@
 		},
 		"prev": {
 			"ident": "prev",
-			"description": "points to the previous element of a virtual aggregate of\n      which the current element is part.",
+			"description": "points to the previous element of a virtual aggregate of which the current element is part.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3629,7 +3515,7 @@
 		},
 		"exclude": {
 			"ident": "exclude",
-			"description": "points to elements that are in exclusive alternation\n      with the current element.",
+			"description": "points to elements that are in exclusive alternation with the current element.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3638,7 +3524,7 @@
 		},
 		"select": {
 			"ident": "select",
-			"description": "selects one or more alternants; if one alternant is\n      selected, the ambiguity or uncertainty is marked as resolved. If\n      more than one alternant is selected, the degree of ambiguity or\n      uncertainty is marked as reduced by the number of alternants not\n      selected.",
+			"description": "selects one or more alternants; if one alternant is selected, the ambiguity or uncertainty is marked as resolved. If more than one alternant is selected, the degree of ambiguity or uncertainty is marked as reduced by the number of alternants not selected.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3647,7 +3533,7 @@
 		},
 		"ana": {
 			"ident": "ana",
-			"description": "indicates one or more elements containing interpretations of the\nelement on which the <att>ana</att> attribute appears.",
+			"description": "indicates one or more elements containing interpretations of the element on which the ana attribute appears.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3665,7 +3551,7 @@
 		},
 		"change": {
 			"ident": "change",
-			"description": "points to one or more <gi>change</gi> elements documenting\n      a state or revision campaign to which the element bearing this\n      attribute and its children have been assigned by the encoder.",
+			"description": "points to one or more change elements documenting a state or revision campaign to which the element bearing this attribute and its children have been assigned by the encoder.",
 			"dataType": "teidata.pointer",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -3683,7 +3569,7 @@
 		},
 		"resp": {
 			"ident": "resp",
-			"description": "indicates the agency responsible for the intervention or interpretation, for example an\n        editor or transcriber.",
+			"description": "indicates the agency responsible for the intervention or interpretation, for example an editor or transcriber.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3692,7 +3578,7 @@
 		},
 		"source": {
 			"ident": "source",
-			"description": "specifies the source from which some aspect of\n        this element is drawn.",
+			"description": "specifies the source from which some aspect of this element is drawn.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3701,7 +3587,7 @@
 		},
 		"type": {
 			"ident": "type",
-			"description": "characterizes the element in some sense, using any convenient\n classification scheme or typology.",
+			"description": "characterizes the element in some sense, using any convenient classification scheme or typology.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3719,7 +3605,7 @@
 		},
 		"key": {
 			"ident": "key",
-			"description": "provides an externally-defined means of identifying the entity (or entities) being\n        named, using a coded value of some kind.",
+			"description": "provides an externally-defined means of identifying the entity (or entities) being named, using a coded value of some kind.",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3728,7 +3614,7 @@
 		},
 		"ref": {
 			"ident": "ref",
-			"description": "provides an explicit means of locating a full definition or identity for the entity being named by\n        means of one or more URIs.",
+			"description": "provides an explicit means of locating a full definition or identity for the entity being named by means of one or more URIs.",
 			"dataType": "teidata.pointer",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -3737,7 +3623,7 @@
 		},
 		"decls": {
 			"ident": "decls",
-			"description": "identifies one or more <term>declarable elements</term> within the\nheader, which are understood to apply to the element bearing this\nattribute and its content.",
+			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3746,25 +3632,25 @@
 		},
 		"org": {
 			"ident": "org",
-			"description": "the immediate contents of this\n\t\t  element are regarded as forming a logical unit, to be\n\t\t  processed in sequence.",
+			"description": "specifies how the content of the division is organized.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": [
 				{
 					"ident": "composite",
-					"desc": "no claim is made about the\n\t\t  sequence in which the immediate contents of this division\n\t\t  are to be processed, or their inter-relationships."
+					"desc": "no claim is made about the sequence in which the immediate contents of this division are to be processed, or their inter-relationships."
 				},
 				{
 					"ident": "uniform",
-					"desc": "the immediate contents of this\n\t\t  element are regarded as forming a logical unit, to be\n\t\t  processed in sequence."
+					"desc": "the immediate contents of this element are regarded as forming a logical unit, to be processed in sequence."
 				}
 			],
 			"valListType": "closed"
 		},
 		"sample": {
 			"ident": "sample",
-			"description": "division is not a sample.",
+			"description": "indicates whether this division is a sample of the original source and if so, from which part.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3794,7 +3680,7 @@
 		},
 		"met": {
 			"ident": "met",
-			"description": "contains a user-specified encoding for the conventional\nmetrical structure of the element.",
+			"description": "contains a user-specified encoding for the conventional metrical structure of the element.",
 			"dataType": "token",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3803,7 +3689,7 @@
 		},
 		"real": {
 			"ident": "real",
-			"description": "contains a user-specified encoding for the actual realization\nof the conventional metrical structure applicable to the element.",
+			"description": "contains a user-specified encoding for the actual realization of the conventional metrical structure applicable to the element.",
 			"dataType": "token",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3821,7 +3707,7 @@
 		},
 		"part": {
 			"ident": "part",
-			"description": "this is the final part of a fragmented element",
+			"description": "specifies whether or not its parent element is fragmented in some way, typically by some other overlapping structure: for example a speech which is divided between two or more verse stanzas, a paragraph which is split across a page division, a verse line which is divided between two speakers.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3860,7 +3746,7 @@
 		},
 		"default": {
 			"ident": "default",
-			"description": "This element can only be selected explicitly, unless it is the\nonly one of its kind, in which case it is selected if its parent is selected.",
+			"description": "indicates whether or not this element is selected by default when its parent is selected.",
 			"dataType": "teidata.truthValue",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3871,7 +3757,7 @@
 				},
 				{
 					"ident": "false",
-					"desc": "This element can only be selected explicitly, unless it is the\nonly one of its kind, in which case it is selected if its parent is selected."
+					"desc": "This element can only be selected explicitly, unless it is the only one of its kind, in which case it is selected if its parent is selected."
 				}
 			],
 			"valListType": "closed"
@@ -3905,7 +3791,7 @@
 		},
 		"evidence": {
 			"ident": "evidence",
-			"description": "the intervention or interpretation has been made by the editor, cataloguer, or\n            scholar on the basis of their expertise.",
+			"description": "indicates the nature of the evidence supporting the reliability or accuracy of the intervention or interpretation.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3920,7 +3806,7 @@
 				},
 				{
 					"ident": "conjecture",
-					"desc": "the intervention or interpretation has been made by the editor, cataloguer, or\n            scholar on the basis of their expertise."
+					"desc": "the intervention or interpretation has been made by the editor, cataloguer, or scholar on the basis of their expertise."
 				}
 			],
 			"valListType": "semi"
@@ -3936,7 +3822,7 @@
 		},
 		"hand": {
 			"ident": "hand",
-			"description": "points to a <gi>handNote</gi> element describing the hand considered responsible for the\n  \t    content of the element concerned.",
+			"description": "points to a handNote element describing the hand considered responsible for the content of the element concerned.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3945,7 +3831,7 @@
 		},
 		"target": {
 			"ident": "target",
-			"description": "points to the related bibliographic element by means of an\n      absolute or relative URI reference",
+			"description": "points to the related bibliographic element by means of an absolute or relative URI reference",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3972,7 +3858,7 @@
 		},
 		"ed": {
 			"ident": "ed",
-			"description": "supplies a sigil or other arbitrary identifier for the source edition in which\n      the associated feature (for example, a  page, column, or line\n      break) occurs at this point in the text.",
+			"description": "supplies a sigil or other arbitrary identifier for the source edition in which the associated feature (for example, a page, column, or line break) occurs at this point in the text.",
 			"dataType": "teidata.word",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3981,7 +3867,7 @@
 		},
 		"edRef": {
 			"ident": "edRef",
-			"description": "provides a pointer to the source edition in which\n      the associated feature (for example, a  page, column, or line\n      break) occurs at this point in the text.",
+			"description": "provides a pointer to the source edition in which the associated feature (for example, a page, column, or line break) occurs at this point in the text.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -3990,7 +3876,7 @@
 		},
 		"spanTo": {
 			"ident": "spanTo",
-			"description": "The @spanTo attribute must point to an element following the\n\tcurrent element",
+			"description": "indicates the end of a span initiated by the element bearing this attribute.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -3999,18 +3885,18 @@
 		},
 		"break": {
 			"ident": "break",
-			"description": "the encoding does not take any position on this issue.",
+			"description": "indicates whether or not the element bearing this attribute should be considered to mark the end of an orthographic token in the same way as whitespace.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": [
 				{
 					"ident": "yes",
-					"desc": "the element bearing this attribute is considered\nto mark the end of any adjacent orthographic token irrespective of the presence\nof any adjacent whitespace"
+					"desc": "the element bearing this attribute is considered to mark the end of any adjacent orthographic token irrespective of the presence of any adjacent whitespace"
 				},
 				{
 					"ident": "no",
-					"desc": "the element bearing this attribute is considered\nnot to mark the end of any adjacent orthographic token irrespective of the presence\nof any adjacent whitespace"
+					"desc": "the element bearing this attribute is considered not to mark the end of any adjacent orthographic token irrespective of the presence of any adjacent whitespace"
 				},
 				{
 					"ident": "maybe",
@@ -4019,9 +3905,238 @@
 			],
 			"valListType": "open"
 		},
+		"reason": {
+			"ident": "reason",
+			"description": "gives the reason for omission",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": [
+				{
+					"ident": "cancelled"
+				},
+				{
+					"ident": "deleted"
+				},
+				{
+					"ident": "editorial",
+					"desc": "for features omitted from transcription due to editorial policy"
+				},
+				{
+					"ident": "illegible"
+				},
+				{
+					"ident": "inaudible"
+				},
+				{
+					"ident": "irrelevant"
+				},
+				{
+					"ident": "sampling"
+				}
+			],
+			"valListType": "semi"
+		},
+		"agent": {
+			"ident": "agent",
+			"description": "in the case of text omitted because of damage, categorizes the cause of the damage, if it can be identified.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "rubbing",
+					"desc": "damage results from rubbing of the leaf edges"
+				},
+				{
+					"ident": "mildew",
+					"desc": "damage results from mildew on the leaf surface"
+				},
+				{
+					"ident": "smoke",
+					"desc": "damage results from smoke"
+				}
+			],
+			"valListType": "open"
+		},
+		"start": {
+			"ident": "start",
+			"description": "indicates the location within a temporal alignment at which this element begins.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"end": {
+			"ident": "end",
+			"description": "indicates the location within a temporal alignment at which this element ends.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"dur": {
+			"ident": "dur",
+			"description": "indicates the length of this element in time.",
+			"dataType": "teidata.duration.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"dur-iso": {
+			"ident": "dur-iso",
+			"description": "indicates the length of this element in time.",
+			"dataType": "teidata.duration.iso",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"unit": {
+			"ident": "unit",
+			"description": "names the unit used for the measurement",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "cm"
+				},
+				{
+					"ident": "mm"
+				},
+				{
+					"ident": "in"
+				},
+				{
+					"ident": "line",
+					"desc": "lines of text"
+				},
+				{
+					"ident": "char",
+					"desc": "characters of text"
+				}
+			],
+			"valListType": "semi"
+		},
+		"quantity": {
+			"ident": "quantity",
+			"description": "specifies the length in the units specified",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"extent": {
+			"ident": "extent",
+			"description": "indicates the size of the object concerned using a project-specific vocabulary combining quantity and units in a single string of words.",
+			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"precision": {
+			"ident": "precision",
+			"description": "characterizes the precision of the values specified by the other attributes.",
+			"dataType": "teidata.certainty",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"scope": {
+			"ident": "scope",
+			"description": "where the measurement summarizes more than one observation, specifies the applicability of this measurement.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "all",
+					"desc": "measurement applies to all instances."
+				},
+				{
+					"ident": "most",
+					"desc": "measurement applies to most of the instances inspected."
+				},
+				{
+					"ident": "range",
+					"desc": "measurement applies to only the specified range of instances."
+				}
+			],
+			"valListType": "open"
+		},
+		"atLeast": {
+			"ident": "atLeast",
+			"description": "gives a minimum estimated value for the approximate measurement.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"atMost": {
+			"ident": "atMost",
+			"description": "gives a maximum estimated value for the approximate measurement.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"min": {
+			"ident": "min",
+			"description": "where the measurement summarizes more than one observation or a range, supplies the minimum value observed.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"max": {
+			"ident": "max",
+			"description": "where the measurement summarizes more than one observation or a range, supplies the maximum value observed.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"confidence": {
+			"ident": "confidence",
+			"description": "specifies the degree of statistical confidence (between zero and one) that a value falls within the range specified by min and max, or the proportion of observed values that fall within that range.",
+			"dataType": "teidata.probability",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"anchored": {
+			"ident": "anchored",
+			"description": "indicates whether the copy text shows the exact place of reference for the note.",
+			"dataType": "teidata.truthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"targetEnd": {
+			"ident": "targetEnd",
+			"description": "points to the end of the span to which the note is attached, if the note is not embedded in the text at that point.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
 		"place": {
 			"ident": "place",
-			"description": " in a predefined space, for example left by an earlier scribe.",
+			"description": "specifies where this item is placed.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -4069,247 +4184,9 @@
 			],
 			"valListType": "semi"
 		},
-		"reason": {
-			"ident": "reason",
-			"description": "for features omitted from\n\t  transcription due to editorial policy",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": [
-				{
-					"ident": "cancelled",
-					"desc": ""
-				},
-				{
-					"ident": "deleted",
-					"desc": ""
-				},
-				{
-					"ident": "editorial",
-					"desc": "for features omitted from\n\t  transcription due to editorial policy"
-				},
-				{
-					"ident": "illegible",
-					"desc": ""
-				},
-				{
-					"ident": "inaudible",
-					"desc": ""
-				},
-				{
-					"ident": "irrelevant",
-					"desc": ""
-				},
-				{
-					"ident": "sampling",
-					"desc": ""
-				}
-			],
-			"valListType": "semi"
-		},
-		"agent": {
-			"ident": "agent",
-			"description": "damage results from smoke",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "rubbing",
-					"desc": "damage results from rubbing of the leaf edges"
-				},
-				{
-					"ident": "mildew",
-					"desc": "damage results from mildew on the leaf surface"
-				},
-				{
-					"ident": "smoke",
-					"desc": "damage results from smoke"
-				}
-			],
-			"valListType": "open"
-		},
-		"start": {
-			"ident": "start",
-			"description": "indicates the location within a temporal alignment at\n      which this element begins.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"end": {
-			"ident": "end",
-			"description": "indicates the location within a temporal alignment at\n      which this element ends.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"dur": {
-			"ident": "dur",
-			"description": "indicates the length of this element in time.",
-			"dataType": "teidata.duration.w3c",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"dur-iso": {
-			"ident": "dur-iso",
-			"description": "indicates the length of this element in time.",
-			"dataType": "teidata.duration.iso",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"unit": {
-			"ident": "unit",
-			"description": "characters of text",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "cm",
-					"desc": ""
-				},
-				{
-					"ident": "mm",
-					"desc": ""
-				},
-				{
-					"ident": "in",
-					"desc": ""
-				},
-				{
-					"ident": "line",
-					"desc": "lines of text"
-				},
-				{
-					"ident": "char",
-					"desc": "characters of text"
-				}
-			],
-			"valListType": "semi"
-		},
-		"quantity": {
-			"ident": "quantity",
-			"description": "specifies the length in the units specified",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"extent": {
-			"ident": "extent",
-			"description": "indicates the size of the object concerned using a project-specific vocabulary combining\n        quantity and units in a single string of words.",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"precision": {
-			"ident": "precision",
-			"description": "characterizes the precision of the values specified by the other attributes.",
-			"dataType": "teidata.certainty",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"scope": {
-			"ident": "scope",
-			"description": "measurement applies to only the specified range of instances.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "all",
-					"desc": "measurement applies to all instances."
-				},
-				{
-					"ident": "most",
-					"desc": "measurement applies to most of the instances inspected."
-				},
-				{
-					"ident": "range",
-					"desc": "measurement applies to only the specified range of instances."
-				}
-			],
-			"valListType": "open"
-		},
-		"atLeast": {
-			"ident": "atLeast",
-			"description": "gives a minimum estimated value for the approximate measurement.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"atMost": {
-			"ident": "atMost",
-			"description": "gives a maximum estimated value for the approximate measurement.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"min": {
-			"ident": "min",
-			"description": "where the measurement summarizes more than one observation\n      or a range, supplies the minimum value\n        observed.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"max": {
-			"ident": "max",
-			"description": "where the measurement summarizes more than one observation\n        or a range, supplies the maximum value\n        observed.",
-			"dataType": "teidata.numeric",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"confidence": {
-			"ident": "confidence",
-			"description": "specifies the degree of statistical confidence (between zero and one) that a value falls within the range\n        specified by <att>min</att> and <att>max</att>, or the proportion of observed values that fall within that range.",
-			"dataType": "teidata.probability",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"anchored": {
-			"ident": "anchored",
-			"description": "indicates whether the copy text shows the exact place of reference for the note.",
-			"dataType": "teidata.truthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"targetEnd": {
-			"ident": "targetEnd",
-			"description": "points to the end of the span to which the note is attached, if the note is not embedded\n        in the text at that point.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
 		"targetLang": {
 			"ident": "targetLang",
-			"description": "specifies the language of the content to be found at the destination referenced by <att>target</att>, using a <soCalled>language tag</soCalled> generated\n        according to <ref target=\"http://www.rfc-editor.org/rfc/bcp/bcp47.txt\">BCP 47</ref>.",
+			"description": "specifies the language of the content to be found at the destination referenced by target, using a language tag generated according to BCP 47.",
 			"dataType": "teidata.language",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4318,60 +4195,60 @@
 		},
 		"evaluate": {
 			"ident": "evaluate",
-			"description": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target.",
+			"description": "specifies the intended meaning when the target of a pointer is itself a pointer.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": [
 				{
 					"ident": "all",
-					"desc": "if the element pointed to is itself a pointer, then\n\t  the target of that pointer will be taken, and so on, until\n\t  an element is found which is not a pointer."
+					"desc": "if the element pointed to is itself a pointer, then the target of that pointer will be taken, and so on, until an element is found which is not a pointer."
 				},
 				{
 					"ident": "one",
-					"desc": "if the element pointed to is itself a pointer, then\n\t  its target (whether a pointer or not) is taken as the target\n\t  of this pointer."
+					"desc": "if the element pointed to is itself a pointer, then its target (whether a pointer or not) is taken as the target of this pointer."
 				},
 				{
 					"ident": "none",
-					"desc": "no further evaluation of targets is carried out\n\t  beyond that needed to find the element specified in the\n\t  pointer's target."
+					"desc": "no further evaluation of targets is carried out beyond that needed to find the element specified in the pointer's target."
 				}
 			],
 			"valListType": "closed"
 		},
 		"status": {
 			"ident": "status",
-			"description": "the deletion is not faulty.",
+			"description": "indicates the effect of the intervention, for example in the case of a deletion, strikeouts which include too much or too little text, or in the case of an addition, an insertion which duplicates some of the text already present.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": [
 				{
 					"ident": "duplicate",
-					"desc": "all of the text indicated as an addition duplicates\n\t  some text that is in the original, whether the duplication\n\t  is word-for-word or less exact."
+					"desc": "all of the text indicated as an addition duplicates some text that is in the original, whether the duplication is word-for-word or less exact."
 				},
 				{
 					"ident": "duplicate-partial",
-					"desc": "part of the text indicated as an addition duplicates\n\t  some text that is in the original"
+					"desc": "part of the text indicated as an addition duplicates some text that is in the original"
 				},
 				{
 					"ident": "excessStart",
-					"desc": "some text at the beginning of the deletion is marked\n          as deleted even though it clearly should not be\n          deleted."
+					"desc": "some text at the beginning of the deletion is marked as deleted even though it clearly should not be deleted."
 				},
 				{
 					"ident": "excessEnd",
-					"desc": "some text at the end of the deletion is marked as\n          deleted even though it clearly should not be\n          deleted."
+					"desc": "some text at the end of the deletion is marked as deleted even though it clearly should not be deleted."
 				},
 				{
 					"ident": "shortStart",
-					"desc": "some text at the beginning of the deletion is not\n          marked as deleted even though it clearly should be."
+					"desc": "some text at the beginning of the deletion is not marked as deleted even though it clearly should be."
 				},
 				{
 					"ident": "shortEnd",
-					"desc": "some text at the end of the deletion is not marked as\n          deleted even though it clearly should be."
+					"desc": "some text at the end of the deletion is not marked as deleted even though it clearly should be."
 				},
 				{
 					"ident": "partial",
-					"desc": "some text in the deletion is not marked as deleted\n\t  even though it clearly should be."
+					"desc": "some text in the deletion is not marked as deleted even though it clearly should be."
 				},
 				{
 					"ident": "unremarkable",
@@ -4391,7 +4268,7 @@
 		},
 		"seq": {
 			"ident": "seq",
-			"description": "assigns a sequence number related to the order in which\n      the encoded features carrying this attribute are believed to have occurred.",
+			"description": "assigns a sequence number related to the order in which the encoded features carrying this attribute are believed to have occurred.",
 			"dataType": "teidata.count",
 			"minOccurs": null,
 			"maxOccurs": "1",
@@ -4400,7 +4277,7 @@
 		},
 		"defective": {
 			"ident": "defective",
-			"description": "indicates whether the passage being quoted is defective,\n      i.e. incomplete through loss or damage.",
+			"description": "indicates whether the passage being quoted is defective, i.e. incomplete through loss or damage.",
 			"dataType": "teidata.xTruthValue",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4427,7 +4304,7 @@
 		},
 		"cRef": {
 			"ident": "cRef",
-			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the\n        scheme defined in a <gi>refsDecl</gi> element in the TEI header",
+			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the scheme defined in a refsDecl element in the TEI header",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": "1",
@@ -4436,7 +4313,7 @@
 		},
 		"label": {
 			"ident": "label",
-			"description": "provides a label\n      (usually a single letter) to identify which part of a rhyme scheme this rhyming string\n        instantiates.",
+			"description": "provides a label (usually a single letter) to identify which part of a rhyme scheme this rhyming string instantiates.",
 			"dataType": "teidata.word",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4454,7 +4331,7 @@
 		},
 		"datcat": {
 			"ident": "datcat",
-			"description": "contains a PID (persistent identifier) that aligns the given element with the appropriate \n        Data Category (or categories) in ISOcat.",
+			"description": "contains a PID (persistent identifier) that aligns the given element with the appropriate Data Category (or categories) in ISOcat.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -4463,7 +4340,7 @@
 		},
 		"valueDatcat": {
 			"ident": "valueDatcat",
-			"description": "contains a PID (persistent identifier) that aligns the content of the given\n        element or the value of the given attribute with the appropriate simple Data\n        Category (or categories) in ISOcat.",
+			"description": "contains a PID (persistent identifier) that aligns the content of the given element or the value of the given attribute with the appropriate simple Data Category (or categories) in ISOcat.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -4472,37 +4349,37 @@
 		},
 		"level": {
 			"ident": "level",
-			"description": "the title applies to any unpublished material (including\n                                                  theses and dissertations unless\n                                                  published by a commercial press)",
+			"description": "indicates the bibliographic level for a title, that is, whether it identifies an article, book, journal, series, or unpublished material.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": [
 				{
 					"ident": "a",
-					"desc": "the title applies to an analytic item, such as an\n\t  article, poem, or other work published as part of a larger item."
+					"desc": "the title applies to an analytic item, such as an article, poem, or other work published as part of a larger item."
 				},
 				{
 					"ident": "m",
-					"desc": "the title applies to a monograph such as a book or\n          other item considered to be a distinct publication, including single\n          volumes of multi-volume works"
+					"desc": "the title applies to a monograph such as a book or other item considered to be a distinct publication, including single volumes of multi-volume works"
 				},
 				{
 					"ident": "j",
-					"desc": "the title applies to any serial or periodical\n\t  publication such as a journal, magazine, or newspaper"
+					"desc": "the title applies to any serial or periodical publication such as a journal, magazine, or newspaper"
 				},
 				{
 					"ident": "s",
-					"desc": "the title applies to a series of otherwise distinct\n\t  publications such as a collection"
+					"desc": "the title applies to a series of otherwise distinct publications such as a collection"
 				},
 				{
 					"ident": "u",
-					"desc": "the title applies to any unpublished material (including\n                                                  theses and dissertations unless\n                                                  published by a commercial press)"
+					"desc": "the title applies to any unpublished material (including theses and dissertations unless published by a commercial press)"
 				}
 			],
 			"valListType": "closed"
 		},
 		"calendar": {
 			"ident": "calendar",
-			"description": "indicates the system or calendar to which the\n        date represented by the content of this element belongs.",
+			"description": "indicates the system or calendar to which the date represented by the content of this element belongs.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4511,7 +4388,7 @@
 		},
 		"period": {
 			"ident": "period",
-			"description": "supplies a pointer to some location defining a\n        named period of time within which the datable item is understood to have occurred.",
+			"description": "supplies a pointer to some location defining a named period of time within which the datable item is understood to have occurred.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4520,7 +4397,7 @@
 		},
 		"when": {
 			"ident": "when",
-			"description": "supplies the value of the date or time in a standard form,\n        e.g. yyyy-mm-dd.",
+			"description": "supplies the value of the date or time in a standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4529,7 +4406,7 @@
 		},
 		"notBefore": {
 			"ident": "notBefore",
-			"description": "specifies the earliest possible date for the event in\n        standard form, e.g. yyyy-mm-dd.",
+			"description": "specifies the earliest possible date for the event in standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4538,7 +4415,7 @@
 		},
 		"notAfter": {
 			"ident": "notAfter",
-			"description": "specifies the latest possible date for the event in\n        standard form, e.g. yyyy-mm-dd.",
+			"description": "specifies the latest possible date for the event in standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4556,7 +4433,7 @@
 		},
 		"to": {
 			"ident": "to",
-			"description": "indicates the ending point of the period in standard\n        form, e.g. yyyy-mm-dd.",
+			"description": "indicates the ending point of the period in standard form, e.g. yyyy-mm-dd.",
 			"dataType": "teidata.temporal.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4664,7 +4541,7 @@
 		},
 		"datingMethod": {
 			"ident": "datingMethod",
-			"description": "supplies a pointer to a <gi>calendar</gi> element or other\n        means of interpreting the values of the custom dating attributes.",
+			"description": "supplies a pointer to a calendar element or other means of interpreting the values of the custom dating attributes.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4673,7 +4550,7 @@
 		},
 		"unitRef": {
 			"ident": "unitRef",
-			"description": "points to a unique identifier stored in the <att>xml:id</att> of a <gi>unitDef</gi> element that defines a unit of measure.",
+			"description": "points to a unique identifier stored in the xml:id of a unitDef element that defines a unit of measure.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "1",
@@ -4691,7 +4568,7 @@
 		},
 		"full": {
 			"ident": "full",
-			"description": "the name component is indicated only by\none initial.",
+			"description": "indicates whether the name component is given in full, as an abbreviation or simply as an initial.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -4706,7 +4583,7 @@
 				},
 				{
 					"ident": "init",
-					"desc": "the name component is indicated only by\none initial."
+					"desc": "the name component is indicated only by one initial."
 				}
 			],
 			"valListType": "closed"
@@ -4722,7 +4599,7 @@
 		},
 		"nymRef": {
 			"ident": "nymRef",
-			"description": "provides a means of locating the canonical form\n      (<term>nym</term>) of the names associated with the object\n       named by\n      the element bearing it.",
+			"description": "provides a means of locating the canonical form (nym) of the names associated with the object named by the element bearing it.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -4749,7 +4626,7 @@
 		},
 		"enjamb": {
 			"ident": "enjamb",
-			"description": "the line is strongly enjambed",
+			"description": "indicates that the end of a verse line is marked by enjambement.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,

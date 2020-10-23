@@ -12,17 +12,14 @@ const getKeys = function getKeys(el,keyTag) {
 }
 
 const loadLocalizedString = function loadLocalizedString(el, tagName, lang="en") {
-    // Load the description of this element
-    let str = ""
-    const tagEls = el.getElementsByTagName(tagName)
-    for( let i=0; i < tagEls.length; i++ ) {
-        const tagEl = tagEls[i]
-        if( tagEl.getAttribute("xml:lang") === lang ) {
-            // TODO flatten out newlines and runs of whitespace
-            str = tagEl.innerHTML
+    for( let i=0; i < el.children.length; i++ ) {
+        const child = el.children[i]
+        if( child.nodeName.toLowerCase() === tagName && child.getAttribute("xml:lang") === lang ) {
+            // remove markup, newlines, runs of whitespace
+            const str = child.textContent.replace(/\n/gm,' ').replace(/\s{2,}/gm,' ')
+            return str
         }
     }
-    return str
 }
 
 const getAllElements = function getAllElements(elementGroups) {

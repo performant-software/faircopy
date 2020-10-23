@@ -181,7 +181,7 @@ export default class ElementMenu extends Component {
             const selection = (editorView) ? editorView.state.selection : null 
 
             const onClick = this.createMenuAction(selection, member)
-            const valid = action === 'info' || menuGroup !== 'structure' ? true : member.enabled ? validAction(action, member.id, teiDocument, selection.anchor ) : false
+            const valid = !member.enabled ? false : (action === 'info' || menuGroup !== 'structure') ? true : validAction(action, member.id, teiDocument, selection.anchor )
 
             const onMenuItemMouseOver = () => {
                 if( action === 'info' ) {
