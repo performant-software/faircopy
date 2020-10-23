@@ -54,14 +54,11 @@ export default class TEIEditor extends Component {
     }
 
     // prevent text entry when a node is selected
-    onEditorKeyDown = (e) => {
-        const { teiDocument } = this.props
-        const editorView = teiDocument.getActiveView()
-        const selection = (editorView) ? editorView.state.selection : null 
-        
-        // create a list of the selected phrase level elements 
+    onEditorKeyDown = (editorView,e) => {
+        const selection = (editorView) ? editorView.state.selection : null    
+        const key = e.key     
         if( selection && selection.node ) {
-            return true
+            return (key === "Backspace" || key === "Delete") ? false : true
         }
     }
 
