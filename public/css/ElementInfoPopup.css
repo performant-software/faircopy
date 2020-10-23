@@ -2,3 +2,8 @@
     margin-left: 5px;
     max-width: 400px;
 }
+
+.rules-table td {
+  min-width: 130px;
+  vertical-align: top;
+}

@@ -3,7 +3,7 @@ import { Popper, MenuItem, MenuList, Paper } from '@material-ui/core'
 
 import ElementInfoPopup from './ElementInfoPopup'
 
-import { validAction, createElement, addInside, addBelow, addAbove, addOutside, replaceElement } from "../tei-document/editor-actions"
+import { validAction, createElement, addInside, addBelow, addAbove, addOutside, replaceElement, determineRules } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -91,7 +91,7 @@ export default class ElementMenu extends Component {
     }
 
     renderElementInfo() {
-        const { teiDocument } = this.props
+        const { teiDocument, menuGroup } = this.props
         const { elementInfoID } = this.state
         const anchorEl = this.itemEls[elementInfoID]
 
@@ -111,12 +111,16 @@ export default class ElementMenu extends Component {
             this.checkActiveMenu()
         }
         
+        // get the text for the structure rules
+        const rules = menuGroup === 'structure' ? determineRules(elementInfoID,teiDocument) : {}
+
         return (
             <ElementInfoPopup
                 onMouseOver={onMouseOver}
                 onMouseLeave={onMouseLeave}
                 elementSpec={elementSpec}
-                anchorEl={anchorEl}            
+                anchorEl={anchorEl}        
+                { ...rules }    
             ></ElementInfoPopup>
         )
     }

@@ -20,6 +20,43 @@ export function createElement( elementID, teiDocument ) {
     }              
 }
 
+export function determineRules( elementID, teiDocument ) {
+    const teiSchema = teiDocument.fairCopyProject.teiSchema
+    const {elements,schema} = teiSchema
+    const targetType = schema.nodes[elementID]
+
+    const mayContainIDs = []
+    for( const element of Object.values(elements) ) {
+        const { name, pmType } = element
+        if( pmType === 'node' ) {
+            const testNode = schema.nodes[name].create() 
+            if( targetType.validContent(Fragment.from(testNode)) ) {
+                mayContainIDs.push(name)
+            }
+        }
+    }
+    const mayContain = mayContainIDs.join(', ')
+
+    const containedByIDs = []
+    const testFragment = Fragment.from(targetType.create())
+    for( const element of Object.values(elements) ) {
+        const { name, pmType } = element
+        if( pmType === 'node' ) {
+            const parentType = schema.nodes[name]
+            if( parentType.validContent(testFragment) ) {
+                containedByIDs.push(name)
+            }
+        }
+    }
+    const containedBy = containedByIDs.join(', ')
+
+    return {
+        containedBy,
+        mayContain,
+        notes: null    
+    }
+}
+
 export function validAction( actionType, elementID, teiDocument, pos ) {
     if( actionType === 'create' || actionType === 'info') return true
     const editorView = teiDocument.getActiveView()

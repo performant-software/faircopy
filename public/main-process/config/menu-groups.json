@@ -40,7 +40,7 @@
         {
             "id": "titles",
             "label": "Headers",
-            "members": ["argument","desc","head","titlePage","titlePart","trailer"]
+            "members": ["argument","desc","head","label","titlePage","titlePart","trailer"]
         },
         {
             "id": "bilbiography",
