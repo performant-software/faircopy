@@ -53,6 +53,18 @@ export default class TEIEditor extends Component {
         } 
     }
 
+    // prevent text entry when a node is selected
+    onEditorKeyDown = (e) => {
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
+        const selection = (editorView) ? editorView.state.selection : null 
+        
+        // create a list of the selected phrase level elements 
+        if( selection && selection.node ) {
+            return true
+        }
+    }
+
     createEditorView = (element) => {
         const { teiDocument } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
@@ -65,6 +77,7 @@ export default class TEIEditor extends Component {
                 dispatchTransaction: this.dispatchTransaction,
                 state: teiDocument.initialState,
                 handleClickOn: this.onClickOn,
+                handleKeyDown: this.onEditorKeyDown,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema,teiDocument),
                 transformPasted: transformPastedHandler(teiSchema,teiDocument),
                 clipboardSerializer: createClipboardSerializer(teiSchema,teiDocument)
