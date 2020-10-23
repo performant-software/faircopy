@@ -386,31 +386,35 @@ function deleteBarrier(state, $cut, dispatch) {
   const afterDepth = depthToLast(after,'textNode')
   if( beforeDepth === null || afterDepth === null ) throw new Error('Expected textNode in deleteBarrier')
 
-  if( beforeDepth === afterDepth ) {
-    // both textNodes at same depth
-    dispatch(tr
-      .clearIncompatible($cut.pos, before.type, before.contentMatchAt(before.childCount))
-      .join($cut.pos,beforeDepth + 1)  // to capture the textNode
-      .scrollIntoView())    
-    return true
-  } else if( afterDepth <= 1 ) {
-    // move after's textNode into before and join with before's textNode
-    const joinPos = $cut.pos-beforeDepth
-    dispatch( tr
-      .delete($cut.pos,$cut.pos+after.nodeSize)
-      .insert(joinPos, after.content )
-      .join(joinPos)
-      .scrollIntoView())
-    return true
-  } else {
-    // delete nested soft node in after 
-    const nestedPos = $cut.pos+afterDepth
-    const nestedNode = tr.doc.resolve(nestedPos).node()
-    dispatch( tr
-      .deleteRange(nestedPos,nestedPos + nestedNode.nodeSize - 1)
-      .insert(nestedPos-1, nestedNode.content )
-      .setSelection(new TextSelection(tr.doc.resolve(nestedPos)))
-      .scrollIntoView())
+  try {
+    if( beforeDepth === afterDepth ) {
+      // both textNodes at same depth
+      dispatch(tr
+        .clearIncompatible($cut.pos, before.type, before.contentMatchAt(before.childCount))
+        .join($cut.pos,beforeDepth + 1)  // to capture the textNode
+        .scrollIntoView())    
+      return true
+    } else if( afterDepth <= 1 ) {
+      // move after's textNode into before and join with before's textNode
+      const joinPos = $cut.pos-beforeDepth
+      dispatch( tr
+        .delete($cut.pos,$cut.pos+after.nodeSize)
+        .insert(joinPos, after.content )
+        .join(joinPos)
+        .scrollIntoView())
+      return true
+    } else {
+      // delete nested soft node in after 
+      const nestedPos = $cut.pos+afterDepth
+      const nestedNode = tr.doc.resolve(nestedPos).node()
+      dispatch( tr
+        .deleteRange(nestedPos,nestedPos + nestedNode.nodeSize - 1)
+        .insert(nestedPos-1, nestedNode.content )
+        .setSelection(new TextSelection(tr.doc.resolve(nestedPos)))
+        .scrollIntoView())
+      return true
+    }  
+  } catch (e) {
     return true
   }
 }

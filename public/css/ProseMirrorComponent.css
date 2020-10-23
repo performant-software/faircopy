@@ -12,6 +12,8 @@
     font-variant-ligatures: none;
     padding: 5px;
     outline: none;
+    padding-left: 4px;
+    border-left: 1px solid #eee;
 }
   
 .ProseMirror pre {
