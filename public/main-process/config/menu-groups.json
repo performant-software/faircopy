@@ -3,12 +3,12 @@
         {
             "id": "general",
             "label": "General",
-            "members": ["date", "hi", "name", "q", "quote", "ref", "s", "seg", "title"]
+            "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term", "title"]
         },
         {
             "id": "transcription",
             "label": "Transcription",
-            "members": ["abbr", "add", "corr", "del", "orig", "reg", "rhyme", "sic", "supplied" ]
+            "members": ["abbr", "add", "corr", "del", "expan", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
         },
         {
             "id": "segmentation",
@@ -18,19 +18,19 @@
         {
             "id": "data",
             "label": "Data",
-            "members": ["address","email","measure","num","person","place","rs","time"]
+            "members": ["date","email","measure","num","rs","time"]
         }
     ],
     "structure": [
         {
             "id": "structure",
             "label": "Sections",
-            "members": ["back","body","div","floatingtext","front"]
+            "members": ["back","body","div","floatingText","front"]
         },        
         {
             "id": "general",
             "label": "Paragraphs",
-            "members":["p","ab"]
+            "members":["ab","cit","p"]
         },
         {
             "id": "lines",
@@ -40,12 +40,22 @@
         {
             "id": "titles",
             "label": "Headers",
-            "members": ["argument","desc","head","label","titlePage","titlePart","trailer"]
+            "members": ["argument","desc","epigraph","head","label","trailer"]
+        },
+        {
+            "id": "titlepage",
+            "label": "Title Page",
+            "members": ["docAuthor","docDate","docEdition","docImprint","docTitle","titlePage","titlePart"]
         },
         {
             "id": "bilbiography",
             "label": "Bibliography",
-            "members": ["author","bibl","editor","publisher","relatedItem","resp","respStmt"]
+            "members": ["author","bibl","biblScope","editor","listBibl","publisher","pubPlace","relatedItem","resp","respStmt"]
+        },
+        {
+            "id": "prosopography",
+            "label": "Prosopography",
+            "members": ["listPerson","listPlace","person","place"]
         },
         {
             "id": "drama",

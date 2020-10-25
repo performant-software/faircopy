@@ -203,42 +203,6 @@
 			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page."
 		},
 		{
-			"name": "group",
-			"pmType": "node",
-			"isolating": true,
-			"content": "((model_divTop)* ((group) (group)*) model_divBottom*)",
-			"group": "",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"decls",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains the body of a composite text, grouping together a sequence of distinct texts (or groups of such texts) which are regarded as a unit for some purpose, for example the collected works of an author, a sequence of prose essays, etc."
-		},
-		{
 			"name": "lg",
 			"pmType": "node",
 			"isolating": true,
@@ -1970,46 +1934,6 @@
 			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term."
 		},
 		{
-			"name": "term",
-			"pmType": "mark",
-			"validAttrs": [
-				"ana",
-				"cRef",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"decls",
-				"evaluate",
-				"exclude",
-				"facs",
-				"key",
-				"n",
-				"next",
-				"prev",
-				"ref",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"sortKey",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"target",
-				"targetLang",
-				"type",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term."
-		},
-		{
 			"name": "time",
 			"pmType": "mark",
 			"validAttrs": [
@@ -2637,39 +2561,6 @@
 				"xml:space"
 			],
 			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an individual, institution or organization, (or of several such) acting as editor, compiler, translator, etc."
-		},
-		{
-			"name": "figDesc",
-			"pmType": "node",
-			"isolating": false,
-			"content": "(textNode|model_inter)*",
-			"group": "",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains a brief prose description of the appearance or content of a graphic figure, for use when documenting an image without displaying it."
 		},
 		{
 			"name": "head",
@@ -3621,15 +3512,6 @@
 			"valList": null,
 			"valListType": "open"
 		},
-		"decls": {
-			"ident": "decls",
-			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
 		"org": {
 			"ident": "org",
 			"description": "specifies how the content of the division is organized.",
@@ -3734,6 +3616,15 @@
 				}
 			],
 			"valListType": "closed"
+		},
+		"decls": {
+			"ident": "decls",
+			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
 		},
 		"sortKey": {
 			"ident": "sortKey",
