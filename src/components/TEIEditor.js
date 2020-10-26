@@ -28,6 +28,13 @@ export default class TEIEditor extends Component {
             altDown: false,
             selectedElements: []
         }
+
+        this.onScrollEditor = debounce( (e) => {
+            if( this.el ) {
+                const scrollTop = this.el.scrollTop
+                this.setState({ ...this.state, scrollTop})    
+            }
+        }, 100 )
     }
 
     componentDidMount() {
@@ -262,7 +269,7 @@ export default class TEIEditor extends Component {
                         elementMenuAnchors={elementMenuAnchors}
                         onEditResource={onEditResource}
                     ></EditorToolbar> }
-                    <div onClick={onClickBody} ref={onRef} style={editorStyle} className='body'>
+                    <div onClick={onClickBody} ref={onRef} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
                         { !hidden && <EditorGutter 
                             expanded={expandedGutter}
                             scrollTop={scrollTop} 
