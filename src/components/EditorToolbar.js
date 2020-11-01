@@ -32,7 +32,7 @@ export default class EditorToolbar extends Component {
                 if( selection.empty ) {
                     return "inline"
                 } else {
-                    return "marks"
+                    return "all"
                 }
             }    
         } 

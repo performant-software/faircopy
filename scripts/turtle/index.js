@@ -20,7 +20,7 @@ async function run() {
     const elements = createElements(elementGroups,specs)
     const attrs = createAttributes(elements,specs)
 
-    const teiSimpleConfig = { elements, attrs }
+    const teiSimpleConfig = { elements, attrs, elementGroups }
     fs.writeFileSync("public/main-process/config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
 
     // new project config is based on schema

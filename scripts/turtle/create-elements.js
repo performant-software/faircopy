@@ -8,17 +8,16 @@ const createElements = function createElements(elGroups,specs) {
     // TODO embeds
     elements.push( ...createNodes(elGroups,true,specs) )
     elements.push( ...createInlineNodes(elGroups,icons,specs) )
-    elements.push( ...createMarks(elGroups,true,specs) )
     // TODO limited-marks
-    // TODO inter as soft nodes
-    elements.push( ...createMarks(elGroups,false,specs) )
+    elements.push( ...createInters(elGroups,specs) )
+    elements.push( ...createMarks(elGroups,specs) )
     elements.push( ...createNodes(elGroups,false,specs) )
     elements.push( ...createStructureNodes(elGroups,specs) )
     return elements
 }
 
-function createMarks(elGroups,inter,specs) {
-    const marks = inter ? elGroups.inter : elGroups.marks
+function createMarks(elGroups,specs) {
+    const marks = elGroups.marks
 
     // TODO filter nodes out of mark group
     const markElements = []
@@ -33,6 +32,40 @@ function createMarks(elGroups,inter,specs) {
         })
     }
     return markElements
+}
+
+function createInters(elGroups,specs) {
+    const inters = elGroups.inter
+    const nodeGroups = getNodeGroups( elGroups, specs )
+
+    // Inter elements generate both a mark and a hard node
+    const interElements = []
+    for(let inter of inters) {
+        const spec = specs[inter]
+        const nodeContent = onlyGroups( nodeGroups, spec.content )
+
+        interElements.push({
+            name: `mark${inter}`,
+            pmType: "mark",
+            validAttrs: [],
+            group: spec.group,
+            desc: spec.description
+        })
+
+        const nodeEl = {
+            name: inter,
+            pmType: "node",
+            isolating: false,
+            content: encodeContent(nodeContent),
+            group: spec.group,
+            gutterMark: true,
+            validAttrs: [],
+            desc: spec.description
+        }
+        interElements.push(nodeEl)    
+    }
+
+    return interElements
 }
 
 function createInlineNodes(elGroups,icons,specs) {
@@ -85,7 +118,7 @@ const createStructureNodes = function createStructureNodes(elGroups,specs) {
 
 function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
-    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.structures ].flat()
+    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.structures, elGroups.inter ].flat()
     const groups = getGroups( nodeIdents, specs )
     return [ nodeIdents, groups, "textNode" ].flat()
 }

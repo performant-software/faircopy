@@ -1,6 +1,11 @@
 
 const createAttributes = function createAttributes( elements, specs ) {
 
+    function getElementName(name) {
+        const markPrefix = 'mark'
+        return name.startsWith(markPrefix) ? name.slice(markPrefix.length) : name
+    }
+
     // for each element, add the attrs to its list of possible attrs
     const findAttrs = (specIdent) => {
         const elSpec = specs[specIdent]
@@ -20,7 +25,8 @@ const createAttributes = function createAttributes( elements, specs ) {
     for( const element of elements ) {
         // skip over special prosemirror root node
         if( element.name === 'doc' ) continue
-        const attrs = findAttrs(element.name)
+        const elementName = getElementName(element.name)
+        const attrs = findAttrs(elementName)
         const validAttrs = []
         for( const attr of attrs ) {
             if( !attrDefs[attr.ident] ) {
