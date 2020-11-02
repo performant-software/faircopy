@@ -126,14 +126,13 @@ export default class ElementMenu extends Component {
     }
 
     createMenuAction(selection,member) {
-        const { action, menuGroup, teiDocument, onAlertMessage, onClose } = this.props
+        const { action, teiDocument, onAlertMessage, onClose } = this.props
 
         return () => {
-            if( menuGroup === 'mark' || menuGroup === 'inline' ) {
-                createElement(member.id, teiDocument) 
-                onClose()    
-            } else if( action !== 'info' ) {
-                if( selection && selection.node ) {
+            if( action === 'info' ) return
+
+            if( selection ) {
+                if( selection.node ) {
                     try {
                         switch(action) {
                             case 'replace':
@@ -157,14 +156,17 @@ export default class ElementMenu extends Component {
                     } catch(err) {
                         onAlertMessage(err.message)
                     }
+                } else {
+                    createElement(member.id, teiDocument) 
                 }
-                onClose()    
             }
+
+            onClose()
         }
     }
 
     renderSubMenu() {
-        const { teiDocument, action, menuGroup } = this.props
+        const { teiDocument, action } = this.props
         const { openSubMenu } = this.state
         const menuGroups = this.getMenuGroups()
         
@@ -184,7 +186,7 @@ export default class ElementMenu extends Component {
             const editorView = teiDocument.getActiveView()
             const selection = (editorView) ? editorView.state.selection : null 
 
-            const valid = !member.enabled ? false : (action === 'info' || menuGroup !== 'structure') ? true : validAction(action, member.id, teiDocument, selection.anchor )
+            const valid = !member.enabled ? false : validAction(action, member.id, teiDocument, selection )
             const onClick = (valid && action !== 'info') ? this.createMenuAction(selection, member) : () => {}
 
             const onMenuItemMouseOver = () => {

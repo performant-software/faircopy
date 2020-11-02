@@ -39,7 +39,7 @@ textnode {
     margin-left: 3px;
 }  
 
-tei-del {
+tei-markdel, tei-del {
     color: red;
     text-decoration: line-through;
 }

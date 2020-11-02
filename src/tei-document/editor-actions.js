@@ -6,6 +6,7 @@ export function createElement( elementID, teiDocument ) {
     const editorView = teiDocument.getActiveView()
     const {schema} = fairCopyProject.teiSchema
     const {pmType} = fairCopyProject.teiSchema.elements[elementID]
+    const { inter } = fairCopyProject.teiSchema.elementGroups
 
     if( pmType === 'inline-node' ) {
         if( elementID === 'note' ) {
@@ -14,10 +15,17 @@ export function createElement( elementID, teiDocument ) {
             const inlineType = schema.nodes[elementID]
             return createInline( inlineType, editorView )
         }    
-    } else {
+    } else if( pmType === 'mark' ) {
         const markType = schema.marks[elementID]
         return createMark( markType, editorView )
-    }              
+    } else {
+        if( inter.includes(elementID) ) {
+            createInterNode( elementID, teiDocument )
+        } else {
+            const nodeType = schema.nodes[elementID]
+            return createNode( nodeType, editorView )
+        }
+    }
 }
 
 export function determineRules( elementID, teiDocument ) {
@@ -57,8 +65,29 @@ export function determineRules( elementID, teiDocument ) {
     }
 }
 
-export function validAction( actionType, elementID, teiDocument, pos ) {
-    if( actionType === 'create' || actionType === 'info') return true
+export function validAction( actionType, elementID, teiDocument, selection ) {
+    const { fairCopyProject } = teiDocument
+    const { inter } = fairCopyProject.teiSchema.elementGroups
+    const {pmType} = fairCopyProject.teiSchema.elements[elementID]
+
+    if( actionType === 'info' || pmType === 'mark' ) return true
+
+    if( inter.includes(elementID) ) {
+        return true // TODO validate inters 
+    } else {
+        if( selection.node ) {
+            return validNodeAction( actionType, elementID, teiDocument, selection.anchor )
+        } else {
+            return validNodeRange( elementID, teiDocument, selection )
+        }
+    }
+}
+
+function validNodeRange( elementID, teiDocument, selection ) {
+    return true
+}
+
+function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
@@ -115,6 +144,33 @@ export function replaceElement( elementID, teiDocument, pos ) {
 
     tr.setNodeMarkup(pos, nodeType, node.attrs)
     editorView.dispatch(tr)        
+}
+
+export function createInterNode( elementID, teiDocument ) {
+    const { fairCopyProject } = teiDocument
+    const editorView = teiDocument.getActiveView()
+    const {schema} = fairCopyProject.teiSchema
+
+    // TODO determine if this should create a node or a mark
+    const markType = schema.marks[`mark${elementID}`]
+    return createMark( markType, editorView )
+}
+
+export function createNode( nodeType, editorView ) {
+    const { tr, selection } = editorView.state
+    const { $from, $to } = selection
+
+    tr.split($to.pos)
+    tr.split($from.pos)
+    const pos = tr.mapping.map($from.pos)-1
+    const textNode = tr.doc.nodeAt(pos)
+    const fragment = textNode.content
+    const $start = tr.doc.resolve(pos)
+    const $end = tr.doc.resolve(pos+1+fragment.size)
+    const nodeRange = new NodeRange($start,$end,$start.depth)
+    tr.wrap(nodeRange,[{type: nodeType}])
+    editorView.dispatch(tr)
+    editorView.focus()      
 }
 
 export function addInside( elementID, teiDocument, pos ) {
