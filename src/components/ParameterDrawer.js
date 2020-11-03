@@ -251,12 +251,13 @@ export default class ParameterDrawer extends Component {
         }
 
         const headerAction = (element instanceof Node) ? this.renderIDField(element) : null
+        const displayName = name.startsWith('mark') ? name.slice('mark'.length) : name
 
         return (
             <Card variant="outlined" className="element" key={key} >
                 <CardHeader 
                     avatar={this.renderLegendBox(count)} 
-                    title={name} 
+                    title={displayName} 
                     subheader={elementSpec.desc}
                     action={headerAction}
                 ></CardHeader>

@@ -64,12 +64,13 @@ export default class AttributeDialog extends Component {
         const { open, onClose, elementName } = this.props
 
         if( !elementName ) return null
+        const displayName = elementName.startsWith('mark') ? elementName.slice('mark'.length) : elementName
 
         return (
             <Dialog open={open} onClose={onClose} aria-labelledby="attribute-dialog">
-                <DialogTitle id="attribute-dialog">Available Attributes for {elementName}</DialogTitle>
+                <DialogTitle id="attribute-dialog">Available Attributes for {displayName}</DialogTitle>
                 <DialogContent>
-                    <Typography>Select attributes to describe this element. These attributes will appear for every instance of {elementName}.</Typography>
+                    <Typography>Select attributes to describe this element. These attributes will appear for every instance of {displayName}.</Typography>
                     { this.renderTable() }                    
                 </DialogContent>
                 <DialogActions>
