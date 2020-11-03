@@ -164,9 +164,14 @@ export function createNode( nodeType, editorView ) {
     const { tr, selection } = editorView.state
     const { $from, $to } = selection
 
-    tr.split($to.pos)
-    tr.split($from.pos)
-    const pos = tr.mapping.map($from.pos)-1
+    // make sure to and from have the same parent
+    const from = $from.pos
+    const to = ( $from.parent === $to.parent ) ? $to.pos : $from.end()
+
+    // split up parent to create the new node
+    tr.split(to)
+    tr.split(from)
+    const pos = tr.mapping.map(from)-1
     const textNode = tr.doc.nodeAt(pos)
     const fragment = textNode.content
     const $start = tr.doc.resolve(pos)
