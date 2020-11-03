@@ -75,16 +75,20 @@ export function validAction( actionType, elementID, teiDocument, selection ) {
     if( inter.includes(elementID) ) {
         return true // TODO validate inters 
     } else {
-        if( selection.node ) {
-            return validNodeAction( actionType, elementID, teiDocument, selection.anchor )
+        if( pmType === 'node' ) {
+            if( selection.node ) {
+                return validNodeAction( actionType, elementID, teiDocument, selection.anchor )
+            } else {
+                const { $from } = selection
+                const pos = $from.before(-1)
+                return validNodeAction('addInside', elementID, teiDocument, pos )    
+            }
         } else {
-            return validNodeRange( elementID, teiDocument, selection )
+            // inline-nodes
+            if( pmType === 'inline-node' && selection.$cursor ) return true
         }
     }
-}
-
-function validNodeRange( elementID, teiDocument, selection ) {
-    return true
+    return false
 }
 
 function validNodeAction( actionType, elementID, teiDocument, pos ) {

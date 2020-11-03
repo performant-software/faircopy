@@ -19,24 +19,53 @@ export default class EditorToolbar extends Component {
         }
     }
 
-    getEnabledMenu() {
-        const { teiDocument } = this.props
+    getEnabledMenus() {
         const { selectedAction } = this.state
+        const { teiDocument } = this.props
         const editorView = teiDocument.getActiveView()
+
         if( editorView ) {
-            if( selectedAction === 'info' ) return "all"
-            const { selection } = editorView.state
-            if( selection.node ) {
-                return "structures"
-            } else {
-                if( selection.empty ) {
-                    return "inline"
-                } else {
-                    return "all"
+            if( selectedAction === 'info' ) {
+                return {
+                    marks: true,
+                    structures: true,
+                    inline: true,
+                    eraser: false
                 }
-            }    
+            } else {
+                const { selection } = editorView.state
+                if( selection.$cursor ) {
+                    return {
+                        marks: false,
+                        structures: false,
+                        inline: true,
+                        eraser: false
+                    }
+                } else {
+                    if( selection.node ) {
+                        return {
+                            marks: false,
+                            structures: true,
+                            inline: true,
+                            eraser: false
+                        }
+                    } else {
+                        return {
+                            marks: true,
+                            structures: true,
+                            inline: false,
+                            eraser: true
+                        }
+                    } 
+                }
+            }
         } 
-        return null
+        return {
+            marks: false,
+            structures: false,
+            inline: false,
+            eraser: false
+        }
     }
 
     renderActionButton( toolTip, icon, action ) {
@@ -60,7 +89,7 @@ export default class EditorToolbar extends Component {
 
     renderActionButtons() {
         const { teiDocument } = this.props
-        const eraseDisabled = this.getEnabledMenu() !== 'marks'
+        const enabledMenus = this.getEnabledMenus()
 
         return (
             <div style={{display: 'inline-block'}}>
@@ -73,7 +102,7 @@ export default class EditorToolbar extends Component {
                 <Tooltip title="Erase Marks">
                     <span>
                         <Button
-                            disabled={eraseDisabled}
+                            disabled={!enabledMenus.eraser}
                             onClick={()=>{eraseSelection(teiDocument)}}
                             {...this.buttonProps}
                         >
@@ -105,28 +134,28 @@ export default class EditorToolbar extends Component {
     renderElementMenuButtons() {
         const { onOpenElementMenu, elementMenuAnchors } = this.props
         const { selectedAction } = this.state
-        const enabledMenu = this.getEnabledMenu()
+        const enabledMenus = this.getEnabledMenus()
 
         return (
             <div style={{display: 'inline-block'}}>
                 { this.renderElementMenuButton(
                     "Marks",
                     "fa-marker",
-                    (enabledMenu !== 'all' && enabledMenu !== 'marks'),
+                    !enabledMenus.marks,
                     (el)=> { elementMenuAnchors.mark = el },
                     () => { onOpenElementMenu({ menuGroup: 'mark', action: selectedAction}) }
                 )}
                 { this.renderElementMenuButton(
                     "Structures",
                     "fa-page-break",
-                    (enabledMenu !== 'all' && enabledMenu !== 'structures'),
+                    !enabledMenus.structures,
                     (el)=> { elementMenuAnchors.structure = el },
                     () => { onOpenElementMenu({ menuGroup: 'structure', action: selectedAction }) }
                 )}
                 { this.renderElementMenuButton(
                     "Inlines",
                     "fa-anchor",
-                    (enabledMenu !== 'all' && enabledMenu !== 'inline'),
+                    !enabledMenus.inline,
                     (el)=> { elementMenuAnchors.inline = el },
                     () => { onOpenElementMenu({ menuGroup: 'inline', action: selectedAction }) }
                 )}
