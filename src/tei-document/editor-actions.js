@@ -1,5 +1,6 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
-import { addMark, insertNodeAt } from "./commands"
+import { Transform } from 'prosemirror-transform'
+import { addMark, insertNodeAt, createFragment } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
@@ -22,8 +23,12 @@ export function createElement( elementID, teiDocument ) {
         if( inter.includes(elementID) ) {
             createInterNode( elementID, teiDocument )
         } else {
+            const editorView = teiDocument.getActiveView()
+            const { selection, tr } = editorView.state
             const nodeType = schema.nodes[elementID]
-            return createNode( nodeType, editorView )
+            createNode( nodeType, tr, selection, schema )
+            editorView.dispatch(tr)
+            editorView.focus()     
         }
     }
 }
@@ -79,9 +84,7 @@ export function validAction( actionType, elementID, teiDocument, selection ) {
             if( selection.node ) {
                 return validNodeAction( actionType, elementID, teiDocument, selection.anchor )
             } else {
-                const { $from } = selection
-                const pos = $from.before(-1)
-                return validNodeAction('addInside', elementID, teiDocument, pos )    
+                return validRangeAction( elementID, teiDocument, selection)
             }
         } else {
             // inline-nodes
@@ -91,10 +94,29 @@ export function validAction( actionType, elementID, teiDocument, selection ) {
     return false
 }
 
+function validRangeAction(elementID, teiDocument, selection) {
+    // TODO hack for now, just allow lines.
+    if( elementID === 'l' ) return true
+    return false
+    // const editorView = teiDocument.getActiveView()
+    // const { doc, schema } = editorView.state
+    // const nodeType = schema.nodes[elementID]
+
+    // // dry run the transform and then test the result
+    // try {
+    //     let tr = new Transform(doc)
+    //     createNode( nodeType, tr, selection, schema )  
+    // } catch(e) {
+    //     // not a valid range
+    //     return false
+    // }
+    // return true // all good
+}
+
 function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { doc } = editorView.state
-    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const { doc, schema } = editorView.state
+    const nodeType = schema.nodes[elementID]
     const node = doc.nodeAt(pos)
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
@@ -160,26 +182,23 @@ export function createInterNode( elementID, teiDocument ) {
     return createMark( markType, editorView )
 }
 
-export function createNode( nodeType, editorView ) {
-    const { tr, selection } = editorView.state
+export function createNode( nodeType, tr, selection, schema ) {
     const { $from, $to } = selection
 
-    // make sure to and from have the same parent
+    // make sure to and from have the same ancestor above textNode
     const from = $from.pos
-    const to = ( $from.parent === $to.parent ) ? $to.pos : $from.end()
+    const ancestor = $from.node(-1)
+    const to = ( ancestor === $to.node(-1) ) ? $to.pos : $from.end(-1)
+    const fragment = createFragment(from,to,tr.doc,schema)
 
-    // split up parent to create the new node
+    // split up ancestor to create the new node
     tr.split(to)
     tr.split(from)
-    const pos = tr.mapping.map(from)-1
-    const textNode = tr.doc.nodeAt(pos)
-    const fragment = textNode.content
-    const $start = tr.doc.resolve(pos)
-    const $end = tr.doc.resolve(pos+1+fragment.size)
-    const nodeRange = new NodeRange($start,$end,$start.depth)
-    tr.wrap(nodeRange,[{type: nodeType}])
-    editorView.dispatch(tr)
-    editorView.focus()      
+    const nextFrom = tr.mapping.map(from)
+    const nextTo = tr.mapping.map(to)
+    const node = nodeType.create( {}, fragment)
+    tr.replaceRangeWith(nextFrom,nextTo,node)
+    return tr
 }
 
 export function addInside( elementID, teiDocument, pos ) {

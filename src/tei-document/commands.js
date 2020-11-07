@@ -142,6 +142,50 @@ export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
     }
 }
 
+
+export function createFragment( from, to, doc, schema ) {
+    const $from = doc.resolve(from)
+    const $to = doc.resolve(to)
+    const startOffset = $from.start()
+    const endOffset = $to.start()
+    const startIndex = $from.index(-1)
+    const endIndex = $to.index(-1)
+    const boundingNode = $from.node(-1)
+    const nodes = []
+
+    function sliceText(node,start,end) {
+        const texts = []
+        for( let i=0; i < node.childCount; i++ ) {
+            texts.push( node.child(i).text )
+        }
+        const text = texts.join('')
+        const nextText = text.slice(start,end)
+        const fragment = Fragment.from(schema.text(nextText))
+        return schema.node(node.type, node.attrs, fragment )
+    }
+
+    for( let i=startIndex; i <= endIndex; i++ ) {
+        let node = boundingNode.child(i)
+        if( node.type.name === 'textNode' ) {
+            if( i === startIndex && i === endIndex ) {
+                const start = from - startOffset
+                const end = to - endOffset
+                node = sliceText(node,start,end)
+            } else if( i === startIndex ) {
+                const start = from - startOffset
+                const end = undefined
+                node = sliceText(node,start,end)                
+            } else if( i === endIndex ) {
+                const start = 0
+                const end = to - endOffset + start
+                node = sliceText(node,start,end)  
+            }
+        }
+        nodes.push(node)
+    }
+    return Fragment.from(nodes)
+}
+
 export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
     let newAttrs = { ...element.attrs }
     newAttrs[attributeKey] = value
