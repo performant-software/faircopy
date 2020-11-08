@@ -46,7 +46,7 @@ export default class EditorToolbar extends Component {
                         return {
                             marks: false,
                             structures: true,
-                            inline: true,
+                            inline: false,
                             eraser: false
                         }
                     } else {

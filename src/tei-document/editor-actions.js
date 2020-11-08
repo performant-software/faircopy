@@ -1,5 +1,4 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
-import { Transform } from 'prosemirror-transform'
 import { addMark, insertNodeAt, createFragment } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
@@ -89,6 +88,9 @@ export function validAction( actionType, elementID, teiDocument, selection ) {
         } else {
             // inline-nodes
             if( pmType === 'inline-node' && selection.$cursor ) return true
+            //     if( selection.$cursor ) return true
+            //     if( actionType === 'addAbove' || 'addBelow' ) return true
+            // } 
         }
     }
     return false
@@ -239,10 +241,22 @@ export function addOutside( elementID, teiDocument, pos ) {
 
 export function addAbove( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { schema } = teiDocument.fairCopyProject.teiSchema
-
+    const { schema, elements } = teiDocument.fairCopyProject.teiSchema
+    const element = elements[elementID]
     const nodeType = schema.nodes[elementID]
-    insertNodeAt(nodeType, pos, editorView, schema )
+
+    if( element.pmType === 'inline-node') {
+        const { state } = editorView
+        const { tr, selection } = state
+        const { $anchor } = selection
+        const node = nodeType.create()
+        tr.insert($anchor.pos+1, node) 
+        debugger
+        editorView.dispatch(tr)
+        editorView.focus()
+    } else {
+        insertNodeAt(nodeType, pos, editorView, schema )    
+    }
 }
 
 export function addBelow( elementID, teiDocument, pos ) {
