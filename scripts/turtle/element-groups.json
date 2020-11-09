@@ -11,11 +11,16 @@
     ],
     "hard": [
         "argument",
+        "back",
+        "body",
         "castGroup",
         "castList",
         "cit",
+        "div",
         "docTitle",
         "epigraph",
+        "floatingText",
+        "front",
         "lg",
         "list",
         "listBibl",
@@ -27,7 +32,8 @@
         "relatedItem",
         "respStmt",
         "set",
-        "sp"
+        "sp",
+        "titlePage"
     ],
     "inlines": [
         "anchor",
@@ -122,13 +128,5 @@
         "stage",
         "titlePart",
         "trailer"
-    ],
-    "structures": [ 
-        "back",
-        "body",
-        "div",
-        "floatingText",
-        "front",
-        "titlePage"
     ]
 }

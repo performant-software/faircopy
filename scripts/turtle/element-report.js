@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const {load} = require('./parse-specs')
-const {createNodes,createStructureNodes} = require('./create-elements')
+const {createNodes} = require('./create-elements')
 const {getAllElements} = require('./parse-util')
 
 const runReport = async function runReport(teiSpecsDir) {
@@ -14,7 +14,7 @@ const runReport = async function runReport(teiSpecsDir) {
     elementGroups.marks = []
 
     // create a table of the name, content, and group data
-    const elements = [...createNodes(elementGroups,specs), ...createStructureNodes(elementGroups,specs)]
+    const elements = [...createNodes(elementGroups,specs)]
     const reportRows = []
     for( const element of elements ) {
         const { name, content, group, pmType } = element

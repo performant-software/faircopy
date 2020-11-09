@@ -12,7 +12,7 @@ const createElements = function createElements(elGroups,specs) {
     elements.push( ...createInters(elGroups,specs) )
     elements.push( ...createMarks(elGroups,specs) )
     elements.push( ...createNodes(elGroups,false,specs) )
-    elements.push( ...createStructureNodes(elGroups,specs) )
+    elements.push( ...createDocNode(elGroups,specs) )
     return elements
 }
 
@@ -86,39 +86,22 @@ function createInlineNodes(elGroups,icons,specs) {
     return inlineElements
 }
 
-const createStructureNodes = function createStructureNodes(elGroups,specs) {
-    const nodeGroups = getNodeGroups( elGroups, specs )
-    const divSpec = specs['div']
-    const divContent = onlyGroups( nodeGroups, divSpec.content )
-    const bodySpec = specs['body']
-    const bodyContent = onlyGroups( nodeGroups, bodySpec.content )
-
+// special top level text node, has properties of text but is called "doc"
+const createDocNode = function createDocNode(elGroups,specs) {
     return [
-         {
-            "name": "div",
-            "pmType": "node",
-            "content": encodeContent(divContent),
-            "group": divSpec.group,
-            "isolating": true,
-            "gutterMark": true,
-            "validAttrs": [],
-            "desc": divSpec.description
-        },
-        // special top level node, has properties of body but is called "doc"
         {
             "name": "doc",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "group": ['body',bodySpec.group].join(' '),
-            "content": encodeContent(bodyContent)
+            "content": "((front)? (body) (back)?)"
         }
     ]
 }
 
 function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
-    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.structures, elGroups.inter ].flat()
+    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.inter ].flat()
     const groups = getGroups( nodeIdents, specs )
     return [ nodeIdents, groups, "textNode" ].flat()
 }
@@ -184,4 +167,3 @@ const createNodes = function createNodes(elGroups,hard,specs) {
 // EXPORTS /////////////
 module.exports.createElements = createElements
 module.exports.createNodes = createNodes
-module.exports.createStructureNodes = createStructureNodes
