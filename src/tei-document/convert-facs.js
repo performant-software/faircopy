@@ -1,4 +1,5 @@
 import {facsTemplate} from "./tei-template"
+import {idValidator} from "./attribute-validators"
 
 // Supports IIIF v2 and v3
 export function iiifToFacsimile( manifestData ) {
@@ -172,7 +173,8 @@ function getLocalLabels(labelEls) {
 function getIDfromURI(uri) {
     const parts = uri.split('/')
     const lastIndex = parts.length - 1
-    return parts[lastIndex]
+    const candidateID = parts[lastIndex]
+    return ( candidateID && !idValidator(candidateID).error ) ? candidateID : null
 }
 
 function generateOrdinalID( prefix, ordinalID ) {

@@ -8,10 +8,13 @@ export function singleTokenValidator( value ) {
 
 // IDs are used as relative URIs, so they must be valid as such
 export function idValidator( value ) {
+    if( value.match(/^[0-9]/) ) {
+        return { error: true, errorMessage: "can not have a numeral as the first character."}    
+    }
     if( value.search(/[\s#&?:/]/) !== -1  ) {
         return { error: true, errorMessage: "can not contain whitespace or any of: '#,&,?,:,/'."}
     }
-    return { error: false, errorMessage: ""}
+    return { error: false, errorMessage: ""}    
 }
 
 // Test that this is a valid URI
