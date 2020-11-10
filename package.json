@@ -9,6 +9,7 @@
     "predist": "yarn build",
     "predist-mac": "yarn build",
     "predist-win": "yarn build",
+    "predist-linux": "yarn build",
     "dist-mac": "electron-builder -m",
     "dist-win": "electron-builder -w",
     "dist-linux": "electron-builder -l",
