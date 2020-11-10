@@ -318,8 +318,11 @@ export function splitBlock(state, dispatch, editorView, splitParent ) {
       let deflt = $from.depth === 0 ? null : defaultBlockAt($from, $from.node(-1).contentMatchAt($from.indexAfter(-1)))
       let can = canSplit(tr.doc, tr.mapping.map($from.pos), 2) // depth of 2 to pick up textNode
       if (can) {
-        const splitDepth = (splitParent && $from.depth >= 3) ? 3 : 2
-        tr.split(tr.mapping.map($from.pos), splitDepth)
+        if( splitParent && $from.depth >= 3 ) {
+          tr.split(tr.mapping.map($from.pos), 3, [{type: $from.node(-2).type, attrs: {}}, {type: $from.node(-1).type, attrs: {}}])
+        } else {
+          tr.split(tr.mapping.map($from.pos), 2, [{type: $from.node(-1).type, attrs: {}}])
+        }
         if (!atEnd && !$from.parentOffset && $from.parent.type !== deflt &&
             $from.node(-1).canReplace($from.index(-1), $from.indexAfter(-1), Fragment.from(deflt.create(), $from.parent)))
           tr.setNodeMarkup(tr.mapping.map($from.before()), deflt)
