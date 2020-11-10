@@ -9,9 +9,11 @@
     "predist": "yarn build",
     "predist-mac": "yarn build",
     "predist-win": "yarn build",
+    "predist-linux": "yarn build",
     "dist-mac": "electron-builder -m",
     "dist-win": "electron-builder -w",
-    "dist": "electron-builder -mw",
+    "dist-linux": "electron-builder -l",
+    "dist": "electron-builder -mwl",
     "build": "react-scripts build",
     "start": "BROWSER=none PORT=4000 react-scripts start",
     "test": "react-scripts test"
@@ -74,6 +76,11 @@
     ],
     "directories": {
       "buildResources": "assets"
+    },
+    "linux": {
+      "icon": "build/icon.png",
+      "target": "AppImage",
+      "category": "public.app-category.utilities"
     },
     "mac": {
       "icon": "build/icon.png",
