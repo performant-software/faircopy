@@ -89,7 +89,7 @@ export default class IDField extends Component {
             const { teiDocument } = this.props
             const { valueBuffer } = this.state
             // check for uniqueness
-            if( this.props.value !== valueBuffer && teiDocument.hasID(valueBuffer) ) {
+            if( this.props.value !== valueBuffer && valueBuffer.length > 0 && teiDocument.hasID(valueBuffer) ) {
                 this.setState( { ...this.state, error: true, errorMessage: 'ID must be unique to the document.'})
             } else {
                 this.setState({ ...this.initialState })

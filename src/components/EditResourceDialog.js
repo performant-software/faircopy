@@ -8,9 +8,8 @@ import { idValidator, validateURL } from '../tei-document/attribute-validators'
 export default class EditResourceDialog extends Component {
 
     constructor(props) {
-        super(props)
-
-        const { resourceEntry } = this.props
+        super()
+        const { resourceEntry } = props
         this.initialState = resourceEntry ? { ...resourceEntry, validationErrors: {} } : {
             name: "",
             localID: "",
@@ -42,21 +41,23 @@ export default class EditResourceDialog extends Component {
             const trimmedName = name.trim()
             if( trimmedName.length === 0 ) nextErrors['name'] = "Name cannot be blank."
 
-            if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
-            else {
-                if( !idMap.isUnique(localID) ) {
-                    nextErrors['localID'] = "ID is already in use in this project."
-                } else {
-                    const idValid = idValidator(localID)
-                    if( idValid.error ) nextErrors['localID'] = idValid.errorMessage        
-                }
+            if( localID !== resourceEntry.localID ) {
+                if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
+                else {
+                    if( !idMap.isUnique(localID) ) {
+                        nextErrors['localID'] = "ID is already in use in this project."
+                    } else {
+                        const idValid = idValidator(localID)
+                        if( idValid.error ) nextErrors['localID'] = idValid.errorMessage        
+                    }
+                }    
             }
 
             if( !resourceEntry && type === 'facs') { 
                 const validURL = validateURL(url)
                 if( validURL.error ) nextErrors['url'] = validURL.errorMessage
             }
-
+            
             const hasErrors = Object.keys(nextErrors).length > 0
             if( hasErrors ) {
                 this.setState({ ...this.state, validationErrors: nextErrors })
