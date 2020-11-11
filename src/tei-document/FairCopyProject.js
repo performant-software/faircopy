@@ -80,28 +80,26 @@ export default class FairCopyProject {
         return ( resource ) ? resource.id : null
     }
 
-    newResource( name, localID, type, url ) {
+    newResource( name, localID, type, url, onError ) {
         const resourceEntry = {
             id: uuidv4(),
             localID,
             name, 
             type
         }
-        this.resources[resourceEntry.id] = resourceEntry
 
         if( resourceEntry.type === 'text') {
+            this.resources[resourceEntry.id] = resourceEntry
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
             this.idMap.addResource(localID)
             this.idMap.save()
         } else {
-            importIIIFManifest(url, (xml,facs) => {
+            importIIIFManifest(url, onError, (xml,facs) => {
                 if( xml ) {
+                    this.resources[resourceEntry.id] = resourceEntry
                     fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
                     this.idMap.mapFacsIDs(localID,facs)
                     this.idMap.save()
-                } else {
-                    this.idMap.addResource(localID)
-                    this.idMap.save()                
                 }
             })
         }

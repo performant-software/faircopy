@@ -41,7 +41,7 @@ export default class EditResourceDialog extends Component {
             const trimmedName = name.trim()
             if( trimmedName.length === 0 ) nextErrors['name'] = "Name cannot be blank."
 
-            if( localID !== resourceEntry.localID ) {
+            if( !resourceEntry || localID !== resourceEntry.localID ) {
                 if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
                 else {
                     if( !idMap.isUnique(localID) ) {

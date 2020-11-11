@@ -434,7 +434,9 @@ export default class MainWindow extends Component {
             if( resourceEntry ) {
                 fairCopyProject.updateResource({ id: resourceEntry.id, name, localID, type })
             } else {
-                fairCopyProject.newResource(name,localID,type,url)    
+                fairCopyProject.newResource(name,localID,type,url, (errorMessage) => {
+                    this.setState({...this.state, alertMessage: errorMessage })
+                })    
             }
             this.setState( {...this.state, editDialogMode: false} )
         }
