@@ -4058,7 +4058,14 @@
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "((front)? (body) (back)?)"
+			"content": "noteDoc | ((front)? (body) (back)?)"
+		},
+		{
+			"name": "noteDoc",
+			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
+			"content": "(textNode|model_phrase|model_inter|model_divPart)*"
 		}
 	],
 	"attrs": {
@@ -5425,7 +5432,6 @@
 			"fw",
 			"subst",
 			"facsimile",
-			"floatingText",
 			"group",
 			"surface",
 			"TEI",

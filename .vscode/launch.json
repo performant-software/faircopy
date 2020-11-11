@@ -14,6 +14,15 @@
             "program": "${workspaceFolder}/scripts/turtle/index.js"
         },
         {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Turtle Element Report",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/scripts/turtle/element-report.js"
+        },
+        {
             "name": "Debug Main Process",
             "type": "node",
             "request": "launch",

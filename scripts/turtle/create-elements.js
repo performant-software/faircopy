@@ -12,7 +12,7 @@ const createElements = function createElements(elGroups,specs) {
     elements.push( ...createInters(elGroups,specs) )
     elements.push( ...createMarks(elGroups,specs) )
     elements.push( ...createNodes(elGroups,false,specs) )
-    elements.push( ...createDocNode(elGroups,specs) )
+    elements.push( ...createDocNodes(elGroups,specs) )
     return elements
 }
 
@@ -87,14 +87,21 @@ function createInlineNodes(elGroups,icons,specs) {
 }
 
 // special top level text node, has properties of text but is called "doc"
-const createDocNode = function createDocNode(elGroups,specs) {
+const createDocNodes = function createDocNode(elGroups,specs) {
     return [
         {
             "name": "doc",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": "((front)? (body) (back)?)"
+            "content": "noteDoc | ((front)? (body) (back)?)"
+        },
+        {
+            "name": "noteDoc",
+            "pmType": "node",
+            "isolating": true,
+            "gutterMark": true,
+            "content": "(textNode|model_phrase|model_inter|model_divPart)*"
         }
     ]
 }
