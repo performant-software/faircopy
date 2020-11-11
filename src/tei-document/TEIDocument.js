@@ -52,7 +52,7 @@ export default class TEIDocument {
 
     parseSubDocument(node, noteID) {
         const {teiSchema} = this.fairCopyProject
-        const subDoc = teiSchema.parseBody(node,this)
+        const subDoc = teiSchema.parseText(node,this)
         this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
     }
 
@@ -61,7 +61,7 @@ export default class TEIDocument {
         let {__id__} = attrs; 
         const noteJSON = JSON.parse( this.subDocs[__id__] )
         const subDoc = teiSchema.schema.nodeFromJSON(noteJSON);
-        const domFragment = teiSchema.serializeBody(subDoc.content, this)
+        const domFragment = teiSchema.serializeText(subDoc.content, this)
         let note = document.createElement('note')
         note.appendChild( domFragment.cloneNode(true) )
         for( const attrKey of Object.keys(attrs)) {
@@ -158,7 +158,8 @@ export default class TEIDocument {
         const parser = new DOMParser();
         const { teiSchema } = this.fairCopyProject
         this.xmlDom = parser.parseFromString(text, "text/xml");
-        const doc = teiSchema.parseBody(this.xmlDom,this)
+        const textEl = this.xmlDom.getElementsByTagName('text')[0] 
+        const doc = teiSchema.parseText(textEl,this)
         const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
         this.initialState = EditorState.create({ 
@@ -179,7 +180,7 @@ export default class TEIDocument {
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        const domFragment = teiSchema.serializeBody(editorState.doc.content, this)
+        const domFragment = teiSchema.serializeText(editorState.doc.content, this)
         const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )

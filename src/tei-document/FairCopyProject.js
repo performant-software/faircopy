@@ -159,12 +159,12 @@ export default class FairCopyProject {
         const teiHeaderEl = teiEl.getElementsByTagName('teiheader')[0] || teiEl.getElementsByTagName('teiHeader')[0]
 
         // TODO handle import of facs 
-        const bodyEl = teiEl.getElementsByTagName('body')[0] || teiEl.getElementsByTagName('BODY')[0]
-        if( !teiHeaderEl || !bodyEl ) {
-            return { error: true, errorMessage: '<TEI> element must contain <teiHeader> and <body>.' }
+        const textEl = teiEl.getElementsByTagName('text')[0] || teiEl.getElementsByTagName('TEXT')[0]
+        if( !teiHeaderEl || !textEl ) {
+            return { error: true, errorMessage: '<TEI> element must contain <teiHeader> and <text>.' }
         } 
 
-        const doc = this.teiSchema.parseBody(bodyEl,tempDoc)
+        const doc = this.teiSchema.parseText(textEl,tempDoc)
 
         this.idMap.mapTextIDs(localID,doc)
         this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)

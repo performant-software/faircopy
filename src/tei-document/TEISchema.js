@@ -17,8 +17,7 @@ export default class TEISchema {
         this.schemaJSON = json
     }
 
-    parseBody(xmlDom, teiDocument) {
-        const bodyEl = xmlDom.getElementsByTagName('body')[0]
+    parseText(textEl, teiDocument) {
         const { hard, soft, inter } = this.elementGroups
         const nodes = [...hard,...soft]
         const markPrefix = 'mark'
@@ -34,12 +33,12 @@ export default class TEISchema {
 
         // pre-parse inter nodes, separating would be marks from nodes
         for( const xmlTag of inter ) {
-            const markEls = bodyEl.querySelectorAll(xmlTag)
+            const markEls = textEl.querySelectorAll(xmlTag)
             for( let i=0; i < markEls.length; i++ ) {
                 const markEl = markEls[i]
                 // if this is a mark.. rename to interMark tag
                 if( isInterMark(markEl) ) {
-                    const interEl = xmlDom.createElement(`${markPrefix}${xmlTag}`)
+                    const interEl = document.createElement(`${markPrefix}${xmlTag}`)
                     interEl.innerHTML = markEl.innerHTML
                     markEl.parentNode.replaceChild(interEl,markEl)
                 }
@@ -48,12 +47,12 @@ export default class TEISchema {
 
         // make the TEIDocument visible to the node spec parser for access to sub docs
         this.teiDocuments.push(teiDocument)
-        const doc = this.domParser.parse(bodyEl)
+        const doc = this.domParser.parse(textEl)
         this.teiDocuments.pop()
         return doc
     }
 
-    serializeBody( content, teiDocument ) {
+    serializeText( content, teiDocument ) {
         const { inter } = this.elementGroups
 
         // remove textNodes from the DOM and replace each with its children
