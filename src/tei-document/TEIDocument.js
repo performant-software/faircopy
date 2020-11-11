@@ -181,10 +181,10 @@ export default class TEIDocument {
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
         const domFragment = teiSchema.serializeText(editorState.doc.content, this)
-        const bodyEl = this.xmlDom.getElementsByTagName('body')[0]
+        const textEl = this.xmlDom.getElementsByTagName('text')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
-        bodyEl.innerHTML = div.innerHTML
+        textEl.innerHTML = div.innerHTML
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
         fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
 
