@@ -1,9 +1,96 @@
 import React, { Component } from 'react'
 import FacsModeControl from './FacsModeControl';
 import { Button, Typography } from '@material-ui/core';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Checkbox } from '@material-ui/core';
+
+import { getLocalString } from '../tei-document/iiif'
 
 export default class FacsIndex extends Component {   
+
+    constructor() {
+        super()
+        this.state = {
+            allChecked: false,
+            checked: {}
+        }
+    }
+
+    renderSurfaceIndex() {
+        const facsDocument = this.getFacsDocument()
+        const { surfaces } = facsDocument.facs
+
+        const onClick = (e) => {
+            console.log('click')
+        //   const { onResourceAction } = this.props
+        //   const resourceID = e.currentTarget.getAttribute('dataresourceid')
+        //   onResourceAction( 'open', [resourceID] )
+        }
+
+        const toggleAll = () => {
+            const { checked, allChecked } = this.state
+            const nextAllChecked = !allChecked
+            const nextChecked = { ...checked }
+            for( const surface of surfaces ) {
+            nextChecked[surface.id] = nextAllChecked
+            }
+            this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
+        }
+
+        const onClickCheck = (e) => {
+            const { checked } = this.state
+            const nextChecked = { ...checked }
+            const resourceID = e.currentTarget.getAttribute('dataresourceid')
+            nextChecked[resourceID] = checked[resourceID] ? false : true
+            this.setState({ ...this.state, checked: nextChecked })
+        }
+
+        const cellProps = {
+            padding: 'none',
+            component: "th",
+            scope: "row"
+        }
+
+        const { checked, allChecked } = this.state
+
+        const surfaceRows = []
+        for( const surface of surfaces ) {
+            const labels = getLocalString(surface.localLabels, 'en')
+            const title = labels[0]
+            // const subHeadings = labels.slice(1)
     
+            const check = checked[surface.id] === true
+            surfaceRows.push(
+                <TableRow hover key={`surface-${surface.id}`}>
+                    <TableCell {...cellProps} >
+                        <Checkbox onClick={onClickCheck} dataresourceid={surface.id} color="default" checked={check} />
+                    </TableCell>
+                    <TableCell onClick={onClick} dataresourceid={surface.id} {...cellProps} >
+                        {title}
+                    </TableCell>
+                    <TableCell onClick={onClick} dataresourceid={surface.id} {...cellProps} >
+                        {surface.id}
+                    </TableCell>
+                </TableRow>
+            )
+        }
+    
+        return (
+            <TableContainer className="table-container" component={Paper}>
+                <Table stickyHeader size="small" >
+                <TableHead>
+                    <TableRow>
+                    <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                    <TableCell padding="none">Name</TableCell>
+                    <TableCell padding="none">ID</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    { surfaceRows }
+                </TableBody>
+                </Table>
+            </TableContainer>
+        )
+    }
     
     renderToolbar() {
         const { onChangeMode } = this.props
@@ -15,6 +102,12 @@ export default class FacsIndex extends Component {
 
         return (
             <div className='top-bar' >
+                <Button
+                    className="toolbar-button"
+                    {...buttonProps}
+                >
+                    Add Image
+                </Button> 
                 <Button
                     disabled
                     className="toolbar-button-right"
@@ -58,7 +151,7 @@ export default class FacsIndex extends Component {
                     </div>
                 }
                 <div className="facs-index-list">
-                    <br></br><br></br><h1>INDEX</h1>
+                    { this.renderSurfaceIndex() }
                 </div>
             </div>
         )
