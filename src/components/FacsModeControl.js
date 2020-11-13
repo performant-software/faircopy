@@ -12,7 +12,7 @@ export default class FacsModeControl extends Component {
                     {...buttonProps}
                     onClick={ () => onChangeMode('detail') }
                 >
-                    <i className={`${ selected === 'detail' ? 'selected-action' : ''} fas fa-square fa-2x`}></i>
+                    <i className={`${ selected === 'detail' ? 'selected-action' : ''} fas fa-image fa-2x`}></i>
                 </Button> 
                 <Button
                     disabled

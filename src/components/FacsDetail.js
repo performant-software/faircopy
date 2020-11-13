@@ -8,42 +8,10 @@ import FacsModeControl from './FacsModeControl';
 
 export default class FacsDetail extends Component {
 
-    constructor(props) {
-        super()
-        
-        let facsDocument = props.facsDocument ? props.facsDocument : null
-        let startIndex = 0
-
-        if( props.imageView ) {
-            const { imageView } = props
-            facsDocument = imageView.facsDocument
-            const { surfaces } = facsDocument.facs
-            startIndex = surfaces.findIndex( s => s.id === imageView.startingID )
-            startIndex = startIndex === -1 ? 0 : startIndex
-        } 
-
-        const surfaces = facsDocument.getSurfaces()
-        const surface = surfaces[startIndex]                
-
-        this.state = {
-            surface,
-            surfaceIndex: startIndex
-        }
-    }
-
     componentWillUnmount() {
         if(this.viewer){
             this.viewer.destroy();
         }    
-    }
-
-    getFacsDocument() {
-        if( this.props.imageView ) {
-            const { imageView } = this.props
-            return imageView.facsDocument
-        } else {
-            return this.props.facsDocument
-        }
     }
 
     initViewer = (el) => {
@@ -51,7 +19,8 @@ export default class FacsDetail extends Component {
             this.viewer = null
             return
         }
-        const { surface } = this.state
+        const { facsDocument, surfaceIndex } = this.props
+        const surface = facsDocument.getSurface(surfaceIndex)
         const imageInfoURL = getImageInfoURL( surface )
         axios.get(imageInfoURL).then((response) => {
             const tileSource = response.data
@@ -68,14 +37,13 @@ export default class FacsDetail extends Component {
     }
     
     setSurfaceIndex( nextIndex ) {
-        const facsDocument = this.getFacsDocument()
-        const surfaces = facsDocument.getSurfaces()
-        const nextSurface = surfaces[nextIndex]
+        const { facsDocument, onChangeIndex } = this.props
+        const nextSurface = facsDocument.getSurface(nextIndex)
         const imageInfoURL = getImageInfoURL( nextSurface )
         axios.get(imageInfoURL).then((response) => {
             const tileSource = response.data
             this.viewer.open(tileSource)
-            this.setState({ ...this.state, surface: nextSurface, surfaceIndex: nextIndex })
+            onChangeIndex(nextIndex)
         })
     }
 
@@ -152,11 +120,10 @@ export default class FacsDetail extends Component {
     }
     
     render() {
-        const { fairCopyProject } = this.props
-        const facsDocument = this.getFacsDocument()
-        const { surfaceIndex, surface } = this.state
+        const { fairCopyProject, facsDocument, surfaceIndex } = this.props
+        const surface = facsDocument.getSurface(surfaceIndex)
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
-        const surfaces = facsDocument.getSurfaces()
+        const {surfaces} = facsDocument.facs
 
         const enablePrev = surfaceIndex > 0
         const enableNext = surfaceIndex < surfaces.length-1

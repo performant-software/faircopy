@@ -20,8 +20,8 @@ export default class FacsDocument {
         this.changedSinceLastSave = false
     }
 
-    getSurfaces() {
-        return this.facs.surfaces
+    getSurface(index) {
+        return this.facs.surfaces[index]
     }
 
     requestResource( resourceID ) {

@@ -16,11 +16,11 @@ export default class FacsIndex extends Component {
     }
 
     renderSurfaceIndex() {
-        const facsDocument = this.getFacsDocument()
+        const { facsDocument, onChangeIndex } = this.props
         const { surfaces } = facsDocument.facs
 
         const onClick = (e) => {
-            console.log('click')
+            // onChangeIndex()
         //   const { onResourceAction } = this.props
         //   const resourceID = e.currentTarget.getAttribute('dataresourceid')
         //   onResourceAction( 'open', [resourceID] )
@@ -123,19 +123,9 @@ export default class FacsIndex extends Component {
             </div>
         )
     }
-
-    getFacsDocument() {
-        if( this.props.imageView ) {
-            const { imageView } = this.props
-            return imageView.facsDocument
-        } else {
-            return this.props.facsDocument
-        }
-    }
     
     render() {
-        const { fairCopyProject } = this.props
-        const facsDocument = this.getFacsDocument()
+        const { fairCopyProject, facsDocument } = this.props
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
 
         const showSearchBar = !!this.props.facsDocument
