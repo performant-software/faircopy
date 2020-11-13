@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import FacsModeControl from './FacsModeControl';
 import { Button, Typography } from '@material-ui/core';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Checkbox } from '@material-ui/core';
+import { TableContainer, TablePagination, Table, TableHead, TableRow, TableCell, TableBody, Paper, Checkbox } from '@material-ui/core';
 
 import { getLocalString } from '../tei-document/iiif'
+
+const rowsPerPage = 100
 
 export default class FacsIndex extends Component {   
 
@@ -11,6 +13,7 @@ export default class FacsIndex extends Component {
         super()
         this.state = {
             allChecked: false,
+            currentPage: 0,
             checked: {}
         }
     }
@@ -48,7 +51,7 @@ export default class FacsIndex extends Component {
             scope: "row"
         }
 
-        const { checked, allChecked } = this.state
+        const { checked, allChecked, currentPage } = this.state
 
         const surfaceRows = []
         let index=0
@@ -57,7 +60,7 @@ export default class FacsIndex extends Component {
             const title = labels[0]
             // const subHeadings = labels.slice(1)
     
-            const check = checked[surface.id] === true
+            const check = checked[index] === true
             surfaceRows.push(
                 <TableRow hover key={`surface-${index}`}>
                     <TableCell {...cellProps} >
@@ -73,22 +76,36 @@ export default class FacsIndex extends Component {
             )
             index++
         }
+
+        const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
+        const start = rowsPerPage * currentPage
+        const end = start + 100
     
         return (
-            <TableContainer className="table-container" component={Paper}>
-                <Table stickyHeader size="small" >
-                <TableHead>
-                    <TableRow>
-                    <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
-                    <TableCell padding="none">Name</TableCell>
-                    <TableCell padding="none">ID</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    { surfaceRows }
-                </TableBody>
-                </Table>
-            </TableContainer>
+            <Paper >
+                <TableContainer className="table-container">
+                    <Table stickyHeader size="small" >
+                        <TableHead>
+                            <TableRow>
+                                <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                                <TableCell padding="none">Name</TableCell>
+                                <TableCell padding="none">ID</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            { surfaceRows.slice(start,end) }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    component="div"
+                    rowsPerPageOptions={[rowsPerPage]}
+                    count={surfaceRows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={currentPage}
+                    onChangePage={onChangePage}
+                />
+            </Paper>
         )
     }
     
