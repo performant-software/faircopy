@@ -19,12 +19,12 @@ export default class FacsIndex extends Component {
     }
 
     renderSurfaceIndex() {
-        const { facsDocument, onChangeView } = this.props
+        const { facsDocument, onChangeView, surfaceIndex } = this.props
         const { surfaces } = facsDocument.facs
 
         const onClick = (e) => {
-            const surfaceIndex = e.currentTarget.getAttribute('datasurfaceindex')
-            onChangeView(surfaceIndex, 'detail')
+            const selection = e.currentTarget.getAttribute('datasurfaceindex')
+            onChangeView(parseInt(selection), 'detail')
         }
 
         const toggleAll = () => {
@@ -61,8 +61,9 @@ export default class FacsIndex extends Component {
             // const subHeadings = labels.slice(1)
     
             const check = checked[index] === true
+            const selectionClass = surfaceIndex === index ? 'row-selected' : ''
             surfaceRows.push(
-                <TableRow hover key={`surface-${index}`}>
+                <TableRow hover className={selectionClass} key={`surface-${index}`}>
                     <TableCell {...cellProps} >
                         <Checkbox onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
                     </TableCell>

@@ -10,3 +10,7 @@
 #FacsIndex .table-container {
     height: calc(100vh - 160px);
 }
+
+#FacsIndex .row-selected {
+    background: #FFF9DD;
+}
