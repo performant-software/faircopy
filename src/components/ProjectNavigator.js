@@ -67,7 +67,7 @@ export default class ProjectNavigator extends Component {
         const {resourceID} = resource
         const {name} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
-        const iconType = resource instanceof TEIDocument ? 'fa-book' : 'fa-image' 
+        const iconType = resource instanceof TEIDocument ? 'fa-book' : 'fa-images' 
         const icon = <i className={`fas ${iconType} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID)
         treeNodes.push(

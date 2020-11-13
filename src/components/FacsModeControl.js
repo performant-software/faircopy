@@ -15,14 +15,6 @@ export default class FacsModeControl extends Component {
                     <i className={`${ selected === 'detail' ? 'selected-action' : ''} fas fa-image fa-2x`}></i>
                 </Button> 
                 <Button
-                    disabled
-                    className="toolbar-button-right"
-                    {...buttonProps}
-                    onClick={ () => onChangeView(surfaceIndex,'grid') }
-                >
-                    <i className={`${ selected === 'grid' ? 'selected-action' : ''} fas fa-th-large fa-2x`}></i>
-                </Button> 
-                <Button
                     className="toolbar-button-right"
                     {...buttonProps}
                     onClick={ () => onChangeView(surfaceIndex,'index') }
