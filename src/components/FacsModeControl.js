@@ -3,14 +3,14 @@ import { Button } from '@material-ui/core';
 
 export default class FacsModeControl extends Component {    
     render() {
-        const { selected, buttonProps, onChangeMode } = this.props
+        const { selected, buttonProps, onChangeView, surfaceIndex } = this.props
 
         return (
             <span id="FacsModeControl" >
                 <Button
                     className="toolbar-button-right"
                     {...buttonProps}
-                    onClick={ () => onChangeMode('detail') }
+                    onClick={ () => onChangeView(surfaceIndex,'detail') }
                 >
                     <i className={`${ selected === 'detail' ? 'selected-action' : ''} fas fa-image fa-2x`}></i>
                 </Button> 
@@ -18,14 +18,14 @@ export default class FacsModeControl extends Component {
                     disabled
                     className="toolbar-button-right"
                     {...buttonProps}
-                    onClick={ () => onChangeMode('grid') }
+                    onClick={ () => onChangeView(surfaceIndex,'grid') }
                 >
                     <i className={`${ selected === 'grid' ? 'selected-action' : ''} fas fa-th-large fa-2x`}></i>
                 </Button> 
                 <Button
                     className="toolbar-button-right"
                     {...buttonProps}
-                    onClick={ () => onChangeMode('index') }
+                    onClick={ () => onChangeView(surfaceIndex,'index') }
                 >
                     <i className={`${ selected === 'index' ? 'selected-action' : ''} fas fa-list fa-2x`}></i>
                 </Button> 

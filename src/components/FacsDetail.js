@@ -37,13 +37,13 @@ export default class FacsDetail extends Component {
     }
     
     setSurfaceIndex( nextIndex ) {
-        const { facsDocument, onChangeIndex } = this.props
+        const { facsDocument, onChangeView } = this.props
         const nextSurface = facsDocument.getSurface(nextIndex)
         const imageInfoURL = getImageInfoURL( nextSurface )
         axios.get(imageInfoURL).then((response) => {
             const tileSource = response.data
             this.viewer.open(tileSource)
-            onChangeIndex(nextIndex)
+            onChangeView(nextIndex,'detail')
         })
     }
 
@@ -66,7 +66,7 @@ export default class FacsDetail extends Component {
     }
 
     renderToolbar() {
-        const { onChangeMode } = this.props
+        const { onChangeView, surfaceIndex } = this.props
         
         const buttonProps = {
             disableRipple: true,
@@ -111,9 +111,10 @@ export default class FacsDetail extends Component {
                     <i className="fas fa-save fa-2x"></i>
                 </Button> 
                 <FacsModeControl
+                    surfaceIndex={surfaceIndex}
                     selected={'detail'}
                     buttonProps={buttonProps}
-                    onChangeMode={onChangeMode}
+                    onChangeView={onChangeView}
                 ></FacsModeControl>
             </div>
         )

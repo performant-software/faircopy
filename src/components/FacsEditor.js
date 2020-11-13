@@ -40,8 +40,7 @@ export default class FacsEditor extends Component {
 
         if( hidden ) return null
 
-        const onChangeMode = (nextMode) => { this.setState({...this.state, mode: nextMode })}
-        const onChangeIndex = (nextIndex) => { this.setState({...this.state, surfaceIndex: nextIndex })}
+        const onChangeView = (nextIndex,nextMode) => { this.setState({...this.state, mode: nextMode, surfaceIndex: nextIndex })}
 
         return (
             <div id="FacsEditor">
@@ -50,17 +49,15 @@ export default class FacsEditor extends Component {
                         surfaceIndex={surfaceIndex}
                         facsDocument={facsDocument}
                         fairCopyProject={fairCopyProject}
-                        onChangeMode={onChangeMode}
-                        onChangeIndex={onChangeIndex}
+                        onChangeView={onChangeView}
                     ></FacsDetail>                
                 : 
                     <FacsIndex
                         surfaceIndex={surfaceIndex}
                         facsDocument={facsDocument}
                         fairCopyProject={fairCopyProject}
+                        onChangeView={onChangeView}
                         onEditResource={onEditResource}                 
-                        onChangeMode={onChangeMode}
-                        onChangeIndex={onChangeIndex}
                     ></FacsIndex>
                 }
             </div>

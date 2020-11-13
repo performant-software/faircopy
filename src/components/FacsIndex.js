@@ -16,22 +16,20 @@ export default class FacsIndex extends Component {
     }
 
     renderSurfaceIndex() {
-        const { facsDocument, onChangeIndex } = this.props
+        const { facsDocument, onChangeView } = this.props
         const { surfaces } = facsDocument.facs
 
         const onClick = (e) => {
-            // onChangeIndex()
-        //   const { onResourceAction } = this.props
-        //   const resourceID = e.currentTarget.getAttribute('dataresourceid')
-        //   onResourceAction( 'open', [resourceID] )
+            const surfaceIndex = e.currentTarget.getAttribute('datasurfaceindex')
+            onChangeView(surfaceIndex, 'detail')
         }
 
         const toggleAll = () => {
             const { checked, allChecked } = this.state
             const nextAllChecked = !allChecked
             const nextChecked = { ...checked }
-            for( const surface of surfaces ) {
-            nextChecked[surface.id] = nextAllChecked
+            for( let i=0; i < surfaces.length; i++ ) {
+                nextChecked[i] = nextAllChecked
             }
             this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
         }
@@ -39,8 +37,8 @@ export default class FacsIndex extends Component {
         const onClickCheck = (e) => {
             const { checked } = this.state
             const nextChecked = { ...checked }
-            const resourceID = e.currentTarget.getAttribute('dataresourceid')
-            nextChecked[resourceID] = checked[resourceID] ? false : true
+            const surfaceIndex = e.currentTarget.getAttribute('datasurfaceindex')
+            nextChecked[surfaceIndex] = checked[surfaceIndex] ? false : true
             this.setState({ ...this.state, checked: nextChecked })
         }
 
@@ -53,6 +51,7 @@ export default class FacsIndex extends Component {
         const { checked, allChecked } = this.state
 
         const surfaceRows = []
+        let index=0
         for( const surface of surfaces ) {
             const labels = getLocalString(surface.localLabels, 'en')
             const title = labels[0]
@@ -60,18 +59,19 @@ export default class FacsIndex extends Component {
     
             const check = checked[surface.id] === true
             surfaceRows.push(
-                <TableRow hover key={`surface-${surface.id}`}>
+                <TableRow hover key={`surface-${index}`}>
                     <TableCell {...cellProps} >
-                        <Checkbox onClick={onClickCheck} dataresourceid={surface.id} color="default" checked={check} />
+                        <Checkbox onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
                     </TableCell>
-                    <TableCell onClick={onClick} dataresourceid={surface.id} {...cellProps} >
+                    <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {title}
                     </TableCell>
-                    <TableCell onClick={onClick} dataresourceid={surface.id} {...cellProps} >
+                    <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {surface.id}
                     </TableCell>
                 </TableRow>
             )
+            index++
         }
     
         return (
@@ -93,7 +93,7 @@ export default class FacsIndex extends Component {
     }
     
     renderToolbar() {
-        const { onChangeMode } = this.props
+        const { onChangeView, onEditResource, surfaceIndex } = this.props
         
         const buttonProps = {
             disableRipple: true,
@@ -104,10 +104,19 @@ export default class FacsIndex extends Component {
             <div className='top-bar' >
                 <Button
                     className="toolbar-button"
+                    variant="outlined"
+                    size="small"              
                     {...buttonProps}
                 >
                     Add Image
                 </Button> 
+                <Button
+                    disabled
+                    onClick={onEditResource}
+                    {...buttonProps}
+                >
+                    <i className="far fa-edit fa-2x"></i>
+                </Button>                   
                 <Button
                     disabled
                     className="toolbar-button-right"
@@ -117,8 +126,9 @@ export default class FacsIndex extends Component {
                 </Button> 
                 <FacsModeControl
                     selected={'index'}
+                    surfaceIndex={surfaceIndex}
                     buttonProps={buttonProps}
-                    onChangeMode={onChangeMode}
+                    onChangeView={onChangeView}
                 ></FacsModeControl>
             </div>
         )
