@@ -111,8 +111,8 @@ export default class FacsIndex extends Component {
     }
     
     renderToolbar() {
-        const { onChangeView, onEditResource, surfaceIndex } = this.props
-        
+        const { onChangeView, onEditResource, surfaceIndex, onAddImages } = this.props
+
         const buttonProps = {
             disableRipple: true,
             disableFocusRipple: true
@@ -121,12 +121,11 @@ export default class FacsIndex extends Component {
         return (
             <div className='top-bar' >
                 <Button
+                    onClick={onAddImages}
                     className="toolbar-button"
-                    variant="outlined"
-                    size="small"              
                     {...buttonProps}
                 >
-                    Add Image
+                    <i className="far fa-file-plus fa-2x"></i>
                 </Button> 
                 <Button
                     disabled

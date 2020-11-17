@@ -9,6 +9,7 @@ export default class FacsEditor extends Component {
         
         let facsDocument = props.facsDocument ? props.facsDocument : null
         let startIndex = 0
+        let mode='index'
 
         if( props.imageView ) {
             const { imageView } = props
@@ -16,10 +17,11 @@ export default class FacsEditor extends Component {
             const { surfaces } = facsDocument.facs
             startIndex = surfaces.findIndex( s => s.id === imageView.startingID )
             startIndex = startIndex === -1 ? 0 : startIndex
+            mode='detail'
         } 
 
         this.state = {
-            mode: 'index',
+            mode,
             surfaceIndex: startIndex
         }
     }
@@ -34,7 +36,7 @@ export default class FacsEditor extends Component {
     }
 
     render() {
-        const { hidden, fairCopyProject, onEditResource } = this.props
+        const { hidden, fairCopyProject, onEditResource, onAddImages } = this.props
         const { mode, surfaceIndex } = this.state
         const facsDocument = this.getFacsDocument()
 
@@ -57,7 +59,8 @@ export default class FacsEditor extends Component {
                         facsDocument={facsDocument}
                         fairCopyProject={fairCopyProject}
                         onChangeView={onChangeView}
-                        onEditResource={onEditResource}                 
+                        onEditResource={onEditResource}      
+                        onAddImages={onAddImages}           
                     ></FacsIndex>
                 }
             </div>

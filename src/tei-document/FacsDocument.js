@@ -29,6 +29,31 @@ export default class FacsDocument {
         this.loading = true
     }
 
+    addLocalImages( imagePaths ) {
+        // for( const imagePath of imagePaths ) {
+        //     // create a surface and add it to the document in the right location
+        //     const surface = {
+        //         id,
+        //         type: 'local',
+        //         localLabels,
+        //         width,
+        //         height,
+        //     }
+        //     this.facs.push(surface)
+
+        //     // create a resource entry for this image
+        //     const resourceEntry = {
+        //         id: uuidv4(),
+        //         localID,
+        //         name, 
+        //         type: 'image'
+        //     }
+
+        //     // send the entry plus path to project store
+        //     fairCopy.services.ipcSend('addResource', resourceEntry, imagePath )
+        // }
+    }
+
     load( facsXML ) {
         this.facs = teiToFacsimile(facsXML)        
         this.loading = false

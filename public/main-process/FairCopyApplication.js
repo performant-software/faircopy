@@ -73,6 +73,11 @@ class FairCopyApplication {
       }
     })
 
+    ipcMain.on('requestImagePaths', (event) => {
+      const paths = this.mainMenu.openAddImage()
+      this.sendToMainWindow('imagesOpened', paths )  
+    })
+
     ipcMain.on('requestExport', (event, exportOptions) => { 
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null

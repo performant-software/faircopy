@@ -53,6 +53,7 @@ export default class FairCopyProject {
         const fairCopyManifest = JSON.parse(json)
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description
+        // TODO only include root level resources
         this.resources = fairCopyManifest.resources
     }
     

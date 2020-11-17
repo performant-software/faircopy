@@ -35,6 +35,16 @@ class MainMenu {
       })
     }
 
+    openAddImage = () => {
+      return dialog.showOpenDialogSync( {
+        title: "Select images to add to this project.",
+        filters: [ 
+            { name: 'Image', extensions: ['jpg','png'] }
+          ],
+          properties: [ 'openFile' ]
+      })
+    }
+
     openExport = () => {
       return dialog.showOpenDialogSync( {
           title: "Select a target directory for export.",

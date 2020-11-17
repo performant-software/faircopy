@@ -11,6 +11,7 @@ import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 import EditResourceDialog from './EditResourceDialog'
 import EditProjectDialog from './EditProjectDialog'
+import AddImageDialog from './AddImageDialog'
 import PopupMenu from './PopupMenu'
 import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
@@ -34,6 +35,7 @@ export default class MainWindow extends Component {
             alertOptions: null,
             exitOnClose: false,
             editDialogMode: false,
+            addImagesMode: false,
             editProjectDialogMode: false,
             elementMenuOptions: null,
             popupMenuOptions: null, 
@@ -49,7 +51,7 @@ export default class MainWindow extends Component {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('importOpened', (event, importData) => this.receiveImportData(importData))
-        services.ipcRegisterCallback('requestExitApp', (event, importData) => this.requestExitApp() ) 
+        services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
     }
     
     requestExitApp = () => {
@@ -217,6 +219,10 @@ export default class MainWindow extends Component {
         fairCopy.services.ipcSend('requestImport')
     }
 
+    onAddImages = () => {
+        this.setState({...this.state, addImagesMode: true })
+    }
+
     onAlertMessage = (message) => {
         this.setState({...this.state, alertMessage: message })
     }
@@ -282,7 +288,8 @@ export default class MainWindow extends Component {
                             hidden={hidden}
                             facsDocument={resource}
                             fairCopyProject={fairCopyProject}
-                            onEditResource={this.onEditResource}                 
+                            onEditResource={this.onEditResource}    
+                            onAddImages={this.onAddImages}
                         ></FacsEditor>
                     )                     
                 }
@@ -419,11 +426,11 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, openResources, selectedResource, elementMenuOptions } = this.state
+        const { editDialogMode, addImagesMode, openResources, selectedResource, elementMenuOptions } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
 
-        const teiDocument = selectedResource ? openResources[selectedResource] : null
+        const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
         const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
 
@@ -455,13 +462,18 @@ export default class MainWindow extends Component {
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }
+                { addImagesMode && <AddImageDialog
+                    idMap={idMap}
+                    facsDocument={selectedDoc}
+                    onClose={()=>{ this.setState( {...this.state, addImagesMode: false} )}}
+                ></AddImageDialog> }
                 { editProjectDialogMode && <EditProjectDialog
                     projectInfo={projectInfo}
                     onSave={onSaveProjectInfo}
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }
                 { elementMenuOptions && <ElementMenu
-                    teiDocument={teiDocument}
+                    teiDocument={selectedDoc}
                     onAlertMessage={this.onAlertMessage}
                     onClose={this.onCloseElementMenu}
                     elementMenuAnchors={this.elementMenuAnchors}
