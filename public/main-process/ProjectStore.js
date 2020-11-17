@@ -196,6 +196,18 @@ class ProjectStore {
         this.saveManifest()
     }
 
+    async openImageResource(resourceID) {
+        const resourceEntry = this.manifestData.resources[resourceID]
+        if( resourceEntry ) {
+            // TODO
+            // create a file path to the temp dir
+            // write the image to the temp dir
+            // product a file URL and send it back to main window
+            const imageURL = '';
+            this.fairCopyApplication.sendToMainWindow('recieveImageURL', resourceID, imageURL )
+        }
+    }
+
     async openResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {

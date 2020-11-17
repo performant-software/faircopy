@@ -62,6 +62,7 @@ class FairCopyApplication {
     ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
     ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
+    ipcMain.on('requestImageURL', (event, resourceID) => { this.projectStore.openImageResource(resourceID) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
 
     ipcMain.on('requestImport', (event) => { 

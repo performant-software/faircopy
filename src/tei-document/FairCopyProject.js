@@ -20,6 +20,20 @@ export default class FairCopyProject {
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
         this.idMap = new IDMap(this.teiSchema,projectData.idMap)
+        this.localImageCache = {}
+        
+        fairCopy.services.ipcRegisterCallback('recieveImageURL', this.receiveLocalImageURL)
+    }
+
+    receiveLocalImageURL = ( event, resourceID, imageURL ) => {
+        const imageRecord = this.localImageCache[resourceID]
+        if( imageRecord ) {
+            imageRecord.imageURL = imageURL
+            if( imageRecord.callback ) {
+                imageRecord.callback(imageURL)
+                imageRecord.callback = null    
+            }
+        }
     }
 
     parseMenus(json) {
@@ -58,6 +72,20 @@ export default class FairCopyProject {
         Object.values(fairCopyManifest.resources).forEach( entry => {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
+    }
+
+    requestLocalImage( resourceID, callback ) {
+        // if cache misses, request the images URL and register callback
+        const cacheRecord = this.localImageCache[resourceID]
+
+        if( cacheRecord && cacheRecord.imageURL) {
+            callback(cacheRecord.imageURL)
+        } else {
+            this.localImageCache[resourceID] = {
+                callback
+            }
+            fairCopy.services.ipcSend('requestImageURL', resourceID )
+        }
     }
     
     updateResource( resourceEntry ) {

@@ -49,7 +49,6 @@ export default class FacsDocument {
                 width,
                 height,
             }
-            debugger
             this.facs.surfaces.push(surface)
 
             // create a resource entry for this image

@@ -19,32 +19,53 @@ export default class FacsDetail extends Component {
             this.viewer = null
             return
         }
-        const { facsDocument, surfaceIndex } = this.props
+        const { fairCopyProject, facsDocument, surfaceIndex } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
-        const imageInfoURL = getImageInfoURL( surface )
-        axios.get(imageInfoURL).then((response) => {
-            const tileSource = response.data
-            this.viewer = OpenSeadragon({
-                element: el,
-                tileSources: tileSource,
-                showHomeControl: false,
-                showFullPageControl: false,
-                showZoomControl: false
+
+        if( surface.type === 'iiif') {
+            const imageInfoURL = getImageInfoURL( surface )
+            axios.get(imageInfoURL).then((response) => {
+                const tileSource = response.data
+                this.viewer = OpenSeadragon({
+                    element: el,
+                    tileSources: tileSource,
+                    showHomeControl: false,
+                    showFullPageControl: false,
+                    showZoomControl: false
+                })    
+            }, (err) => {
+                console.log('Unable to load image: ' + err);
             })    
-        }, (err) => {
-            console.log('Unable to load image: ' + err);
-        })
+        } else {
+            fairCopyProject.requestLocalImage( surface.resourceEntryID, (imageFileURL) => {
+                this.viewer = OpenSeadragon({
+                    element: el,
+                    tileSources: imageFileURL,
+                    showHomeControl: false,
+                    showFullPageControl: false,
+                    showZoomControl: false
+                }) 
+            })
+        }
     }
     
     setSurfaceIndex( nextIndex ) {
-        const { facsDocument, onChangeView } = this.props
+        const { fairCopyProject, facsDocument, onChangeView } = this.props
         const nextSurface = facsDocument.getSurface(nextIndex)
-        const imageInfoURL = getImageInfoURL( nextSurface )
-        axios.get(imageInfoURL).then((response) => {
-            const tileSource = response.data
-            this.viewer.open(tileSource)
-            onChangeView(nextIndex,'detail')
-        })
+
+        if( nextSurface.type === 'iiif' ) {
+            const imageInfoURL = getImageInfoURL( nextSurface )
+            axios.get(imageInfoURL).then((response) => {
+                const tileSource = response.data
+                this.viewer.open(tileSource)
+                onChangeView(nextIndex,'detail')
+            })    
+        } else {
+            fairCopyProject.requestLocalImage( nextSurface.resourceEntryID, (imageFileURL) => {
+                this.viewer.open(imageFileURL)
+                onChangeView(nextIndex,'detail')
+            })
+        }
     }
 
     renderSubHeadings(subHeadings) {
