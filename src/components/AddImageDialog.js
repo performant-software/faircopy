@@ -11,27 +11,27 @@ export default class AddImageDialog extends Component {
     constructor(props) {
         super()
         this.state = {
-            imagePaths: []
+            imagesData: []
         }
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('imagesOpened', (event, imagePaths) => {
-            this.setState({...this.state, imagePaths})
+        fairCopy.services.ipcRegisterCallback('imagesOpened', (event, imagesData) => {
+            this.setState({...this.state, imagesData})
         })
     }
 
     renderForm() {
-        const { imagePaths } = this.state
+        const { imagesData } = this.state
 
         const onClickBrowse = () => {
-            fairCopy.services.ipcSend('requestImagePaths')
+            fairCopy.services.ipcSend('requestImageData')
         }
-        const s = imagePaths.length === 1 ? '' : 's'
+        const s = imagesData.length === 1 ? '' : 's'
         
         return (
             <div>
-                <Typography>{imagePaths.length} file{s} selected.</Typography>
+                <Typography>{imagesData.length} file{s} selected.</Typography>
                 <Button size='small' className='browse-button' onClick={onClickBrowse} variant='contained'>Browse...</Button>
             </div>
         )
@@ -42,8 +42,8 @@ export default class AddImageDialog extends Component {
         
         const onAddImages = () => {
             const { facsDocument } = this.props
-            const { imagePaths } = this.state
-            facsDocument.addLocalImages(imagePaths)
+            const { imagesData } = this.state
+            facsDocument.addLocalImages(imagesData)
             facsDocument.save()
             onClose()
         }

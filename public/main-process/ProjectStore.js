@@ -129,29 +129,16 @@ class ProjectStore {
     addResource( resourceEntryJSON, resourceData ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
-        this.projectArchive.file(resourceEntry.id, resourceData)
+        if( resourceEntry.type === 'image' )  {
+            const imageBuffer = fs.readFileSync(resourceData)
+            this.projectArchive.file(resourceEntry.id, imageBuffer)
+        } else {
+            this.projectArchive.file(resourceEntry.id, resourceData)
+        }
+
         this.saveManifest()
     }
-
-    // addImageResource( parentResourceID, filePath ) {
-    //     const localID = "test"
-    //     const name = "test"
-
-    //     const resourceEntry = {
-    //         id: uuid.v4(),
-    //         localID,
-    //         name,
-    //         type: 'image'
-    //     }
-        
-    //     const imageBuffer = fs.readFileSync(filePath)
-    //     this.manifestData.resources[resourceEntry.id] = resourceEntry
-    //     this.projectArchive.file(resourceEntry.id, imageBuffer)
-    //     this.saveManifest()
-
-    //     this.fairCopyApplication.sendToMainWindow('addImageResource', parentResourceID, resourceEntry.id )
-    // }
-
+    
     removeResource(resourceID) {
         delete this.manifestData.resources[resourceID] 
         this.projectArchive.remove(resourceID)

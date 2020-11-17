@@ -1,4 +1,5 @@
-import {teiToFacsimile, facsimileToTEI} from './convert-facs'
+import { v4 as uuidv4 } from 'uuid'
+import {teiToFacsimile, facsimileToTEI, generateOrdinalID} from './convert-facs'
 
 const fairCopy = window.fairCopy
 
@@ -29,29 +30,39 @@ export default class FacsDocument {
         this.loading = true
     }
 
-    addLocalImages( imagePaths ) {
-        // for( const imagePath of imagePaths ) {
-        //     // create a surface and add it to the document in the right location
-        //     const surface = {
-        //         id,
-        //         type: 'local',
-        //         localLabels,
-        //         width,
-        //         height,
-        //     }
-        //     this.facs.push(surface)
+    nextSurfaceID() {
+        // TODO scan for highest number
+        return generateOrdinalID('f', this.facs.surfaces.length )
+    }
 
-        //     // create a resource entry for this image
-        //     const resourceEntry = {
-        //         id: uuidv4(),
-        //         localID,
-        //         name, 
-        //         type: 'image'
-        //     }
+    addLocalImages( imagesData ) {
+        for( const imageData of imagesData ) {
+            const { width, height, path } = imageData
+            const resourceEntryID = uuidv4()
 
-        //     // send the entry plus path to project store
-        //     fairCopy.services.ipcSend('addResource', resourceEntry, imagePath )
-        // }
+            // create a surface and add it to the document in the right location
+            const surface = {
+                id: this.nextSurfaceID(),
+                type: 'local',
+                localLabels: { none: [path] },
+                resourceEntryID,
+                width,
+                height,
+            }
+            debugger
+            this.facs.surfaces.push(surface)
+
+            // create a resource entry for this image
+            const resourceEntry = {
+                id: resourceEntryID,
+                localID: `${this.resourceID}/${surface.id}`,
+                name: path,
+                type: 'image'
+            }
+
+            // send the entry plus path to project store
+            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), path )
+        }
     }
 
     load( facsXML ) {

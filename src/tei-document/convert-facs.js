@@ -1,5 +1,4 @@
 import {facsTemplate} from "./tei-template"
-import {idValidator} from "./attribute-validators"
 
 // Supports IIIF v2 and v3
 export function iiifToFacsimile( manifestData ) {
@@ -46,16 +45,14 @@ function iiifToFacsimile3( manifestData ) {
                     imageAPIURL = val('id', body)
                 }
                 let localLabels = str( canvas.label )
-                let id = getIDfromURI(canvasURI)
-                if( !id || surfaceIDs.includes(id) ) {
-                    id = generateOrdinalID('page-',n)
-                }
+                let id = generateOrdinalID('f',n)
                 localLabels = !localLabels ? { 'none': [ id ] } : localLabels
                 surfaceIDs.push(id)
                 n++ // page count
 
                 surfaces.push({
                     id,
+                    type: 'iiif',
                     localLabels,
                     width,
                     height,
@@ -89,16 +86,13 @@ function iiifToFacsimile2( manifestData ) {
         const { resource } = image
         const imageAPIURL = resource.service ? val('id', resource.service) : val('id', resource)
         const localLabels = str( canvas.label )
-        let id = getIDfromURI(canvasURI)      
-        // fallback to page number if we can't create a unique ID from canvas ID 
-        if( !id || surfaceIDs.includes(id) ) {
-            id = generateOrdinalID('page-',n)
-        }  
+        let id = generateOrdinalID('f',n)
         surfaceIDs.push(id)
         n++ // page count
 
         surfaces.push({
             id,
+            type: 'iiif',
             localLabels,
             width,
             height,
@@ -129,13 +123,23 @@ export function teiToFacsimile(xml) {
         const height = surfaceEl.getAttribute('lry')
         const canvasURI = surfaceEl.getAttribute('sameAs')
         const graphicEl = surfaceEl.getElementsByTagName('graphic')[0]
-        const imageAPIURL = graphicEl.getAttribute('url')
+        const mimeType = graphicEl.getAttribute('mimeType')
+        let imageAPIURL, resourceEntryID, type
+        if( mimeType === 'application/json' ) {
+            type = 'iiif'
+            imageAPIURL = graphicEl.getAttribute('url')
+        } else {
+            type = 'local'
+            resourceEntryID = graphicEl.getAttribute('url')
+        }
         const labelEls = surfaceEl.getElementsByTagName('label')
         const localLabels = getLocalLabels(labelEls)
 
         surfaces.push({
             id,
+            type,
             canvasURI,
+            resourceEntryID,
             localLabels,
             width,
             height,
@@ -170,14 +174,7 @@ function getLocalLabels(labelEls) {
     return localLabels
 }
 
-function getIDfromURI(uri) {
-    const parts = uri.split('/')
-    const lastIndex = parts.length - 1
-    const candidateID = parts[lastIndex]
-    return ( candidateID && !idValidator(candidateID).error ) ? candidateID : null
-}
-
-function generateOrdinalID( prefix, ordinalID ) {
+export function generateOrdinalID( prefix, ordinalID ) {
     let zeros = ""
 
     if( ordinalID < 10 ) {

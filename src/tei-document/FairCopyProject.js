@@ -53,8 +53,11 @@ export default class FairCopyProject {
         const fairCopyManifest = JSON.parse(json)
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description
-        // TODO only include root level resources
-        this.resources = fairCopyManifest.resources
+        // filter out images, which are part of facs 
+        this.resources = {}
+        Object.values(fairCopyManifest.resources).forEach( entry => {
+            if( entry.type !== 'image' ) this.resources[entry.id] = entry
+        })
     }
     
     updateResource( resourceEntry ) {

@@ -3,6 +3,7 @@ const { autoUpdater } = require('electron-updater')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
+const Jimp = require("jimp")
 const log = require('electron-log')
 const { platform } = process
 
@@ -73,9 +74,11 @@ class FairCopyApplication {
       }
     })
 
-    ipcMain.on('requestImagePaths', (event) => {
+    ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
-      this.sendToMainWindow('imagesOpened', paths )  
+      this.processImageData(paths).then((imageData) => {
+        this.sendToMainWindow('imagesOpened', imageData )  
+      })     
     })
 
     ipcMain.on('requestExport', (event, exportOptions) => { 
@@ -237,6 +240,21 @@ class FairCopyApplication {
 
   sendToMainWindow(message, params) {
     this.mainWindow.webContents.send(message, params)
+  }
+
+  async processImageData(paths) {
+    const imageData = []
+    for( const path of paths ) {
+      const image = await Jimp.read(path)
+      const width = image.bitmap.width
+      const height = image.bitmap.height
+      imageData.push({
+        path,
+        width,
+        height
+      })
+    }
+    return imageData
   }
 
   async createWindow(preload, width, height, resizable, backgroundColor, devTools ) {

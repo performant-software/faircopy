@@ -31,12 +31,18 @@ export const facsTemplate = (facsData) => {
 
     const surfaceEls = []
     for( const surface of surfaces ) {
-        const { id, width, height, imageAPIURL, canvasURI, localLabels } = surface
+        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, resourceEntryID  } = surface
         const labelEls = renderLocalLabels(localLabels)
 
-        surfaceEls.push(
-            `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic url="${imageAPIURL}"/></surface>`
-        )
+        if( type === 'iiif' ) {
+            surfaceEls.push(
+                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic mimeType="application/json" url="${imageAPIURL}"/></surface>`
+            )    
+        } else {
+            surfaceEls.push(
+                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic url="${resourceEntryID}"/></surface>`
+            )    
+        }
     }
 
     return `<?xml version="1.0" encoding="UTF-8"?>
