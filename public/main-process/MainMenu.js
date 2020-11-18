@@ -41,7 +41,7 @@ class MainMenu {
         filters: [ 
             { name: 'Image', extensions: ['jpg','png','gif','jpeg'] }
           ],
-          properties: [ 'openFile' ]
+          properties: [ 'openFile', 'multiSelections' ]
       })
     }
 
