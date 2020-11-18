@@ -8,6 +8,7 @@ import IDMap from "./IDMap"
 import {teiTemplate} from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
 import {learnDoc, saveConfig} from "./faircopy-config"
+import {facsTemplate} from "./tei-template"
 
 const fairCopy = window.fairCopy
 
@@ -127,14 +128,24 @@ export default class FairCopyProject {
             this.idMap.addResource(localID)
             this.idMap.save()
         } else {
-            importIIIFManifest(url, onError, (xml,facs) => {
-                if( xml ) {
-                    this.resources[resourceEntry.id] = resourceEntry
-                    fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
-                    this.idMap.mapFacsIDs(localID,facs)
-                    this.idMap.save()
-                }
-            })
+            if( url && url.length > 0 ) {
+                importIIIFManifest(url, onError, (xml,facs) => {
+                    if( xml ) {
+                        this.resources[resourceEntry.id] = resourceEntry
+                        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
+                        this.idMap.mapFacsIDs(localID,facs)
+                        this.idMap.save()
+                    }
+                })    
+            } else {
+                // add a blank facs 
+                this.resources[resourceEntry.id] = resourceEntry
+                const facs = { manifestID: localID, surfaces: [] }
+                const xml = facsTemplate(facs)
+                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
+                this.idMap.mapFacsIDs(localID,facs)
+                this.idMap.save()
+            }
         }
     }
 

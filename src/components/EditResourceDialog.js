@@ -53,7 +53,7 @@ export default class EditResourceDialog extends Component {
                 }    
             }
 
-            if( !resourceEntry && type === 'facs') { 
+            if( !resourceEntry && type === 'facs-iiif') { 
                 const validURL = validateURL(url)
                 if( validURL.error ) nextErrors['url'] = validURL.errorMessage
             }
@@ -63,7 +63,8 @@ export default class EditResourceDialog extends Component {
                 this.setState({ ...this.state, validationErrors: nextErrors })
             } else {
                 this.setState(this.initialState)
-                onSave(trimmedName,localID,type,url)    
+                const actualType = type === 'facs-iiif' ? 'facs' : type
+                onSave(trimmedName,localID,actualType,url)    
             }
         }
 
@@ -111,8 +112,9 @@ export default class EditResourceDialog extends Component {
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
                         <MenuItem value={'facs'}>Facsimile</MenuItem>
+                        <MenuItem value={'facs-iiif'}>Facsimile from IIIF Manifest</MenuItem>
                     </Select><br/></span>}
-                    { type === 'facs' && <TextField 
+                    { type === 'facs-iiif' && <TextField 
                         name="url"
                         className="name-field"
                         value={url}
