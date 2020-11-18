@@ -140,8 +140,23 @@ class ProjectStore {
     }
     
     removeResource(resourceID) {
+        const resourceEntry = this.manifestData.resources[resourceID] 
+
+        // go through the manifest entries, if there are local images associated with this facs, delete them too
+        if( resourceEntry.type === 'facs' ) {
+            for( const entry of Object.values(this.manifestData.resources) ) {
+                const {id, type, localID} = entry
+                if( type === 'image' && localID.startsWith(resourceID) ) {
+                    delete this.manifestData.resources[id] 
+                    this.projectArchive.remove(id)            
+                    log.info(`Removed image resource from project: ${id}`)
+                }
+            }
+        }
+
         delete this.manifestData.resources[resourceID] 
         this.projectArchive.remove(resourceID)
+        log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
     }
 
