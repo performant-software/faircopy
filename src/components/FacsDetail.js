@@ -40,7 +40,7 @@ export default class FacsDetail extends Component {
             fairCopyProject.requestLocalImage( surface.resourceEntryID, (imageFileURL) => {
                 this.viewer = OpenSeadragon({
                     element: el,
-                    tileSources: imageFileURL,
+                    tileSources: { type: 'image', url: imageFileURL },
                     showHomeControl: false,
                     showFullPageControl: false,
                     showZoomControl: false
@@ -62,7 +62,7 @@ export default class FacsDetail extends Component {
             })    
         } else {
             fairCopyProject.requestLocalImage( nextSurface.resourceEntryID, (imageFileURL) => {
-                this.viewer.open(imageFileURL)
+                this.viewer.open({ type: 'image', url: imageFileURL })
                 onChangeView(nextIndex,'detail')
             })
         }

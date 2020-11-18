@@ -199,12 +199,20 @@ class ProjectStore {
     async openImageResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            // TODO
             // create a file path to the temp dir
-            // write the image to the temp dir
-            // product a file URL and send it back to main window
-            const imageURL = '';
-            this.fairCopyApplication.sendToMainWindow('recieveImageURL', resourceID, imageURL )
+            const cacheFile = `${this.tempDir}/${resourceID}.png`
+
+            try {
+                // write the image to the temp dir
+                const imageBuffer = await this.projectArchive.file(resourceID).async('nodebuffer')
+                fs.writeFileSync(cacheFile,imageBuffer)
+
+                // produce a file URL and send it back to main window
+                const imageURL = `local://${resourceID}.png`
+                this.fairCopyApplication.sendToMainWindow('recieveImageURL', { resourceID, imageURL } )
+            } catch(err) {
+                log.error(err)
+            }
         }
     }
 

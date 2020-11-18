@@ -25,7 +25,8 @@ export default class FairCopyProject {
         fairCopy.services.ipcRegisterCallback('recieveImageURL', this.receiveLocalImageURL)
     }
 
-    receiveLocalImageURL = ( event, resourceID, imageURL ) => {
+    receiveLocalImageURL = ( event, params ) => {
+        const { resourceID, imageURL } = params
         const imageRecord = this.localImageCache[resourceID]
         if( imageRecord ) {
             imageRecord.imageURL = imageURL

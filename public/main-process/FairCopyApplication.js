@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { MainMenu } = require('./MainMenu')
@@ -16,13 +16,14 @@ class FairCopyApplication {
   constructor() {
     this.mainWindow = null
     this.imageViews = []
-    // this.noteWindows = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
     this.mainMenu = new MainMenu(this)
     this.exiting = false
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
+
+    this.initLocalFileProtocol()
     this.initIPC()
   }
 
@@ -35,6 +36,26 @@ class FairCopyApplication {
 
   isDebugMode() {
     return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
+  }
+
+  // local file protocol for accessing cache files in the temp dir 
+  initLocalFileProtocol() {
+    const protocolName = 'local'
+
+    protocol.registerFileProtocol(protocolName, (request, callback) => {
+      const relativeURL = request.url.replace(`${protocolName}://`, '').replace('..','')
+      const safePath = `${this.projectStore.tempDir}/${relativeURL}`
+      if( fs.existsSync(safePath) ) {
+        try {
+          return callback(decodeURIComponent(safePath))
+        }
+        catch (error) {
+          log.error(error)
+        }  
+      } else {
+        log.error(`Requested file does not exist: ${safePath}`)
+      }
+    })
   }
 
   initIPC() {
