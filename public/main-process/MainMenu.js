@@ -39,7 +39,7 @@ class MainMenu {
       return dialog.showOpenDialogSync( {
         title: "Select images to add to this project.",
         filters: [ 
-            { name: 'Image', extensions: ['jpg','png'] }
+            { name: 'Image', extensions: ['jpg','png','gif','jpeg'] }
           ],
           properties: [ 'openFile' ]
       })

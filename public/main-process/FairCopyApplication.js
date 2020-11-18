@@ -268,12 +268,14 @@ class FairCopyApplication {
     const imageData = []
     for( const path of paths ) {
       const image = await Jimp.read(path)
+      const mimeType = image.getMIME()
       const width = image.bitmap.width
       const height = image.bitmap.height
       imageData.push({
         path,
         width,
-        height
+        height,
+        mimeType
       })
     }
     return imageData

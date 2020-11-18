@@ -199,16 +199,18 @@ class ProjectStore {
     async openImageResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            // create a file path to the temp dir
-            const cacheFile = `${this.tempDir}/${resourceID}.png`
-
             try {
+                // create a file path to the temp dir
+                const ext = getExtensionForMIMEType(resourceEntry.mimeType)
+                const fileName = `${resourceID}.${ext}`
+                const cacheFile = `${this.tempDir}/${fileName}`
+
                 // write the image to the temp dir
                 const imageBuffer = await this.projectArchive.file(resourceID).async('nodebuffer')
                 fs.writeFileSync(cacheFile,imageBuffer)
 
                 // produce a file URL and send it back to main window
-                const imageURL = `local://${resourceID}.png`
+                const imageURL = `local://${fileName}`
                 this.fairCopyApplication.sendToMainWindow('recieveImageURL', { resourceID, imageURL } )
             } catch(err) {
                 log.error(err)
@@ -253,6 +255,19 @@ function writeArchive(zipPath, zipData, whenFinished=null) {
                 whenFinished()
             }
         });
+}
+
+function getExtensionForMIMEType( mimeType ) {
+    switch(mimeType) {
+        case 'image/png':
+            return 'png'
+        case 'image/jpeg':
+            return 'jpg'
+        case 'image/gif':
+            return 'gif' 
+        default:
+            throw new Error(`Unknown MIMEType: ${mimeType}`)
+    }        
 }
 
 function migrateConfig( baseConfigJSON, projectConfigJSON ) {

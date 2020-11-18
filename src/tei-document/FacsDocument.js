@@ -37,7 +37,7 @@ export default class FacsDocument {
 
     addLocalImages( imagesData ) {
         for( const imageData of imagesData ) {
-            const { width, height, path } = imageData
+            const { width, height, mimeType, path } = imageData
             const resourceEntryID = uuidv4()
 
             // create a surface and add it to the document in the right location
@@ -48,6 +48,7 @@ export default class FacsDocument {
                 resourceEntryID,
                 width,
                 height,
+                mimeType
             }
             this.facs.surfaces.push(surface)
 
@@ -56,6 +57,7 @@ export default class FacsDocument {
                 id: resourceEntryID,
                 localID: `${this.resourceID}/${surface.id}`,
                 name: path,
+                mimeType,
                 type: 'image'
             }
 
