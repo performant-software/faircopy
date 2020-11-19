@@ -125,7 +125,7 @@ export function teiToFacsimile(xml) {
         const graphicEl = surfaceEl.getElementsByTagName('graphic')[0]
         const mimeType = graphicEl.getAttribute('mimeType')
         let imageAPIURL, resourceEntryID, type
-        if( mimeType === 'application/json' ) {
+        if( !mimeType || mimeType === 'application/json' ) {
             type = 'iiif'
             imageAPIURL = graphicEl.getAttribute('url')
         } else {

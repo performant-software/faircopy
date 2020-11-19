@@ -31,7 +31,7 @@ export const facsTemplate = (facsData) => {
 
     const surfaceEls = []
     for( const surface of surfaces ) {
-        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, resourceEntryID  } = surface
+        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, mimeType, resourceEntryID  } = surface
         const labelEls = renderLocalLabels(localLabels)
 
         if( type === 'iiif' ) {
@@ -40,7 +40,7 @@ export const facsTemplate = (facsData) => {
             )    
         } else {
             surfaceEls.push(
-                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic url="${resourceEntryID}"/></surface>`
+                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic mimeType="${mimeType}" url="${resourceEntryID}"/></surface>`
             )    
         }
     }
