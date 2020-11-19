@@ -64,16 +64,39 @@ export default class FacsDocument {
             // send the entry plus path to project store
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), path )
         }
+
+        // save changes to this document
+        this.save()
+
+        // update ID Map
+        const { idMap } = this.imageViewContext
+        idMap.mapFacsIDs( this.resourceID, this.facs )
+        idMap.save()
     }
 
-    deleteSurface(surfaceIndex) {
-        const surface = this.facs.surfaces[surfaceIndex]
-        if( surface.type === 'image' ) {
-            const { resourceEntryID } = surface
-            fairCopy.services.ipcSend('removeResource', resourceEntryID )
+    deleteSurfaces(doomedSurfaces) {
+        const {surfaces} = this.facs 
+
+        // request delete for local images
+        for( const surfaceIndex of doomedSurfaces ) {
+            const surface = surfaces[surfaceIndex]
+            if( surface.type === 'local' ) {
+                const { resourceEntryID } = surface
+                fairCopy.services.ipcSend('removeResource', resourceEntryID )
+            }    
         }
-        delete this.facs.surfaces[surfaceIndex]
-        this.changedSinceLastSave = true
+
+        // create new surface list, without the deleted surfaces
+        const nextSurfaces = []
+        for( let i=0; i < surfaces.length; i++ ) {
+            if( !doomedSurfaces.includes(i) ) nextSurfaces.push(surfaces[i])
+        }
+        this.facs.surfaces = nextSurfaces
+        this.save()
+
+        const { idMap } = this.imageViewContext
+        idMap.mapFacsIDs( this.resourceID, this.facs )
+        idMap.save()
     }
 
     load( facsXML ) {

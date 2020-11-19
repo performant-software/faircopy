@@ -105,6 +105,11 @@ export default class AlertDialog extends Component {
 
         const { onDelete, surfaceCount } = alertOptions
 
+        const onClickDelete = () => {
+            onDelete()
+            onCloseAlert()
+        }
+
         const onCancel = () => {
             onCloseAlert()
         }
@@ -116,7 +121,7 @@ export default class AlertDialog extends Component {
             {
                 label: "Delete",
                 defaultAction: true,
-                handler: onDelete
+                handler: onClickDelete
             },
             {
                 label: "Cancel",

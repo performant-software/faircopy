@@ -44,7 +44,6 @@ export default class AddImageDialog extends Component {
             const { facsDocument } = this.props
             const { imagesData } = this.state
             facsDocument.addLocalImages(imagesData)
-            facsDocument.save()
             onClose()
         }
 

@@ -30,16 +30,14 @@ export default class FacsIndex extends Component {
                 const { checked } = this.state
                 for( const surfaceIndex of Object.keys(checked) ) {
                     if( checked[surfaceIndex] ) {
-                        doomedSurfaces.push(surfaceIndex) 
+                        doomedSurfaces.push(parseInt(surfaceIndex)) 
                     }
                 }
 
                 const surfaceCount = doomedSurfaces.length
                 const { facsDocument } = this.props
                 const onDelete = () => {
-                    for( const surfaceIndex of doomedSurfaces ) {
-                        facsDocument.deleteSurface(surfaceIndex)
-                    }
+                    facsDocument.deleteSurfaces(doomedSurfaces)
                     this.setState({ ...this.state, checked: {}, allChecked: false })    
                 }
                 onConfirmDeleteImages({ onDelete, surfaceCount })
