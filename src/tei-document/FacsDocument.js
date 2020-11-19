@@ -66,6 +66,16 @@ export default class FacsDocument {
         }
     }
 
+    deleteSurface(surfaceIndex) {
+        const surface = this.facs.surfaces[surfaceIndex]
+        if( surface.type === 'image' ) {
+            const { resourceEntryID } = surface
+            fairCopy.services.ipcSend('removeResource', resourceEntryID )
+        }
+        delete this.facs.surfaces[surfaceIndex]
+        this.changedSinceLastSave = true
+    }
+
     load( facsXML ) {
         this.facs = teiToFacsimile(facsXML)        
         this.loading = false

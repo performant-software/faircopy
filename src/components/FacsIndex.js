@@ -18,6 +18,36 @@ export default class FacsIndex extends Component {
         }
     }
 
+    onOpenActionMenu = (anchorEl) => {    
+        const { onOpenPopupMenu } = this.props
+        
+        const menuOptions = [
+          {
+            id: 'delete',
+            label: 'Delete',
+            action: (actionID) => {
+                const { facsDocument } = this.props
+                const { checked } = this.state
+                for( const surfaceIndex of Object.keys(checked) ) {
+                    if( checked[surfaceIndex] ) {
+                        switch(actionID) {
+                            case 'delete':
+                                facsDocument.deleteSurface(surfaceIndex)
+                                break
+                            default:
+                                console.error(`Unrecognized facs action id: ${actionID}`)
+                                return false
+                        }
+                    }
+                }
+                this.setState({ ...this.state, checked: {}, allChecked: false })
+                return true
+            }
+          }
+        ]
+        onOpenPopupMenu(menuOptions, anchorEl)
+    }
+    
     renderSurfaceIndex() {
         const { facsDocument, onChangeView, surfaceIndex } = this.props
         const { surfaces } = facsDocument.facs
@@ -111,12 +141,15 @@ export default class FacsIndex extends Component {
     }
     
     renderToolbar() {
+        const { checked } = this.state
         const { onChangeView, onEditResource, surfaceIndex, onAddImages } = this.props
 
         const buttonProps = {
             disableRipple: true,
             disableFocusRipple: true
         }
+
+        const actionsEnabled = Object.values(checked).find( c => c === true )
 
         return (
             <div className='top-bar' >
@@ -125,7 +158,14 @@ export default class FacsIndex extends Component {
                     className="toolbar-button"
                     {...buttonProps}
                 >
-                    <i className="far fa-file-plus fa-2x"></i>
+                    Add Images
+                </Button> 
+                <Button 
+                    disabled={!actionsEnabled}
+                    ref={(el)=> { this.actionButtonEl = el }}
+                    onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
+                    {...buttonProps}
+                    >Actions<i className='down-caret fas fa-caret-down fa-lg'></i>
                 </Button> 
                 <Button
                     disabled

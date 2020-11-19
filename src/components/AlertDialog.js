@@ -5,9 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 
 export default class AlertDialog extends Component {
 
-    renderActions() {
-        const { actions } = this.props
-
+    renderActions(actions) {
         if( !actions ) return null
 
         const actionButtons = []
@@ -30,29 +28,13 @@ export default class AlertDialog extends Component {
         return actionButtons
     }
 
-    render() {      
-        const { open, title, message, handleClose } = this.props
-        
-        // const handleSave = () => {
-        //     this.requestSave()
-        // }
-
-        // const handleClose = () => {
-        //     this.setState({...this.state, exitAnyway: true });
-        //     alertDialogMode === 'close' ? window.close() : this.newFile()
-        // }
-        
-        // let message
-        // if( alertDialogMode === 'close' ) {
-        //     message = "Do you wish to save this file before exiting?"
-        // } else if( alertDialogMode === 'new' ) {
-        //     message = "Do you wish to save this file before creating a new document?"
-        // }
+    renderDialog( title, message, actions ) {
+        const { onCloseAlert } = this.props
 
         return (
             <Dialog
-                open={open}
-                onClose={handleClose}
+                open={true}
+                onClose={onCloseAlert}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -63,10 +45,106 @@ export default class AlertDialog extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    { this.renderActions() }
+                    { this.renderActions(actions) }
                 </DialogActions>
             </Dialog>
         )
     }
 
+    renderImportError() {
+        const { alertOptions, onCloseAlert } = this.props
+
+        const title = "Import Error"
+        const message = alertOptions.errorMessage
+        const actions = [
+            {
+                label: "OK",
+                defaultAction: true,
+                handler: onCloseAlert
+            }
+        ]
+
+        return this.renderDialog( title, message, actions )
+    }
+
+    renderConfirmDelete() {
+        const { alertOptions, onCloseAlert, closeResources, fairCopyProject } = this.props
+
+        const { resourceIDs } = alertOptions
+
+        const onDelete = () => {
+            fairCopyProject.removeResources(resourceIDs)
+            closeResources(resourceIDs, false, false )    
+        }
+
+        const onCancel = () => {
+            onCloseAlert()
+        }
+
+        const title = "Confirm Delete"
+        const s = resourceIDs.length === 1 ? '' : 's'
+        const message = `Do you wish to delete ${resourceIDs.length} resource${s}?`
+        const actions = [
+            {
+                label: "Delete",
+                defaultAction: true,
+                handler: onDelete
+            },
+            {
+                label: "Cancel",
+                handler: onCancel
+            }
+        ]
+
+        return this.renderDialog( title, message, actions )
+    }
+
+    renderConfirmSave() {
+        const { alertOptions, closeResources, exitOnClose, fairCopyProject } = this.props
+
+        const onSave = () => {
+            const { resource, resourceIDs } = alertOptions
+            resource.save()
+            closeResources(resourceIDs,exitOnClose)
+        }
+
+        const onCloseWithoutSave = () => {
+            const { resource, resourceIDs } = alertOptions
+            resource.changedSinceLastSave = false       
+            closeResources(resourceIDs,exitOnClose)
+        }
+
+        const { resource } = alertOptions
+        const resourceName = fairCopyProject.resources[resource.resourceID].name
+        const title = "Confirm Close"
+        const message = `Close "${resourceName}" without saving?`
+        const actions = [
+            {
+                label: "Save",
+                defaultAction: true,
+                handler: onSave
+            },
+            {
+                label: "Close",
+                handler: onCloseWithoutSave
+            }
+        ]
+
+        return this.renderDialog( title, message, actions )
+    }
+
+    render() {      
+        const { alertDialogMode } = this.props
+        switch(alertDialogMode) {
+            case 'importError':
+                return this.renderImportError()
+            case 'confirmSave':
+                return this.renderConfirmSave()
+            case 'confirmDelete':
+                return this.renderConfirmDelete()
+            case 'closed':
+            default:
+                return null
+        }
+    }
 }

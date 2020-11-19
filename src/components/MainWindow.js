@@ -124,7 +124,7 @@ export default class MainWindow extends Component {
         }
     }
 
-    closeResources(resourceIDs,exitOnClose=false,promptSave=true) {
+    closeResources = (resourceIDs,exitOnClose=false,promptSave=true) => {
         const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
         if( promptSave ) {
@@ -290,6 +290,7 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onEditResource={this.onEditResource}    
                             onAddImages={this.onAddImages}
+                            onOpenPopupMenu={this.onOpenPopupMenu}
                         ></FacsEditor>
                     )                     
                 }
@@ -319,108 +320,21 @@ export default class MainWindow extends Component {
     }
 
     renderAlertDialog() {
-        const { alertDialogMode, alertOptions } = this.state
+        const { fairCopyProject } = this.props
+        const { alertDialogMode, alertOptions, exitOnClose } = this.state
 
         const onCloseAlert = () => {
             this.setState({ ...this.state, alertDialogMode: 'closed', alertOptions: null })
         }
-
-        let open, title, message, actions, handleClose
-        switch(alertDialogMode) {
-            case 'importError':
-                open = true
-                title = "Import Error"
-                message = alertOptions.errorMessage
-                handleClose = onCloseAlert
-                actions = [
-                    {
-                        label: "OK",
-                        defaultAction: true,
-                        handler: onCloseAlert
-                    }
-                ]
-                break
-
-            case 'confirmDelete': {
-                const { resourceIDs } = alertOptions
-
-                const onDelete = () => {
-                    const { fairCopyProject } = this.props
-                    fairCopyProject.removeResources(resourceIDs)
-                    this.closeResources(resourceIDs, false, false )    
-                }
-
-                const onCancel = () => {
-                    onCloseAlert()
-                }
-
-                open = true
-                title = "Confirm Delete"
-                const s = resourceIDs.length === 1 ? '' : 's'
-                message = `Do you wish to delete ${resourceIDs.length} resource${s}?`
-                handleClose = onCloseAlert
-                actions = [
-                    {
-                        label: "Delete",
-                        defaultAction: true,
-                        handler: onDelete
-                    },
-                    {
-                        label: "Cancel",
-                        handler: onCancel
-                    }
-                ]
-                break
-            }
-                
-            case 'confirmSave': {
-                const onSave = () => {
-                    const { exitOnClose } = this.state
-                    const { resource, resourceIDs } = alertOptions
-                    resource.save()
-                    this.closeResources(resourceIDs,exitOnClose)
-                }
-
-                const onCloseWithoutSave = () => {
-                    const { exitOnClose } = this.state
-                    const { resource, resourceIDs } = alertOptions
-                    resource.changedSinceLastSave = false       
-                    this.closeResources(resourceIDs,exitOnClose)
-                }
-
-                const { fairCopyProject } = this.props
-                const { resource } = alertOptions
-                const resourceName = fairCopyProject.resources[resource.resourceID].name
-                open = true
-                title = "Confirm Close"
-                message = `Close "${resourceName}" without saving?`
-                handleClose = onCloseAlert
-                actions = [
-                    {
-                        label: "Save",
-                        defaultAction: true,
-                        handler: onSave
-                    },
-                    {
-                        label: "Close",
-                        handler: onCloseWithoutSave
-                    }
-                ]
-                break
-            }
-
-            case 'closed':
-            default:
-                open = false
-        }
     
         return (
             <AlertDialog
-                open={open}
-                title={title}
-                message={message}
-                actions={actions}
-                handleClose={handleClose}
+                alertDialogMode={alertDialogMode}
+                alertOptions={alertOptions}
+                onCloseAlert={onCloseAlert}
+                closeResources={this.closeResources}
+                exitOnClose={exitOnClose}
+                fairCopyProject={fairCopyProject}
             ></AlertDialog>    
         )
     }
