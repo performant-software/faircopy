@@ -43,6 +43,7 @@ export default class FacsDetail extends Component {
                     tileSources: { type: 'image', url: imageFileURL },
                     showHomeControl: false,
                     showFullPageControl: false,
+                    maxZoomPixelRatio: Infinity,
                     showZoomControl: false
                 }) 
             })
@@ -123,13 +124,6 @@ export default class FacsDetail extends Component {
                     {...buttonProps}
                 >
                     <i className="fas fa-draw-eraser fa-2x"></i>
-                </Button> 
-                <Button
-                    disabled
-                    className="toolbar-button-right"
-                    {...buttonProps}
-                >
-                    <i className="fas fa-save fa-2x"></i>
                 </Button> 
                 <FacsModeControl
                     surfaceIndex={surfaceIndex}

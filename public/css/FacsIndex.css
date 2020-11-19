@@ -3,9 +3,6 @@
     margin-top: 44px;
 }
 
-#FacsIndex .top-bar {
-    padding-left: 10px;
-}
 
 #FacsIndex .table-container {
     height: calc(100vh - 160px);

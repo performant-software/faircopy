@@ -176,13 +176,6 @@ export default class FacsIndex extends Component {
                 >
                     <i className="far fa-edit fa-2x"></i>
                 </Button>                   
-                <Button
-                    disabled
-                    className="toolbar-button-right"
-                    {...buttonProps}
-                >
-                    <i className="fas fa-save fa-2x"></i>
-                </Button> 
                 <FacsModeControl
                     selected={'index'}
                     surfaceIndex={surfaceIndex}
