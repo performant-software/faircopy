@@ -19,28 +19,30 @@ export default class FacsIndex extends Component {
     }
 
     onOpenActionMenu = (anchorEl) => {    
-        const { onOpenPopupMenu } = this.props
+        const { onOpenPopupMenu, onConfirmDeleteImages } = this.props
         
         const menuOptions = [
           {
             id: 'delete',
             label: 'Delete',
-            action: (actionID) => {
-                const { facsDocument } = this.props
+            action: () => {
+                const doomedSurfaces = []
                 const { checked } = this.state
                 for( const surfaceIndex of Object.keys(checked) ) {
                     if( checked[surfaceIndex] ) {
-                        switch(actionID) {
-                            case 'delete':
-                                facsDocument.deleteSurface(surfaceIndex)
-                                break
-                            default:
-                                console.error(`Unrecognized facs action id: ${actionID}`)
-                                return false
-                        }
+                        doomedSurfaces.push(surfaceIndex) 
                     }
                 }
-                this.setState({ ...this.state, checked: {}, allChecked: false })
+
+                const surfaceCount = doomedSurfaces.length
+                const { facsDocument } = this.props
+                const onDelete = () => {
+                    for( const surfaceIndex of doomedSurfaces ) {
+                        facsDocument.deleteSurface(surfaceIndex)
+                    }
+                    this.setState({ ...this.state, checked: {}, allChecked: false })    
+                }
+                onConfirmDeleteImages({ onDelete, surfaceCount })
                 return true
             }
           }

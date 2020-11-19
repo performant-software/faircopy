@@ -99,6 +99,34 @@ export default class AlertDialog extends Component {
         return this.renderDialog( title, message, actions )
     }
 
+
+    renderConfirmDeleteImages() {
+        const { alertOptions, onCloseAlert } = this.props
+
+        const { onDelete, surfaceCount } = alertOptions
+
+        const onCancel = () => {
+            onCloseAlert()
+        }
+
+        const title = "Confirm Delete"
+        const s = surfaceCount === 1 ? '' : 's'
+        const message = `Do you wish to delete ${surfaceCount} surface${s}?`
+        const actions = [
+            {
+                label: "Delete",
+                defaultAction: true,
+                handler: onDelete
+            },
+            {
+                label: "Cancel",
+                handler: onCancel
+            }
+        ]
+
+        return this.renderDialog( title, message, actions )
+    }
+
     renderConfirmSave() {
         const { alertOptions, closeResources, exitOnClose, fairCopyProject } = this.props
 
@@ -142,6 +170,8 @@ export default class AlertDialog extends Component {
                 return this.renderConfirmSave()
             case 'confirmDelete':
                 return this.renderConfirmDelete()
+            case 'confirmDeleteImages':
+                return this.renderConfirmDeleteImages()
             case 'closed':
             default:
                 return null

@@ -262,6 +262,9 @@ export default class MainWindow extends Component {
             const editorWidth = `calc(100vw - 10px - ${leftPaneWidth}px)`
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
+            const onConfirmDeleteImages = ( alertOptions ) => {
+                this.setState({ ...this.state, alertDialogMode: 'confirmDeleteImages', alertOptions })
+            }
         
             if( resource.loading ) {
                 editors.push(<div key={key}></div>)
@@ -291,6 +294,7 @@ export default class MainWindow extends Component {
                             onEditResource={this.onEditResource}    
                             onAddImages={this.onAddImages}
                             onOpenPopupMenu={this.onOpenPopupMenu}
+                            onConfirmDeleteImages={onConfirmDeleteImages}
                         ></FacsEditor>
                     )                     
                 }

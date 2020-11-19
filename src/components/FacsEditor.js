@@ -36,7 +36,7 @@ export default class FacsEditor extends Component {
     }
 
     render() {
-        const { hidden, fairCopyProject, onEditResource, onAddImages, onOpenPopupMenu } = this.props
+        const { hidden, fairCopyProject, onEditResource, onAddImages, onOpenPopupMenu, onConfirmDeleteImages } = this.props
         const { mode, surfaceIndex } = this.state
         const facsDocument = this.getFacsDocument()
 
@@ -61,7 +61,8 @@ export default class FacsEditor extends Component {
                         onChangeView={onChangeView}
                         onEditResource={onEditResource}
                         onOpenPopupMenu={onOpenPopupMenu}   
-                        onAddImages={onAddImages}           
+                        onAddImages={onAddImages}         
+                        onConfirmDeleteImages={onConfirmDeleteImages}  
                     ></FacsIndex>
                 }
             </div>
