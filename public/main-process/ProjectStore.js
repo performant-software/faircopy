@@ -211,26 +211,25 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    async openImageResource(resourceID) {
+    async openImageResource(requestURL) {
+        const resourceID = requestURL.replace(`local://`, '').replace('..','')
         const resourceEntry = this.manifestData.resources[resourceID]
-        if( resourceEntry ) {
-            try {
-                // create a file path to the temp dir
-                const ext = getExtensionForMIMEType(resourceEntry.mimeType)
-                const fileName = `${resourceID}.${ext}`
-                const cacheFile = `${this.tempDir}/${fileName}`
 
+        if( resourceEntry ) {
+            // create a file path to the temp dir
+            const ext = getExtensionForMIMEType(resourceEntry.mimeType)
+            const fileName = `${resourceID}.${ext}`
+            const cacheFile = `${this.tempDir}/${fileName}`
+
+            if( !fs.existsSync(cacheFile) ) {
                 // write the image to the temp dir
                 const imageBuffer = await this.projectArchive.file(resourceID).async('nodebuffer')
                 fs.writeFileSync(cacheFile,imageBuffer)
-
-                // produce a file URL and send it back to main window
-                const imageURL = `local://${fileName}`
-                this.fairCopyApplication.sendToMainWindow('recieveImageURL', { resourceID, imageURL } )
-            } catch(err) {
-                log.error(err)
             }
-        }
+
+            return cacheFile
+        }    
+        return null
     }
 
     async openResource(resourceID) {

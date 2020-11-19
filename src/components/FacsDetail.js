@@ -19,7 +19,7 @@ export default class FacsDetail extends Component {
             this.viewer = null
             return
         }
-        const { fairCopyProject, facsDocument, surfaceIndex } = this.props
+        const { facsDocument, surfaceIndex } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
 
         if( surface.type === 'iiif') {
@@ -37,21 +37,20 @@ export default class FacsDetail extends Component {
                 console.log('Unable to load image: ' + err);
             })    
         } else {
-            fairCopyProject.requestLocalImage( surface.resourceEntryID, (imageFileURL) => {
-                this.viewer = OpenSeadragon({
-                    element: el,
-                    tileSources: { type: 'image', url: imageFileURL },
-                    showHomeControl: false,
-                    showFullPageControl: false,
-                    maxZoomPixelRatio: Infinity,
-                    showZoomControl: false
-                }) 
-            })
+            const imageFileURL = `local://${surface.resourceEntryID}`
+            this.viewer = OpenSeadragon({
+                element: el,
+                tileSources: { type: 'image', url: imageFileURL },
+                showHomeControl: false,
+                showFullPageControl: false,
+                maxZoomPixelRatio: Infinity,
+                showZoomControl: false
+            }) 
         }
     }
     
     setSurfaceIndex( nextIndex ) {
-        const { fairCopyProject, facsDocument, onChangeView } = this.props
+        const { facsDocument, onChangeView } = this.props
         const nextSurface = facsDocument.getSurface(nextIndex)
 
         if( nextSurface.type === 'iiif' ) {
@@ -62,10 +61,9 @@ export default class FacsDetail extends Component {
                 onChangeView(nextIndex,'detail')
             })    
         } else {
-            fairCopyProject.requestLocalImage( nextSurface.resourceEntryID, (imageFileURL) => {
-                this.viewer.open({ type: 'image', url: imageFileURL })
-                onChangeView(nextIndex,'detail')
-            })
+            const imageFileURL = `local://${nextSurface.resourceEntryID}`
+            this.viewer.open({ type: 'image', url: imageFileURL })
+            onChangeView(nextIndex,'detail')
         }
     }
 

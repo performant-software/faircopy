@@ -41,7 +41,7 @@ export default class IDMap {
 
         const facsIDMap = {}
         for( const surface of surfaces ) {
-            const thumbnailURL = getThumbnailURL(surface)
+            const thumbnailURL = surface.type === 'iiif' ? getThumbnailURL(surface) : `local://${surface.resourceEntryID}`
             facsIDMap[surface.id] = { type: 'facs', thumbnailURL }
         }
 
