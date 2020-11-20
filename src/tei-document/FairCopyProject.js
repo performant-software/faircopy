@@ -85,7 +85,7 @@ export default class FairCopyProject {
         return ( resource ) ? resource.id : null
     }
 
-    newResource( name, localID, type, url, onError ) {
+    newResource( name, localID, type, url, onError, onSuccess ) {
         const resourceEntry = {
             id: uuidv4(),
             localID,
@@ -106,6 +106,7 @@ export default class FairCopyProject {
                         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
                         this.idMap.mapFacsIDs(localID,facs)
                         this.idMap.save()
+                        onSuccess()
                     }
                 })    
             } else {
