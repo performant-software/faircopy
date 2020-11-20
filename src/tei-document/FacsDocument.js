@@ -67,11 +67,7 @@ export default class FacsDocument {
 
         // save changes to this document
         this.save()
-
-        // update ID Map
-        const { idMap } = this.imageViewContext
-        idMap.mapFacsIDs( this.resourceID, this.facs )
-        idMap.save()
+        this.updateIDMap()
     }
 
     deleteSurfaces(doomedSurfaces) {
@@ -93,9 +89,13 @@ export default class FacsDocument {
         }
         this.facs.surfaces = nextSurfaces
         this.save()
+        this.updateIDMap()
+    }
 
+    updateIDMap() {
         const { idMap } = this.imageViewContext
-        idMap.mapFacsIDs( this.resourceID, this.facs )
+        const localID = this.imageViewContext.getLocalID(this.resourceID)
+        idMap.mapFacsIDs( localID, this.facs )
         idMap.save()
     }
 
