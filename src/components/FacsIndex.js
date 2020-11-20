@@ -175,7 +175,6 @@ export default class FacsIndex extends Component {
                     >Actions<i className='down-caret fas fa-caret-down fa-lg'></i>
                 </Button> 
                 <Button
-                    disabled
                     onClick={onEditResource}
                     {...iconButtonProps}
                 >
