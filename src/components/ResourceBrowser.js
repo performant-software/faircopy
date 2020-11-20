@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Checkbox } from '@material-ui/core';
+import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Checkbox } from '@material-ui/core';
+
+const rowsPerPage = 100
 
 export default class ResourceBrowser extends Component {
 
@@ -7,6 +9,7 @@ export default class ResourceBrowser extends Component {
     super()
     this.state = {
       allChecked: false,
+      currentPage: 0,
       checked: {}
     }
   }
@@ -121,7 +124,7 @@ export default class ResourceBrowser extends Component {
       scope: "row"
     }
 
-    const { checked, allChecked } = this.state
+    const { checked, allChecked, currentPage } = this.state
     const { fairCopyProject } = this.props
     const { resources } = fairCopyProject
 
@@ -151,26 +154,40 @@ export default class ResourceBrowser extends Component {
         </TableRow>
       )
     }
+
+    const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
+    const start = rowsPerPage * currentPage
+    const end = start + 100
   
     return (
-      <TableContainer className="table-container" component={Paper}>
-        <Table stickyHeader size="small" >
-          <TableHead>
-            <TableRow>
-              <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
-              <TableCell padding="none">Name</TableCell>
-              <TableCell padding="none">ID</TableCell>
-              <TableCell padding="none">Type</TableCell>
-              <TableCell padding="none">Tags</TableCell>
-              <TableCell padding="none">Last Modified</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            { resourceRows }
-          </TableBody>
-        </Table>
-      </TableContainer>
-    )
+      <Paper >
+          <TableContainer className="table-container">
+              <Table stickyHeader size="small" >
+                  <TableHead>
+                      <TableRow>
+                          <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                          <TableCell padding="none">Name</TableCell>
+                          <TableCell padding="none">ID</TableCell>
+                          <TableCell padding="none">Type</TableCell>
+                          <TableCell padding="none">Tags</TableCell>
+                          <TableCell padding="none">Last Modified</TableCell>
+                      </TableRow>
+                  </TableHead>
+                  <TableBody>
+                      { resourceRows.slice(start,end) }
+                  </TableBody>
+              </Table>
+          </TableContainer>
+          <TablePagination
+              component="div"
+              rowsPerPageOptions={[rowsPerPage]}
+              count={resourceRows.length}
+              rowsPerPage={rowsPerPage}
+              page={currentPage}
+              onChangePage={onChangePage}
+          />
+      </Paper>
+  )
   }
 
   render() {
