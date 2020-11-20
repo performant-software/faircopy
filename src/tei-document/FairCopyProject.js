@@ -111,7 +111,7 @@ export default class FairCopyProject {
             } else {
                 // add a blank facs 
                 this.resources[resourceEntry.id] = resourceEntry
-                const facs = { manifestID: localID, surfaces: [] }
+                const facs = { surfaces: [] }
                 const xml = facsTemplate(facs)
                 fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
                 this.idMap.mapFacsIDs(localID,facs)

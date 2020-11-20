@@ -130,7 +130,7 @@ export function teiToFacsimile(xml) {
             imageAPIURL = graphicEl.getAttribute('url')
         } else {
             type = 'local'
-            resourceEntryID = graphicEl.getAttribute('url')
+            resourceEntryID = graphicEl.getAttribute('sameAs')
         }
         const labelEls = surfaceEl.getElementsByTagName('label')
         const localLabels = getLocalLabels(labelEls)
@@ -143,6 +143,7 @@ export function teiToFacsimile(xml) {
             localLabels,
             width,
             height,
+            mimeType,
             imageAPIURL
         })
     }
@@ -155,6 +156,19 @@ export function teiToFacsimile(xml) {
 
 export function facsimileToTEI(facs) {
    return facsTemplate(facs)
+}
+
+export function getExtensionForMIMEType( mimeType ) {
+    switch(mimeType) {
+        case 'image/png':
+            return 'png'
+        case 'image/jpeg':
+            return 'jpg'
+        case 'image/gif':
+            return 'gif' 
+        default:
+            throw new Error(`Unknown MIMEType: ${mimeType}`)
+    }        
 }
 
 function getLocalLabels(labelEls) {

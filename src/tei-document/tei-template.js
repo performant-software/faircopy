@@ -1,3 +1,4 @@
+import { getExtensionForMIMEType } from './convert-facs'
 
 export const teiTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
@@ -39,11 +40,15 @@ export const facsTemplate = (facsData) => {
                 `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic mimeType="application/json" url="${imageAPIURL}"/></surface>`
             )    
         } else {
+            const ext = getExtensionForMIMEType(mimeType)
+            const filename = `${id}.${ext}`
             surfaceEls.push(
-                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic mimeType="${mimeType}" url="${resourceEntryID}"/></surface>`
+                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic sameAs="${resourceEntryID}" mimeType="${mimeType}" url="${filename}"/></surface>`
             )    
         }
     }
+
+    const sameAs = (manifestID) ? `sameAs="${manifestID}"` : ''
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
@@ -66,7 +71,7 @@ export const facsTemplate = (facsData) => {
             </sourceDesc>
         </fileDesc>
     </teiHeader>
-    <facsimile sameAs="${manifestID}">
+    <facsimile ${sameAs}>
         ${surfaceEls.join('')}
     </facsimile>
 </TEI>
