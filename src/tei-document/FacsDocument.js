@@ -31,20 +31,30 @@ export default class FacsDocument {
     }
 
     nextSurfaceID() {
-        // TODO scan for highest number
-        return generateOrdinalID('f', this.facs.surfaces.length )
+        // scan for highest number
+        let highestID = -1
+        for( const surface of this.facs.surfaces ) {
+            const idNo = parseInt(surface.id.slice(1))
+            if( idNo > highestID ) highestID = idNo
+        }
+        const nextID = highestID + 1
+        return generateOrdinalID('f', nextID )
     }
 
     addLocalImages( imagesData ) {
         for( const imageData of imagesData ) {
             const { width, height, mimeType, path } = imageData
             const resourceEntryID = uuidv4()
+            
+            // get the label from the file path
+            const segments = path.split('/')
+            const label = segments[segments.length-1]
 
             // create a surface and add it to the document in the right location
             const surface = {
                 id: this.nextSurfaceID(),
                 type: 'local',
-                localLabels: { none: [path] },
+                localLabels: { none: [label] },
                 resourceEntryID,
                 width,
                 height,
@@ -55,8 +65,8 @@ export default class FacsDocument {
             // create a resource entry for this image
             const resourceEntry = {
                 id: resourceEntryID,
-                localID: `${this.resourceID}/${surface.id}`,
-                name: path,
+                localID: `${this.resourceID}`,
+                name: label,
                 mimeType,
                 type: 'image'
             }
