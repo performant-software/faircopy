@@ -144,9 +144,17 @@ export default class FacsIndex extends Component {
         const { checked } = this.state
         const { onChangeView, onEditResource, surfaceIndex, onAddImages } = this.props
 
-        const buttonProps = {
+        const iconButtonProps = {
             disableRipple: true,
-            disableFocusRipple: true
+            disableFocusRipple: true,
+        }
+
+        const textButtonProps = {
+            className: 'toolbar-button',
+            disableRipple: true,
+            disableFocusRipple: true,
+            variant: "outlined",
+            size: 'small',      
         }
 
         const actionsEnabled = Object.values(checked).find( c => c === true )
@@ -155,8 +163,7 @@ export default class FacsIndex extends Component {
             <div className='top-bar' >
                 <Button
                     onClick={onAddImages}
-                    className="toolbar-button"
-                    {...buttonProps}
+                    {...textButtonProps}
                 >
                     Add Images
                 </Button> 
@@ -164,20 +171,20 @@ export default class FacsIndex extends Component {
                     disabled={!actionsEnabled}
                     ref={(el)=> { this.actionButtonEl = el }}
                     onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
-                    {...buttonProps}
+                    {...textButtonProps}
                     >Actions<i className='down-caret fas fa-caret-down fa-lg'></i>
                 </Button> 
                 <Button
                     disabled
                     onClick={onEditResource}
-                    {...buttonProps}
+                    {...iconButtonProps}
                 >
                     <i className="far fa-edit fa-2x"></i>
                 </Button>                   
                 <FacsModeControl
                     selected={'index'}
                     surfaceIndex={surfaceIndex}
-                    buttonProps={buttonProps}
+                    buttonProps={iconButtonProps}
                     onChangeView={onChangeView}
                 ></FacsModeControl>
             </div>

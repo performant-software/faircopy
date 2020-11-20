@@ -11,3 +11,7 @@
 #FacsIndex .row-selected {
     background: #FFF9DD;
 }
+
+#FacsIndex .toolbar-button {
+    margin-left: 10px;
+}
