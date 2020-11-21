@@ -50,20 +50,21 @@ export default class FacsDetail extends Component {
     }
     
     setSurfaceIndex( nextIndex ) {
-        const { facsDocument, onChangeView } = this.props
+        const { facsDocument, onChangeView, imageViewMode } = this.props
         const nextSurface = facsDocument.getSurface(nextIndex)
+        const viewMode = imageViewMode ? 'imageView' : 'detail'
 
         if( nextSurface.type === 'iiif' ) {
             const imageInfoURL = getImageInfoURL( nextSurface )
             axios.get(imageInfoURL).then((response) => {
                 const tileSource = response.data
                 this.viewer.open(tileSource)
-                onChangeView(nextIndex,'detail')
+                onChangeView(nextIndex,viewMode)
             })    
         } else {
             const imageFileURL = `local://${nextSurface.resourceEntryID}`
             this.viewer.open({ type: 'image', url: imageFileURL })
-            onChangeView(nextIndex,'detail')
+            onChangeView(nextIndex,viewMode)
         }
     }
 
@@ -134,7 +135,7 @@ export default class FacsDetail extends Component {
     }
     
     render() {
-        const { fairCopyProject, facsDocument, surfaceIndex } = this.props
+        const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
         const {surfaces} = facsDocument.facs
@@ -158,11 +159,9 @@ export default class FacsDetail extends Component {
         const title = labels[0]
         const subHeadings = labels.slice(1)
 
-        const showSearchBar = !!this.props.facsDocument
-
         return (
             <div id="FacsDetail" >
-                { showSearchBar && 
+                { !imageViewMode && 
                     <div>
                         <div className="titlebar">
                             <Typography component="h1" variant="h6">{resourceName}</Typography>
@@ -188,7 +187,7 @@ export default class FacsDetail extends Component {
                             { enableNext && <Button onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button> }
                         </CardActions>
                     </Card>
-                    <SeaDragonComponent showSearchBar={showSearchBar} initViewer={this.initViewer} ></SeaDragonComponent>
+                    <SeaDragonComponent showSearchBar={!imageViewMode} initViewer={this.initViewer} ></SeaDragonComponent>
                 </div>
             </div>
         )

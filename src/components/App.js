@@ -57,7 +57,7 @@ export default class App extends Component {
 
   setTitle( projectName ) {
       var titleEl = document.getElementsByTagName("TITLE")[0]
-      titleEl.innerHTML = `FairCopy - ${projectName}`    
+      titleEl.innerHTML = projectName ? `FairCopy - ${projectName}` : 'Image Detail'
   }
 
   openProject( projectData ) {
@@ -70,11 +70,11 @@ export default class App extends Component {
   }
 
   openImageView( imageViewData ) {
-    setTimeout( () => {
+    // setTimeout( () => {
       const imageView = new ImageView(imageViewData)
-      this.setTitle('IMAGE TITLE')   
+      this.setTitle()   
       this.setState({...this.state, imageView})
-    },2000)
+    // },2000)
   }
 
   onActivate = () => {
