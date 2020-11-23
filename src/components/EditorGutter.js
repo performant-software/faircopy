@@ -41,12 +41,16 @@ export default class EditorGutter extends Component {
     }
 
     renderGutterMarkers() {
-        const { teiDocument, expanded } = this.props
+        const { teiDocument, expanded, scrollTop } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
         const gutterMarks = [], gutterMarkEls = []
         const columnThickness = [], columnPositions = []
         const canvas = document.createElement("canvas")
+
+        // determine clip position
+        const boundingRect = editorView.dom.getBoundingClientRect()
+        const clipTop = boundingRect.top + scrollTop
 
         function getTextWidth(text) {
             const context = canvas.getContext("2d")
@@ -79,7 +83,7 @@ export default class EditorGutter extends Component {
                 const element = teiDocument.fairCopyProject.teiSchema.elements[name]
                 if( element && element.gutterMark ) {
                     gatherColumnThickness(name,column)
-                    const endPos = startPos + processNode(node,startPos+1,column+1)                
+                    const endPos = startPos + processNode(node,startPos+1,column+1)
                     gutterMarks.push( [ node,startPos,endPos,gutterMarks.length,column] )
                 } else {
                     processNode(node,startPos+1,column)                
@@ -100,8 +104,12 @@ export default class EditorGutter extends Component {
         }
 
         // render the components 
-        for( const gutterMark of gutterMarks.slice(0,maxGutterMarks) ) {
-            gutterMarkEls.push( this.renderGutterMark(...gutterMark, columnPositions) )
+        for( const gutterMark of gutterMarks ) {
+            const endPos = gutterMark[2]
+            const endCoords = editorView.coordsAtPos(endPos)
+            if( endCoords.bottom > clipTop && gutterMarkEls.length < maxGutterMarks ) {
+                gutterMarkEls.push( this.renderGutterMark(...gutterMark, columnPositions) )
+            }
         }
 
         return { gutterMarkEls, totalWidth }
