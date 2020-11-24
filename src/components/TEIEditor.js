@@ -38,8 +38,8 @@ export default class TEIEditor extends Component {
     }
 
     componentDidMount() {
-        const { teiDocument } = this.props
-        this.resizeListener = debounce(teiDocument.refreshView,resizeRefreshRate)
+        const {teiDocument} = this.props
+        this.resizeListener = debounce(teiDocument.refreshView(),resizeRefreshRate)
         window.addEventListener("resize", this.resizeListener )
         window.onbeforeunload = this.onBeforeUnload
     }
@@ -229,7 +229,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, fairCopyProject, editorWidth, expandedGutter, elementMenuAnchors } = this.props
+        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, fairCopyProject, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
 
         // used to update scroll position when document changes
@@ -246,6 +246,7 @@ export default class TEIEditor extends Component {
 
         const drawerHeight = selectedElements.length > 0 ? 335 : 35
         const editorHeight = `calc(100% - ${drawerHeight + 130}px)`
+        const editorWidth = `calc(100vw - 10px - ${leftPaneWidth}px)`
         const editorStyle = { minWidth: editorWidth, maxHeight: editorHeight }
 
         const style = hidden ? { display: 'none' } : {}

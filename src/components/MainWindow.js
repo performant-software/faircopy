@@ -259,7 +259,6 @@ export default class MainWindow extends Component {
         for( const resource of Object.values(openResources) ) {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
-            const editorWidth = `calc(100vw - 10px - ${leftPaneWidth}px)`
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
@@ -280,7 +279,7 @@ export default class MainWindow extends Component {
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
                             onSave={onSave}
-                            editorWidth={editorWidth}
+                            leftPaneWidth={leftPaneWidth}
                             expandedGutter={expandedGutter}
                         ></TEIEditor>
                     )        

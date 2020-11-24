@@ -2,25 +2,21 @@ import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
-const maxGutterMarks = 100
+const clipHeight = 1000
 
 export default class EditorGutter extends Component {
 
-    renderGutterMark(node,startPos,endPos,index,column,columnPositions) {
-        const { teiDocument, scrollTop, expanded } = this.props
+    renderGutterMark(node,startPos,top,bottom,index,column,columnPositions) {
+        const { teiDocument, expanded } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
 
-        const startCoords = editorView.coordsAtPos(startPos)
-        const endCoords = editorView.coordsAtPos(endPos)
-        const top = startCoords.top - gutterTop + scrollTop
-        const height = endCoords.bottom - startCoords.top 
+        const height = bottom - top 
         const markStyle = { top, height, marginLeft: columnPositions[column] }
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker ${highlighted}`
         const displayName = (expanded) ? <div className={`el-name`}>{node.type.name}</div> : ''
-
 
         const onClick = () => {
             const {tr,doc} = editorState
@@ -44,13 +40,11 @@ export default class EditorGutter extends Component {
         const { teiDocument, expanded, scrollTop } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
-        const gutterMarks = [], gutterMarkEls = []
-        const columnThickness = [], columnPositions = []
         const canvas = document.createElement("canvas")
 
-        // determine clip position
-        const boundingRect = editorView.dom.getBoundingClientRect()
-        const clipTop = boundingRect.top + scrollTop
+        const columnThickness = []
+        const gutterMarks = []
+        const columnPositions = []
 
         function getTextWidth(text) {
             const context = canvas.getContext("2d")
@@ -74,7 +68,7 @@ export default class EditorGutter extends Component {
             }
         }
 
-        function processNode(parentNode,basePos=0,column=0) {
+        const processNode = (parentNode,basePos=0,column=0) => {
             let relativePos=0
             for( let i=0; i < parentNode.childCount; i++ ) {
                 const node = parentNode.child(i)
@@ -84,7 +78,9 @@ export default class EditorGutter extends Component {
                 if( element && element.gutterMark ) {
                     gatherColumnThickness(name,column)
                     const endPos = startPos + processNode(node,startPos+1,column+1)
-                    gutterMarks.push( [ node,startPos,endPos,gutterMarks.length,column] )
+                    const top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
+                    const bottom = editorView.coordsAtPos(endPos).bottom - gutterTop + scrollTop
+                    gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column] )
                 } else {
                     processNode(node,startPos+1,column)                
                 }
@@ -99,20 +95,21 @@ export default class EditorGutter extends Component {
         // once the max column width is known, calculate column positions
         let totalWidth = 0
         for( let i=0; i < columnThickness.length; i++ ) {
-            columnPositions[i] = totalWidth 
+            columnPositions[i] = totalWidth  
             totalWidth += columnThickness[i]
         }
 
-        // render the components 
-        for( const gutterMark of gutterMarks ) {
-            const endPos = gutterMark[2]
-            const endCoords = editorView.coordsAtPos(endPos)
-            if( endCoords.bottom > clipTop && gutterMarkEls.length < maxGutterMarks ) {
-                gutterMarkEls.push( this.renderGutterMark(...gutterMark, columnPositions) )
-            }
-        }
-
-        return { gutterMarkEls, totalWidth }
+         // render the components 
+         const gutterMarkEls = []
+         for( const gutterMark of gutterMarks ) {
+             const top = gutterMark[2]
+             const bottom = gutterMark[3]
+             if( bottom > scrollTop && top < scrollTop+clipHeight ) {
+                 gutterMarkEls.push( this.renderGutterMark(...gutterMark, columnPositions) )
+             }
+         }
+ 
+         return { gutterMarkEls, totalWidth }
     }
 
     render() {   
