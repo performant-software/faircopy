@@ -6,7 +6,7 @@ import ProjectNavigator from './ProjectNavigator'
 export default class ProjectSidebar extends Component {
 
     render() {
-        const { fairCopyProject, selectedResource, openResources, onSelectResource, onOpenResourceBrowser, onEditProjectInfo, onCloseResource } = this.props
+        const { fairCopyProject, selectedResource, openResources, onSelectResource, onOpenResourceBrowser, onEditProjectInfo, onCloseResource, panelWidth } = this.props
         return (
             <div id="ProjectSidebar">
                 <div className="title-bar">
@@ -23,11 +23,12 @@ export default class ProjectSidebar extends Component {
                     openResources={openResources}
                     selectedResource={selectedResource}
                     fairCopyProject={fairCopyProject}
+                    panelWidth={panelWidth}
                     onSelectResource={onSelectResource}
                     onCloseResource={onCloseResource}
                     onOpenResourceBrowser={onOpenResourceBrowser}
                 ></ProjectNavigator>
-                { selectedResource && 
+                { false && 
                     <TableOfContents
                         teiDocument={openResources[selectedResource]}        
                     ></TableOfContents>

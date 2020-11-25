@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
-import { TextField, MenuItem, Select } from '@material-ui/core'
 
 const fairCopy = window.fairCopy
 

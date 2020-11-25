@@ -60,7 +60,7 @@ export default class ProjectNavigator extends Component {
     }
 
     renderTree() {
-      const { openResources, fairCopyProject } = this.props
+      const { openResources, fairCopyProject, panelWidth } = this.props
 
       const treeNodes = []
       for( const resource of Object.values(openResources) ) {
@@ -70,9 +70,11 @@ export default class ProjectNavigator extends Component {
         const iconType = resource instanceof TEIDocument ? 'fa-book' : 'fa-images' 
         const icon = <i className={`fas ${iconType} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID)
+        const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth-105 }
         treeNodes.push(
           <TreeItem 
             className="tree-item"
+            style={nodeStyle}
             key={treeID} 
             nodeId={resourceID} 
             icon={icon}

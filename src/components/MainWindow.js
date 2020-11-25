@@ -416,7 +416,7 @@ export default class MainWindow extends Component {
     }
 
     renderProjectSidebar() {
-        const { openResources, selectedResource } = this.state
+        const { openResources, selectedResource, leftPaneWidth } = this.state
         const { fairCopyProject } = this.props
 
         const onSelectResource = ( resourceID ) => {
@@ -430,6 +430,7 @@ export default class MainWindow extends Component {
         return (
             <ProjectSidebar
                 fairCopyProject={fairCopyProject}    
+                panelWidth={leftPaneWidth}
                 openResources={openResources}
                 selectedResource={selectedResource}
                 onSelectResource={onSelectResource}   
