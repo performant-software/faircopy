@@ -39,7 +39,7 @@ export default class TEIEditor extends Component {
 
     componentDidMount() {
         const {teiDocument} = this.props
-        this.resizeListener = debounce(teiDocument.refreshView(),resizeRefreshRate)
+        this.resizeListener = debounce(teiDocument.refreshView,resizeRefreshRate)
         window.addEventListener("resize", this.resizeListener )
         window.onbeforeunload = this.onBeforeUnload
     }
@@ -101,7 +101,7 @@ export default class TEIEditor extends Component {
             const nextEditorState = editorState.apply(transaction)
             editorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
-            this.maintainNoteAnchor()
+            const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const selectedElements = this.getSelectedElements()
 
             if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
@@ -112,7 +112,7 @@ export default class TEIEditor extends Component {
                 }, 100 )        
             }
             const scrollTop = (this.el) ? this.el.scrollTop : 0
-            this.setState({...this.state, selectedElements, scrollTop })
+            this.setState({...this.state, selectedElements, scrollTop, notePopupAnchorEl: nextNotePopupAnchorEl })
         }
     }
 
@@ -133,10 +133,10 @@ export default class TEIEditor extends Component {
             })
             if( notePos !== null ) {
                 const domPos = editorView.domAtPos(notePos)
-                const nextNotePopupAnchorEl = domPos.node
-                this.setState({ ...this.state, notePopupAnchorEl: nextNotePopupAnchorEl })
+                return domPos.node.childNodes[domPos.offset]
             }
         }
+        return notePopupAnchorEl
     }
 
     onNoteStateChange = () => {
