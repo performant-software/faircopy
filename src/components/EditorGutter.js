@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
+const lineHeight = 30
 const clipHeight = 1000
 
 export default class EditorGutter extends Component {
 
-    renderGutterMark(node,startPos,top,bottom,index,column,columnPositions) {
+    renderGutterMark(node,targetPos,top,bottom,index,column,columnPositions) {
         const { teiDocument, expanded } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
@@ -20,7 +21,7 @@ export default class EditorGutter extends Component {
 
         const onClick = () => {
             const {tr,doc} = editorState
-            tr.setSelection( new NodeSelection(doc.resolve(startPos)) )
+            tr.setSelection( new NodeSelection(doc.resolve(targetPos-1)) )
             editorView.dispatch(tr)
         }
 
@@ -72,14 +73,18 @@ export default class EditorGutter extends Component {
             let relativePos=0
             for( let i=0; i < parentNode.childCount; i++ ) {
                 const node = parentNode.child(i)
-                const startPos = basePos+relativePos
+                const startPos = basePos+relativePos+1
                 const name = node.type.name
                 const element = teiDocument.fairCopyProject.teiSchema.elements[name]
                 if( element && element.gutterMark ) {
                     gatherColumnThickness(name,column)
-                    const endPos = startPos + processNode(node,startPos+1,column+1)
+                    const endPos = startPos + processNode(node,startPos,column+1) + 1
                     const top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
-                    const bottom = editorView.coordsAtPos(endPos).bottom - gutterTop + scrollTop
+                    let bottom = editorView.coordsAtPos(endPos-3).bottom - gutterTop + scrollTop
+                    let lines = Math.ceil((bottom-top) / lineHeight)
+                    if( lines === 0 ) lines = 1
+                    bottom = top + (lines * lineHeight) // normalize height of marks
+                    // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)
                     gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column] )
                 } else {
                     processNode(node,startPos+1,column)                
