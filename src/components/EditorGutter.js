@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
 const gutterTop = 125
-const lineHeight = 30
 const clipHeight = 1000
 
 export default class EditorGutter extends Component {
@@ -62,7 +61,7 @@ export default class EditorGutter extends Component {
                 if( isNaN(columnThickness[column]) ) {
                     columnThickness[column] = thickness + 12
                 } else {
-                    columnThickness[column] = Math.max(columnThickness[column], thickness)
+                    columnThickness[column] = Math.max(columnThickness[column], thickness + 12)
                 }
             } else {
                 columnThickness[column] = 15
@@ -79,11 +78,9 @@ export default class EditorGutter extends Component {
                 if( element && element.gutterMark ) {
                     gatherColumnThickness(name,column)
                     const endPos = startPos + processNode(node,startPos,column+1) + 1
-                    const top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
+                    let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
                     let bottom = editorView.coordsAtPos(endPos-3).bottom - gutterTop + scrollTop
-                    let lines = Math.ceil((bottom-top) / lineHeight)
-                    if( lines === 0 ) lines = 1
-                    bottom = top + (lines * lineHeight) // normalize height of marks
+                    if( top === bottom ) bottom = top + 30
                     // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)
                     gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column] )
                 } else {
