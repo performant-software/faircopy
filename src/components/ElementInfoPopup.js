@@ -8,7 +8,7 @@ export default class ElementInfoPopup extends Component {
         const { name, desc } = elementSpec
 
         return (
-            <Popper className="element-menu-popup" placement='right' open={true} anchorEl={anchorEl} role={undefined} disablePortal>
+            <Popper className="element-menu-popup" placement='right-start' open={true} anchorEl={anchorEl} role={undefined} >
                 <Card className="element-info-card" elevation={12}>
                     <CardContent>
                         <Typography color="textSecondary" gutterBottom>{name}</Typography>
