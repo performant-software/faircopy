@@ -180,6 +180,7 @@ class FairCopyApplication {
         if( this.returnToProjectWindow ) {
           this.createProjectWindow().then(() => {
             this.returnToProjectWindow = false
+            this.exiting = false
           })
         } 
 
