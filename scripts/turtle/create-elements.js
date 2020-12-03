@@ -79,7 +79,7 @@ function createInlineNodes(elGroups,icons,specs) {
             pmType: "inline-node",
             validAttrs: [],
             icon: icons[inline],
-            group: spec.group,
+            group: 'inline_node',
             desc: spec.description
         } )
     }
@@ -108,7 +108,7 @@ const createDocNodes = function createDocNode(elGroups,specs) {
 
 function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
-    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.inter ].flat()
+    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.inlines, elGroups.inter ].flat()
     const groups = getGroups( nodeIdents, specs )
     return [ nodeIdents, groups, "textNode" ].flat()
 }
@@ -155,11 +155,16 @@ const createNodes = function createNodes(elGroups,hard,specs) {
     for( let node of nodes) {
         const spec = specs[node]
         const nodeContent = onlyGroups( nodeGroups, spec.content )
+        let content = encodeContent(nodeContent)
+        // This hack replaces note with model_noteLike in this one case. inline nodes canot be referenced
+        // by element name since they are fronted by the globalNode element to shim 
+        // block vs. inline interface in ProseMirror.
+        if( node === 'respStmt' ) content = content.replaceAll('note','noteLike')
         const nodeEl = {
             name: node,
             pmType: "node",
             isolating: hard,
-            content: encodeContent(nodeContent),
+            content,
             group: spec.group,
             gutterMark: true,
             validAttrs: [],

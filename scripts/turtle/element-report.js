@@ -17,7 +17,7 @@ const runReport = async function runReport() {
     const reportRows = []
     for( const element of elements ) {
         const { name, content, group, pmType } = element
-        if( pmType === 'node' ) {
+        if( pmType === 'node' || pmType === 'inline-node' ) {
             reportRows.push(`${name}:${content}:${group}`)    
         }
     }    

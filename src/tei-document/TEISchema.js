@@ -128,7 +128,7 @@ export default class TEISchema {
                 inline: true
             },
             textNode: {
-                content: "(model_global|text)*",
+                content: "(inline_node|text)*",
                 selectable: false,
                 draggable: false,
                 parseDOM: [
@@ -137,6 +137,19 @@ export default class TEISchema {
                     } 
                 ],
                 toDOM: () => ["textNode",0]   
+            },
+            globalNode: {
+                content: "inline_node+",
+                group: "model_milestoneLike model_noteLike model_global",
+                atom: true,
+                selectable: false,
+                draggable: false,
+                parseDOM: [
+                    {
+                        tag: "globalNode"
+                    } 
+                ],
+                toDOM: () => ["globalNode",0]
             }
         }
         
