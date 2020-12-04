@@ -124,21 +124,29 @@ export function removeMark(markType) {
 export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
     const { tr } = editorView.state
 
-    // element must ultimately wrap a textNode, so find wrapping 
-    const textNodeType = schema.nodes['textNode']
-    const connective = nodeType.contentMatch.findWrapping(textNodeType)
-    if( connective ) {
-        let wrap = textNodeType.create()
-        for (let i = connective.length - 1; i >= 0; i--) {
-            wrap = Fragment.from(connective[i].create(null, wrap))
-        }
-        const node = nodeType.create({},wrap)
+    if( nodeType.isAtom ) {
+        const node = nodeType.create()
         tr.insert(insertPos,node)
         tr.scrollIntoView()
         editorView.dispatch(tr)
         editorView.focus()                
     } else {
-        throw new Error("No path to textnode")
+        // element must ultimately wrap a textNode, so find wrapping 
+        const textNodeType = schema.nodes['textNode']
+        const connective = nodeType.contentMatch.findWrapping(textNodeType)
+        if( connective ) {
+            let wrap = textNodeType.create()
+            for (let i = connective.length - 1; i >= 0; i--) {
+                wrap = Fragment.from(connective[i].create(null, wrap))
+            }
+            const node = nodeType.create({},wrap)
+            tr.insert(insertPos,node)
+            tr.scrollIntoView()
+            editorView.dispatch(tr)
+            editorView.focus()                
+        } else {
+            throw new Error("No path to textnode")
+        }
     }
 }
 

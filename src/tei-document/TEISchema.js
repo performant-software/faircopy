@@ -48,12 +48,12 @@ export default class TEISchema {
             }
         }
 
-        // Normalize the whitespace in the incoming text
+        // Remove whitespace from children of xmlStripSpaceNames elements, 
+        // as per TEI Guidelines section 1.3.1.1.6 
         for( const xmlStripSpaceName of xmlStripSpaceNames ) {
             const stripEls = textEl.querySelectorAll(xmlStripSpaceName)
             for( let i=0; i < stripEls.length; i++ ) {
                 const stripEl = stripEls[i]
-                // look at each child, if it contains only whitespace, remove it
                 const nextEl = document.createElement(stripEl.nodeName)
                 for( let j=0; j < stripEl.childNodes.length; j++ ) {
                     const child = stripEl.childNodes[j]

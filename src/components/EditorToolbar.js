@@ -46,7 +46,7 @@ export default class EditorToolbar extends Component {
                         return {
                             marks: false,
                             structures: true,
-                            inline: false,
+                            inline: (selectedAction === 'addAbove' || selectedAction === 'addBelow'),
                             eraser: false
                         }
                     } else {
