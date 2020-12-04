@@ -121,32 +121,45 @@ export function removeMark(markType) {
     }
 }
 
+
+export function insertAtomNodeAt( nodeType, insertPos, editorView, below=false ) {
+    const { tr, doc } = editorView.state
+
+    debugger
+    
+    const node = nodeType.create()
+    const offset = below ? 1 : -1
+    const $prev = doc.resolve(insertPos+offset)
+
+    // if there's already a globalNode, insert within it.
+    if( $prev && $prev.parent && $prev.parent.type.name === 'globalNode' ) {            
+        tr.insert(insertPos+offset,node)
+    } else {
+        tr.insert(insertPos,node)
+    }
+    tr.scrollIntoView()
+    editorView.dispatch(tr)
+    editorView.focus()     
+}
+
 export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
     const { tr } = editorView.state
 
-    if( nodeType.isAtom ) {
-        const node = nodeType.create()
+    // element must ultimately wrap a textNode, so find wrapping 
+    const textNodeType = schema.nodes['textNode']
+    const connective = nodeType.contentMatch.findWrapping(textNodeType)
+    if( connective ) {
+        let wrap = textNodeType.create()
+        for (let i = connective.length - 1; i >= 0; i--) {
+            wrap = Fragment.from(connective[i].create(null, wrap))
+        }
+        const node = nodeType.create({},wrap)
         tr.insert(insertPos,node)
         tr.scrollIntoView()
         editorView.dispatch(tr)
         editorView.focus()                
     } else {
-        // element must ultimately wrap a textNode, so find wrapping 
-        const textNodeType = schema.nodes['textNode']
-        const connective = nodeType.contentMatch.findWrapping(textNodeType)
-        if( connective ) {
-            let wrap = textNodeType.create()
-            for (let i = connective.length - 1; i >= 0; i--) {
-                wrap = Fragment.from(connective[i].create(null, wrap))
-            }
-            const node = nodeType.create({},wrap)
-            tr.insert(insertPos,node)
-            tr.scrollIntoView()
-            editorView.dispatch(tr)
-            editorView.focus()                
-        } else {
-            throw new Error("No path to textnode")
-        }
+        throw new Error("No path to textnode")
     }
 }
 

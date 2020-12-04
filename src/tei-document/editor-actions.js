@@ -1,5 +1,5 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
-import { addMark, insertNodeAt, createFragment } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createFragment } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
@@ -244,7 +244,11 @@ export function addAbove( elementID, teiDocument, pos ) {
     const { schema } = teiDocument.fairCopyProject.teiSchema
     const nodeType = schema.nodes[elementID]
 
-    insertNodeAt(nodeType, pos, editorView, schema )    
+    if( nodeType.isAtom ) {
+        insertAtomNodeAt(nodeType, pos, editorView, false )    
+    } else {
+        insertNodeAt(nodeType, pos, editorView, schema )    
+    }
 }
 
 export function addBelow( elementID, teiDocument, pos ) {
@@ -255,7 +259,12 @@ export function addBelow( elementID, teiDocument, pos ) {
     const nodeType = schema.nodes[elementID]
     const targetNode = doc.nodeAt(pos)
     const insertPos = pos + targetNode.nodeSize
-    insertNodeAt(nodeType, insertPos, editorView, schema )
+
+    if( nodeType.isAtom ) {
+        insertAtomNodeAt(nodeType, insertPos, editorView, true )    
+    } else {
+        insertNodeAt(nodeType, insertPos, editorView, schema )    
+    }
 }
 
 export function onClippy() {
