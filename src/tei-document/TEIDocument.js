@@ -7,6 +7,7 @@ import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 
 import {teiTemplate} from "./tei-template"
+import {parseText, serializeText} from "./xml"
 
 const fairCopy = window.fairCopy
 
@@ -57,7 +58,7 @@ export default class TEIDocument {
         noteDoc.innerHTML = node.innerHTML
         let textEl = document.createElement('text')
         textEl.append(noteDoc)
-        const subDoc = teiSchema.parseText(textEl,this)
+        const subDoc = parseText(textEl,this,teiSchema)
         this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
     }
 
@@ -68,7 +69,7 @@ export default class TEIDocument {
         const subDoc = teiSchema.schema.nodeFromJSON(noteJSON);
         // get the content of noteDoc, which is the only child of doc
         const noteDocFragment = subDoc.firstChild.content
-        const domFragment = teiSchema.serializeText(noteDocFragment, this)
+        const domFragment = serializeText(noteDocFragment, this, teiSchema)
         let note = document.createElement('note')
         note.appendChild( domFragment.cloneNode(true) )
         for( const attrKey of Object.keys(attrs)) {
@@ -166,7 +167,7 @@ export default class TEIDocument {
         const { teiSchema } = this.fairCopyProject
         this.xmlDom = parser.parseFromString(text, "text/xml");
         const textEl = this.xmlDom.getElementsByTagName('text')[0] 
-        const doc = teiSchema.parseText(textEl,this)
+        const doc = parseText(textEl,this,teiSchema)
         const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
         this.initialState = EditorState.create({ 
@@ -187,7 +188,7 @@ export default class TEIDocument {
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        const domFragment = teiSchema.serializeText(editorState.doc.content, this)
+        const domFragment = serializeText(editorState.doc.content, this, teiSchema)
         const textEl = this.xmlDom.getElementsByTagName('text')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )

@@ -9,6 +9,7 @@ import {teiTemplate} from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
 import {learnDoc, saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
+import {parseText} from "./xml"
 
 const fairCopy = window.fairCopy
 
@@ -178,7 +179,7 @@ export default class FairCopyProject {
             return { error: true, errorMessage: '<TEI> element must contain <teiHeader> and <text>.' }
         } 
 
-        const doc = this.teiSchema.parseText(textEl,tempDoc)
+        const doc = parseText(textEl,tempDoc,this.teiSchema)
 
         this.idMap.mapTextIDs(localID,doc)
         this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)
