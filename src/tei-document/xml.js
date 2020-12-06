@@ -63,16 +63,16 @@ function stripSpaces(textEl) {
         const stripEls = textEl.querySelectorAll(xmlStripSpaceName)
         for( let i=0; i < stripEls.length; i++ ) {
             const stripEl = stripEls[i]
-            const nextEl = document.createElement(stripEl.nodeName)
+            const nextEl = stripEl.cloneNode(false)
             for( let j=0; j < stripEl.childNodes.length; j++ ) {
                 const child = stripEl.childNodes[j]
+                const nextChild = child.cloneNode(true)
                 if( child.nodeName === '#text' ) {
-                    const nextContent = child.textContent.replace(/\s+/g, '')
-                    if( nextContent.length > 0 ) {                            
-                        nextEl.appendChild(nextContent)
-                    }
+                    const nextChildContent = child.textContent.replace(/\s+/g, '')
+                    nextChild.innerHTML = nextChildContent
+                    if( nextChildContent.length > 0 ) nextEl.appendChild(nextChild)
                 } else {
-                    nextEl.appendChild(child)
+                    nextEl.appendChild(nextChild)
                 }
             }
             stripEl.parentNode.replaceChild(nextEl,stripEl)
