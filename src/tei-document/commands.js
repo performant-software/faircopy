@@ -122,10 +122,9 @@ export function removeMark(markType) {
 }
 
 
-export function insertAtomNodeAt( nodeType, insertPos, editorView, below=false ) {
+export function insertAtomNodeAt( node, insertPos, editorView, below=false ) {
     const { tr, doc } = editorView.state
     
-    const node = nodeType.create()
     const offset = below ? 1 : -1
     const $prev = doc.resolve(insertPos+offset)
 

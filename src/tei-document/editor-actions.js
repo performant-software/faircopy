@@ -245,7 +245,14 @@ export function addAbove( elementID, teiDocument, pos ) {
     const nodeType = schema.nodes[elementID]
 
     if( nodeType.isAtom ) {
-        insertAtomNodeAt(nodeType, pos, editorView, false )    
+        if( elementID === 'note' ) {
+            const subDocID = teiDocument.createSubDocument(document)
+            const noteNode = schema.node('note', { id: '', __id__: subDocID })
+            insertAtomNodeAt(noteNode, pos, editorView, true )    
+        } else {
+            const node = nodeType.create()
+            insertAtomNodeAt(node, pos, editorView, false )    
+        }
     } else {
         insertNodeAt(nodeType, pos, editorView, schema )    
     }
@@ -261,7 +268,14 @@ export function addBelow( elementID, teiDocument, pos ) {
     const insertPos = pos + targetNode.nodeSize
 
     if( nodeType.isAtom ) {
-        insertAtomNodeAt(nodeType, insertPos, editorView, true )    
+        if( elementID === 'note' ) {
+            const subDocID = teiDocument.createSubDocument(document)
+            const noteNode = schema.node('note', { id: '', __id__: subDocID })
+            insertAtomNodeAt(noteNode, insertPos, editorView, true )                
+        } else {
+            const node = nodeType.create()
+            insertAtomNodeAt(node, insertPos, editorView, true )    
+        }
     } else {
         insertNodeAt(nodeType, insertPos, editorView, schema )    
     }
