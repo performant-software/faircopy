@@ -104,9 +104,8 @@ export default class IDMap {
         return this.idMap[testID] === undefined
     }
 
-    getUniqueID() {
-        // TODO generate a unique ID
-        return 'abcd'
+    getUniqueID(baseID) {
+        return `${baseID}-${Date.now()}`
     }
 
     save() {

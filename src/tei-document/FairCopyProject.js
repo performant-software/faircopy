@@ -148,7 +148,7 @@ export default class FairCopyProject {
 
         const name = fairCopy.services.getBasename(path,'.xml').trim()
         const sanitizedID = sanitizeID(name)
-        const localID = sanitizedID && !this.idMap.get(sanitizedID) ? sanitizedID : this.idMap.getUniqueID()  
+        const localID = sanitizedID && !this.idMap.get(sanitizedID) ? sanitizedID : this.idMap.getUniqueID(sanitizedID)  
         
         const resourceEntry = {
             id: uuidv4(),
