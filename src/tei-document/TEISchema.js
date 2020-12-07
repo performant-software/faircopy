@@ -66,7 +66,6 @@ export default class TEISchema {
                 group: "model_milestoneLike model_noteLike model_global",
                 atom: true,
                 selectable: false,
-                draggable: false,
                 parseDOM: [
                     {
                         tag: "globalNode"

@@ -387,7 +387,7 @@ function deleteBarrier(state, $cut, dispatch) {
   // check depth of textNodes
   const beforeDepth = depthToLast(before,'textNode')
   const afterDepth = depthToLast(after,'textNode')
-  if( beforeDepth === null || afterDepth === null ) throw new Error('Expected textNode in deleteBarrier')
+  if( beforeDepth === null || afterDepth === null ) return true 
 
   try {
     if( beforeDepth === afterDepth ) {
