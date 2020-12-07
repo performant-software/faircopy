@@ -29,6 +29,23 @@ export default class LicenseWindow extends Component {
         const { licenseWords } = this.state
         const fieldParts = []
 
+        const onPaste = () => {
+            const value = fairCopy.services.readClipBoardText()
+            if( value ) {
+                const keyValue = value.toLocaleUpperCase().trim()
+                const keyWords = keyValue.split('-')
+                // verify that this is a well formed key
+                if( keyWords.length === numberOfWords ) {
+                    for( const keyWord of keyWords ) {
+                        if( (keyWord.length === 0 || keyWord.length > 4 || !keyWord.match(/^[A-Z0-9]+$/)) ) return
+                    }    
+                    // looks good!
+                    this.setState({...this.state, licenseWords: keyWords })
+                }
+
+            }
+        }
+
         for( let i=0; i < numberOfWords; i++) {
             const onChange = (e) => {
                 const value = e.currentTarget.value.toLocaleUpperCase()
@@ -37,7 +54,7 @@ export default class LicenseWindow extends Component {
                     this.setState({...this.state, licenseWords })
                 }
             }
-    
+  
             fieldParts.push(
                 <TextField 
                     key={`part${i}`}
@@ -46,6 +63,7 @@ export default class LicenseWindow extends Component {
                     className="word-field"
                     value={licenseWords[i]}
                     onChange={onChange}
+                    onPaste={onPaste}
                 />
             )
              if( i < numberOfWords-1 ) {
