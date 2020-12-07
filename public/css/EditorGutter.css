@@ -10,8 +10,16 @@
 }
 
 .EditorGutter .marker {
-    background:#e7ddff;
     border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.EditorGutter .soft {
+    background:#e7ddff;
+}
+
+.EditorGutter .hard {
+    background: #D4C3FC;
 }
 
 .EditorGutter .marker.highlighted {

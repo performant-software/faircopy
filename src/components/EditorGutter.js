@@ -6,7 +6,7 @@ const clipHeight = 1000
 
 export default class EditorGutter extends Component {
 
-    renderGutterMark(node,targetPos,top,bottom,index,column,columnPositions) {
+    renderGutterMark(node,targetPos,top,bottom,index,column,style,columnPositions) {
         const { teiDocument, expanded } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
@@ -15,7 +15,7 @@ export default class EditorGutter extends Component {
         const markStyle = { top, height, marginLeft: columnPositions[column] }
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
-        const className = `marker ${highlighted}`
+        const className = `marker ${highlighted} ${style}`
         const displayName = (expanded) ? <div className={`el-name`}>{node.type.name}</div> : ''
 
         const onClick = () => {
@@ -40,6 +40,7 @@ export default class EditorGutter extends Component {
         const { teiDocument, expanded, scrollTop } = this.props
         const { editorView } = teiDocument
         const editorState = editorView.state
+        const { hard } = teiDocument.fairCopyProject.teiSchema.elementGroups
         const canvas = document.createElement("canvas")
 
         const columnThickness = []
@@ -81,8 +82,9 @@ export default class EditorGutter extends Component {
                     let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
                     let bottom = editorView.coordsAtPos(endPos-3).bottom - gutterTop + scrollTop
                     if( top === bottom ) bottom = top + 30
+                    const style = hard.includes(name) ? 'hard' : 'soft'
                     // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)
-                    gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column] )
+                    gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column,style] )
                 } else {
                     processNode(node,startPos+1,column)                
                 }
