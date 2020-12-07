@@ -235,7 +235,7 @@ export function deleteParentNode(state) {
     const fragment = Fragment.fromArray(children)
     try {
         if( node.canReplace(pos,pos+node.nodeSize,fragment) )
-        tr.replaceWith(pos,pos+node.nodeSize,fragment) 
+            tr.replaceWith(pos,pos+node.nodeSize,fragment) 
     } catch(e) {
         console.log(e)
     }
