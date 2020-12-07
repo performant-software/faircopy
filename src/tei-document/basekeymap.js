@@ -2,12 +2,18 @@ import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirro
 import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
 import {undo, redo} from "prosemirror-history"
+import {deleteParentNode} from "./commands"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
 // Delete the selection, if there is one.
 export function deleteSelection(state, dispatch) {
-  if (state.selection.empty) return false
-  if (dispatch) dispatch(state.tr.deleteSelection().scrollIntoView())
+  const { tr, selection } = state
+  if (selection.empty) return false
+  if( selection.node && !selection.node.isAtom ) {
+    if (dispatch) dispatch(deleteParentNode(state).scrollIntoView())
+  } else {
+    if (dispatch) dispatch(tr.deleteSelection().scrollIntoView())
+  }
   return true
 }
 

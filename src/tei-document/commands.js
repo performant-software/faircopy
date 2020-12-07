@@ -222,6 +222,26 @@ export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
     }
 }
 
+export function deleteParentNode(state) {
+    const { tr, selection } = state
+    const { node, $anchor } = selection
+    const { pos } = $anchor
+
+    const children = []
+    for( let i=0; i < node.childCount; i++ ) {
+        const child = node.child(i)
+        children.push(child)
+    }
+    const fragment = Fragment.fromArray(children)
+    try {
+        if( node.canReplace(pos,pos+node.nodeSize,fragment) )
+        tr.replaceWith(pos,pos+node.nodeSize,fragment) 
+    } catch(e) {
+        console.log(e)
+    }
+    return tr
+}
+
 function findMarkExtent(doc,mark,startPos,dir,endPos) {
     let result = -1
 
