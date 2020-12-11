@@ -159,7 +159,7 @@ const createNodes = function createNodes(elGroups,hard,specs) {
         // This hack replaces note with model_noteLike in this one case. inline nodes canot be referenced
         // by element name since they are fronted by the globalNode element to shim 
         // block vs. inline interface in ProseMirror.
-        if( node === 'respStmt' ) content = content.replaceAll('note','noteLike')
+        if( node === 'respStmt' ) content = content.replace(/note/g,'model_noteLike')
         const nodeEl = {
             name: node,
             pmType: "node",
