@@ -5345,6 +5345,10 @@
 		}
 	},
 	"elementGroups": {
+		"docNodes": [
+			"doc",
+			"noteDoc"
+		],
 		"embed": [
 			"address",
 			"cell",

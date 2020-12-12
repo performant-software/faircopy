@@ -25,7 +25,7 @@ const loadLocalizedString = function loadLocalizedString(el, tagName, lang="en")
 const getAllElements = function getAllElements(elementGroups) {
     const allElements = []
     for( const elementGroupName of Object.keys(elementGroups) ) {
-        if( elementGroupName !== 'exclude' ) {
+        if( elementGroupName !== 'exclude' && elementGroupName !== 'docNodes' ) {
             for( const ident of elementGroups[elementGroupName] ) {
                 allElements.push(ident)
             }    

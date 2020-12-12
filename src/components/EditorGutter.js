@@ -38,7 +38,7 @@ export default class EditorGutter extends Component {
     renderGutterMarkers() {
         const { teiDocument, editorView, expanded, scrollTop, gutterTop } = this.props
         const editorState = editorView.state
-        const { hard } = teiDocument.fairCopyProject.teiSchema.elementGroups
+        const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
         const canvas = document.createElement("canvas")
 
         const columnThickness = []
@@ -81,7 +81,7 @@ export default class EditorGutter extends Component {
                     let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
                     let bottom = editorView.coordsAtPos(endPos-3).bottom - gutterTop + scrollTop
                     if( top === bottom ) bottom = top + 30
-                    const style = hard.includes(name) ? 'hard' : 'soft'
+                    const style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
                     // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)
                     gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column,style] )
                 } else {
