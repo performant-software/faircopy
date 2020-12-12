@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { NodeSelection } from "prosemirror-state"
 
-const gutterTop = 125
 const clipHeight = 1000
 
 export default class EditorGutter extends Component {
 
     renderGutterMark(node,targetPos,top,bottom,index,column,style,columnPositions) {
-        const { teiDocument, expanded } = this.props
-        const { editorView } = teiDocument
+        const { expanded, editorView } = this.props
         const editorState = editorView.state
 
         const height = bottom - top 
@@ -37,8 +35,7 @@ export default class EditorGutter extends Component {
     }
 
     renderGutterMarkers() {
-        const { teiDocument, expanded, scrollTop } = this.props
-        const { editorView } = teiDocument
+        const { teiDocument, editorView, expanded, scrollTop, gutterTop } = this.props
         const editorState = editorView.state
         const { hard } = teiDocument.fairCopyProject.teiSchema.elementGroups
         const canvas = document.createElement("canvas")
@@ -117,8 +114,7 @@ export default class EditorGutter extends Component {
     }
 
     render() {   
-        const { teiDocument } = this.props
-        const { editorView } = teiDocument
+        const { editorView } = this.props
 
         if( !editorView ) return null
 

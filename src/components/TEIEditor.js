@@ -276,10 +276,13 @@ export default class TEIEditor extends Component {
                             expanded={expandedGutter}
                             scrollTop={scrollTop} 
                             teiDocument={teiDocument}
+                            editorView={teiDocument.editorView}
+                            gutterTop={125}
                         /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
+                            thumbMargin={true}
                         />
                         { !hidden && <ThumbnailMargin
                             scrollTop={scrollTop} 
@@ -293,8 +296,10 @@ export default class TEIEditor extends Component {
                     height={drawerHeight}
                 /> }
                 { !hidden && <NotePopup
-                    teiDocument={teiDocument}
                     noteID={noteID}
+                    expanded={expandedGutter}
+                    scrollTop={scrollTop} 
+                    teiDocument={teiDocument}
                     anchorEl={notePopupAnchorEl}
                     onStateChange={this.onNoteStateChange}
                 ></NotePopup> }

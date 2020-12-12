@@ -3,6 +3,7 @@
 }
 
 #NotePopup .note-body {
+    display: flex;
     margin: 5px;
     background: white;
 }

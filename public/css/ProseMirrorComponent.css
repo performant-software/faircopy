@@ -1,6 +1,10 @@
 .ProseMirrorComponent {
   height: 100%;
   left: 40px;
+  min-width: 200px;
+}
+
+.ProseMirrorComponent.thumb-margin {
   margin-right: 240px;
 }
 

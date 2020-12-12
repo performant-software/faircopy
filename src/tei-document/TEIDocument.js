@@ -139,7 +139,13 @@ export default class TEIDocument {
     }
 
     createSubDocument(documentDOM) {
-        const subDoc = this.createEmptyDocument(documentDOM)
+        const { teiSchema } = this.fairCopyProject
+        let noteDoc = documentDOM.createElement('noteDoc')
+        noteDoc.append(documentDOM.createElement('textNode'))
+        let textEl = document.createElement('text')
+        textEl.append(noteDoc)
+        const subDoc = parseText(textEl,this,teiSchema)
+
         const subDocID = this.issueSubDocumentID()
         this.subDocs[subDocID] = JSON.stringify(subDoc.toJSON())
         return subDocID
