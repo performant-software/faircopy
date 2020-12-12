@@ -23,7 +23,6 @@ export default class TEIEditor extends Component {
             noteID: null,
             notePopupAnchorEl: null,
             scrollTop: 0,
-            displayNoteAttrs: false,
             ctrlDown: false,
             altDown: false,
             selectedElements: []
@@ -148,18 +147,17 @@ export default class TEIEditor extends Component {
         if( !direct ) return
 
         if( node.type.name === 'note' ) {
-            const { noteID, ctrlDown } = this.state
+            const { noteID } = this.state
             const nextID = node.attrs['__id__']
             if( noteID !== nextID ) {
                 if( noteID !== null ) {
-                    this.setState({...this.state, noteID: null, notePopupAnchorEl: null, displayNoteAttrs: false })
+                    this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
                 } else {
-                    const displayNoteAttrs = ctrlDown
-                    this.setState({...this.state, noteID: nextID, notePopupAnchorEl: event.target, displayNoteAttrs })
+                    this.setState({...this.state, noteID: nextID, notePopupAnchorEl: event.target })
                 }
             }
         } else {
-            this.setState({...this.state, noteID: null, notePopupAnchorEl: null, displayNoteAttrs: false })
+            this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
         }
     }
 
@@ -187,7 +185,7 @@ export default class TEIEditor extends Component {
 
     getSelectedElements() {
         const { teiDocument } = this.props
-        const { noteID, displayNoteAttrs } = this.state
+        const { noteID } = this.state
 
         const editorView = teiDocument.getActiveView()
         const selection = (editorView) ? editorView.state.selection : null 
@@ -198,8 +196,22 @@ export default class TEIEditor extends Component {
             if( selection.node ) {
                 // don't display drawer for notes here, see below
                 const name = selection.node.type.name
-                if( name !== 'note' && name !== 'globalNode' ) {
+                if( name !== 'note' && name !== 'globalNode' && name !== 'noteDoc' ) {
                     elements.push( selection.node )
+                } else {
+                    if( noteID && name === 'noteDoc' ) {
+                        const { doc } = teiDocument.editorView.state
+                        let noteNode
+                        doc.descendants( (node) => {
+                            if( node.attrs['__id__'] === noteID ) {
+                                noteNode = node
+                            }
+                            if( noteNode ) return false
+                        })
+                        if( noteNode ) {
+                            elements.push( noteNode )
+                        }
+                    }            
                 }
             } else {
                 const { doc } = editorView.state
@@ -208,21 +220,6 @@ export default class TEIEditor extends Component {
                 for( const highlightRange of highlightRanges ) {
                     elements.push( highlightRange.mark )
                 }     
-            }
-        }
-
-        // The note node is sticky while the note is being edited
-        if( noteID && displayNoteAttrs ) {
-            const { doc } = teiDocument.editorView.state
-            let noteNode
-            doc.descendants( (node) => {
-                if( node.attrs['__id__'] === noteID ) {
-                    noteNode = node
-                }
-                if( noteNode ) return false
-            })
-            if( noteNode ) {
-                elements.push( noteNode )
             }
         }
 
