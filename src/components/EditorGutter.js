@@ -79,7 +79,8 @@ export default class EditorGutter extends Component {
                     gatherColumnThickness(name,column)
                     const endPos = startPos + processNode(node,startPos,column+1) + 1
                     let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
-                    let bottom = editorView.coordsAtPos(endPos-3).bottom - gutterTop + scrollTop
+                    const endPosSamplePoint = (endPos >= 3) ? endPos-3 : endPos // trying the inside of text, if it exists
+                    let bottom = editorView.coordsAtPos(endPosSamplePoint).bottom - gutterTop + scrollTop
                     if( top === bottom ) bottom = top + 30
                     const style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
                     // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)

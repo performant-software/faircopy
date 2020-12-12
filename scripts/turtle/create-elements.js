@@ -99,6 +99,7 @@ const createDocNodes = function createDocNode(elGroups,specs) {
         {
             "name": "noteDoc",
             "pmType": "node",
+            "selectable": false,
             "isolating": true,
             "gutterMark": true,
             "content": "(textNode|model_phrase|model_inter|model_divPart)*"
