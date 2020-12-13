@@ -28,16 +28,24 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
                 noteEl.setAttribute('__id__',noteID)
                 const emptyEl = el.cloneNode()
                 emptyEl.setAttribute('__id__',noteID)
-                // blank is necessary so that serializer doesn't collapse element
-                emptyEl.innerHTML = ' '
                 el.parentNode.replaceChild(emptyEl,el)
                 pastedNoteBuffer.push(noteEl)
+            }
+
+            // HTML doesn't have self closing elements, so preserve them here with this hack
+            const inlines = teiSchema.elementGroups.inlines
+            for( const inline of inlines ) {
+                let inlineEls = xmlDom.getElementsByTagName(inline)
+                for( let i=0; i < inlineEls.length; i++ ) {
+                    const inlineEl = inlineEls[i]
+                    // blank is necessary so that serializer doesn't collapse element
+                    inlineEl.innerHTML = ' '
+                }    
             }
     
             // schema needs access to this document while running parseSlice()
             // pops off in transformPastedHandler()
             teiSchema.teiDocuments.push(teiDocument)
-    
             let xhtml = new XMLSerializer().serializeToString(xmlDom);
             xhtml = xhtml.replace('<xml>','').replace('</xml>','')
             const nextHTML = `${metaTag}${xhtml}`
