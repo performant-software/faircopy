@@ -49,7 +49,7 @@ export default class ThumbnailMargin extends Component {
         const uris = []
         const scanAttributes = (node) => {
             const element = teiSchema.elements[node.type.name]
-            if(element) {
+            if(element && element.validAttrs ) {
                 for( const elAttr of element.validAttrs ) {
                     // we're looking for teipointer type attributes 
                     const attr = teiSchema.attrs[elAttr]

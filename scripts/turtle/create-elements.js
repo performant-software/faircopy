@@ -88,20 +88,25 @@ function createInlineNodes(elGroups,icons,specs) {
 
 // special top level text node, has properties of text but is called "doc"
 const createDocNodes = function createDocNode(elGroups,specs) {
+    let noteSpec = specs['note']
+    const nodeGroups = getNodeGroups( elGroups, specs )
+    const nodeContent = onlyGroups( nodeGroups, noteSpec.content )
+    let content = encodeContent(nodeContent)
+
     return [
         {
             "name": "doc",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": "noteDoc | ((front)? (body) (back)?)"
+            "content": "((front)? (body) (back)?)"
         },
         {
             "name": "noteDoc",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": "(textNode|model_phrase|model_inter|model_divPart)*"
+            "content": content //"(textNode|model_phrase|model_inter|model_divPart)*"
         }
     ]
 }
