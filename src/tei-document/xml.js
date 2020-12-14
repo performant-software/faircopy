@@ -50,6 +50,7 @@ function parseInterNodes(textEl,teiSchema) {
             if( isInterMark(markEl) ) {
                 const interEl = document.createElement(`${markPrefix}${xmlTag}`)
                 interEl.innerHTML = markEl.innerHTML
+                cloneAttributes(interEl,markEl)
                 markEl.parentNode.replaceChild(interEl,markEl)
             }
         }
@@ -103,6 +104,7 @@ function renameInterMarks(inter, documentFragment) {
             const markEl = markEls[i]
             const interEl = document.createElement(interMark)
             interEl.innerHTML = markEl.innerHTML
+            cloneAttributes(interEl,markEl)
             markEl.parentNode.replaceChild(interEl,markEl)
         }
     }
@@ -122,4 +124,9 @@ export function renameCamelCaseAttrs(html,attrs) {
 function renameAttrs(htmlFragment, oldAttrName, newAttrName) {
     const regex = new RegExp(`${oldAttrName}=`,'g')
     return htmlFragment.replace(regex,`${newAttrName}=`)
+}
+
+// copy all the attributes from one element to another
+function cloneAttributes(target, source) {
+    [...source.attributes].forEach( attr => { target.setAttribute(attr.nodeName ,attr.nodeValue) })
 }
