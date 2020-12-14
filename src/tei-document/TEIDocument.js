@@ -54,11 +54,11 @@ export default class TEIDocument {
     parseSubDocument(node, noteID) {
         const {teiSchema} = this.fairCopyProject
         // turn note into noteDoc
+        let noteX = document.createElement('noteX')
+        noteX.innerHTML = node.innerHTML
         let noteDoc = document.createElement('noteDoc')
-        noteDoc.innerHTML = node.innerHTML
-        let textEl = document.createElement('text')
-        textEl.append(noteDoc)
-        const subDoc = parseText(textEl,this,teiSchema)
+        noteDoc.append(noteX)
+        const subDoc = parseText(noteDoc,this,teiSchema,true)
         this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
     }
 
@@ -66,10 +66,10 @@ export default class TEIDocument {
         const {teiSchema} = this.fairCopyProject
         let {__id__} = attrs; 
         const noteJSON = JSON.parse( this.subDocs[__id__] )
-        const subDoc = teiSchema.schema.nodeFromJSON(noteJSON);
+        const subDoc = teiSchema.noteSchema.nodeFromJSON(noteJSON);
         // get the content of noteDoc, which is the only child of doc
         const noteDocFragment = subDoc.firstChild.content
-        const domFragment = serializeText(noteDocFragment, this, teiSchema)
+        const domFragment = serializeText(noteDocFragment, this, teiSchema, true)
         let note = document.createElement('note')
         note.appendChild( domFragment.cloneNode(true) )
         for( const attrKey of Object.keys(attrs)) {
@@ -141,10 +141,8 @@ export default class TEIDocument {
     createSubDocument(documentDOM) {
         const { teiSchema } = this.fairCopyProject
         let noteDoc = documentDOM.createElement('noteDoc')
-        noteDoc.append(documentDOM.createElement('textNode'))
-        let textEl = document.createElement('text')
-        textEl.append(noteDoc)
-        const subDoc = parseText(textEl,this,teiSchema)
+        noteDoc.append(documentDOM.createElement('noteX'))
+        const subDoc = parseText(noteDoc,this,teiSchema,true)
 
         const subDocID = this.issueSubDocumentID()
         this.subDocs[subDocID] = JSON.stringify(subDoc.toJSON())

@@ -24,7 +24,7 @@ const createAttributes = function createAttributes( elements, specs ) {
     // create a global dictionary of attr definitions and record attrs for each element
     for( const element of elements ) {
         // skip over special prosemirror root node
-        if( element.name === 'doc' || element.name === 'noteDoc' ) continue
+        if( element.name === 'doc' || element.name === 'noteDoc' || element.name === 'noteX') continue
         const elementName = getElementName(element.name)
         const attrs = findAttrs(elementName)
         const validAttrs = []

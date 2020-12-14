@@ -196,10 +196,10 @@ export default class TEIEditor extends Component {
             if( selection.node ) {
                 // don't display drawer for notes here, see below
                 const name = selection.node.type.name
-                if( name !== 'note' && name !== 'globalNode' && name !== 'noteDoc' ) {
+                if( name !== 'note' && name !== 'globalNode' && name !== 'noteX' ) {
                     elements.push( selection.node )
                 } else {
-                    if( noteID && name === 'noteDoc' ) {
+                    if( noteID && name === 'noteX' ) {
                         const { doc } = teiDocument.editorView.state
                         let noteNode
                         doc.descendants( (node) => {

@@ -102,11 +102,17 @@ const createDocNodes = function createDocNode(elGroups,specs) {
             "content": "((front)? (body) (back)?)"
         },
         {
-            "name": "noteDoc",
+            "name": "noteX",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": content //"(textNode|model_phrase|model_inter|model_divPart)*"
+            "content": content 
+        },
+        {
+            "name": "noteDoc",
+            "pmType": "node",
+            "isolating": true,
+            "content": "noteX"
         }
     ]
 }

@@ -14,7 +14,7 @@ export default class EditorGutter extends Component {
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker ${highlighted} ${style}`
-        const name = (node.type.name === 'noteDoc') ? 'note' : node.type.name
+        const name = (node.type.name === 'noteX') ? 'note' : node.type.name
         const displayName = (expanded) ? <div className={`el-name`}>{name}</div> : ''
 
         const onClick = () => {
@@ -56,7 +56,7 @@ export default class EditorGutter extends Component {
         // find the max width for each column
         function gatherColumnThickness(name, column) {
             if( expanded ) {
-                const displayName = (name === 'noteDoc') ? 'note' : name
+                const displayName = (name === 'noteX') ? 'note' : name
                 const thickness = getTextWidth(displayName)
                 if( isNaN(columnThickness[column]) ) {
                     columnThickness[column] = thickness + 12

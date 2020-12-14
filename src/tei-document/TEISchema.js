@@ -12,7 +12,10 @@ export default class TEISchema {
         this.elements = elements
         this.attrs = attrs
         this.schema = new Schema(schemaSpec)
+        const noteSchemaSpec = { ...schemaSpec, topNode: 'noteDoc' }
+        this.noteSchema = new Schema(noteSchemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
+        this.noteDomParser = PMDOMParser.fromSchema(this.noteSchema)
         this.schemaJSON = json
     }
 
