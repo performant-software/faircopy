@@ -14,7 +14,8 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
         const matches = html.match(metaRegex)
         const parser = new DOMParser();
         let metaTag = matches && matches[1] ? matches[1]: ""
-        let xml = html.replace(metaRegex,"")
+        // also, replace all the non breaking spaces w/spaces, since &nbsp; isn't in schema
+        let xml = html.replace(metaRegex,"").replaceAll('&nbsp;',' ')
         // detect if this is an internal cut and paste
         if( xml.includes('data-pm-slice') ) {
             // xml might be an array of elements, need to wrap them to form a valid document
