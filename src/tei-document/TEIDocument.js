@@ -194,7 +194,7 @@ export default class TEIDocument {
         // the rest of the xml document, then serialize to string
         const domFragment = serializeText(editorState.doc.content, this, teiSchema)
         const textEl = this.xmlDom.getElementsByTagName('text')[0]
-        var div = document.createElement('div')
+        var div = this.xmlDom.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
         // this has to be done here because HTML is case insenitive, while XML is not.
         textEl.innerHTML = renameCamelCaseAttrs(div.innerHTML,teiSchema.attrs)
