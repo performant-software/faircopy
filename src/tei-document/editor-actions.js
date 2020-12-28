@@ -1,4 +1,5 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
+import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createFragment } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
@@ -298,6 +299,55 @@ export function eraseSelection(teiDocument) {
     }
     editorView.dispatch(tr)
     editorView.focus()
+}
+
+export function moveNode(direction,teiDocument) {
+    const editorView = teiDocument.getActiveView()
+    const { tr, selection } = editorView.state
+    const { $anchor } = selection
+    const nodeIndex = $anchor.index()
+    const parentNode = $anchor.node()
+
+    // do nothing if no parent node
+    if( !parentNode ) return
+
+    // go up or down one, don't go out of bounds
+    const swapIndex = direction === 'up' ? nodeIndex > 0 ? nodeIndex-1 : 0 : nodeIndex < parentNode.childCount-1 ? nodeIndex+1 : nodeIndex
+
+    // rearrange siblings
+    const children = []
+    for( let i=0; i < parentNode.childCount; i++ ) {
+        children.push(parentNode.child(i))        
+    }
+    const selectedNode = children[nodeIndex]
+    children[nodeIndex] = children[swapIndex]
+    children[swapIndex] = selectedNode
+
+    // reinsert into document
+    try {
+        // where to insert fragment
+        const { pos, parentOffset } = $anchor
+        const parentPos = pos - parentOffset
+        const startPos = parentPos + 1
+        const endPos = parentPos + parentNode.nodeSize - 2
+
+        // determine new selection position
+        let nextPos = startPos
+        for( let i=0; i < swapIndex; i++ ) {
+            nextPos += children[i].nodeSize
+        }
+        debugger
+        // perform move and keep node selected afterwards
+        tr.delete(startPos, endPos)
+        tr.insert(startPos,children) 
+        const nextSelection = NodeSelection.create(tr.doc, nextPos+1)
+        tr.setSelection( nextSelection )
+        tr.scrollIntoView()
+        editorView.dispatch(tr)
+        editorView.focus()
+    } catch(e) {
+        console.log(e)
+    }
 }
 
 function createMark(markType, editorView) {
