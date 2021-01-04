@@ -7,6 +7,15 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Debug Collate",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/scripts/collate/index.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Debug Turtle",
             "skipFiles": [
                 "<node_internals>/**"
