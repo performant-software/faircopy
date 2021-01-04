@@ -308,46 +308,26 @@ export function moveNode(direction,teiDocument) {
     const nodeIndex = $anchor.index()
     const parentNode = $anchor.node()
 
-    // do nothing if no parent node
+    // do nothing if root node, or can't move in requested direction
     if( !parentNode ) return
+    if( direction === 'up' && nodeIndex === 0 ) return
+    if( direction === 'down' && nodeIndex >= parentNode.childCount-1 ) return 
 
-    // go up or down one, don't go out of bounds
-    const swapIndex = direction === 'up' ? nodeIndex > 0 ? nodeIndex-1 : 0 : nodeIndex < parentNode.childCount-1 ? nodeIndex+1 : nodeIndex
-
-    // rearrange siblings
-    const children = []
-    for( let i=0; i < parentNode.childCount; i++ ) {
-        children.push(parentNode.child(i))        
+    if( direction === 'up' ) { 
+        const swapPos = $anchor.pos - $anchor.nodeBefore.nodeSize 
+        tr.delete(swapPos, $anchor.pos)
+        tr.insert(swapPos + selection.node.nodeSize, $anchor.nodeBefore)         
+    } else {
+        const swapPos = $anchor.pos + $anchor.nodeAfter.nodeSize 
+        const swapNode = parentNode.child(nodeIndex+1)
+        const nextPos = swapPos + swapNode.nodeSize
+        tr.delete(swapPos, nextPos )
+        tr.insert($anchor.pos, swapNode )         
     }
-    const selectedNode = children[nodeIndex]
-    children[nodeIndex] = children[swapIndex]
-    children[swapIndex] = selectedNode
 
-    // reinsert into document
-    try {
-        // where to insert fragment
-        const { pos, parentOffset } = $anchor
-        const parentPos = pos - parentOffset
-        const startPos = parentPos + 1
-        const endPos = parentPos + parentNode.nodeSize - 2
-
-        // determine new selection position
-        let nextPos = startPos
-        for( let i=0; i < swapIndex; i++ ) {
-            nextPos += children[i].nodeSize
-        }
-        debugger
-        // perform move and keep node selected afterwards
-        tr.delete(startPos, endPos)
-        tr.insert(startPos,children) 
-        const nextSelection = NodeSelection.create(tr.doc, nextPos+1)
-        tr.setSelection( nextSelection )
-        tr.scrollIntoView()
-        editorView.dispatch(tr)
-        editorView.focus()
-    } catch(e) {
-        console.log(e)
-    }
+    tr.scrollIntoView()
+    editorView.dispatch(tr)
+    editorView.focus()
 }
 
 function createMark(markType, editorView) {
