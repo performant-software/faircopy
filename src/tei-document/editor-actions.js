@@ -1,5 +1,4 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
-import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createFragment } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
@@ -303,6 +302,7 @@ export function eraseSelection(teiDocument) {
 
 export function moveNode(direction,teiDocument) {
     const editorView = teiDocument.getActiveView()
+    const {hard} = teiDocument.fairCopyProject.teiSchema.elementGroups
     const { tr, selection } = editorView.state
     const { $anchor } = selection
     const nodeIndex = $anchor.index()
@@ -310,19 +310,40 @@ export function moveNode(direction,teiDocument) {
 
     // do nothing if root node, or can't move in requested direction
     if( !parentNode ) return
+
+    // TODO, these should find new parent
     if( direction === 'up' && nodeIndex === 0 ) return
     if( direction === 'down' && nodeIndex >= parentNode.childCount-1 ) return 
 
     if( direction === 'up' ) { 
-        const swapPos = $anchor.pos - $anchor.nodeBefore.nodeSize 
-        tr.delete(swapPos, $anchor.pos)
-        tr.insert(swapPos + selection.node.nodeSize, $anchor.nodeBefore)         
+        const selectedNode = selection.node
+        const selectedPos = $anchor.pos
+        const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
+        const nodeBefore = $anchor.nodeBefore
+        const nodeBeforePos = selectedPos - nodeBefore.nodeSize 
+        const valid = true // validNodeAction( 'addInside', selectedNode.type.name, teiDocument, nodeBeforePos )
+        if( hard.includes( nodeBefore.type.name ) && valid ) {
+            tr.delete(selectedPos, selectedEndPos)
+            tr.insert(selectedPos-1, selectedNode )
+        } else {
+            tr.delete(nodeBeforePos, selectedPos)
+            tr.insert(nodeBeforePos + selectedNode.nodeSize, nodeBefore)             
+        }
     } else {
-        const swapPos = $anchor.pos + $anchor.nodeAfter.nodeSize 
+        const selectedNode = selection.node
+        const selectedPos = $anchor.pos
+        const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
         const swapNode = parentNode.child(nodeIndex+1)
-        const nextPos = swapPos + swapNode.nodeSize
-        tr.delete(swapPos, nextPos )
-        tr.insert($anchor.pos, swapNode )         
+        const swapPos = selectedPos + $anchor.nodeAfter.nodeSize 
+        const swapEndPos = swapPos + swapNode.nodeSize
+        const valid = true // validNodeAction( 'addInside', swapNode.type.name, teiDocument, swapPos )
+        if( hard.includes( swapNode.type.name ) && valid ) {
+            tr.delete(selectedPos, selectedEndPos)
+            tr.insert(tr.mapping.map(selectedEndPos+1), selectedNode )
+        } else {
+            tr.delete(swapPos, swapEndPos )
+            tr.insert(selectedPos, swapNode )                    
+        }
     }
 
     tr.scrollIntoView()
