@@ -28,6 +28,12 @@
     border-bottom: dotted red;
 }
 
+/* Leave blank space for structure elements that have no content */
+[phraselvl = "false"]:empty {
+    display: inline-block;
+    min-height: 30px;
+}
+
 textnode {
     display: block;
     margin-top: 5px;
