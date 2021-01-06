@@ -300,6 +300,7 @@ export function eraseSelection(teiDocument) {
     editorView.focus()
 }
 
+// Move the selected node up or down the document
 export function moveNode(direction,teiDocument) {
     const editorView = teiDocument.getActiveView()
     const {hard} = teiDocument.fairCopyProject.teiSchema.elementGroups
@@ -307,42 +308,71 @@ export function moveNode(direction,teiDocument) {
     const { $anchor } = selection
     const nodeIndex = $anchor.index()
     const parentNode = $anchor.node()
+    const grandParentNode = $anchor.node(-1)
 
     // do nothing if root node, or can't move in requested direction
     if( !parentNode ) return
 
-    // TODO, these should find new parent
-    if( direction === 'up' && nodeIndex === 0 ) return
-    if( direction === 'down' && nodeIndex >= parentNode.childCount-1 ) return 
-
     if( direction === 'up' ) { 
-        const selectedNode = selection.node
-        const selectedPos = $anchor.pos
-        const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
-        const nodeBefore = $anchor.nodeBefore
-        const nodeBeforePos = selectedPos - nodeBefore.nodeSize 
-        const valid = true // validNodeAction( 'addInside', selectedNode.type.name, teiDocument, nodeBeforePos )
-        if( hard.includes( nodeBefore.type.name ) && valid ) {
-            tr.delete(selectedPos, selectedEndPos)
-            tr.insert(selectedPos-1, selectedNode )
+        // if first sibling, see if we can move up and out of this parent
+        if( nodeIndex === 0 ) {
+            const selectedNode = selection.node
+            const selectedPos = $anchor.pos
+            const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
+            const parentType = grandParentNode.type.name
+            const valid = true // validNodeAction( 'addInside', selectedNode.type.name, teiDocument, nodeBeforePos )
+            if( hard.includes( parentType ) && valid ) {
+                tr.delete(selectedPos, selectedEndPos)
+                tr.insert(selectedPos-1, selectedNode )
+            }      
+        // otherwise, we can move around within the parent  
         } else {
-            tr.delete(nodeBeforePos, selectedPos)
-            tr.insert(nodeBeforePos + selectedNode.nodeSize, nodeBefore)             
+            const selectedNode = selection.node
+            const selectedPos = $anchor.pos
+            const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
+            const nodeBefore = $anchor.nodeBefore
+            const nodeBeforePos = selectedPos - nodeBefore.nodeSize 
+            const parentType = nodeBefore.type.name
+            const valid = true // validNodeAction( 'addInside', selectedNode.type.name, teiDocument, nodeBeforePos )
+            // if the prev sibling is a hard node, join it as last sibling
+            if( hard.includes( parentType ) && valid ) {
+                tr.delete(selectedPos, selectedEndPos)
+                tr.insert(selectedPos-1, selectedNode )
+            } else {
+                tr.delete(nodeBeforePos, selectedPos)
+                tr.insert(nodeBeforePos + selectedNode.nodeSize, nodeBefore)             
+            }        
         }
     } else {
-        const selectedNode = selection.node
-        const selectedPos = $anchor.pos
-        const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
-        const swapNode = parentNode.child(nodeIndex+1)
-        const swapPos = selectedPos + $anchor.nodeAfter.nodeSize 
-        const swapEndPos = swapPos + swapNode.nodeSize
-        const valid = true // validNodeAction( 'addInside', swapNode.type.name, teiDocument, swapPos )
-        if( hard.includes( swapNode.type.name ) && valid ) {
-            tr.delete(selectedPos, selectedEndPos)
-            tr.insert(tr.mapping.map(selectedEndPos+1), selectedNode )
+        // if we are the last sibling, try to move down and out of this parent
+        if(nodeIndex >= parentNode.childCount-1) {
+            const selectedNode = selection.node
+            const selectedPos = $anchor.pos
+            const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
+            const parentType = grandParentNode.type.name
+            const valid = true // validNodeAction( 'addInside', swapNode.type.name, teiDocument, swapPos )
+            if( hard.includes( parentType ) && valid ) {
+                tr.delete(selectedPos, selectedEndPos)
+                tr.insert(tr.mapping.map(selectedEndPos+1), selectedNode )
+            }   
+        // otherwise, move around within this parent
         } else {
-            tr.delete(swapPos, swapEndPos )
-            tr.insert(selectedPos, swapNode )                    
+            const selectedNode = selection.node
+            const selectedPos = $anchor.pos
+            const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
+            const swapNode = parentNode.child(nodeIndex+1)
+            const swapPos = selectedPos + $anchor.nodeAfter.nodeSize 
+            const swapEndPos = swapPos + swapNode.nodeSize
+            const parentType = swapNode.type.name
+            const valid = true // validNodeAction( 'addInside', swapNode.type.name, teiDocument, swapPos )
+            // if next sibling is a hard node, join it as the first sibling
+            if( hard.includes( parentType ) && valid ) {
+                tr.delete(selectedPos, selectedEndPos)
+                tr.insert(tr.mapping.map(selectedEndPos+1), selectedNode )
+            } else {
+                tr.delete(swapPos, swapEndPos )
+                tr.insert(selectedPos, swapNode )                    
+            }
         }
     }
 
