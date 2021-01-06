@@ -12,7 +12,7 @@ import ThumbnailMargin from './ThumbnailMargin'
 import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 import { getHighlightRanges } from "../tei-document/highlighter"
-import { moveNode } from "../tei-document/editor-actions"
+import { moveNode, validMove } from "../tei-document/editor-actions"
 
 const resizeRefreshRate = 100
 
@@ -172,7 +172,7 @@ export default class TEIEditor extends Component {
             const selection = (editorView) ? editorView.state.selection : null         
             if( selection && selection.node ) {
                 const dir = event.key === 'ArrowUp' ? 'up' : 'down'
-                moveNode( dir, teiDocument )
+                if( validMove( dir, teiDocument ) ) moveNode( dir, teiDocument )
             }
         }
 
