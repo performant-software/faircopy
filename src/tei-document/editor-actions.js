@@ -1,4 +1,5 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
+import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createFragment } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
@@ -324,6 +325,7 @@ export function moveNode(direction,teiDocument) {
             if( hard.includes( parentType ) && valid ) {
                 tr.delete(selectedPos, selectedEndPos)
                 tr.insert(selectedPos-1, selectedNode )
+                tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
             }      
         // otherwise, we can move around within the parent  
         } else {
@@ -338,6 +340,7 @@ export function moveNode(direction,teiDocument) {
             if( hard.includes( parentType ) && valid ) {
                 tr.delete(selectedPos, selectedEndPos)
                 tr.insert(selectedPos-1, selectedNode )
+                tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
             } else {
                 tr.delete(nodeBeforePos, selectedPos)
                 tr.insert(nodeBeforePos + selectedNode.nodeSize, nodeBefore)             
@@ -353,7 +356,9 @@ export function moveNode(direction,teiDocument) {
             const valid = true // validNodeAction( 'addInside', swapNode.type.name, teiDocument, swapPos )
             if( hard.includes( parentType ) && valid ) {
                 tr.delete(selectedPos, selectedEndPos)
-                tr.insert(tr.mapping.map(selectedEndPos+1), selectedNode )
+                const insertPos = tr.mapping.map(selectedEndPos+1)
+                tr.insert(insertPos, selectedNode )
+                tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
             }   
         // otherwise, move around within this parent
         } else {
@@ -368,7 +373,9 @@ export function moveNode(direction,teiDocument) {
             // if next sibling is a hard node, join it as the first sibling
             if( hard.includes( parentType ) && valid ) {
                 tr.delete(selectedPos, selectedEndPos)
-                tr.insert(tr.mapping.map(selectedEndPos+1), selectedNode )
+                const insertPos = tr.mapping.map(selectedEndPos+1)
+                tr.insert(insertPos, selectedNode )
+                tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
             } else {
                 tr.delete(swapPos, swapEndPos )
                 tr.insert(selectedPos, swapNode )                    
