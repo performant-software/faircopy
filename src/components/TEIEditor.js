@@ -172,7 +172,8 @@ export default class TEIEditor extends Component {
             const selection = (editorView) ? editorView.state.selection : null         
             if( selection && selection.node ) {
                 const dir = event.key === 'ArrowUp' ? 'up' : 'down'
-                if( validMove( dir, teiDocument ) ) moveNode( dir, teiDocument )
+                const validState = validMove( dir, teiDocument ) 
+                if( validState ) moveNode( dir, teiDocument, validState )
             }
         }
 

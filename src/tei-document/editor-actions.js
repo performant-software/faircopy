@@ -338,6 +338,7 @@ export function validMove(direction,teiDocument) {
             }      
         // otherwise, we can move around within the parent  
         } else {
+            let skip = false
             const nodeBefore = $anchor.nodeBefore
             const parentType = nodeBefore.type.name
             // if the prev sibling is a hard node, join it as last sibling
@@ -348,12 +349,17 @@ export function validMove(direction,teiDocument) {
                     nodeBeforeNodes.push(child)
                 }
                 nodeBeforeNodes.push(selectedNode)
-                return parentNode.type.validContent(Fragment.fromArray(nodes)) && nodeBefore.type.validContent(Fragment.fromArray(nodeBeforeNodes))          
-            } else { 
-                const insertIndex = nodes.indexOf(nodeBefore)
-                nodes.splice(insertIndex,0,selectedNode)
-                return parentNode.type.validContent(Fragment.fromArray(nodes))
-            }        
+                if( parentNode.type.validContent(Fragment.fromArray(nodes)) && nodeBefore.type.validContent(Fragment.fromArray(nodeBeforeNodes)) ) {
+                    return true
+                } else {
+                    skip = true
+                }
+            } 
+            const insertIndex = nodes.indexOf(nodeBefore)
+            nodes.splice(insertIndex,0,selectedNode)
+            if( parentNode.type.validContent(Fragment.fromArray(nodes)) ) {
+                return (skip) ? 'skip' : true
+            }
         }
     } else {
         // if we are the last sibling, try to move down and out of this parent
@@ -374,6 +380,7 @@ export function validMove(direction,teiDocument) {
         } else {
             const swapNode = parentNode.child(nodeIndex+1)
             const parentType = swapNode.type.name
+            let skip = false
             // if next sibling is a hard node, join it as the first sibling
             if( hard.includes( parentType ) ) {
                 const nodeAfterNodes = []
@@ -382,12 +389,17 @@ export function validMove(direction,teiDocument) {
                     nodeAfterNodes.push(child)
                 }
                 nodeAfterNodes.splice(0,0,selectedNode)
-                return parentNode.type.validContent(Fragment.fromArray(nodes)) && swapNode.type.validContent(Fragment.fromArray(nodeAfterNodes))          
-             } else {
-                const insertIndex = nodes.indexOf(swapNode) + 1
-                nodes.splice(insertIndex,0,selectedNode)
-                return parentNode.type.validContent(Fragment.fromArray(nodes))
-            }
+                if( parentNode.type.validContent(Fragment.fromArray(nodes)) && swapNode.type.validContent(Fragment.fromArray(nodeAfterNodes)) ) {
+                    return true
+                } else {
+                    skip = true
+                }
+             } 
+            const insertIndex = nodes.indexOf(swapNode) + 1
+            nodes.splice(insertIndex,0,selectedNode)
+            if( parentNode.type.validContent(Fragment.fromArray(nodes)) ) {
+                return (skip) ? 'skip' : true
+            }      
         }
     }
 
@@ -395,7 +407,7 @@ export function validMove(direction,teiDocument) {
 }
 
 // Move the selected node up or down the document
-export function moveNode(direction,teiDocument) {
+export function moveNode(direction,teiDocument,validState) {
     const editorView = teiDocument.getActiveView()
     const {hard} = teiDocument.fairCopyProject.teiSchema.elementGroups
     const { tr, selection } = editorView.state
@@ -425,7 +437,7 @@ export function moveNode(direction,teiDocument) {
             const nodeBeforePos = selectedPos - nodeBefore.nodeSize 
             const parentType = nodeBefore.type.name
             // if the prev sibling is a hard node, join it as last sibling
-            if( hard.includes( parentType ) ) {
+            if( validState !== 'skip' && hard.includes( parentType ) ) {
                 tr.delete(selectedPos, selectedEndPos)
                 tr.insert(selectedPos-1, selectedNode )
                 tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
@@ -457,7 +469,7 @@ export function moveNode(direction,teiDocument) {
             const swapEndPos = swapPos + swapNode.nodeSize
             const parentType = swapNode.type.name
             // if next sibling is a hard node, join it as the first sibling
-            if( hard.includes( parentType ) ) {
+            if( validState !== 'skip' &&  hard.includes( parentType ) ) {
                 tr.delete(selectedPos, selectedEndPos)
                 const insertPos = tr.mapping.map(selectedEndPos+1)
                 tr.insert(insertPos, selectedNode )
