@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
+
 import { Typography } from '@material-ui/core';
 import applyDevTools from "prosemirror-dev-tools";
+import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
@@ -176,6 +178,23 @@ export default class TEIEditor extends Component {
                 if( validState ) moveNode( dir, teiDocument, validState )
             }
         }
+
+        const metaKey = ( event.ctrlKey || event.metaKey )
+        console.log(`${metaKey} ${event.shiftKey} ${event.key}`)
+        
+        // handle undo and redo here so they are available even when focus is not in PM itself
+        if( metaKey && event.key.toLowerCase() === 'z' ) {
+            console.log('undo')
+            const { teiDocument } = this.props
+            const editorView = teiDocument.getActiveView()
+            undo(editorView.state,editorView.dispatch)
+        } 
+        if( metaKey && event.shiftKey && event.key.toLowerCase() === 'z' ) {
+            console.log('redo')
+            const { teiDocument } = this.props
+            const editorView = teiDocument.getActiveView()
+            redo(editorView.state,editorView.dispatch)
+        } 
 
         if( event.altKey && !altDown ) {
            this.setState({...this.state, altDown: true })

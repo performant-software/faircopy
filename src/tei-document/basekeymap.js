@@ -1,7 +1,6 @@
 import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirror-transform"
 import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
-import {undo, redo} from "prosemirror-history"
 import {deleteParentNode} from "./commands"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
@@ -602,9 +601,6 @@ export let pcBaseKeymap = {
   "Delete": del,
   "Mod-Delete": del,
   "Mod-a": selectAll,
-  "Mod-z": undo,
-  "Shift-Mod-z": redo,
-  "Mod-y": redo
 }
 
 // :: Object
