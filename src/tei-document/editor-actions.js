@@ -442,8 +442,8 @@ export function moveNode(direction,teiDocument,validState) {
                 tr.insert(selectedPos-1, selectedNode )
                 tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
             } else {
-                tr.delete(nodeBeforePos, selectedPos)
-                tr.insert(nodeBeforePos + selectedNode.nodeSize, nodeBefore)                 
+                tr.replaceWith(nodeBeforePos,selectedEndPos,[selectedNode,nodeBefore])              
+                tr.setSelection( NodeSelection.create(tr.doc, nodeBeforePos) )
             }        
         }
     } else {
@@ -475,8 +475,8 @@ export function moveNode(direction,teiDocument,validState) {
                 tr.insert(insertPos, selectedNode )
                 tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
             } else {
-                tr.delete(swapPos, swapEndPos )
-                tr.insert(selectedPos, swapNode )                    
+                tr.replaceWith(selectedPos,swapEndPos,[swapNode,selectedNode])    
+                tr.setSelection( NodeSelection.create(tr.doc, selectedPos+swapNode.nodeSize) )
             }
         }
     }

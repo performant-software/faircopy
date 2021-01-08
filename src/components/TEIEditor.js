@@ -15,7 +15,6 @@ import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 import { getHighlightRanges } from "../tei-document/highlighter"
 import { moveNode, validMove } from "../tei-document/editor-actions"
-import { keys } from '@material-ui/core/styles/createBreakpoints';
 
 const resizeRefreshRate = 100
 
