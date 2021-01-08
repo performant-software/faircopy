@@ -15,6 +15,7 @@ import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 import { getHighlightRanges } from "../tei-document/highlighter"
 import { moveNode, validMove } from "../tei-document/editor-actions"
+import { keys } from '@material-ui/core/styles/createBreakpoints';
 
 const resizeRefreshRate = 100
 
@@ -166,11 +167,11 @@ export default class TEIEditor extends Component {
 
     onKeyDown = ( event ) => {
         const { ctrlDown, altDown } = this.state
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
 
         // move structure nodes with arrow keys
         if( event.key === 'ArrowUp' || event.key === 'ArrowDown' ) {
-            const { teiDocument } = this.props
-            const editorView = teiDocument.getActiveView()
             const selection = (editorView) ? editorView.state.selection : null         
             if( selection && selection.node ) {
                 const dir = event.key === 'ArrowUp' ? 'up' : 'down'
@@ -180,19 +181,14 @@ export default class TEIEditor extends Component {
         }
 
         const metaKey = ( event.ctrlKey || event.metaKey )
-        console.log(`${metaKey} ${event.shiftKey} ${event.key}`)
-        
+        const key = event.key.toLowerCase()
+        // console.log(`meta: ${metaKey} shift: ${event.shiftKey} ${key}`)
+
         // handle undo and redo here so they are available even when focus is not in PM itself
-        if( metaKey && event.key.toLowerCase() === 'z' ) {
-            console.log('undo')
-            const { teiDocument } = this.props
-            const editorView = teiDocument.getActiveView()
+        if( metaKey && key === 'z' ) {
             undo(editorView.state,editorView.dispatch)
         } 
-        if( metaKey && event.shiftKey && event.key.toLowerCase() === 'z' ) {
-            console.log('redo')
-            const { teiDocument } = this.props
-            const editorView = teiDocument.getActiveView()
+        if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
             redo(editorView.state,editorView.dispatch)
         } 
 
