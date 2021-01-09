@@ -14,7 +14,7 @@ import ThumbnailMargin from './ThumbnailMargin'
 import NotePopup from './NotePopup';
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
 import { getHighlightRanges } from "../tei-document/highlighter"
-import { moveNode, validMove } from "../tei-document/editor-actions"
+import { moveNode } from "../tei-document/editor-actions"
 
 const resizeRefreshRate = 100
 
@@ -168,18 +168,17 @@ export default class TEIEditor extends Component {
         const { ctrlDown, altDown } = this.state
         const { teiDocument } = this.props
         const editorView = teiDocument.getActiveView()
+        const metaKey = ( event.ctrlKey || event.metaKey )
 
         // move structure nodes with arrow keys
         if( event.key === 'ArrowUp' || event.key === 'ArrowDown' ) {
             const selection = (editorView) ? editorView.state.selection : null         
             if( selection && selection.node ) {
                 const dir = event.key === 'ArrowUp' ? 'up' : 'down'
-                const validState = validMove( dir, teiDocument ) 
-                if( validState ) moveNode( dir, teiDocument, validState )
+                moveNode( dir, teiDocument, metaKey )
             }
         }
 
-        const metaKey = ( event.ctrlKey || event.metaKey )
         const key = event.key.toLowerCase()
         // console.log(`meta: ${metaKey} shift: ${event.shiftKey} ${key}`)
 
