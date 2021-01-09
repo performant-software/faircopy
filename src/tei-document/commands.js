@@ -222,22 +222,44 @@ export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
     }
 }
 
+function isBlank(node) {
+    if( node.childCount === 0 ) return true
+    if( node.childCount > 1 ) return false
+    const child = node.child(0)
+    if( child.type.name === 'textNode' ) {
+        if( child.textContent.match(/\S+/) ) return false
+        return true
+    }
+    return false
+}
+
 export function deleteParentNode(state) {
     const { tr, selection } = state
     const { node, $anchor } = selection
     const { pos } = $anchor
+    const grandParentNode = $anchor.node()
 
-    const children = []
-    for( let i=0; i < node.childCount; i++ ) {
-        const child = node.child(i)
-        children.push(child)
+    // need to have a grand parent to adopt children
+    if(!grandParentNode) return tr
+
+    const greatNodes = [], children = []
+    for( let i=0; i < grandParentNode.childCount; i++ ) {
+        const child = grandParentNode.child(i)
+        if( child === node ) {
+            if( !isBlank(node) ) {
+                for( let i=0; i < node.childCount; i++ ) {
+                    const grandChild = node.child(i)
+                    greatNodes.push(grandChild)
+                    children.push(grandChild)
+                }    
+            }
+        } else {
+            greatNodes.push(child)
+        }
     }
-    const fragment = Fragment.fromArray(children)
-    try {
-        if( node.canReplace(pos,pos+node.nodeSize,fragment) )
-            tr.replaceWith(pos,pos+node.nodeSize,fragment) 
-    } catch(e) {
-        console.log(e)
+
+    if( grandParentNode.type.validContent(Fragment.fromArray(greatNodes)) ) {
+        tr.replaceWith(pos,pos+node.nodeSize,children) 
     }
     return tr
 }
