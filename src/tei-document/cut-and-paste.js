@@ -73,9 +73,7 @@ export function transformPastedHandler(teiSchema,teiDocument) {
             const noteEl = pastedNoteBuffer.pop()
             teiDocument.parseSubDocument(noteEl,noteEl.getAttribute('__id__'))
         }
-
-        // TODO if this is a structure node, paste it in a valid location
-
+        
         // done parsing, disassociate this teidocument from schema parser
         teiSchema.teiDocuments.pop()
         return slice
