@@ -304,7 +304,7 @@ export function eraseSelection(teiDocument) {
 // Can the selected node move up or down the document?
 function validMove(direction,teiDocument,metaKey) {
     const editorView = teiDocument.getActiveView()
-    const {hard} = teiDocument.fairCopyProject.teiSchema.elementGroups
+    const {hard, inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
     const { selection } = editorView.state
     const { $anchor } = selection
     const nodeIndex = $anchor.index()
@@ -313,7 +313,8 @@ function validMove(direction,teiDocument,metaKey) {
     const selectedNode = selection.node
 
     // do nothing if root node, or can't move in requested direction
-    if( !parentNode ) return false
+    // also, this doesn't apply to inline nodes
+    if( !parentNode || inlines.includes(selectedNode.type.name) ) return false
 
     const nodes = []
     for( let i=0; i < parentNode.childCount; i++ ) {

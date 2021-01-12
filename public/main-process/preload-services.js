@@ -13,6 +13,10 @@ const copyToClipBoard = function copyToClipBoard(content) {
     electron.clipboard.writeText(content)
 }
 
+const copyToClipBoardHTML = function copyToClipBoardHTML(content) {
+    electron.clipboard.writeHTML(content)
+}
+
 const ipcRegisterCallback = function ipcRegisterCallback( eventID, callback ) {
     electron.ipcRenderer.on(eventID,callback)
 }
@@ -31,5 +35,6 @@ exports.services = {
     readClipBoardHTML, 
     readClipBoardText,
     copyToClipBoard,
+    copyToClipBoardHTML,
     getBasename
 }

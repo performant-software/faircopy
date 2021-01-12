@@ -1,8 +1,14 @@
 import {DOMSerializer} from "prosemirror-model"
 import TEISchema from "../tei-document/TEISchema"
 
+const fairCopy = window.fairCopy
+
 // buffer for storing subdocuments 
 const pastedNoteBuffer = []
+
+// Note about Cut and Paste:
+// When the users focus is on the EditorGutter, the cut and paste handlers defined here (cutSelectedNode) are operative.
+// When ProseMirror has focus, the ProseMirror editor view callbacks defined below are operative.
 
 // Extract the note elements from the html so they don't get
 // parsed inline by DOMParser.parseSlice() during a cut and paste
@@ -83,4 +89,35 @@ export function createClipboardSerializer(teiSchema,teiDocument) {
     clipboardSchema.teiMode = true
     clipboardSchema.teiDocuments.push(teiDocument)
     return DOMSerializer.fromSchema( clipboardSchema.schema )    
+}
+
+export function cutSelectedNode(teiDocument,clipboardSerializer) {
+    copyNode(teiDocument,clipboardSerializer,true)
+}
+
+export function copySelectedNode(teiDocument,clipboardSerializer) {
+    copyNode(teiDocument,clipboardSerializer)
+}
+
+function copyNode(teiDocument,clipboardSerializer,cut=false) {
+    const editorView = teiDocument.getActiveView()
+    const {inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
+    const selection = (editorView) ? editorView.state.selection : null  
+    
+    if( selection && selection.node && !inlines.includes(selection.node.type.name)  ) {
+        const nodeEl = clipboardSerializer.serializeNode(selection.node)
+        fairCopy.services.copyToClipBoardHTML(nodeEl.outerHTML)
+        if( cut ) {
+            const {tr} = editorView.state
+            tr.deleteSelection()
+            editorView.dispatch(tr)    
+        }
+    }
+}
+
+export function pasteSelectedNode(teiDocument) {
+    const html = fairCopy.services.readClipBoardHTML()    
+    if( html ) {
+        // TODO insert it into the doc
+    }
 }

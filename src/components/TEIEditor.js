@@ -12,7 +12,7 @@ import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import NotePopup from './NotePopup';
-import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
+import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../tei-document/cut-and-paste"
 import { getHighlightRanges } from "../tei-document/highlighter"
 import { moveNode } from "../tei-document/editor-actions"
 
@@ -76,6 +76,7 @@ export default class TEIEditor extends Component {
         const { teiSchema } = teiDocument.fairCopyProject
 
         if( teiDocument.editorView ) return;
+        this.clipboardSerializer = createClipboardSerializer(teiSchema,teiDocument)
 
         const editorView = new EditorView( 
             element,
@@ -86,7 +87,7 @@ export default class TEIEditor extends Component {
                 handleKeyDown: this.onEditorKeyDown,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema,teiDocument),
                 transformPasted: transformPastedHandler(teiSchema,teiDocument),
-                clipboardSerializer: createClipboardSerializer(teiSchema,teiDocument)
+                clipboardSerializer: this.clipboardSerializer
             }
         )
         if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
@@ -181,6 +182,18 @@ export default class TEIEditor extends Component {
 
         const key = event.key.toLowerCase()
         // console.log(`meta: ${metaKey} shift: ${event.shiftKey} ${key}`)
+
+        if( metaKey && key === 'x' ) {
+            cutSelectedNode( teiDocument, this.clipboardSerializer )
+        }
+
+        if( metaKey && key === 'c' ) {
+            copySelectedNode( teiDocument, this.clipboardSerializer )
+        }
+
+        if( metaKey && key === 'v' ) {
+            pasteSelectedNode( teiDocument )
+        }
 
         // handle undo and redo here so they are available even when focus is not in PM itself
         if( metaKey && key === 'z' ) {
