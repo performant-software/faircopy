@@ -75,6 +75,13 @@ class FairCopyApplication {
     ipcMain.on('requestImageURL', (event, resourceID) => { this.projectStore.openImageResource(resourceID) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
 
+    
+    ipcMain.on('requestPaste', (event) => { 
+      if( this.mainWindow ) {
+          this.mainWindow.webContents.paste()
+      }
+    })
+
     ipcMain.on('requestImport', (event) => { 
       const paths = this.mainMenu.openImport()
       const path = paths ? paths[0] : null

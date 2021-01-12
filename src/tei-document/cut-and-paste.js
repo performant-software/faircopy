@@ -74,6 +74,8 @@ export function transformPastedHandler(teiSchema,teiDocument) {
             teiDocument.parseSubDocument(noteEl,noteEl.getAttribute('__id__'))
         }
 
+        // TODO if this is a structure node, paste it in a valid location
+
         // done parsing, disassociate this teidocument from schema parser
         teiSchema.teiDocuments.pop()
         return slice
@@ -91,22 +93,49 @@ export function createClipboardSerializer(teiSchema,teiDocument) {
     return DOMSerializer.fromSchema( clipboardSchema.schema )    
 }
 
-export function cutSelectedNode(teiDocument,clipboardSerializer) {
-    copyNode(teiDocument,clipboardSerializer,true)
+export function cutSelectedNode(teiDocument) {
+    copyNode(teiDocument,true)
 }
 
-export function copySelectedNode(teiDocument,clipboardSerializer) {
-    copyNode(teiDocument,clipboardSerializer)
+export function copySelectedNode(teiDocument) {
+    copyNode(teiDocument)
 }
 
-function copyNode(teiDocument,clipboardSerializer,cut=false) {
+// This function is from https://github.com/ProseMirror/prosemirror-view/blob/master/src/clipboard.js
+// slightly modified for this context.
+function serializeForClipboard(view, slice) {
+    let context = [], {content, openStart, openEnd} = slice
+    while (openStart > 1 && openEnd > 1 && content.childCount === 1 && content.firstChild.childCount === 1) {
+      openStart--
+      openEnd--
+      let node = content.firstChild
+      context.push(node.type.name, node.attrs !== node.type.defaultAttrs ? node.attrs : null)
+      content = node.content
+    }
+  
+    let serializer = view.someProp("clipboardSerializer") || DOMSerializer.fromSchema(view.state.schema)
+    let doc = document, wrap = doc.createElement("div")
+    wrap.appendChild(serializer.serializeFragment(content, {document: doc}))
+  
+    let firstChild = wrap.firstChild
+
+    if (firstChild && firstChild.nodeType === 1)
+      firstChild.setAttribute("data-pm-slice", `${openStart} ${openEnd} ${JSON.stringify(context)}`)
+  
+    let text = view.someProp("clipboardTextSerializer", f => f(slice)) ||
+        slice.content.textBetween(0, slice.content.size, "\n\n")
+  
+    return {dom: wrap, text}
+}
+
+function copyNode(teiDocument,cut=false) {
     const editorView = teiDocument.getActiveView()
     const {inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
     const selection = (editorView) ? editorView.state.selection : null  
     
     if( selection && selection.node && !inlines.includes(selection.node.type.name)  ) {
-        const nodeEl = clipboardSerializer.serializeNode(selection.node)
-        fairCopy.services.copyToClipBoardHTML(nodeEl.outerHTML)
+        const clips = serializeForClipboard(editorView,selection.content())
+        fairCopy.services.copyToClipBoardHTML(clips.dom.innerHTML)
         if( cut ) {
             const {tr} = editorView.state
             tr.deleteSelection()
@@ -115,9 +144,17 @@ function copyNode(teiDocument,clipboardSerializer,cut=false) {
     }
 }
 
+// Handle paste events when the node is selected via the EditorGutter
 export function pasteSelectedNode(teiDocument) {
     const html = fairCopy.services.readClipBoardHTML()    
     if( html ) {
-        // TODO insert it into the doc
+        const editorView = teiDocument.getActiveView()
+        const {inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
+        const selection = (editorView) ? editorView.state.selection : null  
+        if( selection && selection.node && !inlines.includes(selection.node.type.name)  ) {
+            // make the paste happen in the editor view
+            editorView.focus()
+            fairCopy.services.ipcSend('requestPaste')
+        }
     }
 }
