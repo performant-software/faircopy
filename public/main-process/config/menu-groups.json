@@ -76,7 +76,7 @@
         },
         {
             "id": "asides",
-            "label": "Asides",
+            "label": "Notes",
             "members": ["choice","fw","note","subst"]
         },
         {
