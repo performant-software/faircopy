@@ -7,7 +7,7 @@ import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 
 import {teiTemplate} from "./tei-template"
-import {parseText, serializeText, renameCamelCaseAttrs} from "./xml"
+import {parseText, serializeText, htmlToXML} from "./xml"
 
 const fairCopy = window.fairCopy
 
@@ -194,10 +194,9 @@ export default class TEIDocument {
         // the rest of the xml document, then serialize to string
         const domFragment = serializeText(editorState.doc.content, this, teiSchema)
         const textEl = this.xmlDom.getElementsByTagName('text')[0]
-        var div = this.xmlDom.createElement('div')
+        var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
-        // this has to be done here because HTML is case insenitive, while XML is not.
-        textEl.innerHTML = renameCamelCaseAttrs(div.innerHTML,teiSchema.attrs)
+        textEl.innerHTML = htmlToXML(div.innerHTML,teiSchema.attrs)
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
         fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
 

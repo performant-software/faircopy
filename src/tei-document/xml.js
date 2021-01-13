@@ -112,8 +112,16 @@ function renameInterMarks(inter, documentFragment) {
     }
 }
 
+// Apply various transformations to move from HTML -> XML
+export function htmlToXML(html,attrs) {
+    // This entitiy is not valid XML
+    const nextHTML = html.replaceAll('&nbsp;',' ')
+    // this has to be done here because HTML is case insenitive, while XML is not.
+    return renameCamelCaseAttrs(nextHTML,attrs)
+}
+
 // Repair camel cased attrs that React munged
-export function renameCamelCaseAttrs(html,attrs) {
+function renameCamelCaseAttrs(html,attrs) {
     let htmlBuffer = html
     for( const attr of Object.values(attrs) ) {
         if( attr.ident && attr.ident.match(/[a-z]+[A-Z]/) ) {
