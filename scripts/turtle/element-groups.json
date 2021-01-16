@@ -1,7 +1,16 @@
 {
+    "asides": [
+        "note",
+        "choice",
+        "fw",
+        "subst"
+    ],
     "docNodes": [
         "doc",
-        "noteDoc"
+        "noteDoc",
+        "choiceDoc",
+        "fwDoc",
+        "substDoc"
     ],
     "embed": [
         "address",
@@ -45,7 +54,6 @@
         "gap",
         "lb",
         "milestone",
-        "note",
         "pb"
     ],
     "inter": [
@@ -86,9 +94,6 @@
         "time"
     ],
     "exclude": [
-        "choice",
-        "fw",
-        "subst",
         "facsimile",
         "group",
         "surface",

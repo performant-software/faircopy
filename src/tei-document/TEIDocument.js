@@ -51,26 +51,26 @@ export default class TEIDocument {
         return `subdoc-${this.subDocCounter++}`
     }
 
-    parseSubDocument(node, noteID) {
+    parseSubDocument(node, name, noteID) {
         const {teiSchema} = this.fairCopyProject
         // turn note into noteDoc
-        let noteX = document.createElement('noteX')
+        let noteX = document.createElement(`${name}X`)
         noteX.innerHTML = node.innerHTML
-        let noteDoc = document.createElement('noteDoc')
+        let noteDoc = document.createElement(`${name}Doc`)
         noteDoc.append(noteX)
-        const subDoc = parseText(noteDoc,this,teiSchema,true)
+        const subDoc = parseText(noteDoc,this,teiSchema,name)
         this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
     }
 
-    serializeSubDocument(attrs) {
+    serializeSubDocument(name, attrs) {
         const {teiSchema} = this.fairCopyProject
         let {__id__} = attrs; 
         const noteJSON = JSON.parse( this.subDocs[__id__] )
-        const subDoc = teiSchema.noteSchema.nodeFromJSON(noteJSON);
+        const subDoc = teiSchema.docNodeSchemas[name].nodeFromJSON(noteJSON);
         // get the content of noteDoc, which is the only child of doc
         const noteDocFragment = subDoc.firstChild.content
-        const domFragment = serializeText(noteDocFragment, this, teiSchema, true)
-        let note = document.createElement('note')
+        const domFragment = serializeText(noteDocFragment, this, teiSchema, name)
+        let note = document.createElement(name)
         note.appendChild( domFragment.cloneNode(true) )
         for( const attrKey of Object.keys(attrs)) {
             if( attrKey !== '__id__') {
@@ -127,10 +127,10 @@ export default class TEIDocument {
         return doc
     }
 
-    openSubDocument( noteID ) {
-        const noteJSON = JSON.parse( this.subDocs[noteID] )
+    openSubDocument( subDocID ) {
+        const subDocJSON = JSON.parse( this.subDocs[subDocID] )
         const { teiSchema } = this.fairCopyProject
-        const doc = teiSchema.schema.nodeFromJSON(noteJSON);
+        const doc = teiSchema.schema.nodeFromJSON(subDocJSON);
         return EditorState.create({
             doc,
             selection: TextSelection.create(doc, 0),
@@ -138,11 +138,11 @@ export default class TEIDocument {
         })
     }
 
-    createSubDocument(documentDOM) {
+    createSubDocument(documentDOM,docType) {
         const { teiSchema } = this.fairCopyProject
-        let noteDoc = documentDOM.createElement('noteDoc')
-        noteDoc.append(documentDOM.createElement('noteX'))
-        const subDoc = parseText(noteDoc,this,teiSchema,true)
+        let noteDoc = documentDOM.createElement(`${docType}Doc`)
+        noteDoc.append(documentDOM.createElement(`${docType}X`))
+        const subDoc = parseText(noteDoc,this,teiSchema,docType)
 
         const subDocID = this.issueSubDocumentID()
         this.subDocs[subDocID] = JSON.stringify(subDoc.toJSON())
@@ -180,9 +180,9 @@ export default class TEIDocument {
         this.loading = false
     }
 
-    saveNote(noteID, editorState) {
+    saveSubDoc(subDocID, editorState) {
         const subDoc = editorState.doc
-        this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
+        this.subDocs[subDocID] = JSON.stringify(subDoc.toJSON());
     }
 
     save() {

@@ -6,17 +6,30 @@ export default class TEISchema {
 
     constructor(json) {
         this.teiDocuments = []
+        this.schemaJSON = json
         this.teiMode = false
         const { schemaSpec, elements, attrs, elementGroups } = this.parseSchemaConfig(json)
         this.elementGroups = elementGroups
         this.elements = elements
         this.attrs = attrs
         this.schema = new Schema(schemaSpec)
-        const noteSchemaSpec = { ...schemaSpec, topNode: 'noteDoc' }
-        this.noteSchema = new Schema(noteSchemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
-        this.noteDomParser = PMDOMParser.fromSchema(this.noteSchema)
-        this.schemaJSON = json
+        this.createSubDocSchemas(schemaSpec)
+    }
+
+    // Each subdoc type needs its own schema that has the docNode as its top level node and a parser that uses that schema
+    createSubDocSchemas(schemaSpec) {
+        this.docNodeSchemas = {}
+        this.docNodeParsers = {}
+        const { docNodes } = this.elementGroups
+        for( const docNode of docNodes ) {
+            if( docNode !== 'doc' ) {
+                const docNodeSchemaSpec = { ...schemaSpec, topNode: docNode }
+                const asideName = docNode.slice(0,-3) // Slice off 'Doc' to get node name
+                this.docNodeSchemas[asideName] = new Schema(docNodeSchemaSpec)
+                this.docNodeParsers[asideName] = PMDOMParser.fromSchema(this.docNodeSchemas[asideName])    
+            }
+        }
     }
 
     addTextNodes(editorView) {
@@ -92,8 +105,8 @@ export default class TEISchema {
                     nodes[name] = elSpec
                 }
             } else if( pmType === 'inline-node' ) {
-                if( name === 'note' ) {
-                    nodes[name] = this.createNoteSpec(validAttrs, content, group)
+                if( teiSimple.elementGroups.asides.includes(name) ) {
+                    nodes[name] = this.createAsideSpec(name, icon, validAttrs, content, group)
                 } else {
                     nodes[name] = this.createAtomSpec(name, icon, validAttrs, group)
                 }
@@ -158,7 +171,7 @@ export default class TEISchema {
         }
     }
 
-    createNoteSpec(validAttrs, content, group) {
+    createAsideSpec(name, icon, validAttrs, content, group) {
 
         let attrs = this.getAttrSpec(validAttrs)
         attrs['__id__'] = {}
@@ -171,13 +184,13 @@ export default class TEISchema {
             attrs,
             parseDOM: [
                 {
-                    tag: "note",
+                    tag: name,
                     getAttrs: (domNode) => {
                         const attrParser = this.getAttrParser(validAttrs)
                         const existingID = domNode.getAttribute('__id__')
                         const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
                         const noteID = existingID ? existingID : teiDocument.issueSubDocumentID()
-                        teiDocument.parseSubDocument(domNode, noteID)
+                        teiDocument.parseSubDocument(domNode, name, noteID)
                         return { ...attrParser(domNode), __id__: noteID }
                     },
                 }
@@ -187,10 +200,10 @@ export default class TEISchema {
                     let attrs = this.filterOutBlanks(node.attrs)
                     attrs = this.filterOutErrors(attrs)
                     const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
-                    return teiDocument.serializeSubDocument(attrs)
+                    return teiDocument.serializeSubDocument(name, attrs)
                 } else {
-                    const noteAttrs = { ...node.attrs, class: "far fa-xs fa-comment-alt inline-node" }
-                    return ["tei-note",noteAttrs]
+                    const noteAttrs = { ...node.attrs, class: `far fa-xs ${icon} inline-node` }
+                    return [`tei-${name}`,noteAttrs]
                 }
             }
         }          

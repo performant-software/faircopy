@@ -1,17 +1,17 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createFragment } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createFragment, createAsideNode } from "./commands"
 
 export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
     const {schema} = fairCopyProject.teiSchema
     const {pmType} = fairCopyProject.teiSchema.elements[elementID]
-    const { inter } = fairCopyProject.teiSchema.elementGroups
+    const { asides, inter } = fairCopyProject.teiSchema.elementGroups
 
     if( pmType === 'inline-node' ) {
-        if( elementID === 'note' ) {
-            return createNote( teiDocument, editorView )
+        if( asides.includes(elementID) ) {
+            return createAside( elementID, teiDocument, editorView )
         } else {
             const inlineType = schema.nodes[elementID]
             return createInline( inlineType, editorView )
@@ -242,14 +242,15 @@ export function addOutside( elementID, teiDocument, pos ) {
 
 export function addAbove( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { schema } = teiDocument.fairCopyProject.teiSchema
+    const { teiSchema } = teiDocument.fairCopyProject
+    const { schema, elementGroups } = teiSchema
+    const { asides } = elementGroups
     const nodeType = schema.nodes[elementID]
 
     if( nodeType.isAtom ) {
-        if( elementID === 'note' ) {
-            const subDocID = teiDocument.createSubDocument(document)
-            const noteNode = schema.node('note', { id: '', __id__: subDocID })
-            insertAtomNodeAt(noteNode, pos, editorView, true )    
+        if( asides.includes(elementID) ) {
+            const asideNode = createAsideNode( elementID, teiDocument, editorView )
+            insertAtomNodeAt(asideNode, pos, editorView, true )    
         } else {
             const node = nodeType.create()
             insertAtomNodeAt(node, pos, editorView, false )    
@@ -261,18 +262,19 @@ export function addAbove( elementID, teiDocument, pos ) {
 
 export function addBelow( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { schema } = teiDocument.fairCopyProject.teiSchema
     const { doc } = editorView.state
+    const { teiSchema } = teiDocument.fairCopyProject
+    const { schema, elementGroups } = teiSchema
+    const { asides } = elementGroups
 
     const nodeType = schema.nodes[elementID]
     const targetNode = doc.nodeAt(pos)
     const insertPos = pos + targetNode.nodeSize
 
     if( nodeType.isAtom ) {
-        if( elementID === 'note' ) {
-            const subDocID = teiDocument.createSubDocument(document)
-            const noteNode = schema.node('note', { id: '', __id__: subDocID })
-            insertAtomNodeAt(noteNode, insertPos, editorView, true )                
+        if( asides.includes(elementID) ) {
+            const asideNode = createAsideNode( elementID, teiDocument, editorView )
+            insertAtomNodeAt(asideNode, insertPos, editorView, true )                
         } else {
             const node = nodeType.create()
             insertAtomNodeAt(node, insertPos, editorView, true )    
@@ -486,13 +488,12 @@ function createInline( nodeType, editorView ) {
     editorView.focus()
 }
 
-function createNote( teiDocument, editorView ) {
+function createAside( asideName, teiDocument, editorView ) {
     const { state } = editorView
     const { tr, selection } = state
     const { $anchor } = selection
 
-    const subDocID = teiDocument.createSubDocument(document)
-    const noteNode = state.schema.node('note', { id: '', __id__: subDocID })
-    tr.insert($anchor.pos, noteNode) 
+    const asideNode = createAsideNode( asideName, teiDocument, editorView )
+    tr.insert($anchor.pos, asideNode) 
     editorView.dispatch(tr)
 }

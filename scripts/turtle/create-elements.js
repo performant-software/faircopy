@@ -8,11 +8,12 @@ const createElements = function createElements(elGroups,specs) {
     // TODO embeds
     elements.push( ...createNodes(elGroups,true,specs) )
     elements.push( ...createInlineNodes(elGroups,icons,specs) )
+    elements.push( ...createAsides(elGroups,icons,specs) )
     // TODO limited-marks
     elements.push( ...createInters(elGroups,specs) )
     elements.push( ...createMarks(elGroups,specs) )
     elements.push( ...createNodes(elGroups,false,specs) )
-    elements.push( ...createDocNodes(elGroups,specs) )
+    elements.push( ...createDocNode(elGroups,specs) )
     return elements
 }
 
@@ -86,13 +87,51 @@ function createInlineNodes(elGroups,icons,specs) {
     return inlineElements
 }
 
-// special top level text node, has properties of text but is called "doc"
-const createDocNodes = function createDocNode(elGroups,specs) {
-    let noteSpec = specs['note']
-    const nodeGroups = getNodeGroups( elGroups, specs )
-    const nodeContent = onlyGroups( nodeGroups, noteSpec.content )
-    let content = encodeContent(nodeContent)
+function createAsides(elGroups,icons,specs) {
+    const {asides} = elGroups
 
+    const asideElements = []
+    for( const aside of asides ) {
+        const spec = specs[aside]
+        const nodeGroups = getNodeGroups( elGroups, specs )
+        const nodeContent = onlyGroups( nodeGroups, spec.content )
+        const content = encodeContent(nodeContent)
+        const contentName = `${aside}X`
+        const docName = `${aside}Doc`
+    
+        // create the inline node which will represent the element in the document
+        asideElements.push( {
+            name: aside,
+            pmType: "inline-node",
+            validAttrs: [],
+            icon: icons[aside],
+            group: 'inline_node',
+            desc: spec.description
+        } )
+
+        // create the node that will contain the aside's content 
+        asideElements.push({
+            "name": contentName,
+            "pmType": "node",
+            "isolating": true,
+            "gutterMark": true,
+            "content": content 
+        })
+
+        // create the root node for the aside's subDocument
+        asideElements.push({
+            "name": docName,
+            "pmType": "node",
+            "isolating": true,
+            "content": contentName
+        })
+    }
+
+    return asideElements
+}
+
+// special top level text node, has properties of text but is called "doc"
+const createDocNode = function createDocNode(elGroups,specs) {
     return [
         {
             "name": "doc",
@@ -100,19 +139,6 @@ const createDocNodes = function createDocNode(elGroups,specs) {
             "isolating": true,
             "gutterMark": true,
             "content": "((front)? (body) (back)?)"
-        },
-        {
-            "name": "noteX",
-            "pmType": "node",
-            "isolating": true,
-            "gutterMark": true,
-            "content": content 
-        },
-        {
-            "name": "noteDoc",
-            "pmType": "node",
-            "isolating": true,
-            "content": "noteX"
         }
     ]
 }

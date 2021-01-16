@@ -71,7 +71,7 @@ export function transformPastedHandler(teiSchema,teiDocument) {
         // apply notes after DOMParse.parseSlice()
         while( pastedNoteBuffer.length > 0 ) {
             const noteEl = pastedNoteBuffer.pop()
-            teiDocument.parseSubDocument(noteEl,noteEl.getAttribute('__id__'))
+            teiDocument.parseSubDocument(noteEl,noteEl.nodeName,noteEl.getAttribute('__id__'))
         }
         
         // done parsing, disassociate this teidocument from schema parser

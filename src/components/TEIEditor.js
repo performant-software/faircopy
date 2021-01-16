@@ -149,8 +149,11 @@ export default class TEIEditor extends Component {
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
         if( !direct ) return
+        
+        const { teiDocument } = this.props
+        const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
 
-        if( node.type.name === 'note' ) {
+        if( asides.includes(node.type.name) ) {
             const { noteID } = this.state
             const nextID = node.attrs['__id__']
             if( noteID !== nextID ) {
@@ -225,6 +228,7 @@ export default class TEIEditor extends Component {
     getSelectedElements() {
         const { teiDocument } = this.props
         const { noteID } = this.state
+        const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
 
         const editorView = teiDocument.getActiveView()
         const selection = (editorView) ? editorView.state.selection : null 
@@ -235,10 +239,10 @@ export default class TEIEditor extends Component {
             if( selection.node ) {
                 // don't display drawer for notes here, see below
                 const name = selection.node.type.name
-                if( name !== 'note' && name !== 'globalNode' && name !== 'noteX' ) {
+                if( !asides.includes(name) && name !== 'globalNode' && !name.endsWith('X') ) {
                     elements.push( selection.node )
                 } else {
-                    if( noteID && name === 'noteX' ) {
+                    if( noteID && name.endsWith('X') ) {
                         const { doc } = teiDocument.editorView.state
                         let noteNode
                         doc.descendants( (node) => {

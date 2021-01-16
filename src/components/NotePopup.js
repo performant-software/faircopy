@@ -23,7 +23,7 @@ export default class NotePopup extends Component {
         const { noteEditorView } = this.state
 
         if( !noteID ) {
-            this.saveNote()
+            this.saveSubDoc()
             this.setState({...this.state, noteEditorView: null})
             return
         } 
@@ -60,18 +60,18 @@ export default class NotePopup extends Component {
         }
     }
 
-    saveNote() {
+    saveSubDoc() {
         const { teiDocument } = this.props
         const { currentNoteID, noteEditorView } = this.state
         if( noteEditorView ) {
             const editorState = noteEditorView.state
-            teiDocument.saveNote(currentNoteID,editorState)                
+            teiDocument.saveSubDoc(currentNoteID,editorState)                
         }
     }
 
     destroyEditorView = (editorView) => {
         const { teiDocument } = this.props
-        this.saveNote()
+        this.saveSubDoc()
         editorView.destroy()
         teiDocument.noteEditorView = null
         this.setState({ ...this.state, currentNoteID: null, noteEditorView: null })

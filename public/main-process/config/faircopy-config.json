@@ -2420,6 +2420,98 @@
 				}
 			}
 		},
+		"pb": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"break": {
+					"active": false,
+					"vocabID": "pb[break]"
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"ed": {
+					"active": false
+				},
+				"edRef": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"spanTo": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "pb[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "pb[type]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
 		"note": {
 			"attrState": {
 				"ana": {
@@ -2522,14 +2614,16 @@
 				}
 			}
 		},
-		"pb": {
+		"noteX": {
+			"attrState": {}
+		},
+		"noteDoc": {
+			"attrState": {}
+		},
+		"choice": {
 			"attrState": {
 				"ana": {
 					"active": false
-				},
-				"break": {
-					"active": false,
-					"vocabID": "pb[break]"
 				},
 				"cert": {
 					"active": false
@@ -2541,12 +2635,6 @@
 					"active": false
 				},
 				"corresp": {
-					"active": false
-				},
-				"ed": {
-					"active": false
-				},
-				"edRef": {
 					"active": false
 				},
 				"exclude": {
@@ -2582,22 +2670,11 @@
 				"source": {
 					"active": false
 				},
-				"spanTo": {
-					"active": false
-				},
 				"style": {
 					"active": false
 				},
-				"subtype": {
-					"active": false,
-					"vocabID": "pb[subtype]"
-				},
 				"synch": {
 					"active": false
-				},
-				"type": {
-					"active": false,
-					"vocabID": "pb[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -2613,6 +2690,234 @@
 					"vocabID": "*[xml:space]"
 				}
 			}
+		},
+		"choiceX": {
+			"attrState": {}
+		},
+		"choiceDoc": {
+			"attrState": {}
+		},
+		"fw": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"hand": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"place": {
+					"active": false,
+					"vocabID": "*[place]"
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "fw[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "fw[type]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"fwX": {
+			"attrState": {}
+		},
+		"fwDoc": {
+			"attrState": {}
+		},
+		"subst": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"atLeast": {
+					"active": false
+				},
+				"atMost": {
+					"active": false
+				},
+				"cause": {
+					"active": false,
+					"vocabID": "subst[cause]"
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"confidence": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"evidence": {
+					"active": false,
+					"vocabID": "*[evidence]"
+				},
+				"exclude": {
+					"active": false
+				},
+				"extent": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"hand": {
+					"active": false
+				},
+				"instant": {
+					"active": false
+				},
+				"max": {
+					"active": false
+				},
+				"min": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"precision": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"quantity": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"scope": {
+					"active": false,
+					"vocabID": "subst[scope]"
+				},
+				"select": {
+					"active": false
+				},
+				"seq": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"status": {
+					"active": false,
+					"vocabID": "subst[status]"
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"unit": {
+					"active": false,
+					"vocabID": "*[unit]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"substX": {
+			"attrState": {}
+		},
+		"substDoc": {
+			"attrState": {}
 		},
 		"markadd": {
 			"attrState": {
@@ -9633,12 +9938,6 @@
 			}
 		},
 		"doc": {
-			"attrState": {}
-		},
-		"noteX": {
-			"attrState": {}
-		},
-		"noteDoc": {
 			"attrState": {}
 		}
 	},

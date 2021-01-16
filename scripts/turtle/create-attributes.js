@@ -1,7 +1,11 @@
+const {getAllElements} = require('./parse-util')
 
-const createAttributes = function createAttributes( elements, specs ) {
+const createAttributes = function createAttributes( elements, elementGroups, specs ) {
 
-    function getElementName(name) {
+    function getValidElementName(name) {
+        const { asides, docNodes } = elementGroups
+        if( docNodes.includes(name) ) return null
+        if( name.endsWith('X') && asides.includes(name.slice(0,-1)) ) return null
         const markPrefix = 'mark'
         return name.startsWith(markPrefix) ? name.slice(markPrefix.length) : name
     }
@@ -21,11 +25,13 @@ const createAttributes = function createAttributes( elements, specs ) {
 
     const attrDefs = {}
 
+    const validElements = getAllElements(elementGroups)
+
     // create a global dictionary of attr definitions and record attrs for each element
     for( const element of elements ) {
-        // skip over special prosemirror root node
-        if( element.name === 'doc' || element.name === 'noteDoc' || element.name === 'noteX') continue
-        const elementName = getElementName(element.name)
+        const elementName = validElements.includes(element.name) ? element.name : getValidElementName(element.name)
+        if( !elementName ) continue
+
         const attrs = findAttrs(elementName)
         const validAttrs = []
         for( const attr of attrs ) {

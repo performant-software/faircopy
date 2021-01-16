@@ -18,7 +18,7 @@ async function run() {
     const specs = load( teiSpecsDir, allElements )
 
     const elements = createElements(elementGroups,specs)
-    const attrs = createAttributes(elements,specs)
+    const attrs = createAttributes(elements,elementGroups,specs)
 
     const teiSimpleConfig = { elements, attrs, elementGroups }
     fs.writeFileSync("public/main-process/config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))

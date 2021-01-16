@@ -616,7 +616,7 @@
 			"name": "place",
 			"pmType": "node",
 			"isolating": true,
-			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_noteLike|model_biblLike)* (model_placeLike|listPlace)*)",
+			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_biblLike)* (model_placeLike|listPlace)*)",
 			"group": "model_placeLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -724,7 +724,7 @@
 			"name": "respStmt",
 			"pmType": "node",
 			"isolating": true,
-			"content": "(((resp+)|(resp+)) model_noteLike*)",
+			"content": "(((resp+)|(resp+)))",
 			"group": "model_biblPart model_msItemPart model_respLike model_recordingPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1054,6 +1054,43 @@
 			"desc": "marks a boundary point separating any kind of section of a text, typically but not necessarily indicating a point at which some part of a standard reference system changes, where the change is not represented by a structural element."
 		},
 		{
+			"name": "pb",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"break",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"ed",
+				"edRef",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"spanTo",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-file-alt",
+			"group": "inline_node",
+			"desc": "marks the beginning of a new page in a paginated document."
+		},
+		{
 			"name": "note",
 			"pmType": "inline-node",
 			"validAttrs": [
@@ -1094,17 +1131,27 @@
 			"desc": "contains a note or annotation."
 		},
 		{
-			"name": "pb",
+			"name": "noteX",
+			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
+			"content": "(textNode|model_phrase|model_inter|model_divPart|model_global)*"
+		},
+		{
+			"name": "noteDoc",
+			"pmType": "node",
+			"isolating": true,
+			"content": "noteX"
+		},
+		{
+			"name": "choice",
 			"pmType": "inline-node",
 			"validAttrs": [
 				"ana",
-				"break",
 				"cert",
 				"change",
 				"copyOf",
 				"corresp",
-				"ed",
-				"edRef",
 				"exclude",
 				"facs",
 				"n",
@@ -1116,19 +1163,138 @@
 				"sameAs",
 				"select",
 				"source",
-				"spanTo",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-question-circle",
+			"group": "inline_node",
+			"desc": "groups a number of alternative encodings for the same point in a text."
+		},
+		{
+			"name": "choiceX",
+			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
+			"content": "(model_choicePart){2,}"
+		},
+		{
+			"name": "choiceDoc",
+			"pmType": "node",
+			"isolating": true,
+			"content": "choiceX"
+		},
+		{
+			"name": "fw",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"hand",
+				"n",
+				"next",
+				"place",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
 				"style",
 				"subtype",
 				"synch",
+				"type",
 				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
 				"xml:space"
 			],
-			"icon": "fa-file-alt",
+			"icon": "fa-heading",
 			"group": "inline_node",
-			"desc": "marks the beginning of a new page in a paginated document."
+			"desc": "contains a running head (e.g. a header, footer), catchword, or similar material appearing on the current page."
+		},
+		{
+			"name": "fwX",
+			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
+			"content": "(textNode|model_qLike|model_phrase|model_global)*"
+		},
+		{
+			"name": "fwDoc",
+			"pmType": "node",
+			"isolating": true,
+			"content": "fwX"
+		},
+		{
+			"name": "subst",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"atLeast",
+				"atMost",
+				"cause",
+				"cert",
+				"change",
+				"confidence",
+				"copyOf",
+				"corresp",
+				"evidence",
+				"exclude",
+				"extent",
+				"facs",
+				"hand",
+				"instant",
+				"max",
+				"min",
+				"n",
+				"next",
+				"precision",
+				"prev",
+				"quantity",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scope",
+				"select",
+				"seq",
+				"source",
+				"status",
+				"style",
+				"synch",
+				"unit",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-random",
+			"group": "inline_node",
+			"desc": "groups one or more deletions with one or more additions when the combination is to be regarded as a single intervention in the text."
+		},
+		{
+			"name": "substX",
+			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
+			"content": "(add|del|model_milestoneLike)+"
+		},
+		{
+			"name": "substDoc",
+			"pmType": "node",
+			"isolating": true,
+			"content": "substX"
 		},
 		{
 			"name": "markadd",
@@ -4059,19 +4225,6 @@
 			"isolating": true,
 			"gutterMark": true,
 			"content": "((front)? (body) (back)?)"
-		},
-		{
-			"name": "noteX",
-			"pmType": "node",
-			"isolating": true,
-			"gutterMark": true,
-			"content": "(textNode|model_phrase|model_inter|model_divPart|model_global)*"
-		},
-		{
-			"name": "noteDoc",
-			"pmType": "node",
-			"isolating": true,
-			"content": "noteX"
 		}
 	],
 	"attrs": {
@@ -5351,9 +5504,18 @@
 		}
 	},
 	"elementGroups": {
+		"asides": [
+			"note",
+			"choice",
+			"fw",
+			"subst"
+		],
 		"docNodes": [
 			"doc",
-			"noteDoc"
+			"noteDoc",
+			"choiceDoc",
+			"fwDoc",
+			"substDoc"
 		],
 		"embed": [
 			"address",
@@ -5397,7 +5559,6 @@
 			"gap",
 			"lb",
 			"milestone",
-			"note",
 			"pb"
 		],
 		"inter": [
@@ -5438,9 +5599,6 @@
 			"time"
 		],
 		"exclude": [
-			"choice",
-			"fw",
-			"subst",
 			"facsimile",
 			"group",
 			"surface",
