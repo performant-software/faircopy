@@ -5,8 +5,15 @@ const clipHeight = 1000
 
 export default class EditorGutter extends Component {
 
+    renderName( nodeName ) {
+        const { expanded } = this.props
+        if( !expanded ) return ''
+        const name = nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName
+        return <div className={`el-name`}>{name}</div>
+    }
+
     renderGutterMark(node,targetPos,top,bottom,index,column,style,columnPositions) {
-        const { expanded, editorView } = this.props
+        const { editorView } = this.props
         const editorState = editorView.state
 
         const height = bottom - top 
@@ -14,8 +21,6 @@ export default class EditorGutter extends Component {
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker ${highlighted} ${style}`
-        const name = (node.type.name === 'noteX') ? 'note' : node.type.name
-        const displayName = (expanded) ? <div className={`el-name`}>{name}</div> : ''
 
         const onClick = () => {
             const {tr,doc} = editorState
@@ -30,7 +35,7 @@ export default class EditorGutter extends Component {
                 style={markStyle} 
                 className={className}
                 >
-                {displayName}
+                {this.renderName(node.type.name)}
             </div>
         )
     }
