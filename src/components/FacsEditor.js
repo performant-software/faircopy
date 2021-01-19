@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import FacsDetail from './FacsDetail'
+import SurfaceEditor from './SurfaceEditor'
 import FacsIndex from './FacsIndex'
 
 export default class FacsEditor extends Component {
@@ -47,12 +47,12 @@ export default class FacsEditor extends Component {
         return (
             <div id="FacsEditor">
                 { mode === 'detail' ? 
-                    <FacsDetail
+                    <SurfaceEditor
                         surfaceIndex={surfaceIndex}
                         facsDocument={facsDocument}
                         fairCopyProject={fairCopyProject}
                         onChangeView={onChangeView}
-                    ></FacsDetail>                
+                    ></SurfaceEditor>                
                 : mode === 'index' ?
                     <FacsIndex
                         surfaceIndex={surfaceIndex}
@@ -65,13 +65,13 @@ export default class FacsEditor extends Component {
                         onConfirmDeleteImages={onConfirmDeleteImages}  
                     ></FacsIndex>
                 :
-                    <FacsDetail
+                    <SurfaceEditor
                         imageViewMode={true}
                         surfaceIndex={surfaceIndex}
                         facsDocument={facsDocument}
                         fairCopyProject={fairCopyProject}
                         onChangeView={onChangeView}
-                    ></FacsDetail>              
+                    ></SurfaceEditor>              
                 }
             </div>
         )
