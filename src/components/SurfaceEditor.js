@@ -36,6 +36,13 @@ export default class SurfaceEditor extends Component {
         }    
     }
 
+    loadZones() {
+        // const { facsDocument, surfaceIndex } = this.props
+        // const surface = facsDocument.getSurface(surfaceIndex)
+
+        // TODO Load Zones
+    }
+
     initViewer = (el) => {
         if( !el ) {
             this.viewer = null
@@ -53,7 +60,12 @@ export default class SurfaceEditor extends Component {
                 showFullPageControl: false,
                 showZoomControl: false
             })    
-            this.overlay = this.viewer.fabricjsOverlay({scale: 2000});
+            this.overlay = this.viewer.fabricjsOverlay({scale: 1000})
+            const fabricCanvas = this.overlay.fabricCanvas()
+            fabricCanvas.on('mouse:down', this.onMouseDown )
+            fabricCanvas.on('mouse:move', this.onMouseMove )
+            fabricCanvas.on('mouse:up', this.onMouseUp )
+            this.loadZones()
         }
 
         if( surface.type === 'iiif') {
@@ -88,6 +100,32 @@ export default class SurfaceEditor extends Component {
         }
     }
 
+    onMouseDown = () => {
+        console.log('mouse down')
+    }
+    
+    onMouseMove = (o) => {
+        const mouse = this.overlay.fabricCanvas().getPointer(o.e);
+        console.log(`mouse move x:${mouse.x} y:${mouse.y}`)
+    }
+
+    onMouseUp = () => {
+        console.log('mouse up')
+    }
+
+    onDrawSquare = () => {
+        // this.viewer.setMouseNavEnabled(false);
+        var rect = new fabric.Rect({
+            left: 0,
+            top: 0,
+            fill: 'red',
+            width: 200,
+            height: 200
+          });
+
+        this.overlay.fabricCanvas().add(rect);
+    }
+
     render() {
         const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
@@ -99,7 +137,11 @@ export default class SurfaceEditor extends Component {
                         <div className="titlebar">
                             <Typography component="h1" variant="h6">{resourceName}</Typography>
                         </div>        
-                        <SurfaceEditorToolbar onChangeView={onChangeView} surfaceIndex={surfaceIndex}></SurfaceEditorToolbar>
+                        <SurfaceEditorToolbar 
+                            surfaceIndex={surfaceIndex}
+                            onDrawSquare={this.onDrawSquare}
+                            onChangeView={onChangeView} 
+                        ></SurfaceEditorToolbar>
                     </div>
                 }
                 <div className="editor">

@@ -6,7 +6,7 @@ import FacsModeControl from './FacsModeControl';
 export default class SurfaceEditorToolbar extends Component {
 
     render() {
-        const { onChangeView, surfaceIndex } = this.props
+        const { onChangeView, surfaceIndex, onDrawSquare } = this.props
         
         const buttonProps = {
             disableRipple: true,
@@ -28,6 +28,7 @@ export default class SurfaceEditorToolbar extends Component {
                     <i className="fas fa-expand fa-2x"></i>
                 </Button>  
                 <Button
+                    onClick={onDrawSquare}
                     className="toolbar-button"
                     {...buttonProps}
                 >
