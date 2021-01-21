@@ -1,32 +1,11 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { Typography } from '@material-ui/core'
-import OpenSeadragon from 'openseadragon-fabricjs-overlay/openseadragon/openseadragon';
-import { fabric } from 'openseadragon-fabricjs-overlay/fabric/fabric.adapted';
-import openSeaDragonFabricOverlay from 'openseadragon-fabricjs-overlay/openseadragon-fabricjs-overlay';
-
+import OpenSeadragon from 'openseadragon'
+import OSDAnnoLayer from 'annotorious-openseadragon'
 import { getImageInfoURL } from '../tei-document/iiif'
 import SurfaceEditorToolbar from './SurfaceEditorToolbar'
 import SurfaceDetailCard from './SurfaceDetailCard'
-
-// overlay these modules
-openSeaDragonFabricOverlay(OpenSeadragon, fabric);
-
-// from https://stackoverflow.com/a/48343346/6126327 - show consistent stroke width regardless of object scaling
-fabric.Object.prototype._renderStroke = function(ctx) {
-    if (!this.stroke || this.strokeWidth === 0) {
-        return;
-    }
-    if (this.shadow && !this.shadow.affectStroke) {
-        this._removeShadow(ctx);
-    }
-    ctx.save();
-    ctx.scale(1 / this.scaleX, 1 / this.scaleY);
-    this._setLineDash(ctx, this.strokeDashArray, this._renderDashedStroke);
-    this._applyPatternGradientTransform(ctx, this.stroke);
-    ctx.stroke();
-    ctx.restore();
-};
 
 export default class SurfaceEditor extends Component {
 
@@ -60,11 +39,16 @@ export default class SurfaceEditor extends Component {
                 showFullPageControl: false,
                 showZoomControl: false
             })    
-            this.overlay = this.viewer.fabricjsOverlay({scale: 1000})
-            const fabricCanvas = this.overlay.fabricCanvas()
-            fabricCanvas.on('mouse:down', this.onMouseDown )
-            fabricCanvas.on('mouse:move', this.onMouseMove )
-            fabricCanvas.on('mouse:up', this.onMouseUp )
+            this.annotationLayer = OSDAnnoLayer(this.viewer,{});
+
+            // TODO
+            // this.annotationLayer.on('createSelection', this.handleCreateSelection);
+            // this.annotationLayer.on('select', this.handleSelect);
+            // this.annotationLayer.on('updateTarget', this.handleUpdateTarget);
+            // this.annotationLayer.on('moveSelection', this.handleMoveSelection);
+            // this.annotationLayer.on('mouseEnterAnnotation', this.props.onMouseEnterAnnotation);
+            // this.annotationLayer.on('mouseLeaveAnnotation', this.props.onMouseLeaveAnnotation);
+            
             this.loadZones()
         }
 
@@ -114,16 +98,15 @@ export default class SurfaceEditor extends Component {
     }
 
     onDrawSquare = () => {
-        // this.viewer.setMouseNavEnabled(false);
-        var rect = new fabric.Rect({
-            left: 0,
-            top: 0,
-            fill: 'red',
-            width: 200,
-            height: 200
-          });
+        this.viewer.setMouseNavEnabled(false)
+        this.annotationLayer.setDrawingEnabled(true)
+    }
 
-        this.overlay.fabricCanvas().add(rect);
+    onSelectMode = () => {
+        this.viewer.setMouseNavEnabled(true)
+        this.annotationLayer.setDrawingEnabled(false)
+        const annos = this.annotationLayer.getAnnotations()
+        console.log(JSON.stringify(annos))
     }
 
     render() {
@@ -140,6 +123,7 @@ export default class SurfaceEditor extends Component {
                         <SurfaceEditorToolbar 
                             surfaceIndex={surfaceIndex}
                             onDrawSquare={this.onDrawSquare}
+                            onSelectMode={this.onSelectMode}
                             onChangeView={onChangeView} 
                         ></SurfaceEditorToolbar>
                     </div>

@@ -1,5 +1,6 @@
 
 @import "root.css";
+@import "annotorious.min.css";
 
 @import "EditorGutter.css";
 @import "TEIElementStyles.css";
