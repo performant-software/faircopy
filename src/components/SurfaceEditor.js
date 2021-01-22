@@ -2,13 +2,22 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import { Typography } from '@material-ui/core'
 import OpenSeadragon from 'openseadragon'
-import OSDAnnoLayer from 'annotorious-openseadragon'
+import * as ZoneLayer from 'annotorious-openseadragon'
 import { getImageInfoURL } from '../tei-document/iiif'
 import SurfaceEditorToolbar from './SurfaceEditorToolbar'
 import SurfaceDetailCard from './SurfaceDetailCard'
+import ZonePopup from './ZonePopup';
 
 export default class SurfaceEditor extends Component {
 
+    constructor() {
+        super()
+        this.state = {
+            selectedZone: null,
+            selectedDOMElement: null,
+        }
+    }
+    
     componentWillUnmount() {
         if(this.viewer){
             this.viewer.destroy();
@@ -19,7 +28,10 @@ export default class SurfaceEditor extends Component {
         // const { facsDocument, surfaceIndex } = this.props
         // const surface = facsDocument.getSurface(surfaceIndex)
 
-        // TODO Load Zones
+        return [ 
+            { id: '#zone1', ulx: 100, uly: 100, lrx: 200, lry: 200 },
+            { id: '#zone2', ulx: 500, uly: 500, lrx: 600, lry: 600 }
+        ]
     }
 
     initViewer = (el) => {
@@ -39,17 +51,19 @@ export default class SurfaceEditor extends Component {
                 showFullPageControl: false,
                 showZoomControl: false
             })    
-            this.annotationLayer = OSDAnnoLayer(this.viewer,{});
 
-            // TODO
-            // this.annotationLayer.on('createSelection', this.handleCreateSelection);
-            // this.annotationLayer.on('select', this.handleSelect);
-            // this.annotationLayer.on('updateTarget', this.handleUpdateTarget);
-            // this.annotationLayer.on('moveSelection', this.handleMoveSelection);
-            // this.annotationLayer.on('mouseEnterAnnotation', this.props.onMouseEnterAnnotation);
-            // this.annotationLayer.on('mouseLeaveAnnotation', this.props.onMouseLeaveAnnotation);
-            
-            this.loadZones()
+            this.zoneLayer = ZoneLayer(this.viewer,{})
+
+            const zones = this.loadZones()
+            this.zoneLayer.setZones(zones)
+
+            this.zoneLayer.on('zoneSelected', function(zone) {
+                console.log('zone selected: '+zone.id);
+            });
+      
+            this.zoneLayer.on('zoneSaved', function(zone) {
+                console.log('zone saved: '+zone.id);
+            });
         }
 
         if( surface.type === 'iiif') {
@@ -64,7 +78,7 @@ export default class SurfaceEditor extends Component {
             createOSD({ type: 'image', url: imageFileURL })
         }
     }
-    
+
     setSurfaceIndex = ( nextIndex ) => {
         const { facsDocument, onChangeView, imageViewMode } = this.props
         const nextSurface = facsDocument.getSurface(nextIndex)
@@ -84,33 +98,19 @@ export default class SurfaceEditor extends Component {
         }
     }
 
-    onMouseDown = () => {
-        console.log('mouse down')
-    }
-    
-    onMouseMove = (o) => {
-        const mouse = this.overlay.fabricCanvas().getPointer(o.e);
-        console.log(`mouse move x:${mouse.x} y:${mouse.y}`)
-    }
-
-    onMouseUp = () => {
-        console.log('mouse up')
+    onSelectMode = () => {
+        this.zoneLayer.setDrawingEnabled(false)
+        this.zoneLayer.cancel();
     }
 
     onDrawSquare = () => {
-        this.viewer.setMouseNavEnabled(false)
-        this.annotationLayer.setDrawingEnabled(true)
-    }
-
-    onSelectMode = () => {
-        this.viewer.setMouseNavEnabled(true)
-        this.annotationLayer.setDrawingEnabled(false)
-        const annos = this.annotationLayer.getAnnotations()
-        console.log(JSON.stringify(annos))
+        this.zoneLayer.setDrawingEnabled(true)
+        this.zoneLayer.setDrawingTool('rect')
     }
 
     render() {
         const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
+        const { selectedDOMElement, selectedZone } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
     
         return (
@@ -132,6 +132,10 @@ export default class SurfaceEditor extends Component {
                     <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
                     <SeaDragonComponent showSearchBar={!imageViewMode} initViewer={this.initViewer} ></SeaDragonComponent>
                 </div>
+                <ZonePopup
+                    zone={selectedZone}
+                    anchorEl={selectedDOMElement}
+                ></ZonePopup>
             </div>
         )
     }

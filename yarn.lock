@@ -2498,9 +2498,9 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
-"annotorious-openseadragon@github:performant-software/annotorious-openseadragon#access-anno-layer":
+"annotorious-openseadragon@github:performant-software/annotorious-openseadragon":
   version "2.2.0"
-  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/79c4d5ef3374bf5e62af6748029c7d78bf02d8f4"
+  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/e0f1afbfa73558faf0d8b225fec1837e37ed1d37"
   dependencies:
     "@babel/polyfill" "^7.10.4"
     "@recogito/annotorious" "^2.2.0"
