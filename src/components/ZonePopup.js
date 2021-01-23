@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Popper, Button, Paper } from '@material-ui/core'
+import { Popper, Button, Paper, Card, CardContent, CardActions, TextField } from '@material-ui/core'
+import IDField from './attribute-fields/IDField'
 
 export default class ZonePopup extends Component {
 
@@ -10,14 +11,34 @@ export default class ZonePopup extends Component {
     }
 
     renderEditor() {
-        const { zone, onSave, onCancel } = this.props
+        const { teiDocument, zone, onSave, onCancel } = this.props
+        const value = "test"
+        
+        // TODO add delete button when editing
+
+        const onChange = () => {}
 
         return (
-            <div >
-               <h1>TEST {zone.id} </h1>
-               <Button onClick={onSave}>Save</Button>
-               <Button onClick={onCancel}>Cancel</Button>
-            </div>
+            <Card variant="outlined" className="zoneEditor"  >
+                <div className="zone-id">
+                    <IDField
+                        teiDocument={teiDocument}
+                        value={zone.id}
+                        onChangeCallback={onChange}
+                    ></IDField>
+                </div>
+                <CardContent>
+                    <TextField
+                        onChange={onChange}
+                        multiline={true}
+                        value={value}
+                    ></TextField>
+                </CardContent>
+                <CardActions>
+                    <Button onClick={onSave}>Save</Button>
+                    <Button onClick={onCancel}>Cancel</Button>
+                </CardActions>
+            </Card>
         )        
     }
 

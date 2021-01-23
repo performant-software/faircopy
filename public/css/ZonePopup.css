@@ -1,0 +1,12 @@
+#ZonePopup {
+    z-index: 1000;
+}
+
+#ZonePopup .zoneEditor  {
+    max-width: 300px;
+}
+
+
+#ZonePopup .zone-id  {
+    margin-left: 10px;
+}
