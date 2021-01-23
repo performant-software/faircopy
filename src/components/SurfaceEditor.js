@@ -12,11 +12,15 @@ export default class SurfaceEditor extends Component {
 
     constructor() {
         super()
-        this.initialState = {
+        this.state = {
             selectedZone: null,
             selectedDOMElement: null,
+            nextZoneNumber: 1
         }
-        this.state = this.initialState
+    }
+
+    clearSelection() {
+        this.setState({ ...this.state, selectedZone: null, selectedDOMElement: null })
     }
     
     componentWillUnmount() {
@@ -30,8 +34,8 @@ export default class SurfaceEditor extends Component {
         // const surface = facsDocument.getSurface(surfaceIndex)
 
         return [ 
-            { id: '#zone1', ulx: 100, uly: 100, lrx: 200, lry: 200 },
-            { id: '#zone2', ulx: 500, uly: 500, lrx: 600, lry: 600 }
+            { id: '#zone1', n: 1, ulx: 100, uly: 100, lrx: 200, lry: 200 },
+            { id: '#zone2', n: 2, ulx: 500, uly: 500, lrx: 600, lry: 600 }
         ]
     }
 
@@ -61,14 +65,18 @@ export default class SurfaceEditor extends Component {
             this.zoneLayer.setZones(zones)
 
             this.zoneLayer.on('zoneSelected', (selectedZone, selectedDOMElement) => {
-                this.setState({...this.state, selectedZone, selectedDOMElement })
-            });
+                let { nextZoneNumber } = this.state
+                if( selectedZone.id === null ) {
+                    selectedZone.id = `zone${nextZoneNumber++}`
+                }
+                this.setState({...this.state, selectedZone, selectedDOMElement, nextZoneNumber })
+            })
       
             this.zoneLayer.on('zoneSaved', (zone) => {
                 console.log('zone saved: '+zone.id);
                 this.zoneLayer.setDrawingEnabled(false)
-                this.setState(this.initialState)
-            });
+                this.clearSelection()
+            })
         }
 
         if( surface.type === 'iiif') {
@@ -106,7 +114,7 @@ export default class SurfaceEditor extends Component {
     onSelectMode = () => {
         this.zoneLayer.setDrawingEnabled(false)
         this.zoneLayer.cancel();
-        this.setState(this.initialState)
+        this.clearSelection()
     }
 
     onDrawSquare = () => {
@@ -115,13 +123,14 @@ export default class SurfaceEditor extends Component {
     }
 
     onSaveZone = () => {
-        this.zoneLayer.save()
-        this.setState(this.initialState)
+        const { selectedZone } = this.state
+        this.zoneLayer.save(selectedZone.id)
+        this.clearSelection()
     }
 
     onCancelZone = () => {
         this.zoneLayer.cancel()
-        this.setState(this.initialState)
+        this.clearSelection()
     }
 
     render() {
