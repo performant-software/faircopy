@@ -12,10 +12,11 @@ export default class SurfaceEditor extends Component {
 
     constructor() {
         super()
-        this.state = {
+        this.initialState = {
             selectedZone: null,
             selectedDOMElement: null,
         }
+        this.state = this.initialState
     }
     
     componentWillUnmount() {
@@ -57,12 +58,14 @@ export default class SurfaceEditor extends Component {
             const zones = this.loadZones()
             this.zoneLayer.setZones(zones)
 
-            this.zoneLayer.on('zoneSelected', function(zone) {
-                console.log('zone selected: '+zone.id);
+            this.zoneLayer.on('zoneSelected', (selectedZone, selectedDOMElement) => {
+                this.setState({...this.state, selectedZone, selectedDOMElement })
             });
       
-            this.zoneLayer.on('zoneSaved', function(zone) {
+            this.zoneLayer.on('zoneSaved', (zone) => {
                 console.log('zone saved: '+zone.id);
+                this.zoneLayer.setDrawingEnabled(false)
+                this.setState(this.initialState)
             });
         }
 
@@ -101,11 +104,22 @@ export default class SurfaceEditor extends Component {
     onSelectMode = () => {
         this.zoneLayer.setDrawingEnabled(false)
         this.zoneLayer.cancel();
+        this.setState(this.initialState)
     }
 
     onDrawSquare = () => {
         this.zoneLayer.setDrawingEnabled(true)
         this.zoneLayer.setDrawingTool('rect')
+    }
+
+    onSaveZone = () => {
+        this.zoneLayer.save()
+        this.setState(this.initialState)
+    }
+
+    onCancelZone = () => {
+        this.zoneLayer.cancel()
+        this.setState(this.initialState)
     }
 
     render() {
@@ -135,6 +149,8 @@ export default class SurfaceEditor extends Component {
                 <ZonePopup
                     zone={selectedZone}
                     anchorEl={selectedDOMElement}
+                    onSave={this.onSaveZone}
+                    onCancel={this.onCancelZone}
                 ></ZonePopup>
             </div>
         )

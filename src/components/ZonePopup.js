@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Popper, Paper } from '@material-ui/core'
+import { Popper, Button, Paper } from '@material-ui/core'
 
 export default class ZonePopup extends Component {
 
@@ -10,11 +10,13 @@ export default class ZonePopup extends Component {
     }
 
     renderEditor() {
-        const { zone } = this.props
+        const { zone, onSave, onCancel } = this.props
 
         return (
             <div >
                <h1>TEST {zone.id} </h1>
+               <Button onClick={onSave}>Save</Button>
+               <Button onClick={onCancel}>Cancel</Button>
             </div>
         )        
     }
