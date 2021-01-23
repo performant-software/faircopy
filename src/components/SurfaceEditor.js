@@ -48,6 +48,8 @@ export default class SurfaceEditor extends Component {
             this.viewer = OpenSeadragon({
                 element: el,
                 tileSources: tileSource,
+                showNavigator: true,
+                navigatorPosition: 'BOTTOM_RIGHT',
                 showHomeControl: false,
                 showFullPageControl: false,
                 showZoomControl: false
