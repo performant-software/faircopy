@@ -33,9 +33,10 @@ export default class SurfaceEditor extends Component {
         // const { facsDocument, surfaceIndex } = this.props
         // const surface = facsDocument.getSurface(surfaceIndex)
 
+        this.setState({...this.state, nextZoneNumber: 3 })
         return [ 
-            { id: '#zone1', n: 1, ulx: 100, uly: 100, lrx: 200, lry: 200 },
-            { id: '#zone2', n: 2, ulx: 500, uly: 500, lrx: 600, lry: 600 }
+            { id: '#zone1', n: 1, ulx: 100, uly: 100, lrx: 200, lry: 200, note: "note for zone 1" },
+            { id: '#zone2', n: 2, ulx: 500, uly: 500, lrx: 600, lry: 600, note: "note zone 2"}
         ]
     }
 
@@ -71,12 +72,6 @@ export default class SurfaceEditor extends Component {
                 }
                 this.setState({...this.state, selectedZone, selectedDOMElement, nextZoneNumber })
             })
-      
-            this.zoneLayer.on('zoneSaved', (zone) => {
-                console.log('zone saved: '+zone.id);
-                this.zoneLayer.setDrawingEnabled(false)
-                this.clearSelection()
-            })
         }
 
         if( surface.type === 'iiif') {
@@ -102,11 +97,13 @@ export default class SurfaceEditor extends Component {
             axios.get(imageInfoURL).then((response) => {
                 const tileSource = response.data
                 this.viewer.open(tileSource)
+                // TODO load the zones for this surface
                 onChangeView(nextIndex,viewMode)
             })    
         } else {
             const imageFileURL = `local://${nextSurface.resourceEntryID}`
             this.viewer.open({ type: 'image', url: imageFileURL })
+            // TODO load the zones for this surface
             onChangeView(nextIndex,viewMode)
         }
     }
@@ -124,7 +121,9 @@ export default class SurfaceEditor extends Component {
 
     onSaveZone = () => {
         const { selectedZone } = this.state
-        this.zoneLayer.save(selectedZone.id)
+        this.zoneLayer.save(selectedZone)
+        // TODO write the zones to the facs document
+        this.zoneLayer.setDrawingEnabled(false)
         this.clearSelection()
     }
 
@@ -137,6 +136,13 @@ export default class SurfaceEditor extends Component {
         const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
         const { selectedDOMElement, selectedZone } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
+
+        const onChangeZone = (e) => {
+            const {name, value} = e.target
+            const nextZone = { ...selectedZone }
+            nextZone[name] = value
+            this.setState({ ...this.state, selectedZone: nextZone })
+        }
     
         return (
             <div id="FacsDetail" >
@@ -160,6 +166,7 @@ export default class SurfaceEditor extends Component {
                 <ZonePopup
                     zone={selectedZone}
                     anchorEl={selectedDOMElement}
+                    onChange={onChangeZone}
                     onSave={this.onSaveZone}
                     onCancel={this.onCancelZone}
                 ></ZonePopup>

@@ -4,34 +4,29 @@ import IDField from './attribute-fields/IDField'
 
 export default class ZonePopup extends Component {
 
-    constructor() {
-        super()
-        this.state = {
-        }
-    }
-
+    
     renderEditor() {
-        const { teiDocument, zone, onSave, onCancel } = this.props
-        const value = "test"
+        const { teiDocument, zone, onChange, onSave, onCancel } = this.props
+        const { id, note } = zone
         
         // TODO add delete button when editing
 
-        const onChange = () => {}
-
+     
         return (
             <Card variant="outlined" className="zoneEditor"  >
                 <div className="zone-id">
                     <IDField
                         teiDocument={teiDocument}
-                        value={zone.id}
+                        value={id}
                         onChangeCallback={onChange}
                     ></IDField>
                 </div>
                 <CardContent>
                     <TextField
+                        name="note"
                         onChange={onChange}
                         multiline={true}
-                        value={value}
+                        value={note}
                     ></TextField>
                 </CardContent>
                 <CardActions>
