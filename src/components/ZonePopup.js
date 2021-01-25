@@ -6,25 +6,29 @@ export default class ZonePopup extends Component {
 
     
     renderEditor() {
-        const { teiDocument, zone, onChange, onSave, onCancel } = this.props
+        const { facsDocument, zone, onChange, onSave, onCancel } = this.props
         const { id, note } = zone
         
         // TODO add delete button when editing
+        const onChangeText = (e) => {
+            const {name, value} = e.target
+            onChange(name,value,false)
+        }
+        const onChangeID = (value,error) => onChange('id',value,error)
 
-     
         return (
             <Card variant="outlined" className="zoneEditor"  >
                 <div className="zone-id">
                     <IDField
-                        teiDocument={teiDocument}
+                        teiDocument={facsDocument}
                         value={id}
-                        onChangeCallback={onChange}
+                        onChangeCallback={onChangeID}
                     ></IDField>
                 </div>
                 <CardContent>
                     <TextField
                         name="note"
-                        onChange={onChange}
+                        onChange={onChangeText}
                         multiline={true}
                         value={note}
                     ></TextField>

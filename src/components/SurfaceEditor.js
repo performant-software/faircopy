@@ -31,12 +31,9 @@ export default class SurfaceEditor extends Component {
 
     loadZones(surface) {
         const { zones } = surface
-        const zoneLength = (zones) ? zones.length : 0
-        if( zoneLength > 0 ) {
-            // TODO look at n values to determine next zone number
-            this.zoneLayer.setZones(zones)
-        }
-        this.setState({...this.state, nextZoneNumber: zoneLength+1 })
+        this.zoneLayer.setZones(zones)
+        // TODO look at n values to determine next zone number
+        this.setState({...this.state, nextZoneNumber: zones.length+1 })
     }
 
     createOSD(el,tileSource)  {
@@ -141,11 +138,12 @@ export default class SurfaceEditor extends Component {
         const { selectedDOMElement, selectedZone } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
 
-        const onChangeZone = (e) => {
-            const {name, value} = e.target
-            const nextZone = { ...selectedZone }
-            nextZone[name] = value
-            this.setState({ ...this.state, selectedZone: nextZone })
+        const onChangeZone = (name,value,error) => {
+            if( !error ) {
+                const nextZone = { ...selectedZone }
+                nextZone[name] = value
+                this.setState({ ...this.state, selectedZone: nextZone })    
+            }
         }
     
         return (
@@ -170,6 +168,7 @@ export default class SurfaceEditor extends Component {
                 <ZonePopup
                     zone={selectedZone}
                     anchorEl={selectedDOMElement}
+                    facsDocument={facsDocument}
                     onChange={onChangeZone}
                     onSave={this.onSaveZone}
                     onCancel={this.onCancelZone}

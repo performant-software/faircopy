@@ -41,6 +41,23 @@ export default class FacsDocument {
         return generateOrdinalID('f', nextID )
     }
 
+    nextZoneID() {
+        // TODO
+    }
+
+    hasID(targetID) {       
+        const { surfaces } = this.facs
+
+        for( const surface of surfaces ) {
+            if(surface.id === targetID ) return true
+            for( const zone of surface.zones ) {
+                if(zone.id === targetID ) return true
+            }
+        }
+
+        return false
+    }
+
     addLocalImages( imagesData ) {
         for( const imageData of imagesData ) {
             const { width, height, mimeType, path } = imageData
