@@ -31,9 +31,10 @@ export default class SurfaceEditor extends Component {
 
     loadZones(surface) {
         const { zones } = surface
-        this.zoneLayer.setZones(zones)
         // TODO look at n values to determine next zone number
-        this.setState({...this.state, nextZoneNumber: zones.length+1 })
+        this.zoneLayer.cancel()
+        this.zoneLayer.setZones(zones)
+        this.setState({...this.state, selectedZone: null, selectedDOMElement: null, nextZoneNumber: zones.length+1 })
     }
 
     createOSD(el,tileSource)  {
