@@ -29,15 +29,37 @@ export default class SurfaceEditor extends Component {
         }    
     }
 
-    loadZones() {
-        // const { facsDocument, surfaceIndex } = this.props
-        // const surface = facsDocument.getSurface(surfaceIndex)
+    loadZones(surface) {
+        const { zones } = surface
+        const zoneLength = (zones) ? zones.length : 0
+        if( zoneLength > 0 ) {
+            // TODO look at n values to determine next zone number
+            this.zoneLayer.setZones(zones)
+        }
+        this.setState({...this.state, nextZoneNumber: zoneLength+1 })
+    }
 
-        this.setState({...this.state, nextZoneNumber: 3 })
-        return [ 
-            { id: '#zone1', n: 1, ulx: 100, uly: 100, lrx: 200, lry: 200, note: "note for zone 1" },
-            { id: '#zone2', n: 2, ulx: 500, uly: 500, lrx: 600, lry: 600, note: "note zone 2"}
-        ]
+    createOSD(el,tileSource)  {
+        this.viewer = OpenSeadragon({
+            element: el,
+            tileSources: tileSource,
+            showNavigator: true,
+            navigatorPosition: 'BOTTOM_RIGHT',
+            showHomeControl: false,
+            showFullPageControl: false,
+            showZoomControl: false
+        })    
+
+        this.zoneLayer = ZoneLayer(this.viewer,{})
+
+        this.zoneLayer.on('zoneSelected', (selectedZone, selectedDOMElement) => {
+            let { nextZoneNumber } = this.state
+            if( selectedZone.id === null ) {
+                selectedZone.n = nextZoneNumber++
+                selectedZone.id = `zone${selectedZone.n}`
+            }
+            this.setState({...this.state, selectedZone, selectedDOMElement, nextZoneNumber })
+        })
     }
 
     initViewer = (el) => {
@@ -49,41 +71,18 @@ export default class SurfaceEditor extends Component {
         const { facsDocument, surfaceIndex } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
 
-        const createOSD = (tileSource) => {
-            this.viewer = OpenSeadragon({
-                element: el,
-                tileSources: tileSource,
-                showNavigator: true,
-                navigatorPosition: 'BOTTOM_RIGHT',
-                showHomeControl: false,
-                showFullPageControl: false,
-                showZoomControl: false
-            })    
-
-            this.zoneLayer = ZoneLayer(this.viewer,{})
-
-            const zones = this.loadZones()
-            this.zoneLayer.setZones(zones)
-
-            this.zoneLayer.on('zoneSelected', (selectedZone, selectedDOMElement) => {
-                let { nextZoneNumber } = this.state
-                if( selectedZone.id === null ) {
-                    selectedZone.id = `zone${nextZoneNumber++}`
-                }
-                this.setState({...this.state, selectedZone, selectedDOMElement, nextZoneNumber })
-            })
-        }
-
         if( surface.type === 'iiif') {
             const imageInfoURL = getImageInfoURL( surface )
             axios.get(imageInfoURL).then((response) => {
-                createOSD(response.data)   
+                this.createOSD(el,response.data)   
+                this.loadZones(surface)
             }, (err) => {
                 console.log('Unable to load image: ' + err);
             })    
         } else {
             const imageFileURL = `local://${surface.resourceEntryID}`
-            createOSD({ type: 'image', url: imageFileURL })
+            this.createOSD(el,{ type: 'image', url: imageFileURL })
+            this.loadZones(surface)
         }
     }
 
@@ -97,13 +96,13 @@ export default class SurfaceEditor extends Component {
             axios.get(imageInfoURL).then((response) => {
                 const tileSource = response.data
                 this.viewer.open(tileSource)
-                // TODO load the zones for this surface
+                this.loadZones(nextSurface)
                 onChangeView(nextIndex,viewMode)
             })    
         } else {
             const imageFileURL = `local://${nextSurface.resourceEntryID}`
             this.viewer.open({ type: 'image', url: imageFileURL })
-            // TODO load the zones for this surface
+            this.loadZones(nextSurface)
             onChangeView(nextIndex,viewMode)
         }
     }
@@ -120,9 +119,14 @@ export default class SurfaceEditor extends Component {
     }
 
     onSaveZone = () => {
+        const { facsDocument, surfaceIndex } = this.props
         const { selectedZone } = this.state
+        
         this.zoneLayer.save(selectedZone)
-        // TODO write the zones to the facs document
+        const surface = facsDocument.getSurface(surfaceIndex)
+        surface.zones = this.zoneLayer.getZones()
+        facsDocument.save()
+
         this.zoneLayer.setDrawingEnabled(false)
         this.clearSelection()
     }

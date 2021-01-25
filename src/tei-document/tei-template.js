@@ -32,18 +32,19 @@ export const facsTemplate = (facsData) => {
 
     const surfaceEls = []
     for( const surface of surfaces ) {
-        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, mimeType, resourceEntryID  } = surface
+        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, mimeType, resourceEntryID, zones  } = surface
         const labelEls = renderLocalLabels(localLabels)
-
+        const zoneEls = zones ? renderZones(zones) : ""
+        
         if( type === 'iiif' ) {
             surfaceEls.push(
-                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic mimeType="application/json" url="${imageAPIURL}"/></surface>`
+                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic mimeType="application/json" url="${imageAPIURL}"/>${zoneEls}</surface>`
             )    
         } else {
             const ext = getExtensionForMIMEType(mimeType)
             const filename = `${id}.${ext}`
             surfaceEls.push(
-                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic sameAs="${resourceEntryID}" mimeType="${mimeType}" url="${filename}"/></surface>`
+                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic sameAs="${resourceEntryID}" mimeType="${mimeType}" url="${filename}"/>${zoneEls}</surface>`
             )    
         }
     }
@@ -94,4 +95,15 @@ function renderLocalLabels(localLabels) {
     }
 
     return labelEls.join('')
+}
+
+function renderZones(zones) {
+    const zoneEls = []
+    for( const zone of zones ) {
+        const { id,n,ulx,uly,lrx,lry,note} = zone
+        const noteEl = note && note.length > 0 ? `<note>${note}</note>` : ""
+        const zoneEl = `<zone xml:id="${id}" n="${n}" ulx="${ulx}" uly="${uly}" lrx="${lrx}" lry="${lry}">${noteEl}</zone>`
+        zoneEls.push(zoneEl)
+    }
+    return zoneEls.join('\n')
 }
