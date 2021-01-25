@@ -36,6 +36,13 @@ export default class SurfaceEditorToolbar extends Component {
                 >
                     <i className="fas fa-draw-polygon fa-2x"></i>
                 </Button> 
+                <Button
+                    disabled
+                    className="toolbar-button"
+                    {...buttonProps}
+                >
+                    <i className="fas fa-eraser fa-2x"></i>
+                </Button> 
                 <FacsModeControl
                     surfaceIndex={surfaceIndex}
                     selected={'detail'}

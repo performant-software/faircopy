@@ -3,10 +3,14 @@
 }
 
 #ZonePopup .zoneEditor  {
-    max-width: 300px;
+    max-width: 400px;
 }
 
+#ZonePopup .zoneActions {
+    float: right;
+}
 
 #ZonePopup .zone-id  {
-    margin-left: 10px;
+    margin-top: -20px;
+    margin-left: 15px;
 }

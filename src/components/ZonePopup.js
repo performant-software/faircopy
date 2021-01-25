@@ -29,13 +29,16 @@ export default class ZonePopup extends Component {
                     <TextField
                         name="note"
                         onChange={onChangeText}
-                        multiline={true}
+                        multiline
+                        rowsMax={4}
+                        placeholder="Add a note."
+                        variant="outlined"
                         value={note}
                     ></TextField>
                 </CardContent>
-                <CardActions>
-                    <Button onClick={onSave}>Save</Button>
-                    <Button onClick={onCancel}>Cancel</Button>
+                <CardActions className="zoneActions">
+                    <Button size="small" variant="contained" color="primary" onClick={onSave}>Save</Button>
+                    <Button size="small" variant="outlined" onClick={onCancel}>Cancel</Button>
                 </CardActions>
             </Card>
         )        
