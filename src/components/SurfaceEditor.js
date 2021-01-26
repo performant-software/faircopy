@@ -159,7 +159,7 @@ export default class SurfaceEditor extends Component {
         }
     
         return (
-            <div id="FacsDetail" >
+            <div id="SurfaceEditor" >
                 { !imageViewMode && 
                     <div>
                         <div className="titlebar">

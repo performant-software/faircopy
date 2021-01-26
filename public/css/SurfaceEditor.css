@@ -1,0 +1,7 @@
+#SurfaceEditor .search-on {
+    height: calc( 100vh - 62px);
+}
+
+#SurfaceEditor .search-off {
+    height: 100vh;
+}

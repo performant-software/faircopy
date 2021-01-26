@@ -1,17 +1,3 @@
-#FacsEditor .osd-viewer {
-    position: relative;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
-.search-on {
-    height: calc( 100vh - 62px);
-}
-
-.search-off {
-    height: 100vh;
-}
 
 #FacsEditor .titlebar {
     background: #0086C0;
