@@ -240,15 +240,18 @@ function parseZones( surfaceEl ) {
             const zoneEl = zoneEls[i]
             const id = zoneEl.getAttribute('xml:id')
             const n = zoneEl.getAttribute('n')
-            const ulx = zoneEl.getAttribute('ulx')
-            const uly = zoneEl.getAttribute('uly')
-            const lrx = zoneEl.getAttribute('lrx')
-            const lry = zoneEl.getAttribute('lry')
             const noteEls = surfaceEl.getElementsByTagName('note')
             const noteEl = (noteEls && noteEls.length > 0 ) ? noteEls[0] : null
             const note = noteEl ? noteEl.innerHTML : ""
+            const points = zoneEl.getAttribute('points')
+            const coords = ( points ) ? { points } : {
+                ulx: zoneEl.getAttribute('ulx'),
+                uly: zoneEl.getAttribute('uly'),
+                lrx: zoneEl.getAttribute('lrx'),
+                lry: zoneEl.getAttribute('lry')    
+            }
             zones.push({
-                id,n,ulx,uly,lrx,lry,note
+                id,n,...coords,note
             })
         }    
     }

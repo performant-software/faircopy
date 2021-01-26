@@ -2500,7 +2500,7 @@ alphanum-sort@^1.0.0:
 
 "annotorious-openseadragon@github:performant-software/annotorious-openseadragon":
   version "2.2.0"
-  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/5bab9d5894fd53a079ee5bb16b9971f986f2c830"
+  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/dcafdf08fca9b6ceb27ddf255ec30fd7ad54e2f9"
   dependencies:
     "@babel/polyfill" "^7.10.4"
     "@recogito/annotorious" "^2.2.0"

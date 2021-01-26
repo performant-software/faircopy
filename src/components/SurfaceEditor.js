@@ -13,6 +13,7 @@ export default class SurfaceEditor extends Component {
     constructor() {
         super()
         this.state = {
+            selectedTool: 'select',
             selectedZone: null,
             selectedDOMElement: null,
             nextZoneNumber: 1
@@ -20,7 +21,7 @@ export default class SurfaceEditor extends Component {
     }
 
     clearSelection() {
-        this.setState({ ...this.state, selectedZone: null, selectedDOMElement: null })
+        this.setState({ ...this.state, selectedZone: null, selectedDOMElement: null, selectedTool: 'select'})
     }
     
     componentWillUnmount() {
@@ -105,15 +106,16 @@ export default class SurfaceEditor extends Component {
         }
     }
 
-    onSelectMode = () => {
-        this.zoneLayer.setDrawingEnabled(false)
-        this.zoneLayer.cancel();
-        this.clearSelection()
-    }
-
-    onDrawSquare = () => {
-        this.zoneLayer.setDrawingEnabled(true)
-        this.zoneLayer.setDrawingTool('rect')
+    onChangeTool = (tool) => {
+        if( tool === 'select' ) {
+            this.zoneLayer.setDrawingEnabled(false)
+            this.zoneLayer.cancel()
+            this.setState({ ...this.state, selectedZone: null, selectedDOMElement: null, selectedTool: 'select' })
+        } else {
+            this.zoneLayer.setDrawingEnabled(true)
+            if( tool === 'rect' || tool === 'polygon') this.zoneLayer.setDrawingTool(tool)                
+            this.setState({ ...this.state, selectedTool: tool })
+        }
     }
 
     onSaveZone = () => {
@@ -136,7 +138,7 @@ export default class SurfaceEditor extends Component {
 
     render() {
         const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
-        const { selectedDOMElement, selectedZone } = this.state
+        const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
 
         const onChangeZone = (name,value,error) => {
@@ -156,8 +158,8 @@ export default class SurfaceEditor extends Component {
                         </div>        
                         <SurfaceEditorToolbar 
                             surfaceIndex={surfaceIndex}
-                            onDrawSquare={this.onDrawSquare}
-                            onSelectMode={this.onSelectMode}
+                            selectedTool = {selectedTool}
+                            onChangeTool={this.onChangeTool}
                             onChangeView={onChangeView} 
                         ></SurfaceEditorToolbar>
                     </div>
@@ -182,7 +184,7 @@ export default class SurfaceEditor extends Component {
 class SeaDragonComponent extends Component {
   
     shouldComponentUpdate() {
-        return false;
+        return false
     }
 
     render() {

@@ -1,52 +1,54 @@
 import React, { Component } from 'react'
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 
 import FacsModeControl from './FacsModeControl';
 
 export default class SurfaceEditorToolbar extends Component {
 
-    render() {
-        const { onChangeView, surfaceIndex, onDrawSquare, onSelectMode } = this.props
-        
-        const buttonProps = {
+    constructor() {
+        super()
+
+        this.buttonProps = {
+            className: 'toolbar-button',
             disableRipple: true,
             disableFocusRipple: true
         }
+    }
+
+    renderActionButton( toolTip, icon, action ) {
+        const { onChangeTool, selectedTool } = this.props
+        const selectionClass = selectedTool === action ? 'selected-action' : ''
+        const onClick = ()=>{
+            onChangeTool(action)
+        } 
 
         return (
-            <div className='top-bar' >
-                <Button
-                    onClick={onSelectMode}
-                    className="toolbar-button"
-                    {...buttonProps}
-                >
-                    <i className="fas fa-mouse-pointer fa-2x"></i>
-                </Button>
-                <Button
-                    onClick={onDrawSquare}
-                    className="toolbar-button"
-                    {...buttonProps}
-                >
-                    <i className="fas fa-draw-square fa-2x"></i>
-                </Button> 
-                <Button
-                    disabled
-                    className="toolbar-button"
-                    {...buttonProps}
-                >
-                    <i className="fas fa-draw-polygon fa-2x"></i>
-                </Button> 
-                <Button
-                    disabled
-                    className="toolbar-button"
-                    {...buttonProps}
-                >
-                    <i className="fas fa-eraser fa-2x"></i>
-                </Button> 
+            <Tooltip title={toolTip}>
+                <span>
+                    <Button
+                        onClick={onClick}
+                        {...this.buttonProps}
+                    >
+                        <i className={`fas ${selectionClass} ${icon} fa-2x`}></i>
+                    </Button>  
+                </span>
+            </Tooltip>            
+        )
+    }
+
+    render() {
+        const { onChangeView, surfaceIndex } = this.props
+    
+        return (
+            <div id='SurfaceEditorToolbar' >
+                { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
+                { this.renderActionButton("Draw Rectangle", "fa-draw-square", "rect" )}
+                { this.renderActionButton("Draw Polygon", "fa-draw-polygon", "polygon" )}
+                { this.renderActionButton("Erase Zone", "fa-eraser", "eraser" )}
                 <FacsModeControl
                     surfaceIndex={surfaceIndex}
                     selected={'detail'}
-                    buttonProps={buttonProps}
+                    buttonProps={this.buttonProps}
                     onChangeView={onChangeView}
                 ></FacsModeControl>
             </div>
