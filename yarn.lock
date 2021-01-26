@@ -2500,7 +2500,7 @@ alphanum-sort@^1.0.0:
 
 "annotorious-openseadragon@github:performant-software/annotorious-openseadragon":
   version "2.2.0"
-  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/dcafdf08fca9b6ceb27ddf255ec30fd7ad54e2f9"
+  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/1ea1aa143080d351ffa6d9f89014cb7bdd7cb0fc"
   dependencies:
     "@babel/polyfill" "^7.10.4"
     "@recogito/annotorious" "^2.2.0"
@@ -5946,9 +5946,9 @@ follow-redirects@^1.0.0:
   integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
 
 follow-redirects@^1.10.0:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.1.tgz#5f69b813376cee4fd0474a3aba835df04ab763b7"
-  integrity sha512-SSG5xmZh1mkPGyKzjZP8zLjltIfpW32Y5QpdNJyjcfGxK3qo3NDDkZOZSFiGn1A6SclQxY9GzEwAHQ3dmYRWpg==
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
+  integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -6155,9 +6155,9 @@ get-caller-file@^2.0.1, get-caller-file@^2.0.5:
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
 
 get-intrinsic@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/get-intrinsic/-/get-intrinsic-1.0.2.tgz#6820da226e50b24894e08859469dc68361545d49"
-  integrity sha512-aeX0vrFm21ILl3+JpFFRNe9aUvp6VFZb2/CTbgLb8j75kOhvoNYjt9d8KA/tJG4gSo8nzEDedRl0h7vDmBYRVg==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/get-intrinsic/-/get-intrinsic-1.1.0.tgz#892e62931e6938c8a23ea5aaebcfb67bd97da97e"
+  integrity sha512-M11rgtQp5GZMZzDL7jLTNxbDfurpzuau5uqRWDPvlHjfvg3TdScAZo96GLvhMjImrmR8uAt0FS2RLoMrfWGKlg==
   dependencies:
     function-bind "^1.1.1"
     has "^1.0.3"

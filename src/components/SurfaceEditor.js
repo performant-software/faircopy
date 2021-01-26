@@ -136,6 +136,15 @@ export default class SurfaceEditor extends Component {
         this.clearSelection()
     }
 
+    onEraseZone = () => {
+        const { facsDocument, surfaceIndex } = this.props
+        this.zoneLayer.removeSelectedZone()
+        this.onCancelZone()
+        const surface = facsDocument.getSurface(surfaceIndex)
+        surface.zones = this.zoneLayer.getZones()
+        facsDocument.save()
+    }
+
     render() {
         const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
@@ -173,6 +182,7 @@ export default class SurfaceEditor extends Component {
                     anchorEl={selectedDOMElement}
                     facsDocument={facsDocument}
                     onChange={onChangeZone}
+                    onErase={this.onEraseZone}
                     onSave={this.onSaveZone}
                     onCancel={this.onCancelZone}
                 ></ZonePopup>

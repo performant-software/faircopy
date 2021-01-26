@@ -44,7 +44,6 @@ export default class SurfaceEditorToolbar extends Component {
                 { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
                 { this.renderActionButton("Draw Rectangle", "fa-draw-square", "rect" )}
                 { this.renderActionButton("Draw Polygon", "fa-draw-polygon", "polygon" )}
-                { this.renderActionButton("Erase Zone", "fa-eraser", "eraser" )}
                 <FacsModeControl
                     surfaceIndex={surfaceIndex}
                     selected={'detail'}

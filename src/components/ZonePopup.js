@@ -6,7 +6,7 @@ export default class ZonePopup extends Component {
 
     
     renderEditor() {
-        const { facsDocument, zone, onChange, onSave, onCancel } = this.props
+        const { facsDocument, zone, onChange, onSave, onCancel, onErase } = this.props
         const { id, note } = zone
         
         // TODO add delete button when editing
@@ -36,9 +36,12 @@ export default class ZonePopup extends Component {
                         value={note}
                     ></TextField>
                 </CardContent>
-                <CardActions className="zoneActions">
-                    <Button size="small" variant="contained" color="primary" onClick={onSave}>Save</Button>
-                    <Button size="small" variant="outlined" onClick={onCancel}>Cancel</Button>
+                <CardActions >
+                    <Button size="small" onClick={onErase}><i className={`fas fa-eraser fa-2x`}></i></Button>  
+                    <div className="zoneActions">
+                        <Button className="zone-action" size="small" variant="contained" color="primary" onClick={onSave}>Save</Button>
+                        <Button className="zone-action" size="small" variant="outlined" onClick={onCancel}>Cancel</Button>
+                    </div>
                 </CardActions>
             </Card>
         )        
