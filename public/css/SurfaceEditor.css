@@ -1,7 +1,9 @@
-#SurfaceEditor .search-on {
-    height: calc( 100vh - 62px);
+
+#SurfaceEditor .osd-viewer {
+    height: calc( 100vh - 102px );
+    width: 100%;
 }
 
-#SurfaceEditor .search-off {
-    height: 100vh;
+#SurfaceEditor .editor {
+    background: #ccc;
 }

@@ -149,7 +149,7 @@ export default class SurfaceEditor extends Component {
         const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
-
+        
         const onChangeZone = (name,value,error) => {
             if( !error ) {
                 const nextZone = { ...selectedZone }
@@ -175,7 +175,7 @@ export default class SurfaceEditor extends Component {
                 }
                 <div className="editor">
                     <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
-                    <SeaDragonComponent showSearchBar={!imageViewMode} initViewer={this.initViewer} ></SeaDragonComponent>
+                    <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
                 </div>
                 <ZonePopup
                     zone={selectedZone}
@@ -198,9 +198,8 @@ class SeaDragonComponent extends Component {
     }
 
     render() {
-        const { initViewer, showSearchBar } = this.props
-        const searchFlag = showSearchBar ? 'search-on' : 'search-off' 
-        return <div className={`osd-viewer ${searchFlag}`} ref={(el)=> { initViewer(el) }}></div>
+        const { initViewer } = this.props
+        return <div className={`osd-viewer`} ref={(el)=> { initViewer(el) }}></div>
     }
 }
   
