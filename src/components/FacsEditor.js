@@ -7,22 +7,12 @@ export default class FacsEditor extends Component {
     constructor(props) {
         super()
         
-        let facsDocument = props.facsDocument ? props.facsDocument : null
-        let startIndex = 0
-        let mode='index'
-
-        if( props.imageView ) {
-            const { imageView } = props
-            facsDocument = imageView.facsDocument
-            const { surfaces } = facsDocument.facs
-            startIndex = surfaces.findIndex( s => s.id === imageView.startingID )
-            startIndex = startIndex === -1 ? 0 : startIndex
-            mode='imageView'
-        } 
+        const surfaceIndex = props.startIndex ? props.startIndex : 0
+        const mode = isNaN(props.startIndex) ? 'index' : 'detail'
 
         this.state = {
             mode,
-            surfaceIndex: startIndex
+            surfaceIndex
         }
     }
 

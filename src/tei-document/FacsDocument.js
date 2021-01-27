@@ -25,6 +25,12 @@ export default class FacsDocument {
         return this.facs.surfaces[index]
     }
 
+    getIndex(xmlID) {
+        const { surfaces } = this.facs
+        const startIndex = surfaces.findIndex( s => s.id === xmlID )
+        return startIndex === -1 ? 0 : startIndex
+    }
+
     requestResource( resourceID ) {
         fairCopy.services.ipcSend('requestResource', resourceID )
         this.loading = true
