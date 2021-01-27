@@ -176,16 +176,16 @@ export default class SurfaceEditor extends Component {
                 <div className="editor">
                     <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
                     <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
+                    <ZonePopup
+                        zone={selectedZone}
+                        anchorEl={selectedDOMElement}
+                        facsDocument={facsDocument}
+                        onChange={onChangeZone}
+                        onErase={this.onEraseZone}
+                        onSave={this.onSaveZone}
+                        onCancel={this.onCancelZone}
+                    ></ZonePopup>
                 </div>
-                <ZonePopup
-                    zone={selectedZone}
-                    anchorEl={selectedDOMElement}
-                    facsDocument={facsDocument}
-                    onChange={onChangeZone}
-                    onErase={this.onEraseZone}
-                    onSave={this.onSaveZone}
-                    onCancel={this.onCancelZone}
-                ></ZonePopup>
             </div>
         )
     }

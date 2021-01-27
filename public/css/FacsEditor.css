@@ -18,14 +18,3 @@
     border-bottom: 1px solid gray;
     background: white;
 }
-
-#FacsEditor .bottom-bar {
-    position: absolute;
-    z-index: 800;
-    bottom: 0px;
-    opacity: 0.8;
-    padding: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-}

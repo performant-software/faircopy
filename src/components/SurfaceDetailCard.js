@@ -48,7 +48,7 @@ export default class SurfaceDetailCard extends Component {
         }
 
         return (
-            <Card className='bottom-bar' >
+            <Card id="SurfaceDetailCard" >
                 <CardHeader 
                     title={title}
                     subheader={`#${surface.id}`}
