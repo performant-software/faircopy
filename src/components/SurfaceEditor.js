@@ -23,11 +23,25 @@ export default class SurfaceEditor extends Component {
     clearSelection() {
         this.setState({ ...this.state, selectedZone: null, selectedDOMElement: null, selectedTool: 'select'})
     }
+
+    componentDidMount() {
+        const { facsDocument } = this.props
+        facsDocument.addUpdateListener(this.updateListener)
+    }
     
     componentWillUnmount() {
         if(this.viewer){
             this.viewer.destroy();
         }    
+        const { facsDocument } = this.props
+        facsDocument.removeUpdateListener(this.updateListener)
+    }
+
+    // listen for updates from other processes to the zones 
+    updateListener = () => {
+        const { facsDocument, surfaceIndex } = this.props
+        const surface = facsDocument.getSurface(surfaceIndex)
+        this.loadZones(surface)
     }
 
     loadZones(surface) {

@@ -7,18 +7,39 @@ export default class FacsDocument {
 
     constructor( resourceID, imageViewContext, resource=null ) {
         this.imageViewContext = imageViewContext
-        this.facs = null
-
-        if( resourceID ) {
-            this.resourceID = resourceID
-            if( !resource ) {
-                this.name = 'test'
-                this.requestResource( resourceID )    
-            } else {
-                this.load(resource)
-            }
-        }
         this.changedSinceLastSave = false
+        this.facs = null
+        this.resourceID = resourceID
+        this.updateListeners = []
+        this.lastMessageID = null
+
+        if( !resource ) {
+            this.requestResource( resourceID )    
+        } else {
+            this.load(resource)
+        }
+
+        // Listen for updates to this resource.
+        fairCopy.services.ipcRegisterCallback('resourceUpdated', (e, d) => {
+            if( d.resourceID === resourceID && d.messageID !== this.lastMessageID ) 
+                this.onResourceUpdated(d.resourceData)
+        })
+    }
+
+    // Called when document is updated by a different window process
+    onResourceUpdated(resourceData) {
+        this.load(resourceData)
+        for( const listener of this.updateListeners ) {
+            listener()
+        }
+    }
+
+    addUpdateListener(listener) {
+        this.updateListeners.push(listener)
+    }
+
+    removeUpdateListener(listener) {
+        this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
     getSurface(index) {
@@ -139,7 +160,9 @@ export default class FacsDocument {
 
     save() {
         const fileContents = facsimileToTEI(this.facs)
-        fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
+        const messageID = uuidv4()
+        fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.changedSinceLastSave = false
+        this.lastMessageID = messageID
     }
 }

@@ -58,7 +58,13 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
-    ipcMain.on('requestSave', (event,resourceID, resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
+    ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
+      const update = this.projectStore.saveResource(resourceID, resourceData) 
+      if( update ) {
+        update.messageID = msgID
+        this.sendToAllWindows('resourceUpdated', update )
+      }
+    })
     ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
     ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
     ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
@@ -68,7 +74,7 @@ class FairCopyApplication {
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
       this.processImageData(paths).then((imageData) => {
-        this.sendToMainWindow('imagesOpened', imageData )  
+        this.sendToAllWindows('imagesOpened', imageData )  
       })     
     })
     
@@ -168,6 +174,12 @@ class FairCopyApplication {
   async createImageWindow(imageViewInfo) {
     const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
     this.imageViews.push(imageView)
+
+    imageView.on('close', (event) => {
+      // remove image from list
+      this.imageViews = this.imageViews.filter( v => v !== imageView )
+    })
+
     await this.projectStore.openImageView(imageView,imageViewInfo)
   }
 
@@ -257,6 +269,13 @@ class FairCopyApplication {
 
   sendToMainWindow(message, params) {
     this.mainWindow.webContents.send(message, params)
+  }
+
+  sendToAllWindows(message, params) {
+    this.sendToMainWindow(message, params)
+    for( const imageView of this.imageViews ) {
+      imageView.webContents.send(message, params)
+    }
   }
 
   async processImageData(paths) {

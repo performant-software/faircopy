@@ -123,7 +123,9 @@ class ProjectStore {
         if( resourceEntry ) {
             this.writeUTF8File(resourceID,resourceData)
             this.writeProjectArchive()
+            return { resourceID, resourceData }
         }
+        return null
     }
 
     addResource( resourceEntryJSON, resourceData ) {
