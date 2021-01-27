@@ -58,7 +58,20 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
+    ipcMain.on('requestSave', (event,resourceID, resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
+    ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
+    ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
+    ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
+    ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
+    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
   
+    ipcMain.on('requestImageData', (event) => {
+      const paths = this.mainMenu.openAddImage()
+      this.processImageData(paths).then((imageData) => {
+        this.sendToMainWindow('imagesOpened', imageData )  
+      })     
+    })
+    
     // Main window events //////
 
     ipcMain.on('requestResource', (event,resourceID) => { 
@@ -66,15 +79,8 @@ class FairCopyApplication {
         log.info(`opened resourceID: ${resourceID}`)
       }) 
     })
-    ipcMain.on('requestSave', (event,resourceID, resourceData) => { this.projectStore.saveResource(resourceID,resourceData) })
-    ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
-    ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
-    ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
-    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
-    ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
-    ipcMain.on('requestImageURL', (event, resourceID) => { this.projectStore.openImageResource(resourceID) })
-    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
 
+    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
     
     ipcMain.on('requestPaste', (event) => { 
       if( this.mainWindow ) {
@@ -90,13 +96,6 @@ class FairCopyApplication {
         const importData = { path, data }
         this.sendToMainWindow('importOpened', importData )  
       }
-    })
-
-    ipcMain.on('requestImageData', (event) => {
-      const paths = this.mainMenu.openAddImage()
-      this.processImageData(paths).then((imageData) => {
-        this.sendToMainWindow('imagesOpened', imageData )  
-      })     
     })
 
     ipcMain.on('requestExport', (event, exportOptions) => { 
@@ -136,8 +135,6 @@ class FairCopyApplication {
         this.openProject(targetFile)
       }
     })
-
-    // TODO Image Window Events ////
   
   }
 
