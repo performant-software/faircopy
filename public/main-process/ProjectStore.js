@@ -99,7 +99,7 @@ class ProjectStore {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
             const resource = await this.readUTF8File(resourceID)
-            const imageViewData = { resourceID, xmlID, resource, teiSchema, idMap }
+            const imageViewData = { resourceEntry, xmlID, resource, teiSchema, idMap }
             imageView.webContents.send('imageViewOpened', imageViewData )    
         }
     }

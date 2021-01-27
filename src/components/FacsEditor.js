@@ -36,7 +36,7 @@ export default class FacsEditor extends Component {
     }
 
     render() {
-        const { hidden, fairCopyProject, onEditResource, onAddImages, onOpenPopupMenu, onConfirmDeleteImages } = this.props
+        const { hidden, resourceName, onEditResource, onAddImages, onOpenPopupMenu, onConfirmDeleteImages } = this.props
         const { mode, surfaceIndex } = this.state
         const facsDocument = this.getFacsDocument()
 
@@ -50,28 +50,20 @@ export default class FacsEditor extends Component {
                     <SurfaceEditor
                         surfaceIndex={surfaceIndex}
                         facsDocument={facsDocument}
-                        fairCopyProject={fairCopyProject}
+                        resourceName={resourceName}
                         onChangeView={onChangeView}
                     ></SurfaceEditor>                
-                : mode === 'index' ?
+                : 
                     <FacsIndex
                         surfaceIndex={surfaceIndex}
                         facsDocument={facsDocument}
-                        fairCopyProject={fairCopyProject}
+                        resourceName={resourceName}
                         onChangeView={onChangeView}
                         onEditResource={onEditResource}
                         onOpenPopupMenu={onOpenPopupMenu}   
                         onAddImages={onAddImages}         
                         onConfirmDeleteImages={onConfirmDeleteImages}  
                     ></FacsIndex>
-                :
-                    <SurfaceEditor
-                        imageViewMode={true}
-                        surfaceIndex={surfaceIndex}
-                        facsDocument={facsDocument}
-                        fairCopyProject={fairCopyProject}
-                        onChangeView={onChangeView}
-                    ></SurfaceEditor>              
                 }
             </div>
         )

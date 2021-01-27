@@ -72,7 +72,8 @@ export default class App extends Component {
   openImageView( imageViewData ) {
     // setTimeout( () => {
       const imageView = new ImageView(imageViewData)
-      this.setTitle()   
+      const title = imageView.resourceEntry.name
+      this.setTitle(title)   
       this.setState({...this.state, imageView})
     // },2000)
   }

@@ -191,21 +191,16 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { fairCopyProject, facsDocument } = this.props
-        const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
-
-        const showSearchBar = !!this.props.facsDocument
+        const { resourceName } = this.props
 
         return (
             <div id="FacsIndex" >
-                { showSearchBar && 
-                    <div>
-                        <div className="titlebar">
-                            <Typography component="h1" variant="h6">{resourceName}</Typography>
-                        </div>        
-                        { this.renderToolbar() }
-                    </div>
-                }
+                <div>
+                    <div className="titlebar">
+                        <Typography component="h1" variant="h6">{resourceName}</Typography>
+                    </div>        
+                    { this.renderToolbar() }
+                </div>
                 <div className="facs-index-list">
                     { this.renderSurfaceIndex() }
                 </div>

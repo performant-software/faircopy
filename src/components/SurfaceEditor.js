@@ -86,9 +86,9 @@ export default class SurfaceEditor extends Component {
     }
 
     setSurfaceIndex = ( nextIndex ) => {
-        const { facsDocument, onChangeView, imageViewMode } = this.props
+        const { facsDocument, onChangeView } = this.props
         const nextSurface = facsDocument.getSurface(nextIndex)
-        const viewMode = imageViewMode ? 'imageView' : 'detail'
+        const viewMode = 'detail'
 
         if( nextSurface.type === 'iiif' ) {
             const imageInfoURL = getImageInfoURL( nextSurface )
@@ -146,9 +146,8 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { fairCopyProject, facsDocument, surfaceIndex, imageViewMode, onChangeView } = this.props
+        const { resourceName, facsDocument, surfaceIndex, onChangeView } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
-        const resourceName = fairCopyProject ? fairCopyProject.resources[facsDocument.resourceID].name : ""
         
         const onChangeZone = (name,value,error) => {
             if( !error ) {
@@ -160,19 +159,17 @@ export default class SurfaceEditor extends Component {
     
         return (
             <div id="SurfaceEditor" >
-                { !imageViewMode && 
-                    <div>
-                        <div className="titlebar">
-                            <Typography component="h1" variant="h6">{resourceName}</Typography>
-                        </div>        
-                        <SurfaceEditorToolbar 
-                            surfaceIndex={surfaceIndex}
-                            selectedTool = {selectedTool}
-                            onChangeTool={this.onChangeTool}
-                            onChangeView={onChangeView} 
-                        ></SurfaceEditorToolbar>
-                    </div>
-                }
+                <div>
+                    <div className="titlebar">
+                        <Typography component="h1" variant="h6">{resourceName}</Typography>
+                    </div>        
+                    <SurfaceEditorToolbar 
+                        surfaceIndex={surfaceIndex}
+                        selectedTool = {selectedTool}
+                        onChangeTool={this.onChangeTool}
+                        onChangeView={onChangeView} 
+                    ></SurfaceEditorToolbar>
+                </div>
                 <div className="editor">
                     <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
                     <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>

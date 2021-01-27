@@ -6,21 +6,24 @@ const fairCopy = window.fairCopy
 
 export default class ImageWindow extends Component {
 
-    componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('fileSaved', (event, resourceID) => this.saved(resourceID))
-    }
-    
-    saved(resourceID) {
-        // TODO
-        // this.setState( { ...this.state, 
-        //     alertDialogMode: false, 
-        //     exitAnyway: false
-        // })
-    }
-
     onStateChange = (nextState) => {
         this.setState({...this.state,latest:nextState})
+    }
+
+    onEditResource = () => {
+        // TODO
+    }
+
+    onAddImages = () => {
+        // TODO
+    }
+
+    onOpenPopupMenu = () => {
+        // TODO
+    }
+
+    onConfirmDeleteImages = () => {
+        // TODO
     }
 
     render() {
@@ -28,9 +31,16 @@ export default class ImageWindow extends Component {
 
         if(!imageView) return null
 
+        const resourceName = imageView.resourceEntry.name
+
         return (
             <FacsEditor
-                imageView={imageView}
+                resourceName={resourceName}
+                facsDocument={imageView.facsDocument}
+                onEditResource={this.onEditResource}    
+                onAddImages={this.onAddImages}
+                onOpenPopupMenu={this.onOpenPopupMenu}
+                onConfirmDeleteImages={this.onConfirmDeleteImages}
             ></FacsEditor>
         )
     }
