@@ -68,8 +68,25 @@ export default class FacsDocument {
         return generateOrdinalID('f', nextID )
     }
 
-    nextZoneID() {
-        // TODO
+    // Next zone ID in format: <surfaceID>_z<next zone number>
+    nextZoneID(surfaceID) {
+        const surface = this.getSurface( this.getIndex(surfaceID) )
+
+        // scan for highest number
+        let highestID = -1
+        for( const zone of surface.zones ) {
+            // Zone IDs are either user entered or automatically generated here.
+            // If this zone ID fits the format, use it to count up to 
+            // the highest zone number thus issued.
+            const regX = new RegExp(`${surfaceID}_z(\\d+)`)
+            const matchData = zone.id.match(regX)
+            if( matchData ) {
+                const idNo = matchData[1] ? parseInt(matchData[1]) : -1
+                if( idNo > highestID ) highestID = idNo
+            }
+        }
+        const nextID = highestID + 1
+        return generateOrdinalID(`${surfaceID}_z`, nextID )
     }
 
     hasID(targetID) {       

@@ -2500,7 +2500,7 @@ alphanum-sort@^1.0.0:
 
 "annotorious-openseadragon@github:performant-software/annotorious-openseadragon":
   version "2.2.0"
-  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/1ea1aa143080d351ffa6d9f89014cb7bdd7cb0fc"
+  resolved "https://codeload.github.com/performant-software/annotorious-openseadragon/tar.gz/b2a0486bf8ace2fe79de4d8ed3bb8d03a804fcb2"
   dependencies:
     "@babel/polyfill" "^7.10.4"
     "@recogito/annotorious" "^2.2.0"
@@ -10294,9 +10294,9 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, po
     supports-color "^6.1.0"
 
 preact@^10.4.1:
-  version "10.5.11"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.11.tgz#2c8a431f16613e442901068175771806cf1cc0f6"
-  integrity sha512-BdtFePVilR1430kDuzh3VkkZktCmp8RTqHOjG8qesyGZXHNYJjdrjEBuc2f7O/vthhVENxJd0/aTjWtYeH46aw==
+  version "10.5.12"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.12.tgz#6a8ee8bf40a695c505df9abebacd924e4dd37704"
+  integrity sha512-r6siDkuD36oszwlCkcqDJCAKBQxGoeEGytw2DGMD5A/GGdu5Tymw+N2OBXwvOLxg6d1FeY8MgMV3cc5aVQo4Cg==
 
 prelude-ls@~1.1.2:
   version "1.1.2"

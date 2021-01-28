@@ -16,7 +16,6 @@ export default class SurfaceEditor extends Component {
             selectedTool: 'select',
             selectedZone: null,
             selectedDOMElement: null,
-            nextZoneNumber: 1
         }
     }
 
@@ -49,7 +48,7 @@ export default class SurfaceEditor extends Component {
         // TODO look at n values to determine next zone number
         this.zoneLayer.cancel()
         this.zoneLayer.setZones(zones)
-        this.setState({...this.state, selectedZone: null, selectedDOMElement: null, nextZoneNumber: zones.length+1 })
+        this.setState({...this.state, selectedZone: null, selectedDOMElement: null })
     }
 
     createOSD(el,tileSource)  {
@@ -66,12 +65,12 @@ export default class SurfaceEditor extends Component {
         this.zoneLayer = ZoneLayer(this.viewer,{})
 
         this.zoneLayer.on('zoneSelected', (selectedZone, selectedDOMElement) => {
-            let { nextZoneNumber } = this.state
             if( selectedZone.id === null ) {
-                selectedZone.n = nextZoneNumber++
-                selectedZone.id = `zone${selectedZone.n}`
+                const { facsDocument, surfaceIndex } = this.props
+                const surface = facsDocument.getSurface(surfaceIndex)
+                selectedZone.id = facsDocument.nextZoneID(surface.id)
             }
-            this.setState({...this.state, selectedZone, selectedDOMElement, nextZoneNumber })
+            this.setState({...this.state, selectedZone, selectedDOMElement })
         })
     }
 

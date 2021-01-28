@@ -100,10 +100,10 @@ function renderLocalLabels(localLabels) {
 function renderZones(zones) {
     const zoneEls = []
     for( const zone of zones ) {
-        const { id,n,ulx,uly,lrx,lry,note} = zone
+        const { id,ulx,uly,lrx,lry,note} = zone
         const noteEl = note && note.length > 0 ? `<note>${note}</note>` : ""
         const coordAttrs = zone.points ? `points="${zone.points}"` : `ulx="${ulx}" uly="${uly}" lrx="${lrx}" lry="${lry}"`
-        const zoneEl = `<zone xml:id="${id}" n="${n}" ${coordAttrs}>${noteEl}</zone>`
+        const zoneEl = `<zone xml:id="${id}" ${coordAttrs}>${noteEl}</zone>`
         zoneEls.push(zoneEl)
     }
     return zoneEls.join('\n')
