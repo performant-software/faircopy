@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card, CardHeader, CardActions, CardContent } from '@material-ui/core'
 
+import IDField from './attribute-fields/IDField'
+
 import { getLocalString } from '../tei-document/iiif'
 
 export default class SurfaceDetailCard extends Component {
 
     renderSubHeadings(subHeadings) {
-        if( subHeadings.length === 0 ) return null
+        if( !subHeadings || subHeadings.length === 0 ) return null
 
         const subHeadingEls = []
         let n = 0
@@ -24,7 +26,7 @@ export default class SurfaceDetailCard extends Component {
     }
 
     render() {
-        const { facsDocument, surfaceIndex, changeSurfaceIndex } = this.props
+        const { facsDocument, surfaceIndex, changeSurfaceIndex, onChangeSurface } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
         const {surfaces} = facsDocument.facs
 
@@ -47,22 +49,26 @@ export default class SurfaceDetailCard extends Component {
             }
         }
 
+        const onChangeID = (value,error) => onChangeSurface('id',value,error)
+
         return (
             <Card id="SurfaceDetailCard" >
                 <CardHeader 
                     title={title}
-                    subheader={`#${surface.id}`}
                     className="nav-controls"
                 >
                 </CardHeader>
-                { subHeadings &&
-                    <CardContent>
-                        { this.renderSubHeadings(subHeadings) }
-                    </CardContent>
-                }
+                <CardContent>
+                    <IDField
+                        hasID={facsDocument.hasID}
+                        value={surface.id}
+                        onChangeCallback={onChangeID}
+                    ></IDField>
+                    { this.renderSubHeadings(subHeadings) }
+                </CardContent>
                 <CardActions>
-                    { enablePrev && <Button onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button> }
-                    { enableNext && <Button onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button> }
+                    <Button disabled={!enablePrev} onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button>
+                    <Button disabled={!enableNext} onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button>
                 </CardActions>
             </Card>
         )

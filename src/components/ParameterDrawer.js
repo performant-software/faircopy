@@ -230,7 +230,7 @@ export default class ParameterDrawer extends Component {
 
         return (
             <IDField
-                teiDocument={teiDocument}
+                hasID={teiDocument.hasID}
                 value={xmlID}
                 onChangeCallback={onChange}
             ></IDField>

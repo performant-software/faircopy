@@ -89,7 +89,7 @@ export default class FacsDocument {
         return generateOrdinalID(`${surfaceID}_z`, nextID )
     }
 
-    hasID(targetID) {       
+    hasID = (targetID) => {       
         const { surfaces } = this.facs
 
         for( const surface of surfaces ) {

@@ -86,10 +86,10 @@ export default class IDField extends Component {
         const helperText = (errorMessage && errorMessage.length > 0 ) ? errorMessage : " "
 
         const onSaveClick = () => {
-            const { teiDocument } = this.props
+            const { hasID } = this.props
             const { valueBuffer } = this.state
             // check for uniqueness
-            if( this.props.value !== valueBuffer && valueBuffer.length > 0 && teiDocument.hasID(valueBuffer) ) {
+            if( this.props.value !== valueBuffer && valueBuffer.length > 0 && hasID(valueBuffer) ) {
                 this.setState( { ...this.state, error: true, errorMessage: 'ID must be unique to the document.'})
             } else {
                 this.setState({ ...this.initialState })

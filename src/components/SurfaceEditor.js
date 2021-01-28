@@ -169,6 +169,15 @@ export default class SurfaceEditor extends Component {
                 this.setState({ ...this.state, selectedZone: nextZone })    
             }
         }
+
+        const onChangeSurface = (name,value,error) => {
+            if( !error ) {
+                const surface = facsDocument.getSurface(surfaceIndex)
+                surface[name] = value
+                facsDocument.save()
+                this.setState({ ...this.state })    
+            }
+        }
     
         return (
             <div id="SurfaceEditor" >
@@ -185,7 +194,7 @@ export default class SurfaceEditor extends Component {
                     ></SurfaceEditorToolbar>
                 </div>
                 <div className="editor">
-                    <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
+                    <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} onChangeSurface={onChangeSurface} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
                     <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
                     <ZonePopup
                         zone={selectedZone}

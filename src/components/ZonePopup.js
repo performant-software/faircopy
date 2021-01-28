@@ -20,7 +20,7 @@ export default class ZonePopup extends Component {
             <Card variant="outlined" className="zoneEditor"  >
                 <div className="zone-id">
                     <IDField
-                        teiDocument={facsDocument}
+                        hasID={facsDocument.hasID}
                         value={id}
                         onChangeCallback={onChangeID}
                     ></IDField>

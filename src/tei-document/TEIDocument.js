@@ -81,7 +81,7 @@ export default class TEIDocument {
         return note
     }
 
-    hasID(targetID) {       
+    hasID = (targetID) => {       
         const editorState = this.editorView.state
         const {doc} = editorState
         let found = false
