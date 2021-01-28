@@ -142,7 +142,7 @@ export default class FacsIndex extends Component {
     
     renderToolbar() {
         const { checked } = this.state
-        const { onChangeView, onEditResource, surfaceIndex, onAddImages } = this.props
+        const { onChangeView, onEditResource, surfaceIndex, onAddImages, onWindow } = this.props
 
         const iconButtonProps = {
             disableRipple: true,
@@ -185,6 +185,7 @@ export default class FacsIndex extends Component {
                     surfaceIndex={surfaceIndex}
                     buttonProps={iconButtonProps}
                     onChangeView={onChangeView}
+                    onWindow={onWindow}
                 ></FacsModeControl>
             </div>
         )

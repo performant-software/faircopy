@@ -37,8 +37,7 @@ export default class SurfaceEditorToolbar extends Component {
     }
 
     render() {
-        const { onChangeView, surfaceIndex } = this.props
-    
+        const { onChangeView, surfaceIndex, onWindow } = this.props
         return (
             <div id='SurfaceEditorToolbar' >
                 { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
@@ -49,6 +48,7 @@ export default class SurfaceEditorToolbar extends Component {
                     selected={'detail'}
                     buttonProps={this.buttonProps}
                     onChangeView={onChangeView}
+                    onWindow={onWindow}
                 ></FacsModeControl>
             </div>
         )

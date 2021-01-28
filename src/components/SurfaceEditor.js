@@ -160,7 +160,7 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { resourceName, facsDocument, surfaceIndex, onChangeView } = this.props
+        const { resourceName, facsDocument, surfaceIndex, onChangeView, onWindow } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         
         const onChangeZone = (name,value,error) => {
@@ -182,6 +182,7 @@ export default class SurfaceEditor extends Component {
                         selectedTool = {selectedTool}
                         onChangeTool={this.onChangeTool}
                         onChangeView={onChangeView} 
+                        onWindow={onWindow}
                     ></SurfaceEditorToolbar>
                 </div>
                 <div className="editor">

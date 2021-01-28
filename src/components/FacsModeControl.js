@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@material-ui/core';
 
 export default class FacsModeControl extends Component {    
     render() {
-        const { selected, buttonProps, onChangeView, surfaceIndex } = this.props
+        const { selected, buttonProps, onChangeView, surfaceIndex, onWindow } = this.props
 
         return (
             <div id="FacsModeControl" >
@@ -27,6 +27,18 @@ export default class FacsModeControl extends Component {
                         </Button> 
                     </span>
                 </Tooltip>
+                { onWindow && 
+                    <Tooltip title="Display in New Window">
+                        <span>
+                            <Button
+                                {...buttonProps}
+                                onClick={onWindow}
+                            >
+                                <i className={`fas fa-external-link fa-lg`}></i>
+                            </Button> 
+                        </span>
+                    </Tooltip>            
+                }
             </div>
         )
     }

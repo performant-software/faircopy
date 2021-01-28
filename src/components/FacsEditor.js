@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import SurfaceEditor from './SurfaceEditor'
 import FacsIndex from './FacsIndex'
 
+const fairCopy = window.fairCopy
+
 export default class FacsEditor extends Component {
 
     constructor(props) {
@@ -25,14 +27,22 @@ export default class FacsEditor extends Component {
         }
     }
 
+    onWindow = () => {
+        const facsDocument = this.getFacsDocument() 
+        const { surfaceIndex } = this.state
+        const surface = facsDocument.getSurface(surfaceIndex)
+        fairCopy.services.ipcSend('requestImageView', { resourceID: facsDocument.resourceID, xmlID: surface.id }) 
+    }
+
     render() {
-        const { hidden, resourceName, onEditResource, onAddImages, onOpenPopupMenu, onConfirmDeleteImages } = this.props
+        const { hidden, resourceName, onEditResource, onAddImages, onOpenPopupMenu, onConfirmDeleteImages, windowed } = this.props
         const { mode, surfaceIndex } = this.state
         const facsDocument = this.getFacsDocument()
 
         if( hidden ) return null
 
         const onChangeView = (nextIndex,nextMode) => { this.setState({...this.state, mode: nextMode, surfaceIndex: nextIndex })}
+        const onWindowPopup = !windowed ? this.onWindow : null 
 
         return (
             <div id="FacsEditor">
@@ -42,6 +52,7 @@ export default class FacsEditor extends Component {
                         facsDocument={facsDocument}
                         resourceName={resourceName}
                         onChangeView={onChangeView}
+                        onWindow={onWindowPopup}
                     ></SurfaceEditor>                
                 : 
                     <FacsIndex
@@ -53,6 +64,7 @@ export default class FacsEditor extends Component {
                         onOpenPopupMenu={onOpenPopupMenu}   
                         onAddImages={onAddImages}         
                         onConfirmDeleteImages={onConfirmDeleteImages}  
+                        onWindow={onWindowPopup}
                     ></FacsIndex>
                 }
             </div>

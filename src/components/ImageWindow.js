@@ -85,6 +85,7 @@ export default class ImageWindow extends Component {
                     onOpenPopupMenu={this.onOpenPopupMenu}
                     onConfirmDeleteImages={this.onConfirmDeleteImages}
                     startIndex={startIndex}
+                    windowed={true}
                 ></FacsEditor>
                 { this.renderAlertDialog() }
                 { editDialogMode && <EditResourceDialog
