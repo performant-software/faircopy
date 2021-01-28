@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { getThumbnailURL } from '../tei-document/iiif'
 
 const fairCopy = window.fairCopy
@@ -6,6 +7,17 @@ export default class IDMap {
 
     constructor(teiSchema,idMapData) {
         this.teiSchema = teiSchema
+        this.lastMessageID = null
+        this.loadIDMap(idMapData)
+
+        // Listen for updates
+        fairCopy.services.ipcRegisterCallback('IDMapUpdated', (e, d) => {
+            if( d.messageID !== this.lastMessageID ) 
+                this.loadIDMap(d.idMapData)
+        })
+    }
+
+    loadIDMap(idMapData) {
         this.idMap = JSON.parse(idMapData)
     }
 
@@ -109,6 +121,8 @@ export default class IDMap {
     }
 
     save() {
-        fairCopy.services.ipcSend('requestSaveIDMap', JSON.stringify(this.idMap))
+        const messageID = uuidv4()
+        fairCopy.services.ipcSend('requestSaveIDMap', messageID, JSON.stringify(this.idMap))
+        this.lastMessageID = messageID
     }
 }

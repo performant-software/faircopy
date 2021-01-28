@@ -65,10 +65,13 @@ class FairCopyApplication {
         this.sendToAllWindows('resourceUpdated', update )
       }
     })
+    ipcMain.on('requestSaveIDMap', (event, msgID, idMap) => { 
+      this.projectStore.saveIDMap(idMap) 
+      this.sendToAllWindows('IDMapUpdated', { messageID: msgID, idMapData: idMap } )
+    })
     ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
     ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
     ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
-    ipcMain.on('requestSaveIDMap', (event,idMap) => { this.projectStore.saveIDMap(idMap) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
   
     ipcMain.on('requestImageData', (event) => {
