@@ -270,7 +270,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, resourceName, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
+        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, resourceEntry, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
 
         // used to update scroll position when document changes
@@ -301,7 +301,7 @@ export default class TEIEditor extends Component {
             > 
                 <div>
                     { !hidden && <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceName}</Typography>
+                        <Typography component="h1" variant="h6">{resourceEntry.name}</Typography>
                     </div> }
                     { !hidden && <EditorToolbar
                         teiDocument={teiDocument}

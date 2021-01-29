@@ -23,7 +23,7 @@ export default class SurfaceDetailCard extends Component {
     }
 
     render() {
-        const { facsDocument, surfaceIndex, changeSurfaceIndex, onChange } = this.props
+        const { facsDocument, facsID, surfaceIndex, changeSurfaceIndex, onChange } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
         const {surfaces} = facsDocument.facs
         // const names = getSurfaceNames(surface)
@@ -50,6 +50,7 @@ export default class SurfaceDetailCard extends Component {
                     hasID={facsDocument.hasID}
                     value={surface.id}
                     onChangeCallback={onChangeID}
+                    idPrefix={facsID}
                 ></IDField>           
                 <Button size="small" disabled={!enablePrev} onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button>
                 <Button size="small" disabled={!enableNext} onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button>

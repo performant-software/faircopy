@@ -58,13 +58,15 @@ export default class IDField extends Component {
     }
 
     renderDisplayMode() {
+        const {idPrefix} = this.props
         const value = this.getID()
 
         const onClick = () => { this.setState( {...this.state, valueBuffer: value, initialValue: value, editMode: true} )}
 
         const onCopy= () => {
             const value = this.getID()
-            fairCopy.services.copyToClipBoard(`#${value}`)
+            const fullID = idPrefix ? `${idPrefix}#${value}` : `#${value}`
+            fairCopy.services.copyToClipBoard(fullID)
         }
 
         return (

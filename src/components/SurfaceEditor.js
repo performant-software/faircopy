@@ -160,10 +160,11 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { resourceName, facsDocument, surfaceIndex, onChangeView, onWindow } = this.props
+        const { resourceEntry, facsDocument, surfaceIndex, onChangeView, onWindow } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
+        const facsID = resourceEntry.localID
 
         const onChangeZone = (name,value,error) => {
             if( !error ) {
@@ -186,7 +187,7 @@ export default class SurfaceEditor extends Component {
             <div id="SurfaceEditor" >
                 <div>
                     <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceName} - {surfaceNames.title}</Typography>
+                        <Typography component="h1" variant="h6">{resourceEntry.name} - {surfaceNames.title}</Typography>
                     </div>        
                     <SurfaceEditorToolbar 
                         surfaceIndex={surfaceIndex}
@@ -197,12 +198,13 @@ export default class SurfaceEditor extends Component {
                     ></SurfaceEditorToolbar>
                 </div>
                 <div className="editor">
-                    <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} onChange={onChangeSurface} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
+                    <SurfaceDetailCard facsDocument={facsDocument} facsID={facsID} surfaceIndex={surfaceIndex} onChange={onChangeSurface} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
                     <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
                     <ZonePopup
                         zone={selectedZone}
                         anchorEl={selectedDOMElement}
                         facsDocument={facsDocument}
+                        facsID={facsID}
                         onChange={onChangeZone}
                         onErase={this.onEraseZone}
                         onSave={this.onSaveZone}

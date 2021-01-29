@@ -192,13 +192,13 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { resourceName } = this.props
+        const { resourceEntry } = this.props
 
         return (
             <div id="FacsIndex" >
                 <div>
                     <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceName}</Typography>
+                        <Typography component="h1" variant="h6">{resourceEntry.name}</Typography>
                     </div>        
                     { this.renderToolbar() }
                 </div>
