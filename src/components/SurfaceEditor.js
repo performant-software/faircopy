@@ -7,6 +7,7 @@ import { getImageInfoURL } from '../tei-document/iiif'
 import SurfaceEditorToolbar from './SurfaceEditorToolbar'
 import SurfaceDetailCard from './SurfaceDetailCard'
 import ZonePopup from './ZonePopup';
+import { getSurfaceNames } from '../tei-document/convert-facs'
 
 export default class SurfaceEditor extends Component {
 
@@ -161,7 +162,9 @@ export default class SurfaceEditor extends Component {
     render() {
         const { resourceName, facsDocument, surfaceIndex, onChangeView, onWindow } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
-        
+        const surface = facsDocument.getSurface(surfaceIndex)
+        const surfaceNames = getSurfaceNames(surface)
+
         const onChangeZone = (name,value,error) => {
             if( !error ) {
                 const nextZone = { ...selectedZone }
@@ -183,7 +186,7 @@ export default class SurfaceEditor extends Component {
             <div id="SurfaceEditor" >
                 <div>
                     <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceName}</Typography>
+                        <Typography component="h1" variant="h6">{resourceName} - {surfaceNames.title}</Typography>
                     </div>        
                     <SurfaceEditorToolbar 
                         surfaceIndex={surfaceIndex}
@@ -194,7 +197,7 @@ export default class SurfaceEditor extends Component {
                     ></SurfaceEditorToolbar>
                 </div>
                 <div className="editor">
-                    <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} onChangeSurface={onChangeSurface} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
+                    <SurfaceDetailCard facsDocument={facsDocument} surfaceIndex={surfaceIndex} onChange={onChangeSurface} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
                     <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
                     <ZonePopup
                         zone={selectedZone}

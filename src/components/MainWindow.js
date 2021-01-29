@@ -259,6 +259,7 @@ export default class MainWindow extends Component {
         for( const resource of Object.values(openResources) ) {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
+            const resourceName = fairCopyProject.resources[resource.resourceID].name
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
@@ -274,6 +275,7 @@ export default class MainWindow extends Component {
                             key={key}
                             hidden={hidden}
                             teiDocument={resource}
+                            resourceName={resourceName}
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onEditResource={this.onEditResource}
@@ -289,6 +291,7 @@ export default class MainWindow extends Component {
                             key={key}
                             hidden={hidden}
                             facsDocument={resource}
+                            resourceName={resourceName}
                             fairCopyProject={fairCopyProject}
                             onEditResource={this.onEditResource}    
                             onAddImages={this.onAddImages}

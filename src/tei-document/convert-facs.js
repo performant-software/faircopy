@@ -1,4 +1,5 @@
 import {facsTemplate} from "./tei-template"
+import { getLocalString } from './iiif'
 
 // Supports IIIF v2 and v3
 export function iiifToFacsimile( manifestData ) {
@@ -171,6 +172,13 @@ export function getExtensionForMIMEType( mimeType ) {
         default:
             throw new Error(`Unknown MIMEType: ${mimeType}`)
     }        
+}
+
+export function getSurfaceNames( surface, lang='en') {
+    const labels = getLocalString(surface.localLabels, lang)
+    const title = labels[0]
+    const subHeadings = labels.slice(1)
+    return { title, subHeadings }
 }
 
 function getLocalLabels(labelEls) {

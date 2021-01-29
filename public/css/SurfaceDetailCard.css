@@ -1,11 +1,16 @@
 
 #SurfaceDetailCard  {
+    display: flex;
     position: absolute;
     z-index: 200;
     bottom: 0px;
     opacity: 0.8;
-    padding: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+#SurfaceDetailCard .element-id-field {
+    margin-bottom: 22px;
+    margin-left: 10px;
 }

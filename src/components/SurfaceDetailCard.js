@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Typography, Card, CardHeader, CardActions, CardContent } from '@material-ui/core'
-
+import { Button, Typography, Card } from '@material-ui/core'
 import IDField from './attribute-fields/IDField'
-
-import { getLocalString } from '../tei-document/iiif'
 
 export default class SurfaceDetailCard extends Component {
 
@@ -26,16 +23,13 @@ export default class SurfaceDetailCard extends Component {
     }
 
     render() {
-        const { facsDocument, surfaceIndex, changeSurfaceIndex, onChangeSurface } = this.props
+        const { facsDocument, surfaceIndex, changeSurfaceIndex, onChange } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
         const {surfaces} = facsDocument.facs
+        // const names = getSurfaceNames(surface)
 
         const enablePrev = surfaceIndex > 0
         const enableNext = surfaceIndex < surfaces.length-1
-
-        const labels = getLocalString(surface.localLabels, 'en')
-        const title = labels[0]
-        const subHeadings = labels.slice(1)
 
         const onPrev = () => {
             if(enablePrev) {
@@ -48,28 +42,17 @@ export default class SurfaceDetailCard extends Component {
                 changeSurfaceIndex( surfaceIndex + 1 )
             }
         }
-
-        const onChangeID = (value,error) => onChangeSurface('id',value,error)
+        const onChangeID = (value,error) => onChange('id',value,error)
 
         return (
-            <Card id="SurfaceDetailCard" >
-                <CardHeader 
-                    title={title}
-                    className="nav-controls"
-                >
-                </CardHeader>
-                <CardContent>
-                    <IDField
-                        hasID={facsDocument.hasID}
-                        value={surface.id}
-                        onChangeCallback={onChangeID}
-                    ></IDField>
-                    { this.renderSubHeadings(subHeadings) }
-                </CardContent>
-                <CardActions>
-                    <Button disabled={!enablePrev} onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button>
-                    <Button disabled={!enableNext} onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button>
-                </CardActions>
+        <Card id="SurfaceDetailCard" >
+                <IDField
+                    hasID={facsDocument.hasID}
+                    value={surface.id}
+                    onChangeCallback={onChangeID}
+                ></IDField>           
+                <Button size="small" disabled={!enablePrev} onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button>
+                <Button size="small" disabled={!enableNext} onClick={onNext} className='next-nav-button'><i className='fas fa-chevron-circle-right fa-2x'></i></Button>
             </Card>
         )
     }

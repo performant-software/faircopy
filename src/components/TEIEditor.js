@@ -270,7 +270,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, fairCopyProject, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
+        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, resourceName, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
 
         // used to update scroll position when document changes
@@ -291,8 +291,7 @@ export default class TEIEditor extends Component {
         const editorStyle = { minWidth: editorWidth, maxHeight: editorHeight }
 
         const style = hidden ? { display: 'none' } : {}
-        const resourceName = fairCopyProject.resources[teiDocument.resourceID].name
-
+        
         return (
             <div 
                 style={style} 
