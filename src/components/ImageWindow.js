@@ -78,8 +78,8 @@ export default class ImageWindow extends Component {
         return (
             <div id="ImageWindow">
                 <FacsEditor
-                    resourceName={resourceEntry.name}
                     facsDocument={imageView.facsDocument}
+                    resourceEntry={resourceEntry}
                     onEditResource={this.onEditResource}    
                     onAddImages={this.onAddImages}
                     onOpenPopupMenu={this.onOpenPopupMenu}
