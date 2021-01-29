@@ -123,9 +123,9 @@ class ProjectStore {
         if( resourceEntry ) {
             this.writeUTF8File(resourceID,resourceData)
             this.writeProjectArchive()
-            return { resourceID, resourceData }
+            return true
         }
-        return null
+        return false
     }
 
     addResource( resourceEntryJSON, resourceData ) {
@@ -163,9 +163,15 @@ class ProjectStore {
     }
 
     updateResource(resourceEntryJSON) {
+        const { resources } = this.manifestData
         const resourceEntry = JSON.parse(resourceEntryJSON)
-        this.manifestData.resources[resourceEntry.id] = resourceEntry
-        this.saveManifest()
+        if( resources[resourceEntry.id] ) {
+            this.manifestData.resources[resourceEntry.id] = resourceEntry
+            this.saveManifest()
+            return true
+        }
+        log.info(`Error updating resource entry: ${resourceEntry.id}`)
+        return false
     }
 
     async exportResources(resourceIDs,path) {

@@ -58,10 +58,14 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
+    ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
+    ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
+
+    /// These messages are rebroadcast to all windows 
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
-      const update = this.projectStore.saveResource(resourceID, resourceData) 
-      if( update ) {
-        update.messageID = msgID
+      const ok = this.projectStore.saveResource(resourceID, resourceData) 
+      if( ok ) {
+        const update = { messageID: msgID, resourceID, resourceData }
         this.sendToAllWindows('resourceUpdated', update )
       }
     })
@@ -69,17 +73,19 @@ class FairCopyApplication {
       this.projectStore.saveIDMap(idMap) 
       this.sendToAllWindows('IDMapUpdated', { messageID: msgID, idMapData: idMap } )
     })
-    ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
-    ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
-    ipcMain.on('updateResource', (event, resourceEntry) => { this.projectStore.updateResource(resourceEntry) })
-    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
-  
+    ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
+      const ok = this.projectStore.updateResource(resourceEntry) 
+      if( ok ) {
+        this.sendToAllWindows('resourceEntryUpdated', { messageID: msgID, resourceEntry } )
+      }
+    })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
       this.processImageData(paths).then((imageData) => {
         this.sendToAllWindows('imagesOpened', imageData )  
       })     
     })
+    ///////////  
     
     // Main window events //////
 
@@ -90,6 +96,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
+    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
     
     ipcMain.on('requestPaste', (event) => { 
       if( this.mainWindow ) {

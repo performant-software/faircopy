@@ -117,13 +117,13 @@ export default class App extends Component {
       )
     }
 
-    if( rootComponent === "MainWindow" ) {
-        return ( fairCopyProject &&
+    if( rootComponent === "MainWindow" && fairCopyProject ) {
+        return (
           <MainWindow
             fairCopyProject={fairCopyProject}
           ></MainWindow>
         ) 
-    } else if( rootComponent === "ImageWindow" ) {
+    } else if( rootComponent === "ImageWindow" && imageView ) {
         return (
             <ImageWindow
               imageView={imageView}
@@ -133,7 +133,7 @@ export default class App extends Component {
       return (
           <ProjectWindow></ProjectWindow>
       )
-    }
+    } else return null
 
   }
 }

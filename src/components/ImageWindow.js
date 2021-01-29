@@ -20,6 +20,18 @@ export default class ImageWindow extends Component {
         }	
     }
 
+    componentDidMount() {
+        const { imageView } = this.props
+        imageView.addUpdateListener(this.updateListener)
+    }
+    
+    componentWillUnmount() {
+        const { imageView } = this.props
+        imageView.removeUpdateListener(this.updateListener)
+    }
+
+    updateListener = () => { this.setState({...this.state}) }
+
     onEditResource = () => {
         this.setState({...this.state, editDialogMode: true })
     }

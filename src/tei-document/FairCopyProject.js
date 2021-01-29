@@ -21,7 +21,33 @@ export default class FairCopyProject {
         this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
-        this.idMap = new IDMap(this.teiSchema,projectData.idMap)        
+        this.idMap = new IDMap(this.teiSchema,projectData.idMap)   
+        this.updateListeners = []
+        this.lastResourceEntryMessage = null 
+        
+        // Listen for updates to resource entries.
+        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
+            const nextResourceEntry = JSON.parse(d.resourceEntry)
+            if( d.messageID !== this.lastResourceEntryMessage ) {
+                this.onResourceUpdated(nextResourceEntry)
+            }
+        })
+    }
+
+    // Called when resource entry is updated by a different window process
+    onResourceUpdated(nextResourceEntry) {
+        this.resources[ nextResourceEntry.id ] = nextResourceEntry
+        for( const listener of this.updateListeners ) {
+            listener()
+        }
+    }
+
+    addUpdateListener(listener) {
+        this.updateListeners.push(listener)
+    }
+
+    removeUpdateListener(listener) {
+        this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
     parseMenus(json) {
@@ -70,7 +96,9 @@ export default class FairCopyProject {
                 this.idMap.save()
             }
             this.resources[resourceEntry.id] = resourceEntry
-            fairCopy.services.ipcSend('updateResource', JSON.stringify(resourceEntry) )
+            const messageID = uuidv4()
+            fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(resourceEntry) )
+            this.lastResourceEntryMessage = messageID
         } else {
             console.log(`Unable to update resource: ${resourceEntry}`)
         }
