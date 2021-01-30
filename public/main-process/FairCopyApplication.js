@@ -59,9 +59,19 @@ class FairCopyApplication {
       }
     })
     ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
-    ipcMain.on('removeResource', (event, resourceID) => { this.projectStore.removeResource(resourceID) })
 
-    /// These messages are rebroadcast to all windows 
+    ipcMain.on('removeResource', (event, resourceID) => { 
+      this.projectStore.removeResource(resourceID) 
+      // close any open image windows
+      this.imageViews = this.imageViews.filter((imageView) => {
+        if( imageView.resourceID === resourceID ) {
+          imageView.imageWindow.close()
+          return false
+        }
+        return true
+      })
+    })
+
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
       const ok = this.projectStore.saveResource(resourceID, resourceData) 
       if( ok ) {
@@ -182,15 +192,19 @@ class FairCopyApplication {
   }  
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
+    const imageWindow = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
+    const imageView = {
+      imageWindow,
+      resourceID: imageViewInfo.resourceID
+    }
     this.imageViews.push(imageView)
 
-    imageView.on('close', (event) => {
+    imageWindow.on('close', (event) => {
       // remove image from list
-      this.imageViews = this.imageViews.filter( v => v !== imageView )
+      this.imageViews = this.imageViews.filter( v => v.imageWindow !== imageWindow )
     })
 
-    await this.projectStore.openImageView(imageView,imageViewInfo)
+    await this.projectStore.openImageView(imageWindow,imageViewInfo)
   }
 
   exitApp() {
@@ -198,8 +212,9 @@ class FairCopyApplication {
       this.exiting = true
       this.projectStore.quitSafely(() => {
         for( const imageView of this.imageViews ) {
-          if( !imageView.isDestroyed() ) {
-            imageView.close()
+          const { imageWindow } = imageView
+          if( !imageWindow.isDestroyed() ) {
+            imageWindow.close()
           }
         }
         this.imageViews = []
@@ -284,7 +299,8 @@ class FairCopyApplication {
   sendToAllWindows(message, params) {
     this.sendToMainWindow(message, params)
     for( const imageView of this.imageViews ) {
-      imageView.webContents.send(message, params)
+      const { imageWindow } = imageView 
+      imageWindow.webContents.send(message, params)
     }
   }
 

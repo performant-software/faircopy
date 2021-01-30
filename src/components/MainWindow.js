@@ -57,7 +57,7 @@ export default class MainWindow extends Component {
     }
 
     componentWillUnmount() {
-        const { fairCopyProject } = this.prpos
+        const { fairCopyProject } = this.props
         fairCopyProject.removeUpdateListener(this.receiveResourceEntryUpdate)
     }
     
