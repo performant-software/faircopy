@@ -39,14 +39,18 @@ export default class SurfaceEditor extends Component {
 
     // listen for updates from other processes to the zones 
     updateListener = () => {
-        const { facsDocument, surfaceIndex } = this.props
+        const { facsDocument, surfaceIndex, onChangeView } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
-        this.loadZones(surface)
+        if( surface ) {
+            this.loadZones(surface)
+        } else {
+            // surface must have been deleted, switch to index view
+            onChangeView(0,'index')
+        }
     }
 
     loadZones(surface) {
         const { zones } = surface
-        // TODO look at n values to determine next zone number
         this.zoneLayer.cancel()
         this.zoneLayer.setZones(zones)
         this.setState({...this.state, selectedZone: null, selectedDOMElement: null })

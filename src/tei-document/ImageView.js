@@ -39,6 +39,10 @@ export default class ImageView {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
+    getLocalID() {
+        return this.resourceEntry.localID
+    }
+
     updateResource( nextResourceEntry ) {
         const currentLocalID = this.resourceEntry.localID 
         const nextLocalID = nextResourceEntry.localID

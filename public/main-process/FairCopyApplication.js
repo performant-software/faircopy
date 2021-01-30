@@ -49,7 +49,6 @@ class FairCopyApplication {
 
   initIPC() {
     
-    // Common events ////
     ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
     ipcMain.on('exitApp', (event) => { 
       if( this.projectWindow ) {
@@ -95,7 +94,6 @@ class FairCopyApplication {
         this.sendToAllWindows('imagesOpened', imageData )  
       })     
     })
-    ///////////  
     
     // Main window events //////
 

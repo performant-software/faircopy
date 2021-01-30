@@ -18,6 +18,21 @@ export default class FacsIndex extends Component {
         }
     }
 
+    componentDidMount() {
+        const { facsDocument } = this.props
+        facsDocument.addUpdateListener(this.updateListener)
+    }
+    
+    componentWillUnmount() {
+        const { facsDocument } = this.props
+        facsDocument.removeUpdateListener(this.updateListener)
+    }
+
+    // listen for updates from other processes 
+    updateListener = () => {
+        this.setState({...this.state})
+    }
+
     onOpenActionMenu = (anchorEl) => {    
         const { onOpenPopupMenu, onConfirmDeleteImages } = this.props
         
