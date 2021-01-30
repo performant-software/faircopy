@@ -119,6 +119,7 @@ export default class FacsDocument {
                 resourceEntryID,
                 width,
                 height,
+                zones: [],
                 mimeType
             }
             this.facs.surfaces.push(surface)
