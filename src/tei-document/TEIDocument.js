@@ -5,6 +5,7 @@ import {baseKeymap} from "./basekeymap"
 import {highlighter} from "./highlighter"
 import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
+import { v4 as uuidv4 } from 'uuid'
 
 import {teiTemplate} from "./tei-template"
 import {parseText, serializeText, htmlToXML} from "./xml"
@@ -17,6 +18,7 @@ export default class TEIDocument {
         this.subDocs = {}
         this.subDocCounter = 0
         this.editorView = null
+        this.lastMessageID = null
         this.noteEditorView = null
         this.resourceID = resourceID
         this.fairCopyProject = fairCopyProject
@@ -198,7 +200,10 @@ export default class TEIDocument {
         div.appendChild( domFragment.cloneNode(true) )
         textEl.innerHTML = htmlToXML(div.innerHTML,teiSchema.attrs)
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
-        fairCopy.services.ipcSend('requestSave', this.resourceID, fileContents)
+
+        const messageID = uuidv4()
+        fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
+        this.lastMessageID = messageID
 
         const localID = this.fairCopyProject.getLocalID(this.resourceID)
         idMap.mapTextIDs(localID,editorState.doc)

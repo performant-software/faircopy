@@ -52,7 +52,7 @@ export default class EditSurfaceInfoDialog extends Component {
                 onClose={onClickClose}
                 aria-labelledby="edit-surface-title"
             >
-                <DialogTitle id="edit-surface-title">Edit Surface Information</DialogTitle>
+                <DialogTitle id="edit-surface-title">Edit Surface</DialogTitle>
                 <DialogContent>
                     <TextField 
                         name="name"
