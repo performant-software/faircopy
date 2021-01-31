@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import FacsModeControl from './FacsModeControl';
-import { Button, Typography } from '@material-ui/core';
-import { TableContainer, TablePagination, Table, TableHead, TableRow, TableCell, TableBody, Paper, Checkbox } from '@material-ui/core';
+import FacsModeControl from './FacsModeControl'
+import { Button, Typography } from '@material-ui/core'
+import { TablePagination, TableHead, TableRow, TableCell, Paper, Checkbox } from '@material-ui/core'
 
 import { getLocalString } from '../tei-document/iiif'
+import DragAndDropTable from './DragAndDropTable'
+import DraggableComponent from './DraggableComponent'
 
 const rowsPerPage = 100
 
@@ -62,24 +64,15 @@ export default class FacsIndex extends Component {
         ]
         onOpenPopupMenu(menuOptions, anchorEl)
     }
-    
-    renderSurfaceIndex() {
+
+    renderSurfaceRows() {
         const { facsDocument, onChangeView, surfaceIndex } = this.props
         const { surfaces } = facsDocument.facs
+        const { checked } = this.state
 
         const onClick = (e) => {
             const selection = e.currentTarget.getAttribute('datasurfaceindex')
             onChangeView(parseInt(selection), 'detail')
-        }
-
-        const toggleAll = () => {
-            const { checked, allChecked } = this.state
-            const nextAllChecked = !allChecked
-            const nextChecked = { ...checked }
-            for( let i=0; i < surfaces.length; i++ ) {
-                nextChecked[i] = nextAllChecked
-            }
-            this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
         }
 
         const onClickCheck = (e) => {
@@ -95,9 +88,6 @@ export default class FacsIndex extends Component {
             component: "th",
             scope: "row"
         }
-
-        const { checked, allChecked, currentPage } = this.state
-
         const surfaceRows = []
         let index=0
         for( const surface of surfaces ) {
@@ -108,7 +98,7 @@ export default class FacsIndex extends Component {
             const check = checked[index] === true
             const selectionClass = surfaceIndex === index ? 'row-selected' : ''
             surfaceRows.push(
-                <TableRow hover className={selectionClass} key={`surface-${index}`}>
+                <TableRow component={DraggableComponent(surface.id, index)} hover className={selectionClass} key={`surface-${index}`}>
                     <TableCell {...cellProps} >
                         <Checkbox onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
                     </TableCell>
@@ -123,26 +113,72 @@ export default class FacsIndex extends Component {
             index++
         }
 
+        return surfaceRows
+    }
+
+    onDragEnd = (result) => {
+        const { facsDocument } = this.props
+        const { surfaces } = facsDocument.facs
+
+        // dropped outside the list
+        if (!result.destination) {
+            return
+        }
+
+        console.log(`dragEnd ${result.source.index} to  ${result.destination.index}`)
+        const nextSurfaces = reorder(
+            surfaces,
+            result.source.index,
+            result.destination.index
+        )
+
+        facsDocument.facs.surfaces = nextSurfaces
+        facsDocument.save()
+        this.setState({...this.state})
+    }
+
+    renderTableHead() {
+        const { facsDocument } = this.props
+        const { surfaces } = facsDocument.facs
+
+        const toggleAll = () => {
+            const { checked, allChecked } = this.state
+            const nextAllChecked = !allChecked
+            const nextChecked = { ...checked }
+            for( let i=0; i < surfaces.length; i++ ) {
+                nextChecked[i] = nextAllChecked
+            }
+            this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
+        }
+
+        const { allChecked } = this.state
+
+        return ( 
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                    <TableCell padding="none">Name</TableCell>
+                    <TableCell padding="none">ID</TableCell>
+                </TableRow>
+            </TableHead>
+        )
+    }
+    
+    renderSurfaceIndex() {
+        const surfaceRows = this.renderSurfaceRows()
+        const { currentPage } = this.state
+
         const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
         const start = rowsPerPage * currentPage
         const end = start + 100
-    
+
         return (
             <Paper >
-                <TableContainer className="table-container">
-                    <Table stickyHeader size="small" >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
-                                <TableCell padding="none">Name</TableCell>
-                                <TableCell padding="none">ID</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            { surfaceRows.slice(start,end) }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <DragAndDropTable
+                    tableHead={this.renderTableHead()}
+                    rows={surfaceRows.slice(start,end)}
+                    onDragEnd={this.onDragEnd}
+                ></DragAndDropTable>
                 <TablePagination
                     component="div"
                     rowsPerPageOptions={[rowsPerPage]}
@@ -225,3 +261,10 @@ export default class FacsIndex extends Component {
     }
 }
 
+function reorder(list, startIndex, endIndex) {
+    const result = Array.from(list)
+    const [removed] = result.splice(startIndex, 1)
+    result.splice(endIndex, 0, removed)
+
+    return result
+}

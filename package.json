@@ -58,6 +58,7 @@
     "prosemirror-transform": "^1.2.8",
     "prosemirror-view": "^1.15.7",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
     "react-force-graph-2d": "^1.13.6",
     "react-scripts": "3.4.1",
