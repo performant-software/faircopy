@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import FacsModeControl from './FacsModeControl'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Tooltip, Typography } from '@material-ui/core'
 import { TablePagination, TableHead, TableRow, TableCell, Paper, Checkbox } from '@material-ui/core'
 
 import { getLocalString } from '../tei-document/iiif'
@@ -100,6 +100,7 @@ export default class FacsIndex extends Component {
             surfaceRows.push(
                 <TableRow component={DraggableComponent(surface.id, index)} hover className={selectionClass} key={`surface-${index}`}>
                     <TableCell {...cellProps} >
+                        <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
                         <Checkbox onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
                     </TableCell>
                     <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
@@ -154,9 +155,12 @@ export default class FacsIndex extends Component {
         const { allChecked } = this.state
 
         return ( 
-            <TableHead>
+            <TableHead  >
                 <TableRow>
-                    <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                    <TableCell padding="none">
+                        <i className="toggle-all-gap"></i>
+                        <Checkbox onClick={toggleAll} color="default" checked={allChecked} />
+                    </TableCell>
                     <TableCell padding="none">Name</TableCell>
                     <TableCell padding="none">ID</TableCell>
                 </TableRow>

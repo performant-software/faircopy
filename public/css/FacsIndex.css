@@ -15,3 +15,12 @@
 #FacsIndex .toolbar-button {
     margin-left: 10px;
 }
+
+#FacsIndex .grab-handle {
+    color: gray;
+    margin-left: 10px;
+}
+
+#FacsIndex .toggle-all-gap {
+    margin-left: 20px;
+}
