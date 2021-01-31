@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import {teiToFacsimile, facsimileToTEI, generateOrdinalID} from './convert-facs'
+import {teiToFacsimile, facsimileToTEI, generateOrdinalID, setSurfaceTitle} from './convert-facs'
 
 const fairCopy = window.fairCopy
 
@@ -162,6 +162,15 @@ export default class FacsDocument {
         this.facs.surfaces = nextSurfaces
         this.save()
         this.updateIDMap()
+    }
+
+    updateSurfaceInfo(surfaceInfo) {
+        const { surfaceID, name } = surfaceInfo
+        const surface = this.facs.surfaces[ this.getIndex(surfaceID) ]
+        if( surface ) {
+            setSurfaceTitle( surface, name )
+            this.save()    
+        }
     }
 
     updateIDMap() {

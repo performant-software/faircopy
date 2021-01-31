@@ -5,6 +5,7 @@ import EditResourceDialog from './EditResourceDialog'
 import AddImageDialog from './AddImageDialog'
 import PopupMenu from './PopupMenu'
 import AlertDialog from './AlertDialog'
+import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
 
 export default class ImageWindow extends Component {
 
@@ -15,6 +16,8 @@ export default class ImageWindow extends Component {
             addImagesMode: false,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
+            surfaceInfo: null,
+            editSurfaceInfoMode: false,
             alertDialogMode: 'closed',
             alertOptions: null,
         }	
@@ -58,6 +61,16 @@ export default class ImageWindow extends Component {
         this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null })
     }
 
+    onEditSurfaceInfo = (surfaceInfo) => {
+        this.setState( {...this.state, surfaceInfo: surfaceInfo, editSurfaceInfoMode: true} )
+    }
+
+    onSaveSurfaceInfo = (surfaceInfo) => {
+        const { imageView } = this.props
+        imageView.facsDocument.updateSurfaceInfo(surfaceInfo)
+        this.setState( {...this.state, surfaceInfo: null, editSurfaceInfoMode: false} )
+    }
+
     renderAlertDialog() {
         const { fairCopyProject } = this.props
         const { alertDialogMode, alertOptions, exitOnClose } = this.state
@@ -84,7 +97,7 @@ export default class ImageWindow extends Component {
         if(!imageView) return null
 
         const { facsDocument, resourceEntry, idMap, startingID } = imageView
-        const { editDialogMode, addImagesMode, popupMenuAnchorEl, popupMenuOptions } = this.state
+        const { editDialogMode, addImagesMode, popupMenuAnchorEl, popupMenuOptions, surfaceInfo, editSurfaceInfoMode } = this.state
         const startIndex = facsDocument.getIndex(startingID)
 
         return (
@@ -93,9 +106,11 @@ export default class ImageWindow extends Component {
                     facsDocument={imageView.facsDocument}
                     resourceEntry={resourceEntry}
                     onEditResource={this.onEditResource}    
+                    onEditSurface={this.onEditSurface}
                     onAddImages={this.onAddImages}
                     onOpenPopupMenu={this.onOpenPopupMenu}
                     onConfirmDeleteImages={this.onConfirmDeleteImages}
+                    onEditSurfaceInfo={this.onEditSurfaceInfo}
                     startIndex={startIndex}
                     windowed={true}
                 ></FacsEditor>
@@ -116,6 +131,11 @@ export default class ImageWindow extends Component {
                     anchorEl={popupMenuAnchorEl}
                     onClose={this.onClosePopupMenu}                
                 ></PopupMenu> }
+                { editSurfaceInfoMode && <EditSurfaceInfoDialog
+                    surfaceInfo={surfaceInfo}
+                    onSave={this.onSaveSurfaceInfo}
+                    onClose={()=>{ this.setState( {...this.state, editSurfaceInfoMode: false, surfaceInfo: null} )}}
+                ></EditSurfaceInfoDialog> }
             </div>
         )
     }

@@ -181,6 +181,11 @@ export function getSurfaceNames( surface, lang='en') {
     return { title, subHeadings }
 }
 
+export function setSurfaceTitle( surface, title, lang='en' ) {
+    const key = surface.localLabels[lang] ? lang : 'none'
+    surface.localLabels[key][0] = title
+} 
+
 function getLocalLabels(labelEls) {
     const localLabels = {}
     for( let i=0; i < labelEls.length; i++ ) {

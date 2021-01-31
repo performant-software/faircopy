@@ -37,7 +37,7 @@ export default class SurfaceEditorToolbar extends Component {
     }
 
     render() {
-        const { onChangeView, surfaceIndex, onWindow, onEditResource } = this.props
+        const { onChangeView, surfaceIndex, onWindow, onEditSurfaceInfo } = this.props
         return (
             <div id='SurfaceEditorToolbar' >
                 { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
@@ -46,8 +46,7 @@ export default class SurfaceEditorToolbar extends Component {
                 <Tooltip title="Edit Surface Properties">
                     <span>
                         <Button
-                            disabled
-                            onClick={onEditResource}
+                            onClick={onEditSurfaceInfo}
                             {...this.buttonProps}
                         >
                             <i className="far fa-edit fa-2x"></i>

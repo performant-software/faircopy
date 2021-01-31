@@ -164,7 +164,7 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { resourceEntry, facsDocument, surfaceIndex, onChangeView, onWindow } = this.props
+        const { resourceEntry, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
@@ -186,6 +186,10 @@ export default class SurfaceEditor extends Component {
                 this.setState({ ...this.state })    
             }
         }
+
+        const onEditInfo = () => {
+            onEditSurfaceInfo({ resourceID: facsDocument.resourceID, surfaceID: surface.id, name: surfaceNames.title })
+        }
     
         return (
             <div id="SurfaceEditor" >
@@ -198,6 +202,7 @@ export default class SurfaceEditor extends Component {
                         selectedTool = {selectedTool}
                         onChangeTool={this.onChangeTool}
                         onChangeView={onChangeView} 
+                        onEditSurfaceInfo={onEditInfo}
                         onWindow={onWindow}
                     ></SurfaceEditorToolbar>
                 </div>

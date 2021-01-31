@@ -16,6 +16,7 @@ import PopupMenu from './PopupMenu'
 import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
 import SnackAlert from './SnackAlert'
+import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
 
 const fairCopy = window.fairCopy
 
@@ -37,6 +38,8 @@ export default class MainWindow extends Component {
             editDialogMode: false,
             addImagesMode: false,
             editProjectDialogMode: false,
+            editSurfaceInfoMode: false,
+            surfaceInfo: null,
             elementMenuOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
@@ -239,6 +242,10 @@ export default class MainWindow extends Component {
         this.setState({...this.state, alertMessage: message })
     }
 
+    onEditSurfaceInfo = (surfaceInfo) => {
+        this.setState( {...this.state, surfaceInfo: surfaceInfo, editSurfaceInfoMode: true} )
+    }
+
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
             case 'open':
@@ -309,6 +316,7 @@ export default class MainWindow extends Component {
                             onAddImages={this.onAddImages}
                             onOpenPopupMenu={this.onOpenPopupMenu}
                             onConfirmDeleteImages={onConfirmDeleteImages}
+                            onEditSurfaceInfo={this.onEditSurfaceInfo}
                         ></FacsEditor>
                     )                     
                 }
@@ -366,7 +374,7 @@ export default class MainWindow extends Component {
         const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
         const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
 
-        const { editProjectDialogMode, alertMessage } = this.state
+        const { editProjectDialogMode, alertMessage, editSurfaceInfoMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
 
         const onSaveResource = (name,localID,type,url) => {
@@ -388,6 +396,12 @@ export default class MainWindow extends Component {
         const onSaveProjectInfo = (name,description) => {
             fairCopyProject.updateProjectInfo({name, description})
             this.setState( {...this.state, editProjectDialogMode: false} )
+        }
+
+        const onSaveSurfaceInfo = (surfaceInfo) => {
+            const facsDocument = openResources[surfaceInfo.resourceID]
+            facsDocument.updateSurfaceInfo(surfaceInfo)
+            this.setState( {...this.state, surfaceInfo: null, editSurfaceInfoMode: false} )
         }
 
         return (
@@ -421,6 +435,11 @@ export default class MainWindow extends Component {
                     anchorEl={popupMenuAnchorEl}
                     onClose={this.onClosePopupMenu}                
                 ></PopupMenu> }
+                { editSurfaceInfoMode && <EditSurfaceInfoDialog
+                    surfaceInfo={surfaceInfo}
+                    onSave={onSaveSurfaceInfo}
+                    onClose={()=>{ this.setState( {...this.state, editSurfaceInfoMode: false, surfaceInfo: null} )}}
+                ></EditSurfaceInfoDialog> }
                 <SnackAlert
                     open={alertMessage !== null}
                     message={alertMessage}
