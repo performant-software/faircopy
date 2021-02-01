@@ -56,9 +56,8 @@ export default class IDMap {
             return true
         })
 
-        const sortedIDs = xmlIDs.sort()
         const xmlIDMap = {}
-        for( const id of sortedIDs ) {
+        for( const id of xmlIDs ) {
             xmlIDMap[id] = { type: 'text' }
         }
 
@@ -130,7 +129,7 @@ export default class IDMap {
                 }
             }
         }
-        return uris
+        return uris.sort()
     }
 
     isUnique(testID) {
