@@ -16,6 +16,8 @@ import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSeria
 import { getHighlightRanges } from "../tei-document/highlighter"
 import { moveNode } from "../tei-document/editor-actions"
 
+const fairCopy = window.fairCopy
+
 const resizeRefreshRate = 100
 
 export default class TEIEditor extends Component {
@@ -106,6 +108,7 @@ export default class TEIEditor extends Component {
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const selectedElements = this.getSelectedElements()
+            this.broadcastZoneLinks(selectedElements)
 
             if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
                 setTimeout( () => {
@@ -223,6 +226,34 @@ export default class TEIEditor extends Component {
         if( !event.ctrlKey && ctrlDown ) {
             this.setState({...this.state, ctrlDown: false })            
         }
+    }
+
+    broadcastZoneLinks( selectedElements ) {
+        const {teiSchema, idMap} = this.props.teiDocument.fairCopyProject
+        const attrSpecs = teiSchema.attrs
+
+        const selectedZones = []
+        for( const element of selectedElements ) {
+            for( const attr of Object.keys(element.attrs) ) {
+                const dataType = attrSpecs[attr]?.dataType
+
+                // is the attribute a tei data pointer?
+                if( dataType === 'teidata.pointer' ) {
+                    const uris = element.attrs[attr]?.split(" ")
+                    if( uris ) {
+                        for( const uri of uris ) {
+                            // gather any zone uris
+                            const entry = idMap.get( uri )
+                            if( entry && entry.type === 'zone' ) {
+                                selectedZones.push(uri)
+                            }
+                        }    
+                    }
+                }
+            }
+        }
+
+        fairCopy.services.ipcSend('selectedZones', selectedZones )
     }
 
     getSelectedElements() {

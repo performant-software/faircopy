@@ -21,6 +21,10 @@ const ipcRegisterCallback = function ipcRegisterCallback( eventID, callback ) {
     electron.ipcRenderer.on(eventID,callback)
 }
 
+const ipcRemoveListener = function ipcRemoveListener( eventID, callback ) {
+    electron.ipcRenderer.removeListener(eventID,callback)
+}
+
 const ipcSend = function ipcSend( eventID, ...params) {
     electron.ipcRenderer.send(eventID,...params)
 }
@@ -31,6 +35,7 @@ const getBasename = function getBasename( mypath, ext ) {
 
 exports.services = { 
     ipcRegisterCallback, 
+    ipcRemoveListener,
     ipcSend, 
     readClipBoardHTML, 
     readClipBoardText,

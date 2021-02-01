@@ -16,9 +16,15 @@ export default class AddImageDialog extends Component {
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('imagesOpened', (event, imagesData) => {
-            this.setState({...this.state, imagesData, spinner: false})
-        })
+        fairCopy.services.ipcRegisterCallback('imagesOpened', this.imagesOpenedCallback)
+    }
+
+    componentWillUnmount() {
+        fairCopy.services.ipcRemoveListener('imagesOpened', this.imagesOpenedCallback)
+    }
+
+    imagesOpenedCallback = ( event, imagesData ) => {
+        this.setState({...this.state, imagesData, spinner: false})
     }
 
     renderForm() {

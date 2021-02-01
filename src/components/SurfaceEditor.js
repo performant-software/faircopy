@@ -9,6 +9,8 @@ import SurfaceDetailCard from './SurfaceDetailCard'
 import ZonePopup from './ZonePopup';
 import { getSurfaceNames } from '../tei-document/convert-facs'
 
+const fairCopy = window.fairCopy
+
 export default class SurfaceEditor extends Component {
 
     constructor() {
@@ -16,7 +18,7 @@ export default class SurfaceEditor extends Component {
         this.state = {
             selectedTool: 'select',
             selectedZone: null,
-            selectedDOMElement: null,
+            selectedDOMElement: null
         }
     }
 
@@ -27,6 +29,7 @@ export default class SurfaceEditor extends Component {
     componentDidMount() {
         const { facsDocument } = this.props
         facsDocument.addUpdateListener(this.updateListener)
+        fairCopy.services.ipcRegisterCallback('selectedZones', this.onSelectedZones )
     }
     
     componentWillUnmount() {
@@ -35,6 +38,23 @@ export default class SurfaceEditor extends Component {
         }    
         const { facsDocument } = this.props
         facsDocument.removeUpdateListener(this.updateListener)
+        fairCopy.services.ipcRemoveListener('selectedZones', this.onSelectedZones)
+    }
+
+    onSelectedZones = (e, selectedZones) => {
+        const { resourceEntry } = this.props
+        const facsID = resourceEntry.localID
+
+        const highlightedZones = []
+        for( const zoneID of selectedZones ) {
+            const idParts = zoneID.split('#')
+            if( idParts[0] === facsID ) {
+                const zoneID = idParts[1]
+                highlightedZones.push(zoneID)
+            }
+        }
+
+        this.zoneLayer.setHighlights(highlightedZones)
     }
 
     // listen for updates from other processes to the zones 

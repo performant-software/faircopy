@@ -138,6 +138,10 @@ class FairCopyApplication {
       })
     })
 
+    ipcMain.on('selectedZones', (event, selectedZones) => { 
+      this.sendToAllWindows('selectedZones', selectedZones )  
+    })
+
     // Project Window events ///////
 
     ipcMain.on('requestNewPath', (event) => { 

@@ -7,3 +7,9 @@
 #SurfaceEditor .editor {
     background: #ccc;
 }
+
+.a9s-annotation.highlight .a9s-inner,
+.a9s-annotation.highlight .a9s-outer {
+  stroke-width:4;
+  stroke:yellow;
+}
