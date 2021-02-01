@@ -139,7 +139,6 @@ export default class FacsDocument {
 
         // save changes to this document
         this.save()
-        this.updateIDMap()
     }
 
     deleteSurfaces(doomedSurfaces) {
@@ -161,7 +160,6 @@ export default class FacsDocument {
         }
         this.facs.surfaces = nextSurfaces
         this.save()
-        this.updateIDMap()
     }
 
     updateSurfaceInfo(surfaceInfo) {
@@ -171,13 +169,6 @@ export default class FacsDocument {
             setSurfaceTitle( surface, name )
             this.save()    
         }
-    }
-
-    updateIDMap() {
-        const { idMap } = this.imageViewContext
-        const localID = this.imageViewContext.getLocalID(this.resourceID)
-        idMap.mapFacsIDs( localID, this.facs )
-        idMap.save()
     }
 
     load( facsXML ) {
@@ -191,5 +182,11 @@ export default class FacsDocument {
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.changedSinceLastSave = false
         this.lastMessageID = messageID
+
+        // Update the ID Map 
+        const { idMap } = this.imageViewContext
+        const localID = this.imageViewContext.getLocalID(this.resourceID)
+        idMap.mapFacsIDs( localID, this.facs )
+        idMap.save()
     }
 }
