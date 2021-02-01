@@ -295,11 +295,12 @@ export default class TEIEditor extends Component {
         return (
             <div 
                 style={style} 
-                onKeyDown={this.onKeyDown} 
-                onKeyUp={this.onKeyUp} 
                 className='TEIEditor'
             > 
-                <div>
+                <div
+                    onKeyDown={this.onKeyDown} 
+                    onKeyUp={this.onKeyUp}                 
+                >
                     { !hidden && <div className="titlebar">
                         <Typography component="h1" variant="h6">{resourceEntry.name}</Typography>
                     </div> }
