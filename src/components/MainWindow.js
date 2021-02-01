@@ -56,16 +56,17 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('importOpened', (event, importData) => this.receiveImportData(importData))
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
-        fairCopyProject.addUpdateListener(this.receiveResourceEntryUpdate)
+        fairCopyProject.addUpdateListener(this.receivedUpdate)
+        fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
     }
 
     componentWillUnmount() {
         const { fairCopyProject } = this.props
-        fairCopyProject.removeUpdateListener(this.receiveResourceEntryUpdate)
+        fairCopyProject.removeUpdateListener(this.receivedUpdate)
+        fairCopyProject.idMap.removeUpdateListener(this.receivedUpdate)
     }
     
-    receiveResourceEntryUpdate = () => { 
-        console.log('update received')
+    receivedUpdate = () => { 
         this.setState({...this.state}) 
     }
 

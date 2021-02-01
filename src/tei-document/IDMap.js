@@ -8,13 +8,30 @@ export default class IDMap {
     constructor(teiSchema,idMapData) {
         this.teiSchema = teiSchema
         this.lastMessageID = null
+        this.updateListeners = []
         this.loadIDMap(idMapData)
 
         // Listen for updates
         fairCopy.services.ipcRegisterCallback('IDMapUpdated', (e, d) => {
             if( d.messageID !== this.lastMessageID ) 
-                this.loadIDMap(d.idMapData)
+                this.onUpdate(d.idMapData)
         })
+    }
+
+    // Called when ID Map is updated by a different window process
+    onUpdate(idMapData) {
+        this.loadIDMap(idMapData)
+        for( const listener of this.updateListeners ) {
+            listener()
+        }
+    }
+
+    addUpdateListener(listener) {
+        this.updateListeners.push(listener)
+    }
+
+    removeUpdateListener(listener) {
+        this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
     loadIDMap(idMapData) {
