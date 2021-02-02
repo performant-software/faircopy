@@ -58,6 +58,7 @@ function iiifToFacsimile3( manifestData ) {
                     width,
                     height,
                     imageAPIURL,
+                    zones: [],
                     canvasURI
                 })  
                 break // one surface per canvas      
@@ -98,6 +99,7 @@ function iiifToFacsimile2( manifestData ) {
             width,
             height,
             imageAPIURL,
+            zones: [],
             canvasURI
         })
     }
