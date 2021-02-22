@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid'
 
-const activationEndpoint = 'https://activate.faircopyeditor.com/activation'
-// const activationEndpoint = 'http://localhost:3000/activation'
+const devEndpoint = 'https://faircopy-activate-dev.netlify.app/api/activation'
+const prodEndpoint = 'https://activate.faircopyeditor.com/api/activation'
 
-export function activateLicense(license,machine_uuid,onActivate,onError) {
+export function activateLicense(devMode,license,machine_uuid,onActivate,onError) {
+    const activationEndpoint = devMode ? devEndpoint : prodEndpoint
     axios.post(activationEndpoint, {
         customer: {
             license,
@@ -19,7 +20,7 @@ export function activateLicense(license,machine_uuid,onActivate,onError) {
         },
         (error) => {
             // problem with the license 
-            if( error && error.response && error.response.status === 403 ) {
+            if( error && error.response && error.response.status === 401 ) {
                 const errorMessage = error.response.data.status
                 onError(errorMessage)    
             } else {

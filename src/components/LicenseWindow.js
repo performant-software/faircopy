@@ -84,9 +84,9 @@ export default class LicenseWindow extends Component {
         const onClickConfirm = () => {
             const { licenseData, licenseWords } = this.state
             const { machineID } = licenseData
-            const { onActivate } = this.props
+            const { onActivate, appConfig } = this.props
             const licenseKey = licenseWords.join('-')
-            activateLicense(licenseKey, machineID, onActivate, (errorMessage) => {
+            activateLicense( appConfig.devMode, licenseKey, machineID, onActivate, (errorMessage) => {
                 this.setState({...this.state, errorMessage})
             })
         }

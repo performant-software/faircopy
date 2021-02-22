@@ -13,8 +13,7 @@ export default class ProjectWindow extends Component {
             mode: 'select', 
             projectName: '',
             description: '',
-            filePath: '',
-            appConfig: null
+            filePath: ''
         }
         this.state = this.initialState
     }
@@ -22,9 +21,6 @@ export default class ProjectWindow extends Component {
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('pathSelected', (event, filePath) => this.onPathUpdated(filePath))
-        services.ipcRegisterCallback('appConfig', (event, appConfig) => {
-            this.setState({ ...this.state, appConfig })
-        })
     }
 
     onPathUpdated(filePath) {
@@ -158,7 +154,8 @@ export default class ProjectWindow extends Component {
     }
 
     render() {
-        const { mode, appConfig } = this.state
+        const { appConfig } = this.props
+        const { mode } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
         const allowKeyReset = appConfig ? appConfig.devMode : false

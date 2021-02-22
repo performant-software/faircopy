@@ -21,13 +21,18 @@ export default class App extends Component {
     this.state = {
       fairCopyProject: null,
       licenseData,
-      imageView: null
+      imageView: null,
+      appConfig: null
     }
   }
 
   componentDidMount() {
     const { services } = fairCopy
     const { licenseData } = this.state
+
+    fairCopy.services.ipcRegisterCallback('appConfig', (event, appConfig) => {
+      this.setState({ ...this.state, appConfig })
+    })
 
     // tell main process to check for updates 
     if( licenseData.activated ) {
@@ -106,12 +111,12 @@ export default class App extends Component {
   }
 
   render() {
-    const {fairCopyProject, imageView, licenseData } = this.state
+    const {fairCopyProject, imageView, licenseData, appConfig } = this.state
     const {rootComponent} = window.fairCopy
-
     if( !licenseData.activated ) {
       return (
         <LicenseWindow
+          appConfig={appConfig}
           onActivate={this.onActivate}
         ></LicenseWindow>
       )
@@ -131,7 +136,9 @@ export default class App extends Component {
         )
     } else if( rootComponent === "ProjectWindow" ) {
       return (
-          <ProjectWindow></ProjectWindow>
+          <ProjectWindow
+            appConfig={appConfig}
+          ></ProjectWindow>
       )
     } else return null
 
