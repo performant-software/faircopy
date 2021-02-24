@@ -1,7 +1,7 @@
 const { encodeContent } = require('./parse-content');
 const fs = require('fs');
 
-const createElements = function createElements(elGroups,specs) {
+const createElements = function createElements(elGroups,specs,header=false) {
     const elements = []
     const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons.json`).toString('utf-8'))
 
@@ -13,7 +13,7 @@ const createElements = function createElements(elGroups,specs) {
     elements.push( ...createInters(elGroups,specs) )
     elements.push( ...createMarks(elGroups,specs) )
     elements.push( ...createNodes(elGroups,false,specs) )
-    elements.push( ...createDocNode(elGroups,specs) )
+    elements.push( ...createDocNode(header) )
     return elements
 }
 
@@ -131,14 +131,15 @@ function createAsides(elGroups,icons,specs) {
 }
 
 // special top level text node, has properties of text but is called "doc"
-const createDocNode = function createDocNode(elGroups,specs) {
+const createDocNode = function createDocNode(header) {
+    const content = header ? '(fileDesc)' : '((front)? (body) (back)?)'
     return [
         {
             "name": "doc",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": "((front)? (body) (back)?)"
+            "content": content
         }
     ]
 }
