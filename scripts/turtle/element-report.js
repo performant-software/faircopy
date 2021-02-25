@@ -8,11 +8,11 @@ const {getAllElements} = require('./parse-util')
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
 const runReport = async function runReport() {
-    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/exp-element-groups.json`).toString('utf-8'))
+    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/element-groups.json`).toString('utf-8'))
     const allElements = getAllElements(elementGroups)
     const specs = load( teiSpecsDir, allElements )
 
-    const elements = createElements(elementGroups,specs,true)
+    const elements = createElements(elementGroups,specs)
 
     const reportRows = []
     for( const element of elements ) {

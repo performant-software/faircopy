@@ -34,6 +34,41 @@
 			"desc": "contains a formal list or prose description of the topics addressed by a subdivision of a text."
 		},
 		{
+			"name": "availability",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(model_pLike)+",
+			"group": "model_publicationStmtPart_detail model_biblPart",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"status",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "supplies information about the availability of a text, for example any restrictions on its use or distribution, its copyright status, any licence applying to it, etc."
+		},
+		{
 			"name": "back",
 			"pmType": "node",
 			"isolating": true,
@@ -66,6 +101,42 @@
 				"xml:space"
 			],
 			"desc": "contains any appendixes, etc. following the main part of a text."
+		},
+		{
+			"name": "biblFull",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc*)|(fileDesc))",
+			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"sortKey",
+				"source",
+				"status",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains a fully-structured bibliographic citation, in which all components of the TEI file description are present."
 		},
 		{
 			"name": "body",
@@ -281,6 +352,39 @@
 			"desc": "contains the title of a document, including all its constituents, as given on a title page."
 		},
 		{
+			"name": "editionStmt",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(model_pLike+|(model_respLike*))",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "groups information relating to one edition of a text."
+		},
+		{
 			"name": "epigraph",
 			"pmType": "node",
 			"isolating": true,
@@ -312,6 +416,39 @@
 				"xml:space"
 			],
 			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page."
+		},
+		{
+			"name": "fileDesc",
+			"pmType": "node",
+			"isolating": true,
+			"content": "((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc+)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains a full bibliographic description of an electronic file."
 		},
 		{
 			"name": "floatingText",
@@ -574,6 +711,39 @@
 			"desc": "contains a list of places, optionally followed by a list of relationships (other than containment) defined amongst them."
 		},
 		{
+			"name": "notesStmt",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(relatedItem)+",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "collects together any notes providing information about a text additional to that recorded in other parts of the bibliographic description."
+		},
+		{
 			"name": "person",
 			"pmType": "node",
 			"isolating": true,
@@ -685,6 +855,39 @@
 			"desc": "contains a postscript, e.g. to a letter."
 		},
 		{
+			"name": "publicationStmt",
+			"pmType": "node",
+			"isolating": true,
+			"content": "((model_publicationStmtPart_agency model_publicationStmtPart_detail*)+|model_pLike+)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "groups information concerning the publication or distribution of an electronic or other text."
+		},
+		{
 			"name": "relatedItem",
 			"pmType": "node",
 			"isolating": true,
@@ -756,6 +959,39 @@
 			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition, recording, or series, where the specialized elements for authors, editors, etc. do not suffice or do not apply. May also be used to encode information about individuals or organizations which have played a role in the production or distribution of a bibliographic work."
 		},
 		{
+			"name": "seriesStmt",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(model_pLike+|(title+ (editor|respStmt)* (biblScope)*))",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "groups information about the series, if any, to which a publication belongs."
+		},
+		{
 			"name": "set",
 			"pmType": "node",
 			"isolating": true,
@@ -787,6 +1023,40 @@
 				"xml:space"
 			],
 			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a play, typically found in the front matter of a printed performance text (not a stage direction)."
+		},
+		{
+			"name": "sourceDesc",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(model_pLike+|(model_biblLike|model_listLike)+)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as \"born digital\" for a text which has no previous existence."
 		},
 		{
 			"name": "sp",
@@ -858,6 +1128,39 @@
 				"xml:space"
 			],
 			"desc": "contains the title page of a text, appearing within the front or back matter."
+		},
+		{
+			"name": "titleStmt",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(title+ model_respLike*)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "groups information about the title of a work and those responsible for its content."
 		},
 		{
 			"name": "anchor",
@@ -3396,6 +3699,41 @@
 			"desc": "contains a brief description of the object documented by its parent element, typically a documentation element or an entity."
 		},
 		{
+			"name": "distributor",
+			"pmType": "node",
+			"isolating": false,
+			"content": "(textNode|model_qLike|model_phrase|model_global)*",
+			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"key",
+				"n",
+				"next",
+				"prev",
+				"ref",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "supplies the name of a person or other agency responsible for the distribution of a text."
+		},
+		{
 			"name": "docAuthor",
 			"pmType": "node",
 			"isolating": false,
@@ -3566,6 +3904,39 @@
 				"xml:space"
 			],
 			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an individual, institution or organization, (or of several such) acting as editor, compiler, translator, etc."
+		},
+		{
+			"name": "extent",
+			"pmType": "node",
+			"isolating": false,
+			"content": "(textNode|model_qLike|model_phrase|model_global)*",
+			"group": "model_biblPart",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "describes the approximate size of a text stored on some carrier medium or of some other object, digital or non-digital, specified in any convenient units."
 		},
 		{
 			"name": "head",
@@ -4225,6 +4596,13 @@
 			"isolating": true,
 			"gutterMark": true,
 			"content": "((front)? (body) (back)?)"
+		},
+		{
+			"name": "headerDoc",
+			"pmType": "node",
+			"isolating": true,
+			"gutterMark": true,
+			"content": "(fileDesc)"
 		}
 	],
 	"attrs": {
@@ -4437,12 +4815,61 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"status": {
+			"ident": "status",
+			"description": "supplies a code identifying the current availability of the text.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "free",
+					"desc": "the text is freely available."
+				},
+				{
+					"ident": "unknown",
+					"desc": "the status of the text is unknown."
+				},
+				{
+					"ident": "restricted",
+					"desc": "the text is not freely available."
+				}
+			],
+			"valListType": "closed"
+		},
+		"default": {
+			"ident": "default",
+			"description": "indicates whether or not this element is selected by default when its parent is selected.",
+			"dataType": "teidata.truthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "true",
+					"desc": "This element is selected if its parent is selected"
+				},
+				{
+					"ident": "false",
+					"desc": "This element can only be selected explicitly, unless it is the only one of its kind, in which case it is selected if its parent is selected."
+				}
+			],
+			"valListType": "closed"
+		},
 		"decls": {
 			"ident": "decls",
 			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"sortKey": {
+			"ident": "sortKey",
+			"description": "supplies the sort key for this element in an index, list or group which contains it.",
+			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"valList": null,
 			"valListType": "open"
 		},
@@ -4595,33 +5022,6 @@
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
-		},
-		"sortKey": {
-			"ident": "sortKey",
-			"description": "supplies the sort key for this element in an index, list or group which contains it.",
-			"dataType": "teidata.word",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"default": {
-			"ident": "default",
-			"description": "indicates whether or not this element is selected by default when its parent is selected.",
-			"dataType": "teidata.truthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "true",
-					"desc": "This element is selected if its parent is selected"
-				},
-				{
-					"ident": "false",
-					"desc": "This element can only be selected explicitly, unless it is the only one of its kind, in which case it is selected if its parent is selected."
-				}
-			],
-			"valListType": "closed"
 		},
 		"role": {
 			"ident": "role",
@@ -5067,48 +5467,6 @@
 			],
 			"valListType": "closed"
 		},
-		"status": {
-			"ident": "status",
-			"description": "indicates the effect of the intervention, for example in the case of a deletion, strikeouts which include too much or too little text, or in the case of an addition, an insertion which duplicates some of the text already present.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "duplicate",
-					"desc": "all of the text indicated as an addition duplicates some text that is in the original, whether the duplication is word-for-word or less exact."
-				},
-				{
-					"ident": "duplicate-partial",
-					"desc": "part of the text indicated as an addition duplicates some text that is in the original"
-				},
-				{
-					"ident": "excessStart",
-					"desc": "some text at the beginning of the deletion is marked as deleted even though it clearly should not be deleted."
-				},
-				{
-					"ident": "excessEnd",
-					"desc": "some text at the end of the deletion is marked as deleted even though it clearly should not be deleted."
-				},
-				{
-					"ident": "shortStart",
-					"desc": "some text at the beginning of the deletion is not marked as deleted even though it clearly should be."
-				},
-				{
-					"ident": "shortEnd",
-					"desc": "some text at the end of the deletion is not marked as deleted even though it clearly should be."
-				},
-				{
-					"ident": "partial",
-					"desc": "some text in the deletion is not marked as deleted even though it clearly should be."
-				},
-				{
-					"ident": "unremarkable",
-					"desc": "the deletion is not faulty."
-				}
-			],
-			"valListType": "open"
-		},
 		"cause": {
 			"ident": "cause",
 			"description": "documents the presumed cause for the intervention.",
@@ -5515,6 +5873,7 @@
 			"noteDoc",
 			"choiceDoc",
 			"fwDoc",
+			"headerDoc",
 			"substDoc"
 		],
 		"embed": [
@@ -5529,14 +5888,18 @@
 		],
 		"hard": [
 			"argument",
+			"availability",
 			"back",
+			"biblFull",
 			"body",
 			"castGroup",
 			"castList",
 			"cit",
 			"div",
 			"docTitle",
+			"editionStmt",
 			"epigraph",
+			"fileDesc",
 			"floatingText",
 			"front",
 			"lg",
@@ -5544,14 +5907,19 @@
 			"listBibl",
 			"listPerson",
 			"listPlace",
+			"notesStmt",
 			"person",
 			"place",
 			"postscript",
+			"publicationStmt",
 			"relatedItem",
 			"respStmt",
+			"seriesStmt",
 			"set",
+			"sourceDesc",
 			"sp",
-			"titlePage"
+			"titlePage",
+			"titleStmt"
 		],
 		"inlines": [
 			"anchor",
@@ -5618,11 +5986,13 @@
 			"closer",
 			"dateline",
 			"desc",
+			"distributor",
 			"docAuthor",
 			"docDate",
 			"docEdition",
 			"docImprint",
 			"editor",
+			"extent",
 			"head",
 			"imprimatur",
 			"item",

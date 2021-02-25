@@ -1,21 +1,12 @@
 {
     "asides": [
-        "note"
     ],
     "embed": [
     ],
     "hard": [
         "biblFull",
-        "listPerson",
-        "listPlace",
-        "listBibl",
-        "list",
-        "table",
         "publicationStmt",
         "fileDesc",
-        "relatedItem",
-        "address",
-        "respStmt",
         "notesStmt",
         "availability",
         "sourceDesc",
@@ -26,29 +17,15 @@
     "inlines": [
     ],
     "inter": [
-        "ref"
     ],
     "limited-marks": [
     ],
     "marks": [
-        "idno",
-        "date"
     ],
     "exclude": [
-        "table"
     ],
     "soft": [
-        "bibl",
         "extent",
-        "author",
-        "editor",
-        "pubPlace",
-        "publisher",
-        "distributor",
-        "biblScope",
-        "note",
-        "title",
-        "p",
-        "ab"
+        "distributor"
     ]
 }
