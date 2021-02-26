@@ -21,6 +21,7 @@ export default class FairCopyProject {
         this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
+        this.headerMenus = this.parseMenus(projectData.headerMenuGroups)
         this.idMap = new IDMap(this.teiSchema,projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 

@@ -58,9 +58,10 @@ class ProjectStore {
         const idMap = await this.readUTF8File(idMapEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
         const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
+        const headerMenuGroups = fs.readFileSync(`${baseDir}/config/header-menu-groups.json`).toString('utf-8')
         const baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
-        if( !teiSchema || !menuGroups || !baseConfig ) {
+        if( !teiSchema || !menuGroups || !baseConfig || !headerMenuGroups ) {
             log.info('Application data is missing or corrupted.')
             return
         }
@@ -86,7 +87,7 @@ class ProjectStore {
         // temp folder for streaming zip data
         this.setupTempFolder()
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, idMap }
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, headerMenuGroups, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 

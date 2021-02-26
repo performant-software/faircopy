@@ -5,7 +5,7 @@ import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
 import { validAction, createElement, addInside, addBelow, addAbove, addOutside, replaceElement, determineRules } from "../tei-document/editor-actions"
 
-export default class NextElementMenu extends Component {
+export default class ElementMenu extends Component {
 
     constructor() {
         super()
@@ -18,7 +18,7 @@ export default class NextElementMenu extends Component {
     getMenuGroups() {
         const { teiDocument, menuGroup } = this.props
         if(!teiDocument) return null
-        const { menus } = teiDocument.fairCopyProject
+        const menus = teiDocument.resourceType === 'header' ? teiDocument.fairCopyProject.headerMenus : teiDocument.fairCopyProject.menus
         return menus[menuGroup]
     }
 
