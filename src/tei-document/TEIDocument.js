@@ -205,12 +205,18 @@ export default class TEIDocument {
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        const schemaType = this.resourceType === 'header' ? 'header' : null
-        const domFragment = serializeText(editorState.doc.content, this, teiSchema, schemaType)
-        const textEl = this.xmlDom.getElementsByTagName('text')[0]
+         
+        let textEl, domFragment
+        if( this.resourceType === 'header' ) {
+            domFragment = serializeText(editorState.doc.content, this, teiSchema, 'header')
+            textEl = this.xmlDom.getElementsByTagName('teiHeader')[0]    
+        } else {
+            domFragment = serializeText(editorState.doc.content, this, teiSchema)
+            textEl = this.xmlDom.getElementsByTagName('text')[0]    
+        }
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )
-        textEl.innerHTML = htmlToXML(div.innerHTML,teiSchema.attrs)
+        textEl.innerHTML = htmlToXML(div.innerHTML,teiSchema.elements,teiSchema.attrs)
         const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
 
         const messageID = uuidv4()

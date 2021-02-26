@@ -113,19 +113,25 @@ function renameInterMarks(inter, documentFragment) {
 }
 
 // Apply various transformations to move from HTML -> XML
-export function htmlToXML(html,attrs) {
+export function htmlToXML(html,elements,attrs) {
     // This entitiy is not valid XML
     const nextHTML = html.replaceAll('&nbsp;',' ')
     // this has to be done here because HTML is case insenitive, while XML is not.
-    return renameCamelCaseAttrs(nextHTML,attrs)
+    return renameCamelCase(nextHTML,elements,attrs)
 }
 
 // Repair camel cased attrs that React munged
-function renameCamelCaseAttrs(html,attrs) {
+function renameCamelCase(html,elements,attrs) {
+    const regex = /[a-z]+[A-Z]/
     let htmlBuffer = html
     for( const attr of Object.values(attrs) ) {
-        if( attr.ident && attr.ident.match(/[a-z]+[A-Z]/) ) {
+        if( attr.ident && attr.ident.match(regex) ) {
             htmlBuffer = renameAttrs(htmlBuffer, attr.ident.toLowerCase(), attr.ident)
+        }
+    }
+    for( const el of Object.values(elements) ) {
+        if( el.name && el.name.match(regex) ) {
+            htmlBuffer = renameEls(htmlBuffer, el.name.toLowerCase(), el.name)
         }
     }
     return htmlBuffer
@@ -134,6 +140,12 @@ function renameCamelCaseAttrs(html,attrs) {
 function renameAttrs(htmlFragment, oldAttrName, newAttrName) {
     const regex = new RegExp(`${oldAttrName}=`,'g')
     return htmlFragment.replace(regex,`${newAttrName}=`)
+}
+
+function renameEls(htmlFragment, oldElName, newElName) {
+    const regexOpen = new RegExp(`<${oldElName}`,'g')
+    const regexClose = new RegExp(`</${oldElName}`,'g')
+    return htmlFragment.replace(regexOpen,`<${newElName}`).replace(regexClose,`</${newElName}`)
 }
 
 // copy all the attributes from one element to another

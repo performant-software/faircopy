@@ -2595,119 +2595,6 @@
 			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe."
 		},
 		{
-			"name": "marktitle",
-			"pmType": "mark",
-			"validAttrs": [
-				"ana",
-				"calendar",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"datingMethod",
-				"datingPoint",
-				"exclude",
-				"facs",
-				"from",
-				"from-custom",
-				"from-iso",
-				"key",
-				"level",
-				"n",
-				"next",
-				"notAfter",
-				"notAfter-custom",
-				"notAfter-iso",
-				"notBefore",
-				"notBefore-custom",
-				"notBefore-iso",
-				"period",
-				"prev",
-				"ref",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"to",
-				"to-custom",
-				"to-iso",
-				"type",
-				"type",
-				"when",
-				"when-custom",
-				"when-iso",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
-			"desc": "contains a title for any kind of work."
-		},
-		{
-			"name": "title",
-			"pmType": "node",
-			"isolating": false,
-			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
-			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
-			"gutterMark": true,
-			"validAttrs": [
-				"ana",
-				"calendar",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"datingMethod",
-				"datingPoint",
-				"exclude",
-				"facs",
-				"from",
-				"from-custom",
-				"from-iso",
-				"key",
-				"level",
-				"n",
-				"next",
-				"notAfter",
-				"notAfter-custom",
-				"notAfter-iso",
-				"notBefore",
-				"notBefore-custom",
-				"notBefore-iso",
-				"period",
-				"prev",
-				"ref",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"to",
-				"to-custom",
-				"to-iso",
-				"type",
-				"type",
-				"when",
-				"when-custom",
-				"when-iso",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"desc": "contains a title for any kind of work."
-		},
-		{
 			"name": "markunclear",
 			"pmType": "mark",
 			"validAttrs": [
@@ -4518,6 +4405,64 @@
 			"desc": "contains any kind of stage direction within a dramatic text or fragment."
 		},
 		{
+			"name": "title",
+			"pmType": "node",
+			"isolating": false,
+			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"calendar",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"datingMethod",
+				"datingPoint",
+				"exclude",
+				"facs",
+				"from",
+				"from-custom",
+				"from-iso",
+				"key",
+				"level",
+				"n",
+				"next",
+				"notAfter",
+				"notAfter-custom",
+				"notAfter-iso",
+				"notBefore",
+				"notBefore-custom",
+				"notBefore-iso",
+				"period",
+				"prev",
+				"ref",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"to",
+				"to-custom",
+				"to-iso",
+				"type",
+				"type",
+				"when",
+				"when-custom",
+				"when-iso",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"desc": "contains a title for any kind of work."
+		},
+		{
 			"name": "titlePart",
 			"pmType": "node",
 			"isolating": false,
@@ -5557,36 +5502,6 @@
 			"valList": null,
 			"valListType": "open"
 		},
-		"level": {
-			"ident": "level",
-			"description": "indicates the bibliographic level for a title, that is, whether it identifies an article, book, journal, series, or unpublished material.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "a",
-					"desc": "the title applies to an analytic item, such as an article, poem, or other work published as part of a larger item."
-				},
-				{
-					"ident": "m",
-					"desc": "the title applies to a monograph such as a book or other item considered to be a distinct publication, including single volumes of multi-volume works"
-				},
-				{
-					"ident": "j",
-					"desc": "the title applies to any serial or periodical publication such as a journal, magazine, or newspaper"
-				},
-				{
-					"ident": "s",
-					"desc": "the title applies to a series of otherwise distinct publications such as a collection"
-				},
-				{
-					"ident": "u",
-					"desc": "the title applies to any unpublished material (including theses and dissertations unless published by a commercial press)"
-				}
-			],
-			"valListType": "closed"
-		},
 		"calendar": {
 			"ident": "calendar",
 			"description": "indicates the system or calendar to which the date represented by the content of this element belongs.",
@@ -5859,6 +5774,36 @@
 				}
 			],
 			"valListType": "open"
+		},
+		"level": {
+			"ident": "level",
+			"description": "indicates the bibliographic level for a title, that is, whether it identifies an article, book, journal, series, or unpublished material.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "a",
+					"desc": "the title applies to an analytic item, such as an article, poem, or other work published as part of a larger item."
+				},
+				{
+					"ident": "m",
+					"desc": "the title applies to a monograph such as a book or other item considered to be a distinct publication, including single volumes of multi-volume works"
+				},
+				{
+					"ident": "j",
+					"desc": "the title applies to any serial or periodical publication such as a journal, magazine, or newspaper"
+				},
+				{
+					"ident": "s",
+					"desc": "the title applies to a series of otherwise distinct publications such as a collection"
+				},
+				{
+					"ident": "u",
+					"desc": "the title applies to any unpublished material (including theses and dissertations unless published by a commercial press)"
+				}
+			],
+			"valListType": "closed"
 		}
 	},
 	"elementGroups": {
@@ -5943,7 +5888,6 @@
 			"seg",
 			"sic",
 			"supplied",
-			"title",
 			"unclear"
 		],
 		"limited-marks": [
@@ -6009,6 +5953,7 @@
 			"signed",
 			"speaker",
 			"stage",
+			"title",
 			"titlePart",
 			"trailer"
 		]

@@ -5,7 +5,7 @@ export const teiHeaderTemplate = `<?xml version="1.0" encoding="UTF-8"?>
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title>The title of the document</title>
+                <title>test</title>
             </titleStmt>
             <publicationStmt>
                 <p>Information concerning the publication of this document.</p>
