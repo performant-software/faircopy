@@ -7,20 +7,21 @@ import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 import { v4 as uuidv4 } from 'uuid'
 
-import {teiTemplate} from "./tei-template"
+import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
 import {parseText, serializeText, htmlToXML} from "./xml"
 
 const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, fairCopyProject ) {
+    constructor( resourceID, resourceType, fairCopyProject ) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.editorView = null
         this.lastMessageID = null
         this.noteEditorView = null
         this.resourceID = resourceID
+        this.resourceType = resourceType
         this.fairCopyProject = fairCopyProject
         this.plugins = [
             keymap(baseKeymap),
@@ -40,6 +41,7 @@ export default class TEIDocument {
     editorInitialState() {
         // load blank XML template 
         const parser = new DOMParser();
+        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : teiHeaderTemplate
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
                
@@ -172,8 +174,17 @@ export default class TEIDocument {
         const parser = new DOMParser();
         const { teiSchema } = this.fairCopyProject
         this.xmlDom = parser.parseFromString(text, "text/xml");
-        const textEl = this.xmlDom.getElementsByTagName('text')[0] 
-        const doc = parseText(textEl,this,teiSchema)
+ 
+        let doc
+        if( this.resourceType === 'header' ) {
+            const textEl = this.xmlDom.getElementsByTagName('teiHeader')[0] 
+            doc = parseText(textEl,this,teiSchema,'header')
+     
+        } else {
+            const textEl = this.xmlDom.getElementsByTagName('text')[0] 
+            doc = parseText(textEl,this,teiSchema)    
+        }
+ 
         const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
         this.initialState = EditorState.create({ 
@@ -194,7 +205,8 @@ export default class TEIDocument {
 
         // take the body of the document from prosemirror and reunite it with 
         // the rest of the xml document, then serialize to string
-        const domFragment = serializeText(editorState.doc.content, this, teiSchema)
+        const schemaType = this.resourceType === 'header' ? 'header' : null
+        const domFragment = serializeText(editorState.doc.content, this, teiSchema, schemaType)
         const textEl = this.xmlDom.getElementsByTagName('text')[0]
         var div = document.createElement('div')
         div.appendChild( domFragment.cloneNode(true) )

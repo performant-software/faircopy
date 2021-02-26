@@ -5,7 +5,7 @@ import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
-import {teiTemplate} from "./tei-template"
+import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
 import {learnDoc, saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
@@ -122,8 +122,9 @@ export default class FairCopyProject {
             type
         }
 
-        if( resourceEntry.type === 'text') {
+        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' ) {
             this.resources[resourceEntry.id] = resourceEntry
+            const teiTemplate = resourceEntry.type === 'text' ? teiTextTemplate : teiHeaderTemplate
             fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
             this.idMap.addResource(localID)
             this.idMap.save()
@@ -164,8 +165,8 @@ export default class FairCopyProject {
         const resourceEntry = this.resources[resourceID]
         if( !resourceEntry ) return null
 
-        if( resourceEntry.type === 'text') {
-            return new TEIDocument( resourceID, this )
+        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' ) {
+            return new TEIDocument( resourceID, resourceEntry.type, this )
         } else {
             return new FacsDocument( resourceID, this )
         }        
@@ -187,7 +188,7 @@ export default class FairCopyProject {
 
         // parse the data into a ProseMirror doc
         const parser = new DOMParser();
-        const tempDoc = new TEIDocument(null,this)
+        const tempDoc = new TEIDocument(null,'text',this)
         const xmlDom = parser.parseFromString(data, "text/xml");
 
         // Check for basic validity 

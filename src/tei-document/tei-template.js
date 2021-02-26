@@ -1,28 +1,27 @@
 import { getExtensionForMIMEType } from './convert-facs'
 
-export const teiTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+export const teiHeaderTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title></title>
+                <title>The title of the document</title>
             </titleStmt>
             <publicationStmt>
-                <publisher/>
-                <pubPlace/>
-                <date/>
-                <authority/>
-            <availability>
-                <p/> 
-                </availability>
-        </publicationStmt>
+                <p>Information concerning the publication of this document.</p>
+            </publicationStmt>
             <sourceDesc>
-            <p/>
+                <p>Description of the source(s) from which the document was derived.</p>
             </sourceDesc>
         </fileDesc>
     </teiHeader>
+</TEI>
+`
+
+export const teiTextTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">    
 <text>
-    <body><ab></ab></body>
+    <body><p></p></body>
 </text>
 </TEI>
 `
@@ -53,25 +52,6 @@ export const facsTemplate = (facsData) => {
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
-    <teiHeader>
-        <fileDesc>
-            <titleStmt>
-                <title></title>
-            </titleStmt>
-            <publicationStmt>
-                <publisher/>
-                <pubPlace/>
-                <date/>
-                <authority/>
-            <availability>
-                <p/> 
-                </availability>
-        </publicationStmt>
-            <sourceDesc>
-            <p/>
-            </sourceDesc>
-        </fileDesc>
-    </teiHeader>
     <facsimile ${sameAs}>
         ${surfaceEls.join('')}
     </facsimile>

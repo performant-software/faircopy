@@ -26,7 +26,8 @@ export default class EditResourceDialog extends Component {
         const onChange = (e) => {
             const {name, value} = e.target
             const nextState = { ...this.state }
-            if( name === 'type' && value === 'text' ) {
+            if( name === 'type' && (value === 'text' 
+            || value === 'header') ) {
                 nextState['url'] = ''
             }
             nextState[name] = value
@@ -111,6 +112,7 @@ export default class EditResourceDialog extends Component {
                         onChange={onChange}
                     >
                         <MenuItem value={'text'}>Text</MenuItem>
+                        <MenuItem value={'header'}>Header</MenuItem>
                         <MenuItem value={'facs'}>Facsimile</MenuItem>
                         <MenuItem value={'facs-iiif'}>Facsimile from IIIF Manifest</MenuItem>
                     </Select><br/></span>}
