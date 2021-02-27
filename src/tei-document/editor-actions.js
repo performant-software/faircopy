@@ -5,7 +5,7 @@ import { addMark, insertNodeAt, insertAtomNodeAt, createFragment, createAsideNod
 export function createElement( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
-    const {schema} = fairCopyProject.teiSchema
+    const { schema } = editorView.state
     const {pmType} = fairCopyProject.teiSchema.elements[elementID]
     const { asides, inter } = fairCopyProject.teiSchema.elementGroups
 
@@ -35,7 +35,9 @@ export function createElement( elementID, teiDocument ) {
 
 export function determineRules( elementID, teiDocument ) {
     const teiSchema = teiDocument.fairCopyProject.teiSchema
-    const {elements,schema} = teiSchema
+    const {elements} = teiSchema
+    const editorView = teiDocument.getActiveView()
+    const { schema } = editorView.state
     const targetType = schema.nodes[elementID]
 
     const mayContainIDs = []
@@ -167,8 +169,8 @@ function validNodeAction( actionType, elementID, teiDocument, pos ) {
 // changes the NodeType for a node element at a given pos
 export function replaceElement( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { doc, tr } = editorView.state
-    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const { doc, tr, schema } = editorView.state
+    const nodeType = schema.nodes[elementID]
     const node = doc.nodeAt(pos)
 
     tr.setNodeMarkup(pos, nodeType, node.attrs)
@@ -176,16 +178,15 @@ export function replaceElement( elementID, teiDocument, pos ) {
 }
 
 export function createInterNode( elementID, teiDocument ) {
-    const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
-    const {schema} = fairCopyProject.teiSchema
+    const { schema } = editorView.state
 
     // TODO determine if this should create a node or a mark
     const markType = schema.marks[`mark${elementID}`]
     return createMark( markType, editorView )
 }
 
-export function createNode( nodeType, tr, selection, schema ) {
+function createNode( nodeType, tr, selection, schema ) {
     const { $from, $to } = selection
 
     // make sure to and from have the same ancestor above textNode
@@ -206,10 +207,10 @@ export function createNode( nodeType, tr, selection, schema ) {
 
 export function addInside( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { tr, doc } = editorView.state
+    const { tr, doc, schema } = editorView.state
 
     const parentNode = doc.nodeAt(pos)
-    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const nodeType = schema.nodes[elementID]
     const fragment = parentNode.content
 
     const $start = doc.resolve(pos+1)
@@ -226,10 +227,10 @@ export function addInside( elementID, teiDocument, pos ) {
     
 export function addOutside( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
-    const { doc, tr } = editorView.state
+    const { doc, tr, schema } = editorView.state
 
     const $pos = doc.resolve(pos)
-    const nodeType = teiDocument.fairCopyProject.teiSchema.schema.nodes[elementID]
+    const nodeType = schema.nodes[elementID]
 
     const $start = doc.resolve($pos.start($pos.depth+1))
     const $end = doc.resolve($start.end($start.depth)+1)
@@ -243,7 +244,7 @@ export function addOutside( elementID, teiDocument, pos ) {
 export function addAbove( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { teiSchema } = teiDocument.fairCopyProject
-    const { schema } = editorView.state.doc.type
+    const { schema } = editorView.state
     const { elementGroups } = teiSchema
     const { asides } = elementGroups
     const nodeType = schema.nodes[elementID]
@@ -265,7 +266,8 @@ export function addBelow( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const { teiSchema } = teiDocument.fairCopyProject
-    const { schema, elementGroups } = teiSchema
+    const { elementGroups } = teiSchema
+    const { schema } = editorView.state
     const { asides } = elementGroups
 
     const nodeType = schema.nodes[elementID]
