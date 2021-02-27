@@ -23,6 +23,11 @@
     ],
     "structure": [
         {
+            "id": "fileDesc",
+            "label": "File Description",
+            "members": ["titleStmt","publicationStmt","sourceDesc","editionStmt","extent","notesStmt","seriesStmt"]
+        },
+        {
             "id": "structure",
             "label": "Sections",
             "members": ["back","body","div","floatingText","front"]
@@ -56,11 +61,6 @@
             "id": "prosopography",
             "label": "Prosopography",
             "members": ["listPerson","listPlace","person","place"]
-        },
-        {
-            "id": "drama",
-            "label": "Drama",
-            "members": ["actor","castGroup","castItem","castList","role","roleDesc","set","sp","speaker","stage"]
         },
         {
             "id": "correspondence",

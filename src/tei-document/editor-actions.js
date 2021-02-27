@@ -243,7 +243,8 @@ export function addOutside( elementID, teiDocument, pos ) {
 export function addAbove( elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { teiSchema } = teiDocument.fairCopyProject
-    const { schema, elementGroups } = teiSchema
+    const { schema } = editorView.state.doc.type
+    const { elementGroups } = teiSchema
     const { asides } = elementGroups
     const nodeType = schema.nodes[elementID]
 
