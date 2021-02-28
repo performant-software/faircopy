@@ -25,7 +25,9 @@
     ],
     "hard": [
         "argument",
+        "availability",
         "back",
+        "biblFull",
         "body",
         "castGroup",
         "castList",
@@ -54,29 +56,7 @@
         "sourceDesc",
         "sp",
         "titlePage",
-        "titleStmt",
-        "availability",
-        "biblFull",
-        "category",
-        "encodingDesc",
-        "editorialDecl",
-        "classDecl",
-        "keywords",
-        "listPrefixDef",
-        "namespace",
-        "projectDesc",
-        "prefixDef",
-        "refsDecl",
-        "samplingDecl",
-        "tagsDecl",
-        "taxonomy",
-        "profileDesc",
-        "particDesc",
-        "settingDesc",
-        "abstract",
-        "langUsage",
-        "revisionDesc",
-        "listChange"
+        "titleStmt"
     ],
     "inlines": [
         "anchor",
@@ -167,16 +147,6 @@
         "stage",
         "title",
         "titlePart",
-        "trailer",
-        "creation",
-        "edition",
-        "idno",
-        "licence",
-        "rendition",
-        "tagUsage",
-        "catDesc",
-        "change",
-        "classCode",
-        "language"
+        "trailer"
     ]
 }

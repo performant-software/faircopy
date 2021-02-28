@@ -24,8 +24,68 @@
     "structure": [
         {
             "id": "fileDesc",
-            "label": "File Description",
-            "members": ["titleStmt","publicationStmt","sourceDesc","editionStmt","extent","notesStmt","seriesStmt"]
+            "label": "File",
+            "members": [
+                "titleStmt",
+                "publicationStmt",
+                "sourceDesc",
+                "editionStmt",
+                "extent",
+                "notesStmt",
+                "seriesStmt",
+                "edition",
+                "distributor",
+                "idno",
+                "availability",
+                "licence",
+                "biblFull"
+            ]
+        },
+        {
+            "id": "encodingDesc",
+            "label": "Encoding",
+            "members": [      
+                "encodingDesc",
+                "editorialDecl",
+                "classDecl",
+                "listPrefixDef",
+                "projectDesc",
+                "refsDecl",
+                "samplingDecl",
+                "tagsDecl",
+                "rendition",
+                "namespace",
+                "tagUsage",
+                "taxonomy",
+                "catDesc",
+                "category",
+                "prefixDef"
+            ]
+        },
+        {
+            "id": "profileDesc",
+            "label": "Profile",
+            "members": [      
+                "profileDesc",
+                "particDesc",
+                "settingDesc",
+                "abstract",
+                "creation",
+                "langUsage",
+                "textClass",
+                "classCode",
+                "keywords",
+                "language"
+            ]
+        },
+        {
+            "id": "revisionDesc",
+            "label": "Revisions",
+            "members": [      
+                "revisionDesc",
+                "listChange",
+                "change"
+            ]
         },
         {
             "id": "structure",
@@ -63,6 +123,11 @@
             "members": ["listPerson","listPlace","person","place"]
         },
         {
+            "id": "drama",
+            "label": "Drama",
+            "members": ["actor","castGroup","castItem","castList","role","roleDesc","set","sp","speaker","stage"]
+        },
+        {
             "id": "correspondence",
             "label": "Correspondence",
             "members": ["addrLine","byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
@@ -72,7 +137,7 @@
         {
             "id": "anchors",
             "label": "Anchors",
-            "members": ["anchor", "milestone"]
+            "members": ["anchor", "milestone", "catRef"]
         },
         {
             "id": "asides",

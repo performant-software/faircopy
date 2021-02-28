@@ -71,84 +71,6 @@
 				}
 			}
 		},
-		"availability": {
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"default": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"prev": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"select": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"status": {
-					"active": false,
-					"vocabID": "*[status]"
-				},
-				"style": {
-					"active": false
-				},
-				"synch": {
-					"active": false
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
 		"back": {
 			"attrState": {
 				"ana": {
@@ -201,87 +123,6 @@
 				},
 				"source": {
 					"active": false
-				},
-				"style": {
-					"active": false
-				},
-				"synch": {
-					"active": false
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
-		"biblFull": {
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"default": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"prev": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"select": {
-					"active": false
-				},
-				"sortKey": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"status": {
-					"active": false,
-					"vocabID": "*[status]"
 				},
 				"style": {
 					"active": false
@@ -2574,6 +2415,1642 @@
 				},
 				"synch": {
 					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"availability": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"status": {
+					"active": false,
+					"vocabID": "*[status]"
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"biblFull": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"sortKey": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"status": {
+					"active": false,
+					"vocabID": "*[status]"
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"category": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"encodingDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"editorialDecl": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"classDecl": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"keywords": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"scheme": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"listPrefixDef": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"namespace": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"name": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"projectDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"prefixDef": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"ident": {
+					"active": false
+				},
+				"matchPattern": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"replacementPattern": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"refsDecl": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"samplingDecl": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"tagsDecl": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"partial": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"taxonomy": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"profileDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"particDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"settingDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"abstract": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"langUsage": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"revisionDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"status": {
+					"active": false,
+					"vocabID": "*[status]"
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"listChange": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"ordered": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"sortKey": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "listChange[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "listChange[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -10598,6 +12075,1020 @@
 				}
 			}
 		},
+		"creation": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"calendar": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
+				"period": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"edition": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"idno": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"calendar": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
+				"period": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"sortKey": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "idno[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "idno[type]"
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"licence": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"calendar": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
+				"evaluate": {
+					"active": false,
+					"vocabID": "*[evaluate]"
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
+				"period": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"target": {
+					"active": false
+				},
+				"targetLang": {
+					"active": false
+				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"rendition": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"scheme": {
+					"active": false
+				},
+				"schemeVersion": {
+					"active": false
+				},
+				"scope": {
+					"active": false,
+					"vocabID": "rendition[scope]"
+				},
+				"select": {
+					"active": false
+				},
+				"selector": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"tagUsage": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"gi": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"occurs": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"withId": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"catDesc": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"key": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"ref": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"change": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"calendar": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
+				"period": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"status": {
+					"active": false,
+					"vocabID": "*[status]"
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "change[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"target": {
+					"active": false
+				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "change[type]"
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
+					"active": false
+				},
+				"who": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"classCode": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"scheme": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"language": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"ident": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"usage": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
 		"doc": {
 			"attrState": {}
 		},
@@ -10613,30 +13104,6 @@
 			],
 			[
 				"preserve",
-				false
-			]
-		],
-		"*[status]": [
-			[
-				"free",
-				false
-			],
-			[
-				"unknown",
-				false
-			],
-			[
-				"restricted",
-				false
-			]
-		],
-		"*[default]": [
-			[
-				"true",
-				false
-			],
-			[
-				"false",
 				false
 			]
 		],
@@ -10694,6 +13161,16 @@
 				false
 			]
 		],
+		"*[default]": [
+			[
+				"true",
+				false
+			],
+			[
+				"false",
+				false
+			]
+		],
 		"*[evidence]": [
 			[
 				"internal",
@@ -10705,6 +13182,20 @@
 			],
 			[
 				"conjecture",
+				false
+			]
+		],
+		"*[status]": [
+			[
+				"free",
+				false
+			],
+			[
+				"unknown",
+				false
+			],
+			[
+				"restricted",
 				false
 			]
 		],

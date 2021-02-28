@@ -145,7 +145,7 @@ const createDocNode = function createDocNode() {
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": '(fileDesc)'
+            "content": '(fileDesc model_teiHeaderPart* revisionDesc?)'
         }
     ]
 }
