@@ -50,7 +50,7 @@ export function determineRules( elementID, teiDocument ) {
             }
         }
     }
-    const mayContain = mayContainIDs.join(', ')
+    const mayContain = mayContainIDs.length > 0 ? mayContainIDs.join(', ') : null
 
     const containedByIDs = []
     const testFragment = Fragment.from(targetType.create())
@@ -63,7 +63,7 @@ export function determineRules( elementID, teiDocument ) {
             }
         }
     }
-    const containedBy = containedByIDs.join(', ')
+    const containedBy = containedByIDs.length > 0 ? containedByIDs.join(', ') : null
 
     return {
         containedBy,
