@@ -34,8 +34,8 @@ export default class TEISchema {
 
     addTextNodes(editorView) {
         const { state } = editorView
-        const { tr, doc } = state
-        const textNodeType = this.schema.nodes['textNode'] 
+        const { tr, doc, schema } = state
+        const textNodeType = schema.nodes['textNode'] 
 
         doc.descendants((node,pos) => {
             const contentExp = node.type.spec.content
