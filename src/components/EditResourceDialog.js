@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { Button } from '@material-ui/core'
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select } from '@material-ui/core'
+import { Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select } from '@material-ui/core'
 
 import { idValidator, validateURL } from '../tei-document/attribute-validators'
 
@@ -18,6 +18,53 @@ export default class EditResourceDialog extends Component {
             validationErrors: {}
         }
         this.state = this.initialState
+    }
+
+    renderTypeCard(title, icon, description) {
+        return(
+            <Card className="resource-type-card" variant="outlined">
+                <CardContent >
+                    <div className="type-icon">
+                        <i className={`${icon} fa-3x`}></i>
+                    </div>
+                    <div className="description">
+                        <Typography variant="h5">{title}</Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                           {description}
+                        </Typography>
+                    </div>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    renderResourceTypeSelect(type,onChange) {
+        return (
+            <span>
+                <Select
+                    name="type"
+                    value={type}
+                    onChange={onChange}
+                    variant="outlined"
+                >
+                    <MenuItem value={'text'}>
+                        { this.renderTypeCard("Text","fa fa-book",
+                            <span>A single text of any kind. For <br/>example: a poem or drama, <br/>a collection of essays, <br/>a novel, or a bibliography.</span>
+                        )}
+                    </MenuItem>
+                    <MenuItem value={'facs'}>
+                        { this.renderTypeCard("Facsimile","fa fa-images",
+                            <span>A facsimile is a collection of <br/>images of a physical text. The <br/>images are sequenced in reading <br/>order or the order in which <br/>they are archived.</span>
+                        )}
+                    </MenuItem>
+                    <MenuItem value={'header'}>
+                        { this.renderTypeCard("TEI Document","fa fa-books",
+                            <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed metadata.</span>
+                        )}
+                    </MenuItem>
+                </Select><br/>
+            </span>
+        )
     }
 
     render() {      
@@ -106,17 +153,8 @@ export default class EditResourceDialog extends Component {
                         helperText={validationErrors['localID']}
                         label="ID" 
                     /><br/>
-                    { !resourceEntry && <span><Select
-                        name="type"
-                        value={type}
-                        onChange={onChange}
-                    >
-                        <MenuItem value={'text'}>Text</MenuItem>
-                        <MenuItem value={'header'}>Header</MenuItem>
-                        <MenuItem value={'facs'}>Facsimile</MenuItem>
-                        <MenuItem value={'facs-iiif'}>Facsimile from IIIF Manifest</MenuItem>
-                    </Select><br/></span>}
-                    { type === 'facs-iiif' && <TextField 
+                    { !resourceEntry && this.renderResourceTypeSelect(type,onChange) }
+                    {/* { type === 'facs-iiif' && <TextField 
                         name="url"
                         className="name-field"
                         value={url}
@@ -124,7 +162,7 @@ export default class EditResourceDialog extends Component {
                         error={validationErrors['url'] !== undefined }
                         helperText={validationErrors['url']}
                         label="IIIF Manifest URL" 
-                    /> }
+                    /> } */}
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>

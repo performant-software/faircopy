@@ -2,3 +2,17 @@
     width: 350px;
     margin-bottom: 20px;
 }
+
+#EditResourceDialog .resource-type-card {
+    width: 100%;
+}
+
+#EditResourceDialog .type-icon {
+    margin-top: 10px;
+    float:left;
+}
+
+#EditResourceDialog .description {
+    margin-left: 65px;
+    margin-right: 10px;
+}
