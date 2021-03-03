@@ -40,7 +40,8 @@ export default class EditResourceDialog extends Component {
 
     renderResourceTypeSelect(type,onChange) {
         return (
-            <span>
+            <div>
+                <Typography color="textSecondary" >Resource Type</Typography>
                 <Select
                     name="type"
                     value={type}
@@ -63,7 +64,7 @@ export default class EditResourceDialog extends Component {
                         )}
                     </MenuItem>
                 </Select><br/>
-            </span>
+            </div>
         )
     }
 
