@@ -65,10 +65,10 @@ export default class ProjectNavigator extends Component {
       const treeNodes = []
       for( const resource of Object.values(openResources) ) {
         const {resourceID} = resource
-        const {name} = fairCopyProject.resources[resourceID]
+        const {name, type} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
-        const iconType = resource instanceof TEIDocument ? 'fa-book' : 'fa-images' 
-        const icon = <i className={`fas ${iconType} fa-lg`}></i>
+        const resourceIcon = type === 'text' ? 'fa fa-book' : type === 'facs' ? 'fa fa-images' : type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
+        const icon = <i className={`${resourceIcon} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID)
         const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth-105 }
         treeNodes.push(

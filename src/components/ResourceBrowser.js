@@ -133,7 +133,7 @@ export default class ResourceBrowser extends Component {
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
       const check = checked[resource.id] === true
-      const resourceIcon = resource.type === 'text' ? 'fa fa-book' : 'facs' ? 'fa fa-images' : 'fa fa-books'
+      const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
       resourceRows.push(
         <TableRow hover key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
