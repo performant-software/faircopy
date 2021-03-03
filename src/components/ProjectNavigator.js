@@ -6,8 +6,6 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Button, Typography } from '@material-ui/core';
 
-import TEIDocument from '../tei-document/TEIDocument'
-
 export default class ProjectNavigator extends Component {
 
     onClickNode = (e) => {

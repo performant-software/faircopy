@@ -124,7 +124,7 @@ export default class EditResourceDialog extends Component {
 
         const dialogTitle = resourceEntry ? "Edit Resource" : "Create Resource"
 
-        const { name, type, localID, url, validationErrors } = this.state
+        const { name, type, localID, validationErrors } = this.state
 
         return (
             <Dialog
