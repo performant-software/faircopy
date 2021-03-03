@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Button } from '@material-ui/core'
 import { Card, CardContent, Typography, Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, Select } from '@material-ui/core'
 
-import { idValidator, validateURL } from '../tei-document/attribute-validators'
+import { idValidator } from '../tei-document/attribute-validators'
 
 export default class EditResourceDialog extends Component {
 
@@ -58,7 +58,7 @@ export default class EditResourceDialog extends Component {
                             <span>A facsimile is a collection of <br/>images of a physical text. The <br/>images are sequenced in reading <br/>order or the order in which <br/>they are archived.</span>
                         )}
                     </MenuItem>
-                    <MenuItem value={'header'}>
+                    <MenuItem value={'teidoc'}>
                         { this.renderTypeCard("TEI Document","fa fa-books",
                             <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed <br/>metadata.</span>
                         )}
@@ -102,10 +102,10 @@ export default class EditResourceDialog extends Component {
                 }    
             }
 
-            if( !resourceEntry && type === 'facs-iiif') { 
-                const validURL = validateURL(url)
-                if( validURL.error ) nextErrors['url'] = validURL.errorMessage
-            }
+            // if( !resourceEntry && type === 'facs-iiif') { 
+            //     const validURL = validateURL(url)
+            //     if( validURL.error ) nextErrors['url'] = validURL.errorMessage
+            // }
             
             const hasErrors = Object.keys(nextErrors).length > 0
             if( hasErrors ) {

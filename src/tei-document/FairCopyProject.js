@@ -5,7 +5,7 @@ import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
-import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
+import {teiHeaderTemplate, teiTextTemplate, teiDocTemplate } from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
 import {learnDoc, saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
@@ -123,10 +123,24 @@ export default class FairCopyProject {
             type
         }
 
-        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' ) {
+        if( resourceEntry.type === 'teidoc' ) {
+            const headerEntry = {
+                id: uuidv4(),
+                localID: 'header',
+                name: 'TEI Header', 
+                type: 'header'
+            }                
+            // create a header resource 
+            fairCopy.services.ipcSend('addResource', JSON.stringify(headerEntry), teiHeaderTemplate )
+
+            // next, create teidoc resource
             this.resources[resourceEntry.id] = resourceEntry
-            const teiTemplate = resourceEntry.type === 'text' ? teiTextTemplate : teiHeaderTemplate
-            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTemplate )
+            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiDocTemplate(headerEntry.id) )
+            this.idMap.addResource(localID)
+            this.idMap.save()
+        } else if( resourceEntry.type === 'text' ) {
+            this.resources[resourceEntry.id] = resourceEntry
+            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTextTemplate )
             this.idMap.addResource(localID)
             this.idMap.save()
         } else {
