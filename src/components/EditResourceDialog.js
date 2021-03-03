@@ -49,7 +49,7 @@ export default class EditResourceDialog extends Component {
                 >
                     <MenuItem value={'text'}>
                         { this.renderTypeCard("Text","fa fa-book",
-                            <span>A single text of any kind. For <br/>example: a poem or drama, <br/>a collection of essays, <br/>a novel, or a bibliography.</span>
+                            <span>A single text of any kind. <br/>For example: a poem or drama, <br/>a collection of essays, <br/>a novel, or a bibliography.</span>
                         )}
                     </MenuItem>
                     <MenuItem value={'facs'}>
@@ -59,7 +59,7 @@ export default class EditResourceDialog extends Component {
                     </MenuItem>
                     <MenuItem value={'header'}>
                         { this.renderTypeCard("TEI Document","fa fa-books",
-                            <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed metadata.</span>
+                            <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed <br/>metadata.</span>
                         )}
                     </MenuItem>
                 </Select><br/>
