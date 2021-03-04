@@ -132,11 +132,11 @@ export default class ResourceBrowser extends Component {
     }
 
     const { checked, allChecked, currentPage } = this.state
-    const { resources } = this.props
+    const { resources, teiDocName } = this.props
     
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
-      if( !resource  ) continue
+      if( !resource || (!teiDocName && resource.subEntry) ) continue
       const check = checked[resource.id] === true
       const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
       resourceRows.push(
