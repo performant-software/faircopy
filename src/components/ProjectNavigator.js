@@ -30,7 +30,7 @@ export default class ProjectNavigator extends Component {
             className="tree-item-close"
             onClick={onClick}
           >
-            <i className="fa fa-plus-circle fa-lg"></i>
+            <i className="fa fa-home-alt fa-lg"></i>
           </Button>
         </div>
       )    

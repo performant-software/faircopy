@@ -132,6 +132,7 @@ export default class ResourceBrowser extends Component {
 
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
+      if( resource.subEntry ) continue
       const check = checked[resource.id] === true
       const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
       resourceRows.push(
@@ -190,15 +191,12 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, fairCopyProject } = this.props
-      const { resources } = fairCopyProject
-      const resourceCount = Object.keys(resources).length
-      const s = resourceCount === 1 ? '' : 's'
+      const { width } = this.props
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
           <div className="titlebar">
-              <Typography component="h1" variant="h6">Browse Resources ({resourceCount} resource{s})</Typography>
+              <Typography component="h1" variant="h6"><i className="fa fa-home-alt"></i> Project Resources</Typography>
           </div>
           { this.renderToolbar() }
           <div>

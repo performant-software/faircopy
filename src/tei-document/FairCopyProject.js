@@ -85,7 +85,7 @@ export default class FairCopyProject {
         // filter out images, which are part of facs 
         this.resources = {}
         Object.values(fairCopyManifest.resources).forEach( entry => {
-            if( entry.type !== 'image' && !entry.subEntry ) this.resources[entry.id] = entry
+            if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
     }
     
