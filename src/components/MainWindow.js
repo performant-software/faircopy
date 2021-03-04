@@ -31,6 +31,7 @@ export default class MainWindow extends Component {
         this.state = {
             selectedResource: null,
             openResources: {},
+            openTEIDoc: null,
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -82,12 +83,29 @@ export default class MainWindow extends Component {
 
     receiveResourceData( resourceData ) {
         const { resourceID, resource } = resourceData
-        const { openResources } = this.state
-        const openResource = openResources[resourceID]
-        if( openResource ) {
-            openResource.load(resource)
-            this.setState({...this.state})
-        } 
+        const { fairCopyProject } = this.props
+        const { resources } = fairCopyProject
+        const resourceEntry = resources[resourceID]
+
+        if( !resourceEntry ) {
+            console.error(`Received data from unrecongnized resource ID: ${resourceID}`)
+            return
+        }
+
+        if( resourceEntry.type === 'teidoc' ) {
+            const { openTEIDoc } = this.state
+            if( openTEIDoc ) {
+                openTEIDoc.load(resource)
+                this.setState({...this.state})    
+            }
+        } else {
+            const { openResources } = this.state
+            const openResource = openResources[resourceID]
+            if( openResource ) {
+                openResource.load(resource)
+                this.setState({...this.state})
+            }     
+        }
     }
 
     receiveImportData( importData ) {
@@ -99,6 +117,16 @@ export default class MainWindow extends Component {
         } else {
             this.setState({...this.state})
         }
+    }
+
+    openTEIDoc(resourceID) {
+        const { fairCopyProject } = this.props
+        const openTEIDoc = fairCopyProject.openResource(resourceID)
+        this.setState({...this.state, openTEIDoc})
+    }
+
+    closeTEIDoc() {
+        this.setState({...this.state, openTEIDoc: null})
     }
 
     selectResources(resourceIDs) {
@@ -249,6 +277,12 @@ export default class MainWindow extends Component {
 
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
+            case 'open-teidoc':
+                this.openTEIDoc(resourceIDs)
+                return false
+            case 'close-teidoc':
+                this.closeTEIDoc()
+                return false
             case 'open':
                 this.selectResources(resourceIDs)
                 return false
@@ -329,7 +363,7 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen } = this.state
+        const { resourceBrowserOpen, openTEIDoc } = this.state
 
         return (
             <div>
@@ -340,6 +374,7 @@ export default class MainWindow extends Component {
                         onEditResource={this.onEditResource}
                         onImportResource={this.onImportResource}
                         fairCopyProject={fairCopyProject}
+                        openTEIDoc={openTEIDoc && !openTEIDoc.loading ? openTEIDoc : null}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
             </div>

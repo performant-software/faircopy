@@ -25,3 +25,7 @@
 #ResourceBrowser .table-container {
     height: calc(100vh - 160px);
 }
+
+#ResourceBrowser .home-link:hover {
+    text-decoration: underline;
+}

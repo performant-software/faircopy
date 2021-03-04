@@ -49,6 +49,7 @@ export default class ResourceBrowser extends Component {
   }
 
   createResourceAction(actionID) {    
+    // TODO filter out the tei doc resources
     return () => {
       const { onResourceAction } = this.props
       const { checked } = this.state
@@ -95,9 +96,15 @@ export default class ResourceBrowser extends Component {
   renderResourceTable() {
 
     const onClick = (e) => {
-      const { onResourceAction } = this.props
+      const { onResourceAction, fairCopyProject } = this.props
+      const { resources } = fairCopyProject
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
-      onResourceAction( 'open', [resourceID] )
+      const resource = resources[resourceID]
+      if( resource.type === 'teidoc' ) {
+        onResourceAction( 'open-teidoc', resourceID )         
+      } else {
+        onResourceAction( 'open', [resourceID] )         
+      }
     }
 
     const toggleAll = () => {
@@ -191,12 +198,18 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width } = this.props
+      const { width, openTEIDoc, onResourceAction } = this.props
+
+      const onClickHome = () => {
+        onResourceAction( 'close-teidoc' )   
+      }
+
+      const docTitle = openTEIDoc ? <span><i className="fa fa-chevron-right"></i> <i className="fa fa-books"></i> {openTEIDoc.getName()}</span> : ""
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
           <div className="titlebar">
-              <Typography component="h1" variant="h6"><i className="fa fa-home-alt"></i> Project Resources</Typography>
+            <Typography component="h1" variant="h6"><span className="home-link" onClick={onClickHome}><i className="fa fa-home-alt"></i> Project Resources</span> {docTitle}</Typography>
           </div>
           { this.renderToolbar() }
           <div>

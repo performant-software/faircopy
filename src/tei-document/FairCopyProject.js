@@ -10,6 +10,7 @@ import {sanitizeID} from "./attribute-validators"
 import {learnDoc, saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {parseText} from "./xml"
+import TEIDoc from './TEIDoc'
 
 const fairCopy = window.fairCopy
 
@@ -183,9 +184,11 @@ export default class FairCopyProject {
 
         if( resourceEntry.type === 'text' || resourceEntry.type === 'header' ) {
             return new TEIDocument( resourceID, resourceEntry.type, this )
-        } else {
+        } else if( resourceEntry.type === 'facs' ) {
             return new FacsDocument( resourceID, this )
-        }        
+        } else {
+            return new TEIDoc( resourceID, this )
+        }
     }
 
     importResource(importData) {
