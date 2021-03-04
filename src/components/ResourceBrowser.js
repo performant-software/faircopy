@@ -96,8 +96,7 @@ export default class ResourceBrowser extends Component {
   renderResourceTable() {
 
     const onClick = (e) => {
-      const { onResourceAction, fairCopyProject } = this.props
-      const { resources } = fairCopyProject
+      const { onResourceAction, resources } = this.props
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
       const resource = resources[resourceID]
       if( resource.type === 'teidoc' ) {
@@ -108,8 +107,7 @@ export default class ResourceBrowser extends Component {
     }
 
     const toggleAll = () => {
-      const { fairCopyProject } = this.props
-      const { resources } = fairCopyProject
+      const { resources } = this.props
       const { checked, allChecked } = this.state
       const nextAllChecked = !allChecked
       const nextChecked = { ...checked }
@@ -134,18 +132,17 @@ export default class ResourceBrowser extends Component {
     }
 
     const { checked, allChecked, currentPage } = this.state
-    const { fairCopyProject } = this.props
-    const { resources } = fairCopyProject
-
+    const { resources } = this.props
+    
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
-      if( resource.subEntry ) continue
+      if( !resource  ) continue
       const check = checked[resource.id] === true
       const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
       resourceRows.push(
         <TableRow hover key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
-            <Checkbox onClick={onClickCheck} dataresourceid={resource.id} color="default" checked={check} />
+            <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
           <TableCell {...cellProps} >
             <i className={`${resourceIcon} fa-lg`}></i>
@@ -198,13 +195,13 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, openTEIDoc, onResourceAction } = this.props
+      const { width, teiDocName, onResourceAction } = this.props
 
       const onClickHome = () => {
         onResourceAction( 'close-teidoc' )   
       }
 
-      const docTitle = openTEIDoc ? <span><i className="fa fa-chevron-right"></i> <i className="fa fa-books"></i> {openTEIDoc.getName()}</span> : ""
+      const docTitle = teiDocName ? <span><i className="fa fa-chevron-right"></i> <i className="fa fa-books"></i> {teiDocName}</span> : ""
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>

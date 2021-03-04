@@ -364,6 +364,8 @@ export default class MainWindow extends Component {
     renderContentPane() {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, openTEIDoc } = this.state
+        const resources = openTEIDoc ? openTEIDoc.getResources() : fairCopyProject.resources
+        const teiDocName = openTEIDoc ? fairCopyProject.resources[openTEIDoc.resourceID].name : null
 
         return (
             <div>
@@ -373,8 +375,8 @@ export default class MainWindow extends Component {
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onEditResource={this.onEditResource}
                         onImportResource={this.onImportResource}
-                        fairCopyProject={fairCopyProject}
-                        openTEIDoc={openTEIDoc && !openTEIDoc.loading ? openTEIDoc : null}
+                        teiDocName={teiDocName}
+                        resources={resources}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
             </div>

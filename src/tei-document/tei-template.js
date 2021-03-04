@@ -2,9 +2,7 @@ import { getExtensionForMIMEType } from './convert-facs'
 
 export const teiDocTemplate = (headerID) => {
     return JSON.stringify({
-        header: headerID,
-        texts: [],
-        facs: []
+        resources: [headerID]
     })
 }
 
