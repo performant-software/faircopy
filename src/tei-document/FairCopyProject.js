@@ -89,6 +89,14 @@ export default class FairCopyProject {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
     }
+
+    getProjectResources() {
+        const projectResources = {}
+        for( const resource of Object.values(this.resources) ) {
+            if( !resource.subEntry ) projectResources[resource.id] = resource
+        }
+        return projectResources
+    }
     
     updateResource( resourceEntry ) {
         if( this.resources[resourceEntry.id] ) {
@@ -116,12 +124,13 @@ export default class FairCopyProject {
         return ( resource ) ? resource.id : null
     }
 
-    newResource( name, localID, type, url, onError, onSuccess ) {
+    newResource( name, localID, type, url, parentResource, onError, onSuccess ) {
         const resourceEntry = {
             id: uuidv4(),
             localID,
             name, 
-            type
+            type,
+            subEntry: !!parentResource
         }
 
         if( resourceEntry.type === 'teidoc' ) {
@@ -166,6 +175,10 @@ export default class FairCopyProject {
                 this.idMap.save()
             }
         }
+
+        if( parentResource ) {
+            parentResource.addResource(resourceEntry.id)
+        }
     }
 
     removeResources( resourceIDs ) {
@@ -191,7 +204,7 @@ export default class FairCopyProject {
         }
     }
 
-    importResource(importData) {
+    importResource(importData,parentResource) {
         const { path, data } = importData
 
         const name = fairCopy.services.getBasename(path,'.xml').trim()
@@ -202,7 +215,8 @@ export default class FairCopyProject {
             id: uuidv4(),
             localID,
             name,
-            type: 'text'
+            type: 'text',
+            subEntry: !!parentResource
         }
 
         // parse the data into a ProseMirror doc
@@ -235,6 +249,10 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
         saveConfig(this.fairCopyConfig)
         this.idMap.save()    
+
+        if( parentResource ) {
+            parentResource.addResource(resourceEntry.id)
+        }
         return { error: false, errorMessage: null }
     }
 

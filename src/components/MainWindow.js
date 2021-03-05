@@ -110,7 +110,8 @@ export default class MainWindow extends Component {
 
     receiveImportData( importData ) {
         const { fairCopyProject } = this.props
-        const { error, errorMessage } = fairCopyProject.importResource(importData)
+        const { openTEIDoc } = this.state
+        const { error, errorMessage } = fairCopyProject.importResource(importData,openTEIDoc)
         if( error ) {
             const alertOptions = { errorMessage }
             this.setState({...this.state, alertDialogMode: 'importError', alertOptions })
@@ -364,7 +365,7 @@ export default class MainWindow extends Component {
     renderContentPane() {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, openTEIDoc } = this.state
-        const resources = openTEIDoc ? openTEIDoc.getResources() : fairCopyProject.resources
+        const resources = openTEIDoc ? openTEIDoc.getResources() : fairCopyProject.getProjectResources()
         const teiDocName = openTEIDoc ? fairCopyProject.resources[openTEIDoc.resourceID].name : null
 
         return (
@@ -404,7 +405,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, openResources, selectedResource, elementMenuOptions } = this.state
+        const { editDialogMode, addImagesMode, openResources, selectedResource, elementMenuOptions, openTEIDoc } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
 
@@ -424,6 +425,7 @@ export default class MainWindow extends Component {
                     localID,
                     type,
                     url, 
+                    openTEIDoc,
                     (errorMessage) => { this.setState({...this.state, alertMessage: errorMessage }) },
                     () => { this.setState({...this.state}) }
                 )    
@@ -448,6 +450,7 @@ export default class MainWindow extends Component {
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
                     resourceEntry={resourceEntry}
+                    hasParent={!!openTEIDoc}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }

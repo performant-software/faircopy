@@ -6,7 +6,6 @@ export default class TEIDoc {
 
     constructor( resourceID, fairCopyProject ) {
         this.fairCopyProject = fairCopyProject
-        this.changedSinceLastSave = false
         this.resources = null
         this.resourceID = resourceID
         this.requestResource( resourceID )    
@@ -28,6 +27,16 @@ export default class TEIDoc {
         return resources
     }
 
+    addResource( resourceID ) {
+        this.resources.push(resourceID)
+        this.save()
+    }
+
+    removeResource( resourceID ) {
+        this.resources = this.resources.map( r => r !== resourceID )
+        this.save()
+    }
+
     load( teiDocJSON ) {
         const teiDoc = JSON.parse(teiDocJSON)   
         this.resources = teiDoc.resources
@@ -40,7 +49,6 @@ export default class TEIDoc {
         })
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
-        this.changedSinceLastSave = false
 
         // Update the ID Map 
         // const { idMap } = this.fairCopyProject

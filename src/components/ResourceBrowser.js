@@ -80,9 +80,9 @@ export default class ResourceBrowser extends Component {
     return (
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-        <Button onClick={onEditResource} {...buttonProps}>Create From Template</Button>    
+        <Button disabled onClick={onEditResource} {...buttonProps}>Create From Template</Button>    
         <Button onClick={onImportResource} {...buttonProps}>Import XML</Button>    
-        <Button onClick={onImportResource} {...buttonProps}>Import IIIF</Button>    
+        <Button disabled onClick={onImportResource} {...buttonProps}>Import IIIF</Button>    
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}
@@ -132,11 +132,11 @@ export default class ResourceBrowser extends Component {
     }
 
     const { checked, allChecked, currentPage } = this.state
-    const { resources, teiDocName } = this.props
+    const { resources } = this.props
     
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
-      if( !resource || (!teiDocName && resource.subEntry) ) continue
+      if( !resource ) continue
       const check = checked[resource.id] === true
       const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
       resourceRows.push(
