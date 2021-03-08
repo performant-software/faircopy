@@ -112,7 +112,7 @@ export default class ResourceBrowser extends Component {
       const nextAllChecked = !allChecked
       const nextChecked = { ...checked }
       for( const resource of Object.values(resources) ) {
-        nextChecked[resource.id] = nextAllChecked
+        if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked
       }
       this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
     }

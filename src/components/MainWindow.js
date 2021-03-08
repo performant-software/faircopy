@@ -116,15 +116,19 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
 
-        // select the first one from the list
-        const nextSelection = resourceIDs[0]
-
+        let nextSelection = null
         let change = (selectedResource !== nextSelection)
         let nextResources = { ...openResources }
         for( const resourceID of resourceIDs ) {
             if( !openResources[resourceID] ) {
-                nextResources[resourceID] = fairCopyProject.openResource(resourceID)
-                change = true
+                const resource = fairCopyProject.resources[resourceID]
+                // can't select a tei doc this way, skip
+                if( resource.type !== 'teidoc' ) {
+                    nextResources[resourceID] = fairCopyProject.openResource(resourceID)
+                    change = true    
+                    // select the first valid doc to open
+                    if(!nextSelection) nextSelection = resourceID                
+                }
             }    
         }
 
