@@ -31,7 +31,7 @@ export default class MainWindow extends Component {
         this.state = {
             selectedResource: null,
             openResources: {},
-            openTEIDoc: null,
+            parentResourceID: null,
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -92,42 +92,24 @@ export default class MainWindow extends Component {
             return
         }
 
-        if( resourceEntry.type === 'teidoc' ) {
-            const { openTEIDoc } = this.state
-            if( openTEIDoc ) {
-                openTEIDoc.load(resource)
-                this.setState({...this.state})    
-            }
-        } else {
-            const { openResources } = this.state
-            const openResource = openResources[resourceID]
-            if( openResource ) {
-                openResource.load(resource)
-                this.setState({...this.state})
-            }     
-        }
+        const { openResources } = this.state
+        const openResource = openResources[resourceID]
+        if( openResource ) {
+            openResource.load(resource)
+            this.setState({...this.state})
+        }     
     }
 
     receiveImportData( importData ) {
         const { fairCopyProject } = this.props
-        const { openTEIDoc } = this.state
-        const { error, errorMessage } = fairCopyProject.importResource(importData,openTEIDoc)
+        const { parentResourceID } = this.state
+        const { error, errorMessage } = fairCopyProject.importResource(importData,parentResourceID)
         if( error ) {
             const alertOptions = { errorMessage }
             this.setState({...this.state, alertDialogMode: 'importError', alertOptions })
         } else {
             this.setState({...this.state})
         }
-    }
-
-    openTEIDoc(resourceID) {
-        const { fairCopyProject } = this.props
-        const openTEIDoc = fairCopyProject.openResource(resourceID)
-        this.setState({...this.state, openTEIDoc})
-    }
-
-    closeTEIDoc() {
-        this.setState({...this.state, openTEIDoc: null})
     }
 
     selectResources(resourceIDs) {
@@ -279,10 +261,10 @@ export default class MainWindow extends Component {
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
             case 'open-teidoc':
-                this.openTEIDoc(resourceIDs)
+                this.setState({...this.state, parentResourceID: resourceIDs})
                 return false
             case 'close-teidoc':
-                this.closeTEIDoc()
+                this.setState({...this.state, parentResourceID: null})
                 return false
             case 'open':
                 this.selectResources(resourceIDs)
@@ -364,9 +346,10 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, openTEIDoc } = this.state
-        const resources = openTEIDoc ? openTEIDoc.getResources() : fairCopyProject.getProjectResources()
-        const teiDocName = openTEIDoc ? fairCopyProject.resources[openTEIDoc.resourceID].name : null
+        const { resourceBrowserOpen, parentResourceID } = this.state
+        const parentResource = parentResourceID ? fairCopyProject.resources[parentResourceID] : null
+        const resources = fairCopyProject.getResources(parentResource)
+        const teiDocName = parentResource ? parentResource.name : null
 
         return (
             <div>
@@ -405,7 +388,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, openResources, selectedResource, elementMenuOptions, openTEIDoc } = this.state
+        const { editDialogMode, addImagesMode, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
 
@@ -418,14 +401,14 @@ export default class MainWindow extends Component {
 
         const onSaveResource = (name,localID,type,url) => {
             if( resourceEntry ) {
-                fairCopyProject.updateResource({ id: resourceEntry.id, name, localID, type })
+                fairCopyProject.updateResource({ ...resourceEntry, name, localID, type })
             } else {
                 fairCopyProject.newResource(
                     name,
                     localID,
                     type,
                     url, 
-                    openTEIDoc,
+                    parentResourceID,
                     (errorMessage) => { this.setState({...this.state, alertMessage: errorMessage }) },
                     () => { this.setState({...this.state}) }
                 )    
@@ -450,7 +433,7 @@ export default class MainWindow extends Component {
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
                     resourceEntry={resourceEntry}
-                    hasParent={!!openTEIDoc}
+                    hasParent={!!parentResourceID}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }

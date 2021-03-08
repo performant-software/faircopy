@@ -5,12 +5,11 @@ import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
-import {teiHeaderTemplate, teiTextTemplate, teiDocTemplate } from "./tei-template"
+import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
 import {sanitizeID} from "./attribute-validators"
 import {learnDoc, saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {parseText} from "./xml"
-import TEIDoc from './TEIDoc'
 
 const fairCopy = window.fairCopy
 
@@ -90,12 +89,19 @@ export default class FairCopyProject {
         })
     }
 
-    getProjectResources() {
-        const projectResources = {}
-        for( const resource of Object.values(this.resources) ) {
-            if( !resource.subEntry ) projectResources[resource.id] = resource
+    getResources(parentResource) {
+        const selectedResources = {}
+        if( parentResource ) {
+            for( const resourceID of parentResource.resources ) {
+                const resource = this.resources[resourceID]
+                selectedResources[resource.id] = resource
+            }
+        } else {
+            for( const resource of Object.values(this.resources) ) {
+                if( !resource.parentResource ) selectedResources[resource.id] = resource
+            }
         }
-        return projectResources
+        return selectedResources
     }
     
     updateResource( resourceEntry ) {
@@ -124,47 +130,47 @@ export default class FairCopyProject {
         return ( resource ) ? resource.id : null
     }
 
-    newResource( name, localID, type, url, parentResource, onError, onSuccess ) {
+    newResource( name, localID, type, url, parentResourceID, onError, onSuccess ) {
         const resourceEntry = {
             id: uuidv4(),
             localID,
             name, 
             type,
-            subEntry: !!parentResource
+            parentResource: parentResourceID
         }
 
-        if( resourceEntry.type === 'teidoc' ) {
-            const headerEntry = {
-                id: uuidv4(),
-                localID: 'header',
-                name: 'TEI Header', 
-                type: 'header',
-                subEntry: true
-            }                
-            // create a header resource 
-            fairCopy.services.ipcSend('addResource', JSON.stringify(headerEntry), teiHeaderTemplate )
-
-            // next, create teidoc resource
-            this.resources[resourceEntry.id] = resourceEntry
-            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiDocTemplate(headerEntry.id) )
-            this.idMap.addResource(localID)
-            this.idMap.save()
-        } else if( resourceEntry.type === 'text' ) {
-            this.resources[resourceEntry.id] = resourceEntry
-            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTextTemplate )
-            this.idMap.addResource(localID)
-            this.idMap.save()
+        if( type === 'facs' && url && url.length > 0 ) {
+            importIIIFManifest(url, onError, (xml,facs) => {
+                if( xml ) {
+                    this.resources[resourceEntry.id] = resourceEntry
+                    fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
+                    if( parentResourceID ) this.addChild( parentResourceID, resourceEntry.id )
+                    this.idMap.mapFacsIDs(localID,facs)
+                    this.idMap.save()
+                    onSuccess()
+                }
+            })    
         } else {
-            if( url && url.length > 0 ) {
-                importIIIFManifest(url, onError, (xml,facs) => {
-                    if( xml ) {
-                        this.resources[resourceEntry.id] = resourceEntry
-                        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
-                        this.idMap.mapFacsIDs(localID,facs)
-                        this.idMap.save()
-                        onSuccess()
-                    }
-                })    
+            if( type === 'teidoc' ) {
+                const headerEntry = {
+                    id: uuidv4(),
+                    localID: 'header',
+                    name: 'TEI Header', 
+                    type: 'header',
+                    parentResource: resourceEntry.id
+                }
+                // create a header resource 
+                resourceEntry.resources = [ headerEntry.id ]
+                fairCopy.services.ipcSend('addResource', JSON.stringify(headerEntry), teiHeaderTemplate )
+    
+                // next, create teidoc resource
+                this.resources[resourceEntry.id] = resourceEntry
+                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), "" )
+                this.idMap.addResource(localID)
+            } else if( type === 'text' ) {
+                this.resources[resourceEntry.id] = resourceEntry
+                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTextTemplate )
+                this.idMap.addResource(localID)
             } else {
                 // add a blank facs 
                 this.resources[resourceEntry.id] = resourceEntry
@@ -172,20 +178,27 @@ export default class FairCopyProject {
                 const xml = facsTemplate(facs)
                 fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
                 this.idMap.mapFacsIDs(localID,facs)
-                this.idMap.save()
-            }
+            }    
+
+            if( parentResourceID ) this.addChild( parentResourceID, resourceEntry.id )
+            this.idMap.save()
+            onSuccess()
         }
 
-        if( parentResource ) {
-            parentResource.addResource(resourceEntry.id)
-        }
+
     }
 
     removeResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
-            const {localID} = this.resources[resourceID]
+            const {localID,parentResource,resources} = this.resources[resourceID]
             this.idMap.removeResource(localID)
+
+            // if there are child resources, remove them too
+            if( resources ) this.removeResources( resources )
             delete this.resources[resourceID]
+
+            // if this is a child resource, remove it from parent
+            if( parentResource ) this.removeChild( parentResource, resourceID )
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
         this.idMap.save()
@@ -199,12 +212,10 @@ export default class FairCopyProject {
             return new TEIDocument( resourceID, resourceEntry.type, this )
         } else if( resourceEntry.type === 'facs' ) {
             return new FacsDocument( resourceID, this )
-        } else {
-            return new TEIDoc( resourceID, this )
-        }
+        } 
     }
 
-    importResource(importData,parentResource) {
+    importResource(importData,parentResourceID) {
         const { path, data } = importData
 
         const name = fairCopy.services.getBasename(path,'.xml').trim()
@@ -216,7 +227,7 @@ export default class FairCopyProject {
             localID,
             name,
             type: 'text',
-            subEntry: !!parentResource
+            parentResource: parentResourceID
         }
 
         // parse the data into a ProseMirror doc
@@ -250,10 +261,23 @@ export default class FairCopyProject {
         saveConfig(this.fairCopyConfig)
         this.idMap.save()    
 
-        if( parentResource ) {
-            parentResource.addResource(resourceEntry.id)
+        if( parentResourceID ) {
+            this.addChild( parentResourceID, resourceEntry.id )
         }
+
         return { error: false, errorMessage: null }
+    }
+
+    addChild( parentResourceID, childID ) {
+        const parentResource = this.resources[parentResourceID]
+        parentResource.resources.push(childID)
+        this.updateResource( parentResource )
+    }
+
+    removeChild( parentResourceID, childID ) {
+        const parentResource = this.resources[parentResourceID]
+        parentResource.resources = parentResource.resources.filter(r => r !== childID)
+        this.updateResource( parentResource )
     }
 
     updateProjectInfo( projectInfo ) {

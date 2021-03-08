@@ -145,7 +145,7 @@ export default class ResourceBrowser extends Component {
             <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
           <TableCell {...cellProps} >
-            <i className={`${resourceIcon} fa-lg`}></i>
+            <i onClick={onClick} dataresourceid={resource.id} className={`${resourceIcon} fa-lg`}></i>
           </TableCell>
           <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
             {resource.name}

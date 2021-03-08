@@ -1,11 +1,5 @@
 import { getExtensionForMIMEType } from './convert-facs'
 
-export const teiDocTemplate = (headerID) => {
-    return JSON.stringify({
-        resources: [headerID]
-    })
-}
-
 export const teiHeaderTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
