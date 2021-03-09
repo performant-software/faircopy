@@ -161,7 +161,7 @@ export default class FairCopyProject {
                 }
                 // create a header resource 
                 resourceEntry.resources = [ headerEntry.id ]
-                fairCopy.services.ipcSend('addResource', JSON.stringify(headerEntry), teiHeaderTemplate )
+                fairCopy.services.ipcSend('addResource', JSON.stringify(headerEntry), teiHeaderTemplate(name) )
     
                 // next, create teidoc resource
                 this.resources[resourceEntry.id] = resourceEntry

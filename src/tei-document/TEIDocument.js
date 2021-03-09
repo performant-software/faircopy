@@ -41,7 +41,7 @@ export default class TEIDocument {
     editorInitialState() {
         // load blank XML template 
         const parser = new DOMParser();
-        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : teiHeaderTemplate
+        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : teiHeaderTemplate('')
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
                

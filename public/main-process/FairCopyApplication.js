@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, protocol } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
+const { exportResources } = require('./export-xml')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
 const Jimp = require("jimp")
@@ -126,7 +127,7 @@ class FairCopyApplication {
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null
       if( path ) {
-        this.projectStore.exportResources(exportOptions,path).then( () => { 
+        exportResources(exportOptions,path,this.projectStore).then( () => { 
           log.info(`Resources exported.`)
         })
       }

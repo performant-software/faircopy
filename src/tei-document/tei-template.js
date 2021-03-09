@@ -1,17 +1,17 @@
 import { getExtensionForMIMEType } from './convert-facs'
 
-export const teiHeaderTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+export const teiHeaderTemplate = (title) => `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title>test</title>
+                <title>${title}</title>
             </titleStmt>
             <publicationStmt>
-                <p>Information concerning the publication of this document.</p>
+                <p></p>
             </publicationStmt>
             <sourceDesc>
-                <p>Description of the source(s) from which the document was derived.</p>
+                <p></p>
             </sourceDesc>
         </fileDesc>
     </teiHeader>
