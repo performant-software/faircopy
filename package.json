@@ -64,6 +64,7 @@
     "react-scripts": "3.4.1",
     "react-split-pane": "^0.1.89",
     "uuid": "^8.1.0",
+    "w3c-xmlserializer": "^2.0.0",
     "xml-formatter": "^2.1.2"
   },
   "eslintConfig": {
