@@ -142,9 +142,7 @@ export default class FairCopyProject {
         if( type === 'facs' && url && url.length > 0 ) {
             importIIIFManifest(url, onError, (xml,facs) => {
                 if( xml ) {
-                    this.resources[resourceEntry.id] = resourceEntry
-                    fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
-                    if( parentResourceID ) this.addChild( parentResourceID, resourceEntry.id )
+                    this.addResource(resourceEntry, xml)
                     this.idMap.mapFacsIDs(localID,facs)
                     this.idMap.save()
                     onSuccess()
@@ -158,34 +156,21 @@ export default class FairCopyProject {
                     name: 'TEI Header', 
                     type: 'header',
                     parentResource: resourceEntry.id
-                }
-                // create a header resource 
-                resourceEntry.resources = [ headerEntry.id ]
-                fairCopy.services.ipcSend('addResource', JSON.stringify(headerEntry), teiHeaderTemplate(name) )
-    
-                // next, create teidoc resource
-                this.resources[resourceEntry.id] = resourceEntry
-                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), "" )
-                this.idMap.addResource(localID)
+                }    
+                this.addResource(resourceEntry, "" )
+                this.addResource(headerEntry, teiHeaderTemplate(name))
+
             } else if( type === 'text' ) {
-                this.resources[resourceEntry.id] = resourceEntry
-                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), teiTextTemplate )
-                this.idMap.addResource(localID)
+                this.addResource(resourceEntry, teiTextTemplate)
             } else {
                 // add a blank facs 
-                this.resources[resourceEntry.id] = resourceEntry
                 const facs = { surfaces: [] }
                 const xml = facsTemplate(facs)
-                fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), xml )
-                this.idMap.mapFacsIDs(localID,facs)
+                this.addResource(resourceEntry,xml)
             }    
 
-            if( parentResourceID ) this.addChild( parentResourceID, resourceEntry.id )
-            this.idMap.save()
             onSuccess()
         }
-
-
     }
 
     removeResources( resourceIDs ) {
@@ -198,7 +183,11 @@ export default class FairCopyProject {
             delete this.resources[resourceID]
 
             // if this is a child resource, remove it from parent
-            if( parentResource ) this.removeChild( parentResource, resourceID )
+            if( parentResource ) {
+                const parent = this.resources[parentResource]
+                parent.resources = parent.resources.filter(r => r !== resourceID)
+                this.updateResource( parentResource )        
+            }
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
         this.idMap.save()
@@ -268,16 +257,21 @@ export default class FairCopyProject {
         return { error: false, errorMessage: null }
     }
 
-    addChild( parentResourceID, childID ) {
-        const parentResource = this.resources[parentResourceID]
-        parentResource.resources.push(childID)
-        this.updateResource( parentResource )
-    }
+    addResource( resourceEntry, content ) {
+        const { id, localID, parentResource } = resourceEntry
 
-    removeChild( parentResourceID, childID ) {
-        const parentResource = this.resources[parentResourceID]
-        parentResource.resources = parentResource.resources.filter(r => r !== childID)
-        this.updateResource( parentResource )
+        if( parentResource ) {
+            const parent = this.resources[parentResource]
+            if( !parent.resources ) parent.resources = []
+            parent.resources.push(id)
+            this.updateResource( parent )    
+        }
+
+        // TODO how to handle teidoc children id map?
+        this.idMap.addResource(localID)
+        this.resources[id] = resourceEntry
+        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), content )
+        this.idMap.save()
     }
 
     updateProjectInfo( projectInfo ) {

@@ -1093,10 +1093,17 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.13.7"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.7.tgz#d494e39d198ee9ca04f4dcb76d25d9d7a1dc961a"
   integrity sha512-h+ilqoX998mRVM5FtB5ijRuHUDVt5l3yfoOi2uh18Z/O3hvyaHQ39NpxVkCIG5yFs+mLq/ewFp8Bss6zmWv6ZA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.10.2":
+  version "7.13.10"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.10.tgz#47d42a57b6095f4468da440388fdbad8bebf0d7d"
+  integrity sha512-4QPkjJq6Ns3V/RgpEahRk+AGfL0eO6RHHtTWoNNr5mO49G6B5+X6d6THgWEAvTrznU5xYpbAlVKRYcsCgh/Akw==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -1843,17 +1850,35 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@recogito/annotorious@^2.2.0":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@recogito/annotorious/-/annotorious-2.2.1.tgz#5abfbebf9faae900ee941eeb87b4478f906a0356"
-  integrity sha512-Wdh+uo5dK/RuSQRjlXfsaCxNDd8ISsfLiZRINToEsAAhKqairqEAzhFf9FkdHU28tuwcx5E4eao9iONqqDXmMg==
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@recogito/annotorious/-/annotorious-2.2.4.tgz#64e6bc1a3ac0500f4984081981cffc3dd0b89430"
+  integrity sha512-qPcd/95wmuxAgB7w/XItpSNg3cCRWwwiY8yUXRu3l7TLhpMnF8r5uTqH5XKU2NmlyzxeIRGIVOq/nUHcBZ3RXw==
   dependencies:
     "@babel/polyfill" "^7.10.4"
-    "@recogito/recogito-client-core" "^0.3.3"
+    "@recogito/recogito-client-core" "1.0.1"
     axios "^0.21.1"
+    hammerjs "^2.0.8"
     preact "^10.4.1"
     tiny-emitter "^2.1.0"
 
-"@recogito/recogito-client-core@^0.3.2", "@recogito/recogito-client-core@^0.3.3":
+"@recogito/recogito-client-core@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@recogito/recogito-client-core/-/recogito-client-core-1.0.1.tgz#51792c00d1c0fea7cec544b850b659fef6585828"
+  integrity sha512-tBJx5z2PqrtdGst/eFP1GZvw9d4frSbXI0FgOABjWYLuclPLKhHqKFW9xp+rQCgoMtrqgeRyAxppjWG5IQSW+A==
+  dependencies:
+    axios "^0.21.1"
+    downshift "^5.4.6"
+    fast-deep-equal "^3.1.3"
+    node-polyglot "^2.4.0"
+    preact "^10.4.1"
+    react-autosize-textarea "^7.1.0"
+    react-select "^3.1.1"
+    react-transition-group "^4.3.0"
+    timeago-react "^3.0.1"
+    tiny-emitter "^2.1.0"
+    uuid "^8.3.0"
+
+"@recogito/recogito-client-core@^0.3.2":
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/@recogito/recogito-client-core/-/recogito-client-core-0.3.3.tgz#69b927c34e7f27e96b77ec8b0176006aa5ff524f"
   integrity sha512-KGJDgeoscWM0/+3J0/Y3EZwkJfHu5ew+6SQhBqF0XQbcJxk/Xq3dmIxkNyy1jsyupbX8JWKww5BCtLEfl8g9dA==
@@ -5851,10 +5876,15 @@ follow-redirects@1.5.10:
   dependencies:
     debug "=3.1.0"
 
-follow-redirects@^1.0.0, follow-redirects@^1.10.0:
+follow-redirects@^1.0.0:
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
   integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
+
+follow-redirects@^1.10.0:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
+  integrity sha512-DUgl6+HDzB0iEptNQEXLx/KhTmDb8tZUHSeLqpnjpknR70H0nC2t9N73BK6fN4hOvJ84pKlIQVQ4k5FFlBedKA==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -6271,6 +6301,11 @@ gzip-size@5.1.1:
   dependencies:
     duplexer "^0.1.1"
     pify "^4.0.1"
+
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
 
 handle-thing@^2.0.0:
   version "2.0.1"
