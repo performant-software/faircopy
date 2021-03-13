@@ -89,6 +89,9 @@ export default class TEIDocument {
         const editorState = this.editorView.state
         const {doc} = editorState
         let found = false
+
+        // check to see if this ID exists in the parent resource
+        if( this.fairCopyProject.siblingHasID(targetID, this.resourceID) ) return true 
     
         const findID = (element) => {
             const xmlID = element.attrs['xml:id']
@@ -200,7 +203,7 @@ export default class TEIDocument {
 
     save() {
         const editorState = this.editorView.state
-        const { teiSchema, idMap } = this.fairCopyProject
+        const { teiSchema, idMap, getLocalID, resources } = this.fairCopyProject
         teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
@@ -223,8 +226,9 @@ export default class TEIDocument {
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.lastMessageID = messageID
 
-        const localID = this.fairCopyProject.getLocalID(this.resourceID)
-        idMap.mapTextIDs(localID,editorState.doc)
+        const localID = getLocalID(this.resourceID)
+        const parentID = getLocalID(resources[this.resourceID].parentResource)
+        idMap.mapResource( 'text', localID, parentID, editorState.doc )
         idMap.save()
 
         teiSchema.teiMode = false

@@ -95,6 +95,7 @@ export default class EditResourceDialog extends Component {
             if( !resourceEntry || localID !== resourceEntry.localID ) {
                 if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
                 else {
+                    // TODO need parent local ID
                     if( !idMap.isUnique(localID) ) {
                         nextErrors['localID'] = "ID is already in use in this project."
                     } else {

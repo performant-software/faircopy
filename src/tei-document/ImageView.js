@@ -9,7 +9,7 @@ export default class ImageView {
 
     constructor(imageViewData) {
         this.teiSchema = new TEISchema(imageViewData.teiSchema)
-        this.idMap = new IDMap(this.teiSchema,imageViewData.idMap)
+        this.idMap = new IDMap(imageViewData.idMap)
         this.resourceEntry = imageViewData.resourceEntry
         this.facsDocument = new FacsDocument( this.resourceEntry.id, this, imageViewData.resource )
         this.startingID = imageViewData.xmlID
@@ -29,6 +29,15 @@ export default class ImageView {
         for( const listener of this.updateListeners ) {
             listener()
         }
+    }
+
+    // TODO
+    siblingHasID(targetID, resourceID) {
+        // if( this.resourceEntry.parentResource ) {
+        //     const parentEntry = this.resources[resourceEntry.parentResource]
+        //     return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
+        // }    
+        // return false
     }
 
     addUpdateListener(listener) {

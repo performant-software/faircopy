@@ -5,8 +5,7 @@ const fairCopy = window.fairCopy
 
 export default class IDMap {
 
-    constructor(teiSchema,idMapData) {
-        this.teiSchema = teiSchema
+    constructor(idMapData) {
         this.lastMessageID = null
         this.updateListeners = []
         this.loadIDMap(idMapData)
@@ -38,8 +37,17 @@ export default class IDMap {
         this.idMap = JSON.parse(idMapData)
     }
 
-    mapTextIDs(localID, doc) {        
+    mapResource( resourceType, localID, parentLocalID, content ) {
+        const resourceMap = (resourceType === 'facs') ? this.mapFacsIDs(content) : this.mapTextIDs(content)
 
+        if( parentLocalID ) {
+            this.idMap[parentLocalID][localID] = resourceMap
+        } else {
+            this.idMap[localID] = resourceMap
+        }
+    }
+
+    mapTextIDs(doc) {        
         const xmlIDs = []
 
         const gatherID = (element) => {
@@ -61,10 +69,10 @@ export default class IDMap {
             xmlIDMap[id] = { type: 'text' }
         }
 
-        this.idMap[localID] = xmlIDMap
+        return xmlIDMap
     }
 
-    mapFacsIDs(localID, facs) {
+    mapFacsIDs(facs) {
         const { surfaces } = facs
 
         const facsIDMap = {}
@@ -77,19 +85,30 @@ export default class IDMap {
             }
         }
 
-        this.idMap[localID] = facsIDMap
+        return facsIDMap
     }
 
-    addResource( localID ) {
-        if( this.idMap[localID] ) return false;
-        this.idMap[localID] = {}
-        return true
+    addResource( localID, parentID=null ) {
+        if( parentID ) {
+            if( this.idMap[parentID][localID] ) return false;
+            this.idMap[parentID][localID] = {}
+            return true    
+        } else {
+            if( this.idMap[localID] ) return false;
+            this.idMap[localID] = {}
+            return true    
+        }
     }
 
-    removeResource( localID ) {
-        delete this.idMap[localID]
+    removeResource( localID, parentID=null ) {
+        if( parentID ) {
+            delete this.idMap[parentID][localID]
+        } else {
+            delete this.idMap[localID]
+        }
     }
 
+    // TODO works with sub resource?
     get( uri, parent ) {
         try {
             let rootPath = parent ? `${parent}/` : ''
@@ -111,6 +130,7 @@ export default class IDMap {
         }
     }
 
+    // TODO works with sub resource?
     changeID( oldID, newID ) {
         if( this.idMap[oldID] ) {
             this.idMap[newID] = this.idMap[oldID]
@@ -118,6 +138,7 @@ export default class IDMap {
         }
     }
 
+    // TODO works with sub resource?
     getRelativeURIList( parent ) {
         const uris = []
         for( const resourceID of Object.keys(this.idMap) ) {
@@ -132,17 +153,32 @@ export default class IDMap {
         return uris.sort()
     }
 
-    isUnique(testID) {
-        return this.idMap[testID] === undefined
+    isUnique(testID,parentLocalID=null) {
+        if( parentLocalID ) {
+            return !this.siblingHasID(testID,null,parentLocalID)
+        } else {
+            return this.idMap[testID] === undefined
+        }
+    }
+
+    siblingHasID(testID,localID,parentLocalID) {
+        const parentIDMap = this.idMap[parentLocalID]
+        for( const siblingID of Object.keys(parentIDMap)) {
+            if( localID !== siblingID ) {
+                if( parentIDMap[testID] || parentIDMap[siblingID][testID] ) return true
+            }
+        }
+        return false
     }
 
     getUniqueID(baseID) {
         return `${baseID}-${Date.now()}`
     }
 
-    save() {
+    save() {        
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSaveIDMap', messageID, JSON.stringify(this.idMap))
         this.lastMessageID = messageID
+        console.log(JSON.stringify(this.idMap))
     }
 }

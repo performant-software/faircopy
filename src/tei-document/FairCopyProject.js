@@ -22,7 +22,7 @@ export default class FairCopyProject {
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.menus = this.parseMenus(projectData.menuGroups)
         this.headerMenus = this.parseMenus(projectData.headerMenuGroups)
-        this.idMap = new IDMap(this.teiSchema,projectData.idMap)   
+        this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 
         
@@ -120,12 +120,12 @@ export default class FairCopyProject {
         }
     }
 
-    getLocalID( resourceID ) {
+    getLocalID = ( resourceID ) => {
         const resourceEntry = this.resources[resourceID]
-        return resourceEntry.localID
+        return ( resourceEntry ) ? resourceEntry.localID : null
     }
 
-    getResourceID( localID ) {
+    getResourceID = ( localID ) => {
         const resource = Object.values(this.resources).find( r => r.localID === localID)
         return ( resource ) ? resource.id : null
     }
@@ -176,7 +176,6 @@ export default class FairCopyProject {
     removeResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
             const {localID,parentResource,resources} = this.resources[resourceID]
-            this.idMap.removeResource(localID)
 
             // if there are child resources, remove them too
             if( resources ) this.removeResources( resources )
@@ -187,6 +186,9 @@ export default class FairCopyProject {
                 const parent = this.resources[parentResource]
                 parent.resources = parent.resources.filter(r => r !== resourceID)
                 this.updateResource( parentResource )        
+                this.idMap.removeResource(localID, parent.localID)
+            } else {
+                this.idMap.removeResource(localID)
             }
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
@@ -243,7 +245,8 @@ export default class FairCopyProject {
 
         const doc = parseText(textEl,tempDoc,this.teiSchema)
 
-        this.idMap.mapTextIDs(localID,doc)
+        const parent = this.resources[parentResourceID]
+        this.idMap.mapResource( 'text', localID, parent.localID, doc )
         this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)
         this.resources[resourceEntry.id] = resourceEntry
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
@@ -260,18 +263,21 @@ export default class FairCopyProject {
     addResource( resourceEntry, content ) {
         const { id, localID, parentResource } = resourceEntry
 
+        this.resources[id] = resourceEntry
+
         if( parentResource ) {
             const parent = this.resources[parentResource]
             if( !parent.resources ) parent.resources = []
             parent.resources.push(id)
+            this.idMap.addResource(localID,parent.localID)
             this.updateResource( parent )    
+            this.idMap.save()
+        } else {
+            this.idMap.addResource(localID)
+            this.idMap.save()
         }
 
-        // TODO how to handle teidoc children id map?
-        this.idMap.addResource(localID)
-        this.resources[id] = resourceEntry
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), content )
-        this.idMap.save()
     }
 
     updateProjectInfo( projectInfo ) {
@@ -289,5 +295,14 @@ export default class FairCopyProject {
         }
 
         fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
+    }
+
+    siblingHasID(targetID, resourceID) {
+        const resourceEntry = this.resources[resourceID]
+        if( resourceEntry.parentResource ) {
+            const parentEntry = this.resources[resourceEntry.parentResource]
+            return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
+        }    
+        return false
     }
 }

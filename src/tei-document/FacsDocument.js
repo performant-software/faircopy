@@ -92,6 +92,9 @@ export default class FacsDocument {
     hasID = (targetID) => {       
         const { surfaces } = this.facs
 
+        // check to see if this ID exists in the parent resource
+        if( this.imageViewContext.siblingHasID(targetID, this.resourceID) ) return true 
+
         for( const surface of surfaces ) {
             if(surface.id === targetID ) return true
             for( const zone of surface.zones ) {
@@ -184,9 +187,12 @@ export default class FacsDocument {
         this.lastMessageID = messageID
 
         // Update the ID Map 
-        const { idMap } = this.imageViewContext
-        const localID = this.imageViewContext.getLocalID(this.resourceID)
+        const { idMap, getLocalID } = this.imageViewContext
+        const localID = getLocalID(this.resourceID)
+        // TODO
+        // const parentID = getLocalID(this.resourceID)
         idMap.mapFacsIDs( localID, this.facs )
+        // idMap.mapResource( 'facs', localID, parentLocalID, content )
         idMap.save()
     }
 }

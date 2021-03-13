@@ -45,7 +45,7 @@ export default class SurfaceDetailCard extends Component {
         const onChangeID = (value,error) => onChange('id',value,error)
 
         return (
-        <Card id="SurfaceDetailCard" >
+            <Card id="SurfaceDetailCard" >
                 <IDField
                     hasID={facsDocument.hasID}
                     value={surface.id}
