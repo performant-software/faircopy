@@ -92,7 +92,8 @@ export default class TEIEditor extends Component {
                 clipboardSerializer: this.clipboardSerializer
             }
         )
-        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
+        // uncomment to use ProseMirror dev tools
+        // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.finalizeEditorView(editorView)
     }

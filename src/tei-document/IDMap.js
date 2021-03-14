@@ -130,11 +130,17 @@ export default class IDMap {
         }
     }
 
-    // TODO works with sub resource?
-    changeID( oldID, newID ) {
-        if( this.idMap[oldID] ) {
-            this.idMap[newID] = this.idMap[oldID]
-            delete this.idMap[oldID]
+    changeID( oldID, newID, parentID ) {
+        if( parentID ) {
+            if( this.idMap[parentID][oldID] ) {
+                this.idMap[parentID][newID] = this.idMap[parentID][oldID]
+                delete this.idMap[parentID][oldID]
+            }    
+        } else {
+            if( this.idMap[oldID] ) {
+                this.idMap[newID] = this.idMap[oldID]
+                delete this.idMap[oldID]
+            }    
         }
     }
 

@@ -60,7 +60,7 @@ export default class ImageView {
         const currentLocalID = this.resourceEntry.localID 
         const nextLocalID = nextResourceEntry.localID
         if( currentLocalID !== nextLocalID ) {
-            this.idMap.changeID(currentLocalID,nextLocalID)
+            this.idMap.changeID(currentLocalID,nextLocalID,this.parentEntry?.localID)
             this.idMap.save()
         }        
         this.resourceEntry = { id: this.resourceEntry.id, ...nextResourceEntry }

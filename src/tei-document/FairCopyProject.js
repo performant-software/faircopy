@@ -108,7 +108,8 @@ export default class FairCopyProject {
         if( this.resources[resourceEntry.id] ) {
             const currentLocalID = this.resources[resourceEntry.id].localID
             if( resourceEntry.localID !== currentLocalID ) {
-                this.idMap.changeID(currentLocalID,resourceEntry.localID)
+                const parentEntry = this.getParent(resourceEntry)
+                this.idMap.changeID(currentLocalID,resourceEntry.localID, parentEntry?.localID)
                 this.idMap.save()
             }
             this.resources[resourceEntry.id] = resourceEntry
