@@ -306,10 +306,8 @@ export default class MainWindow extends Component {
             }
         
             if( resource.loading ) {
-                console.log('loading...')
                 editors.push(<div key={key}></div>)
             } else {
-                console.log(`rendering.. ${hidden} ${selectedResource}`)
                 if( resource instanceof TEIDocument ) {
                     editors.push(
                         <TEIEditor 
