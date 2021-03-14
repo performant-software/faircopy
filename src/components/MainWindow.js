@@ -121,7 +121,7 @@ export default class MainWindow extends Component {
         let nextResources = { ...openResources }
         for( const resourceID of resourceIDs ) {
             if( !openResources[resourceID] ) {
-                const resource = fairCopyProject.resources[resourceID]
+                const resource = fairCopyProject.getResourceEntry(resourceID)
                 // can't select a tei doc this way, skip
                 if( resource.type !== 'teidoc' ) {
                     nextResources[resourceID] = fairCopyProject.openResource(resourceID)
@@ -298,7 +298,7 @@ export default class MainWindow extends Component {
         for( const resource of Object.values(openResources) ) {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
-            const resourceEntry = fairCopyProject.resources[resource.resourceID]
+            const resourceEntry = fairCopyProject.getResourceEntry(resource.resourceID)
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
@@ -351,7 +351,7 @@ export default class MainWindow extends Component {
     renderContentPane() {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, parentResourceID } = this.state
-        const parentResource = parentResourceID ? fairCopyProject.resources[parentResourceID] : null
+        const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const resources = fairCopyProject.getResources(parentResource)
         const teiDocName = parentResource ? parentResource.name : null
 
@@ -397,7 +397,7 @@ export default class MainWindow extends Component {
         const { idMap } = fairCopyProject
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
-        const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
+        const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
         const parentEntry = fairCopyProject.getParent(resourceEntry)
         const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
 
