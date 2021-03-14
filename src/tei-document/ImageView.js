@@ -52,8 +52,12 @@ export default class ImageView {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
-    getLocalID() {
-        return this.resourceEntry.localID
+    getResourceEntry() {
+        return this.resourceEntry
+    }
+
+    getParent() {
+        return this.parentEntry
     }
 
     updateResource( nextResourceEntry ) {

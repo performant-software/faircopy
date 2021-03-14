@@ -121,14 +121,13 @@ export default class FairCopyProject {
         }
     }
 
-    getLocalID = ( resourceID ) => {
-        const resourceEntry = this.resources[resourceID]
-        return ( resourceEntry ) ? resourceEntry.localID : null
-    }
-
     getResourceID = ( localID ) => {
         const resource = Object.values(this.resources).find( r => r.localID === localID)
         return ( resource ) ? resource.id : null
+    }
+
+    getResourceEntry( resourceID ) {
+        return this.resources[resourceID]
     }
 
     getParent = ( resourceEntry ) => {

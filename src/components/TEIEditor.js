@@ -3,7 +3,7 @@ import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
 import { Typography } from '@material-ui/core';
-import applyDevTools from "prosemirror-dev-tools";
+// import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"

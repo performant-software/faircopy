@@ -53,8 +53,9 @@ export default class FacsDocument {
     }
 
     getParentID() {
-        const resourceEntry = this.imageViewContext.resources ? this.imageViewContext.resources[this.resourceID] : this.imageViewContext.resourceEntry
-        return resourceEntry.parentResource
+        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
+        const parentEntry = this.imageViewContext.getParent(resourceEntry)
+        return parentEntry?.id
     }
 
     requestResource( resourceID ) {
@@ -192,12 +193,10 @@ export default class FacsDocument {
         this.lastMessageID = messageID
 
         // Update the ID Map 
-        const { idMap, getLocalID } = this.imageViewContext
-        const localID = getLocalID(this.resourceID)
-        // TODO
-        // const parentID = getLocalID(this.resourceID)
-        idMap.mapFacsIDs( localID, this.facs )
-        // idMap.mapResource( 'facs', localID, parentLocalID, content )
+        const { idMap } = this.imageViewContext
+        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
+        const parentEntry = this.imageViewContext.getParent(resourceEntry)
+        idMap.mapResource( 'facs', resourceEntry.localID, parentEntry.localID, this.facs )
         idMap.save()
     }
 }
