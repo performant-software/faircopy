@@ -116,7 +116,7 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
 
-        let nextSelection = null
+        let nextSelection = resourceIDs.find( r => fairCopyProject.getResourceEntry(r).type !== 'teidoc' )
         let change = (selectedResource !== nextSelection)
         let nextResources = { ...openResources }
         for( const resourceID of resourceIDs ) {
@@ -126,8 +126,6 @@ export default class MainWindow extends Component {
                 if( resource.type !== 'teidoc' ) {
                     nextResources[resourceID] = fairCopyProject.openResource(resourceID)
                     change = true    
-                    // select the first valid doc to open
-                    if(!nextSelection) nextSelection = resourceID                
                 }
             }    
         }
@@ -308,8 +306,10 @@ export default class MainWindow extends Component {
             }
         
             if( resource.loading ) {
+                console.log('loading...')
                 editors.push(<div key={key}></div>)
             } else {
+                console.log(`rendering.. ${hidden} ${selectedResource}`)
                 if( resource instanceof TEIDocument ) {
                     editors.push(
                         <TEIEditor 
