@@ -52,6 +52,11 @@ export default class FacsDocument {
         return startIndex === -1 ? 0 : startIndex
     }
 
+    getParentID() {
+        const resourceEntry = this.imageViewContext.resources ? this.imageViewContext.resources[this.resourceID] : this.imageViewContext.resourceEntry
+        return resourceEntry.parentResource
+    }
+
     requestResource( resourceID ) {
         fairCopy.services.ipcSend('requestResource', resourceID )
         this.loading = true

@@ -39,7 +39,7 @@ export default class EditResourceDialog extends Component {
     }
 
     renderResourceTypeSelect(type,onChange) {
-        const { hasParent } = this.props
+        const { parentEntry } = this.props
 
         return (
             <div>
@@ -60,7 +60,7 @@ export default class EditResourceDialog extends Component {
                             <span>A facsimile is a collection of <br/>images of a physical text. The <br/>images are sequenced in reading <br/>order or the order in which <br/>they are archived.</span>
                         )}
                     </MenuItem>
-                    { !hasParent && <MenuItem value={'teidoc'}>
+                    { !parentEntry && <MenuItem value={'teidoc'}>
                         { this.renderTypeCard("TEI Document","fa fa-books",
                             <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed <br/>metadata.</span>
                         )}
@@ -85,7 +85,7 @@ export default class EditResourceDialog extends Component {
         }
 
         const onSaveResource = () => {
-            const { resourceEntry, idMap } = this.props
+            const { resourceEntry, parentEntry, idMap } = this.props
             const { name, type, localID, url } = this.state
 
             const nextErrors = {}
@@ -95,9 +95,8 @@ export default class EditResourceDialog extends Component {
             if( !resourceEntry || localID !== resourceEntry.localID ) {
                 if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
                 else {
-                    // TODO need parent local ID
-                    if( !idMap.isUnique(localID) ) {
-                        nextErrors['localID'] = "ID is already in use in this project."
+                    if( !idMap.isUnique(localID, parentEntry?.localID ) ) {
+                        nextErrors['localID'] = parentEntry ? "ID is already in use in this TEI Document." : "ID is already in use in this project."
                     } else {
                         const idValid = idValidator(localID)
                         if( idValid.error ) nextErrors['localID'] = idValid.errorMessage        

@@ -398,6 +398,7 @@ export default class MainWindow extends Component {
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.resources[selectedResource] : null
+        const parentEntry = fairCopyProject.getParent(resourceEntry)
         const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
 
         const { editProjectDialogMode, alertMessage, editSurfaceInfoMode, surfaceInfo } = this.state
@@ -437,7 +438,7 @@ export default class MainWindow extends Component {
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
                     resourceEntry={resourceEntry}
-                    hasParent={!!parentResourceID}
+                    parentEntry={parentEntry}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }

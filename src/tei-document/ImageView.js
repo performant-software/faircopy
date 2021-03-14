@@ -11,6 +11,7 @@ export default class ImageView {
         this.teiSchema = new TEISchema(imageViewData.teiSchema)
         this.idMap = new IDMap(imageViewData.idMap)
         this.resourceEntry = imageViewData.resourceEntry
+        this.parentEntry = imageViewData.parentEntry
         this.facsDocument = new FacsDocument( this.resourceEntry.id, this, imageViewData.resource )
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
@@ -18,8 +19,13 @@ export default class ImageView {
         
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
             const nextResourceEntry = JSON.parse(d.resourceEntry)
-            if( this.resourceEntry.id === nextResourceEntry.id && d.messageID !== this.lastResourceEntryMessage ) 
+            if( this.resourceEntry.id === nextResourceEntry.id && d.messageID !== this.lastResourceEntryMessage ) {
                 this.onResourceUpdated(nextResourceEntry)
+            }
+            // also listen for updates to parent
+            if( this.parentEntry.id === nextResourceEntry.id ) {
+                this.parentEntry = nextResourceEntry
+            }
         })
     }
 
@@ -31,13 +37,11 @@ export default class ImageView {
         }
     }
 
-    // TODO
-    siblingHasID(targetID, resourceID) {
-        // if( this.resourceEntry.parentResource ) {
-        //     const parentEntry = this.resources[resourceEntry.parentResource]
-        //     return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
-        // }    
-        // return false
+    siblingHasID(targetID) {
+        if( this.parentEntry ) {
+            return this.idMap.siblingHasID(targetID,this.resourceEntry.localID,this.parentEntry.localID)
+        } 
+        return false
     }
 
     addUpdateListener(listener) {

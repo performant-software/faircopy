@@ -96,7 +96,7 @@ export default class ImageWindow extends Component {
 
         if(!imageView) return null
 
-        const { facsDocument, resourceEntry, idMap, startingID } = imageView
+        const { facsDocument, resourceEntry, parentEntry, idMap, startingID } = imageView
         const { editDialogMode, addImagesMode, popupMenuAnchorEl, popupMenuOptions, surfaceInfo, editSurfaceInfoMode } = this.state
         const startIndex = facsDocument.getIndex(startingID)
 
@@ -118,6 +118,7 @@ export default class ImageWindow extends Component {
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
                     resourceEntry={resourceEntry}
+                    parentEntry={parentEntry}
                     onSave={this.onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }

@@ -130,6 +130,10 @@ export default class FairCopyProject {
         return ( resource ) ? resource.id : null
     }
 
+    getParent = ( resourceEntry ) => {
+        return resourceEntry ? resourceEntry.parentResource ? this.resources[resourceEntry.parentResource] : null : null
+    }
+
     newResource( name, localID, type, url, parentResourceID, onError, onSuccess ) {
         const resourceEntry = {
             id: uuidv4(),

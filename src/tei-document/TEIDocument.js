@@ -173,6 +173,11 @@ export default class TEIDocument {
         return this.noteEditorView ? this.noteEditorView : this.editorView
     }
 
+    getParentID() {
+        const resourceEntry = this.fairCopyProject.resources[this.resourceID]
+        return resourceEntry.parentResource
+    }
+
     load( text ) {
         const parser = new DOMParser();
         const { teiSchema } = this.fairCopyProject

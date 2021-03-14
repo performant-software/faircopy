@@ -23,9 +23,11 @@ export default class ThumbnailMargin extends Component {
                 const thumbResource = thumbResources[0]
                 if( thumbResource ) {
                     const { thumbnailURL, resourceID, xmlID } = thumbResource
+                    const parentID = teiDocument.getParentID()
+                    const imageViewData = { resourceID, xmlID, parentID }
                     thumbnails.push(
                         <img 
-                            onClick={() => { fairCopy.services.ipcSend('requestImageView', { resourceID, xmlID }) }} 
+                            onClick={() => { fairCopy.services.ipcSend('requestImageView', imageViewData) }} 
                             key={thumbKey} 
                             style={thumbStyle} 
                             className="facs-thumbnail" 
