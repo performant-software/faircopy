@@ -82,7 +82,7 @@ export default class ResourceBrowser extends Component {
         <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
         <Button disabled onClick={onEditResource} {...buttonProps}>New From Template</Button>    
         <Button onClick={onImportResource} {...buttonProps}>Import XML</Button>    
-        <Button disabled onClick={onImportResource} {...buttonProps}>Import IIIF</Button>    
+        <Button onClick={onImportResource} {...buttonProps}>Import IIIF</Button>    
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}

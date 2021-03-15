@@ -247,19 +247,18 @@ export default class FairCopyProject {
             return { error: true, errorMessage: '<TEI> element must contain <teiHeader> and <text>.' }
         } 
 
-        const doc = parseText(textEl,tempDoc,this.teiSchema)
+        // Things look OK, load this resource
+        this.addResource( resourceEntry, data )
 
+        // map existing IDs
+        const doc = parseText(textEl,tempDoc,this.teiSchema)
         const parent = this.resources[parentResourceID]
-        this.idMap.mapResource( 'text', localID, parent.localID, doc )
-        this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)
-        this.resources[resourceEntry.id] = resourceEntry
-        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), data )
-        saveConfig(this.fairCopyConfig)
+        this.idMap.mapResource( 'text', localID, parent?.localID, doc )
         this.idMap.save()    
 
-        if( parentResourceID ) {
-            this.addChild( parentResourceID, resourceEntry.id )
-        }
+        // learn the attributes and vocabs
+        this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)
+        saveConfig(this.fairCopyConfig)
 
         return { error: false, errorMessage: null }
     }
