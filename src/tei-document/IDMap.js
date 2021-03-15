@@ -88,14 +88,14 @@ export default class IDMap {
         return facsIDMap
     }
 
-    addResource( localID, parentID=null ) {
+    addResource( localID, parentID, multiPart ) {
         if( parentID ) {
             if( this.idMap[parentID][localID] ) return false;
             this.idMap[parentID][localID] = {}
             return true    
         } else {
             if( this.idMap[localID] ) return false;
-            this.idMap[localID] = {}
+            this.idMap[localID] = { __multiPart__: multiPart }
             return true    
         }
     }
@@ -108,7 +108,6 @@ export default class IDMap {
         }
     }
 
-    // TODO works with sub resource?
     get( uri, parent ) {
         try {
             let rootPath = parent ? `${parent}/` : ''
@@ -119,7 +118,15 @@ export default class IDMap {
                 const xmlID = url.hash ? url.hash.slice(1) : null // slice off #
                 const resourceMap = this.idMap[localID]
                 if( resourceMap ) {
-                    return { localID, xmlID, ...resourceMap[xmlID] }
+                    if( resourceMap.__multiPart__ ) {
+                        for( const childID of Object.keys(resourceMap)) {
+                            if( resourceMap[childID][xmlID] ) {
+                                return { localID, xmlID, ...resourceMap[childID][xmlID] }
+                            }
+                        }
+                    } else {
+                        return { localID, xmlID, ...resourceMap[xmlID] }
+                    }
                 } 
             }   
             // local ID not found or external URL
@@ -144,16 +151,31 @@ export default class IDMap {
         }
     }
 
-    // TODO works with sub resource?
-    getRelativeURIList( parent ) {
+    getRelativeURIList( localResourceID, parentID ) {
         const uris = []
-        for( const resourceID of Object.keys(this.idMap) ) {
-            for( const xmlID of Object.keys(this.idMap[resourceID])) {
-                if( resourceID === parent ) {
+
+        const getURIs = (resourceID, resourceMap, local) => {
+            for( const xmlID of Object.keys(resourceMap)) {
+                if( xmlID === '__multiPart__' ) continue
+                if( local ) {
                     uris.push(`#${xmlID}`)
                 } else {
                     uris.push(`${resourceID}#${xmlID}`)
                 }
+            }   
+            return uris
+        }
+
+        for( const resourceID of Object.keys(this.idMap) ) {
+            const resourceMap = this.idMap[resourceID]
+            if( resourceMap.__multiPart__ ) {
+                const local = ( resourceID === parentID )
+                for( const childID of Object.keys(resourceMap) ) {
+                    getURIs(resourceID, resourceMap[childID], local)
+                }
+            } else {
+                const local = ( resourceID === localResourceID )
+                getURIs(resourceID, resourceMap, local)           
             }
         }
         return uris.sort()

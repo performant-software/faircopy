@@ -265,7 +265,7 @@ export default class FairCopyProject {
     }
 
     addResource( resourceEntry, content ) {
-        const { id, localID, parentResource } = resourceEntry
+        const { id, type, localID, parentResource } = resourceEntry
 
         this.resources[id] = resourceEntry
 
@@ -273,11 +273,12 @@ export default class FairCopyProject {
             const parent = this.resources[parentResource]
             if( !parent.resources ) parent.resources = []
             parent.resources.push(id)
-            this.idMap.addResource(localID,parent.localID)
+            this.idMap.addResource(localID,parent.localID,false)
             this.updateResource( parent )    
             this.idMap.save()
         } else {
-            this.idMap.addResource(localID)
+            const multiPart = (type === 'teidoc')
+            this.idMap.addResource(localID,null,multiPart)
             this.idMap.save()
         }
 

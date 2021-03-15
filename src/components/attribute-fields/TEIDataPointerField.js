@@ -65,7 +65,9 @@ export default class TEIDataPointerField extends Component {
         const { teiDocument, value } = this.props
         const { fairCopyProject, resourceID } = teiDocument
         const { idMap } = fairCopyProject
-        const IDs = idMap.getRelativeURIList(fairCopyProject.getResourceEntry(resourceID).localID)
+        const resourceEntry = fairCopyProject.getResourceEntry(resourceID)
+        const parentEntry = fairCopyProject.getParent(resourceEntry)
+        const IDs = idMap.getRelativeURIList(resourceEntry.localID,parentEntry?.localID)
         const key = `singleterm-${Date.now()}`
 
         const onChange = (e, value) => {
@@ -128,7 +130,8 @@ export default class TEIDataPointerField extends Component {
         const { fairCopyProject, resourceID } = teiDocument
         const { idMap } = fairCopyProject
         const resourceEntry = fairCopyProject.getResourceEntry(resourceID)
-        const options = this.valuesToOptions( idMap.getRelativeURIList(resourceEntry.localID) )
+        const parentEntry = fairCopyProject.getParent(resourceEntry)
+        const options = this.valuesToOptions( idMap.getRelativeURIList(resourceEntry.localID, parentEntry?.localID) )
         const values = value.length > 0 ? value.split(' ') : []
         const selectedOptions = this.valuesToOptions( values )
         const key = `multiterm-${Date.now()}`

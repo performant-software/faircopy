@@ -233,7 +233,7 @@ export default class TEIDocument {
 
         const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
         const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        idMap.mapResource( 'text', resourceEntry.localID, parentEntry.localID, editorState.doc )
+        idMap.mapResource( 'text', resourceEntry.localID, parentEntry?.localID, editorState.doc )
         idMap.save()
 
         teiSchema.teiMode = false
