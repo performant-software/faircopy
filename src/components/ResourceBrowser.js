@@ -80,7 +80,6 @@ export default class ResourceBrowser extends Component {
     return (
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-        <Button disabled onClick={onEditResource} {...buttonProps}>New From Template</Button>    
         <Button onClick={onImportResource} {...buttonProps}>Import XML</Button>    
         <Button onClick={onImportResource} {...buttonProps}>Import IIIF</Button>    
         <Button 
