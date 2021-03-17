@@ -14,7 +14,6 @@ export default class EditResourceDialog extends Component {
             name: "",
             localID: "",
             type: "text",
-            url: "",
             validationErrors: {}
         }
         this.state = this.initialState
@@ -76,17 +75,13 @@ export default class EditResourceDialog extends Component {
         const onChange = (e) => {
             const {name, value} = e.target
             const nextState = { ...this.state }
-            if( name === 'type' && (value === 'text' 
-            || value === 'header') ) {
-                nextState['url'] = ''
-            }
             nextState[name] = value
             this.setState(nextState)
         }
 
         const onSaveResource = () => {
             const { resourceEntry, parentEntry, idMap } = this.props
-            const { name, type, localID, url } = this.state
+            const { name, type, localID } = this.state
 
             const nextErrors = {}
             const trimmedName = name.trim()
@@ -104,18 +99,13 @@ export default class EditResourceDialog extends Component {
                 }    
             }
 
-            // if( !resourceEntry && type === 'facs-iiif') { 
-            //     const validURL = validateURL(url)
-            //     if( validURL.error ) nextErrors['url'] = validURL.errorMessage
-            // }
-            
             const hasErrors = Object.keys(nextErrors).length > 0
             if( hasErrors ) {
                 this.setState({ ...this.state, validationErrors: nextErrors })
             } else {
                 this.setState(this.initialState)
                 const actualType = type === 'facs-iiif' ? 'facs' : type
-                onSave(trimmedName,localID,actualType,url)    
+                onSave(trimmedName,localID,actualType)    
             }
         }
 
@@ -157,15 +147,6 @@ export default class EditResourceDialog extends Component {
                         label="ID" 
                     /><br/>
                     { !resourceEntry && this.renderResourceTypeSelect(type,onChange) }
-                    {/* { type === 'facs-iiif' && <TextField 
-                        name="url"
-                        className="name-field"
-                        value={url}
-                        onChange={onChange}
-                        error={validationErrors['url'] !== undefined }
-                        helperText={validationErrors['url']}
-                        label="IIIF Manifest URL" 
-                    /> } */}
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>

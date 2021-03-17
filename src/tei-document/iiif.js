@@ -5,9 +5,9 @@ export function importIIIFManifest( manifestURL, onError, onSuccess ) {
     axios.get(manifestURL).then(
         (resp) => {
             try {
-                const facsData = iiifToFacsimile(resp.data)
+                const { facsData, metadata } = iiifToFacsimile(resp.data)
                 const facsXML = facsimileToTEI(facsData)
-                onSuccess(facsXML,facsData)
+                onSuccess(facsXML,facsData,metadata)
             } catch(error) {
                 onError(`Unable to parse IIIF manifest ${manifestURL} :\n'${error}`)      
             }

@@ -1,5 +1,6 @@
 import {facsTemplate} from "./tei-template"
 import { getLocalString } from './iiif'
+import { sanitizeID } from './attribute-validators'
 
 // Supports IIIF v2 and v3
 export function iiifToFacsimile( manifestData ) {
@@ -18,6 +19,7 @@ function iiifToFacsimile3( manifestData ) {
 
     const canvases = manifestData.items
     const manifestID = val('id', manifestData)
+    const manifestLabel = str( manifestData.label )
 
     const surfaceIDs = []
     const surfaces = []
@@ -66,15 +68,22 @@ function iiifToFacsimile3( manifestData ) {
         } 
     }
 
-    return {
-        manifestID,
-        surfaces
+    const metadata = parseMetadata(manifestID,manifestLabel)
+
+    return { 
+        facsData: {
+            manifestID,
+            surfaces    
+        },
+        metadata
     }
 }
 
 function iiifToFacsimile2( manifestData ) {
     const { sequences } = manifestData
     const manifestID = val('id', manifestData)
+    const manifestLabel = str( manifestData.label )
+
     const sequence = sequences[0]
     const { canvases } = sequence
 
@@ -103,10 +112,14 @@ function iiifToFacsimile2( manifestData ) {
             canvasURI
         })
     }
+    const metadata = parseMetadata(manifestID,manifestLabel)
 
-    return {
-        manifestID,
-        surfaces
+    return { 
+        facsData: {
+            manifestID,
+            surfaces    
+        },
+        metadata
     }
 }
 
@@ -187,6 +200,20 @@ export function setSurfaceTitle( surface, title, lang='en' ) {
     const key = surface.localLabels[lang] ? lang : 'none'
     surface.localLabels[key][0] = title
 } 
+
+function parseMetadata(manifestID,manifestLabel) {
+    const name = getLocalString( manifestLabel, 'en' ).join(' ')
+
+    // take the pathname and convert it to a valid local ID
+    const url = new URL(manifestID)
+    const cleanID = sanitizeID(url.pathname)
+    const localID = cleanID ? cleanID : `import_${Date.now()}`
+
+    return {
+        name,
+        localID
+    }
+}
 
 function getLocalLabels(labelEls) {
     const localLabels = {}

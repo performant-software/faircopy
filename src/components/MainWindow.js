@@ -11,6 +11,7 @@ import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 import EditResourceDialog from './EditResourceDialog'
 import EditProjectDialog from './EditProjectDialog'
+import IIIFImportDialog from './IIIFImportDialog'
 import AddImageDialog from './AddImageDialog'
 import PopupMenu from './PopupMenu'
 import TEIDocument from '../tei-document/TEIDocument'
@@ -46,6 +47,7 @@ export default class MainWindow extends Component {
             popupMenuAnchorEl: null,
             alertMessage: null,
             expandedGutter: true,
+            iiifDialogMode: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
         this.elementMenuAnchors = {}
@@ -244,8 +246,12 @@ export default class MainWindow extends Component {
         this.setState({...this.state, editProjectDialogMode: true })
     }
 
-    onImportResource = () => {
-        fairCopy.services.ipcSend('requestImport')
+    onImportResource = (importType) => {
+        if( importType === 'xml' ) {
+            fairCopy.services.ipcSend('requestImport')
+        } else {
+            this.setState({...this.state, iiifDialogMode: true })
+        }
     }
 
     onAddImages = () => {
@@ -399,22 +405,14 @@ export default class MainWindow extends Component {
         const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : fairCopyProject.getResourceEntry(parentResourceID)
         const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
 
-        const { editProjectDialogMode, alertMessage, editSurfaceInfoMode, surfaceInfo } = this.state
+        const { editProjectDialogMode, alertMessage, editSurfaceInfoMode, iiifDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
 
-        const onSaveResource = (name,localID,type,url) => {
+        const onSaveResource = (name,localID,type) => {
             if( resourceEntry ) {
                 fairCopyProject.updateResource({ ...resourceEntry, name, localID, type })
             } else {
-                fairCopyProject.newResource(
-                    name,
-                    localID,
-                    type,
-                    url, 
-                    parentResourceID,
-                    (errorMessage) => { this.setState({...this.state, alertMessage: errorMessage }) },
-                    () => { this.setState({...this.state}) }
-                )    
+                fairCopyProject.newResource( name, localID, type, parentResourceID )    
             }
             this.setState( {...this.state, editDialogMode: false} )
         }
@@ -440,6 +438,11 @@ export default class MainWindow extends Component {
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }
+                { iiifDialogMode && <IIIFImportDialog
+                    fairCopyProject={fairCopyProject}
+                    parentResourceID={parentResourceID}
+                    onClose={()=>{ this.setState( {...this.state, iiifDialogMode: false} )}}
+                ></IIIFImportDialog> }
                 { addImagesMode && <AddImageDialog
                     idMap={idMap}
                     facsDocument={selectedDoc}

@@ -85,5 +85,9 @@ export function validateURL(value) {
 export function sanitizeID(value) {
     // can not contain whitespace or any of: '#,&,?,:,/'
     let cleanID = value.replace(/[\s#&?:/]/g,'');
+    if( cleanID.match(/^[0-9]/) ) {
+        // can't have number as first char
+        cleanID = `_${cleanID}`
+    }
     return cleanID.length > 0 ? cleanID : null
 }

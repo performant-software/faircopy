@@ -75,13 +75,15 @@ export default class ResourceBrowser extends Component {
       disableFocusRipple: true
     }
 
+    const onImportXML = () => { onImportResource('xml') }
+    const onImportIIIF = () => { onImportResource('iiif') }
     const actionsEnabled = Object.values(checked).find( c => c === true )
 
     return (
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-        <Button onClick={onImportResource} {...buttonProps}>Import XML</Button>    
-        <Button onClick={onImportResource} {...buttonProps}>Import IIIF</Button>    
+        <Button onClick={onImportXML} {...buttonProps}>Import XML</Button>    
+        <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>    
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}

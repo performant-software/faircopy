@@ -134,7 +134,27 @@ export default class FairCopyProject {
         return resourceEntry ? resourceEntry.parentResource ? this.resources[resourceEntry.parentResource] : null : null
     }
 
-    newResource( name, localID, type, url, parentResourceID, onError, onSuccess ) {
+    importIIIF( url, parentResourceID, onError, onSuccess ) {     
+        importIIIFManifest(url, onError, (xml,facs,metadata) => {
+            const { name, localID } = metadata
+            const uniqueID = localID && !this.idMap.get(localID) ? localID : this.idMap.getUniqueID(localID)  
+            const resourceEntry = {
+                id: uuidv4(),
+                name,
+                localID: uniqueID,
+                type: 'facs',
+                parentResource: parentResourceID
+            }
+    
+            this.addResource(resourceEntry, xml)
+            const parentLocalID = (parentResourceID) ? this.getResourceEntry(parentResourceID)?.localID : null
+            this.idMap.mapResource( 'facs', resourceEntry.localID, parentLocalID, facs ) 
+            this.idMap.save()
+            onSuccess()
+        })    
+    }
+
+    newResource( name, localID, type, parentResourceID ) {
         const resourceEntry = {
             id: uuidv4(),
             localID,
@@ -143,38 +163,25 @@ export default class FairCopyProject {
             parentResource: parentResourceID
         }
 
-        if( type === 'facs' && url && url.length > 0 ) {
-            importIIIFManifest(url, onError, (xml,facs) => {
-                if( xml ) {
-                    this.addResource(resourceEntry, xml)
-                    this.idMap.mapFacsIDs(localID,facs)
-                    this.idMap.save()
-                    onSuccess()
-                }
-            })    
-        } else {
-            if( type === 'teidoc' ) {
-                const headerEntry = {
-                    id: uuidv4(),
-                    localID: 'header',
-                    name: 'TEI Header', 
-                    type: 'header',
-                    parentResource: resourceEntry.id
-                }    
-                this.addResource(resourceEntry, "" )
-                this.addResource(headerEntry, teiHeaderTemplate(name))
-
-            } else if( type === 'text' ) {
-                this.addResource(resourceEntry, teiTextTemplate)
-            } else {
-                // add a blank facs 
-                const facs = { surfaces: [] }
-                const xml = facsTemplate(facs)
-                this.addResource(resourceEntry,xml)
+        if( type === 'teidoc' ) {
+            const headerEntry = {
+                id: uuidv4(),
+                localID: 'header',
+                name: 'TEI Header', 
+                type: 'header',
+                parentResource: resourceEntry.id
             }    
+            this.addResource(resourceEntry, "" )
+            this.addResource(headerEntry, teiHeaderTemplate(name))
 
-            onSuccess()
-        }
+        } else if( type === 'text' ) {
+            this.addResource(resourceEntry, teiTextTemplate)
+        } else {
+            // add a blank facs 
+            const facs = { surfaces: [] }
+            const xml = facsTemplate(facs)
+            this.addResource(resourceEntry,xml)
+        }    
     }
 
     removeResources( resourceIDs ) {
