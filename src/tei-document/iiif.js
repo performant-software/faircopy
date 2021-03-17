@@ -9,11 +9,11 @@ export function importIIIFManifest( manifestURL, onError, onSuccess ) {
                 const facsXML = facsimileToTEI(facsData)
                 onSuccess(facsXML,facsData,metadata)
             } catch(error) {
-                onError(`Unable to parse IIIF manifest ${manifestURL} :\n'${error}`)      
+                onError(`Unable to parse IIIF manifest: '${error}`)      
             }
         },
         (error) => {
-            onError(`Unable to load IIIF manifest ${manifestURL} :\n'${error}`)
+            onError(`Unable to load IIIF manifest.`)
         }
     );
 }

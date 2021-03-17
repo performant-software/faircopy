@@ -6,11 +6,11 @@ import { validateURL } from '../tei-document/attribute-validators'
 
 export default class IIIFImportDialog extends Component {
 
-    constructor(props) {
+    constructor() {
         super()
-        const { resourceEntry } = props
-        this.initialState = resourceEntry ? { ...resourceEntry, validationErrors: {} } : {
+        this.initialState = {
             url: "",
+            loading: false,
             validationErrors: {}
         }
         this.state = this.initialState
@@ -21,10 +21,11 @@ export default class IIIFImportDialog extends Component {
 
         const onError = (errorMsg) => {
             const nextErrors = { url: errorMsg }            
-            this.setState({ ...this.state, validationErrors: nextErrors })
+            this.setState({ ...this.state, loading: false, validationErrors: nextErrors })
         }
 
         const onSuccess = () => {
+            this.setState(this.initialState)
             onClose()
         }
 
@@ -56,7 +57,7 @@ export default class IIIFImportDialog extends Component {
             if( hasErrors ) {
                 this.setState({ ...this.state, validationErrors: nextErrors })
             } else {
-                this.setState(this.initialState)
+                this.setState({ ...this.state, loading: true })
                 this.importManifest(url)    
             }
         }
@@ -66,7 +67,7 @@ export default class IIIFImportDialog extends Component {
             onClose()
         }
 
-        const { url, validationErrors } = this.state
+        const { url, loading, validationErrors } = this.state
 
         return (
             <Dialog
@@ -78,19 +79,24 @@ export default class IIIFImportDialog extends Component {
             >
                 <DialogTitle id="edit-resource-title">Import IIIF Manifest</DialogTitle>
                 <DialogContent>
-                    <TextField 
-                        name="url"
-                        className="name-field"
-                        value={url}
-                        onChange={onChange}
-                        error={validationErrors['url'] !== undefined }
-                        helperText={validationErrors['url']}
+                    { loading ? 
+                        <div>
+                            <img className='spinner' alt='loading images' src='img/spinner.gif'></img>
+                        </div> : 
+                        <TextField 
+                            name="url"
+                            className="name-field"
+                            value={url}
+                            onChange={onChange}
+                            error={validationErrors['url'] !== undefined }
+                            helperText={validationErrors['url']}
                         label="IIIF Manifest URL" 
-                    />
+                        />
+                    }
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>
-                    <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
+                    <Button disabled={loading} variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>
+                    <Button disabled={loading} variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )
