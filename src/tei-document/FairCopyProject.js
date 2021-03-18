@@ -135,7 +135,8 @@ export default class FairCopyProject {
     }
 
     importIIIF( url, parentResourceID, onError, onSuccess ) {     
-        const nextSurfaceID = parentResourceID ? this.idMap.nextSurfaceID(parentResourceID) : 0
+        const parentEntry = this.getResourceEntry(parentResourceID)
+        const nextSurfaceID = parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0
 
         importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
             const { name, localID } = metadata
@@ -186,12 +187,12 @@ export default class FairCopyProject {
         this.idMap.save()
     }
 
-    removeResources( resourceIDs ) {
+    removeResources( resourceIDs, save=true ) {
         for( const resourceID of resourceIDs ) {
             const {localID,parentResource,resources} = this.resources[resourceID]
 
             // if there are child resources, remove them too
-            if( resources ) this.removeResources( resources )
+            if( resources ) this.removeResources( resources, false )
             delete this.resources[resourceID]
 
             // if this is a child resource, remove it from parent
@@ -205,7 +206,7 @@ export default class FairCopyProject {
             }
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
-        this.idMap.save()
+        if(save) this.idMap.save()
     }
 
     openResource( resourceID ) {
