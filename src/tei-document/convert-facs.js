@@ -3,18 +3,18 @@ import { getLocalString } from './iiif'
 import { sanitizeID } from './attribute-validators'
 
 // Supports IIIF v2 and v3
-export function iiifToFacsimile( manifestData ) {
+export function iiifToFacsimile( manifestData, nextSurfaceID ) {
     const context = manifestData["@context"]
     if( context.includes("http://iiif.io/api/presentation/3/context.json") ) {
-        return iiifToFacsimile3( manifestData )
+        return iiifToFacsimile3( manifestData, nextSurfaceID )
     }
     if( context.includes("http://iiif.io/api/presentation/2/context.json") ) {
-        return iiifToFacsimile2( manifestData )
+        return iiifToFacsimile2( manifestData, nextSurfaceID )
     }
     throw new Error("Expected IIIF Presentation API context 2 or 3.")
 }
 
-function iiifToFacsimile3( manifestData ) {
+function iiifToFacsimile3( manifestData, nextSurfaceID ) {
     if( manifestData.type !== "Manifest" ) throw new Error("Expected a manifest as the root object.")
 
     const canvases = manifestData.items
@@ -23,7 +23,7 @@ function iiifToFacsimile3( manifestData ) {
 
     const surfaceIDs = []
     const surfaces = []
-    let n=1
+    let n=nextSurfaceID
     for( const canvas of canvases ) {
         if( canvas.type !== "Canvas" ) throw new Error("Expected a Canvas item.")
         const canvasURI = canvas.id
@@ -79,7 +79,7 @@ function iiifToFacsimile3( manifestData ) {
     }
 }
 
-function iiifToFacsimile2( manifestData ) {
+function iiifToFacsimile2( manifestData, nextSurfaceID ) {
     const { sequences } = manifestData
     const manifestID = val('id', manifestData)
     const manifestLabel = str( manifestData.label )
@@ -89,7 +89,7 @@ function iiifToFacsimile2( manifestData ) {
 
     const surfaceIDs = []
     const surfaces = []
-    let n=1
+    let n=nextSurfaceID
     for( const canvas of canvases ) {
         const { images, width, height } = canvas
         const canvasURI = val('id', canvas)

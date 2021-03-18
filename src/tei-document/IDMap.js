@@ -137,6 +137,34 @@ export default class IDMap {
         }
     }
 
+    nextSurfaceID( localID ) {
+        const resourceMap = this.idMap[localID]
+
+        let highestID = -1
+        if( resourceMap.__multiPart__ ) {
+            for( const key of Object.key(resourceMap) ) {
+                if( key === '__multiPart__' ) continue
+                const childLastID = this.getHighestFacsID(resourceMap[key])
+                highestID = childLastID > highestID ? childLastID : highestID
+            }
+        } else {
+            highestID = this.getHighestFacsID(resourceMap)
+        }
+        return highestID + 1
+    }
+
+    getHighestFacsID( resourceMap ) {
+        let highestID = -1
+        for( const entryID of Object.keys(resourceMap) ) {
+            const entry = resourceMap[entryID]
+            if( entry.type === 'facs' ) {
+                const idNo = parseInt(entryID.slice(1))
+                if( idNo > highestID ) highestID = idNo    
+            }
+        }
+        return highestID
+    }
+
     changeID( oldID, newID, parentID ) {
         if( parentID ) {
             if( this.idMap[parentID][oldID] ) {

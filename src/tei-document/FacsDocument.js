@@ -63,17 +63,6 @@ export default class FacsDocument {
         this.loading = true
     }
 
-    nextSurfaceID() {
-        // scan for highest number
-        let highestID = -1
-        for( const surface of this.facs.surfaces ) {
-            const idNo = parseInt(surface.id.slice(1))
-            if( idNo > highestID ) highestID = idNo
-        }
-        const nextID = highestID + 1
-        return generateOrdinalID('f', nextID )
-    }
-
     // Next zone ID in format: <surfaceID>_z<next zone number>
     nextZoneID(surfaceID) {
         const surface = this.getSurface( this.getIndex(surfaceID) )
@@ -112,6 +101,11 @@ export default class FacsDocument {
     }
 
     addLocalImages( imagesData ) {
+        const { idMap } = this.imageViewContext
+        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
+        const parentEntry = this.imageViewContext.getParent(resourceEntry)
+        let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
+
         for( const imageData of imagesData ) {
             const { width, height, mimeType, path } = imageData
             const resourceEntryID = uuidv4()
@@ -122,7 +116,7 @@ export default class FacsDocument {
 
             // create a surface and add it to the document in the right location
             const surface = {
-                id: this.nextSurfaceID(),
+                id: generateOrdinalID('f', nextSurfaceID++ ),
                 type: 'local',
                 localLabels: { none: [label] },
                 resourceEntryID,

@@ -135,7 +135,9 @@ export default class FairCopyProject {
     }
 
     importIIIF( url, parentResourceID, onError, onSuccess ) {     
-        importIIIFManifest(url, onError, (xml,facs,metadata) => {
+        const nextSurfaceID = parentResourceID ? this.idMap.nextSurfaceID(parentResourceID) : 0
+
+        importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
             const { name, localID } = metadata
             const uniqueID = localID && !this.idMap.get(localID) ? localID : this.idMap.getUniqueID(localID)  
             const resourceEntry = {
@@ -173,7 +175,6 @@ export default class FairCopyProject {
             }    
             this.addResource(resourceEntry, "" )
             this.addResource(headerEntry, teiHeaderTemplate(name))
-
         } else if( type === 'text' ) {
             this.addResource(resourceEntry, teiTextTemplate)
         } else {
@@ -182,6 +183,7 @@ export default class FairCopyProject {
             const xml = facsTemplate(facs)
             this.addResource(resourceEntry,xml)
         }    
+        this.idMap.save()
     }
 
     removeResources( resourceIDs ) {
@@ -281,11 +283,9 @@ export default class FairCopyProject {
             parent.resources.push(id)
             this.idMap.addResource(localID,parent.localID,false)
             this.updateResource( parent )    
-            this.idMap.save()
         } else {
             const multiPart = (type === 'teidoc')
             this.idMap.addResource(localID,null,multiPart)
-            this.idMap.save()
         }
 
         fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), content )
