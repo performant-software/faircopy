@@ -142,7 +142,7 @@ export default class IDMap {
 
         let highestID = -1
         if( resourceMap.__multiPart__ ) {
-            for( const key of Object.key(resourceMap) ) {
+            for( const key of Object.keys(resourceMap) ) {
                 if( key === '__multiPart__' ) continue
                 const childLastID = this.getHighestFacsID(resourceMap[key])
                 highestID = childLastID > highestID ? childLastID : highestID
