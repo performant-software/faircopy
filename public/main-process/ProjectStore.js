@@ -3,6 +3,8 @@ const fs = require('fs')
 const os = require('os')
 const debounce = require('debounce')
 const log = require('electron-log')
+const { IDMapAuthority } = require('./IDMapAuthority')
+const { v4: uuidv4 } = require('uuid');
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -83,6 +85,9 @@ class ProjectStore {
             return
         }
 
+        // id map authority tracks ids across processes
+        this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
+
         // temp folder for streaming zip data
         this.setupTempFolder()
 
@@ -118,10 +123,23 @@ class ProjectStore {
         }
     }
 
+    onIDMapUpdated(msgID, idMapData) {
+        this.idMapAuthority.update(idMapData)
+        this.sendIDMapUpdate(msgID)
+    }
+
+    sendIDMapUpdate(msgID) {
+        const messageID = msgID ? msgID : uuidv4()
+        const idMapData = JSON.stringify( this.idMapAuthority.idMapNext )
+        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
+    }
+
     saveResource(resourceID, resourceData) {
         const { resources } = this.manifestData
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
+            const idMap = this.idMapAuthority.commitResource(resourceID)
+            this.writeUTF8File(idMapEntryName, idMap)
             this.writeUTF8File(resourceID,resourceData)
             this.writeProjectArchive()
             return true
@@ -129,13 +147,17 @@ class ProjectStore {
         return false
     }
 
-    addResource( resourceEntryJSON, resourceData ) {
+    addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
         if( resourceEntry.type === 'image' )  {
             const imageBuffer = fs.readFileSync(resourceData)
             this.projectArchive.file(resourceEntry.id, imageBuffer)
         } else {
+            const resourceMap = JSON.parse(resourceMapJSON)
+            const idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
+            this.writeUTF8File(idMapEntryName, idMap)
+            this.sendIDMapUpdate()
             this.projectArchive.file(resourceEntry.id, resourceData)
         }
 
@@ -157,6 +179,10 @@ class ProjectStore {
             }
         }
 
+        const idMap = this.idMapAuthority.removeResource(resourceID)
+        this.writeUTF8File(idMapEntryName, idMap)
+        this.sendIDMapUpdate()
+
         delete this.manifestData.resources[resourceID] 
         this.projectArchive.remove(resourceID)
         log.info(`Removed resource from project: ${resourceID}`)
@@ -168,6 +194,11 @@ class ProjectStore {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         if( resources[resourceEntry.id] ) {
             this.manifestData.resources[resourceEntry.id] = resourceEntry
+            const currentLocalID = resources[resourceEntry.id].localID
+            if( resourceEntry.localID !== currentLocalID ) {
+                this.idMapAuthority.changeID( resourceEntry.localID, resourceEntry.id ) 
+                this.sendIDMapUpdate()
+            }
             this.saveManifest()
             return true
         }
@@ -183,11 +214,6 @@ class ProjectStore {
     saveFairCopyConfig( fairCopyConfig ) {
         this.migratedConfig = null
         this.writeUTF8File( configSettingsEntryName, fairCopyConfig)
-        this.writeProjectArchive()
-    }
-
-    saveIDMap( idMap ) {
-        this.writeUTF8File( idMapEntryName, idMap)
         this.writeProjectArchive()
     }
 

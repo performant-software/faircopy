@@ -112,6 +112,14 @@ export default class TEIDocument {
         return found
     }
 
+    setXMLID( xmlID, oldXMLID ) {
+        const { idMap } = this.fairCopyProject
+        const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
+        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+        idMap.set( idMap.getTextEntry(), xmlID, resourceEntry.localID, parentEntry?.localID )
+        if( oldXMLID ) idMap.unset( oldXMLID, resourceEntry.localID, parentEntry?.localID )
+    }
+
     finalizeEditorView(editorView) {
         const {teiSchema} = this.fairCopyProject
         this.editorView = editorView
@@ -208,7 +216,7 @@ export default class TEIDocument {
 
     save() {
         const editorState = this.editorView.state
-        const { teiSchema, idMap } = this.fairCopyProject
+        const { teiSchema } = this.fairCopyProject
         teiSchema.teiMode = true
 
         // take the body of the document from prosemirror and reunite it with 
@@ -230,11 +238,6 @@ export default class TEIDocument {
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.lastMessageID = messageID
-
-        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
-        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        idMap.mapResource( 'text', resourceEntry.localID, parentEntry?.localID, editorState.doc )
-        idMap.save()
 
         teiSchema.teiMode = false
         this.changedSinceLastSave = false

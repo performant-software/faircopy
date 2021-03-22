@@ -58,7 +58,7 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
-    ipcMain.on('addResource', (event, resourceEntry, resourceData) => { this.projectStore.addResource(resourceEntry,resourceData) })
+    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.projectStore.addResource(resourceEntry,resourceData,resourceMap) })
 
     ipcMain.on('removeResource', (event, resourceID) => { 
       this.projectStore.removeResource(resourceID) 
@@ -79,9 +79,8 @@ class FairCopyApplication {
         this.sendToAllWindows('resourceUpdated', update )
       }
     })
-    ipcMain.on('requestSaveIDMap', (event, msgID, idMap) => { 
-      this.projectStore.saveIDMap(idMap) 
-      this.sendToAllWindows('IDMapUpdated', { messageID: msgID, idMapData: idMap } )
+    ipcMain.on('updateIDMap', (event, msgID, idMap) => { 
+      this.projectStore.onIDMapUpdated(msgID, idMap)
     })
     ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
       const ok = this.projectStore.updateResource(resourceEntry) 

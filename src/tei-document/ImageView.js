@@ -60,13 +60,7 @@ export default class ImageView {
         return this.parentEntry
     }
 
-    updateResource( nextResourceEntry ) {
-        const currentLocalID = this.resourceEntry.localID 
-        const nextLocalID = nextResourceEntry.localID
-        if( currentLocalID !== nextLocalID ) {
-            this.idMap.changeID(currentLocalID,nextLocalID,this.parentEntry?.localID)
-            this.idMap.save()
-        }        
+    updateResource( nextResourceEntry ) {     
         this.resourceEntry = { id: this.resourceEntry.id, ...nextResourceEntry }
         const messageID = uuidv4()
         fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(this.resourceEntry) )

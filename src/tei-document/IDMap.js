@@ -37,14 +37,16 @@ export default class IDMap {
         this.idMap = JSON.parse(idMapData)
     }
 
-    mapResource( resourceType, localID, parentLocalID, content ) {
-        const resourceMap = (resourceType === 'facs') ? this.mapFacsIDs(content) : this.mapTextIDs(content)
+    mapResource( resourceType, content ) {
+        return (resourceType === 'facs') ? this.mapFacsIDs(content) : this.mapTextIDs(content)
+    }
 
-        if( parentLocalID ) {
-            this.idMap[parentLocalID][localID] = resourceMap
-        } else {
-            this.idMap[localID] = resourceMap
-        }
+    getTextEntry() {
+        return { type: 'text' }
+    }
+
+    getBlankResourceMap(multipart) {
+        return { __multiPart__: multipart }
     }
 
     mapTextIDs(doc) {        
@@ -66,7 +68,7 @@ export default class IDMap {
 
         const xmlIDMap = {}
         for( const id of xmlIDs ) {
-            xmlIDMap[id] = { type: 'text' }
+            xmlIDMap[id] = this.getTextEntry()
         }
 
         return xmlIDMap
@@ -86,26 +88,6 @@ export default class IDMap {
         }
 
         return facsIDMap
-    }
-
-    addResource( localID, parentID, multiPart ) {
-        if( parentID ) {
-            if( this.idMap[parentID][localID] ) return false;
-            this.idMap[parentID][localID] = {}
-            return true    
-        } else {
-            if( this.idMap[localID] ) return false;
-            this.idMap[localID] = { __multiPart__: multiPart }
-            return true    
-        }
-    }
-
-    removeResource( localID, parentID=null ) {
-        if( parentID ) {
-            delete this.idMap[parentID][localID]
-        } else {
-            delete this.idMap[localID]
-        }
     }
 
     get( uri, parent ) {
@@ -136,6 +118,28 @@ export default class IDMap {
             return null            
         }
     }
+    
+    set( value, xmlID, localID, parentID ) {
+        if( parentID ) {
+            this.idMap[parentID][localID][xmlID] = value
+        } else {
+            this.idMap[localID][xmlID] = value
+        }
+        const messageID = uuidv4()
+        fairCopy.services.ipcSend('updateIDMap', messageID, JSON.stringify(this.idMap))
+        this.lastMessageID = messageID
+    }
+
+    unset( xmlID, localID, parentID ) {
+        if( parentID ) {
+            delete this.idMap[parentID][localID][xmlID]
+        } else {
+            delete this.idMap[localID][xmlID]
+        }
+        const messageID = uuidv4()
+        fairCopy.services.ipcSend('updateIDMap', messageID, JSON.stringify(this.idMap))
+        this.lastMessageID = messageID
+    }
 
     nextSurfaceID( localID ) {
         const resourceMap = this.idMap[localID]
@@ -163,20 +167,6 @@ export default class IDMap {
             }
         }
         return highestID
-    }
-
-    changeID( oldID, newID, parentID ) {
-        if( parentID ) {
-            if( this.idMap[parentID][oldID] ) {
-                this.idMap[parentID][newID] = this.idMap[parentID][oldID]
-                delete this.idMap[parentID][oldID]
-            }    
-        } else {
-            if( this.idMap[oldID] ) {
-                this.idMap[newID] = this.idMap[oldID]
-                delete this.idMap[oldID]
-            }    
-        }
     }
 
     getRelativeURIList( localResourceID, parentID ) {
@@ -229,12 +219,5 @@ export default class IDMap {
 
     getUniqueID(baseID) {
         return `${baseID}-${Date.now()}`
-    }
-
-    save() {        
-        const messageID = uuidv4()
-        fairCopy.services.ipcSend('requestSaveIDMap', messageID, JSON.stringify(this.idMap))
-        this.lastMessageID = messageID
-        console.log(JSON.stringify(this.idMap))
     }
 }
