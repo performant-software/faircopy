@@ -190,7 +190,7 @@ export default class FairCopyProject {
             if( parentResource ) {
                 const parent = this.resources[parentResource]
                 parent.resources = parent.resources.filter(r => r !== resourceID)
-                this.updateResource( parentResource )        
+                this.updateResource( parent )        
             } 
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
