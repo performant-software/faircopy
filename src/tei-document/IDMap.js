@@ -136,6 +136,14 @@ export default class IDMap {
         }
     }
 
+    setMap( resourceMap, localID, parentID ) {
+        if( parentID ) {
+            this.idMap[parentID][localID] = resourceMap
+        } else {
+            this.idMap[localID] = resourceMap
+        }
+    }
+
     update() {
         const messageID = uuidv4()
         fairCopy.services.ipcSend('updateIDMap', messageID, JSON.stringify(this.idMap))

@@ -185,17 +185,19 @@ export default class FacsDocument {
     }
 
     save() {
+        // Update the ID Map 
+        const { idMap } = this.imageViewContext
+        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
+        const parentEntry = this.imageViewContext.getParent(resourceEntry)
+        const resourceMap = idMap.mapResource( 'facs', resourceEntry.localID, parentEntry?.localID, this.facs )
+        idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
+        idMap.update()
+
+        // save the facs
         const fileContents = facsimileToTEI(this.facs)
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.changedSinceLastSave = false
         this.lastMessageID = messageID
-
-        // Update the ID Map 
-        const { idMap } = this.imageViewContext
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        const parentEntry = this.imageViewContext.getParent(resourceEntry)
-        idMap.mapResource( 'facs', resourceEntry.localID, parentEntry?.localID, this.facs )
-        idMap.save()
     }
 }
