@@ -143,7 +143,7 @@ export default class AlertDialog extends Component {
 
         const onCloseWithoutSave = () => {
             const { resource, resourceIDs } = alertOptions
-            resource.changedSinceLastSave = false       
+            resource.abandonChanges()
             closeResources(resourceIDs,exitOnClose)
         }
 

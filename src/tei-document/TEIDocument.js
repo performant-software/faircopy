@@ -217,6 +217,11 @@ export default class TEIDocument {
         this.subDocs[subDocID] = JSON.stringify(subDoc.toJSON());
     }
 
+    abandonChanges() {
+        this.changedSinceLastSave = false
+        fairCopy.services.ipcSend('abandonResourceMap', this.resourceID)
+    }
+
     save() {
         const editorState = this.editorView.state
         const { teiSchema } = this.fairCopyProject

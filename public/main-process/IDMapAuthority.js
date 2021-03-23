@@ -18,11 +18,16 @@ class IDMapAuthority {
         this.idMapNext = JSON.parse(idMapData)
     }
 
-    // TODO restore the specified resource to its previously saved state
-    rollbackResource( resourceID ) {
-        // load previous state
-        // update with previous state
-        // this.updateIDMap(idMap,false)
+    // restore the specified resource to its previously saved state
+    abandonResourceMap( resourceID ) {
+        const { localID, parentID } = this.resourceIndex[resourceID]
+
+        // discard draft resource map and restore authoritative version
+        if( parentID ) {
+            this.idMapNext[parentID][localID] = this.idMap[parentID][localID]
+        } else {
+            this.idMapNext[localID] = this.idMap[localID]
+        }
     }
 
     addResource( resourceEntry, resourceMap ) {

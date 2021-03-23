@@ -179,6 +179,11 @@ export default class FacsDocument {
         this.loading = false
     }
 
+    abandonChanges() {
+        this.changedSinceLastSave = false
+        fairCopy.services.ipcSend('abandonResourceMap', this.resourceID)
+    }
+
     save() {
         const fileContents = facsimileToTEI(this.facs)
         const messageID = uuidv4()

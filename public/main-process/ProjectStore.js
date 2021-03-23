@@ -134,6 +134,11 @@ class ProjectStore {
         this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
     }
 
+    abandonResourceMap(resourceID) {
+        this.idMapAuthority.abandonResourceMap(resourceID)
+        this.sendIDMapUpdate()
+    }
+
     saveResource(resourceID, resourceData) {
         const { resources } = this.manifestData
         const resourceEntry = resources[resourceID]

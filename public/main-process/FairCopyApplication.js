@@ -82,6 +82,9 @@ class FairCopyApplication {
     ipcMain.on('updateIDMap', (event, msgID, idMap) => { 
       this.projectStore.onIDMapUpdated(msgID, idMap)
     })
+    ipcMain.on('abandonResourceMap', (event, resourceID) => { 
+      this.projectStore.abandonResourceMap(resourceID)
+    })
     ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
       const ok = this.projectStore.updateResource(resourceEntry) 
       if( ok ) {
