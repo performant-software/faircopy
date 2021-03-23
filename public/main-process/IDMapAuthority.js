@@ -8,14 +8,14 @@ class IDMapAuthority {
         for( const resourceID of Object.keys(resources) ) {
             const resourceEntry = resources[resourceID]
             const parentEntry = resources[resourceEntry.parentResource]
-            this.resourceIndex[resourceID] = { localID: resources.localID, parentID: parentEntry?.localID }
+            this.resourceIndex[resourceID] = { localID: resourceEntry.localID, parentID: parentEntry?.localID }
         }
     }
 
     // update the resource map and broadcast the updated idMap, including any errors?
     update( idMapData ) {       
-        this.idMapNext = JSON.parse(idMapData)
         console.log(idMapData)
+        this.idMapNext = JSON.parse(idMapData)
     }
 
     // TODO restore the specified resource to its previously saved state
@@ -47,11 +47,13 @@ class IDMapAuthority {
 
         if( parentID ) {
             delete this.idMapNext[parentID][localID]
+            delete this.idMap[parentID][localID]
         } else {
             delete this.idMapNext[localID]
+            delete this.idMap[localID]
         }
 
-        return this.commitResource(resourceID)
+        return JSON.stringify(this.idMap)
     }
 
     changeID( newID, resourceID ) {

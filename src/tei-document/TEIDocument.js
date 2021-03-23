@@ -116,8 +116,11 @@ export default class TEIDocument {
         const { idMap } = this.fairCopyProject
         const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
         const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        idMap.set( idMap.getTextEntry(), xmlID, resourceEntry.localID, parentEntry?.localID )
+        if( xmlID && xmlID.length > 0 ) {
+            idMap.set( idMap.getTextEntry(), xmlID, resourceEntry.localID, parentEntry?.localID )
+        } 
         if( oldXMLID ) idMap.unset( oldXMLID, resourceEntry.localID, parentEntry?.localID )
+        idMap.update()
     }
 
     finalizeEditorView(editorView) {

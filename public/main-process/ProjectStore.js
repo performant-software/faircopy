@@ -193,8 +193,8 @@ class ProjectStore {
         const { resources } = this.manifestData
         const resourceEntry = JSON.parse(resourceEntryJSON)
         if( resources[resourceEntry.id] ) {
-            this.manifestData.resources[resourceEntry.id] = resourceEntry
             const currentLocalID = resources[resourceEntry.id].localID
+            this.manifestData.resources[resourceEntry.id] = resourceEntry
             if( resourceEntry.localID !== currentLocalID ) {
                 this.idMapAuthority.changeID( resourceEntry.localID, resourceEntry.id ) 
                 this.sendIDMapUpdate()
