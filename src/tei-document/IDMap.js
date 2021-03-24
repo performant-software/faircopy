@@ -93,7 +93,7 @@ export default class IDMap {
 
     get( uri, parent ) {
         try {
-            let rootPath = parent ? `${parent}/` : ''
+            let rootPath = parent ? parent : ''
             const url = new URL(uri, `https://uri.faircopy.com/${rootPath}`)
             if( url.hostname === 'uri.faircopy.com') {
                 const localID = url.pathname.slice(1) // slice off /

@@ -184,9 +184,9 @@ export default class TEIDocument {
         return this.noteEditorView ? this.noteEditorView : this.editorView
     }
 
-    getParentID() {
-        const parentEntry = this.fairCopyProject.getParent(this.resourceID)
-        return parentEntry?.id
+    getParent() {
+        const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
+        return this.fairCopyProject.getParent(resourceEntry)
     }
 
     load( text ) {

@@ -94,10 +94,10 @@ export default class ImageWindow extends Component {
     render() {
         const { imageView } = this.props
 
-        if(!imageView) return null
-
+        if(!imageView || imageView.facsDocument.loading ) return null
         const { facsDocument, resourceEntry, parentEntry, idMap, startingID } = imageView
         const { editDialogMode, addImagesMode, popupMenuAnchorEl, popupMenuOptions, surfaceInfo, editSurfaceInfoMode } = this.state
+
         const startIndex = facsDocument.getIndex(startingID)
 
         return (

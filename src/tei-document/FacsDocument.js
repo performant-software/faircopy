@@ -52,10 +52,9 @@ export default class FacsDocument {
         return startIndex === -1 ? 0 : startIndex
     }
 
-    getParentID() {
+    getParent() {
         const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        const parentEntry = this.imageViewContext.getParent(resourceEntry)
-        return parentEntry?.id
+        return this.imageViewContext.getParent(resourceEntry)
     }
 
     requestResource( resourceID ) {

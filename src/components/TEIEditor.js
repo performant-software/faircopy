@@ -230,7 +230,10 @@ export default class TEIEditor extends Component {
     }
 
     broadcastZoneLinks( selectedElements ) {
-        const {teiSchema, idMap} = this.props.teiDocument.fairCopyProject
+        const {teiDocument} = this.props
+        const {teiSchema, idMap} = teiDocument.fairCopyProject
+        const parentEntry = teiDocument.getParent()
+
         const attrSpecs = teiSchema.attrs
 
         const selectedZones = []
@@ -244,7 +247,7 @@ export default class TEIEditor extends Component {
                     if( uris ) {
                         for( const uri of uris ) {
                             // gather any zone uris
-                            const entry = idMap.get( uri )
+                            const entry = idMap.get( uri, parentEntry?.localID )
                             if( entry && entry.type === 'zone' ) {
                                 selectedZones.push(uri)
                             }

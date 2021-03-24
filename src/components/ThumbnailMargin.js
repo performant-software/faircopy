@@ -23,8 +23,8 @@ export default class ThumbnailMargin extends Component {
                 const thumbResource = thumbResources[0]
                 if( thumbResource ) {
                     const { thumbnailURL, resourceID, xmlID } = thumbResource
-                    const parentID = teiDocument.getParentID()
-                    const imageViewData = { resourceID, xmlID, parentID }
+                    const parentEntry = teiDocument.getParent()
+                    const imageViewData = { resourceID, xmlID, parentID: parentEntry?.id }
                     thumbnails.push(
                         <img 
                             onClick={() => { fairCopy.services.ipcSend('requestImageView', imageViewData) }} 
@@ -47,7 +47,8 @@ export default class ThumbnailMargin extends Component {
         const { teiDocument } = this.props
         const { fairCopyProject } = teiDocument
         const { teiSchema, idMap } = fairCopyProject
-
+        const parentEntry = teiDocument.getParent()
+        
         const uris = []
         const scanAttributes = (node) => {
             const element = teiSchema.elements[node.type.name]
@@ -75,8 +76,8 @@ export default class ThumbnailMargin extends Component {
         // obtain the resource data for thumbnails
         const thumbResources = []
         for( const uri of uris ) {
-            const resource = idMap.get(uri)
-            if( resource && resource.type === 'facs' ) {
+            const resource = idMap.get(uri, parentEntry?.localID)
+            if( resource && resource.type === 'facs' ) {                
                 const resourceID = fairCopyProject.getResourceID( resource.localID )
                 thumbResources.push({ ...resource, resourceID })
             }
