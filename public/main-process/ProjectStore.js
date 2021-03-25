@@ -98,14 +98,14 @@ class ProjectStore {
     async openImageView(imageView,imageViewInfo) {
         const { resourceID, xmlID, parentID } = imageViewInfo
         const { baseDir } = this.fairCopyApplication
-        const idMap = await this.readUTF8File(idMapEntryName)
+        const { idMapNext } = this.idMapAuthority
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
 
         const resourceEntry = this.manifestData.resources[resourceID]
         const parentEntry = this.manifestData.resources[parentID]
         if( resourceEntry ) {
             const resource = await this.readUTF8File(resourceID)
-            const imageViewData = { resourceEntry, parentEntry, xmlID, resource, teiSchema, idMap }
+            const imageViewData = { resourceEntry, parentEntry, xmlID, resource, teiSchema, idMap: JSON.stringify(idMapNext) }
             imageView.webContents.send('imageViewOpened', imageViewData )    
         }
     }
