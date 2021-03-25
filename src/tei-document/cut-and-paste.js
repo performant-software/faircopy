@@ -73,7 +73,9 @@ export function transformPastedHandler(teiSchema,teiDocument) {
             const noteEl = pastedNoteBuffer.pop()
             teiDocument.parseSubDocument(noteEl,noteEl.nodeName,noteEl.getAttribute('__id__'))
         }
-        
+        // rescan the idMap to pick up any changes to xml IDs
+        teiDocument.idScanNeeded = true
+
         // done parsing, disassociate this teidocument from schema parser
         teiSchema.teiDocuments.pop()
         return slice

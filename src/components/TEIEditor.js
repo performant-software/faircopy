@@ -110,6 +110,7 @@ export default class TEIEditor extends Component {
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const selectedElements = this.getSelectedElements()
             this.broadcastZoneLinks(selectedElements)
+            if( teiDocument.idScanNeeded ) teiDocument.scanIDMap()
 
             if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
                 setTimeout( () => {

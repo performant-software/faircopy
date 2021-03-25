@@ -34,7 +34,6 @@ export default class IDMap {
     }
 
     loadIDMap(idMapData) {
-        console.log(idMapData)
         this.idMap = JSON.parse(idMapData)
     }
 
@@ -148,6 +147,7 @@ export default class IDMap {
         const messageID = uuidv4()
         fairCopy.services.ipcSend('updateIDMap', messageID, JSON.stringify(this.idMap))
         this.lastMessageID = messageID
+        console.log(JSON.stringify(this.idMap))
     }
 
     nextSurfaceID( localID ) {

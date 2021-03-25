@@ -36,6 +36,7 @@ export default class TEIDocument {
             this.initialState = this.editorInitialState()
         }
         this.changedSinceLastSave = false
+        this.idScanNeeded = false
     }
 
     editorInitialState() {
@@ -121,6 +122,17 @@ export default class TEIDocument {
         } 
         if( oldXMLID ) idMap.unset( oldXMLID, resourceEntry.localID, parentEntry?.localID )
         idMap.update()
+    }
+
+    scanIDMap() {
+        const { idMap } = this.fairCopyProject
+        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
+        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+        const { doc } = this.editorView.state
+        const resourceMap = idMap.mapResource( 'text', doc )
+        idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
+        idMap.update()
+        this.idScanNeeded = false
     }
 
     finalizeEditorView(editorView) {

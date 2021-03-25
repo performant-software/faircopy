@@ -188,7 +188,7 @@ export default class FacsDocument {
         const { idMap } = this.imageViewContext
         const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
         const parentEntry = this.imageViewContext.getParent(resourceEntry)
-        const resourceMap = idMap.mapResource( 'facs', resourceEntry.localID, parentEntry?.localID, this.facs )
+        const resourceMap = idMap.mapResource( 'facs', this.facs )
         idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
         idMap.update()
 
