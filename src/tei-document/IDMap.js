@@ -104,7 +104,7 @@ export default class IDMap {
                     if( resourceMap.__multiPart__ ) {
                         for( const childID of Object.keys(resourceMap)) {
                             if( resourceMap[childID][xmlID] ) {
-                                return { localID, xmlID, ...resourceMap[childID][xmlID] }
+                                return { localID: childID, xmlID, ...resourceMap[childID][xmlID] }
                             }
                         }
                     } else {
