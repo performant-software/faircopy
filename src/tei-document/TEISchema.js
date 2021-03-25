@@ -164,7 +164,7 @@ export default class TEISchema {
                     attrs = this.filterOutErrors(attrs)
                     return [name,attrs,0]
                 } else {
-                    const displayAttrs = { ...el.attr, phraseLvl }
+                    const displayAttrs = { ...el.attrs, phraseLvl }
                     return [`tei-${name}`,displayAttrs,0]
                 }
             } 
