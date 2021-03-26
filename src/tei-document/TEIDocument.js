@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
 import {parseText, serializeText, htmlToXML} from "./xml"
+import {prepareDoc} from "./preprocess"
 
 const fairCopy = window.fairCopy
 
@@ -136,9 +137,10 @@ export default class TEIDocument {
     }
 
     finalizeEditorView(editorView) {
-        const {teiSchema} = this.fairCopyProject
         this.editorView = editorView
-        teiSchema.addTextNodes(editorView)
+        const { state, dispatch } = editorView
+        const { teiSchema } = this.fairCopyProject
+        prepareDoc(state, teiSchema, dispatch)
         this.changedSinceLastSave = false
     }
 

@@ -1,6 +1,5 @@
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
-import { NodeRange } from 'prosemirror-model'
 
 export default class TEISchema {
 
@@ -30,24 +29,6 @@ export default class TEISchema {
                 this.docNodeParsers[asideName] = PMDOMParser.fromSchema(this.docNodeSchemas[asideName])    
             }
         }
-    }
-
-    addTextNodes(editorView) {
-        const { state } = editorView
-        const { tr, doc, schema } = state
-        const textNodeType = schema.nodes['textNode'] 
-
-        doc.descendants((node,pos) => {
-            const contentExp = node.type.spec.content
-            // if an element could have a textnode, but is instead empty, add a textnode to it
-            if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
-                const $start = tr.doc.resolve(tr.mapping.map(pos+1))
-                const nodeRange = new NodeRange($start,$start,$start.depth)
-                tr.wrap(nodeRange, [{type: textNodeType}])
-            }
-            return true
-        })
-        editorView.dispatch(tr)
     }
 
     parseSchemaConfig(json) {
