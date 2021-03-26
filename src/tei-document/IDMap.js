@@ -42,9 +42,9 @@ export default class IDMap {
     }
 
     getTextEntry() {
-        return { type: 'text' }
+        return { type: 'text', useCount: 1 }
     }
-
+    
     getBlankResourceMap(multipart) {
         return { __multiPart__: multipart }
     }
@@ -68,7 +68,11 @@ export default class IDMap {
 
         const xmlIDMap = {}
         for( const id of xmlIDs ) {
-            xmlIDMap[id] = this.getTextEntry()
+            if( xmlIDMap[id] && xmlIDMap[id].useCount ) {
+                xmlIDMap[id].useCount++
+            } else {
+                xmlIDMap[id] = this.getTextEntry()
+            }
         }
 
         return xmlIDMap

@@ -87,7 +87,9 @@ export default class EditorGutter extends Component {
                     const endPosSamplePoint = (endPos >= 3) ? endPos-3 : endPos // trying the inside of text, if it exists
                     let bottom = editorView.coordsAtPos(endPosSamplePoint).bottom - gutterTop + scrollTop
                     if( top === bottom ) bottom = top + 30
-                    const style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
+                    let style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
+                    if( node.attrs['__error__'] ) style = style.concat(' error')
+
                     // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)
                     gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column,style] )
                 } else {

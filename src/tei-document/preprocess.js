@@ -1,16 +1,20 @@
 import { NodeRange } from 'prosemirror-model'
 
-import { tokenValidator, teiDataWordValidator, uriValidator } from './attribute-validators'
+import { tokenValidator, teiDataWordValidator, uriValidator, idValidator } from './attribute-validators'
 import { changeAttribute } from "../tei-document/commands"
 
 // Ammends the document with run time only elements such as text node and error flags
-export function prepareDoc(editorState, teiSchema, dispatch) {
+export function prepareDoc(teiDocument) {
+    const parentEntry = teiDocument.getParent()
+    const parentLocalID = parentEntry?.localID
+    const { teiSchema, idMap } = teiDocument.fairCopyProject
+    const { state: editorState, dispatch } = teiDocument.editorView
     const { tr, doc, schema } = editorState
     const textNodeType = schema.nodes['textNode'] 
 
     doc.descendants((node,pos) => {
         addTextNode(node,pos,tr,textNodeType)
-        markAttrErrors(node,pos,tr,teiSchema)
+        markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema)
         return true
     })
     dispatch(tr)
@@ -27,15 +31,15 @@ function addTextNode(node,pos,tr,textNodeType) {
 }
 
 // validate all attrs and mark any errors.
-function markAttrErrors(node, pos, tr, teiSchema) {
+function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
     const attrSpecs = teiSchema.attrs
     const $anchor = tr.doc.resolve(tr.mapping.map(pos))
 
-    if( scanAttrs(node.attrs,attrSpecs) ) {
+    if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) ) {
         changeAttribute( node, '__error__', true, $anchor, tr )
     } else {
         for( const mark of node.marks ) {
-            if( scanAttrs(mark.attrs,attrSpecs) ) {
+            if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) ) {
                 changeAttribute( mark, '__error__', true, $anchor, tr )
                 return
             }
@@ -43,20 +47,31 @@ function markAttrErrors(node, pos, tr, teiSchema) {
     }
 }
 
-function scanAttrs(attrs, attrSpecs) {
+function scanAttrs(attrs, attrSpecs, parentLocalID, idMap) {
     for( const key of Object.keys(attrs) ) {        
         const attrSpec = attrSpecs[key]
         const value = attrs[key]
         if( value && attrSpec ) {
-            const validState = validateAttribute(value,attrSpec)
+            const validState = validateAttribute(value,parentLocalID,idMap,attrSpec)
             if( validState.error ) return true
         }
     }
     return false
 }
 
-function validateAttribute(value,attrSpec) {
+function validateAttribute(value,parentLocalID,idMap,attrSpec) {
     const { dataType, minOccurs, maxOccurs } = attrSpec
+
+    if( dataType === 'ID' ) {
+        const validState = idValidator( value ) 
+        if( !validState.error ) {
+            const entry = idMap.get(value,parentLocalID) 
+            if( entry && entry.useCount > 1 ) {
+                return { error: true, errorMessage: 'ID must be unique to the document.'}
+            }
+        }
+        return validState
+    }
 
     if( dataType === 'token') {
         return tokenValidator(value)
@@ -65,6 +80,7 @@ function validateAttribute(value,attrSpec) {
         return teiDataWordValidator(value, minOccurs, maxOccurs)
     }
     if( dataType === 'teidata.pointer' ) {
+        // TODO need to pass in ID Map here
         return validateTEIPointerArray(value)
     }
 

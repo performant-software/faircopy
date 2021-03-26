@@ -22,6 +22,10 @@
     background: #D4C3FC;
 }
 
+.EditorGutter .error {
+    border: 1px solid red;
+}
+
 .EditorGutter .marker.highlighted {
     background: yellow;
 }

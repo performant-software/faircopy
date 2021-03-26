@@ -138,9 +138,7 @@ export default class TEIDocument {
 
     finalizeEditorView(editorView) {
         this.editorView = editorView
-        const { state, dispatch } = editorView
-        const { teiSchema } = this.fairCopyProject
-        prepareDoc(state, teiSchema, dispatch)
+        prepareDoc(this)
         this.changedSinceLastSave = false
     }
 

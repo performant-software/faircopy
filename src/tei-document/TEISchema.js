@@ -221,7 +221,7 @@ export default class TEISchema {
         for( const attr of validAttrs ) {
             attrs[attr] = { default: '' }
         }
-        attrs['__error__'] = { default: 'false' }
+        attrs['__error__'] = { default: false }
         return attrs
     }
 
