@@ -1,7 +1,7 @@
 import { NodeRange } from 'prosemirror-model'
 
 import { tokenValidator, teiDataWordValidator, uriValidator, idValidator } from './attribute-validators'
-import { changeAttribute } from "../tei-document/commands"
+import { changeAttributes } from "../tei-document/commands"
 
 // Ammends the document with run time only elements such as text node and error flags
 export function prepareDoc(teiDocument) {
@@ -36,11 +36,13 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
     const $anchor = tr.doc.resolve(tr.mapping.map(pos))
 
     if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) ) {
-        changeAttribute( node, '__error__', true, $anchor, tr )
+        const nextAttrs = { ...node.attrs, '__error__': true }
+        changeAttributes( node, nextAttrs, $anchor, tr )
     } else {
         for( const mark of node.marks ) {
             if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) ) {
-                changeAttribute( mark, '__error__', true, $anchor, tr )
+                const nextAttrs = { ...mark.attrs, '__error__': true }
+                changeAttributes( mark, nextAttrs, $anchor, tr )
                 return
             }
         }

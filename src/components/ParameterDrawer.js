@@ -7,7 +7,7 @@ import {Node} from 'prosemirror-model'
 
 import AttributeDialog from './AttributeDialog'
 import VocabDialog from './VocabDialog'
-import { changeAttribute } from "../tei-document/commands"
+import { changeAttributes } from "../tei-document/commands"
 import { getHighlightColor } from "../tei-document/highlighter"
 
 import TokenField from './attribute-fields/TokenField'
@@ -65,8 +65,9 @@ export default class ParameterDrawer extends Component {
 
             // if there are any errors for this element, mark it in the editor
             const elementError = ( nextErrorStates[elementName] && nextErrorStates[elementName].length > 0 )
-            const nextElement = changeAttribute( element, '__error__', elementError, $anchor, tr )                
-            changeAttribute( nextElement, attributeKey, value, $anchor, tr )
+            const newAttrs = { ...element.attrs, '__error__': elementError }
+            newAttrs[attributeKey] = value
+            changeAttributes( element, newAttrs, $anchor, tr )
             editorView.dispatch(tr)
 
             // update ID Map with new XML ID

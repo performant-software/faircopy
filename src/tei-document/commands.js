@@ -204,9 +204,7 @@ export function createFragment( from, to, doc, schema ) {
     return Fragment.from(nodes)
 }
 
-export function changeAttribute( element, attributeKey, value, $anchor, tr ) {
-    let newAttrs = { ...element.attrs }
-    newAttrs[attributeKey] = value
+export function changeAttributes( element, newAttrs, $anchor, tr ) {
     if( element instanceof Node ) {
         const {pos} = $anchor
         tr.setNodeMarkup(pos,element.type,newAttrs)
