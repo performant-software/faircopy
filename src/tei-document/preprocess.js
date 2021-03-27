@@ -5,10 +5,12 @@ import { changeAttributes } from "../tei-document/commands"
 
 // Ammends the document with run time only elements such as text node and error flags
 export function prepareDoc(teiDocument) {
-    const parentEntry = teiDocument.getParent()
-    const parentLocalID = parentEntry?.localID
-    const { teiSchema, idMap } = teiDocument.fairCopyProject
-    const { state: editorState, dispatch } = teiDocument.editorView
+    const { fairCopyProject, editorView } = teiDocument
+    const resourceEntry = fairCopyProject.getResourceEntry( teiDocument.resourceID )
+    const parentEntry = fairCopyProject.getParent( resourceEntry )
+    const parentLocalID = parentEntry?.localID ?  parentEntry.localID : resourceEntry.localID
+    const { teiSchema, idMap } = fairCopyProject
+    const { state: editorState, dispatch } = editorView
     const { tr, doc, schema } = editorState
     const textNodeType = schema.nodes['textNode'] 
 
@@ -67,7 +69,7 @@ function validateAttribute(value,parentLocalID,idMap,attrSpec) {
     if( dataType === 'ID' ) {
         const validState = idValidator( value ) 
         if( !validState.error ) {
-            const entry = idMap.get(value,parentLocalID) 
+            const entry = idMap.get(`#${value}`,parentLocalID) 
             if( entry && entry.useCount > 1 ) {
                 return { error: true, errorMessage: 'ID must be unique to the document.'}
             }

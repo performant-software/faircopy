@@ -14,7 +14,6 @@ class IDMapAuthority {
 
     // update the resource map and broadcast the updated idMap, including any errors?
     update( idMapData ) {       
-        console.log(idMapData)
         this.idMapNext = JSON.parse(idMapData)
     }
 

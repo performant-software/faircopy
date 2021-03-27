@@ -134,6 +134,7 @@ export default class TEIDocument {
         idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
         idMap.update()
         this.idScanNeeded = false
+        prepareDoc(this)
     }
 
     finalizeEditorView(editorView) {
