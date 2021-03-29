@@ -18,11 +18,21 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
     } else {
-        for( const mark of node.marks ) {
-            if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) ) {
-                const nextAttrs = { ...mark.attrs, '__error__': true }
+        if( node.attrs['__error__'] ) {
+            const nextAttrs = { ...node.attrs, '__error__': false }
+            changeAttributes( node, nextAttrs, $anchor, tr )
+        }
+    }
+
+    for( const mark of node.marks ) {
+        if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) ) {
+            const nextAttrs = { ...mark.attrs, '__error__': true }
+            changeAttributes( mark, nextAttrs, $anchor, tr )
+            return
+        } else {
+            if( mark.attrs['__error__'] ) {
+                const nextAttrs = { ...mark.attrs, '__error__': false }
                 changeAttributes( mark, nextAttrs, $anchor, tr )
-                return
             }
         }
     }
