@@ -103,11 +103,8 @@ export default class TEIEditor extends Component {
         const { editorView } = teiDocument
 
         if( editorView ) {
-            teiDocument.scanIDMap(transaction)
-            const editorState = editorView.state
-            const nextEditorState = editorState.apply(transaction)
-            editorView.updateState(nextEditorState)
-            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+            teiDocument.onUpdate(transaction)
+
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const selectedElements = this.getSelectedElements()
             this.broadcastZoneLinks(selectedElements)

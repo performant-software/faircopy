@@ -1,35 +1,12 @@
-import { NodeRange } from 'prosemirror-model'
-
 import { tokenValidator, teiDataWordValidator, uriValidator, idValidator } from './attribute-validators'
-import { changeAttributes } from "../tei-document/commands"
+import { changeAttributes } from "./commands"
 
 // Ammends the document with run time only elements such as text node and error flags
-export function prepareDoc(teiDocument,tr) {
-    const { fairCopyProject, editorView } = teiDocument
-    const resourceEntry = fairCopyProject.getResourceEntry( teiDocument.resourceID )
-    const parentEntry = fairCopyProject.getParent( resourceEntry )
-    const parentLocalID = parentEntry?.localID ?  parentEntry.localID : resourceEntry.localID
-    const { teiSchema, idMap } = fairCopyProject
-    const { state: editorState } = editorView
-    const { schema } = editorState
-    const textNodeType = schema.nodes['textNode'] 
-
+export function scanForErrors(teiSchema, idMap, parentLocalID, tr) {
     tr.doc.descendants((node,pos) => {
-        // addTextNode(node,pos,tr,textNodeType)
         markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema)
         return true
     })
-    return tr
-}
-
-// if an element could have a textnode, but is instead empty, add a textnode to it
-function addTextNode(node,pos,tr,textNodeType) {
-    const contentExp = node.type.spec.content
-    if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
-        const $start = tr.doc.resolve(tr.mapping.map(pos+1))
-        const nodeRange = new NodeRange($start,$start,$start.depth)
-        tr.wrap(nodeRange, [{type: textNodeType}])
-    }
 }
 
 // validate all attrs and mark any errors.

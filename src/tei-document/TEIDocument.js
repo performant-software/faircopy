@@ -1,4 +1,5 @@
-import {EditorState, TextSelection} from "prosemirror-state"
+import {EditorState, TextSelection } from "prosemirror-state"
+import { NodeRange } from "prosemirror-model"
 import {keymap} from "prosemirror-keymap"
 import {history} from "prosemirror-history"
 import {baseKeymap} from "./basekeymap"
@@ -9,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
 import {parseText, serializeText, htmlToXML} from "./xml"
-import {prepareDoc} from "./preprocess"
+import {scanForErrors} from "./error-scan"
 
 const fairCopy = window.fairCopy
 
@@ -124,18 +125,43 @@ export default class TEIDocument {
         idMap.update()
     }
 
-    scanIDMap(transaction) {
-        const { idMap } = this.fairCopyProject
+    // called by dispatch transaction for every change to doc state
+    onUpdate(transaction) {
+        const { idMap, teiSchema } = this.fairCopyProject
         const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
         const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+
+        // update the ID Map
         const resourceMap = idMap.mapResource( 'text', transaction.doc )
         idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
         idMap.update()
-        return prepareDoc(this,transaction)
+        
+        // scan for attribute errors
+        const relativeParentID = parentEntry ? parentEntry.localID : resourceEntry.localID
+        scanForErrors(teiSchema,idMap,relativeParentID,transaction)
+
+        // update editor state
+        const nextEditorState = this.editorView.state.apply(transaction)
+        this.editorView.updateState(nextEditorState)
+        this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
     }
 
     finalizeEditorView(editorView) {
         this.editorView = editorView
+        const { tr, doc, schema } = editorView.state
+        const textNodeType = schema.nodes['textNode'] 
+
+        // if an element could have a textnode, but is instead empty, add a textnode to it
+        doc.descendants((node,pos) => {
+            const contentExp = node.type.spec.content
+            if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
+                const $start = doc.resolve(tr.mapping.map(pos+1))
+                const nodeRange = new NodeRange($start,$start,$start.depth)
+                tr.wrap(nodeRange, [{type: textNodeType}])
+            }
+            return true
+        })
+
         this.changedSinceLastSave = false
     }
 
