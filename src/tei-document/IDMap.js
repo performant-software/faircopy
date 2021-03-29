@@ -50,30 +50,20 @@ export default class IDMap {
     }
 
     mapTextIDs(doc) {        
-        const xmlIDs = []
-
-        const gatherID = (element) => {
-            const xmlID = element.attrs['xml:id']
-            if( xmlID ) xmlIDs.push(xmlID)
-        }
+        const xmlIDMap = {}
         
         // gather up all xml:ids and their nodes/marks
         doc.descendants((node) => {
-            gatherID(node)
-            for( const mark of node.marks ) {
-                gatherID(mark)
-            }        
+            const id = node.attrs['xml:id']
+            if( id ) {
+                if( xmlIDMap[id] && xmlIDMap[id].useCount ) {
+                    xmlIDMap[id].useCount++
+                } else {
+                    xmlIDMap[id] = this.getTextEntry()
+                }    
+            }
             return true
         })
-
-        const xmlIDMap = {}
-        for( const id of xmlIDs ) {
-            if( xmlIDMap[id] && xmlIDMap[id].useCount ) {
-                xmlIDMap[id].useCount++
-            } else {
-                xmlIDMap[id] = this.getTextEntry()
-            }
-        }
 
         return xmlIDMap
     }
