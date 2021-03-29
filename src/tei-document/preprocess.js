@@ -4,22 +4,22 @@ import { tokenValidator, teiDataWordValidator, uriValidator, idValidator } from 
 import { changeAttributes } from "../tei-document/commands"
 
 // Ammends the document with run time only elements such as text node and error flags
-export function prepareDoc(teiDocument) {
+export function prepareDoc(teiDocument,tr) {
     const { fairCopyProject, editorView } = teiDocument
     const resourceEntry = fairCopyProject.getResourceEntry( teiDocument.resourceID )
     const parentEntry = fairCopyProject.getParent( resourceEntry )
     const parentLocalID = parentEntry?.localID ?  parentEntry.localID : resourceEntry.localID
     const { teiSchema, idMap } = fairCopyProject
-    const { state: editorState, dispatch } = editorView
-    const { tr, doc, schema } = editorState
+    const { state: editorState } = editorView
+    const { schema } = editorState
     const textNodeType = schema.nodes['textNode'] 
 
-    doc.descendants((node,pos) => {
-        addTextNode(node,pos,tr,textNodeType)
+    tr.doc.descendants((node,pos) => {
+        // addTextNode(node,pos,tr,textNodeType)
         markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema)
         return true
     })
-    dispatch(tr)
+    return tr
 }
 
 // if an element could have a textnode, but is instead empty, add a textnode to it
@@ -35,7 +35,7 @@ function addTextNode(node,pos,tr,textNodeType) {
 // validate all attrs and mark any errors.
 function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
     const attrSpecs = teiSchema.attrs
-    const $anchor = tr.doc.resolve(tr.mapping.map(pos))
+    const $anchor = tr.doc.resolve(pos)
 
     if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) ) {
         const nextAttrs = { ...node.attrs, '__error__': true }

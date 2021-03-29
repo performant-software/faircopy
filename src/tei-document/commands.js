@@ -1,4 +1,4 @@
-import { TextSelection, NodeSelection } from "prosemirror-state"
+import { NodeSelection, TextSelection } from "prosemirror-state"
 import { Node, Fragment } from "prosemirror-model"
 
 function markApplies(doc, ranges, type) {
@@ -207,9 +207,12 @@ export function createFragment( from, to, doc, schema ) {
 export function changeAttributes( element, newAttrs, $anchor, tr ) {
     if( element instanceof Node ) {
         const {pos} = $anchor
+        const selection = tr.selection
         tr.setNodeMarkup(pos,element.type,newAttrs)
-        const selection = NodeSelection.create(tr.doc, pos)
-        tr.setSelection( selection )
+        if( selection.from === pos ) {
+            const nextSelection = new NodeSelection(tr.doc.resolve(pos))
+            tr.setSelection( nextSelection )
+        }
         return element
     } else {
         const { from, to } = markExtent($anchor,element,tr.doc)

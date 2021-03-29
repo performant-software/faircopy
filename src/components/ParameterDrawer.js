@@ -63,9 +63,7 @@ export default class ParameterDrawer extends Component {
             const nextErrorStates = this.getNextErrorStates(elementName,attributeKey,error)
             this.setState({...this.state, errorStates: nextErrorStates })
 
-            // if there are any errors for this element, mark it in the editor
-            const elementError = ( nextErrorStates[elementName] && nextErrorStates[elementName].length > 0 )
-            const newAttrs = { ...element.attrs, '__error__': elementError }
+            const newAttrs = { ...element.attrs }
             newAttrs[attributeKey] = value
             changeAttributes( element, newAttrs, $anchor, tr )
             editorView.dispatch(tr)
