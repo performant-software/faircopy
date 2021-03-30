@@ -1,4 +1,4 @@
-import { tokenValidator, teiDataWordValidator, uriValidator, idValidator } from './attribute-validators'
+import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './attribute-validators'
 import { changeAttributes } from "./commands"
 
 // Ammends the document with run time only elements such as text node and error flags
@@ -54,14 +54,7 @@ function validateAttribute(value,parentLocalID,idMap,attrSpec) {
     const { dataType, minOccurs, maxOccurs } = attrSpec
 
     if( dataType === 'ID' ) {
-        const validState = idValidator( value ) 
-        if( !validState.error ) {
-            const entry = idMap.get(`#${value}`,parentLocalID) 
-            if( entry && entry.useCount > 1 ) {
-                return { error: true, errorMessage: 'ID must be unique to the document.'}
-            }
-        }
-        return validState
+        return checkID(value, parentLocalID, idMap)
     }
 
     if( dataType === 'token') {

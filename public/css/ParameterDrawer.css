@@ -102,6 +102,10 @@
     margin-right: 8px;
 }
 
+.element-id-field .error {
+    color: red;
+}
+
 .element-id-field .element-id:hover {
     text-decoration: underline;
 }

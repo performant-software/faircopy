@@ -114,16 +114,17 @@ export default class TEIDocument {
         return found
     }
 
-    setXMLID( xmlID, oldXMLID ) {
-        const { idMap } = this.fairCopyProject
-        const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
-        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        if( xmlID && xmlID.length > 0 ) {
-            idMap.set( idMap.getTextEntry(), xmlID, resourceEntry.localID, parentEntry?.localID )
-        } 
-        if( oldXMLID ) idMap.unset( oldXMLID, resourceEntry.localID, parentEntry?.localID )
-        idMap.update()
-    }
+    // TODO remove
+    // setXMLID( xmlID, oldXMLID ) {
+    //     const { idMap } = this.fairCopyProject
+    //     const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
+    //     const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+    //     if( xmlID && xmlID.length > 0 ) {
+    //         idMap.set( idMap.getTextEntry(), xmlID, resourceEntry.localID, parentEntry?.localID )
+    //     } 
+    //     if( oldXMLID ) idMap.unset( oldXMLID, resourceEntry.localID, parentEntry?.localID )
+    //     idMap.update()
+    // }
 
     // called by dispatch transaction for every change to doc state
     onUpdate(transaction) {
@@ -137,13 +138,19 @@ export default class TEIDocument {
         idMap.update()
         
         // scan for attribute errors
-        const relativeParentID = parentEntry ? parentEntry.localID : resourceEntry.localID
+        const relativeParentID = this.getRelativeParentID()
         scanForErrors(teiSchema,idMap,relativeParentID,transaction)
 
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
         this.editorView.updateState(nextEditorState)
         this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
+    }
+
+    getRelativeParentID() {
+        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
+        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+        return parentEntry ? parentEntry.localID : resourceEntry.localID
     }
 
     finalizeEditorView(editorView) {

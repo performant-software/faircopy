@@ -16,6 +16,7 @@ import TEIDataWordField from './attribute-fields/TEIDataWordField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
 import IDField from './attribute-fields/IDField'
+import { checkID } from '../tei-document/attribute-validators';
 
 export default class ParameterDrawer extends Component {
 
@@ -68,11 +69,12 @@ export default class ParameterDrawer extends Component {
             changeAttributes( element, newAttrs, $anchor, tr )
             editorView.dispatch(tr)
 
+            // TODO remove
             // update ID Map with new XML ID
-            if( attributeKey === 'xml:id') {
-                const prevValue = element.attrs['xml:id']
-                teiDocument.setXMLID(value,prevValue)
-            }
+            // if( attributeKey === 'xml:id') {
+            //     const prevValue = element.attrs['xml:id']
+            //     teiDocument.setXMLID(value,prevValue)
+            // }
         }
     }
 
@@ -230,12 +232,23 @@ export default class ParameterDrawer extends Component {
 
     renderIDField(element) {
         const { teiDocument } = this.props
-        const xmlID = element.attrs['xml:id'] ? element.attrs['xml:id'] : ""
         const onChange = this.changeAttributeHandler(element,'xml:id')
+
+        let xmlID, preExistingCondition
+        if( element.attrs['xml:id'] ) {
+            xmlID = element.attrs['xml:id'] 
+            const relativeParentID = teiDocument.getRelativeParentID()
+            // flags if the field already has an error
+            preExistingCondition = checkID(xmlID,relativeParentID,teiDocument.fairCopyProject.idMap)?.errorMessage
+        } else {
+            xmlID = ""
+            preExistingCondition = null
+        } 
 
         return (
             <IDField
                 hasID={teiDocument.hasID}
+                preExistingCondition={preExistingCondition}
                 value={xmlID}
                 onChangeCallback={onChange}
             ></IDField>

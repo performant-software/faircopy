@@ -9,15 +9,15 @@ export default class IDField extends Component {
 
     constructor(props) {
         super()
-        const { value } = props
+        const { preExistingCondition } = props
         this.initialState = {
             valueBuffer: '',
             initialValue: '',
-            error: false,
-            errorMessage: null,
+            error: !!preExistingCondition,
+            errorMessage: preExistingCondition,
             editMode: false
         }
-        this.state = (value !== null && value !== '') ? { ...this.initialState, ...idValidator(value) } : this.initialState
+        this.state = this.initialState
     }
 
     getID() {
@@ -58,7 +58,7 @@ export default class IDField extends Component {
     }
 
     renderDisplayMode() {
-        const {idPrefix} = this.props
+        const {idPrefix, preExistingCondition} = this.props
         const value = this.getID()
 
         const onClick = () => { this.setState( {...this.state, valueBuffer: value, initialValue: value, editMode: true} )}
@@ -68,10 +68,11 @@ export default class IDField extends Component {
             const fullID = idPrefix ? `${idPrefix}#${value}` : `#${value}`
             fairCopy.services.copyToClipBoard(fullID)
         }
+        const error = preExistingCondition ? 'error' : ''
 
         return (
             <div className="element-id-field">
-                <Typography onClick={onClick} className="element-id" variant="h5">#{value}</Typography>                 
+                <Typography onClick={onClick} className={`element-id ${error}`} variant="h5">#{value}</Typography>                 
                 <IconButton
                     onClick={onCopy}
                     tooltip="Copy to clipboard."
@@ -94,6 +95,7 @@ export default class IDField extends Component {
             if( this.props.value !== valueBuffer && valueBuffer.length > 0 && hasID(valueBuffer) ) {
                 this.setState( { ...this.state, error: true, errorMessage: 'ID must be unique to the document.'})
             } else {
+                this.initialState = { ...this.initialState, error: false, errorMessage: null}
                 this.setState({ ...this.initialState })
                 this.props.onChangeCallback(valueBuffer,false)    
             }

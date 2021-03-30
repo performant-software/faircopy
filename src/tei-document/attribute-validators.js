@@ -17,6 +17,18 @@ export function idValidator( value ) {
     return { error: false, errorMessage: ""}    
 }
 
+// check the uniqueness of an existing ID and validate its syntax
+export function checkID(value, parentLocalID, idMap) {
+    const validState = idValidator( value ) 
+    if( !validState.error ) {
+        const entry = idMap.get(`#${value}`,parentLocalID) 
+        if( entry && entry.useCount > 1 ) {
+            return { error: true, errorMessage: 'ID must be unique to the document.'}
+        }
+    }
+    return validState
+}
+
 // Test that this is a valid URI
 export function uriValidator( value ) {
     try {
