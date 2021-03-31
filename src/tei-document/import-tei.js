@@ -23,10 +23,16 @@ export function importResource(importData,parentResourceID,fairCopyProject) {
     const resources = []
 
     const addResource = (resourceEl, name, localID, parentID) => {
-        // TODO determine if it is a facs or text
-        const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = importTEIDocument(resourceEl,name,localID,parentID,fairCopyProject,fairCopyConfig)
-        fairCopyConfig = nextFairCopyConfig
-        resources.push({resourceEntry, content, resourceMap})
+        const resourceName = resourceEl.tagName.toLowerCase()
+        const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : 'facs'
+        if( type === 'facs' ) {
+            const facsResource = importFacsDocument(resourceEl,name,localID,parentID,fairCopyProject)
+            resources.push(facsResource)  
+        } else {
+            const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = importTEIDocument(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig)
+            fairCopyConfig = nextFairCopyConfig
+            resources.push({resourceEntry, content, resourceMap})    
+        }
     }
 
     const name = fairCopy.services.getBasename(path,'.xml').trim()
@@ -104,21 +110,21 @@ function createTEIDoc(name,localID,parentResourceID,idMap) {
     return {resourceEntry, content: "", resourceMap}
 }
 
-function importTEIDocument(textEl, name, localID, parentResourceID, fairCopyProject, fairCopyConfig) {
+function importTEIDocument(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig) {
     const { idMap, teiSchema } = fairCopyProject
 
     const resourceEntry = {
         id: uuidv4(),
         localID,
         name,
-        type: 'text',
+        type,
         parentResource: parentResourceID
     }
 
     // map existing IDs
-    const tempDoc = new TEIDocument(null,'text',fairCopyProject)
+    const tempDoc = new TEIDocument(null,type,fairCopyProject)
     const doc = parseText(textEl,tempDoc,teiSchema)
-    const resourceMap = idMap.mapResource( 'text', doc )
+    const resourceMap = idMap.mapResource( type, doc )
 
     // the XML of this text el
     const content = textEl.outerHTML
@@ -129,7 +135,16 @@ function importTEIDocument(textEl, name, localID, parentResourceID, fairCopyProj
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
 
-// TODO
-// function importFacsDocument(facsEl, fairCopyProject) {
-//     return 
-// }
+function importFacsDocument(facsEl, name, localID, parentResourceID, fairCopyProject) {
+    const resourceEntry = {
+        id: uuidv4(),
+        localID,
+        name,
+        type: 'facs',
+        parentResource: parentResourceID
+    }
+
+    let content, resourceMap // TODO
+
+    return { resourceEntry, content, resourceMap }
+}
