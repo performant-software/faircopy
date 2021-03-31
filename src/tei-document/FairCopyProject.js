@@ -6,10 +6,8 @@ import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
-import {sanitizeID} from "./attribute-validators"
-import {learnDoc, saveConfig} from "./faircopy-config"
+import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
-import {parseText} from "./xml"
 import {importResource} from "./import-tei"
 
 const fairCopy = window.fairCopy
@@ -209,17 +207,18 @@ export default class FairCopyProject {
     }
 
     importResource(importData,parentResourceID) {
-        try {
+        // try {
             const { resources, fairCopyConfig } = importResource(importData,parentResourceID,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
+            this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
             return { error: false, errorMessage: null }
-        } catch(e) {
-            return { error: true, errorMessage: e.message }
-        }        
+        // } catch(e) {
+        //     return { error: true, errorMessage: e.message }
+        // }        
     }
 
     // TODO remove

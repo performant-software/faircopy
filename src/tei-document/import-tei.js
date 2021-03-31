@@ -2,6 +2,7 @@ import {sanitizeID} from "./attribute-validators"
 import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
+import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText} from "./xml"
 
@@ -57,7 +58,7 @@ export function importResource(importData,parentResourceID,fairCopyProject) {
         }
     } else {
         // if there is no header, there will be only one resource, it gets the name and localID
-        addResource(extractedResources[0], name, localID, parentResourceID)
+        addResource(extractedResources.resources[0], name, localID, parentResourceID)
     }
     
     // Things look OK, return these resources
@@ -81,20 +82,24 @@ function extractResourceEls(data) {
     }
     const teiHeaderEl = teiEl.getElementsByTagName('teiheader')[0] || teiEl.getElementsByTagName('teiHeader')[0]
 
-    // TODO handle import of facs 
     let textEls = teiEl.getElementsByTagName('text') 
     if( textEls.length === 0 ) textEls = teiEl.getElementsByTagName('TEXT')
 
-    if( !teiHeaderEl || textEls.length === 0 ) {
-        throw new Error('<TEI> element must contain <teiHeader> and <text>.')
+    let facsEls = teiEl.getElementsByTagName('facsimile') 
+    if( facsEls.length === 0 ) facsEls = teiEl.getElementsByTagName('FACSIMILE')
+
+    if( textEls.length === 0 && facsEls.length === 0 ) {
+        throw new Error('<TEI> element must contain one more more <text> and/or <facsimile> elements.')
     } 
 
     const resources = []
     for( let i=0; i < textEls.length; i++ ) {
         resources.push(textEls[i])
     }
+    for( let i=0; i < facsEls.length; i++ ) {
+        resources.push(facsEls[i])
+    }
 
-    // TODO return the header, facs, and texts found
     return { header: teiHeaderEl, resources }
 }
 
@@ -127,7 +132,7 @@ function importTEIDocument(textEl, name, type, localID, parentResourceID, fairCo
     const resourceMap = idMap.mapResource( type, doc )
 
     // the XML of this text el
-    const content = textEl.outerHTML
+    const content = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">${textEl.outerHTML}</TEI>`
 
     // learn the attributes and vocabs
     const nextFairCopyConfig = learnDoc(fairCopyConfig, doc, teiSchema, tempDoc)
@@ -144,7 +149,13 @@ function importFacsDocument(facsEl, name, localID, parentResourceID, fairCopyPro
         parentResource: parentResourceID
     }
 
-    let content, resourceMap // TODO
+    // the XML of this facs el
+    const content = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">${facsEl.outerHTML}</TEI>`
+
+    // generate resource map
+    const { idMap } = fairCopyProject
+    const facsDoc = new FacsDocument( null, content, fairCopyProject )
+    const resourceMap = idMap.mapResource( 'facs', facsDoc.facs )
 
     return { resourceEntry, content, resourceMap }
 }
