@@ -28,9 +28,7 @@ export default class FairCopyProject {
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
             const nextResourceEntry = JSON.parse(d.resourceEntry)
-            if( d.messageID !== this.lastResourceEntryMessage ) {
-                this.onResourceUpdated(nextResourceEntry)
-            }
+            this.onResourceUpdated(nextResourceEntry)
         })
     }
 
@@ -105,7 +103,6 @@ export default class FairCopyProject {
     
     updateResource( resourceEntry ) {
         if( this.resources[resourceEntry.id] ) {
-            this.resources[resourceEntry.id] = resourceEntry
             const messageID = uuidv4()
             fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(resourceEntry) )
             this.lastResourceEntryMessage = messageID
@@ -207,7 +204,7 @@ export default class FairCopyProject {
     }
 
     importResource(importData,parentResourceID) {
-        // try {
+        try {
             const { resources, fairCopyConfig } = importResource(importData,parentResourceID,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
@@ -216,62 +213,10 @@ export default class FairCopyProject {
             this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
             return { error: false, errorMessage: null }
-        // } catch(e) {
-        //     return { error: true, errorMessage: e.message }
-        // }        
+        } catch(e) {
+            return { error: true, errorMessage: e.message }
+        }        
     }
-
-    // TODO remove
-    // oldimportResource(importData,parentResourceID) {
-    //     const { path, data } = importData
-
-    //     const name = fairCopy.services.getBasename(path,'.xml').trim()
-    //     const sanitizedID = sanitizeID(name)
-    //     const localID = sanitizedID && !this.idMap.get(sanitizedID) ? sanitizedID : this.idMap.getUniqueID(sanitizedID)  
-        
-    //     const resourceEntry = {
-    //         id: uuidv4(),
-    //         localID,
-    //         name,
-    //         type: 'text',
-    //         parentResource: parentResourceID
-    //     }
-
-    //     // parse the data into a ProseMirror doc
-    //     const parser = new DOMParser();
-    //     const tempDoc = new TEIDocument(null,'text',this)
-    //     const xmlDom = parser.parseFromString(data, "text/xml");
-
-    //     // Check for basic validity 
-    //     if( xmlDom.getElementsByTagName('parsererror').length > 0 ) {
-    //         return { error: true, errorMessage: 'Document is not a well formed XML document.' }
-    //     } 
-
-    //     const teiEl = xmlDom.getElementsByTagName('tei')[0] || xmlDom.getElementsByTagName('TEI')[0]
-    //     if( !teiEl ) {
-    //         return { error: true, errorMessage: 'Document must contain a <TEI> element.' }
-    //     }
-    //     const teiHeaderEl = teiEl.getElementsByTagName('teiheader')[0] || teiEl.getElementsByTagName('teiHeader')[0]
-
-    //     // TODO handle import of facs 
-    //     const textEl = teiEl.getElementsByTagName('text')[0] || teiEl.getElementsByTagName('TEXT')[0]
-    //     if( !teiHeaderEl || !textEl ) {
-    //         return { error: true, errorMessage: '<TEI> element must contain <teiHeader> and <text>.' }
-    //     } 
-
-    //     // map existing IDs
-    //     const doc = parseText(textEl,tempDoc,this.teiSchema)
-    //     const resourceMap = this.idMap.mapResource( 'text', doc )
-        
-    //     // Things look OK, load this resource
-    //     this.addResource( resourceEntry, data, resourceMap )
-
-    //     // learn the attributes and vocabs
-    //     this.fairCopyConfig = learnDoc(this.fairCopyConfig, doc, this.teiSchema, tempDoc)
-    //     saveConfig(this.fairCopyConfig)
-
-    //     return { error: false, errorMessage: null }
-    // }
 
     addResource( resourceEntry, content, resourceMap ) {
         const { id, parentResource } = resourceEntry

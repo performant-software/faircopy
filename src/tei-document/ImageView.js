@@ -19,11 +19,9 @@ export default class ImageView {
         
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
             const nextResourceEntry = JSON.parse(d.resourceEntry)
-            if( this.resourceEntry.id === nextResourceEntry.id && d.messageID !== this.lastResourceEntryMessage ) {
-                this.onResourceUpdated(nextResourceEntry)
-            }
+            this.onResourceUpdated(nextResourceEntry)
             // also listen for updates to parent
-            if( this.parentEntry.id === nextResourceEntry.id ) {
+            if( this.parentEntry && this.parentEntry.id === nextResourceEntry.id ) {
                 this.parentEntry = nextResourceEntry
             }
         })
@@ -61,9 +59,8 @@ export default class ImageView {
     }
 
     updateResource( nextResourceEntry ) {     
-        this.resourceEntry = { id: this.resourceEntry.id, ...nextResourceEntry }
+        const resourceEntry = { id: this.resourceEntry.id, ...nextResourceEntry }
         const messageID = uuidv4()
-        fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(this.resourceEntry) )
-        this.lastResourceEntryMessage = messageID
+        fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(resourceEntry) )
     }
 }
