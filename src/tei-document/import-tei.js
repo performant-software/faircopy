@@ -154,7 +154,7 @@ function importFacsDocument(facsEl, name, localID, parentResourceID, fairCopyPro
 
     // generate resource map
     const { idMap } = fairCopyProject
-    const facsDoc = new FacsDocument( null, content, fairCopyProject )
+    const facsDoc = new FacsDocument( null, fairCopyProject, content )
     const resourceMap = idMap.mapResource( 'facs', facsDoc.facs )
 
     return { resourceEntry, content, resourceMap }
