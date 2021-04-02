@@ -68,13 +68,6 @@ export default class ParameterDrawer extends Component {
             newAttrs[attributeKey] = value
             changeAttributes( element, newAttrs, $anchor, tr )
             editorView.dispatch(tr)
-
-            // TODO remove
-            // update ID Map with new XML ID
-            // if( attributeKey === 'xml:id') {
-            //     const prevValue = element.attrs['xml:id']
-            //     teiDocument.setXMLID(value,prevValue)
-            // }
         }
     }
 

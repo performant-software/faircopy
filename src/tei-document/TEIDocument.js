@@ -114,18 +114,6 @@ export default class TEIDocument {
         return found
     }
 
-    // TODO remove
-    // setXMLID( xmlID, oldXMLID ) {
-    //     const { idMap } = this.fairCopyProject
-    //     const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
-    //     const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-    //     if( xmlID && xmlID.length > 0 ) {
-    //         idMap.set( idMap.getTextEntry(), xmlID, resourceEntry.localID, parentEntry?.localID )
-    //     } 
-    //     if( oldXMLID ) idMap.unset( oldXMLID, resourceEntry.localID, parentEntry?.localID )
-    //     idMap.update()
-    // }
-
     // called by dispatch transaction for every change to doc state
     onUpdate(transaction) {
         const { idMap, teiSchema } = this.fairCopyProject
@@ -169,6 +157,7 @@ export default class TEIDocument {
             return true
         })
 
+        this.editorView.dispatch(tr)
         this.changedSinceLastSave = false
     }
 
