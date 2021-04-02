@@ -73,8 +73,8 @@ export default class AlertDialog extends Component {
         const { resourceIDs } = alertOptions
 
         const onDelete = () => {
-            fairCopyProject.removeResources(resourceIDs)
             closeResources(resourceIDs, false, false )    
+            fairCopyProject.removeResources(resourceIDs)
         }
 
         const onCancel = () => {

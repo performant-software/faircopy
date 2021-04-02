@@ -62,6 +62,8 @@ class FairCopyApplication {
 
     ipcMain.on('removeResource', (event, resourceID) => { 
       this.projectStore.removeResource(resourceID) 
+      this.sendToMainWindow('resourceEntryUpdated', { deleted: true, resourceID } )
+      
       // close any open image windows
       this.imageViews = this.imageViews.filter((imageView) => {
         if( imageView.resourceID === resourceID ) {

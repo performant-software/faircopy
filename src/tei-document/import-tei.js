@@ -8,10 +8,11 @@ import {parseText} from "./xml"
 
 const fairCopy = window.fairCopy
 
-// The are a wide number of valid configurations for TEI elements in the guidelines, but 
-// to keep things simple, we are going to just support the simplest and most common document 
-// structure, which is a single tei element containing one header and one or more texts and/or facs.
-// We will also support import of TEI partials in the same format that we export them. (i.e. a single text or facs in a TEI element)
+// There are a wide number of valid configurations for TEI elements in the guidelines, but 
+// to keep things simple, we are going to support the most common document 
+// structure: a single tei element containing one header and one or more texts and/or facs.
+// We will also support import of TEI partials in the same format that we export them. (i.e. a single 
+// text or facs in a TEI element)
 
 export function importResource(importData,existingParentID,fairCopyProject) {
     const { path, data } = importData

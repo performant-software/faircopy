@@ -27,17 +27,16 @@ export default class FairCopyProject {
         
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
-            const nextResourceEntry = JSON.parse(d.resourceEntry)
-            this.onResourceUpdated(nextResourceEntry)
+            if( d.deleted ) {
+                delete this.resources[d.resourceID]
+            } else {
+                const nextResourceEntry = JSON.parse(d.resourceEntry)
+                this.resources[ nextResourceEntry.id ] = nextResourceEntry
+            }
+            for( const listener of this.updateListeners ) {
+                listener()
+            }
         })
-    }
-
-    // Called when resource entry is updated by a different window process
-    onResourceUpdated(nextResourceEntry) {
-        this.resources[ nextResourceEntry.id ] = nextResourceEntry
-        for( const listener of this.updateListeners ) {
-            listener()
-        }
     }
 
     addUpdateListener(listener) {
@@ -181,7 +180,6 @@ export default class FairCopyProject {
 
             // if there are child resources, remove them too
             if( resources ) this.removeResources( resources )
-            delete this.resources[resourceID]
 
             // if this is a child resource, remove it from parent
             if( parentResource ) {
