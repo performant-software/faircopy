@@ -13,13 +13,13 @@ const fairCopy = window.fairCopy
 // structure, which is a single tei element containing one header and one or more texts and/or facs.
 // We will also support import of TEI partials in the same format that we export them. (i.e. a single text or facs in a TEI element)
 
-export function importResource(importData,parentResourceID,fairCopyProject) {
+export function importResource(importData,existingParentID,fairCopyProject) {
     const { path, data } = importData
+    const { idMap } = fairCopyProject
 
     // locate the XML els that contain resources
     const extractedResources = extractResourceEls(data)
 
-    const { idMap } = fairCopyProject
     let {fairCopyConfig} = fairCopyProject
     const resources = []
 
@@ -36,29 +36,45 @@ export function importResource(importData,parentResourceID,fairCopyProject) {
         }
     }
 
+    // what do we call this resource?
     const name = fairCopy.services.getBasename(path,'.xml').trim()
     const sanitizedID = sanitizeID(name)
-    const localID = sanitizedID && !idMap.get(sanitizedID) ? sanitizedID : idMap.getUniqueID(sanitizedID)  
+    const parentEntry = fairCopyProject.getResourceEntry(existingParentID)
+    const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
+    const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
 
     if( extractedResources.header ) {
-        // create the tei doc 
-        const teiDoc = createTEIDoc(name,localID,parentResourceID,idMap)
-        const teiDocID = teiDoc.resourceEntry.id
-        resources.push(teiDoc)
+        let parentEntryID, childLocalIDs
 
-        // create the header
-        addResource(extractedResources.header, "TEI Header", "header", teiDocID)
+        // if there isn't a parent, create a tei doc, otherwise add resources to current parent
+        if( !parentEntry ) {
+            // create the tei doc 
+            const teiDoc = createTEIDoc(name,localID,idMap)
+            const teiDocID = teiDoc.resourceEntry.id
+            resources.push(teiDoc)
+
+            // add resources to teidoc
+            parentEntryID = teiDocID
+            childLocalIDs = []
+
+            // create the header
+            addResource(extractedResources.header, "TEI Header", "header", parentEntryID)            
+        } else {
+            // add resources to existing parent
+            parentEntryID = parentEntry.id
+            childLocalIDs = Object.keys(idMap.idMap[parentEntry.localID])
+        }
 
         // create the resources
         for( const resourceEl of extractedResources.resources ) {
-            const name = resourceEl.getAttribute('xml:id')
-            const sanitizedID = name ? sanitizeID(name) : idMap.getUniqueID('text') 
-            const localID = sanitizedID && !idMap.get(sanitizedID) ? sanitizedID : idMap.getUniqueID(sanitizedID)  
-            addResource(resourceEl, name, localID, teiDocID)
+            const xmlID = resourceEl.getAttribute('xml:id')
+            const childLocalID = xmlID ? childLocalIDs.includes(sanitizeID(xmlID)) ? idMap.getUniqueID(sanitizedID) : sanitizedID : idMap.getUniqueID('import')
+            addResource(resourceEl, name, childLocalID, parentEntryID)
+            childLocalIDs.push(childLocalID)
         }
     } else {
-        // if there is no header, there will be only one resource, it gets the name and localID
-        addResource(extractedResources.resources[0], name, localID, parentResourceID)
+        // if there is no header only take the first resource, it gets the name and localID
+        addResource(extractedResources.resources[0], name, localID, existingParentID)
     }
     
     // Things look OK, return these resources
@@ -103,13 +119,13 @@ function extractResourceEls(data) {
     return { header: teiHeaderEl, resources }
 }
 
-function createTEIDoc(name,localID,parentResourceID,idMap) {
+function createTEIDoc(name,localID,idMap) {
     const resourceEntry = {
         id: uuidv4(),
         localID,
         name,
         type: 'teidoc',
-        parentResource: parentResourceID
+        parentResource: null
     }
     const resourceMap = idMap.getBlankResourceMap(true)
     return {resourceEntry, content: "", resourceMap}

@@ -130,7 +130,8 @@ export default class FairCopyProject {
 
         importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
             const { name, localID } = metadata
-            const uniqueID = localID && !this.idMap.get(localID) ? localID : this.idMap.getUniqueID(localID)  
+            const conflictingID = parentEntry ? this.idMap.idMap[parentEntry.localID][localID] : this.idMap.idMap[localID]
+            const uniqueID = !conflictingID ? localID : this.idMap.getUniqueID(localID)  
             const resourceEntry = {
                 id: uuidv4(),
                 name,
@@ -204,7 +205,7 @@ export default class FairCopyProject {
     }
 
     importResource(importData,parentResourceID) {
-        try {
+        // try {
             const { resources, fairCopyConfig } = importResource(importData,parentResourceID,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
@@ -213,9 +214,9 @@ export default class FairCopyProject {
             this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
             return { error: false, errorMessage: null }
-        } catch(e) {
-            return { error: true, errorMessage: e.message }
-        }        
+        // } catch(e) {
+        //     return { error: true, errorMessage: e.message }
+        // }        
     }
 
     addResource( resourceEntry, content, resourceMap ) {
