@@ -69,8 +69,9 @@ export function importResource(importData,existingParentID,fairCopyProject) {
         // create the resources
         for( const resourceEl of extractedResources.resources ) {
             const xmlID = resourceEl.getAttribute('xml:id')
-            const childLocalID = xmlID ? childLocalIDs.includes(sanitizeID(xmlID)) ? idMap.getUniqueID(sanitizedID) : sanitizedID : idMap.getUniqueID('import')
-            addResource(resourceEl, name, childLocalID, parentEntryID)
+            const childSanitizedID = xmlID ? sanitizeID(xmlID) : idMap.getUniqueID('import')
+            const childLocalID = childLocalIDs.includes(childSanitizedID) ? idMap.getUniqueID(childSanitizedID) : childSanitizedID 
+            addResource(resourceEl, childLocalID, childLocalID, parentEntryID)
             childLocalIDs.push(childLocalID)
         }
     } else {
