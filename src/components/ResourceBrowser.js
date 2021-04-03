@@ -97,6 +97,8 @@ export default class ResourceBrowser extends Component {
   renderResourceTable() {
 
     const onClick = (e) => {
+      // if we clicked on check, let onClickCheck handle it
+      if( e.target.nodeName === 'INPUT' ) return
       const { onResourceAction, resources } = this.props
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
       const resource = resources[resourceID]
@@ -141,17 +143,17 @@ export default class ResourceBrowser extends Component {
       const check = checked[resource.id] === true
       const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
       resourceRows.push(
-        <TableRow hover key={`resource-${resource.id}`}>
+        <TableRow hover onClick={onClick} dataresourceid={resource.id} key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
             <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
           <TableCell {...cellProps} >
-            <i onClick={onClick} dataresourceid={resource.id} className={`${resourceIcon} fa-lg`}></i>
+            <i className={`${resourceIcon} fa-lg`}></i>
           </TableCell>
-          <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
+          <TableCell {...cellProps} >
             {resource.name}
           </TableCell>
-          <TableCell onClick={onClick} dataresourceid={resource.id} {...cellProps} >
+          <TableCell {...cellProps} >
             {resource.localID}
           </TableCell>
           <TableCell {...cellProps} >
