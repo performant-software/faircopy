@@ -203,7 +203,7 @@ export default class FairCopyProject {
     }
 
     importResource(importData,parentResourceID) {
-        // try {
+        try {
             const { resources, fairCopyConfig } = importResource(importData,parentResourceID,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
@@ -212,9 +212,36 @@ export default class FairCopyProject {
             this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
             return { error: false, errorMessage: null }
-        // } catch(e) {
-        //     return { error: true, errorMessage: e.message }
-        // }        
+        } catch(e) {
+            return { error: true, errorMessage: e.message }
+        }        
+    }
+
+    moveResources( resourceIDs, targetParentID ) {
+
+        // take the resources and move them into the parent ID
+        for( const resourceID of resourceIDs ) {
+            if( resourceID.parentResource === targetParentID ) continue
+
+            // first remove the resource from current parent
+            if( resourceID.parentResource ) {
+                const parent = this.resources[targetParentID]
+                // TODO remove
+                this.updateResource( parent )    
+            }
+
+            const child = this.resources[resourceID]
+            child.parentResource = targetParentID
+            this.updateResource( child )
+
+            if( targetParentID ) {
+                // add resource to new parent
+                const parent = this.resources[targetParentID]
+                if( !parent.resources ) parent.resources = []
+                parent.resources.push(resourceID)
+                this.updateResource( parent )    
+            } 
+        }
     }
 
     addResource( resourceEntry, content, resourceMap ) {

@@ -18,6 +18,7 @@ import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
 import SnackAlert from './SnackAlert'
 import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
+import MoveResourceDialog from './MoveResourceDialog';
 
 const fairCopy = window.fairCopy
 
@@ -41,6 +42,8 @@ export default class MainWindow extends Component {
             addImagesMode: false,
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
+            moveResourceMode: false,
+            moveResourceIDs: null,
             surfaceInfo: null,
             elementMenuOptions: null,
             popupMenuOptions: null, 
@@ -280,6 +283,9 @@ export default class MainWindow extends Component {
             case 'close':
                 this.closeResources(resourceIDs)
                 return false
+            case 'move':
+                this.setState( {...this.state, moveResourceMode: true, moveResourceIDs: resourceIDs} )
+                return false
             case 'save':
                 this.saveResources(resourceIDs)
                 return false
@@ -396,7 +402,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, moveResourceMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
 
@@ -460,6 +466,11 @@ export default class MainWindow extends Component {
                     elementMenuAnchors={this.elementMenuAnchors}
                     {...elementMenuOptions}
                 ></ElementMenu> }
+                { moveResourceMode && <MoveResourceDialog
+                    resourceIDs={moveResourceIDs}
+                    fairCopyProject={fairCopyProject}
+                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceIDs: null} )}}
+                ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}
                     anchorEl={popupMenuAnchorEl}
