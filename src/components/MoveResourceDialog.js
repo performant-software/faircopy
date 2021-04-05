@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
-import { Button } from '@material-ui/core'
-import { Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
+import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBody } from '@material-ui/core'
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 
 export default class MoveResourceDialog extends Component {
 
@@ -27,32 +27,77 @@ export default class MoveResourceDialog extends Component {
         }
     }
 
-    renderList() {
-        const { targetID, teiDocs } = this.state
+    renderRow(resource) {        
+        const { targetID } = this.state
 
         const onSelect = (e) => {
             const resourceID = e.currentTarget.getAttribute('dataresourceid')
             this.setState({...this.state, targetID: resourceID})
         }
 
-        // create the root folder option
-        const rootSelected = targetID === 'ROOT' ? 'selected' : ''
-        const rootEl = <li onClick={onSelect} dataresourceid="ROOT" className={rootSelected} key="mr-ROOT"><Typography>ROOT</Typography></li>
+        const cellProps = {
+            padding: 'none',
+            component: "th",
+            scope: "row"
+        }
 
-        const teiDocEls = []
-        teiDocEls.push(rootEl)
-        for( const teiDoc of teiDocs ) {
-            const selected = teiDoc.id === targetID ? 'selected' : ''
-            const teiDocEl = <li onClick={onSelect} dataresourceid={teiDoc.id} className={selected} key={`mr-${teiDoc.id}`}><Typography>{teiDoc.name}</Typography></li>
-            teiDocEls.push(teiDocEl)
+        if( !resource ) {    
+            const selected = targetID === 'ROOT' ? 'selected' : ''
+            return (
+                <TableRow hover onClick={onSelect} className={selected} dataresourceid='ROOT' key={`resource-ROOT`}>
+                    <TableCell {...cellProps} >
+                        <i className={`fa fa-home-alt fa-lg`}></i>
+                    </TableCell>
+                    <TableCell {...cellProps} >
+                        Project Home
+                    </TableCell>
+                    <TableCell {...cellProps} >
+                    </TableCell>
+                </TableRow>
+            )
+        } else {
+            const selected = resource.id === targetID ? 'selected' : ''
+
+            return (
+                <TableRow hover onClick={onSelect} className={selected} dataresourceid={resource.id} key={`resource-${resource.id}`}>
+                    <TableCell {...cellProps} >
+                        <i className={`fa fa-books fa-lg`}></i>
+                    </TableCell>
+                    <TableCell {...cellProps} >
+                        {resource.name}
+                    </TableCell>
+                    <TableCell {...cellProps} >
+                        {resource.localID}
+                    </TableCell>
+                </TableRow>
+            )
+        }        
+    }
+
+    renderTable() {
+        const { teiDocs } = this.state
+
+        const teiDocRows = []
+        teiDocRows.push(this.renderRow(null))
+        for( const teiDoc of teiDocs ) {            
+            teiDocRows.push(this.renderRow(teiDoc))
         }
 
         return (
-            <div>
-                <ul>
-                    {teiDocEls}
-                </ul>
-            </div>
+            <TableContainer className="table-container">
+                <Table stickyHeader size="small" >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell padding="none">Type</TableCell>
+                            <TableCell padding="none">Name</TableCell>
+                            <TableCell padding="none">ID</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        { teiDocRows }
+                    </TableBody>
+                </Table>
+          </TableContainer>
         )
     }
 
@@ -90,7 +135,7 @@ export default class MoveResourceDialog extends Component {
             >
                 <DialogTitle id="edit-resource-title">Move Resources</DialogTitle>
                 <DialogContent>
-                    { this.renderList() }
+                    { this.renderTable() }
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" disabled={moveDisabled} color="primary" onClick={onClickMove} autoFocus>Move</Button>
