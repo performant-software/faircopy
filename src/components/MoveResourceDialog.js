@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBody } from '@material-ui/core'
+import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBody, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 
 export default class MoveResourceDialog extends Component {
@@ -103,11 +103,11 @@ export default class MoveResourceDialog extends Component {
 
     render() {      
         const { targetID } = this.state
-        const { onClose } = this.props
+        const { onClose, resourceIDs } = this.props
         
         const onClickMove = () => {
             const { targetID } = this.state
-            const { fairCopyProject, resourceIDs } = this.props
+            const { fairCopyProject } = this.props
 
             // ignore the tei docs
             const validIDs = []
@@ -130,11 +130,12 @@ export default class MoveResourceDialog extends Component {
                 id="MoveResourceDialog"
                 open={true}
                 onClose={onClose}
-                aria-labelledby="edit-resource-title"
+                aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Move Resources</DialogTitle>
+                <DialogTitle id="move-resource-dialog">Move Resources ({resourceIDs.length})</DialogTitle>
                 <DialogContent>
+                    <Typography>Select a destination for these resources: </Typography>
                     { this.renderTable() }
                 </DialogContent>
                 <DialogActions>

@@ -1,3 +1,6 @@
+#MoveResourceDialog  table {
+    width: 450px;
+}
 
 #MoveResourceDialog .selected {
     background: #FFF9DD;
