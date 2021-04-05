@@ -285,7 +285,7 @@ export default class MainWindow extends Component {
                 return false
             case 'move':
                 this.setState( {...this.state, moveResourceMode: true, moveResourceIDs: resourceIDs} )
-                return false
+                return true
             case 'save':
                 this.saveResources(resourceIDs)
                 return false

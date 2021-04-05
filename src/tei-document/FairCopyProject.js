@@ -240,15 +240,27 @@ export default class FairCopyProject {
                 checkinResource(parent)
             }
 
-            resourceEntry.parentResource = targetParentID
-            checkinResource( resourceEntry )
-
             if( targetParentID ) {
                 // add resource to new parent
                 const targetParent = checkoutResource(targetParentID)
+
+                // is localID unique in this context?
+                for( const siblingResourceID of targetParent.resources ) {
+                    const siblingResource = checkoutResource(siblingResourceID)
+                    if( resourceEntry.localID === siblingResource.localID ) {
+                        // make localID unique
+                        resourceEntry.localID = this.idMap.getUniqueID(resourceEntry.localID)
+                    }
+                }
+
+                // add resource to target parent
                 targetParent.resources = !targetParent.resources ? [resourceID] : targetParent.resources.concat( resourceID )
                 checkinResource( targetParent )    
             } 
+
+            // update resource
+            resourceEntry.parentResource = targetParentID
+            checkinResource( resourceEntry )
         }
 
         // to prevent racing with main thread, only update the resources once they are final
