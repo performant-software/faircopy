@@ -217,30 +217,43 @@ export default class FairCopyProject {
         }        
     }
 
+    // take the resources and move them into the parent ID
     moveResources( resourceIDs, targetParentID ) {
+        const updatedResources = {}
 
-        // take the resources and move them into the parent ID
+        const checkoutResource = (resourceID) => {
+            return updatedResources[resourceID] ? updatedResources[resourceID] : { ...this.resources[resourceID] }
+        }
+
+        const checkinResource = (resource) => {
+            updatedResources[resource.id] = resource
+        }
+
         for( const resourceID of resourceIDs ) {
-            if( resourceID.parentResource === targetParentID ) continue
+            const resourceEntry = checkoutResource(resourceID)
+            if( resourceEntry.parentResource === targetParentID ) continue
 
             // first remove the resource from current parent
-            if( resourceID.parentResource ) {
-                const parent = this.resources[targetParentID]
-                // TODO remove
-                this.updateResource( parent )    
+            if( resourceEntry.parentResource ) {
+                const parent = checkoutResource(resourceEntry.parentResource)
+                parent.resources = parent.resources.filter( id => id !== resourceID )
+                checkinResource(parent)
             }
 
-            const child = this.resources[resourceID]
-            child.parentResource = targetParentID
-            this.updateResource( child )
+            resourceEntry.parentResource = targetParentID
+            checkinResource( resourceEntry )
 
             if( targetParentID ) {
                 // add resource to new parent
-                const parent = this.resources[targetParentID]
-                if( !parent.resources ) parent.resources = []
-                parent.resources.push(resourceID)
-                this.updateResource( parent )    
+                const targetParent = checkoutResource(targetParentID)
+                targetParent.resources = !targetParent.resources ? [resourceID] : targetParent.resources.concat( resourceID )
+                checkinResource( targetParent )    
             } 
+        }
+
+        // to prevent racing with main thread, only update the resources once they are final
+        for( const resource of Object.values(updatedResources) ) {
+            this.updateResource(resource)
         }
     }
 
