@@ -143,16 +143,16 @@ export default class TEIDocument {
 
     finalizeEditorView(editorView) {
         this.editorView = editorView
-        const { tr, doc, schema } = editorView.state
+        const { tr, schema } = editorView.state
         const textNodeType = schema.nodes['textNode'] 
 
         // if an element could have a textnode, but is instead empty, add a textnode to it
-        doc.descendants((node,pos) => {
+        tr.doc.descendants((node,pos) => {
             const contentExp = node.type.spec.content
             if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
-                const $start = doc.resolve(tr.mapping.map(pos+1))
+                const $start = tr.doc.resolve(tr.mapping.map(pos+1))
                 const nodeRange = new NodeRange($start,$start,$start.depth)
-                tr.wrap(nodeRange, [{type: textNodeType}])
+                tr.wrap(nodeRange, [{type: textNodeType}])    
             }
             return true
         })
