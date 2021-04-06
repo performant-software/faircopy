@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Checkbox } from '@material-ui/core';
+import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 
 const rowsPerPage = 100
 
@@ -69,7 +69,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderToolbar() {
-    const { onEditResource, onImportResource } = this.props
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc } = this.props
     const { checked } = this.state
 
     const buttonProps = {
@@ -95,6 +95,19 @@ export default class ResourceBrowser extends Component {
           onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
           {...buttonProps}
         >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button> 
+        { teiDoc && <Tooltip title="Edit Document Properties">
+            <span>
+                <Button
+                    onClick={onEditTEIDoc}
+                    className='toolbar-button'
+                    disableRipple={true}
+                    disableFocusRipple={true}
+                    style={{float: 'right'}}
+                >
+                    <i className="far fa-edit fa-2x"></i>
+                </Button>                   
+            </span>
+        </Tooltip> }
       </div>
     )
   }
@@ -203,13 +216,13 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDocName, onResourceAction } = this.props
+      const { width, teiDoc, onResourceAction } = this.props
 
       const onClickHome = () => {
         onResourceAction( 'close-teidoc' )   
       }
 
-      const docTitle = teiDocName ? <span><i className="fa fa-chevron-right"></i> <i className="fa fa-books"></i> {teiDocName}</span> : ""
+      const docTitle = teiDoc ? <span><i className="fa fa-chevron-right"></i> <i className="fa fa-books"></i> {teiDoc.name}</span> : ""
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>

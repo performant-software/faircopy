@@ -43,6 +43,7 @@ export default class MainWindow extends Component {
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
+            editTEIDocDialogMode: false,
             moveResourceIDs: null,
             surfaceInfo: null,
             elementMenuOptions: null,
@@ -363,8 +364,7 @@ export default class MainWindow extends Component {
         const { resourceBrowserOpen, parentResourceID } = this.state
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const resources = fairCopyProject.getResources(parentResource)
-        const teiDocName = parentResource ? parentResource.name : null
-
+        
         return (
             <div>
                 { resourceBrowserOpen && 
@@ -372,8 +372,9 @@ export default class MainWindow extends Component {
                         onResourceAction={this.onResourceAction}
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onEditResource={this.onEditResource}
+                        onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
-                        teiDocName={teiDocName}
+                        teiDoc={parentResource}
                         resources={resources}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
@@ -402,7 +403,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, moveResourceMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject } = this.props
         const { idMap } = fairCopyProject
 
@@ -422,6 +423,11 @@ export default class MainWindow extends Component {
             }
             this.setState( {...this.state, editDialogMode: false} )
         }
+
+        const onSaveTEIDoc = (name,localID,type) => {
+            fairCopyProject.updateResource({ ...parentEntry, name, localID, type })
+            this.setState( {...this.state, editTEIDocDialogMode: false} )
+        }        
 
         const onSaveProjectInfo = (name,description) => {
             fairCopyProject.updateProjectInfo({name, description})
@@ -443,6 +449,13 @@ export default class MainWindow extends Component {
                     parentEntry={parentEntry}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
+                ></EditResourceDialog> }
+                { editTEIDocDialogMode && <EditResourceDialog
+                    idMap={idMap}
+                    resourceEntry={parentEntry}
+                    parentEntry={null}
+                    onSave={onSaveTEIDoc}
+                    onClose={()=>{ this.setState( {...this.state, editTEIDocDialogMode: false} )}}
                 ></EditResourceDialog> }
                 { iiifDialogMode && <IIIFImportDialog
                     fairCopyProject={fairCopyProject}
