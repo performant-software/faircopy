@@ -151,7 +151,7 @@ function importTEIDocument(textEl, name, type, localID, parentResourceID, fairCo
 
     // the XML of this text el
     const content = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">${textEl.outerHTML}</TEI>`
-    console.log(content)
+
     // learn the attributes and vocabs
     const nextFairCopyConfig = learnDoc(fairCopyConfig, doc, teiSchema, tempDoc)
 
