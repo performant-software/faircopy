@@ -74,7 +74,16 @@ export default class MainWindow extends Component {
     }
     
     receivedUpdate = () => { 
-        this.setState({...this.state}) 
+        const { openResources } = this.state
+        const { fairCopyProject } = this.props
+        // if any open resources no longer exist, close them
+        const doomedResources = []
+        for( const openResourceID of Object.keys(openResources) ) {
+            if( !fairCopyProject.resources[openResourceID]) {
+                doomedResources.push(openResourceID)
+            }
+        }        
+        this.closeResources(doomedResources,false,false)
     }
 
     requestExitApp = () => {
