@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core'
 
 export default class EditProjectDialog extends Component {
@@ -12,6 +12,7 @@ export default class EditProjectDialog extends Component {
         this.initialState = projectInfo ? { ...projectInfo, validationErrors: {} } : {
             name: "",
             description: "",
+            projectFilePath: "",
             validationErrors: {}
         }
         this.state = this.initialState
@@ -48,7 +49,7 @@ export default class EditProjectDialog extends Component {
             onClose()
         }
 
-        const { name, description, validationErrors } = this.state
+        const { name, description, projectFilePath, validationErrors } = this.state
 
         return (
             <Dialog
@@ -76,6 +77,7 @@ export default class EditProjectDialog extends Component {
                         onChange={onChange}
                         label="Project Description" 
                     /><br/>
+                    <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>
 
                 </DialogContent>
                 <DialogActions>

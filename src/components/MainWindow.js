@@ -419,7 +419,7 @@ export default class MainWindow extends Component {
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
         const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : fairCopyProject.getResourceEntry(parentResourceID)
-        const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description }
+        const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description, projectFilePath: fairCopyProject.projectFilePath }
 
         const { editProjectDialogMode, alertMessage, editSurfaceInfoMode, iiifDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
