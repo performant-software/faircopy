@@ -1,0 +1,14 @@
+
+#MainWindowStatusBar { 
+    top: auto;
+    background: #0086C0;
+    bottom: 0px;
+}
+
+#MainWindowStatusBar .bar {
+    padding: 10px; 
+}
+
+#MainWindowStatusBar .version-button {
+    float: right;
+}

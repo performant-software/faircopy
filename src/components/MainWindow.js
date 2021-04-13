@@ -19,6 +19,7 @@ import FacsEditor from './FacsEditor'
 import SnackAlert from './SnackAlert'
 import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
 import MoveResourceDialog from './MoveResourceDialog';
+import MainWindowStatusBar from './MainWindowStatusBar';
 
 const fairCopy = window.fairCopy
 
@@ -387,6 +388,7 @@ export default class MainWindow extends Component {
                         resources={resources}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
+                <MainWindowStatusBar></MainWindowStatusBar>
             </div>
         )
     }
