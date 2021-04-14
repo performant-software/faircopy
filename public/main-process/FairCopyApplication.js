@@ -183,6 +183,7 @@ class FairCopyApplication {
 
     const windowSize = this.isDebugMode() ? [1440,1200] : [1440,900]
     this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true )
+    this.mainWindow.webContents.send('appConfig', this.config)
 
     // let render window handle on close (without browser restrictions)
     this.mainWindow.on('close', (event) => {

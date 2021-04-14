@@ -159,11 +159,12 @@ export default class ProjectWindow extends Component {
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
         const allowKeyReset = appConfig ? appConfig.devMode : false
+        const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
         return (
             <div id="ProjectWindow" >
                 <div className='header'>
-        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion}</Typography>
+        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion} {devModeTag}</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </div>
                 { mode === 'select' ? this.renderSelectProject(allowKeyReset) : this.renderNewProject() }

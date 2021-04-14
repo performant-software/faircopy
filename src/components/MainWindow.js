@@ -370,7 +370,7 @@ export default class MainWindow extends Component {
     }
 
     renderContentPane() {
-        const { fairCopyProject } = this.props
+        const { fairCopyProject, appConfig } = this.props
         const { resourceBrowserOpen, parentResourceID } = this.state
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const resources = fairCopyProject.getResources(parentResource)
@@ -388,7 +388,9 @@ export default class MainWindow extends Component {
                         resources={resources}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
-                <MainWindowStatusBar></MainWindowStatusBar>
+                <MainWindowStatusBar
+                    appConfig={appConfig}
+                ></MainWindowStatusBar>
             </div>
         )
     }
