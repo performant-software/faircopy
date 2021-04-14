@@ -340,6 +340,7 @@ class FairCopyApplication {
       webPreferences: {
           webSecurity,
           enableRemoteModule: false,
+          contextIsolation: false,
           preload: `${this.baseDir}/${preload}`,
           spellcheck: false
       },
