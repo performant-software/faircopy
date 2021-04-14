@@ -390,6 +390,9 @@ export default class MainWindow extends Component {
                 { this.renderEditors() }
                 <MainWindowStatusBar
                     appConfig={appConfig}
+                    onQuitAndInstall={()=>{}}
+                    onFeedback={()=>{}}
+                    onDisplayNotes={()=>{}}
                 ></MainWindowStatusBar>
             </div>
         )

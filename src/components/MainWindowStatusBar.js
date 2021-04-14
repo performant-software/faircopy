@@ -2,45 +2,37 @@ import React, { Component } from 'react'
 
 import { AppBar, Button } from '@material-ui/core';
 
-// const fairCopy = window.fairCopy
+const fairCopy = window.fairCopy
 
 export default class MainWindowStatusBar extends Component {
 
     constructor(props) {
         super(props)
-        
+
+        const licenseDataJSON = localStorage.getItem('licenseData')
+        const licenseData = JSON.parse(licenseDataJSON)
+
         this.state = {
-            softwareUpdateStatus: 'updateAvailable'
+            softwareUpdateStatus: 'OK',
+            licenseData
         }
     }
 
     componentDidMount() {
-        // TODO
-        // const { services } = fairCopy
-        
-        // const licenseDataJSON = localStorage.getItem('licenseData')
-        // const licenseData = JSON.parse(licenseDataJSON)
-        // services.ipcSend( 'checkForUpdates', licenseData )
-    }
+        // TODO listen for update, if there is one, update to 'updateAvailable'
 
-    onDisplayNotes = () => {
-        // TODO
+        // TODO listen for download completed, update status to 'quitAndInstall'
+
+        const { licenseData } = this.state
+        fairCopy.services.ipcSend( 'checkForUpdates', licenseData )
     }
 
     onStartUpdate = () => {
-        // TODO
-    }
-
-    onQuitAndInstall = () => {
-        // TODO
-    }
-
-    onFeedback = () => {
-        // TODO
+        // TODO send message to kick off download, update state to 'downloading'
     }
 
     render() {
-        const { appConfig } = this.props
+        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes } = this.props
         const { softwareUpdateStatus } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
@@ -50,7 +42,7 @@ export default class MainWindowStatusBar extends Component {
             <AppBar id="MainWindowStatusBar" position="fixed" >
                 <div className="bar">
                     { softwareUpdateStatus === 'OK' && 
-                        <Button onClick={this.onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">
+                        <Button onClick={onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">
                                 { appVersion } {devModeTag }                       
                         </Button> 
                     }
@@ -65,7 +57,7 @@ export default class MainWindowStatusBar extends Component {
                         </Button> 
                     }
                     { softwareUpdateStatus === 'quitAndInstall' && 
-                        <Button onClick={this.onQuitAndInstall }className="version-button" size="small" variant="outlined" color="inherit">
+                        <Button onClick={onQuitAndInstall}className="version-button" size="small" variant="outlined" color="inherit">
                                 <i className="fas fa-sync fa-lg"></i> Quit and Install
                         </Button> 
                     }
@@ -74,10 +66,9 @@ export default class MainWindowStatusBar extends Component {
                                 <i className="fas fa-times fa-lg"></i> Update Error                 
                         </Button> 
                     }
-                     <Button className="version-button" size="small" color="inherit" onClick={this.onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
+                     <Button className="version-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
                </div>
             </AppBar>
         )
     }
-
 }
