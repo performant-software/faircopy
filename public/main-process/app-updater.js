@@ -12,14 +12,15 @@ const checkForUpdates = function checkForUpdates( licenseData, config, sendToMai
 
     const productID = config.devMode ? config.devChannelID : config.productionChannelID
     const keygenDistURL = `https://dist.keygen.sh/v1/${config.keyGenAccountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
-    
+
     autoUpdater = createAutoUpdater( {
-      autoDownload: false,
       url: keygenDistURL,
       provider: 'generic',
       channel: 'latest',
-      logger: log
     })
+
+    autoUpdater.autoDownload = false
+    autoUpdater.logger = log
 
     autoUpdater.on('error', err => {
       log.info(`Autoupdate: ${err}`)
