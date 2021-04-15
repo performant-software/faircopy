@@ -14,26 +14,40 @@ export default class MainWindowStatusBar extends Component {
 
         this.state = {
             softwareUpdateStatus: 'OK',
+            progress: 0,
             licenseData
         }
     }
 
     componentDidMount() {
-        // TODO listen for update, if there is one, update to 'updateAvailable'
+        fairCopy.services.ipcRegisterCallback('updateAvailable', (event) => {
+            this.setState({ ...this.state, softwareUpdateStatus: 'updateAvailable' })
+        })
 
-        // TODO listen for download completed, update status to 'quitAndInstall'
+        fairCopy.services.ipcRegisterCallback('updateDownloading', (event,progress) => {
+            this.setState({ ...this.state, progress })
+        })
+
+        fairCopy.services.ipcRegisterCallback('updateDownloaded', (event) => {
+            this.setState({ ...this.state, softwareUpdateStatus: 'quitAndInstall' })
+        })
+
+        fairCopy.services.ipcRegisterCallback('errorUpdating', (event, error) => {
+            this.setState({ ...this.state, softwareUpdateStatus: 'error' })
+        })
 
         const { licenseData } = this.state
         fairCopy.services.ipcSend( 'checkForUpdates', licenseData )
     }
 
     onStartUpdate = () => {
-        // TODO send message to kick off download, update state to 'downloading'
+        fairCopy.services.ipcSend( 'downloadUpdate' )
+        this.setState({ ...this.state, softwareUpdateStatus: 'downloading', progress: 0 })
     }
 
     render() {
         const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes } = this.props
-        const { softwareUpdateStatus } = this.state
+        const { softwareUpdateStatus, progress } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
@@ -53,7 +67,7 @@ export default class MainWindowStatusBar extends Component {
                     }
                     { softwareUpdateStatus === 'downloading' && 
                         <Button disabled className="version-button" size="small" variant="outlined" color="inherit">
-                                Downloading...                     
+                                Downloading... {progress}%            
                         </Button> 
                     }
                     { softwareUpdateStatus === 'quitAndInstall' && 

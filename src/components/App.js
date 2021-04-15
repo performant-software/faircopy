@@ -27,7 +27,6 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const { services } = fairCopy
     const { licenseData } = this.state
 
     fairCopy.services.ipcRegisterCallback('appConfig', (event, appConfig) => {
@@ -35,9 +34,7 @@ export default class App extends Component {
     })
 
     // tell main process to check for updates 
-    if( licenseData.activated ) {
-      services.ipcSend( 'checkForUpdates', licenseData )
-    } else {
+    if( !licenseData.activated ) {
       this.setTitle('Activate License')
       return
     }

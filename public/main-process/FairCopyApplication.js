@@ -1,12 +1,11 @@
 const { app, BrowserWindow, ipcMain, protocol } = require('electron')
-const { autoUpdater } = require('electron-updater')
 const { ProjectStore, createProjectArchive } = require('./ProjectStore')
 const { exportResources } = require('./export-xml')
 const { MainMenu } = require('./MainMenu')
+const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
-const { platform } = process
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -50,7 +49,9 @@ class FairCopyApplication {
 
   initIPC() {
     
-    ipcMain.on('checkForUpdates', (event,licenseData) => { this.checkForUpdates(licenseData) })
+    ipcMain.on('checkForUpdates', (event,licenseData) => { checkForUpdates(licenseData, this.config, this.sendToMainWindow) })
+    ipcMain.on('downloadUpdate', (event) => { downloadUpdate(this.sendToMainWindow) })
+    
     ipcMain.on('exitApp', (event) => { 
       if( this.projectWindow ) {
         this.projectWindow.close() 
@@ -263,44 +264,7 @@ class FairCopyApplication {
     }
   }
 
-  checkForUpdates( licenseData ) {
-    if( !this.autoUpdaterStarted ) {
-      const { licenseKey, machineID, activated } = licenseData
-
-      // Don't ask for updates if machine isn't activated
-      if( !activated ) return
-
-      autoUpdater.on('error', err => {
-        log.info(`Autoupdate: ${err}`)
-      })
-  
-      autoUpdater.on('update-downloaded', (...args) => {
-        log.info('Autoupdate: update downloaded, ready to restart.')  
-        // TODO need a button on interface to trigger this
-        // autoUpdater.quitAndInstall()
-      })
-
-      autoUpdater.on('update-available', () => {
-        log.info('Autoupdate: update available, downloading.')  
-      }) 
-  
-      const productID = this.config.devMode ? this.config.devChannelID : this.config.productionChannelID
-      const keygenDistURL = `https://dist.keygen.sh/v1/${this.config.keyGenAccountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
-      autoUpdater.setFeedURL({
-        url: keygenDistURL,
-        useMultipleRangeRequest: false,
-        provider: 'generic',
-        channel: 'latest'
-      })  
-      this.autoUpdaterStarted = true
-
-      log.info('Autoupdate: Checking for updates...')
-      autoUpdater.logger = log
-      autoUpdater.checkForUpdatesAndNotify()
-    }
-  }
-
-  sendToMainWindow(message, params) {
+  sendToMainWindow = (message, params) => {
     this.mainWindow.webContents.send(message, params)
   }
 
