@@ -66,7 +66,7 @@ export default class MainWindowStatusBar extends Component {
                         </Button> 
                     }
                     { softwareUpdateStatus === 'downloading' && 
-                        <Button disabled className="version-button" size="small" variant="outlined" color="inherit">
+                        <Button className="version-button" size="small" variant="outlined" color="inherit">
                                 Downloading... {progress}%            
                         </Button> 
                     }

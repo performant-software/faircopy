@@ -31,8 +31,10 @@ const checkForUpdates = function checkForUpdates( licenseData, config, sendToMai
       sendToMainWindow('updateDownloaded')
     })
   
-    autoUpdater.on('download-progress', (progress,bytesPerSecond,percent,total,transferred) => {
-      sendToMainWindow('updateDownloading', percent )
+    autoUpdater.on('download-progress', (progress) => {
+      const percentDownloaded = Math.round(progress.percent)
+      log.info(`downloading ${percentDownloaded}%`)
+      sendToMainWindow('updateDownloading', percentDownloaded )
     }) 
   
     autoUpdater.on('update-available', () => {
