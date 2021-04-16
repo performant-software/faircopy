@@ -72,15 +72,15 @@ export default class MainWindowStatusBar extends Component {
                     }
                     { softwareUpdateStatus === 'quitAndInstall' && 
                         <Button onClick={onQuitAndInstall}className="version-button" size="small" variant="outlined" color="inherit">
-                                <i className="fas fa-sync fa-lg"></i> Restart to Install
+                                <i className="fas fa-sync fa-lg"></i> Restart to Update
                         </Button> 
                     }
                     { softwareUpdateStatus === 'error' && 
                         <Button className="version-button" size="small" variant="outlined" color="inherit">
-                                <i className="fas fa-times fa-lg"></i> Update Error                 
+                                <i className="fas fa-times fa-lg"></i> Error updating                 
                         </Button> 
                     }
-                     <Button className="version-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
+                     <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
                </div>
             </AppBar>
         )

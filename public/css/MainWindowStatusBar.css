@@ -12,3 +12,13 @@
 #MainWindowStatusBar .version-button {
     float: right;
 }
+
+#MainWindowStatusBar .version-button i {
+    margin-right: 5px;
+}
+
+#MainWindowStatusBar .feedback-button {
+    margin-top: 5px;
+    float: right;
+}
+
