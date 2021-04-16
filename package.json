@@ -61,6 +61,7 @@
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
     "react-force-graph-2d": "^1.13.6",
+    "react-markdown": "^6.0.0",
     "react-scripts": "3.4.1",
     "react-split-pane": "^0.1.89",
     "uuid": "^8.1.0",

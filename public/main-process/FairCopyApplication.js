@@ -30,6 +30,7 @@ class FairCopyApplication {
   getConfig() {
     const distConfigJSON = fs.readFileSync(`${this.baseDir}/config/dist-config.json`).toString('utf-8')
     const distConfig = JSON.parse(distConfigJSON)
+    distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/release-notes/latest.md`).toString('utf-8')
     distConfig.version = this.isDebugMode() ? "0.0.0" : app.getVersion()
     return distConfig
   }

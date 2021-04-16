@@ -20,6 +20,7 @@ import SnackAlert from './SnackAlert'
 import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
 import MoveResourceDialog from './MoveResourceDialog';
 import MainWindowStatusBar from './MainWindowStatusBar';
+import ReleaseNotesDialog from './ReleaseNotesDialog';
 
 const fairCopy = window.fairCopy
 
@@ -41,6 +42,7 @@ export default class MainWindow extends Component {
             exitOnClose: false,
             editDialogMode: false,
             addImagesMode: false,
+            releaseNotesMode: false,
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
@@ -392,7 +394,7 @@ export default class MainWindow extends Component {
                     appConfig={appConfig}
                     onQuitAndInstall={()=>{ this.requestExitApp() }}
                     onFeedback={()=>{}}
-                    onDisplayNotes={()=>{}}
+                    onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                 ></MainWindowStatusBar>
             </div>
         )
@@ -419,8 +421,8 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
-        const { fairCopyProject } = this.props
+        const { editDialogMode, addImagesMode, releaseNotesMode, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
@@ -505,6 +507,10 @@ export default class MainWindow extends Component {
                     anchorEl={popupMenuAnchorEl}
                     onClose={this.onClosePopupMenu}                
                 ></PopupMenu> }
+                { releaseNotesMode && <ReleaseNotesDialog
+                    appConfig={appConfig}
+                    onClose={()=> { this.setState( { ...this.state, releaseNotesMode: false })}}                
+                ></ReleaseNotesDialog> }
                 { editSurfaceInfoMode && <EditSurfaceInfoDialog
                     surfaceInfo={surfaceInfo}
                     onSave={onSaveSurfaceInfo}

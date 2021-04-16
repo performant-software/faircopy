@@ -1,0 +1,30 @@
+import React, { Component } from 'react'
+import { Button } from '@material-ui/core'
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import ReactMarkdown from 'react-markdown'
+
+export default class ReleaseNotesDialog extends Component {
+
+    render() {      
+        const { onClose, appConfig } = this.props
+        const { releaseNotes, version } = appConfig
+
+        return (
+            <Dialog
+                id="ReleaseNotesDialog"
+                open={true}
+                onClose={onClose}
+                aria-labelledby="edit-resource-title"
+                aria-describedby="edit-resource-description"
+            >
+                <DialogTitle id="edit-resource-title">Release Notes for FairCopy v{version}</DialogTitle>
+                <DialogContent>
+                    <ReactMarkdown children={releaseNotes} />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="outlined" onClick={onClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+}
