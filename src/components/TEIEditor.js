@@ -318,8 +318,9 @@ export default class TEIEditor extends Component {
             }
         }
 
-        const drawerHeight = selectedElements.length > 0 ? 335 : 35
-        const editorHeight = `calc(100% - ${drawerHeight + 130}px)`
+        const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
+        const drawerWidth = `calc(100vw - 30px - ${leftPaneWidth}px)`
+        const editorHeight = `calc(100% - ${drawerHeight + 230}px)`
         const editorWidth = `calc(100vw - 10px - ${leftPaneWidth}px)`
         const editorStyle = { minWidth: editorWidth, maxHeight: editorHeight }
 
@@ -366,6 +367,7 @@ export default class TEIEditor extends Component {
                         teiDocument={teiDocument} 
                         elements={selectedElements}
                         height={drawerHeight}
+                        width={drawerWidth}
                     /> }
                 </div>
                 { !hidden && <NotePopup

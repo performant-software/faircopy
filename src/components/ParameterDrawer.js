@@ -315,7 +315,9 @@ export default class ParameterDrawer extends Component {
     }
 
     render() {
-        const { elements, height } = this.props
+        const { elements, width, height } = this.props
+
+        if( elements.length === 0 ) return null
 
         const elementEls = []
         let count = 0
@@ -324,17 +326,15 @@ export default class ParameterDrawer extends Component {
         }
 
         const s = (elements.length !== 1) ? 's' : ''
-        const headerMessage = (elements.length > 0) ? 
-            `Element Inspector (${elements.length} element${s})` :  
-            "Click on an element to view its attributes."
+        const headerMessage = `Element Inspector (${elements.length} element${s})`
 
         return (
-            <div id="ParameterDrawer" style={ { height, marginBottom: 50 } }>
+            <div id="ParameterDrawer">
                 <div className="header">
                     <Typography>{headerMessage}</Typography>
                 </div>
                 { elementEls.length > 0 ? 
-                    <div className="attribute-list">
+                    <div className="attribute-list"  style={ { width, height } }>
                         { elementEls }
                     </div>
                     : null

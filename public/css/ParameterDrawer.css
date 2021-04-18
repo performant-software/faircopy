@@ -3,10 +3,8 @@
     background: '#FFF9DD';
     z-index: 999;
     bottom: 0;
+    margin-bottom: 50px;
     position: fixed;
-    max-height: 335px;
-    max-width: 100%;
-    width: 100%;
 }
 
 .attributePanel  {
@@ -40,7 +38,7 @@
 #ParameterDrawer .attribute-list {
     background: #FFF9DD;
     padding: 10px;
-    padding-top: 50px;
+    overflow-y: auto;
 }
 
 #ParameterDrawer .legend-box {
