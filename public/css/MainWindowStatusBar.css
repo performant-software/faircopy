@@ -1,15 +1,16 @@
 
 #MainWindowStatusBar { 
-    top: auto;
+    position: fixed;
+    color: white;
     background: #0086C0;
+    width: 100%;
     bottom: 0px;
-}
-
-#MainWindowStatusBar .bar {
+    z-index: 800;
     padding: 10px; 
 }
 
 #MainWindowStatusBar .version-button {
+    margin-right: 20px;
     float: right;
 }
 

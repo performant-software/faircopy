@@ -372,7 +372,7 @@ export default class MainWindow extends Component {
     }
 
     renderContentPane() {
-        const { fairCopyProject, appConfig } = this.props
+        const { fairCopyProject } = this.props
         const { resourceBrowserOpen, parentResourceID } = this.state
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const resources = fairCopyProject.getResources(parentResource)
@@ -390,12 +390,6 @@ export default class MainWindow extends Component {
                         resources={resources}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
-                <MainWindowStatusBar
-                    appConfig={appConfig}
-                    onQuitAndInstall={()=>{ this.requestExitApp() }}
-                    onFeedback={()=>{}}
-                    onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
-                ></MainWindowStatusBar>
             </div>
         )
     }
@@ -580,20 +574,26 @@ export default class MainWindow extends Component {
     }
 
     render() {
+        const { appConfig } = this.props
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
    
         return (
-            <div 
-                ref={(el) => this.el = el} 
-                onKeyDown={this.onKeyDown} 
-            > 
-                <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
-                    { this.renderProjectSidebar() }
-                    { this.renderContentPane() }
-                </SplitPane>
+            <div>
+                <div onKeyDown={this.onKeyDown} > 
+                    <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
+                        { this.renderProjectSidebar() }
+                        { this.renderContentPane() }
+                    </SplitPane>
+                    <MainWindowStatusBar
+                        appConfig={appConfig}
+                        onQuitAndInstall={()=>{ this.requestExitApp() }}
+                        onFeedback={()=>{}}
+                        onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
+                    ></MainWindowStatusBar>
+                </div>
                 { this.renderDialogs() }
             </div>
         )

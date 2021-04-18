@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { AppBar, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 const fairCopy = window.fairCopy
 
@@ -53,8 +53,7 @@ export default class MainWindowStatusBar extends Component {
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
         return (
-            <AppBar id="MainWindowStatusBar" position="fixed" >
-                <div className="bar">
+            <div id="MainWindowStatusBar" className="bar">
                     { softwareUpdateStatus === 'OK' && 
                         <Button onClick={onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">
                                 { appVersion } {devModeTag }                       
@@ -81,8 +80,7 @@ export default class MainWindowStatusBar extends Component {
                         </Button> 
                     }
                      <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
-               </div>
-            </AppBar>
+            </div>
         )
     }
 }

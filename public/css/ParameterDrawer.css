@@ -1,4 +1,13 @@
 
+#ParameterDrawer {
+    background: '#FFF9DD';
+    z-index: 999;
+    bottom: 0;
+    position: fixed;
+    max-height: 335px;
+    max-width: 100%;
+    width: 100%;
+}
 
 .attributePanel  {
     border: 1px solid #ddd;
@@ -26,8 +35,6 @@
     background: #ffea8a;
     height: 25px;
     width: 100%;
-    z-index: 999;
-    position: fixed;
 }
 
 #ParameterDrawer .attribute-list {

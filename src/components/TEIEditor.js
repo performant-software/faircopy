@@ -362,12 +362,12 @@ export default class TEIEditor extends Component {
                             teiDocument={teiDocument}
                         /> }      
                     </div>
+                    { !hidden && <ParameterDrawer 
+                        teiDocument={teiDocument} 
+                        elements={selectedElements}
+                        height={drawerHeight}
+                    /> }
                 </div>
-                { !hidden && <ParameterDrawer 
-                    teiDocument={teiDocument} 
-                    elements={selectedElements}
-                    height={drawerHeight}
-                /> }
                 { !hidden && <NotePopup
                     noteID={noteID}
                     expanded={expandedGutter}

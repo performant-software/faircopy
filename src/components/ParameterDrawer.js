@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Drawer, Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-ui/core'
-import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
+import { Card, CardContent, Slide, CardActions, CardHeader } from '@material-ui/core'
 
 import Typography from '@material-ui/core/Typography'
 import {Node} from 'prosemirror-model'
@@ -329,13 +329,7 @@ export default class ParameterDrawer extends Component {
             "Click on an element to view its attributes."
 
         return (
-            <Drawer 
-                id="ParameterDrawer"
-                variant="persistent"
-                anchor="bottom"
-                open={true}        
-                PaperProps={{ style: { height, background: '#FFF9DD' } }}
-            >
+            <div id="ParameterDrawer" style={ { height, marginBottom: 50 } }>
                 <div className="header">
                     <Typography>{headerMessage}</Typography>
                 </div>
@@ -346,7 +340,7 @@ export default class ParameterDrawer extends Component {
                     : null
                 }
                 { this.renderDialogs() }                
-            </Drawer>
+            </div>
         )
     }
 
