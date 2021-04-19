@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 
 const fairCopy = window.fairCopy
 
@@ -79,7 +79,9 @@ export default class MainWindowStatusBar extends Component {
                                 <i className="fas fa-times fa-lg"></i> Error updating                 
                         </Button> 
                     }
-                     <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
+                        <Tooltip title="Send developer feedback">
+                            <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
+                        </Tooltip>
             </div>
         )
     }
