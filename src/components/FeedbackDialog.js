@@ -21,9 +21,13 @@ export default class FeedbackNotesDialog extends Component {
 
         const onChange = (e) => {
             const {name, value} = e.target
-            const nextState = { ...this.state }
-            nextState[name] = value
-            this.setState(nextState)
+
+            // cap message length (to prevent phonebook cut and paste)
+            if( value.length < 10000 ) {
+                const nextState = { ...this.state }
+                nextState[name] = value
+                this.setState(nextState)    
+            }
         }
 
         const onSuccess = () => {
@@ -36,9 +40,12 @@ export default class FeedbackNotesDialog extends Component {
 
         const onSend = (e) => {
             const { message } = this.state
-            const { appConfig } = this.props
-            const { version, devMode } = appConfig        
-            sendFeedback(devMode,message,version,onSuccess,onError)
+
+            if( message.length > 0 ) {
+                const { appConfig } = this.props
+                const { version, devMode } = appConfig        
+                sendFeedback(devMode,message,version,onSuccess,onError)    
+            }
         }
 
         return (
@@ -49,19 +56,25 @@ export default class FeedbackNotesDialog extends Component {
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Send us Feedback</DialogTitle>
-                <Typography>Please send us a message:</Typography>
+                <DialogTitle id="edit-resource-title">User Feedback Form</DialogTitle>
                 <DialogContent>
-                    <TextField 
-                        name="message"
-                        value={message}
-                        onChange={onChange}
-                        label="Your message" 
-                    />
+                    <div className="form">
+                        <Typography className="instructions" >Please enter a message to send to the developers of FairCopy. Bug reports, feature requests, and general comments are welcome.</Typography>
+                        <TextField 
+                            name="message"
+                            value={message}
+                            multiline
+                            rows={6}
+                            className="form-field"
+                            variant="outlined"
+                            onChange={onChange}
+                            label="Your Message" 
+                        />
+                    </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" onClick={onSend}>Send</Button>
-                    <Button variant="outlined" onClick={onClose}>Close</Button>
+                    <Button color="primary" disabled={ message.length === 0 } variant="contained" onClick={onSend}>Send</Button>
+                    <Button variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )

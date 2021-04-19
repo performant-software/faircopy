@@ -1,0 +1,10 @@
+
+#FeedbackNotesDialog .instructions {
+    margin-bottom: 20px;
+    max-width: 360px;
+}
+
+#FeedbackNotesDialog .form-field {
+    width: 350px;
+    margin-bottom: 10px;
+}
