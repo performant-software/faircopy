@@ -1,0 +1,26 @@
+#ReleaseNotesDialog .notes {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    width: 550px;
+}
+
+#ReleaseNotesDialog .notes p {
+    font-weight: 400;
+    line-height: 1.43;
+}
+
+#ReleaseNotesDialog .notes li {
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+#ReleaseNotesDialog .notes h1 {
+    font-weight: 500;
+    font-size: 1.25;
+    line-height: 1.43;
+}
+
+#ReleaseNotesDialog .notes h2 {
+    font-weight: 500;
+    font-size: 1.25;
+    line-height: 1.43;
+}

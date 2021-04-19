@@ -21,7 +21,7 @@ export default class ReleaseNotesDialog extends Component {
 
     render() {      
         const { onClose, appConfig } = this.props
-        const { releaseNotes, version } = appConfig
+        const { releaseNotes } = appConfig
 
         return (
             <Dialog
@@ -31,9 +31,11 @@ export default class ReleaseNotesDialog extends Component {
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Release Notes for FairCopy v{version}</DialogTitle>
+                <DialogTitle id="edit-resource-title">Release Notes for FairCopy</DialogTitle>
                 <DialogContent>
-                    <ReactMarkdown children={releaseNotes} />
+                    <div className="notes">
+                        <ReactMarkdown children={releaseNotes} />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={onClose}>Close</Button>
