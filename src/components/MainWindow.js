@@ -21,6 +21,7 @@ import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
 import MoveResourceDialog from './MoveResourceDialog';
 import MainWindowStatusBar from './MainWindowStatusBar';
 import ReleaseNotesDialog from './ReleaseNotesDialog';
+import FeedbackDialog from './FeedbackDialog';
 
 const fairCopy = window.fairCopy
 
@@ -43,6 +44,7 @@ export default class MainWindow extends Component {
             editDialogMode: false,
             addImagesMode: false,
             releaseNotesMode: false,
+            feedbackMode: false,
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
@@ -415,7 +417,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, releaseNotesMode, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -505,6 +507,10 @@ export default class MainWindow extends Component {
                     appConfig={appConfig}
                     onClose={()=> { this.setState( { ...this.state, releaseNotesMode: false })}}                
                 ></ReleaseNotesDialog> }
+                { feedbackMode && <FeedbackDialog
+                    appConfig={appConfig}
+                    onClose={()=> { this.setState( { ...this.state, feedbackMode: false })}}                
+                ></FeedbackDialog> }
                 { editSurfaceInfoMode && <EditSurfaceInfoDialog
                     surfaceInfo={surfaceInfo}
                     onSave={onSaveSurfaceInfo}
@@ -590,7 +596,7 @@ export default class MainWindow extends Component {
                     <MainWindowStatusBar
                         appConfig={appConfig}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
-                        onFeedback={()=>{}}
+                        onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                     ></MainWindowStatusBar>
                 </div>

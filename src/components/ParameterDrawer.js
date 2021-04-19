@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Drawer, Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-ui/core'
-import { Card, CardContent, Slide, CardActions, CardHeader } from '@material-ui/core'
+import { Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-ui/core'
+import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
 
 import Typography from '@material-ui/core/Typography'
 import {Node} from 'prosemirror-model'
