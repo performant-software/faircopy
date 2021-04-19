@@ -70,6 +70,7 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
         fairCopyProject.addUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
+        this.checkReleaseNotes()
     }
 
     componentWillUnmount() {
@@ -98,6 +99,20 @@ export default class MainWindow extends Component {
             this.closeResources( resourceIDs, true)
         } else {
             fairCopy.services.ipcSend('exitApp')
+        }
+    }
+
+    checkReleaseNotes() {
+        const { appConfig } = this.props
+        const { version } = appConfig
+
+        const licenseDataJSON = localStorage.getItem('licenseData')
+        const licenseData = JSON.parse(licenseDataJSON)
+        const { viewedReleaseNotes } = licenseData
+        
+        // display release notes if they haven't been viewed
+        if( !viewedReleaseNotes || viewedReleaseNotes !== version ) {
+            this.setState({ ...this.state, releaseNotesMode: true })
         }
     }
 
