@@ -1101,9 +1101,9 @@
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.10.2":
-  version "7.13.10"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.10.tgz#47d42a57b6095f4468da440388fdbad8bebf0d7d"
-  integrity sha512-4QPkjJq6Ns3V/RgpEahRk+AGfL0eO6RHHtTWoNNr5mO49G6B5+X6d6THgWEAvTrznU5xYpbAlVKRYcsCgh/Akw==
+  version "7.13.16"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.16.tgz#673e7b84c1f6287d96d483fa65cd3db792d53e22"
+  integrity sha512-7VsWJsI5USRhBLE/3of+VU2DDNWtYHQlq2IHu2iL15+Yx4qVqP8KllR6JMHQlTKWRyDk9Tw6unkqSusaHXt//A==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -1868,21 +1868,20 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@recogito/annotorious@^2.2.0":
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/@recogito/annotorious/-/annotorious-2.2.4.tgz#64e6bc1a3ac0500f4984081981cffc3dd0b89430"
-  integrity sha512-qPcd/95wmuxAgB7w/XItpSNg3cCRWwwiY8yUXRu3l7TLhpMnF8r5uTqH5XKU2NmlyzxeIRGIVOq/nUHcBZ3RXw==
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/@recogito/annotorious/-/annotorious-2.3.3.tgz#63c0531cf274014944a21e96be7080fca8cbef2b"
+  integrity sha512-QLFkp+rEdsdPZAbc9+3SfNQmLfcKotgZnduWro9UTlPjqTch/TVjREoBTnnY4c7heVBZfvpBxBqRUIxn4ujnTA==
   dependencies:
     "@babel/polyfill" "^7.10.4"
-    "@recogito/recogito-client-core" "1.0.1"
+    "@recogito/recogito-client-core" "1.0.6"
     axios "^0.21.1"
-    hammerjs "^2.0.8"
     preact "^10.4.1"
     tiny-emitter "^2.1.0"
 
-"@recogito/recogito-client-core@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@recogito/recogito-client-core/-/recogito-client-core-1.0.1.tgz#51792c00d1c0fea7cec544b850b659fef6585828"
-  integrity sha512-tBJx5z2PqrtdGst/eFP1GZvw9d4frSbXI0FgOABjWYLuclPLKhHqKFW9xp+rQCgoMtrqgeRyAxppjWG5IQSW+A==
+"@recogito/recogito-client-core@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@recogito/recogito-client-core/-/recogito-client-core-1.0.6.tgz#2d47bee9eef7d30bcc576b57174f8950c256362f"
+  integrity sha512-61hQqKpNBkSQbdo+rK/Y/a3jOoGSrWWUWgDZQV6NNLpFqkdzJ19+3A8E0XOwwJwD7vVSttg4s0Y07X1a9pqKzQ==
   dependencies:
     axios "^0.21.1"
     downshift "^5.4.6"
@@ -6495,11 +6494,6 @@ gzip-size@5.1.1:
     duplexer "^0.1.1"
     pify "^4.0.1"
 
-hammerjs@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
-  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
-
 handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
@@ -10589,9 +10583,9 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, po
     supports-color "^6.1.0"
 
 preact@^10.4.1:
-  version "10.5.12"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.12.tgz#6a8ee8bf40a695c505df9abebacd924e4dd37704"
-  integrity sha512-r6siDkuD36oszwlCkcqDJCAKBQxGoeEGytw2DGMD5A/GGdu5Tymw+N2OBXwvOLxg6d1FeY8MgMV3cc5aVQo4Cg==
+  version "10.5.13"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.13.tgz#85f6c9197ecd736ce8e3bec044d08fd1330fa019"
+  integrity sha512-q/vlKIGNwzTLu+jCcvywgGrt+H/1P/oIRSD6mV4ln3hmlC+Aa34C7yfPI4+5bzW8pONyVXYS7SvXosy2dKKtWQ==
 
 prelude-ls@~1.1.2:
   version "1.1.2"
