@@ -7,6 +7,7 @@ import LicenseWindow from './LicenseWindow'
 import FairCopyProject from '../tei-document/FairCopyProject'
 import ImageView from '../tei-document/ImageView'
 import { initLicenseData } from '../tei-document/license-key.js'
+import IncompatDialog from './IncompatDialog'
 
 const fairCopy = window.fairCopy
 
@@ -21,6 +22,7 @@ export default class App extends Component {
     this.state = {
       fairCopyProject: null,
       licenseData,
+      incompatInfo: null,
       imageView: null,
       appConfig: null
     }
@@ -52,6 +54,7 @@ export default class App extends Component {
     // Receive open and save file events from the main process
     if( rootComponent === 'MainWindow' ) {
       services.ipcRegisterCallback('projectOpened', (event, projectData) => this.openProject(projectData))
+      services.ipcRegisterCallback('projectIncompatible', (event, incompatInfo) => this.setState({ ...this.state, incompatInfo }) )
     } else if( rootComponent === 'ImageWindow' ) {
       services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
     }
@@ -108,7 +111,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {fairCopyProject, imageView, licenseData, appConfig } = this.state
+    const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo } = this.state
     const {rootComponent} = window.fairCopy
     if( !licenseData.activated ) {
       return (
@@ -116,6 +119,16 @@ export default class App extends Component {
           appConfig={appConfig}
           onActivate={this.onActivate}
         ></LicenseWindow>
+      )
+    }
+
+    if( incompatInfo ) {
+      const { projectFilePath, projectFileVersion } = incompatInfo
+      return (
+        <IncompatDialog
+          projectFilePath={projectFilePath}
+          projectFileVersion={projectFileVersion}
+        ></IncompatDialog>
       )
     }
 

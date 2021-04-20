@@ -52,6 +52,10 @@ class FairCopyApplication {
     
     ipcMain.on('checkForUpdates', (event,licenseData) => { checkForUpdates(licenseData, this.config, this.sendToMainWindow) })
     ipcMain.on('downloadUpdate', (event) => { downloadUpdate(this.sendToMainWindow) })
+    ipcMain.on('closeProject', (event) => { 
+      this.closeProject()
+      this.exitApp()
+    })
     
     ipcMain.on('exitApp', (event) => { 
       if( this.projectWindow ) {

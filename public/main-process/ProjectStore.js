@@ -4,7 +4,8 @@ const os = require('os')
 const debounce = require('debounce')
 const log = require('electron-log')
 const { IDMapAuthority } = require('./IDMapAuthority')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid')
+const semver = require('semver')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -72,18 +73,25 @@ class ProjectStore {
             return
         }
 
-        // if elements changed in config, migrate project config
-        this.migratedConfig = migrateConfig(baseConfig,fairCopyConfig)
-        if( this.migratedConfig ) {
-            fairCopyConfig = this.migratedConfig
-        }
-        
         // project store keeps a copy of the manifest data
         this.manifestData = JSON.parse(fairCopyManifest)
         if( !this.manifestData ) {
             log.info('Error parsing project manifest.')
             return
         }
+
+        if( !this.compatibleProject() ) {
+            log.info('Project file is incompatible.')
+            const incompatInfo = { projectFilePath, projectFileVersion: this.manifestData.generatedWith }
+            this.fairCopyApplication.sendToMainWindow('projectIncompatible', incompatInfo)
+            return
+        }
+        
+        // if elements changed in config, migrate project config
+        this.migratedConfig = migrateConfig(baseConfig,fairCopyConfig)
+        if( this.migratedConfig ) {
+            fairCopyConfig = this.migratedConfig
+        }        
 
         // id map authority tracks ids across processes
         this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
@@ -108,6 +116,19 @@ class ProjectStore {
             const imageViewData = { resourceEntry, parentEntry, xmlID, resource, teiSchema, idMap: JSON.stringify(idMapNext) }
             imageView.webContents.send('imageViewOpened', imageViewData )    
         }
+    }
+
+    // project files are backward compatible but not forward compatible
+    compatibleProject() {
+        if( this.fairCopyApplication.isDebugMode() ) return true
+        const currentVersion = this.fairCopyApplication.config.version
+        const projectVersion = this.manifestData.generatedWith ? this.manifestData.generatedWith : '0.9.4'  // this field was added in 0.9.5
+        return currentVersion === projectVersion || semver.gt(currentVersion, projectVersion)
+    }
+
+    setProjectVersion() {
+        const currentVersion = this.fairCopyApplication.config.version
+        this.manifestData.generatedWith = currentVersion
     }
 
     quitSafely = (quitCallback) => {
@@ -212,6 +233,7 @@ class ProjectStore {
     }
 
     saveManifest() {
+        this.setProjectVersion()
         this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
         this.writeProjectArchive()
     }
