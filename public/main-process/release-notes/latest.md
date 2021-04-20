@@ -15,7 +15,7 @@ _Note:_ FairCopy 0.9.5 changes the project save file format. Older versions of F
 * You can now import TEI Facsimile resources.
 * Exporting resources that are not in a TEI Document does not include a TEI Header.
 * You can move resources in and out of TEI Documents.
-* FairCopy now let's you know when a new version is available so you can download it when the time is right for you.
+* FairCopy now lets you know when a new version is available so you can download it when the time is right for you.
 * FairCopy now displays the latest release notes after a new version of the software is installed.
 * Project file location is now displayed in the Edit Project dialog.
 * There is now a feedback button in the lower right hand corner. Please use it to send us a message!
