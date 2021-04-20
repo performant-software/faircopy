@@ -2,9 +2,9 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
-## Version 0.9.5
+## Version 0.9.6
 
-_Note:_ FairCopy 0.9.5 changes the project save file format. Older versions of FairCopy may have errors opening files generated using 0.9.5 or later. Please ask collaborators to upgrade to 0.9.5 or later.
+_Note:_ FairCopy 0.9.6 changes the project save file format. Older versions of FairCopy may have errors opening files generated using 0.9.6 or later. Please ask collaborators to upgrade to 0.9.6 or later.
 
 ### Improvements
 
