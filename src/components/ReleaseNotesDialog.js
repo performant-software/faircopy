@@ -28,10 +28,12 @@ export default class ReleaseNotesDialog extends Component {
                 id="ReleaseNotesDialog"
                 open={true}
                 onClose={onClose}
+                maxWidth="md"
+                fullWidth={true}
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Release Notes for FairCopy</DialogTitle>
+                <DialogTitle id="edit-resource-title">Release Notes</DialogTitle>
                 <DialogContent>
                     <div className="notes">
                         <ReactMarkdown children={releaseNotes} />

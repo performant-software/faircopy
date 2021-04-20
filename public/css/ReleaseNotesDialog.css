@@ -1,6 +1,7 @@
 #ReleaseNotesDialog .notes {
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    width: 550px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 #ReleaseNotesDialog .notes p {
