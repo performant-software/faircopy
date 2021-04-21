@@ -103,7 +103,7 @@ export default class MoveResourceDialog extends Component {
 
     render() {      
         const { targetID } = this.state
-        const { onClose, resourceIDs } = this.props
+        const { onClose, resourceIDs, closeResources } = this.props
         
         const onClickMove = () => {
             const { targetID } = this.state
@@ -120,6 +120,7 @@ export default class MoveResourceDialog extends Component {
 
             const parentID = targetID === 'ROOT' ? null : targetID
             fairCopyProject.moveResources( validIDs, parentID )
+            closeResources(validIDs, false, false )  
             onClose()
         }
 

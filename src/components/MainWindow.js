@@ -511,6 +511,7 @@ export default class MainWindow extends Component {
                 { moveResourceMode && <MoveResourceDialog
                     resourceIDs={moveResourceIDs}
                     fairCopyProject={fairCopyProject}
+                    closeResources={this.closeResources}
                     onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceIDs: null} )}}
                 ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
