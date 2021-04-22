@@ -164,7 +164,7 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { onEditResource, onSave, teiDocument } = this.props
+        const { onEditResource, onSave, onOpenPalette, teiDocument } = this.props
         const { changedSinceLastSave } = teiDocument
         
         return (
@@ -180,6 +180,16 @@ export default class EditorToolbar extends Component {
                             >
                                 <i className="far fa-edit fa-2x"></i>
                             </Button>                   
+                        </span>
+                    </Tooltip>
+                    <Tooltip title={"Open Palette"}>
+                        <span>
+                            <Button
+                                onClick={onOpenPalette}
+                                {...this.buttonProps}
+                            >
+                                <i className="fas fa-palette fa-2x"></i>
+                            </Button>  
                         </span>
                     </Tooltip>
                 </div>

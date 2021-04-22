@@ -18,10 +18,11 @@ import TEIDocument from '../tei-document/TEIDocument'
 import FacsEditor from './FacsEditor'
 import SnackAlert from './SnackAlert'
 import EditSurfaceInfoDialog from './EditSurfaceInfoDialog'
-import MoveResourceDialog from './MoveResourceDialog';
-import MainWindowStatusBar from './MainWindowStatusBar';
-import ReleaseNotesDialog from './ReleaseNotesDialog';
-import FeedbackDialog from './FeedbackDialog';
+import MoveResourceDialog from './MoveResourceDialog'
+import MainWindowStatusBar from './MainWindowStatusBar'
+import ReleaseNotesDialog from './ReleaseNotesDialog'
+import FeedbackDialog from './FeedbackDialog'
+import FloatingWindow from './FloatingWindow'
 
 const fairCopy = window.fairCopy
 
@@ -42,6 +43,7 @@ export default class MainWindow extends Component {
             alertOptions: null,
             exitOnClose: false,
             editDialogMode: false,
+            paletteWindowOpen: false,
             addImagesMode: false,
             releaseNotesMode: false,
             feedbackMode: false,
@@ -259,6 +261,10 @@ export default class MainWindow extends Component {
         this.setState({...this.state, elementMenuOptions })
     }
 
+    onOpenPalette = () => {
+        this.setState({...this.state, paletteWindowOpen: true })
+    }
+
     onCloseElementMenu = () => {
         this.setState({...this.state, elementMenuOptions: null })
     }
@@ -359,6 +365,7 @@ export default class MainWindow extends Component {
                             resourceEntry={resourceEntry}
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
+                            onOpenPalette={this.onOpenPalette}
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
                             onSave={onSave}
@@ -432,7 +439,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -501,6 +508,9 @@ export default class MainWindow extends Component {
                     onSave={onSaveProjectInfo}
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }
+                { paletteWindowOpen && <FloatingWindow
+                    onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
+                ></FloatingWindow> }
                 { elementMenuOptions && <ElementMenu
                     teiDocument={selectedDoc}
                     onAlertMessage={this.onAlertMessage}
