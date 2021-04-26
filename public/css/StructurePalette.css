@@ -1,0 +1,69 @@
+#StructurePalette {
+    position: absolute;
+    z-index: 2000;
+    background-color: white;
+    border: 2px solid gray;
+    opacity: 100%;
+}
+  
+#StructurePalette .header {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    color: white;
+    background: #3787AA;
+}
+
+#StructurePalette .close-x { 
+    font-style: bold;
+    color: white;
+    padding: 3px;
+    float: right;
+}
+
+#StructurePalette .content {
+    min-width: 200px;
+    max-width: 400px;
+    max-height: 600px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+#StructurePalette .content > img {
+    max-width: 400px;
+}
+
+#StructurePalette .content > h2 {
+    font-size: 12pt;
+}
+
+#StructurePalette-content > p {
+    font-size: 10pt;
+}
+
+#StructurePalette .right-img {
+    float: right;
+    padding: 5px;
+    width: 180px;
+}
+
+#StructurePalette .element-type {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-width: 10px;
+    text-align: center;
+    background:#e7ddff;
+}
+
+#StructurePalette .el-name {
+    display: inline-block;
+    user-select: none;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+#StructurePalette .add-button {
+    margin-top: 20px;
+}

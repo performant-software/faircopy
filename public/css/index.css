@@ -34,4 +34,5 @@
 @import "MainWindowStatusBar.css";
 @import "FeedbackNotesDialog.css";
 @import "ReleaseNotesDialog.css";
-@import "FloatingWindow.css";
+@import "StructurePalette.css";
+@import "DraggingElement.css";

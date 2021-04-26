@@ -22,7 +22,8 @@ import MoveResourceDialog from './MoveResourceDialog'
 import MainWindowStatusBar from './MainWindowStatusBar'
 import ReleaseNotesDialog from './ReleaseNotesDialog'
 import FeedbackDialog from './FeedbackDialog'
-import FloatingWindow from './FloatingWindow'
+import StructurePalette from './StructurePalette'
+import DraggingElement from './DraggingElement';
 
 const fairCopy = window.fairCopy
 
@@ -47,6 +48,7 @@ export default class MainWindow extends Component {
             addImagesMode: false,
             releaseNotesMode: false,
             feedbackMode: false,
+            draggingElementActive: false,
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
@@ -439,7 +441,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -508,9 +510,15 @@ export default class MainWindow extends Component {
                     onSave={onSaveProjectInfo}
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }
-                { paletteWindowOpen && <FloatingWindow
+                { paletteWindowOpen && <StructurePalette
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
-                ></FloatingWindow> }
+                ></StructurePalette> }
+                { draggingElementActive && <DraggingElement
+                    elementID={'p'}
+                    teiDocument={selectedDoc}
+                    startingPoint={{ x: 500, y: 500}}
+                    onDrop={()=>{ this.setState( {...this.state, draggingElementActive: false} )}}
+                ></DraggingElement> }
                 { elementMenuOptions && <ElementMenu
                     teiDocument={selectedDoc}
                     onAlertMessage={this.onAlertMessage}

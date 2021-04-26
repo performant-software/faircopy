@@ -1,6 +1,7 @@
+import { Button, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
-export default class FloatingWindow extends Component {
+export default class StructurePalette extends Component {
 
   constructor(props) {
     super(props)
@@ -51,6 +52,7 @@ elementDrag = (e) => {
     const nextOffsetX = (offsetX - pos1)
     const nextOffsetY = (offsetY - pos2)
     this.setState({ ...this.state, offsetX: nextOffsetX, offsetY: nextOffsetY, startX: nextStartX, startY: nextStartY })
+
     e.preventDefault()
   }
 }
@@ -63,24 +65,37 @@ closeDragElement = () => {
   }
 }
 
+onStartDragElement = () => {
+
+}
+
 render() {      
-    const { offsetX, offsetY } = this.state
+    const { offsetX, offsetY, dragging } = this.state
     const { onClose } = this.props
   
     const style = {
       left: offsetX,
       top: offsetY,
+      pointerEvents: dragging ? 'none' : 'auto' 
     }
 
     return (
       <div 
         style={style}
-        className="floating-window"
+        id="StructurePalette"
       >
-        <div className="floating-window-close-x" onClick={onClose}>X</div>
-        <div className="floating-window-header" onMouseDown={this.dragMouseDown}></div>
-        <div className="floating-window-content">
-          THIS WINDOW
+        <div className="header" onMouseDown={this.dragMouseDown}>
+          <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
+          <Typography>Structure Palette</Typography>
+        </div>
+        <div className="content">
+          <div 
+              onMouseDown={this.onStartDragElement} 
+              className="element-type"
+              >
+              <div className="el-name">p</div>
+          </div>
+          <Button className="add-button" size="small" variant="outlined">Add Element</Button>
         </div>
       </div>
     )
