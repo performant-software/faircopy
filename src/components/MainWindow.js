@@ -49,6 +49,7 @@ export default class MainWindow extends Component {
             releaseNotesMode: false,
             feedbackMode: false,
             draggingElementActive: false,
+            dragInfo: null,
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
@@ -307,6 +308,11 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, surfaceInfo: surfaceInfo, editSurfaceInfoMode: true} )
     }
 
+    onDragElement = (elementID, startingPoint) => {
+        const dragInfo = { elementID, startingPoint }
+        this.setState( {...this.state, draggingElementActive: true, dragInfo })
+    }
+
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
             case 'open-teidoc':
@@ -441,7 +447,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -511,13 +517,14 @@ export default class MainWindow extends Component {
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }
                 { paletteWindowOpen && <StructurePalette
+                    onDragElement={this.onDragElement}
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
                 ></StructurePalette> }
                 { draggingElementActive && <DraggingElement
-                    elementID={'p'}
+                    elementID={dragInfo.elementID}
                     teiDocument={selectedDoc}
-                    startingPoint={{ x: 500, y: 500}}
-                    onDrop={()=>{ this.setState( {...this.state, draggingElementActive: false} )}}
+                    startingPoint={dragInfo.startingPoint}
+                    onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></DraggingElement> }
                 { elementMenuOptions && <ElementMenu
                     teiDocument={selectedDoc}

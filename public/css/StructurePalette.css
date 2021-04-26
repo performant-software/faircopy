@@ -53,6 +53,7 @@
     min-width: 10px;
     text-align: center;
     background:#e7ddff;
+    margin-bottom: 5px;
 }
 
 #StructurePalette .el-name {
@@ -65,5 +66,5 @@
 }
 
 #StructurePalette .add-button {
-    margin-top: 20px;
+    margin-top: 10px;
 }

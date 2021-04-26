@@ -53,6 +53,7 @@ onDrop = () => {
 }
 
 render() {      
+    const { elementID } = this.props
     const { offsetX, offsetY } = this.state
   
     const style = {
@@ -62,12 +63,10 @@ render() {
 
     return (
       <div 
-        style={style}
         id="DraggingElement"
+        style={style}
       >
-        <div className="content">
-            P
-        </div>
+        <div className="el-name">{elementID}</div>
       </div>
     )
   }

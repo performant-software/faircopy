@@ -13,3 +13,22 @@
     padding: 10px;
     overflow: hidden;
 }
+
+#DraggingElement {
+    cursor: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-width: 10px;
+    text-align: center;
+    background:#e7ddff;
+    margin-bottom: 5px;
+}
+
+#DraggingElement .el-name {
+    display: inline-block;
+    user-select: none;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 4px;
+    margin-right: 4px;
+}

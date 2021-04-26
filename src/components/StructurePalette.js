@@ -65,8 +65,21 @@ closeDragElement = () => {
   }
 }
 
-onStartDragElement = () => {
+renderElement(elementID) {
 
+  const onStartDrag = () => {
+    const { onDragElement } = this.props
+    onDragElement(elementID,{ x: 500, y: 500})
+  }
+
+  return (
+    <div 
+        onMouseDown={onStartDrag} 
+        className="element-type"
+        >
+        <div className="el-name">{elementID}</div>
+    </div>
+  )
 }
 
 render() {      
@@ -89,12 +102,9 @@ render() {
           <Typography>Structure Palette</Typography>
         </div>
         <div className="content">
-          <div 
-              onMouseDown={this.onStartDragElement} 
-              className="element-type"
-              >
-              <div className="el-name">p</div>
-          </div>
+          { this.renderElement('p') }
+          { this.renderElement('ab') }
+          { this.renderElement('div') }
           <Button className="add-button" size="small" variant="outlined">Add Element</Button>
         </div>
       </div>
