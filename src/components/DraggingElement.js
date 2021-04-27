@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
-import { debounce } from "debounce"
 import { changeAttributes } from '../tei-document/commands'
-
-const hitDetectionInterval = 20
 
 export default class DraggingElement extends Component {
 
@@ -12,14 +9,13 @@ export default class DraggingElement extends Component {
     const { x: startX, y: startY } = props.startingPoint
 
     this.initialState = {
+      nodePos: null,
       startX,
       startY,
       offsetX: startX,
       offsetY: startY
     }
     this.state = this.initialState
-
-    this.hitDetection = debounce( this.__hitDetection, hitDetectionInterval)
 }
 
 componentDidMount() {
@@ -33,54 +29,59 @@ componentWillUnmount() {
 }
 
 elementDrag = (e) => {
-    const { offsetX: prevOffsetX, offsetY: prevOffsetY, startX, startY } = this.state
+    const { offsetX: prevOffsetX, offsetY: prevOffsetY, startX: prevStartX, startY: prevStartY } = this.state
 
     // calculate the new cursor position:
-    const pos1 = startX - e.clientX;
-    const pos2 = startY - e.clientY;
-    const nextStartX = e.clientX;
-    const nextStartY = e.clientY;
+    const pos1 = prevStartX - e.clientX;
+    const pos2 = prevStartY - e.clientY;
+    const startX = e.clientX;
+    const startY = e.clientY;
 
     // set the element's new position:
     const offsetX = (prevOffsetX - pos1)
     const offsetY = (prevOffsetY - pos2)
-    this.setState({ ...this.state, offsetX, offsetY, startX: nextStartX, startY: nextStartY })
-    this.hitDetection(offsetX,offsetY)
+    const nodePos = this.hitDetection(offsetX,offsetY)
+    this.setState({ ...this.state, nodePos, offsetX, offsetY, startX, startY })
     e.preventDefault()
 }
 
 // is called by the debounced fn() defined in constructor
-__hitDetection = (offsetX,offsetY) => {
+hitDetection = (offsetX,offsetY) => {
+  const { nodePos: lastNodePos } = this.state
+
   const el = document.elementFromPoint(offsetX,offsetY)
-  const nodePos = parseInt(el.getAttribute('datanodepos'))
+  const nodePos = el ? parseInt(el.getAttribute('datanodepos')) : null
+
+  if( nodePos === lastNodePos ) return nodePos
+
+  const { teiDocument } = this.props
+  const editorView = teiDocument.getActiveView()
+  const { doc, tr } = editorView.state
 
   if( !isNaN(nodePos) ) {
-    const { teiDocument } = this.props
-    const editorView = teiDocument.getActiveView()
-    const { doc, tr } = editorView.state
     const node = doc.nodeAt(nodePos)
-
     if( !node.attrs['__border__'] ) {
       const nextAttrs = { ...node.attrs, '__border__': 'Right green'}
       const $anchor = tr.doc.resolve(nodePos)
       changeAttributes( node, nextAttrs, $anchor, tr )
       editorView.dispatch(tr)         
     }
+    return nodePos
+  } else {
+    if( lastNodePos !== null ) {
+      const node = doc.nodeAt(lastNodePos)
+      const nextAttrs = { ...node.attrs, '__border__': false}
+      const $anchor = tr.doc.resolve(lastNodePos)
+      changeAttributes( node, nextAttrs, $anchor, tr )
+      editorView.dispatch(tr)         
+    }
+    return null  
   }
 }
 
 onDrop = () => {
-  // const { offsetX, offsetY } = this.state
-  // const { elementID, teiDocument, onDrop } = this.props
   const { onDrop } = this.props
-
-  // hit test
-  // const el = document.elementFromPoint(offsetX,offsetY)
-  // if( el ) console.log(`hit: ${el.nodeName} ${el.className}`)
-
-  // map bar to node
-  // perform action on node
-
+  // TODO perform action on node
   onDrop()
 }
 
