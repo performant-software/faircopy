@@ -12,12 +12,25 @@ export default class EditorGutter extends Component {
         return <div className={`el-name`}>{name}</div>
     }
 
+    getBorderStyles( node ) {
+        const borderAttr = node.attrs['__border__']
+        if( borderAttr ) {
+            const [ pos, color ] = borderAttr.split(' ')
+            let styles = {}
+            styles[`border${pos}`] = `3px dashed ${color}`
+            return styles
+        } else {
+            return {}
+        }
+    }
+
     renderGutterMark(node,targetPos,top,bottom,index,column,style,columnPositions) {
         const { editorView } = this.props
         const editorState = editorView.state
 
         const height = bottom - top 
-        const markStyle = { top, height, marginLeft: columnPositions[column] }
+        const borderStyles = this.getBorderStyles(node)
+        const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker ${highlighted} ${style}`
@@ -32,6 +45,7 @@ export default class EditorGutter extends Component {
             <div 
                 key={markKey} 
                 onClick={onClick} 
+                datanodepos={targetPos-1}
                 style={markStyle} 
                 className={className}
                 >

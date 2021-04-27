@@ -97,9 +97,9 @@ render() {
         style={style}
         id="StructurePalette"
       >
+        <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
         <div className="header" onMouseDown={this.dragMouseDown}>
-          <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
-          <Typography>Structure Palette</Typography>
+          <Typography>Structure Elements</Typography>
         </div>
         <div className="content">
           { this.renderElement('p') }

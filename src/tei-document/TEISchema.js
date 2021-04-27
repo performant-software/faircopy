@@ -112,12 +112,12 @@ export default class TEISchema {
         return attrs
     }
 
-    filterOutErrors( attrObj ) {
+    filterInternal( attrObj ) {
         // don't save error flags
         const attrs = {}
         for( const key of Object.keys(attrObj) ) {
             const value = attrObj[key]
-            if( key !== '__error__' ) {
+            if( key !== '__error__' && key !== '__border__' ) {
                 attrs[key] = value
             }
         }
@@ -142,7 +142,7 @@ export default class TEISchema {
             toDOM: (el) => {
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(el.attrs)
-                    attrs = this.filterOutErrors(attrs)
+                    attrs = this.filterInternal(attrs)
                     return [name,attrs,0]
                 } else {
                     const displayAttrs = { ...el.attrs, phraseLvl }
@@ -179,7 +179,7 @@ export default class TEISchema {
             toDOM: (node) => { 
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(node.attrs)
-                    attrs = this.filterOutErrors(attrs)
+                    attrs = this.filterInternal(attrs)
                     const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
                     return teiDocument.serializeSubDocument(name, attrs)
                 } else {
@@ -206,7 +206,7 @@ export default class TEISchema {
             toDOM: (node) => {
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(node.attrs)
-                    attrs = this.filterOutErrors(attrs)
+                    attrs = this.filterInternal(attrs)
                     return [name,attrs]
                 } else {
                     const atomAttrs = { ...node.attrs, class: `far ${icon} inline-node` }
@@ -222,6 +222,7 @@ export default class TEISchema {
             attrs[attr] = { default: '' }
         }
         attrs['__error__'] = { default: false }
+        attrs['__border__'] = { default: false }
         return attrs
     }
 
