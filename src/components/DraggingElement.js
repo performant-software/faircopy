@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
+
 import { changeAttributes } from '../tei-document/commands'
 import { addAbove, addBelow, addInside, addOutside, replaceElement, validNodeAction } from '../tei-document/editor-actions'
 
 const hitMargin = {
   top: 10,
   bottom: 10,
-  left: 5,
-  right: 5
+  left: 10,
+  right: 10
 }
 
 const positionToAction = {
@@ -63,7 +64,7 @@ elementDrag = (e) => {
 }
 
 hitDetection(offsetX,offsetY) {
-  const { nodePos: lastNodePos } = this.state
+  const { nodePos: lastNodePos, actionType: lastActionType } = this.state
 
   const el = document.elementFromPoint(offsetX,offsetY)
   let nodePos = el ? parseInt(el.getAttribute('datanodepos')) : null
@@ -74,21 +75,26 @@ hitDetection(offsetX,offsetY) {
   const editorView = teiDocument.getActiveView()
   const { doc, tr } = editorView.state
 
-  if( lastNodePos !== null ) {
+  if( lastNodePos !== null && nodePos !== lastNodePos) {
     this.clearNodeBorder(lastNodePos,doc,tr)
   }
 
   if( nodePos !== null ) {
     const node = doc.nodeAt(nodePos)
     if( !node.attrs['__border__'] ) {
+      // determine action type and whether it is valid
       const position = this.determineBorderPosition(el,offsetX,offsetY)
       const requestedAction = positionToAction[position]
       const valid = validNodeAction( requestedAction, elementID, teiDocument, nodePos )
       actionType = valid ? requestedAction : null
-      const borderState = `${position} ${valid}`
-      const nextAttrs = { ...node.attrs, '__border__': borderState}
-      const $anchor = tr.doc.resolve(nodePos)
-      changeAttributes( node, nextAttrs, $anchor, tr )
+
+      // don't update doc if state is same
+      if( nodePos !== lastNodePos || actionType !== lastActionType ) {
+        const borderState = `${position} ${valid}`
+        const nextAttrs = { ...node.attrs, '__border__': borderState}
+        const $anchor = tr.doc.resolve(nodePos)
+        changeAttributes( node, nextAttrs, $anchor, tr )  
+      }
     }  
   }
 
@@ -158,8 +164,8 @@ onDrop = () => {
       default:
     }
 
-    // this.clearNodeBorder(nodePos,doc,tr)
-    // editorView.dispatch(tr)
+    this.clearNodeBorder(nodePos,doc,tr)
+    editorView.dispatch(tr)
   }
 
   this.setState(this.initialState)
