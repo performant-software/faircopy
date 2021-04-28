@@ -50,7 +50,8 @@ hitDetection = (offsetX,offsetY) => {
   const { nodePos: lastNodePos } = this.state
 
   const el = document.elementFromPoint(offsetX,offsetY)
-  const nodePos = el ? parseInt(el.getAttribute('datanodepos')) : null
+  let nodePos = el ? parseInt(el.getAttribute('datanodepos')) : null
+  nodePos = isNaN(nodePos) ? null : nodePos
 
   if( nodePos === lastNodePos ) return nodePos
 
@@ -58,27 +59,30 @@ hitDetection = (offsetX,offsetY) => {
   const editorView = teiDocument.getActiveView()
   const { doc, tr } = editorView.state
 
-  if( !isNaN(nodePos) ) {
+  if( lastNodePos !== null ) {
+    this.clearNodeBorder(lastNodePos,doc,tr)
+  }
+
+  if( nodePos !== null ) {
     const node = doc.nodeAt(nodePos)
     if( !node.attrs['__border__'] ) {
       const borderState = this.determineBorderState(el,offsetX,offsetY)
       const nextAttrs = { ...node.attrs, '__border__': borderState}
       const $anchor = tr.doc.resolve(nodePos)
       changeAttributes( node, nextAttrs, $anchor, tr )
-      editorView.dispatch(tr)         
-    }
-    return nodePos
-  } else {
-    // TODO implement a stack for lastNodePos
-    if( lastNodePos !== null ) {
-      const node = doc.nodeAt(lastNodePos)
-      const nextAttrs = { ...node.attrs, '__border__': false}
-      const $anchor = tr.doc.resolve(lastNodePos)
-      changeAttributes( node, nextAttrs, $anchor, tr )
-      editorView.dispatch(tr)         
-    }
-    return null  
+    }  
   }
+
+  if( tr.docChanged ) editorView.dispatch(tr)
+
+  return nodePos
+}
+
+clearNodeBorder(pos, doc, tr) {
+  const node = doc.nodeAt(pos)
+  const nextAttrs = { ...node.attrs, '__border__': false}
+  const $anchor = tr.doc.resolve(pos)
+  changeAttributes( node, nextAttrs, $anchor, tr )
 }
 
 determineBorderState(el,offsetX,offsetY) {
@@ -92,7 +96,18 @@ determineBorderState(el,offsetX,offsetY) {
 }
 
 onDrop = () => {
-  const { onDrop } = this.props
+  const { teiDocument, onDrop } = this.props
+  const { nodePos } = this.state
+
+  const editorView = teiDocument.getActiveView()
+  const { doc, tr } = editorView.state
+
+  if( nodePos !== null ) {
+    this.clearNodeBorder(nodePos,doc,tr)
+    editorView.dispatch(tr)
+    this.setState(this.initialState)
+  }
+  
   // TODO perform appropriate editor action on node
   onDrop()
 }
