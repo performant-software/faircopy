@@ -118,7 +118,7 @@ function validRangeAction(elementID, teiDocument, selection) {
     // return true // all good
 }
 
-function validNodeAction( actionType, elementID, teiDocument, pos ) {
+export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
     const nodeType = schema.nodes[elementID]

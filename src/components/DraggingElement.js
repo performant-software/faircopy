@@ -1,11 +1,20 @@
 import React, { Component } from 'react'
 import { changeAttributes } from '../tei-document/commands'
+import { validNodeAction } from '../tei-document/editor-actions'
 
 const hitMargin = {
   top: 10,
   bottom: 10,
   left: 5,
   right: 5
+}
+
+const positionToAction = {
+  'Top': 'addAbove',
+  'Bottom': 'addBelow',
+  'Left': 'addOutside',
+  'Right': 'addInside',
+  'Center': 'replace'
 }
 
 export default class DraggingElement extends Component {
@@ -72,7 +81,9 @@ hitDetection = (offsetX,offsetY) => {
   if( nodePos !== null ) {
     const node = doc.nodeAt(nodePos)
     if( !node.attrs['__border__'] ) {
-      const borderState = this.determineBorderState(el,offsetX,offsetY)
+      const position = this.determineBorderPosition(el,offsetX,offsetY)
+      const status = this.determineBorderStatus(positionToAction[position], nodePos)
+      const borderState = `${position} ${status}`
       const nextAttrs = { ...node.attrs, '__border__': borderState}
       const $anchor = tr.doc.resolve(nodePos)
       changeAttributes( node, nextAttrs, $anchor, tr )
@@ -91,8 +102,13 @@ clearNodeBorder(pos, doc, tr) {
   changeAttributes( node, nextAttrs, $anchor, tr )
 }
 
-determineBorderState(el,x,y) {
+determineBorderStatus(actionType,nodePos) {
+  const { elementID, teiDocument } = this.props
+  const valid = validNodeAction( actionType, elementID, teiDocument, nodePos )
+  return valid ? 'green' : 'red'
+}
 
+determineBorderPosition(el,x,y) {
   const { top, bottom, left, right } = el.getBoundingClientRect()
   let position = 'Center'
 
@@ -109,10 +125,7 @@ determineBorderState(el,x,y) {
     position = 'Right'
   }
 
-  // TODO determine status
-  const status = 'green'
-
-  return `${position} ${status}`
+  return position
 }
 
 onDrop = () => {
