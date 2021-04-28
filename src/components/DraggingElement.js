@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { changeAttributes } from '../tei-document/commands'
 
+const hitMargin = 10
+
 export default class DraggingElement extends Component {
 
   constructor(props) {
@@ -45,7 +47,6 @@ elementDrag = (e) => {
     e.preventDefault()
 }
 
-// is called by the debounced fn() defined in constructor
 hitDetection = (offsetX,offsetY) => {
   const { nodePos: lastNodePos } = this.state
 
@@ -87,11 +88,9 @@ clearNodeBorder(pos, doc, tr) {
 
 determineBorderState(el,x,y) {
 
-  const hitMargin = 10
   const { top, bottom, left, right } = el.getBoundingClientRect()
   let position = 'Center'
 
-  // if y is within 10px of bottom
   if( bottom-y <= hitMargin ) {
     position = 'Bottom'
   } 
