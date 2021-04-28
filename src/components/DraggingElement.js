@@ -61,13 +61,15 @@ hitDetection = (offsetX,offsetY) => {
   if( !isNaN(nodePos) ) {
     const node = doc.nodeAt(nodePos)
     if( !node.attrs['__border__'] ) {
-      const nextAttrs = { ...node.attrs, '__border__': 'Right green'}
+      const borderState = this.determineBorderState(el,offsetX,offsetY)
+      const nextAttrs = { ...node.attrs, '__border__': borderState}
       const $anchor = tr.doc.resolve(nodePos)
       changeAttributes( node, nextAttrs, $anchor, tr )
       editorView.dispatch(tr)         
     }
     return nodePos
   } else {
+    // TODO implement a stack for lastNodePos
     if( lastNodePos !== null ) {
       const node = doc.nodeAt(lastNodePos)
       const nextAttrs = { ...node.attrs, '__border__': false}
@@ -79,9 +81,19 @@ hitDetection = (offsetX,offsetY) => {
   }
 }
 
+determineBorderState(el,offsetX,offsetY) {
+  // TODO determine Left,Right,Top,Bottom,Center
+  const position = 'Right'
+
+  // TODO determine status
+  const status = 'green'
+
+  return `${position} ${status}`
+}
+
 onDrop = () => {
   const { onDrop } = this.props
-  // TODO perform action on node
+  // TODO perform appropriate editor action on node
   onDrop()
 }
 
