@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { changeAttributes } from '../tei-document/commands'
 
-const hitMargin = 10
+const hitMargin = {
+  top: 10,
+  bottom: 10,
+  left: 5,
+  right: 5
+}
 
 export default class DraggingElement extends Component {
 
@@ -91,16 +96,16 @@ determineBorderState(el,x,y) {
   const { top, bottom, left, right } = el.getBoundingClientRect()
   let position = 'Center'
 
-  if( bottom-y <= hitMargin ) {
+  if( bottom-y <= hitMargin.bottom ) {
     position = 'Bottom'
   } 
-  else if( y-top <= hitMargin ) {
+  else if( y-top <= hitMargin.top ) {
     position = 'Top'
   }
-  else if( x-left <= hitMargin ) {
+  else if( x-left <= hitMargin.left ) {
     position = 'Left'
   } 
-  else if( right-x <= hitMargin ) {
+  else if( right-x <= hitMargin.right ) {
     position = 'Right'
   }
 
