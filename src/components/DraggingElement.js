@@ -85,9 +85,25 @@ clearNodeBorder(pos, doc, tr) {
   changeAttributes( node, nextAttrs, $anchor, tr )
 }
 
-determineBorderState(el,offsetX,offsetY) {
-  // TODO determine Left,Right,Top,Bottom,Center
-  const position = 'Right'
+determineBorderState(el,x,y) {
+
+  const hitMargin = 10
+  const { top, bottom, left, right } = el.getBoundingClientRect()
+  let position = 'Center'
+
+  // if y is within 10px of bottom
+  if( bottom-y <= hitMargin ) {
+    position = 'Bottom'
+  } 
+  else if( y-top <= hitMargin ) {
+    position = 'Top'
+  }
+  else if( x-left <= hitMargin ) {
+    position = 'Left'
+  } 
+  else if( right-x <= hitMargin ) {
+    position = 'Right'
+  }
 
   // TODO determine status
   const status = 'green'

@@ -17,7 +17,11 @@ export default class EditorGutter extends Component {
         if( borderAttr ) {
             const [ pos, color ] = borderAttr.split(' ')
             let styles = {}
-            styles[`border${pos}`] = `3px dashed ${color}`
+            if( pos === 'Center' ) {
+                styles.border = `3px dashed ${color}`
+            } else {
+                styles[`border${pos}`] = `3px dashed ${color}`
+            }
             return styles
         } else {
             return {}
