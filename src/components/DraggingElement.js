@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { changeAttributes } from '../tei-document/commands'
-import { validNodeAction } from '../tei-document/editor-actions'
+import { addAbove, addBelow, addInside, addOutside, replaceElement, validNodeAction } from '../tei-document/editor-actions'
 
 const hitMargin = {
   top: 10,
@@ -26,6 +26,7 @@ export default class DraggingElement extends Component {
 
     this.initialState = {
       nodePos: null,
+      actionType: null,
       startX,
       startY,
       offsetX: startX,
@@ -56,21 +57,20 @@ elementDrag = (e) => {
     // set the element's new position:
     const offsetX = (prevOffsetX - pos1)
     const offsetY = (prevOffsetY - pos2)
-    const nodePos = this.hitDetection(offsetX,offsetY)
-    this.setState({ ...this.state, nodePos, offsetX, offsetY, startX, startY })
+    const { nodePos, actionType } = this.hitDetection(offsetX,offsetY)
+    this.setState({ ...this.state, nodePos, actionType, offsetX, offsetY, startX, startY })
     e.preventDefault()
 }
 
-hitDetection = (offsetX,offsetY) => {
+hitDetection(offsetX,offsetY) {
   const { nodePos: lastNodePos } = this.state
 
   const el = document.elementFromPoint(offsetX,offsetY)
   let nodePos = el ? parseInt(el.getAttribute('datanodepos')) : null
   nodePos = isNaN(nodePos) ? null : nodePos
+  let actionType = null
 
-  if( nodePos === lastNodePos ) return nodePos
-
-  const { teiDocument } = this.props
+  const { teiDocument, elementID } = this.props
   const editorView = teiDocument.getActiveView()
   const { doc, tr } = editorView.state
 
@@ -82,8 +82,10 @@ hitDetection = (offsetX,offsetY) => {
     const node = doc.nodeAt(nodePos)
     if( !node.attrs['__border__'] ) {
       const position = this.determineBorderPosition(el,offsetX,offsetY)
-      const status = this.determineBorderStatus(positionToAction[position], nodePos)
-      const borderState = `${position} ${status}`
+      const requestedAction = positionToAction[position]
+      const valid = validNodeAction( requestedAction, elementID, teiDocument, nodePos )
+      actionType = valid ? requestedAction : null
+      const borderState = `${position} ${valid}`
       const nextAttrs = { ...node.attrs, '__border__': borderState}
       const $anchor = tr.doc.resolve(nodePos)
       changeAttributes( node, nextAttrs, $anchor, tr )
@@ -92,7 +94,7 @@ hitDetection = (offsetX,offsetY) => {
 
   if( tr.docChanged ) editorView.dispatch(tr)
 
-  return nodePos
+  return { nodePos, actionType }
 }
 
 clearNodeBorder(pos, doc, tr) {
@@ -102,10 +104,10 @@ clearNodeBorder(pos, doc, tr) {
   changeAttributes( node, nextAttrs, $anchor, tr )
 }
 
-determineBorderStatus(actionType,nodePos) {
+validateAction(actionType,nodePos) {
   const { elementID, teiDocument } = this.props
   const valid = validNodeAction( actionType, elementID, teiDocument, nodePos )
-  return valid ? 'green' : 'red'
+  return valid
 }
 
 determineBorderPosition(el,x,y) {
@@ -129,19 +131,38 @@ determineBorderPosition(el,x,y) {
 }
 
 onDrop = () => {
-  const { teiDocument, onDrop } = this.props
-  const { nodePos } = this.state
-
-  const editorView = teiDocument.getActiveView()
-  const { doc, tr } = editorView.state
+  const { teiDocument, elementID, onDrop } = this.props
+  const { nodePos, actionType } = this.state
 
   if( nodePos !== null ) {
-    this.clearNodeBorder(nodePos,doc,tr)
-    editorView.dispatch(tr)
-    this.setState(this.initialState)
-  }
+    const editorView = teiDocument.getActiveView()
+    const { doc, tr } = editorView.state
   
-  // TODO perform appropriate editor action on node
+    // perform appropriate editor action on node
+    switch( actionType ) {
+      case 'addAbove':
+        addAbove(elementID,teiDocument,nodePos)
+        break
+      case 'addBelow':
+        addBelow(elementID,teiDocument,nodePos)
+        break
+      case 'addOutside':
+        addOutside(elementID,teiDocument,nodePos)
+        break
+      case 'addInside':
+        addInside(elementID,teiDocument,nodePos)
+        break
+      case 'replace':
+        replaceElement(elementID,teiDocument,nodePos)
+        break
+      default:
+    }
+
+    // this.clearNodeBorder(nodePos,doc,tr)
+    // editorView.dispatch(tr)
+  }
+
+  this.setState(this.initialState)
   onDrop()
 }
 

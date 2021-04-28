@@ -15,7 +15,8 @@ export default class EditorGutter extends Component {
     getBorderStyles( node ) {
         const borderAttr = node.attrs['__border__']
         if( borderAttr ) {
-            const [ pos, color ] = borderAttr.split(' ')
+            const [ pos, valid ] = borderAttr.split(' ')
+            const color = valid ? 'green' : 'red'
             let styles = {}
             if( pos === 'Center' ) {
                 styles.border = `3px dashed ${color}`
