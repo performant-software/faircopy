@@ -83,9 +83,9 @@ export default class EditorGutter extends Component {
                 const displayName = (name === 'noteX') ? 'note' : name
                 const thickness = getTextWidth(displayName)
                 if( isNaN(columnThickness[column]) ) {
-                    columnThickness[column] = thickness + 12
+                    columnThickness[column] = thickness + 24
                 } else {
-                    columnThickness[column] = Math.max(columnThickness[column], thickness + 12)
+                    columnThickness[column] = Math.max(columnThickness[column], thickness + 24)
                 }
             } else {
                 columnThickness[column] = 15
