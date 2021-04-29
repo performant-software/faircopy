@@ -174,7 +174,7 @@ export function replaceElement( elementID, teiDocument, pos ) {
     const node = doc.nodeAt(pos)
 
     tr.setNodeMarkup(pos, nodeType, node.attrs)
-    editorView.dispatch(tr)        
+    return tr
 }
 
 export function createInterNode( elementID, teiDocument ) {
@@ -218,11 +218,8 @@ export function addInside( elementID, teiDocument, pos ) {
     const nodeRange = new NodeRange($start,$end,$start.depth)
 
     // take the content of the parent and put it inside the new node
-    editorView.dispatch(tr
-        .wrap(nodeRange, [{type: nodeType}])
-        .scrollIntoView()
-    )
-    editorView.focus()            
+    tr.wrap(nodeRange, [{type: nodeType}])
+    return tr
 }
     
 export function addOutside( elementID, teiDocument, pos ) {
@@ -236,9 +233,7 @@ export function addOutside( elementID, teiDocument, pos ) {
     const $end = doc.resolve($start.end($start.depth)+1)
     const nodeRange = new NodeRange($start,$end,$pos.depth)
     tr.wrap(nodeRange,[{type: nodeType}])
-    tr.scrollIntoView()
-    editorView.dispatch(tr)
-    editorView.focus()        
+    return tr
 }
 
 export function addAbove( elementID, teiDocument, pos ) {
@@ -252,13 +247,13 @@ export function addAbove( elementID, teiDocument, pos ) {
     if( nodeType.isAtom ) {
         if( asides.includes(elementID) ) {
             const asideNode = createAsideNode( elementID, teiDocument, editorView )
-            insertAtomNodeAt(asideNode, pos, editorView, true )    
+            return insertAtomNodeAt(asideNode, pos, editorView, true )    
         } else {
             const node = nodeType.create()
-            insertAtomNodeAt(node, pos, editorView, false )    
+            return insertAtomNodeAt(node, pos, editorView, false )    
         }
     } else {
-        insertNodeAt(nodeType, pos, editorView, schema )    
+        return insertNodeAt(nodeType, pos, editorView, schema )    
     }
 }
 
@@ -277,13 +272,13 @@ export function addBelow( elementID, teiDocument, pos ) {
     if( nodeType.isAtom ) {
         if( asides.includes(elementID) ) {
             const asideNode = createAsideNode( elementID, teiDocument, editorView )
-            insertAtomNodeAt(asideNode, insertPos, editorView, true )                
+            return insertAtomNodeAt(asideNode, insertPos, editorView, true )                
         } else {
             const node = nodeType.create()
-            insertAtomNodeAt(node, insertPos, editorView, true )    
+            return insertAtomNodeAt(node, insertPos, editorView, true )    
         }
     } else {
-        insertNodeAt(nodeType, insertPos, editorView, schema )    
+        return insertNodeAt(nodeType, insertPos, editorView, schema )    
     }
 }
 

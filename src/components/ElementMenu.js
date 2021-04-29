@@ -59,6 +59,7 @@ export default class ElementMenu extends Component {
 
     createMenuAction(selection,member) {
         const { action, teiDocument, onAlertMessage, onClose } = this.props
+        const editorView = teiDocument.getActiveView()
 
         return () => {
             if( action === 'info' ) return
@@ -67,21 +68,39 @@ export default class ElementMenu extends Component {
                 if( selection.node ) {
                     try {
                         switch(action) {
-                            case 'replace':
-                                replaceElement(member.id, teiDocument, selection.anchor) 
+                            case 'replace': {
+                                const tr = replaceElement(member.id, teiDocument, selection.anchor) 
+                                editorView.dispatch(tr)
                                 break
-                            case 'addAbove':
-                                addAbove(member.id, teiDocument, selection.anchor) 
+                            }
+                            case 'addAbove': {
+                                const tr = addAbove(member.id, teiDocument, selection.anchor) 
+                                tr.scrollIntoView()
+                                editorView.dispatch(tr)
+                                editorView.focus()  
                                 break
-                            case 'addBelow':
-                                addBelow(member.id, teiDocument, selection.anchor) 
+                            }
+                            case 'addBelow': {
+                                const tr = addBelow(member.id, teiDocument, selection.anchor) 
+                                tr.scrollIntoView()
+                                editorView.dispatch(tr)
+                                editorView.focus()  
                                 break
-                            case 'addInside':
-                                addInside(member.id, teiDocument, selection.anchor) 
+                            }
+                            case 'addInside': {
+                                const tr = addInside(member.id, teiDocument, selection.anchor) 
+                                tr.scrollIntoView()
+                                editorView.dispatch(tr)
+                                editorView.focus()            
                                 break
-                            case 'addOutside':
-                                addOutside(member.id, teiDocument, selection.anchor) 
+                            }
+                            case 'addOutside': {
+                                const tr = addOutside(member.id, teiDocument, selection.anchor) 
+                                tr.scrollIntoView()
+                                editorView.dispatch(tr)
+                                editorView.focus()   
                                 break
+                            }
                             default:
                                 throw new Error('Unknown action type selected in ElementMenu')
                         }    

@@ -134,9 +134,7 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false ) {
     } else {
         tr.insert(insertPos,node)
     }
-    tr.scrollIntoView()
-    editorView.dispatch(tr)
-    editorView.focus()     
+    return tr
 }
 
 export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
@@ -152,12 +150,10 @@ export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
         }
         const node = nodeType.create({},wrap)
         tr.insert(insertPos,node)
-        tr.scrollIntoView()
-        editorView.dispatch(tr)
-        editorView.focus()                
     } else {
         throw new Error("No path to textnode")
     }
+    return tr             
 }
 
 
