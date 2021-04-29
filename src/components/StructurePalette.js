@@ -102,8 +102,11 @@ render() {
           <Typography>Structure Elements</Typography>
         </div>
         <div className="content">
-          { this.renderElement('p') }
-          { this.renderElement('ab') }
+          { this.renderElement('opener') }
+          { this.renderElement('dateline') }
+          { this.renderElement('salute') }
+          { this.renderElement('closer') }
+          { this.renderElement('signed') }
           { this.renderElement('div') }
           <Button className="add-button" size="small" variant="outlined">Add Element</Button>
         </div>

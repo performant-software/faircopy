@@ -485,7 +485,7 @@ export default class MainWindow extends Component {
         }
 
         return (
-            <div>
+            <div className="dialog-container">
                 { this.renderAlertDialog() }
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}

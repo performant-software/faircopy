@@ -67,7 +67,12 @@ hitDetection(offsetX,offsetY) {
   const { nodePos: lastNodePos, actionType: lastActionType } = this.state
 
   const el = document.elementFromPoint(offsetX,offsetY)
-  let nodePos = el ? parseInt(el.getAttribute('datanodepos')) : null
+
+  if( !el.className ) {
+    return { nodePos: lastNodePos, actionType: lastActionType }
+  }
+
+  let nodePos = parseInt(el.getAttribute('datanodepos'))
   nodePos = isNaN(nodePos) ? null : nodePos
   let actionType = null
 
@@ -80,25 +85,25 @@ hitDetection(offsetX,offsetY) {
   }
 
   if( nodePos !== null ) {
+    // determine action type and whether it is valid
     const node = doc.nodeAt(nodePos)
-    if( !node.attrs['__border__'] ) {
-      // determine action type and whether it is valid
-      const position = this.determineBorderPosition(el,offsetX,offsetY)
-      const requestedAction = positionToAction[position]
-      const valid = validNodeAction( requestedAction, elementID, teiDocument, nodePos )
-      actionType = valid ? requestedAction : null
+    const position = this.determineBorderPosition(el,offsetX,offsetY)
+    const requestedAction = positionToAction[position]
+    const valid = validNodeAction( requestedAction, elementID, teiDocument, nodePos )
+    actionType = valid ? requestedAction : null
 
-      // don't update doc if state is same
-      if( nodePos !== lastNodePos || actionType !== lastActionType ) {
-        const borderState = `${position} ${valid}`
-        const nextAttrs = { ...node.attrs, '__border__': borderState}
-        const $anchor = tr.doc.resolve(nodePos)
-        changeAttributes( node, nextAttrs, $anchor, tr )  
-      }
-    }  
+    // don't update doc if state is same
+    if( nodePos !== lastNodePos || actionType !== lastActionType ) {
+      const borderState = `${position} ${valid}`
+      const nextAttrs = { ...node.attrs, '__border__': borderState}
+      const $anchor = tr.doc.resolve(nodePos)
+      changeAttributes( node, nextAttrs, $anchor, tr )  
+    }
   }
 
   if( tr.docChanged ) editorView.dispatch(tr)
+
+  console.log(`ondrag ${nodePos} ${actionType} ${el} ${el.className}`)
 
   return { nodePos, actionType }
 }
@@ -139,6 +144,8 @@ determineBorderPosition(el,x,y) {
 onDrop = () => {
   const { teiDocument, elementID, onDrop } = this.props
   const { nodePos, actionType } = this.state
+
+  console.log(`ondrop ${nodePos} ${actionType}`)
 
   if( nodePos !== null ) {
     const editorView = teiDocument.getActiveView()

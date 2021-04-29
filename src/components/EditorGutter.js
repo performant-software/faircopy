@@ -19,9 +19,9 @@ export default class EditorGutter extends Component {
             const color = valid==='true' ? 'green' : 'red'
             let styles = {}
             if( pos === 'Center' ) {
-                styles.border = `4px dashed ${color}`
+                styles.border = `4px solid ${color}`
             } else {
-                styles[`border${pos}`] = `4px dashed ${color}`
+                styles[`border${pos}`] = `4px solid ${color}`
             }
             return styles
         } else {
