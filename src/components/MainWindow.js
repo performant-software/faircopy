@@ -518,6 +518,7 @@ export default class MainWindow extends Component {
                 ></EditProjectDialog> }
                 { paletteWindowOpen && <StructurePalette
                     onDragElement={this.onDragElement}
+                    teiDocument={selectedDoc}
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
                 ></StructurePalette> }
                 { draggingElementActive && <DraggingElement

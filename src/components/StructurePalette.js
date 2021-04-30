@@ -1,4 +1,4 @@
-import { Button, Typography } from '@material-ui/core'
+import { Select, MenuItem, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
 export default class StructurePalette extends Component {
@@ -6,14 +6,16 @@ export default class StructurePalette extends Component {
   constructor(props) {
     super(props)
 
-    this.initialState = {
+    const currentSubmenuID = "structure"
+
+    this.initialPosition = {
       dragging: false,
       startX: 500,
       startY: 500,
       offsetX: 500,
-      offsetY: 500
+      offsetY: 500,
     }
-    this.state = this.initialState
+    this.state = { ...this.initialPosition, currentSubmenuID }
 }
 
 componentDidMount() {
@@ -61,8 +63,41 @@ closeDragElement = () => {
   const { dragging, offsetX, offsetY } = this.state
 
   if( dragging ) {
-    this.setState({ ...this.initialState, offsetX, offsetY })
+    this.setState({ ...this.initialPosition, offsetX, offsetY })
   }
+}
+
+getMenuGroups() {
+  const { teiDocument } = this.props
+  const menus = teiDocument.resourceType === 'header' ? teiDocument.fairCopyProject.headerMenus : teiDocument.fairCopyProject.menus
+  return menus['structure']
+}
+
+renderSelectStructureGroup(menuGroups) {
+  const { currentSubmenuID } = this.state
+
+  const onChange = (e) => {
+    const { value: currentSubmenuID } = e.target
+    this.setState({...this.state, currentSubmenuID})
+  }
+
+  const menuItemEls = []
+  for( const menuItem of Object.values(menuGroups) ) {
+    const { id, label } = menuItem
+    const menuItemEl = <MenuItem key={`structure-palette-${id}`} value={id}>{label}</MenuItem>
+    menuItemEls.push(menuItemEl)
+  }
+
+  return (
+    <Select
+        name="type"
+        className="select-structure-group"
+        value={currentSubmenuID}
+        onChange={onChange}
+    >
+      { menuItemEls }
+    </Select>
+  )
 }
 
 renderElement(elementID) {
@@ -74,17 +109,30 @@ renderElement(elementID) {
 
   return (
     <div 
+        key={`structs-${elementID}`}
         onMouseDown={onStartDrag} 
         className="element-type"
-        >
-        <div className="el-name">{elementID}</div>
+    >
+      <div className="el-name">{elementID}</div>
     </div>
   )
 }
 
+renderStructures( currentMenu ) {
+  const structureEls = []
+  for( const member of currentMenu.members ) {
+    const structureEl = this.renderElement(member.id)
+    structureEls.push(structureEl)
+  }
+
+  return structureEls
+}
+
 render() {      
-    const { offsetX, offsetY, dragging } = this.state
+    const { offsetX, offsetY, dragging, currentSubmenuID } = this.state
     const { onClose } = this.props
+    const menuGroups = this.getMenuGroups()
+    const currentMenu = menuGroups[currentSubmenuID]
   
     const style = {
       left: offsetX,
@@ -102,13 +150,8 @@ render() {
           <Typography>Structure Elements</Typography>
         </div>
         <div className="content">
-          { this.renderElement('opener') }
-          { this.renderElement('dateline') }
-          { this.renderElement('salute') }
-          { this.renderElement('closer') }
-          { this.renderElement('signed') }
-          { this.renderElement('div') }
-          <Button className="add-button" size="small" variant="outlined">Add Element</Button>
+          { this.renderSelectStructureGroup(menuGroups) }
+          { this.renderStructures(currentMenu) }
         </div>
       </div>
     )
