@@ -122,8 +122,8 @@ export function removeMark(markType) {
 }
 
 
-export function insertAtomNodeAt( node, insertPos, editorView, below=false ) {
-    const { tr, doc } = editorView.state
+export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr ) {
+    const { doc } = editorView.state
     
     const offset = below ? 1 : -1
     const $prev = doc.resolve(insertPos+offset)
@@ -137,8 +137,7 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false ) {
     return tr
 }
 
-export function insertNodeAt( nodeType, insertPos, editorView, schema ) {
-    const { tr } = editorView.state
+export function insertNodeAt( nodeType, insertPos, editorView, schema, tr ) {
 
     // element must ultimately wrap a textNode, so find wrapping 
     const textNodeType = schema.nodes['textNode']

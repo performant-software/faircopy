@@ -146,30 +146,28 @@ onDrop = () => {
 
   if( nodePos !== null ) {
     const editorView = teiDocument.getActiveView()
-    let tr = null
-    
+    let tr = editorView.state.tr
+    this.clearNodeBorder(nodePos,tr.doc,tr)
+
     // perform appropriate editor action on node
     switch( actionType ) {
       case 'addAbove':
-        tr = addAbove(elementID,teiDocument,nodePos)
+        tr = addAbove(elementID,teiDocument,nodePos,tr)
         break
       case 'addBelow':
-        tr = addBelow(elementID,teiDocument,nodePos)
+        tr = addBelow(elementID,teiDocument,nodePos,tr)
         break
       case 'addOutside':
-        tr = addOutside(elementID,teiDocument,nodePos)
+        tr = addOutside(elementID,teiDocument,nodePos,tr)
         break
       case 'addInside':
-        tr = addInside(elementID,teiDocument,nodePos)
+        tr = addInside(elementID,teiDocument,nodePos,tr)
         break
       case 'replace':
-        tr = replaceElement(elementID,teiDocument,nodePos)
+        tr = replaceElement(elementID,teiDocument,nodePos,tr)
         break
       default:
-        tr = editorView.state.tr
     }
-
-    this.clearNodeBorder(nodePos,tr.doc,tr)
 
     editorView.dispatch(tr)
   }

@@ -167,11 +167,11 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
 }
 
 // changes the NodeType for a node element at a given pos
-export function replaceElement( elementID, teiDocument, pos ) {
+export function replaceElement( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
-    const { doc, tr, schema } = editorView.state
+    const { schema } = editorView.state
     const nodeType = schema.nodes[elementID]
-    const node = doc.nodeAt(pos)
+    const node = tr.doc.nodeAt(pos)
 
     tr.setNodeMarkup(pos, nodeType, node.attrs)
     return tr
@@ -205,9 +205,9 @@ function createNode( nodeType, tr, selection, schema ) {
     return tr
 }
 
-export function addInside( elementID, teiDocument, pos ) {
+export function addInside( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
-    const { tr, doc, schema } = editorView.state
+    const { doc, schema } = editorView.state
 
     const parentNode = doc.nodeAt(pos)
     const nodeType = schema.nodes[elementID]
@@ -222,9 +222,9 @@ export function addInside( elementID, teiDocument, pos ) {
     return tr
 }
     
-export function addOutside( elementID, teiDocument, pos ) {
+export function addOutside( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
-    const { doc, tr, schema } = editorView.state
+    const { doc, schema } = editorView.state
 
     const $pos = doc.resolve(pos)
     const nodeType = schema.nodes[elementID]
@@ -236,7 +236,7 @@ export function addOutside( elementID, teiDocument, pos ) {
     return tr
 }
 
-export function addAbove( elementID, teiDocument, pos ) {
+export function addAbove( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { teiSchema } = teiDocument.fairCopyProject
     const { schema } = editorView.state
@@ -247,17 +247,17 @@ export function addAbove( elementID, teiDocument, pos ) {
     if( nodeType.isAtom ) {
         if( asides.includes(elementID) ) {
             const asideNode = createAsideNode( elementID, teiDocument, editorView )
-            return insertAtomNodeAt(asideNode, pos, editorView, true )    
+            return insertAtomNodeAt(asideNode, pos, editorView, true, tr )    
         } else {
             const node = nodeType.create()
-            return insertAtomNodeAt(node, pos, editorView, false )    
+            return insertAtomNodeAt(node, pos, editorView, false, tr )    
         }
     } else {
-        return insertNodeAt(nodeType, pos, editorView, schema )    
+        return insertNodeAt(nodeType, pos, editorView, schema, tr )    
     }
 }
 
-export function addBelow( elementID, teiDocument, pos ) {
+export function addBelow( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const { teiSchema } = teiDocument.fairCopyProject
@@ -272,13 +272,13 @@ export function addBelow( elementID, teiDocument, pos ) {
     if( nodeType.isAtom ) {
         if( asides.includes(elementID) ) {
             const asideNode = createAsideNode( elementID, teiDocument, editorView )
-            return insertAtomNodeAt(asideNode, insertPos, editorView, true )                
+            return insertAtomNodeAt(asideNode, insertPos, editorView, true, tr )                
         } else {
             const node = nodeType.create()
-            return insertAtomNodeAt(node, insertPos, editorView, true )    
+            return insertAtomNodeAt(node, insertPos, editorView, true, tr )    
         }
     } else {
-        return insertNodeAt(nodeType, insertPos, editorView, schema )    
+        return insertNodeAt(nodeType, insertPos, editorView, schema, tr )    
     }
 }
 
