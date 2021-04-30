@@ -92,13 +92,10 @@ hitDetection(offsetX,offsetY) {
     const valid = validNodeAction( requestedAction, elementID, teiDocument, nodePos )
     actionType = valid ? requestedAction : null
 
-    // don't update doc if state is same
-    if( nodePos !== lastNodePos || actionType !== lastActionType ) {
-      const borderState = `${position} ${valid}`
-      const nextAttrs = { ...node.attrs, '__border__': borderState}
-      const $anchor = tr.doc.resolve(nodePos)
-      changeAttributes( node, nextAttrs, $anchor, tr )  
-    }
+    const borderState = `${position} ${valid}`
+    const nextAttrs = { ...node.attrs, '__border__': borderState}
+    const $anchor = tr.doc.resolve(nodePos)
+    changeAttributes( node, nextAttrs, $anchor, tr )  
   }
 
   if( tr.docChanged ) editorView.dispatch(tr)
