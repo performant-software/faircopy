@@ -100,8 +100,6 @@ hitDetection(offsetX,offsetY) {
 
   if( tr.docChanged ) editorView.dispatch(tr)
 
-  console.log(`ondrag ${nodePos} ${actionType} ${el} ${el.className}`)
-
   return { nodePos, actionType }
 }
 
@@ -141,8 +139,6 @@ determineBorderPosition(el,x,y) {
 onDrop = () => {
   const { teiDocument, elementID, onDrop } = this.props
   const { nodePos, actionType } = this.state
-
-  console.log(`ondrop ${nodePos} ${actionType}`)
 
   if( nodePos !== null ) {
     const editorView = teiDocument.getActiveView()
