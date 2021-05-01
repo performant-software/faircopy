@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button, Tooltip } from '@material-ui/core'
+import { IconButton, Tooltip } from '@material-ui/core'
 
 import { eraseSelection } from "../tei-document/editor-actions"
 
@@ -68,143 +68,134 @@ export default class EditorToolbar extends Component {
         }
     }
 
-    renderActionButton( toolTip, icon, action ) {
-        const { selectedAction } = this.state
-        const selectionClass = selectedAction === action ? 'selected-action' : ''
-        const onClick = ()=>{this.setState({...this.state, selectedAction: action})} 
+    // renderActionButton( toolTip, icon, action ) {
+    //     const { selectedAction } = this.state
+    //     const selectionClass = selectedAction === action ? 'selected-action' : ''
+    //     const onClick = ()=>{this.setState({...this.state, selectedAction: action})} 
 
-        return (
-            <Tooltip title={toolTip}>
-                <span>
-                    <Button
-                        onClick={onClick}
-                        {...this.buttonProps}
-                    >
-                        <i className={`far ${selectionClass} ${icon} fa-2x`}></i>
-                    </Button>  
-                </span>
-            </Tooltip>            
+    //     return (
+    //         <Tooltip title={toolTip}>
+    //             <span>
+    //                 <Button
+    //                     onClick={onClick}
+    //                     {...this.buttonProps}
+    //                 >
+    //                     <i className={`far ${selectionClass} ${icon} fa-2x`}></i>
+    //                 </Button>  
+    //             </span>
+    //         </Tooltip>            
+    //     )
+    // }
+
+    // renderActionButtons() {
+    //     const { teiDocument } = this.props
+    //     const enabledMenus = this.getEnabledMenus()
+
+    //     return (
+    //         <div style={{display: 'inline-block'}}>
+    //             { this.renderActionButton("Replace Element", 'fa-crosshairs', 'replace' ) }
+    //             { this.renderActionButton("Add Element Above", 'fa-arrow-to-top', 'addAbove') }
+    //             { this.renderActionButton("Add Element Below",  'fa-arrow-to-bottom', 'addBelow') }
+    //             { this.renderActionButton("Add Element Outside", 'fa-arrow-to-left', 'addOutside') }
+    //             { this.renderActionButton("Add Element Inside", 'fa-arrow-to-right', 'addInside') }
+    //             { this.renderActionButton("View Element Description", 'fa-info-circle', 'info') }
+    //         </div>
+    //     )
+    // }
+
+    // renderElementMenuButton( toolTip, icon, disabled, onRef, onClick ) {
+    //     return (
+    //         <Tooltip title={toolTip}>
+    //             <span>
+    //                 <IconButton
+    //                     disabled={disabled}
+    //                     ref={onRef}
+    //                     onClick={onClick}
+    //                     {...this.buttonProps}
+    //                 >
+    //                     <i className={`far ${icon} fa-sm`}></i>
+    //                 </IconButton> 
+    //             </span>
+    //         </Tooltip>
+    //     )
+    // }
+
+    renderButton(title,icon,onClick,enabled=true,onRef=null) {
+        const refProps = onRef ? { ref: onRef } : {}
+        const iconButton = (
+            <IconButton
+                disabled={!enabled}
+                onClick={onClick}
+                {...this.buttonProps}
+                {...refProps}
+            >
+                <i className={`${icon} fa-sm`}></i>
+            </IconButton> 
         )
+             
+        return enabled ? <Tooltip title={title}>{iconButton}</Tooltip> : iconButton
     }
 
     renderActionButtons() {
-        const { teiDocument } = this.props
+        const { onOpenElementMenu, teiDocument, onOpenPalette, elementMenuAnchors } = this.props
+        const { selectedAction } = this.state
         const enabledMenus = this.getEnabledMenus()
 
         return (
-            <div style={{display: 'inline-block'}}>
-                { this.renderActionButton("Replace Element", 'fa-crosshairs', 'replace' ) }
-                { this.renderActionButton("Add Element Above", 'fa-arrow-to-top', 'addAbove') }
-                { this.renderActionButton("Add Element Below",  'fa-arrow-to-bottom', 'addBelow') }
-                { this.renderActionButton("Add Element Outside", 'fa-arrow-to-left', 'addOutside') }
-                { this.renderActionButton("Add Element Inside", 'fa-arrow-to-right', 'addInside') }
-                { this.renderActionButton("View Element Description", 'fa-info-circle', 'info') }
-                <Tooltip title="Erase Marks">
-                    <span>
-                        <Button
-                            disabled={!enabledMenus.eraser}
-                            onClick={()=>{eraseSelection(teiDocument)}}
-                            {...this.buttonProps}
-                        >
-                            <i className="fas fa-eraser fa-2x"></i>
-                        </Button>                          
-                    </span>
-                </Tooltip>
-            </div>
-        )
-    }
-
-    renderElementMenuButton( toolTip, icon, disabled, onRef, onClick ) {
-        return (
-            <Tooltip title={toolTip}>
-                <span>
-                    <Button
-                        disabled={disabled}
-                        ref={onRef}
-                        onClick={onClick}
-                        {...this.buttonProps}
-                    >
-                        <i className={`far ${icon} fa-2x`}></i>
-                    </Button> 
-                </span>
-            </Tooltip>
+            <span>
+                { this.renderButton("Open Palette", "fas fa-palette", onOpenPalette ) }
+                { this.renderButton(
+                    "Marks",
+                    "fas fa-marker",
+                    () => { onOpenElementMenu({ menuGroup: 'mark', action: selectedAction})},
+                    enabledMenus.marks,
+                    (el)=> { elementMenuAnchors.mark = el }
+                )}
+                { this.renderButton(
+                    "Inlines",
+                    "fas fa-stamp",
+                    () => { onOpenElementMenu({ menuGroup: 'inline', action: selectedAction }) },
+                    enabledMenus.inline,
+                    (el)=> { elementMenuAnchors.inline = el }
+                )}
+                { this.renderButton("Erase Marks", "fas fa-eraser", ()=>{eraseSelection(teiDocument)}, enabledMenus.eraser) }
+            </span>
         )
     }
 
     renderElementMenuButtons() {
-        const { onOpenElementMenu, elementMenuAnchors } = this.props
-        const { selectedAction } = this.state
-        const enabledMenus = this.getEnabledMenus()
+
+        // TODO
+        const noOp = () => {}
 
         return (
             <div style={{display: 'inline-block'}}>
-                { this.renderElementMenuButton(
-                    "Marks",
-                    "fa-marker",
-                    !enabledMenus.marks,
-                    (el)=> { elementMenuAnchors.mark = el },
-                    () => { onOpenElementMenu({ menuGroup: 'mark', action: selectedAction}) }
-                )}
-                { this.renderElementMenuButton(
-                    "Structures",
-                    "fa-page-break",
-                    !enabledMenus.structures,
-                    (el)=> { elementMenuAnchors.structure = el },
-                    () => { onOpenElementMenu({ menuGroup: 'structure', action: selectedAction }) }
-                )}
-                { this.renderElementMenuButton(
-                    "Inlines",
-                    "fa-anchor",
-                    !enabledMenus.inline,
-                    (el)=> { elementMenuAnchors.inline = el },
-                    () => { onOpenElementMenu({ menuGroup: 'inline', action: selectedAction }) }
-                )}
+                { this.renderActionButtons() }
+                <div className="seperator"></div>
+                { this.renderButton("Bold", "fas fa-bold", noOp ) }
+                { this.renderButton("Italic", "fas fa-italic", noOp ) }
+                { this.renderButton("Underline", "fas fa-underline", noOp ) }
+                { this.renderButton("Reference", "fas fa-link", noOp ) }
+                { this.renderButton("Note", "far fa-comment-alt", noOp ) }
+                <div className="seperator"></div>
+                { this.renderButton("Undo", "fas fa-undo", noOp ) }
+                { this.renderButton("Redo", "fas fa-redo", noOp ) }
             </div>
         )
     }
 
     render() {
-        const { onEditResource, onSave, onOpenPalette, teiDocument } = this.props
+        const { onEditResource, onSave, teiDocument } = this.props
         const { changedSinceLastSave } = teiDocument
         
         return (
             <div id="EditorToolbar">
                 <div className="leftgroup">
-                    { this.renderElementMenuButtons() }
-                    { this.renderActionButtons() }
-                    <Tooltip title="Edit Document Properties">
-                        <span>
-                            <Button
-                                onClick={onEditResource}
-                                {...this.buttonProps}
-                            >
-                                <i className="far fa-edit fa-2x"></i>
-                            </Button>                   
-                        </span>
-                    </Tooltip>
-                    <Tooltip title={"Open Palette"}>
-                        <span>
-                            <Button
-                                onClick={onOpenPalette}
-                                {...this.buttonProps}
-                            >
-                                <i className="fas fa-palette fa-2x"></i>
-                            </Button>  
-                        </span>
-                    </Tooltip>
+                    { this.renderElementMenuButtons() }                                    
                 </div>
                 <div className="rightgroup">
-                    <Tooltip title={"Save Document"}>
-                        <span>
-                            <Button
-                                onClick={onSave}
-                                disabled={!changedSinceLastSave}
-                                {...this.buttonProps}
-                            >
-                                <i className="fas fa-save fa-2x"></i>
-                            </Button>  
-                        </span>
-                    </Tooltip>
+                    { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
+                    { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
                 </div>
             </div>
         )
