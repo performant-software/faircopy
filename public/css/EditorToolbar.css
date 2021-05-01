@@ -27,10 +27,15 @@
 }
 
 #EditorToolbar .seperator {
-    margin-top: 15px;
-    border-left: 3px solid #ccc;
-    height: 20px;
+    margin-top: 0px;
     margin-left: 20px;
     margin-right: 20px;
+    display: inline-block;
+}
+
+#EditorToolbar .line {
+    border-left: 3px solid #ccc;
+    height: 20px;
+    margin-bottom: -5px;
     display: inline-block;
 }

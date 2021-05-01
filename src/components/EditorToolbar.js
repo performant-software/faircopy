@@ -163,35 +163,27 @@ export default class EditorToolbar extends Component {
         )
     }
 
-    renderElementMenuButtons() {
-
-        // TODO
-        const noOp = () => {}
-
-        return (
-            <div style={{display: 'inline-block'}}>
-                { this.renderActionButtons() }
-                <div className="seperator"></div>
-                { this.renderButton("Bold", "fas fa-bold", noOp ) }
-                { this.renderButton("Italic", "fas fa-italic", noOp ) }
-                { this.renderButton("Underline", "fas fa-underline", noOp ) }
-                { this.renderButton("Reference", "fas fa-link", noOp ) }
-                { this.renderButton("Note", "far fa-comment-alt", noOp ) }
-                <div className="seperator"></div>
-                { this.renderButton("Undo", "fas fa-undo", noOp ) }
-                { this.renderButton("Redo", "fas fa-redo", noOp ) }
-            </div>
-        )
-    }
-
     render() {
         const { onEditResource, onSave, teiDocument } = this.props
         const { changedSinceLastSave } = teiDocument
-        
-        return (
+
+         // TODO
+         const noOp = () => {}
+         const seperator = <div className="seperator"><div className="line"></div></div>
+
+         return (
             <div id="EditorToolbar">
                 <div className="leftgroup">
-                    { this.renderElementMenuButtons() }                                    
+                    { this.renderActionButtons() }
+                    { seperator }
+                    { this.renderButton("Bold", "fas fa-bold", noOp ) }
+                    { this.renderButton("Italic", "fas fa-italic", noOp ) }
+                    { this.renderButton("Underline", "fas fa-underline", noOp ) }
+                    { this.renderButton("Reference", "fas fa-link", noOp ) }
+                    { this.renderButton("Note", "far fa-comment-alt", noOp ) }
+                    { seperator }
+                    { this.renderButton("Undo", "fas fa-undo", noOp ) }
+                    { this.renderButton("Redo", "fas fa-redo", noOp ) }                          
                 </div>
                 <div className="rightgroup">
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
