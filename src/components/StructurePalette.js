@@ -7,13 +7,14 @@ export default class StructurePalette extends Component {
     super(props)
 
     const currentSubmenuID = "structure"
+    const x = window.innerWidth - 235
 
     this.initialPosition = {
       dragging: false,
-      startX: 500,
-      startY: 500,
-      offsetX: 500,
-      offsetY: 500,
+      startX: x,
+      startY: 130,
+      offsetX: x,
+      offsetY: 130,
     }
     this.state = { ...this.initialPosition, currentSubmenuID }
 }
@@ -69,6 +70,7 @@ closeDragElement = () => {
 
 getMenuGroups() {
   const { teiDocument } = this.props
+  if( !teiDocument ) return null
   const menus = teiDocument.resourceType === 'header' ? teiDocument.fairCopyProject.headerMenus : teiDocument.fairCopyProject.menus
   return menus['structure']
 }
@@ -147,7 +149,7 @@ render() {
       >
         <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
         <div className="header" onMouseDown={this.dragMouseDown}>
-          <Typography>Structure Elements</Typography>
+          <Typography>Elements</Typography>
         </div>
         <div className="content">
           { this.renderSelectStructureGroup(menuGroups) }
