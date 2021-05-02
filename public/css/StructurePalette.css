@@ -23,6 +23,10 @@
     float: right;
 }
 
+#StructurePalette .title {
+    padding-left: 10px;
+}
+
 #StructurePalette .content {
     min-width: 200px;
     max-width: 400px;

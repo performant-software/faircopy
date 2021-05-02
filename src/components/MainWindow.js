@@ -264,8 +264,9 @@ export default class MainWindow extends Component {
         this.setState({...this.state, elementMenuOptions })
     }
 
-    onOpenPalette = () => {
-        this.setState({...this.state, paletteWindowOpen: true })
+    onTogglePalette = () => {
+        const { paletteWindowOpen } = this.state
+        this.setState({...this.state, paletteWindowOpen: !paletteWindowOpen })
     }
 
     onCloseElementMenu = () => {
@@ -373,7 +374,7 @@ export default class MainWindow extends Component {
                             resourceEntry={resourceEntry}
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
-                            onOpenPalette={this.onOpenPalette}
+                            onTogglePalette={this.onTogglePalette}
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
                             onSave={onSave}

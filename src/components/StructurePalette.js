@@ -149,7 +149,7 @@ render() {
       >
         <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
         <div className="header" onMouseDown={this.dragMouseDown}>
-          <Typography>Elements</Typography>
+          <Typography><i className="fas fa-palette fa-sm"></i><span className="title">Elements</span></Typography>
         </div>
         <div className="content">
           { this.renderSelectStructureGroup(menuGroups) }

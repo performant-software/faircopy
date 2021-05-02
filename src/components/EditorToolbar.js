@@ -137,22 +137,22 @@ export default class EditorToolbar extends Component {
     }
 
     renderActionButtons() {
-        const { onOpenElementMenu, teiDocument, onOpenPalette, elementMenuAnchors } = this.props
+        const { onOpenElementMenu, teiDocument, onTogglePalette, elementMenuAnchors } = this.props
         const { selectedAction } = this.state
         const enabledMenus = this.getEnabledMenus()
 
         return (
             <span>
-                { this.renderButton("Open Palette", "fas fa-palette", onOpenPalette ) }
+                { this.renderButton("Toggle Element Palette", "fas fa-palette", onTogglePalette ) }
                 { this.renderButton(
-                    "Marks",
+                    "Mark Phrase",
                     "fas fa-marker",
                     () => { onOpenElementMenu({ menuGroup: 'mark', action: selectedAction})},
                     enabledMenus.marks,
                     (el)=> { elementMenuAnchors.mark = el }
                 )}
                 { this.renderButton(
-                    "Inlines",
+                    "Insert Inline",
                     "fas fa-stamp",
                     () => { onOpenElementMenu({ menuGroup: 'inline', action: selectedAction }) },
                     enabledMenus.inline,
