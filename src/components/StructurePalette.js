@@ -22,11 +22,19 @@ export default class StructurePalette extends Component {
 componentDidMount() {
   window.addEventListener("mouseup", this.closeDragElement )
   window.addEventListener("mousemove", this.elementDrag )
+  window.addEventListener("resize", this.onResize )
 }
 
 componentWillUnmount() {
   window.removeEventListener("mouseup", this.closeDragElement )
   window.removeEventListener("mousemove", this.elementDrag )
+  window.removeEventListener("resize", this.onResize )
+}
+
+onResize = () => {
+  const { offsetX, offsetY } = this.state
+  const { nextX, nextY } = this.constrainToWindow(offsetX,offsetY)
+  this.setState({ ...this.state, offsetX: nextX, offsetY: nextY })
 }
 
 dragMouseDown = (e) => {
@@ -52,12 +60,28 @@ elementDrag = (e) => {
     const nextStartY = e.clientY;
 
     // set the element's new position:
-    const nextOffsetX = (offsetX - pos1)
-    const nextOffsetY = (offsetY - pos2)
-    this.setState({ ...this.state, offsetX: nextOffsetX, offsetY: nextOffsetY, startX: nextStartX, startY: nextStartY })
+    const { nextX, nextY } = this.constrainToWindow( (offsetX - pos1), (offsetY - pos2) )
+
+    this.setState({ ...this.state, offsetX: nextX, offsetY: nextY, startX: nextStartX, startY: nextStartY })
 
     e.preventDefault()
   }
+}
+
+constrainToWindow( offsetX, offsetY ) {
+  if( !this.el ) return { nextX: offsetX, nextY: offsetY }
+
+  const { width, height } = this.el.getBoundingClientRect()
+  const maxX = window.innerWidth - width
+  const maxY = window.innerHeight - height
+
+  let nextX, nextY  
+  nextX = (offsetX < 0) ? 0 : offsetX
+  nextX = nextX > maxX ? maxX : nextX
+  nextY = offsetY < 0 ? 0 : offsetY
+  nextY = nextY > maxY ? maxY : nextY
+
+  return { nextX, nextY }
 }
 
 closeDragElement = () => {
@@ -142,10 +166,15 @@ render() {
       pointerEvents: dragging ? 'none' : 'auto' 
     }
 
+    const onRef = (el) => {
+      this.el = el
+    }
+
     return (
       <div 
-        style={style}
         id="StructurePalette"
+        style={style}
+        ref={onRef} 
       >
         <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
         <div className="header" onMouseDown={this.dragMouseDown}>
