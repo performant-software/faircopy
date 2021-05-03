@@ -94,7 +94,7 @@ closeDragElement = () => {
 
 getMenuGroups() {
   const { teiDocument } = this.props
-  if( !teiDocument ) return null
+  if( !teiDocument || !teiDocument.fairCopyProject ) return null
   const menus = teiDocument.resourceType === 'header' ? teiDocument.fairCopyProject.headerMenus : teiDocument.fairCopyProject.menus
   return menus['structure']
 }
@@ -157,7 +157,10 @@ renderStructures( currentMenu ) {
 render() {      
     const { offsetX, offsetY, dragging, currentSubmenuID } = this.state
     const { onClose } = this.props
+    
     const menuGroups = this.getMenuGroups()
+    if( !menuGroups ) return null
+
     const currentMenu = menuGroups[currentSubmenuID]
   
     const style = {
