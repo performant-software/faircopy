@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { IconButton, Tooltip } from '@material-ui/core'
 
 import {undo, redo} from "prosemirror-history"
-import { eraseSelection } from "../tei-document/editor-actions"
+import { createElement, eraseSelection } from "../tei-document/editor-actions"
 
 export default class EditorToolbar extends Component {
     
@@ -32,11 +32,11 @@ export default class EditorToolbar extends Component {
                     eraser: false
                 }
             } else {
-                    return {
-                        marks: true,
-                        inline: false,
-                        eraser: true
-                    }
+                return {
+                    marks: true,
+                    inline: false,
+                    eraser: true
+                }
             }
         } 
         return {
@@ -102,22 +102,39 @@ export default class EditorToolbar extends Component {
         redo(editorView.state,editorView.dispatch)
     }
 
+    onHi = (rend) => {
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
+
+        if( editorView ) {
+            const { selection } = editorView.state
+            if( selection.$cursor ) {
+                // TODO
+            } else {
+                createElement( 'hi', {rend}, teiDocument )
+            }        
+        }
+    }
+
     render() {
         const { onEditResource, onSave, teiDocument } = this.props
         const { changedSinceLastSave } = teiDocument
 
-         // TODO
          const noOp = () => {}
          const seperator = <div className="seperator"><div className="line"></div></div>
+
+         const onBold = ()=> { this.onHi('bold')}
+         const onItalic = ()=> { this.onHi('italic')}
+         const onUnderline = ()=> { this.onHi('underline')}
 
          return (
             <div id="EditorToolbar">
                 <div className="leftgroup">
                     { this.renderActionButtons() }
                     { seperator }
-                    { this.renderButton("Bold", "fas fa-bold", noOp ) }
-                    { this.renderButton("Italic", "fas fa-italic", noOp ) }
-                    { this.renderButton("Underline", "fas fa-underline", noOp ) }
+                    { this.renderButton("Bold", "fas fa-bold", onBold ) }
+                    { this.renderButton("Italic", "fas fa-italic", onItalic ) }
+                    { this.renderButton("Underline", "fas fa-underline", onUnderline ) }
                     { this.renderButton("Reference", "fas fa-link", noOp ) }
                     { this.renderButton("Note", "far fa-comment-alt", noOp ) }
                     { seperator }

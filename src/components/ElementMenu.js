@@ -47,7 +47,7 @@ export default class ElementMenu extends Component {
             const { teiDocument, onClose } = this.props
 
             if( selection && !selection.node ) {
-                createElement(member.id, teiDocument) 
+                createElement(member.id, {}, teiDocument) 
             }
             onClose()
         }

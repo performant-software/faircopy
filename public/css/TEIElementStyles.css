@@ -50,15 +50,24 @@ tei-markdel, tei-del {
     text-decoration: line-through;
 }
 
-*[rendition~="simple:caps"] {
+*[rend~="uppercase"] {
     text-transform: uppercase;
 }
-*[rendition~="simple:italic"] {
+*[rend~="italic"] {
     font-style: italic;
 }
-*[rendition~="simple:bold"] {
+*[rend~="bold"] {
     font-weight: bold;
 }
+
+*[rend~="underline"] {
+   text-decoration: underline;
+}
+
+*[rend~="line-through"] {
+    text-decoration: line-through;
+ }
+ 
 
 .ProseMirror {
     font-family: Arial, Helvetica, sans-serif;

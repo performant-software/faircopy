@@ -14,7 +14,7 @@ function markApplies(doc, ranges, type) {
     return false
 }
 
-export function addMark(markType) {
+export function addMark(markType,attrs) {
     return function(state, dispatch) {
         let {empty, $cursor, ranges} = state.selection
         if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) return false
@@ -25,8 +25,9 @@ export function addMark(markType) {
                 const {tr} = state
                 for (let i = 0; i < ranges.length; i++) {
                     const {$from, $to} = ranges[i]
-                    const {from, to, attrs} = preventOverlap(state.doc, markType, $from, $to)
-                    tr.addMark(from, to, markType.create(attrs))
+                    const {from, to, attrs: existingAttrs } = preventOverlap(state.doc, markType, $from, $to)
+                    const nextAttrs = combineAttrs(attrs,existingAttrs)
+                    tr.addMark(from, to, markType.create(nextAttrs))
                     // change the range to a cursor at the end of the first range
                     if( i === 0 ) {
                         const cursorPos = tr.doc.resolve(to)
@@ -38,6 +39,11 @@ export function addMark(markType) {
         }
         return true
     }
+}
+
+function combineAttrs( requestedAttrs, existingAttrs ) {
+    // TODO
+    return requestedAttrs
 }
 
 function preventOverlap( doc, markType, $from, $to ) {   

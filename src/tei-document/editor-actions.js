@@ -2,7 +2,7 @@ import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createFragment, createAsideNode } from "./commands"
 
-export function createElement( elementID, teiDocument ) {
+export function createElement( elementID, attrs, teiDocument ) {
     const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state
@@ -18,10 +18,10 @@ export function createElement( elementID, teiDocument ) {
         }    
     } else if( pmType === 'mark' ) {
         const markType = schema.marks[elementID]
-        return createMark( markType, editorView )
+        return createMark( markType, attrs, editorView )
     } else {
         if( inter.includes(elementID) ) {
-            createInterNode( elementID, teiDocument )
+            createInterNode( elementID, attrs, teiDocument )
         } else {
             const editorView = teiDocument.getActiveView()
             const { selection, tr } = editorView.state
@@ -177,13 +177,13 @@ export function replaceElement( elementID, teiDocument, pos, tr ) {
     return tr
 }
 
-export function createInterNode( elementID, teiDocument ) {
+export function createInterNode( elementID, attrs, teiDocument ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state
 
     // TODO determine if this should create a node or a mark
     const markType = schema.marks[`mark${elementID}`]
-    return createMark( markType, editorView )
+    return createMark( markType, attrs, editorView )
 }
 
 function createNode( nodeType, tr, selection, schema ) {
@@ -470,8 +470,8 @@ export function moveNode(direction,teiDocument,metaKey) {
     editorView.focus()
 }
 
-function createMark(markType, editorView) {
-    const cmd = addMark( markType )
+function createMark(markType, attrs, editorView) {
+    const cmd = addMark( markType, attrs )
     cmd( editorView.state, editorView.dispatch ) 
     editorView.focus()
 }
