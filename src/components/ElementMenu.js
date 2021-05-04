@@ -55,6 +55,7 @@ export default class ElementMenu extends Component {
 
     renderGroup(menuGroup) {
         const { teiDocument } = this.props
+        const { elements } = teiDocument.fairCopyProject.teiSchema
         const {members} = menuGroup
 
         // generate the sub menu items
@@ -70,6 +71,9 @@ export default class ElementMenu extends Component {
             const valid = !member.enabled ? false : validAction('mark', member.id, teiDocument, selection )
             const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member.id })}
             const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
+            const elementSpec = elements[member.id]
+            const icon = elementSpec ? elementSpec.icon : null
+            const nameEl = icon ? <span><i className={`fas ${icon} fa-sm`}></i><span className="element-menu-name">{member.id}</span></span> : <span>{member.id}</span>
 
             menuItems.push(
                 <MenuItem 
@@ -81,7 +85,7 @@ export default class ElementMenu extends Component {
                     onMouseLeave={onMouseLeave}
                     onClick={this.createMenuAction(selection, member)}
                 >
-                    {member.id}
+                    {nameEl}
                 </MenuItem>
             )
         }

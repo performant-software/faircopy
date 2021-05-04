@@ -6,6 +6,10 @@
     width: 180px;
 }
 
+.element-menu-name {
+    padding-left: 10px;
+}
+
 #ElementMenu .menu-chevron {
     position: absolute;
     right: 10px;
