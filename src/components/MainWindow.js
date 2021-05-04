@@ -348,7 +348,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter } = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen } = this.state
         const { fairCopyProject } = this.props
 
         const editors = []
@@ -375,6 +375,7 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onTogglePalette={this.onTogglePalette}
+                            paletteActive={paletteWindowOpen}
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
                             onSave={onSave}

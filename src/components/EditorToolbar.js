@@ -46,14 +46,16 @@ export default class EditorToolbar extends Component {
         }
     }
 
-    renderButton(title,icon,onClick,enabled=true,onRef=null) {
+    renderButton(title,icon,onClick,enabled=true,onRef=null,active=false) {
         const refProps = onRef ? { ref: onRef } : {}
+        const colorProps = active ? { color: 'primary' } : {}
         const iconButton = (
             <IconButton
                 disabled={!enabled}
                 onClick={onClick}
                 {...this.buttonProps}
                 {...refProps}
+                {...colorProps}
             >
                 <i className={`${icon} fa-sm`}></i>
             </IconButton> 
@@ -63,12 +65,12 @@ export default class EditorToolbar extends Component {
     }
 
     renderActionButtons() {
-        const { onOpenElementMenu, teiDocument, onTogglePalette, elementMenuAnchors } = this.props
+        const { onOpenElementMenu, teiDocument, onTogglePalette, paletteActive, elementMenuAnchors } = this.props
         const enabledMenus = this.getEnabledMenus()
 
         return (
             <span>
-                { this.renderButton("Toggle Element Palette", "fas fa-palette", onTogglePalette ) }
+                { this.renderButton("Toggle Element Palette", "fas fa-palette", onTogglePalette, true, null, paletteActive ) }
                 { this.renderButton(
                     "Mark Phrase",
                     "fas fa-marker",
