@@ -133,7 +133,6 @@ export default class ElementMenu extends Component {
             const valid = !member.enabled ? false : validAction(action, member.id, teiDocument, selection )
             const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member.id })}
             const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
-            const mouseEvents = (action === 'info') ? { onMouseOver, onMouseLeave } : { onClick: this.createMenuAction(selection, member) }
 
             menuItems.push(
                 <MenuItem 
@@ -141,7 +140,9 @@ export default class ElementMenu extends Component {
                     ref={setItemElRef}
                     key={`submenu-${member.id}`}
                     disableRipple={true}
-                    { ...mouseEvents }
+                    onMouseOver={onMouseOver}
+                    onMouseLeave={onMouseLeave}
+                    onClick={this.createMenuAction(selection, member)}
                 >
                     {member.id}
                 </MenuItem>
