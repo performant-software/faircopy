@@ -102,7 +102,7 @@ export default class EditorToolbar extends Component {
         redo(editorView.state,editorView.dispatch)
     }
 
-    onHi = (rend) => {
+    onMark = (elementID, attrs) => {
         const { teiDocument } = this.props
         const editorView = teiDocument.getActiveView()
 
@@ -111,7 +111,7 @@ export default class EditorToolbar extends Component {
             if( selection.$cursor ) {
                 // TODO
             } else {
-                createElement( 'hi', {rend}, teiDocument )
+                createElement( elementID, attrs, teiDocument )
             }        
         }
     }
@@ -123,9 +123,10 @@ export default class EditorToolbar extends Component {
          const noOp = () => {}
          const seperator = <div className="seperator"><div className="line"></div></div>
 
-         const onBold = ()=> { this.onHi('bold')}
-         const onItalic = ()=> { this.onHi('italic')}
-         const onUnderline = ()=> { this.onHi('underline')}
+         const onBold = ()=> { this.onMark('hi', {rend: 'bold'})}
+         const onItalic = ()=> { this.onMark('hi', {rend: 'italic'})}
+         const onUnderline = ()=> { this.onMark('hi',{rend:'underline'})}
+         const onRef = ()=> { this.onMark('ref',{})}
 
          return (
             <div id="EditorToolbar">
@@ -135,7 +136,7 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Bold", "fas fa-bold", onBold ) }
                     { this.renderButton("Italic", "fas fa-italic", onItalic ) }
                     { this.renderButton("Underline", "fas fa-underline", onUnderline ) }
-                    { this.renderButton("Reference", "fas fa-link", noOp ) }
+                    { this.renderButton("Reference", "fas fa-link", onRef ) }
                     { this.renderButton("Note", "far fa-comment-alt", noOp ) }
                     { seperator }
                     { this.renderButton("Undo", "fas fa-undo", this.onUndo ) }
