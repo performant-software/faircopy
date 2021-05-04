@@ -77,7 +77,7 @@ export function validAction( actionType, elementID, teiDocument, selection ) {
     const { inter } = fairCopyProject.teiSchema.elementGroups
     const {pmType} = fairCopyProject.teiSchema.elements[elementID]
 
-    if( actionType === 'info' || pmType === 'mark' ) return true
+    if( pmType === 'mark' ) return true
 
     if( inter.includes(elementID) ) {
         return true // TODO validate inters 
