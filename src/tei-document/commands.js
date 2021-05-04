@@ -42,8 +42,21 @@ export function addMark(markType,attrs) {
 }
 
 function combineAttrs( requestedAttrs, existingAttrs ) {
-    // TODO
-    return requestedAttrs
+    const nextAttrs = { ...existingAttrs }
+
+    for( const key of Object.keys(requestedAttrs) ) {
+        const nextVal = requestedAttrs[key]
+        if( nextAttrs[key] ) {
+            const vals = nextAttrs[key].split(' ')
+            if( !vals.includes(nextVal) ) {
+                nextAttrs[key] = `${nextAttrs[key]} ${nextVal}`
+            }
+        } else {
+            nextAttrs[key] = nextVal
+        }
+    }
+    
+    return nextAttrs
 }
 
 function preventOverlap( doc, markType, $from, $to ) {   

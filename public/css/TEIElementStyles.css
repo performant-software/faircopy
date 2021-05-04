@@ -59,6 +59,19 @@ tei-markdel, tei-del {
 *[rend~="bold"] {
     font-weight: bold;
 }
+*[rend~="red"] {
+    color: red;
+}
+*[rend~="small"] {
+    font-size: small;
+}
+*[rend~="medium"] {
+    font-size: large;
+}
+*[rend~="large"] {
+    font-size: x-large;
+}
+
 
 *[rend~="underline"] {
    text-decoration: underline;
