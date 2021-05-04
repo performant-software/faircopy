@@ -73,7 +73,7 @@ export default class ElementMenu extends Component {
             const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
             const elementSpec = elements[member.id]
             const icon = elementSpec ? elementSpec.icon : null
-            const nameEl = icon ? <span><i className={`fas ${icon} fa-sm`}></i><span className="element-menu-name">{member.id}</span></span> : <span>{member.id}</span>
+            const nameEl = icon ? <span><i className={`far ${icon} fa-sm`}></i><span className="element-menu-name">{member.id}</span></span> : <span>{member.id}</span>
 
             menuItems.push(
                 <MenuItem 
