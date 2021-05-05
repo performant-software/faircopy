@@ -77,8 +77,8 @@ function preventOverlap( doc, markType, $from, $to ) {
         for( const mark of marks ) {
             if( mark.type === markType ) {
                 const extent = markExtent($cursor, mark, doc)
-                from = extent.from < from ? extent.from : from
-                to = extent.to > to ? extent.to : to
+                // from = extent.from < from ? extent.from : from
+                // to = extent.to > to ? extent.to : to
                 if( !firstMarkPos || extent.from < firstMarkPos ) {
                     firstMark = mark
                     firstMarkPos = extent.from
