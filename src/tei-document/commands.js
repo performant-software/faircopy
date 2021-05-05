@@ -1,4 +1,4 @@
-import { NodeSelection, TextSelection } from "prosemirror-state"
+import { NodeSelection } from "prosemirror-state"
 import { Node, Fragment } from "prosemirror-model"
 
 function markApplies(doc, ranges, type) {
@@ -25,13 +25,9 @@ export function addMark(markType,attrs) {
                 const {tr} = state
                 for (let i = 0; i < ranges.length; i++) {
                     const {$from, $to} = ranges[i]
-                    const {from, to, attrs: existingAttrs } = preventOverlap(state.doc, markType, $from, $to)
-                    const nextAttrs = combineAttrs(attrs,existingAttrs)
-                    tr.addMark(from, to, markType.create(nextAttrs))
-                    // change the range to a cursor at the end of the first range
-                    if( i === 0 ) {
-                        const cursorPos = tr.doc.resolve(to)
-                        tr.setSelection(new TextSelection(cursorPos,cursorPos))                
+                    const markParams = generateMarks(state.doc, markType, attrs, $from, $to)
+                    for( const markParam of markParams ) {
+                        tr.addMark(...markParam)
                     }
                 }
                 dispatch(tr.scrollIntoView())
@@ -59,7 +55,7 @@ function combineAttrs( requestedAttrs, existingAttrs ) {
     return nextAttrs
 }
 
-function preventOverlap( doc, markType, $from, $to ) {   
+function generateMarks( doc, markType, attrs, $from, $to ) {   
     const parentNode = $from.parent
     let from = $from.pos
     const parentStartPos = from - $from.parentOffset
@@ -68,53 +64,24 @@ function preventOverlap( doc, markType, $from, $to ) {
     // don't allow bounds beyond the current node
     let to = ($to.pos > parentEndPos) ? parentEndPos : $to.pos
 
-    let firstMarkPos = null, firstMark = null
-
-    // detect marks of markType in this range, adjust bounds to absorb these
-    for( let i=from; i <= to; i++ ) {
+    const markParams = []
+    for( let i=from; i < to; i++ ) {
         const $cursor = doc.resolve(i)
         const marks = $cursor.marks()
+        let markParam
         for( const mark of marks ) {
             if( mark.type === markType ) {
-                const extent = markExtent($cursor, mark, doc)
-                // from = extent.from < from ? extent.from : from
-                // to = extent.to > to ? extent.to : to
-                if( !firstMarkPos || extent.from < firstMarkPos ) {
-                    firstMark = mark
-                    firstMarkPos = extent.from
-                }
-            }
+                const nextAttrs = combineAttrs( attrs, mark.attrs ) 
+                markParam = [ i, i+1, markType.create(nextAttrs) ]
+                break
+            } 
         }
+        if( !markParam ) markParam = [i,i+1,markType.create(attrs)]
+        markParams.push(markParam)
     }    
 
-    // if we found a mark of this type, use its attrs instead
-    const attrs = (firstMarkPos) ? firstMark.attrs : null
-
-    return { from, to, attrs }
+    return markParams
 }
-
-    // let to
-
-    // // second pass: detect overlap with from to end range
-    // for( to=from; to < end; to++ ) {
-    //     const $cursor = doc.resolve(to)
-    //     const marks = $cursor.marks()
-    //     for( const mark of marks ) {
-    //         const extent = markExtent($cursor, mark, doc)
-    //         if( extent.from < from && extent.to < end) {
-    //             // overlap found: clip range
-    //             return { from, to: extent.to } 
-    //         }
-    //         if( extent.from > from && extent.to > end) {
-    //             // overlap found: clip range
-    //             return { from, to: extent.from } 
-    //         }
-    //     }
-    // }
-
-    // // no overlap with existing marks
-    // return { from, to, attrs }
-// }
 
 export function removeMark(markType) {
     return function(state, dispatch) {
