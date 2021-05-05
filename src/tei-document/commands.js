@@ -66,17 +66,16 @@ function generateMarks( doc, markType, attrs, $from, $to ) {
 
     const markParams = []
     for( let i=from; i < to; i++ ) {
-        const $cursor = doc.resolve(i)
-        const marks = $cursor.marks()
         let markParam
-        for( const mark of marks ) {
-            if( mark.type === markType ) {
-                const nextAttrs = combineAttrs( attrs, mark.attrs ) 
-                markParam = [ i, i+1, markType.create(nextAttrs) ]
-                break
-            } 
+        if( doc.rangeHasMark(i,i+1,markType) ) {
+            const $m = doc.resolve(i+1)
+            const marks = $m.marks()
+            const mark = marks.find((m) => m.type === markType )
+            const nextAttrs = combineAttrs( attrs, mark.attrs ) 
+            markParam = [ i, i+1, markType.create(nextAttrs) ]
+        } else {
+            markParam = [i,i+1,markType.create(attrs)]
         }
-        if( !markParam ) markParam = [i,i+1,markType.create(attrs)]
         markParams.push(markParam)
     }    
 
