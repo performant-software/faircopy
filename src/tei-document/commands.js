@@ -282,21 +282,15 @@ export function deleteParentNode(state) {
 function findMarkExtent(doc,mark,startPos,dir,endPos) {
     let result = -1
 
-    let testFn //,range
+    let testFn
     if( dir === -1 ) {
         testFn = (i) => (i >= endPos)
-        // range = -(startPos-endPos)
     } else {
         testFn = (i) => (i <= endPos)
-        // range = endPos-startPos
     }
 
-    // TODO search tree recursively.
-    // let testRange = Math.round(range/2)
-    // doc.rangeHasMark( startPos, startPos+testRange, mark.type )
-
     for( let i=startPos; testFn(i); i+=dir ) {
-        if( doc.rangeHasMark( i, i+1, mark.type ) ) {
+        if( doc.rangeHasMark( i, i+1, mark ) ) {
             result = (dir === -1) ? i : i+1
         } else break
     }
@@ -308,27 +302,14 @@ export function markExtent($anchor, mark, doc) {
     const pos = $anchor.pos
     const parentStartPos = pos - $anchor.parentOffset
     const parentEndPos = parentStartPos + parentNode.nodeSize
-    // let from = pos
-    // let to = pos
 
     // walk from index in parent node backwards until we encounter text wo/this mark
     const backwards = findMarkExtent(doc,mark,pos-1,-1,parentStartPos)
     const from = (backwards !== -1 ) ? backwards : pos
 
-    // for( let i=pos-1; i >= parentStartPos; i-- ) {
-    //     if( doc.rangeHasMark( i, i+1, mark.type ) ) {
-    //         from = i
-    //     } else break
-    // }
-
     // now walk forwards, doing the same thing
     const forwards = findMarkExtent(doc,mark,pos,1,parentEndPos-1)
     const to = (forwards !== -1 ) ? forwards : pos
-    // for( let i=pos; i < parentEndPos; i++ ) {
-    //     if( doc.rangeHasMark( i, i+1, mark.type ) ) {
-    //         to = i+1
-    //     } else break
-    // }
 
     return { from, to }
 }
