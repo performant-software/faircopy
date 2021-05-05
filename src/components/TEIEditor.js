@@ -290,12 +290,16 @@ export default class TEIEditor extends Component {
                     }            
                 }
             } else {
-                const { doc } = editorView.state
-                const { $anchor } = selection
-                const highlightRanges = getHighlightRanges(doc,$anchor)
-                for( const highlightRange of highlightRanges ) {
-                    elements.push( highlightRange.mark )
-                }     
+                // highlight ranges are not active when there's a browser selection
+                const browserSelection = window.getSelection()
+                if( browserSelection.isCollapsed ) {
+                    const { doc } = editorView.state
+                    const { $anchor } = selection
+                    const highlightRanges = getHighlightRanges(doc,$anchor)
+                    for( const highlightRange of highlightRanges ) {
+                        elements.push( highlightRange.mark )
+                    }         
+                } 
             }
         }
 

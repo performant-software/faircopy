@@ -21,6 +21,10 @@ const heatMapColors = [
 const drawHighlight = function(state) { 
     const { doc, selection } = state
 
+    // highlight ranges are not active when there's a browser selection
+    const browserSelection = window.getSelection()
+    if( !browserSelection.isCollapsed ) return 
+    
     if( selection && selection instanceof TextSelection ) {
         const { $anchor } = selection
         const highlights = getHighlightRanges(doc, $anchor) 
