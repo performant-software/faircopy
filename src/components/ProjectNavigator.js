@@ -51,7 +51,7 @@ export default class ProjectNavigator extends Component {
             className="tree-item-close"
             onClick={onClick}
           >
-            <i className="fa fa-minus-circle fa-lg"></i>
+            <i className="fas fa-times-circle fa-lg"></i>
           </Button>
         </div>
       )
