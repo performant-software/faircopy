@@ -280,8 +280,8 @@ export function markExtent($anchor, mark, doc) {
     return { from, to }
 }
 
-export function createAsideNode( asideName, teiDocument, editorView ) {
+export function createAsideNode( asideName, attrs, teiDocument, editorView ) {
     const { state } = editorView
-    const subDocID = teiDocument.createSubDocument(document,asideName)
-    return state.schema.node(asideName, { id: '', __id__: subDocID })
+    const subDocID = teiDocument.createSubDocument(document,asideName,attrs)
+    return state.schema.node(asideName, { id: '', __id__: subDocID, ...attrs })
 }

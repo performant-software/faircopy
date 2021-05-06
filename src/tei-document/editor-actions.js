@@ -11,7 +11,7 @@ export function createElement( elementID, attrs, teiDocument ) {
 
     if( pmType === 'inline-node' ) {
         if( asides.includes(elementID) ) {
-            return createAside( elementID, teiDocument, editorView )
+            return createAside( elementID, attrs, teiDocument, editorView )
         } else {
             const inlineType = schema.nodes[elementID]
             return createInline( inlineType, editorView )
@@ -246,7 +246,7 @@ export function addAbove( elementID, teiDocument, pos, tr ) {
 
     if( nodeType.isAtom ) {
         if( asides.includes(elementID) ) {
-            const asideNode = createAsideNode( elementID, teiDocument, editorView )
+            const asideNode = createAsideNode( elementID, {}, teiDocument, editorView )
             return insertAtomNodeAt(asideNode, pos, editorView, true, tr )    
         } else {
             const node = nodeType.create()
@@ -271,7 +271,7 @@ export function addBelow( elementID, teiDocument, pos, tr ) {
 
     if( nodeType.isAtom ) {
         if( asides.includes(elementID) ) {
-            const asideNode = createAsideNode( elementID, teiDocument, editorView )
+            const asideNode = createAsideNode( elementID, {}, teiDocument, editorView )
             return insertAtomNodeAt(asideNode, insertPos, editorView, true, tr )                
         } else {
             const node = nodeType.create()
@@ -486,12 +486,12 @@ function createInline( nodeType, editorView ) {
     editorView.focus()
 }
 
-function createAside( asideName, teiDocument, editorView ) {
+function createAside( asideName, attrs, teiDocument, editorView ) {
     const { state } = editorView
     const { tr, selection } = state
-    const { $anchor } = selection
+    const { $head } = selection
 
-    const asideNode = createAsideNode( asideName, teiDocument, editorView )
-    tr.insert($anchor.pos, asideNode) 
+    const asideNode = createAsideNode( asideName, attrs, teiDocument, editorView )
+    tr.insert($head.pos, asideNode) 
     editorView.dispatch(tr)
 }

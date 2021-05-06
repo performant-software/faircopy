@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import { v4 as uuidv4 } from 'uuid'
 import { IconButton, Tooltip } from '@material-ui/core'
 
 import {undo, redo} from "prosemirror-history"
@@ -102,7 +102,7 @@ export default class EditorToolbar extends Component {
         redo(editorView.state,editorView.dispatch)
     }
 
-    onMark = (elementID, attrs) => {
+    createMark = (elementID, attrs) => {
         const { teiDocument } = this.props
         const editorView = teiDocument.getActiveView()
 
@@ -116,17 +116,32 @@ export default class EditorToolbar extends Component {
         }
     }
 
+    onNote = () => {
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
+
+        if( editorView ) {
+            const { selection } = editorView.state
+            if( selection.$cursor ) {
+                createElement( 'note', {}, teiDocument ) 
+            } else {
+                const noteID = `note_${uuidv4().replaceAll('-','')}`
+                this.createMark('ref', { target: noteID }, teiDocument )
+                createElement( 'note', {'xml:id': noteID}, teiDocument )
+            }
+        }
+    }
+
     render() {
         const { onEditResource, onSave, teiDocument } = this.props
         const { changedSinceLastSave } = teiDocument
 
-         const noOp = () => {}
          const seperator = <div className="seperator"><div className="line"></div></div>
 
-         const onBold = ()=> { this.onMark('hi', {rend: 'bold'})}
-         const onItalic = ()=> { this.onMark('hi', {rend: 'italic'})}
-         const onUnderline = ()=> { this.onMark('hi',{rend:'underline'})}
-         const onRef = ()=> { this.onMark('ref',{})}
+         const onBold = ()=> { this.createMark('hi', {rend: 'bold'})}
+         const onItalic = ()=> { this.createMark('hi', {rend: 'italic'})}
+         const onUnderline = ()=> { this.createMark('hi',{rend:'underline'})}
+         const onRef = ()=> { this.createMark('ref',{})}
 
          return (
             <div id="EditorToolbar">
@@ -137,7 +152,7 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Italic", "fas fa-italic", onItalic ) }
                     { this.renderButton("Underline", "fas fa-underline", onUnderline ) }
                     { this.renderButton("Reference", "fas fa-link", onRef ) }
-                    { this.renderButton("Note", "far fa-comment-alt", noOp ) }
+                    { this.renderButton("Note", "far fa-comment-alt", this.onNote ) }
                     { seperator }
                     { this.renderButton("Undo", "fas fa-undo", this.onUndo ) }
                     { this.renderButton("Redo", "fas fa-redo", this.onRedo ) }                          
