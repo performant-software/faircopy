@@ -62,6 +62,24 @@ tei-markdel, tei-del {
 *[rend~="red"] {
     color: red;
 }
+*[rend~="green"] {
+    color: green;
+}
+*[rend~="blue"] {
+    color: blue;
+}
+*[rend~="purple"] {
+    color: purple;
+}
+*[rend~="orange"] {
+    color: orange;
+}
+*[rend~="brown"] {
+    color: brown;
+}
+*[rend~="gray"] {
+    color: gray;
+}
 *[rend~="small"] {
     font-size: small;
 }
