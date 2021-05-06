@@ -65,7 +65,7 @@ export default class ProjectNavigator extends Component {
         const {resourceID} = resource
         const {name, type} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
-        const resourceIcon = type === 'text' ? 'fa fa-book' : type === 'facs' ? 'fa fa-images' : type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
+        const resourceIcon = type === 'text' ? 'far fa-book-open' : type === 'facs' ? 'far fa-images' : type === 'header' ? 'far fa-file-alt' : 'far fa-books'
         const icon = <i className={`${resourceIcon} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID)
         const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth-105 }
