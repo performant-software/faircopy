@@ -39,7 +39,7 @@ function createInters(elGroups,specs) {
     const inters = elGroups.inter
     const nodeGroups = getNodeGroups( elGroups, specs )
 
-    // Inter elements generate both a mark and a hard node
+    // Inter elements generate both a mark and a soft node
     const interElements = []
     for(let inter of inters) {
         const spec = specs[inter]

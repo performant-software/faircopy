@@ -9,7 +9,7 @@ import {gapCursor} from "prosemirror-gapcursor"
 import { v4 as uuidv4 } from 'uuid'
 
 import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
-import {parseText, serializeText, htmlToXML} from "./xml"
+import {parseText, proseMirrorToDOM, serializeText} from "./xml"
 import {scanForErrors} from "./error-scan"
 
 const fairCopy = window.fairCopy
@@ -75,7 +75,7 @@ export default class TEIDocument {
         const subDoc = teiSchema.docNodeSchemas[name].nodeFromJSON(noteJSON);
         // get the content of noteDoc, which is the only child of doc
         const noteDocFragment = subDoc.firstChild.content
-        const domFragment = serializeText(noteDocFragment, this, teiSchema, name)
+        const domFragment = proseMirrorToDOM(noteDocFragment, this, teiSchema, name)
         let note = document.createElement(name)
         note.appendChild( domFragment.cloneNode(true) )
         for( const attrKey of Object.keys(attrs)) {
@@ -256,29 +256,13 @@ export default class TEIDocument {
     save() {
         const editorState = this.editorView.state
         const { teiSchema } = this.fairCopyProject
-        teiSchema.teiMode = true
-
-        // take the body of the document from prosemirror and reunite it with 
-        // the rest of the xml document, then serialize to string
-         
-        let textEl, domFragment
-        if( this.resourceType === 'header' ) {
-            domFragment = serializeText(editorState.doc.content, this, teiSchema, 'header')
-            textEl = this.xmlDom.getElementsByTagName('teiHeader')[0]    
-        } else {
-            domFragment = serializeText(editorState.doc.content, this, teiSchema)
-            textEl = this.xmlDom.getElementsByTagName('text')[0]    
-        }
-        var div = document.createElement('div')
-        div.appendChild( domFragment.cloneNode(true) )
-        textEl.innerHTML = htmlToXML(div.innerHTML,teiSchema.elements,teiSchema.attrs)
-        const fileContents = new XMLSerializer().serializeToString(this.xmlDom);
+        
+        const fileContents = serializeText(editorState.doc, this, teiSchema)
 
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.lastMessageID = messageID
 
-        teiSchema.teiMode = false
         this.changedSinceLastSave = false
     }
 }

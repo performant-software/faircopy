@@ -14,7 +14,29 @@ export function parseText(textEl, teiDocument, teiSchema, subDocName) {
     return doc
 }
 
-export function serializeText( content, teiDocument, teiSchema, subDocName ) {
+export function serializeText(doc, teiDocument, teiSchema) {
+    teiSchema.teiMode = true
+    let textEl, domFragment
+    if( teiDocument.resourceType === 'header' ) {
+        domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema, 'header')
+        textEl = teiDocument.xmlDom.getElementsByTagName('teiHeader')[0]    
+    } else {
+        domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
+        textEl = teiDocument.xmlDom.getElementsByTagName('text')[0]    
+    }
+
+    // take the body of the document from prosemirror and reunite it with 
+    // the rest of the xml document, then serialize to string
+    var div = document.createElement('div')
+    div.appendChild( domFragment.cloneNode(true) )
+    textEl.innerHTML = htmlToXML(div.innerHTML,teiSchema.elements,teiSchema.attrs)
+    const fileContents = new XMLSerializer().serializeToString(teiDocument.xmlDom);
+    teiSchema.teiMode = false
+ 
+    return fileContents
+}
+
+export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) {
     const { inter } = teiSchema.elementGroups
 
     // make the TEIDocument visible to the serialize for access to sub docs
@@ -35,11 +57,16 @@ function parseInterNodes(textEl,elementGroups) {
     const markPrefix = 'mark'
 
     function isInterMark(markEl) {
+        // is its parent a hard node?
+        const parentNodeName = markEl.parentNode.nodeName
+        if( hard.includes(parentNodeName) ) return false
+
         // are there any node descendants of markEl?
         for( const node of nodes ) {
             const nodeEls = markEl.querySelectorAll(node)
             if( nodeEls.length > 0 ) return false
         }
+
         return true
     }
 

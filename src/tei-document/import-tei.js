@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
-import {parseText} from "./xml"
+import {parseText, serializeText} from "./xml"
 
 const fairCopy = window.fairCopy
 
@@ -148,9 +148,7 @@ function importTEIDocument(textEl, name, type, localID, parentResourceID, fairCo
     const tempDoc = new TEIDocument(null,type,fairCopyProject)
     const doc = parseText(textEl,tempDoc,teiSchema)
     const resourceMap = idMap.mapResource( type, doc )
-
-    // the XML of this text el
-    const content = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">${textEl.outerHTML}</TEI>`
+    const content = serializeText(doc, tempDoc, teiSchema)
 
     // learn the attributes and vocabs
     const nextFairCopyConfig = learnDoc(fairCopyConfig, doc, teiSchema, tempDoc)
