@@ -24,6 +24,12 @@ const createConfig = function createConfig(teiSchema) {
         elements[element.name] = configElement
     }
 
+    // set some default attrs 
+    elements.hi.attrState.rend.active = true
+    elements.ref.attrState.target.active = true
+    elements.markhi.attrState.rend.active = true
+    elements.markref.attrState.target.active = true
+
     // initialize vocabs
     for( const attr of Object.values(attrs) ) {
         const { valList, valListType } = attr

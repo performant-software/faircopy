@@ -5799,7 +5799,7 @@
 					"active": false
 				},
 				"rend": {
-					"active": false
+					"active": true
 				},
 				"rendition": {
 					"active": false
@@ -5873,7 +5873,7 @@
 					"active": false
 				},
 				"rend": {
-					"active": false
+					"active": true
 				},
 				"rendition": {
 					"active": false
@@ -6461,7 +6461,7 @@
 					"active": false
 				},
 				"target": {
-					"active": false
+					"active": true
 				},
 				"targetLang": {
 					"active": false
@@ -6559,7 +6559,7 @@
 					"active": false
 				},
 				"target": {
-					"active": false
+					"active": true
 				},
 				"targetLang": {
 					"active": false
