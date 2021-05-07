@@ -31,6 +31,12 @@ export default class EditorToolbar extends Component {
                     inline: true,
                     eraser: false
                 }
+            } else if( selection.node ) {
+                return {
+                    marks: false,
+                    inline: false,
+                    eraser: true
+                }
             } else {
                 return {
                     marks: true,

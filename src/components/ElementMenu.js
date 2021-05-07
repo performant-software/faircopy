@@ -3,7 +3,7 @@ import { Menu, MenuItem } from '@material-ui/core'
 
 import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
-import { validAction, createElement } from "../tei-document/editor-actions"
+import { createElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -68,7 +68,7 @@ export default class ElementMenu extends Component {
                 this.itemEls[member.id] = el
             }
 
-            const valid = !member.enabled ? false : validAction('mark', member.id, teiDocument, selection )
+            // const valid = !member.enabled ? false : validAction('mark', member.id, teiDocument, selection )
             const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member.id })}
             const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
             const elementSpec = elements[member.id]
@@ -77,7 +77,6 @@ export default class ElementMenu extends Component {
 
             menuItems.push(
                 <MenuItem 
-                    disabled={!valid} 
                     ref={setItemElRef}
                     key={`submenu-${member.id}`}
                     disableRipple={true}
