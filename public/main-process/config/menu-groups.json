@@ -33,14 +33,19 @@
             "members":["ab","cit","p"]
         },
         {
+            "id": "transcription",
+            "label": "Transcription",
+            "members": ["add", "corr", "del", "hi", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
+        },
+        {
             "id": "lines",
             "label": "Lines and lists",
-            "members":["item","l","lg","list"]
+            "members":["hi","item","l","lg","list","q","quote","ref","seg"]
         },
         {
             "id": "titles",
             "label": "Headers",
-            "members": ["argument","desc","epigraph","head","label","trailer"]
+            "members": ["argument","desc","epigraph","head","label","title","trailer"]
         },
         {
             "id": "titlepage",
