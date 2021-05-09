@@ -50,6 +50,7 @@ export default class MainWindow extends Component {
             feedbackMode: false,
             draggingElementActive: false,
             dragInfo: null,
+            currentSubmenuID: 'structure',
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
@@ -176,6 +177,7 @@ export default class MainWindow extends Component {
                 selectedResource: nextSelection,
                 openResources: nextResources, 
                 resourceBrowserOpen: false, 
+                currentSubmenuID: 'structure',
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null
             })    
@@ -237,7 +239,8 @@ export default class MainWindow extends Component {
             alertDialogMode: 'closed', 
             alertOptions: null,
             popupMenuOptions: null, 
-            popupMenuAnchorEl: null 
+            popupMenuAnchorEl: null,
+            currentSubmenuID: 'structure'
         })
 
         if( exitOnClose ) {
@@ -449,7 +452,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -521,6 +524,8 @@ export default class MainWindow extends Component {
                 { paletteWindowOpen && <StructurePalette
                     onDragElement={this.onDragElement}
                     teiDocument={selectedDoc}
+                    currentSubmenuID={currentSubmenuID}
+                    onChangeMenu={(currentSubmenuID)=>{ this.setState( {...this.state, currentSubmenuID} )}}
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
                 ></StructurePalette> }
                 { draggingElementActive && <DraggingElement

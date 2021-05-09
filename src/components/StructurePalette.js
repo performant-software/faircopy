@@ -6,7 +6,6 @@ export default class StructurePalette extends Component {
   constructor(props) {
     super(props)
 
-    const currentSubmenuID = "structure"
     const x = window.innerWidth - 235
 
     this.initialPosition = {
@@ -16,7 +15,7 @@ export default class StructurePalette extends Component {
       offsetX: x,
       offsetY: 130,
     }
-    this.state = { ...this.initialPosition, currentSubmenuID }
+    this.state = { ...this.initialPosition }
 }
 
 componentDidMount() {
@@ -100,11 +99,11 @@ getMenuGroups() {
 }
 
 renderSelectStructureGroup(menuGroups) {
-  const { currentSubmenuID } = this.state
+  const { currentSubmenuID, onChangeMenu } = this.props
 
   const onChange = (e) => {
     const { value: currentSubmenuID } = e.target
-    this.setState({...this.state, currentSubmenuID})
+    onChangeMenu(currentSubmenuID)
   }
 
   const menuItemEls = []
@@ -155,8 +154,8 @@ renderStructures( currentMenu ) {
 }
 
 render() {      
-    const { offsetX, offsetY, dragging, currentSubmenuID } = this.state
-    const { onClose } = this.props
+    const { offsetX, offsetY, dragging } = this.state
+    const { onClose, currentSubmenuID } = this.props
     
     const menuGroups = this.getMenuGroups()
     if( !menuGroups ) return null
