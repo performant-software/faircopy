@@ -51,15 +51,22 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
     return domFragment
 }
 
+// Internodes are a set of elements that can be processed as either nodes or marks, depending on their
+// location in the document structure. They have to be determined before parsing with ProseMirror.
 function parseInterNodes(textEl,elementGroups) {
-    const { hard, soft, inter } = elementGroups
+    const { hard, soft, inter, asides } = elementGroups
     const nodes = [...hard,...soft]
     const markPrefix = 'mark'
 
-    function isInterMark(markEl) {
-        // is its parent a hard node?
-        const parentNodeName = markEl.parentNode.nodeName
-        if( hard.includes(parentNodeName) ) return false
+    // Node names are uppercase, so these are uppercased. Also, need to test against
+    // both aside node name and the 'X' variant used in sub documents
+    const interMarkSet = [ ...hard.map(i => i.toUpperCase()), ...asides.map(i => i.toUpperCase()), ...asides.map(i => `${i.toUpperCase()}X`) ]
+
+    function isMark(markEl) {
+        let parentNodeName = markEl.parentNode.nodeName.toUpperCase()
+
+        // is its parent a node that precludes it from being a mark?
+        if( interMarkSet.includes(parentNodeName) ) return false
 
         // are there any node descendants of markEl?
         for( const node of nodes ) {
@@ -76,7 +83,7 @@ function parseInterNodes(textEl,elementGroups) {
         for( let i=0; i < markEls.length; i++ ) {
             const markEl = markEls[i]
             // if this is a mark.. rename to interMark tag
-            if( isInterMark(markEl) ) {
+            if( isMark(markEl) ) {
                 const interEl = document.createElement(`${markPrefix}${xmlTag}`)
                 interEl.innerHTML = markEl.innerHTML
                 cloneAttributes(interEl,markEl)
