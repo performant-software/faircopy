@@ -4,11 +4,12 @@ const fs = require('fs');
 const createElements = function createElements(elGroups,specs) {
     const elements = []
     const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons.json`).toString('utf-8'))
+    const defaultNodes = JSON.parse(fs.readFileSync(`scripts/turtle/default-nodes.json`).toString('utf-8'))
 
     // TODO embeds
     elements.push( ...createNodes(elGroups,true,specs) )
     elements.push( ...createInlineNodes(elGroups,icons,specs) )
-    elements.push( ...createAsides(elGroups,icons,specs) )
+    elements.push( ...createAsides(elGroups,icons,defaultNodes,specs) )
     // TODO limited-marks
     elements.push( ...createInters(elGroups,specs) )
     elements.push( ...createMarks(elGroups,specs) )
@@ -87,7 +88,7 @@ function createInlineNodes(elGroups,icons,specs) {
     return inlineElements
 }
 
-function createAsides(elGroups,icons,specs) {
+function createAsides(elGroups,icons,defaultNodes,specs) {
     const {asides} = elGroups
 
     const asideElements = []
@@ -106,6 +107,7 @@ function createAsides(elGroups,icons,specs) {
             validAttrs: [],
             icon: icons[aside],
             group: 'inline_node',
+            defaultNodes: defaultNodes[aside] ? defaultNodes[aside] : null,
             desc: spec.description
         } )
 
@@ -115,7 +117,7 @@ function createAsides(elGroups,icons,specs) {
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": content 
+            "content": content
         })
 
         // create the root node for the aside's subDocument

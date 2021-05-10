@@ -2109,6 +2109,7 @@
 			],
 			"icon": "fa-comment-alt",
 			"group": "inline_node",
+			"defaultNodes": null,
 			"desc": "contains a note or annotation."
 		},
 		{
@@ -2153,6 +2154,10 @@
 			],
 			"icon": "fa-question-circle",
 			"group": "inline_node",
+			"defaultNodes": [
+				"sic",
+				"corr"
+			],
 			"desc": "groups a number of alternative encodings for the same point in a text."
 		},
 		{
@@ -2202,6 +2207,7 @@
 			],
 			"icon": "fa-heading",
 			"group": "inline_node",
+			"defaultNodes": null,
 			"desc": "contains a running head (e.g. a header, footer), catchword, or similar material appearing on the current page."
 		},
 		{
@@ -2262,6 +2268,10 @@
 			],
 			"icon": "fa-random",
 			"group": "inline_node",
+			"defaultNodes": [
+				"add",
+				"del"
+			],
 			"desc": "groups one or more deletions with one or more additions when the combination is to be regarded as a single intervention in the text."
 		},
 		{

@@ -176,11 +176,14 @@ export default class TEIDocument {
         const { teiSchema } = this.fairCopyProject
         let noteDoc = documentDOM.createElement(`${docType}Doc`)
         const docX = documentDOM.createElement(`${docType}X`)
-        const add = documentDOM.createElement('add')
-        const del = documentDOM.createElement('del')
-        docX.append(add)
-        docX.append(del)
-        noteDoc.append(docX)
+        const {defaultNodes} = teiSchema.elements[docType]
+        if( defaultNodes ) {
+            for( const defaultNodeName of defaultNodes ) {
+                const defaultNode = documentDOM.createElement(defaultNodeName)
+                docX.append(defaultNode)
+            }
+        }
+        noteDoc.append(docX)    
         const subDoc = parseText(noteDoc,this,teiSchema,docType)
 
         const subDocID = this.issueSubDocumentID()
