@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { Popper, Paper } from '@material-ui/core'
 import {EditorView} from "prosemirror-view"
 import EditorGutter from "./EditorGutter"
-import applyDevTools from "prosemirror-dev-tools";
+// import applyDevTools from "prosemirror-dev-tools";
+import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
-import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
+import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode} from "../tei-document/cut-and-paste"
 import {addTextNodes} from "../tei-document/xml"
 
 export default class NotePopup extends Component {
@@ -30,6 +31,7 @@ export default class NotePopup extends Component {
 
         if( noteEditorView ) return
         const initialState = teiDocument.openSubDocument( noteID )
+        this.clipboardSerializer = createClipboardSerializer(teiSchema,teiDocument)
 
         const editorView = new EditorView( 
             element,
@@ -38,10 +40,10 @@ export default class NotePopup extends Component {
                 state: initialState,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema),
                 transformPasted: transformPastedHandler(teiSchema),
-                clipboardSerializer: createClipboardSerializer(teiSchema)
+                clipboardSerializer: this.clipboardSerializer
             }
         )
-        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
+        // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.noteEditorView = editorView
         addTextNodes(editorView)
@@ -80,6 +82,34 @@ export default class NotePopup extends Component {
         this.setState({ ...this.state, currentNoteID: null })
     }
 
+
+    onKeyDown = ( event ) => {
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
+        const metaKey = ( event.ctrlKey || event.metaKey )
+
+        const key = event.key.toLowerCase()
+
+        if( metaKey && key === 'x' ) {
+            cutSelectedNode( teiDocument, this.clipboardSerializer )
+        }
+
+        if( metaKey && key === 'c' ) {
+            copySelectedNode( teiDocument, this.clipboardSerializer )
+        }
+
+        if( metaKey && key === 'v' ) {
+            pasteSelectedNode( teiDocument )
+        }
+
+        if( metaKey && key === 'z' ) {
+            undo(editorView.state,editorView.dispatch)
+        } 
+        if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
+            redo(editorView.state,editorView.dispatch)
+        } 
+    }
+
     renderEditor() {
         const { teiDocument, expanded } = this.props
         const { noteEditorView } = teiDocument
@@ -92,7 +122,7 @@ export default class NotePopup extends Component {
         // if( this.el ) console.log(`top: ${gutterTop}`)
 
         return (
-            <div className='note-body' ref={onRef}>
+            <div className='note-body' ref={onRef} onKeyDown={this.onKeyDown} >
                 <EditorGutter 
                     scrollTop={0} 
                     gutterTop={gutterTop}
