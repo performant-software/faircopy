@@ -95,7 +95,7 @@ export default class MainWindow extends Component {
                 doomedResources.push(openResourceID)
             }
         }        
-        this.closeResources(doomedResources,false,false)
+        if( doomedResources.length > 0 ) this.closeResources(doomedResources,false,false)
     }
 
     requestExitApp = () => {
@@ -240,7 +240,6 @@ export default class MainWindow extends Component {
             alertOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
-            currentSubmenuID: 'structure'
         })
 
         if( exitOnClose ) {

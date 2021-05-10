@@ -102,8 +102,8 @@ renderSelectStructureGroup(menuGroups) {
   const { currentSubmenuID, onChangeMenu } = this.props
 
   const onChange = (e) => {
-    const { value: currentSubmenuID } = e.target
-    onChangeMenu(currentSubmenuID)
+    const { value } = e.target
+    onChangeMenu(value)
   }
 
   const menuItemEls = []
