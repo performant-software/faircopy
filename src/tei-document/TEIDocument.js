@@ -1,5 +1,4 @@
 import {EditorState, TextSelection } from "prosemirror-state"
-import { NodeRange } from "prosemirror-model"
 import {keymap} from "prosemirror-keymap"
 import {history} from "prosemirror-history"
 import {baseKeymap} from "./basekeymap"
@@ -9,7 +8,7 @@ import {gapCursor} from "prosemirror-gapcursor"
 import { v4 as uuidv4 } from 'uuid'
 
 import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
-import {parseText, proseMirrorToDOM, serializeText} from "./xml"
+import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {scanForErrors} from "./error-scan"
 
 const fairCopy = window.fairCopy
@@ -143,21 +142,7 @@ export default class TEIDocument {
 
     finalizeEditorView(editorView) {
         this.editorView = editorView
-        const { tr, schema } = editorView.state
-        const textNodeType = schema.nodes['textNode'] 
-
-        // if an element could have a textnode, but is instead empty, add a textnode to it
-        tr.doc.descendants((node,pos) => {
-            const contentExp = node.type.spec.content
-            if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
-                const $start = tr.doc.resolve(tr.mapping.map(pos+1))
-                const nodeRange = new NodeRange($start,$start,$start.depth)
-                tr.wrap(nodeRange, [{type: textNodeType}])    
-            }
-            return true
-        })
-
-        this.editorView.dispatch(tr)
+        addTextNodes(editorView)
         this.changedSinceLastSave = false
     }
 
@@ -190,7 +175,12 @@ export default class TEIDocument {
     createSubDocument(documentDOM,docType) {
         const { teiSchema } = this.fairCopyProject
         let noteDoc = documentDOM.createElement(`${docType}Doc`)
-        noteDoc.append(documentDOM.createElement(`${docType}X`))
+        const docX = documentDOM.createElement(`${docType}X`)
+        const add = documentDOM.createElement('add')
+        const del = documentDOM.createElement('del')
+        docX.append(add)
+        docX.append(del)
+        noteDoc.append(docX)
         const subDoc = parseText(noteDoc,this,teiSchema,docType)
 
         const subDocID = this.issueSubDocumentID()

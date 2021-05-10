@@ -2,25 +2,25 @@ import React, { Component } from 'react'
 import { Popper, Paper } from '@material-ui/core'
 import {EditorView} from "prosemirror-view"
 import EditorGutter from "./EditorGutter"
-// import applyDevTools from "prosemirror-dev-tools";
+import applyDevTools from "prosemirror-dev-tools";
 
 import ProseMirrorComponent from "./ProseMirrorComponent"
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer} from "../tei-document/cut-and-paste"
+import {addTextNodes} from "../tei-document/xml"
 
 export default class NotePopup extends Component {
 
     constructor() {
         super()
         this.state = {
-            currentNoteID: null,
-            noteEditorView: null
+            currentNoteID: null
         }
     }
 
     createEditorView = (element) => {
         const { teiDocument, noteID } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
-        const { noteEditorView } = this.state
+        const { noteEditorView } = teiDocument
 
         if( !noteID ) {
             this.saveSubDoc()
@@ -41,15 +41,17 @@ export default class NotePopup extends Component {
                 clipboardSerializer: createClipboardSerializer(teiSchema)
             }
         )
-        // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
+        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.noteEditorView = editorView
-        this.setState( { ...this.state, currentNoteID: noteID, noteEditorView: editorView } )
+        addTextNodes(editorView)
+
+        this.setState( { ...this.state, currentNoteID: noteID } )
     }
 
     dispatchTransaction = (transaction) => {
         const { teiDocument, onStateChange } = this.props
-        const { noteEditorView } = this.state
+        const { noteEditorView } = teiDocument
 
         if( noteEditorView ) {
             const editorState = noteEditorView.state
@@ -62,7 +64,8 @@ export default class NotePopup extends Component {
 
     saveSubDoc() {
         const { teiDocument } = this.props
-        const { currentNoteID, noteEditorView } = this.state
+        const { noteEditorView } = teiDocument
+        const { currentNoteID } = this.state
         if( noteEditorView ) {
             const editorState = noteEditorView.state
             teiDocument.saveSubDoc(currentNoteID,editorState)                
@@ -74,12 +77,12 @@ export default class NotePopup extends Component {
         this.saveSubDoc()
         editorView.destroy()
         teiDocument.noteEditorView = null
-        this.setState({ ...this.state, currentNoteID: null, noteEditorView: null })
+        this.setState({ ...this.state, currentNoteID: null })
     }
 
     renderEditor() {
         const { teiDocument, expanded } = this.props
-        const { noteEditorView } = this.state
+        const { noteEditorView } = teiDocument
 
         const onRef = (el) => {
             this.el = el
