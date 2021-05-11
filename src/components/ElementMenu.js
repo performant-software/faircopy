@@ -3,7 +3,7 @@ import { Menu, MenuItem } from '@material-ui/core'
 
 import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
-import { createElement } from "../tei-document/editor-actions"
+import { createPhraseElement } from "../tei-document/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -47,7 +47,7 @@ export default class ElementMenu extends Component {
             const { teiDocument, onClose } = this.props
 
             if( selection && !selection.node ) {
-                createElement(member.id, {}, teiDocument) 
+                createPhraseElement(member.id, {}, teiDocument) 
             }
             onClose()
         }

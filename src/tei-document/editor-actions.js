@@ -3,7 +3,7 @@ import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode } from "./commands"
 
 // creates inlines, marks, and inter marks
-export function createElement( elementID, attrs, teiDocument ) {
+export function createPhraseElement( elementID, attrs, teiDocument ) {
     const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state

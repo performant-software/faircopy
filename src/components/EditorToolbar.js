@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { IconButton, Tooltip } from '@material-ui/core'
 
 import {undo, redo} from "prosemirror-history"
-import { createElement, eraseSelection } from "../tei-document/editor-actions"
+import { createPhraseElement, eraseSelection } from "../tei-document/editor-actions"
 
 export default class EditorToolbar extends Component {
     
@@ -117,7 +117,7 @@ export default class EditorToolbar extends Component {
             if( selection.$cursor ) {
                 // TODO
             } else {
-                createElement( elementID, attrs, teiDocument )
+                createPhraseElement( elementID, attrs, teiDocument )
             }        
         }
     }
@@ -129,11 +129,11 @@ export default class EditorToolbar extends Component {
         if( editorView ) {
             const { selection } = editorView.state
             if( selection.$cursor ) {
-                createElement( 'note', {}, teiDocument ) 
+                createPhraseElement( 'note', {}, teiDocument ) 
             } else {
                 const noteID = `note_${uuidv4().replaceAll('-','')}`
                 this.createMark('ref', { target: noteID }, teiDocument )
-                createElement( 'note', {'xml:id': noteID}, teiDocument )
+                createPhraseElement( 'note', {'xml:id': noteID}, teiDocument )
             }
         }
     }
