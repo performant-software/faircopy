@@ -1,7 +1,8 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createFragment, createAsideNode } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode } from "./commands"
 
+// creates inlines, marks, and inter marks
 export function createElement( elementID, attrs, teiDocument ) {
     const { fairCopyProject } = teiDocument
     const editorView = teiDocument.getActiveView()
@@ -19,17 +20,9 @@ export function createElement( elementID, attrs, teiDocument ) {
     } else if( pmType === 'mark' ) {
         const markType = schema.marks[elementID]
         return createMark( markType, attrs, editorView )
-    } else {
-        if( inter.includes(elementID) ) {
-            createInterNode( elementID, attrs, teiDocument )
-        } else {
-            const editorView = teiDocument.getActiveView()
-            const { selection, tr } = editorView.state
-            const nodeType = schema.nodes[elementID]
-            createNode( nodeType, tr, selection, schema )
-            editorView.dispatch(tr)
-            editorView.focus()     
-        }
+    } else if( inter.includes(elementID) ) {
+        const markType = schema.marks[`mark${elementID}`]
+        return createMark( markType, attrs, editorView )
     }
 }
 
@@ -181,28 +174,8 @@ export function createInterNode( elementID, attrs, teiDocument ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state
 
-    // TODO determine if this should create a node or a mark
     const markType = schema.marks[`mark${elementID}`]
     return createMark( markType, attrs, editorView )
-}
-
-function createNode( nodeType, tr, selection, schema ) {
-    const { $from, $to } = selection
-
-    // make sure to and from have the same ancestor above textNode
-    const from = $from.pos
-    const ancestor = $from.node(-1)
-    const to = ( ancestor === $to.node(-1) ) ? $to.pos : $from.end(-1)
-    const fragment = createFragment(from,to,tr.doc,schema)
-
-    // split up ancestor to create the new node
-    tr.split(to)
-    tr.split(from)
-    const nextFrom = tr.mapping.map(from)
-    const nextTo = tr.mapping.map(to)
-    const node = nodeType.create( {}, fragment)
-    tr.replaceRangeWith(nextFrom,nextTo,node)
-    return tr
 }
 
 export function addInside( elementID, teiDocument, pos, tr ) {
