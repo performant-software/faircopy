@@ -31,7 +31,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a formal list or prose description of the topics addressed by a subdivision of a text."
 		},
 		{
@@ -66,7 +68,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains any appendixes, etc. following the main part of a text."
 		},
 		{
@@ -101,7 +105,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains the whole body of a single unitary text, excluding any front or back matter."
 		},
 		{
@@ -135,7 +141,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"castItem"
+			],
 			"desc": "groups one or more individual castItem elements within a cast list."
 		},
 		{
@@ -169,7 +177,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"castGroup"
+			],
 			"desc": "contains a single cast list or dramatis personae."
 		},
 		{
@@ -205,7 +215,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"quote"
+			],
 			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example."
 		},
 		{
@@ -249,7 +261,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a subdivision of the front, body, or back of a text."
 		},
 		{
@@ -285,7 +299,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"titlePart"
+			],
 			"desc": "contains the title of a document, including all its constituents, as given on a title page."
 		},
 		{
@@ -319,7 +335,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "groups information relating to one edition of a text."
 		},
 		{
@@ -353,7 +371,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"quote"
+			],
 			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page."
 		},
 		{
@@ -387,7 +407,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"titleStmt"
+			],
 			"desc": "contains a full bibliographic description of an electronic file."
 		},
 		{
@@ -424,7 +446,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"body"
+			],
 			"desc": "contains a single text of any kind, whether unitary or composite, which interrupts the text containing it at any point and after which the surrounding text resumes."
 		},
 		{
@@ -459,7 +483,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains any prefatory matter (headers, abstracts, title page, prefaces, dedications, etc.) found at the start of a document, before the main body."
 		},
 		{
@@ -542,7 +568,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"item"
+			],
 			"desc": "contains any sequence of items organized as a list."
 		},
 		{
@@ -580,7 +608,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"bibl"
+			],
 			"desc": "contains a list of bibliographic citations of any kind."
 		},
 		{
@@ -694,7 +724,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"relatedItem"
+			],
 			"desc": "collects together any notes providing information about a text additional to that recorded in other parts of the bibliographic description."
 		},
 		{
@@ -812,7 +844,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a postscript, e.g. to a letter."
 		},
 		{
@@ -846,7 +880,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "groups information concerning the publication or distribution of an electronic or other text."
 		},
 		{
@@ -883,7 +919,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"bibl"
+			],
 			"desc": "contains or references some other bibliographic item which is related to the present one in some specified manner, for example as a constituent or alternative version of it."
 		},
 		{
@@ -919,7 +957,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"resp"
+			],
 			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition, recording, or series, where the specialized elements for authors, editors, etc. do not suffice or do not apply. May also be used to encode information about individuals or organizations which have played a role in the production or distribution of a bibliographic work."
 		},
 		{
@@ -953,7 +993,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "groups information about the series, if any, to which a publication belongs."
 		},
 		{
@@ -987,7 +1029,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a play, typically found in the front matter of a printed performance text (not a stage direction)."
 		},
 		{
@@ -1022,7 +1066,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as \"born digital\" for a text which has no previous existence."
 		},
 		{
@@ -1058,7 +1104,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
 		},
 		{
@@ -1095,7 +1143,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"docTitle"
+			],
 			"desc": "contains the title page of a text, appearing within the front or back matter."
 		},
 		{
@@ -1129,7 +1179,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"title"
+			],
 			"desc": "groups information about the title of a work and those responsible for its content."
 		},
 		{
@@ -1165,7 +1217,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "supplies information about the availability of a text, for example any restrictions on its use or distribution, its copyright status, any licence applying to it, etc."
 		},
 		{
@@ -1202,7 +1256,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"titleStmt"
+			],
 			"desc": "contains a fully-structured bibliographic citation, in which all components of the TEI file description are present."
 		},
 		{
@@ -1236,7 +1292,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"catDesc"
+			],
 			"desc": "contains an individual descriptive category, possibly nested within a superordinate category, within a user-defined taxonomy."
 		},
 		{
@@ -1270,7 +1328,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "documents the relationship between an electronic text and the source or sources from which it was derived."
 		},
 		{
@@ -1305,7 +1365,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "provides details of editorial principles and practices applied during the encoding of a text."
 		},
 		{
@@ -1339,7 +1401,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"taxonomy"
+			],
 			"desc": "contains one or more taxonomies defining any classificatory codes used elsewhere in the text."
 		},
 		{
@@ -1374,7 +1438,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"term"
+			],
 			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text."
 		},
 		{
@@ -1408,7 +1474,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"desc"
+			],
 			"desc": "contains a list of definitions of prefixing schemes used in data.pointer values, showing how abbreviated URIs using each scheme may be expanded into full URIs."
 		},
 		{
@@ -1443,7 +1511,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"tagUsage"
+			],
 			"desc": "supplies the formal name of the namespace to which the elements documented by its children belong."
 		},
 		{
@@ -1478,7 +1548,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes in detail the aim or purpose for which an electronic file was encoded, together with any other relevant information concerning the process by which it was assembled or collected."
 		},
 		{
@@ -1515,7 +1587,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "defines a prefixing scheme used in data.pointer values, showing how abbreviated URIs using the scheme may be expanded into full URIs."
 		},
 		{
@@ -1550,7 +1624,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "specifies how canonical references are constructed for this text."
 		},
 		{
@@ -1585,7 +1661,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a prose description of the rationale and methods used in sampling texts in the creation of a corpus or collection."
 		},
 		{
@@ -1620,7 +1698,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"rendition"
+			],
 			"desc": "provides detailed information about the tagging applied to a document."
 		},
 		{
@@ -1654,7 +1734,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"category"
+			],
 			"desc": "defines a typology either implicitly, by means of a bibliographic citation, or explicitly by a structured taxonomy."
 		},
 		{
@@ -1688,7 +1770,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"textDesc"
+			],
 			"desc": "provides a detailed description of non-bibliographic aspects of a text, specifically the languages and sublanguages used, the situation in which it was produced, the participants and their setting."
 		},
 		{
@@ -1723,7 +1807,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes the identifiable speakers, voices, or other participants in any kind of text or other persons named or otherwise referred to in a text, edition, or metadata."
 		},
 		{
@@ -1758,7 +1844,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes the setting or settings within which a language interaction takes place, or other places otherwise referred to in a text, edition, or metadata."
 		},
 		{
@@ -1792,7 +1880,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a summary or formal abstract prefixed to an existing source document by the encoder."
 		},
 		{
@@ -1827,7 +1917,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"language"
+			],
 			"desc": "describes the languages, sublanguages, registers, dialects, etc. represented within a text."
 		},
 		{
@@ -1862,7 +1954,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"change"
+			],
 			"desc": "summarizes the revision history for a file."
 		},
 		{
@@ -1900,7 +1994,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"change"
+			],
 			"desc": "groups a number of change descriptions associated with either the creation of a source text or the revision of an encoded text."
 		},
 		{
@@ -2406,6 +2502,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -2492,6 +2589,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2577,6 +2675,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -2659,6 +2758,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2723,6 +2823,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2789,6 +2890,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_qLike",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2859,6 +2961,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2934,6 +3037,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cRef",
@@ -3009,6 +3113,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3079,6 +3184,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_lPart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3156,6 +3262,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3230,6 +3337,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3306,6 +3414,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -3396,6 +3505,7 @@
 			"content": "(textNode|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
 			"gutterMark": true,
+			"defaultNodes": null,
 			"validAttrs": [
 				"agent",
 				"ana",
