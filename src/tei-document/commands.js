@@ -122,21 +122,35 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr )
     return tr
 }
 
-export function insertNodeAt( nodeType, insertPos, editorView, schema, tr ) {
+function createValidNode( elementID, schema, elements ) {
+    const { defaultNodes } = elements[elementID]
+    const nodeType = schema.nodes[elementID]
+    let node
 
-    // element must ultimately wrap a textNode, so find wrapping 
-    const textNodeType = schema.nodes['textNode']
-    const connective = nodeType.contentMatch.findWrapping(textNodeType)
-    if( connective ) {
-        let wrap = textNodeType.create()
-        for (let i = connective.length - 1; i >= 0; i--) {
-            wrap = Fragment.from(connective[i].create(null, wrap))
-        }
-        const node = nodeType.create({},wrap)
-        tr.insert(insertPos,node)
+    if( defaultNodes ) {
+        // if default nodes are provided, use them to wrap the text node
+        const nodes = defaultNodes.map( elementID => createValidNode( elementID, schema, elements ) )
+        node = nodeType.create({}, nodes)
     } else {
-        throw new Error("No path to textnode")
+        // otherwise, find wrapping 
+        const textNodeType = schema.nodes['textNode']
+        const connective = nodeType.contentMatch.findWrapping(textNodeType)
+        if( connective ) {
+            let wrap = textNodeType.create()
+            for (let i = connective.length - 1; i >= 0; i--) {
+                wrap = Fragment.from(connective[i].create(null, wrap))
+            }
+            node = nodeType.create({},wrap)
+        } else {
+            throw new Error("No path to textnode")
+        }
     }
+    return node
+}    
+
+export function insertNodeAt( elementID, insertPos, schema, elements, tr ) {
+    const validNode = createValidNode(elementID,schema,elements)
+    tr.insert( insertPos, validNode )
     return tr             
 }
 

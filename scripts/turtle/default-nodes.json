@@ -1,4 +1,9 @@
 {
     "choice": ["sic","corr"],
+    "lg": ["l"],
+    "listPerson": [ "person" ],
+    "listPlace": [ "place" ],
+    "person": ["p"],
+    "place": [ "p"],
     "subst": ["add","del"]
 }

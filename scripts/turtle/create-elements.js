@@ -7,13 +7,13 @@ const createElements = function createElements(elGroups,specs) {
     const defaultNodes = JSON.parse(fs.readFileSync(`scripts/turtle/default-nodes.json`).toString('utf-8'))
 
     // TODO embeds
-    elements.push( ...createNodes(elGroups,true,specs) )
+    elements.push( ...createNodes(elGroups,true,defaultNodes,specs) )
     elements.push( ...createInlineNodes(elGroups,icons,specs) )
     elements.push( ...createAsides(elGroups,icons,defaultNodes,specs) )
     // TODO limited-marks
-    elements.push( ...createInters(elGroups,specs) )
+    elements.push( ...createInters(elGroups,defaultNodes,specs) )
     elements.push( ...createMarks(elGroups,specs) )
-    elements.push( ...createNodes(elGroups,false,specs) )
+    elements.push( ...createNodes(elGroups,false,defaultNodes,specs) )
     elements.push( ...createDocNode() )
     return elements
 }
@@ -36,7 +36,7 @@ function createMarks(elGroups,specs) {
     return markElements
 }
 
-function createInters(elGroups,specs) {
+function createInters(elGroups,defaultNodes,specs) {
     const inters = elGroups.inter
     const nodeGroups = getNodeGroups( elGroups, specs )
 
@@ -61,6 +61,7 @@ function createInters(elGroups,specs) {
             content: encodeContent(nodeContent),
             group: spec.group,
             gutterMark: true,
+            defaultNodes: defaultNodes[inter] ? defaultNodes[inter] : null,
             validAttrs: [],
             desc: spec.description
         }
@@ -193,7 +194,7 @@ function onlyGroups( targetGroups, content ) {
     return filteredContent
 }
 
-const createNodes = function createNodes(elGroups,hard,specs) {
+const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
     const nodes = hard ? elGroups.hard : elGroups.soft 
     const nodeGroups = getNodeGroups( elGroups, specs )
 
@@ -214,6 +215,7 @@ const createNodes = function createNodes(elGroups,hard,specs) {
             group: spec.group,
             gutterMark: true,
             validAttrs: [],
+            defaultNodes: defaultNodes[node] ? defaultNodes[node] : null,
             desc: spec.description
         }
         nodeElements.push(nodeEl)

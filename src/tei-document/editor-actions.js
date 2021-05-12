@@ -226,7 +226,7 @@ export function addAbove( elementID, teiDocument, pos, tr ) {
             return insertAtomNodeAt(node, pos, editorView, false, tr )    
         }
     } else {
-        return insertNodeAt(nodeType, pos, editorView, schema, tr )    
+        return insertNodeAt(elementID, pos, schema, teiSchema.elements, tr )    
     }
 }
 
@@ -251,7 +251,7 @@ export function addBelow( elementID, teiDocument, pos, tr ) {
             return insertAtomNodeAt(node, insertPos, editorView, true, tr )    
         }
     } else {
-        return insertNodeAt(nodeType, insertPos, editorView, schema, tr )    
+        return insertNodeAt(elementID, insertPos, schema, teiSchema.elements, tr )    
     }
 }
 
