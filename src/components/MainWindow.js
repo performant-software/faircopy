@@ -380,6 +380,7 @@ export default class MainWindow extends Component {
                             paletteActive={paletteWindowOpen}
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
+                            onAlertMessage={this.onAlertMessage}
                             onSave={onSave}
                             leftPaneWidth={leftPaneWidth}
                             expandedGutter={expandedGutter}
@@ -535,7 +536,6 @@ export default class MainWindow extends Component {
                 ></DraggingElement> }
                 { elementMenuOptions && <ElementMenu
                     teiDocument={selectedDoc}
-                    onAlertMessage={this.onAlertMessage}
                     onClose={this.onCloseElementMenu}
                     elementMenuAnchors={this.elementMenuAnchors}
                     {...elementMenuOptions}

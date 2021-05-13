@@ -217,6 +217,8 @@ export function deleteParentNode(state) {
         // for content expressions similar to: model_placeLike+
         if( children.length === 1 && isBlank(children[0])) {
             tr.replaceWith(pos,pos+node.nodeSize,Fragment.empty) 
+        } else {
+            tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
         }
     }
     return tr
