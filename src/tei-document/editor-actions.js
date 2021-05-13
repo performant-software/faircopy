@@ -181,18 +181,24 @@ export function createInterNode( elementID, attrs, teiDocument ) {
 export function addInside( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
-
     const parentNode = doc.nodeAt(pos)
-    const nodeType = schema.nodes[elementID]
-    const fragment = parentNode.content
 
-    const $start = doc.resolve(pos+1)
-    const $end = doc.resolve(pos+1+fragment.size)
-    const nodeRange = new NodeRange($start,$end,$start.depth)
-
-    // take the content of the parent and put it inside the new node
-    tr.wrap(nodeRange, [{type: nodeType}])
-    return tr
+    if( parentNode.childCount > 0 ) {
+        // take the content of the parent and put it inside the new node
+        const nodeType = schema.nodes[elementID]
+        const fragment = parentNode.content
+    
+        const $start = doc.resolve(pos+1)
+        const $end = doc.resolve(pos+1+fragment.size)
+        const nodeRange = new NodeRange($start,$end,$start.depth)
+    
+        tr.wrap(nodeRange, [{type: nodeType}])    
+        return tr
+    } else {
+        // insert node inside parent
+        const { elements } = teiDocument.fairCopyProject.teiSchema
+        return insertNodeAt( elementID, pos+1, schema, elements, tr )
+    }
 }
     
 export function addOutside( elementID, teiDocument, pos, tr ) {
