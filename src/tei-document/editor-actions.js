@@ -1,6 +1,6 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode } from "./commands"
 
 // creates inlines, marks, and inter marks
 export function createPhraseElement( elementID, attrs, teiDocument ) {
@@ -268,13 +268,19 @@ export function onClippy() {
 
 export function eraseSelection(teiDocument) {
     const editorView = teiDocument.getActiveView()
-    const { tr, selection } = editorView.state
+    const { selection } = editorView.state
+    let tr
 
-    let {empty, $cursor, ranges} = selection
-    if (empty || $cursor) return
-    for (let i = 0; i < ranges.length; i++) {
-        let {$from, $to} = ranges[i]
-        tr.removeMark($from.pos, $to.pos)
+    if( selection.node && !selection.node.isAtom ) {
+        tr = deleteParentNode(editorView.state)
+    } else {
+        tr = editorView.state.tr
+        let {empty, $cursor, ranges} = selection
+        if (empty || $cursor) return
+        for (let i = 0; i < ranges.length; i++) {
+            let {$from, $to} = ranges[i]
+            tr.removeMark($from.pos, $to.pos)
+        }    
     }
     editorView.dispatch(tr)
     editorView.focus()
