@@ -211,6 +211,13 @@ export function deleteParentNode(state) {
 
     if( grandParentNode.type.validContent(Fragment.fromArray(greatNodes)) ) {
         tr.replaceWith(pos,pos+node.nodeSize,children) 
+    } 
+    else {
+        // if there's only one child node and it is empty, then delete
+        // for content expressions similar to: model_placeLike+
+        if( children.length === 1 && isBlank(children[0])) {
+            tr.replaceWith(pos,pos+node.nodeSize,Fragment.empty) 
+        }
     }
     return tr
 }
