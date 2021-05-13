@@ -126,17 +126,21 @@ renderSelectStructureGroup(menuGroups) {
 }
 
 renderElement(elementID) {
+  const { elementGroups } = this.props.teiDocument.fairCopyProject.teiSchema
 
   const onStartDrag = () => {
     const { onDragElement } = this.props
     onDragElement(elementID,{ x: 500, y: 500})
   }
 
+  const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
+  const className = `element-type ${elType}`
+
   return (
     <div 
         key={`structs-${elementID}`}
         onMouseDown={onStartDrag} 
-        className="element-type"
+        className={className}
     >
       <div className="el-name">{elementID}</div>
     </div>

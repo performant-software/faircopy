@@ -63,8 +63,15 @@
     border-radius: 5px;
     min-width: 10px;
     text-align: center;
-    background:#e7ddff;
     margin-bottom: 5px;
+}
+
+#StructurePalette .soft {
+    background:#e7ddff;
+}
+
+#StructurePalette .hard {
+    background:#D4C3FC;
 }
 
 #StructurePalette .el-name {
