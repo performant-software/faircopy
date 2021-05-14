@@ -19,13 +19,19 @@ export default class TitleBar extends Component {
         }
     }
 
+    onClickTeiDoc = () => {
+        // TODO
+        // const { onResourceAction, teiDocName } = this.props
+        // onResourceAction('close-teidoc')
+    }
+
     renderTitle() {
-        const { teiDocName, resourceName, surfaceName } = this.props
+        const { teiDocName, resourceName, surfaceName, onClickResource } = this.props
 
         const chevClass = "fa fa-chevron-right"
         const surfaceNameEl = surfaceName && <span><i className={chevClass}></i> {surfaceName}</span>
-        const resourceNameEl = resourceName && <span><i className={chevClass}></i> {resourceName}</span>
-        const teiDocNameEl = teiDocName && <span><i className={chevClass}></i> <i className="fa fa-books"></i> {teiDocName}</span>
+        const resourceNameEl = resourceName && <span className="resource-name" onClick={onClickResource}><i className={chevClass}></i> {resourceName}</span>
+        const teiDocNameEl = teiDocName && <span className="tei-doc-name" onClick={this.onClickTeiDoc} ><i className={chevClass}></i> {teiDocName}</span>
         return (
             <span>
                 {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
@@ -37,7 +43,7 @@ export default class TitleBar extends Component {
         return (
             <div id="TitleBar" >
                 <Typography component="h1" variant="h6">
-                    <span className="home-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Project </span> { this.renderTitle() }
+                    <span className="home-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> { this.renderTitle() }
                 </Typography>
             </div>
         )

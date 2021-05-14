@@ -16,22 +16,9 @@ export default class ProjectNavigator extends Component {
     }
 
     renderTreeRootLabel() {
-      const { onOpenResourceBrowser } = this.props
-
-      const onClick = (event) => {
-        onOpenResourceBrowser()
-        event.preventDefault() 
-      }
-
       return (
         <div>
-          <Typography className="open-resources">Open Resources</Typography>
-          <Button 
-            className="tree-item-close"
-            onClick={onClick}
-          >
-            <i className="fa fa-home-alt fa-lg"></i>
-          </Button>
+          <Typography className="open-resources">Open Resources</Typography>          
         </div>
       )    
     }

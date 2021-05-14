@@ -208,6 +208,10 @@ export default class SurfaceEditor extends Component {
             }
         }
 
+        const onClickResource = () => {
+            onChangeView(surfaceIndex,'index') 
+        }
+
         const onEditInfo = () => {
             onEditSurfaceInfo({ resourceID: facsDocument.resourceID, surfaceID: surface.id, name: surfaceNames.title })
         }
@@ -215,7 +219,7 @@ export default class SurfaceEditor extends Component {
         return (
             <div id="SurfaceEditor" >
                 <div>
-                    <TitleBar resourceName={ resourceEntry.name } surfaceName={surfaceNames.title} onResourceAction={onResourceAction}></TitleBar>
+                    <TitleBar resourceName={ resourceEntry.name } onClickResource={onClickResource} surfaceName={surfaceNames.title} onResourceAction={onResourceAction}></TitleBar>
                     <SurfaceEditorToolbar 
                         surfaceIndex={surfaceIndex}
                         selectedTool = {selectedTool}

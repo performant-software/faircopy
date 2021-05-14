@@ -12,3 +12,7 @@
 #TitleBar .home-link:hover {
     text-decoration: underline;
 }
+
+#TitleBar .resource-name:hover {
+    text-decoration: underline;
+}
