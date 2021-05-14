@@ -330,6 +330,9 @@ export default class MainWindow extends Component {
             case 'close':
                 this.closeResources(resourceIDs)
                 return false
+            case 'home':
+                this.onOpenResourceBrowser()
+                return false
             case 'move':
                 this.setState( {...this.state, moveResourceMode: true, moveResourceIDs: resourceIDs} )
                 return true
@@ -381,6 +384,7 @@ export default class MainWindow extends Component {
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
                             onAlertMessage={this.onAlertMessage}
+                            onResourceAction={this.onResourceAction}
                             onSave={onSave}
                             leftPaneWidth={leftPaneWidth}
                             expandedGutter={expandedGutter}
@@ -395,6 +399,7 @@ export default class MainWindow extends Component {
                             resourceEntry={resourceEntry}
                             fairCopyProject={fairCopyProject}
                             onEditResource={this.onEditResource}    
+                            onResourceAction={this.onResourceAction}
                             onAddImages={this.onAddImages}
                             onOpenPopupMenu={this.onOpenPopupMenu}
                             onConfirmDeleteImages={onConfirmDeleteImages}

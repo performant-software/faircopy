@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
-import { Typography } from '@material-ui/core';
 // import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
 
@@ -11,7 +10,8 @@ import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
-import NotePopup from './NotePopup';
+import TitleBar from './TitleBar'
+import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../tei-document/cut-and-paste"
 import { getHighlightRanges } from "../tei-document/highlighter"
 import { moveNode } from "../tei-document/editor-actions"
@@ -313,7 +313,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
+        const { teiDocument, hidden, onSave, onOpenElementMenu, onEditResource, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
         const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
 
         // used to update scroll position when document changes
@@ -347,9 +347,7 @@ export default class TEIEditor extends Component {
                     onKeyDown={this.onKeyDown} 
                     onKeyUp={this.onKeyUp}                 
                 >
-                    { !hidden && <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceEntry.name}</Typography>
-                    </div> }
+                    { !hidden && <TitleBar onResourceAction={onResourceAction} resourceName={resourceEntry.name}></TitleBar> }
                     { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
                         onSave={onSave}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
+import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
+import TitleBar from './TitleBar'
 
 const rowsPerPage = 100
 
@@ -218,17 +219,9 @@ export default class ResourceBrowser extends Component {
   render() {
       const { width, teiDoc, onResourceAction } = this.props
 
-      const onClickHome = () => {
-        onResourceAction( 'close-teidoc' )   
-      }
-
-      const docTitle = teiDoc ? <span><i className="fa fa-chevron-right"></i> <i className="fa fa-books"></i> {teiDoc.name}</span> : ""
-
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <div className="titlebar">
-            <Typography component="h1" variant="h6"><span className="home-link" onClick={onClickHome}><i className="fa fa-home-alt"></i> Project Resources</span> {docTitle}</Typography>
-          </div>
+          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction}></TitleBar>
           { this.renderToolbar() }
           <div>
               { this.renderResourceTable() }

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import FacsModeControl from './FacsModeControl'
-import { Button, Tooltip, Typography } from '@material-ui/core'
+import { Button, Tooltip } from '@material-ui/core'
 import { TablePagination, TableHead, TableRow, TableCell, Paper, Checkbox } from '@material-ui/core'
 
 import { getLocalString } from '../tei-document/iiif'
 import DragAndDropTable from './DragAndDropTable'
 import DraggableComponent from './DraggableComponent'
+import TitleBar from './TitleBar'
 
 const rowsPerPage = 100
 
@@ -247,14 +248,12 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { resourceEntry } = this.props
+        const { resourceEntry, onResourceAction } = this.props
 
         return (
             <div id="FacsIndex" >
                 <div>
-                    <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceEntry.name}</Typography>
-                    </div>        
+                    <TitleBar resourceName={ resourceEntry.name } onResourceAction={onResourceAction} ></TitleBar>
                     { this.renderToolbar() }
                 </div>
                 <div className="facs-index-list">

@@ -1,15 +1,4 @@
 
-#ResourceBrowser .titlebar {
-    background: #3787AA;
-    color: white;
-    padding: 10px;
-    height: 42px;
-}
-
-#ResourceBrowser .titlebar h1 {
-    padding-top: 5px;
-}
-
 #ResourceBrowser .toolbar {
     margin: 10px;
 }

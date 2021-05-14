@@ -1,15 +1,4 @@
 
-#FacsEditor .titlebar {
-    background: #3787AA;
-    color: white;
-    padding: 10px;
-    height: 42px;
-}
-
-#FacsEditor .titlebar h1 {
-    padding-top: 5px;
-}
-
 #FacsEditor .top-bar {
     position: absolute;
     width: 100%;

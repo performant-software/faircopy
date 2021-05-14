@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import { Typography } from '@material-ui/core'
 import OpenSeadragon from 'openseadragon'
 import * as ZoneLayer from 'annotorious-openseadragon'
 import { getImageInfoURL } from '../tei-document/iiif'
 import SurfaceEditorToolbar from './SurfaceEditorToolbar'
 import SurfaceDetailCard from './SurfaceDetailCard'
-import ZonePopup from './ZonePopup';
+import ZonePopup from './ZonePopup'
+import TitleBar from './TitleBar'
 import { getSurfaceNames } from '../tei-document/convert-facs'
+
 
 const fairCopy = window.fairCopy
 
@@ -184,7 +185,7 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { resourceEntry, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo } = this.props
+        const { resourceEntry, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo, onResourceAction } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
@@ -214,9 +215,7 @@ export default class SurfaceEditor extends Component {
         return (
             <div id="SurfaceEditor" >
                 <div>
-                    <div className="titlebar">
-                        <Typography component="h1" variant="h6">{resourceEntry.name} - {surfaceNames.title}</Typography>
-                    </div>        
+                    <TitleBar resourceName={ resourceEntry.name } surfaceName={surfaceNames.title} onResourceAction={onResourceAction}></TitleBar>
                     <SurfaceEditorToolbar 
                         surfaceIndex={surfaceIndex}
                         selectedTool = {selectedTool}
