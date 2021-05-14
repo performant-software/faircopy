@@ -8,3 +8,7 @@
 #TitleBar h1 {
     padding-top: 5px;
 }
+
+#TitleBar .home-link:hover {
+    text-decoration: underline;
+}

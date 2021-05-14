@@ -353,7 +353,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen } = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen, parentResourceID} = this.state
         const { fairCopyProject } = this.props
 
         const editors = []
@@ -361,6 +361,7 @@ export default class MainWindow extends Component {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
             const resourceEntry = fairCopyProject.getResourceEntry(resource.resourceID)
+            const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
@@ -377,6 +378,7 @@ export default class MainWindow extends Component {
                             hidden={hidden}
                             teiDocument={resource}
                             resourceEntry={resourceEntry}
+                            parentResource={parentResource}
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onTogglePalette={this.onTogglePalette}
@@ -397,6 +399,7 @@ export default class MainWindow extends Component {
                             hidden={hidden}
                             facsDocument={resource}
                             resourceEntry={resourceEntry}
+                            parentResource={parentResource}
                             fairCopyProject={fairCopyProject}
                             onEditResource={this.onEditResource}    
                             onResourceAction={this.onResourceAction}

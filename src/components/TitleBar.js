@@ -28,7 +28,7 @@ export default class TitleBar extends Component {
         const teiDocNameEl = teiDocName && <span><i className={chevClass}></i> <i className="fa fa-books"></i> {teiDocName}</span>
         return (
             <span>
-                {teiDocNameEl}{resourceNameEl}{surfaceNameEl}
+                {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
             </span>
         )
     }
