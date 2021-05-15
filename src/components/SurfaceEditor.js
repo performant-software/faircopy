@@ -185,7 +185,7 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { resourceEntry, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo, onResourceAction } = this.props
+        const { resourceEntry, parentResource, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo, onResourceAction } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
@@ -219,7 +219,13 @@ export default class SurfaceEditor extends Component {
         return (
             <div id="SurfaceEditor" >
                 <div>
-                    <TitleBar resourceName={ resourceEntry.name } onClickResource={onClickResource} surfaceName={surfaceNames.title} onResourceAction={onResourceAction}></TitleBar>
+                    <TitleBar 
+                        resourceName={ resourceEntry.name } 
+                        onClickResource={onClickResource} 
+                        surfaceName={surfaceNames.title} onResourceAction={onResourceAction}
+                        teiDocID={ parentResource ? parentResource.id : null } 
+                        teiDocName={ parentResource ? parentResource.name : null } >
+                        </TitleBar>
                     <SurfaceEditorToolbar 
                         surfaceIndex={surfaceIndex}
                         selectedTool = {selectedTool}

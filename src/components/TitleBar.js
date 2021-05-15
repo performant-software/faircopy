@@ -3,26 +3,14 @@ import { Typography } from '@material-ui/core'
 
 export default class TitleBar extends Component {
     
-    constructor() {
-        super()
-        this.state = {
-        }
-    }
-
     onClickHome = () => {
-        const { onResourceAction, teiDocName } = this.props
-
-        if( teiDocName ) {
-            onResourceAction('close-teidoc')
-        } else {
-            onResourceAction('home')
-        }
+        const { onResourceAction } = this.props
+        onResourceAction('home')
     }
 
     onClickTeiDoc = () => {
-        // TODO
-        // const { onResourceAction, teiDocName } = this.props
-        // onResourceAction('close-teidoc')
+        const { onResourceAction, teiDocID } = this.props
+        onResourceAction('open-teidoc',[teiDocID])        
     }
 
     renderTitle() {
@@ -30,8 +18,8 @@ export default class TitleBar extends Component {
 
         const chevClass = "fa fa-chevron-right"
         const surfaceNameEl = surfaceName && <span><i className={chevClass}></i> {surfaceName}</span>
-        const resourceNameEl = resourceName && <span className="resource-name" onClick={onClickResource}><i className={chevClass}></i> {resourceName}</span>
-        const teiDocNameEl = teiDocName && <span className="tei-doc-name" onClick={this.onClickTeiDoc} ><i className={chevClass}></i> {teiDocName}</span>
+        const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}><i className={chevClass}></i> {resourceName}</span>
+        const teiDocNameEl = teiDocName && <span className="nav-link" onClick={this.onClickTeiDoc} ><i className={chevClass}></i> {teiDocName}</span>
         return (
             <span>
                 {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
@@ -43,7 +31,7 @@ export default class TitleBar extends Component {
         return (
             <div id="TitleBar" >
                 <Typography component="h1" variant="h6">
-                    <span className="home-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> { this.renderTitle() }
+                    <span className="nav-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> { this.renderTitle() }
                 </Typography>
             </div>
         )

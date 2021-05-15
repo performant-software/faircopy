@@ -160,21 +160,26 @@ export default class MainWindow extends Component {
         let nextSelection = resourceIDs.find( r => fairCopyProject.getResourceEntry(r).type !== 'teidoc' )
         let change = (selectedResource !== nextSelection)
         let nextResources = { ...openResources }
+        let parentResourceID
         for( const resourceID of resourceIDs ) {
-            if( !openResources[resourceID] ) {
-                const resource = fairCopyProject.getResourceEntry(resourceID)
+            const resource = fairCopyProject.getResourceEntry(resourceID)
+            if( !openResources[resourceID] ) {                
                 // can't select a tei doc this way, skip
                 if( resource.type !== 'teidoc' ) {
                     nextResources[resourceID] = fairCopyProject.openResource(resourceID)
                     change = true    
                 }
             }    
+            if( nextSelection === resourceID ) {
+                parentResourceID = resource.parentResource
+            }
         }
 
         if( change ) {
             this.setState( {
                 ...this.state, 
                 selectedResource: nextSelection,
+                parentResourceID,
                 openResources: nextResources, 
                 resourceBrowserOpen: false, 
                 currentSubmenuID: 'structure',
@@ -258,10 +263,6 @@ export default class MainWindow extends Component {
         }
     }
 
-    onOpenResourceBrowser = () => {
-        this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })
-    }
-
     onOpenElementMenu = (elementMenuOptions ) => {
         this.setState({...this.state, elementMenuOptions })
     }
@@ -319,10 +320,7 @@ export default class MainWindow extends Component {
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
             case 'open-teidoc':
-                this.setState({...this.state, parentResourceID: resourceIDs})
-                return false
-            case 'close-teidoc':
-                this.setState({...this.state, parentResourceID: null})
+                this.setState({...this.state, selectedResource: null, parentResourceID: resourceIDs, resourceBrowserOpen: true })
                 return false
             case 'open':
                 this.selectResources(resourceIDs)
@@ -331,7 +329,7 @@ export default class MainWindow extends Component {
                 this.closeResources(resourceIDs)
                 return false
             case 'home':
-                this.onOpenResourceBrowser()
+                this.setState( {...this.state, selectedResource: null, parentResourceID: null, resourceBrowserOpen: true })
                 return false
             case 'move':
                 this.setState( {...this.state, moveResourceMode: true, moveResourceIDs: resourceIDs} )
@@ -602,7 +600,6 @@ export default class MainWindow extends Component {
                 onSelectResource={onSelectResource}   
                 onCloseResource={onCloseResource}
                 onEditProjectInfo={this.onEditProjectInfo}
-                onOpenResourceBrowser={this.onOpenResourceBrowser}                               
             ></ProjectSidebar>    
         )
     }

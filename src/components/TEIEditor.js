@@ -348,6 +348,7 @@ export default class TEIEditor extends Component {
                     onKeyUp={this.onKeyUp}                 
                 >
                     { !hidden && <TitleBar 
+                        teiDocID={ parentResource ? parentResource.id : null } 
                         teiDocName={ parentResource ? parentResource.name : null } 
                         onResourceAction={onResourceAction} 
                         resourceName={resourceEntry.name}>                            

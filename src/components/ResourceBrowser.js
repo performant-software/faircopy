@@ -24,21 +24,9 @@ export default class ResourceBrowser extends Component {
         action: this.createResourceAction('open')
       },
       {
-        id: 'edit-tags',
-        label: 'Edit Tags',
-        disabled: true,
-        action: this.createResourceAction('edit-tags')
-      },
-      {
         id: 'move',
         label: 'Move',
         action: this.createResourceAction('move')
-      },
-      {
-        id: 'compare',
-        label: 'Compare',
-        disabled: true,
-        action: this.createResourceAction('compare')
       },
       {
         id: 'export',
@@ -175,9 +163,6 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             {resource.localID}
           </TableCell>
-          <TableCell {...cellProps} >
-            ---
-          </TableCell>
         </TableRow>
       )
     }
@@ -196,7 +181,6 @@ export default class ResourceBrowser extends Component {
                           <TableCell padding="none">Type</TableCell>
                           <TableCell padding="none">Name</TableCell>
                           <TableCell padding="none">ID</TableCell>
-                          <TableCell padding="none">Tags</TableCell>
                       </TableRow>
                   </TableHead>
                   <TableBody>

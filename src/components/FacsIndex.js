@@ -248,12 +248,17 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { resourceEntry, onResourceAction } = this.props
+        const { resourceEntry, parentResource, onResourceAction } = this.props
 
         return (
             <div id="FacsIndex" >
                 <div>
-                    <TitleBar resourceName={ resourceEntry.name } onResourceAction={onResourceAction} ></TitleBar>
+                    <TitleBar 
+                        resourceName={ resourceEntry.name } 
+                        onResourceAction={onResourceAction} 
+                        teiDocID={ parentResource ? parentResource.id : null } 
+                        teiDocName={ parentResource ? parentResource.name : null } >
+                    </TitleBar>
                     { this.renderToolbar() }
                 </div>
                 <div className="facs-index-list">

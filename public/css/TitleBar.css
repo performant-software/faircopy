@@ -9,10 +9,6 @@
     padding-top: 5px;
 }
 
-#TitleBar .home-link:hover {
-    text-decoration: underline;
-}
-
-#TitleBar .resource-name:hover {
+#TitleBar .nav-link:hover {
     text-decoration: underline;
 }
