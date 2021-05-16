@@ -57,6 +57,7 @@ export default class FacsEditor extends Component {
                         onChangeView={onChangeView}
                         onEditSurfaceInfo={onEditSurfaceInfo}
                         onWindow={onWindowPopup}
+                        isWindowed={windowed}
                     ></SurfaceEditor>                
                 : 
                     <FacsIndex
@@ -71,6 +72,7 @@ export default class FacsEditor extends Component {
                         onAddImages={onAddImages}         
                         onConfirmDeleteImages={onConfirmDeleteImages}  
                         onWindow={onWindowPopup}
+                        isWindowed={windowed}
                     ></FacsIndex>
                 }
             </div>

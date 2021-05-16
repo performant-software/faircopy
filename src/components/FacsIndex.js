@@ -248,7 +248,7 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { resourceEntry, parentResource, onResourceAction } = this.props
+        const { resourceEntry, parentResource, onResourceAction, isWindowed } = this.props
 
         return (
             <div id="FacsIndex" >
@@ -257,7 +257,9 @@ export default class FacsIndex extends Component {
                         resourceName={ resourceEntry.name } 
                         onResourceAction={onResourceAction} 
                         teiDocID={ parentResource ? parentResource.id : null } 
-                        teiDocName={ parentResource ? parentResource.name : null } >
+                        teiDocName={ parentResource ? parentResource.name : null }
+                        isImageWindow={isWindowed}
+                    >
                     </TitleBar>
                     { this.renderToolbar() }
                 </div>

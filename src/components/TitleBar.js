@@ -14,11 +14,12 @@ export default class TitleBar extends Component {
     }
 
     renderTitle() {
-        const { teiDocName, resourceName, surfaceName, onClickResource } = this.props
+        const { teiDocName, resourceName, surfaceName, isImageWindow, onClickResource } = this.props
 
         const chevClass = "fa fa-chevron-right"
+        const resourceNameSeperator = isImageWindow ? <i className="far fa-images"></i> : <i className={chevClass}></i>
         const surfaceNameEl = surfaceName && <span><i className={chevClass}></i> {surfaceName}</span>
-        const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}><i className={chevClass}></i> {resourceName}</span>
+        const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceName}</span>
         const teiDocNameEl = teiDocName && <span className="nav-link" onClick={this.onClickTeiDoc} ><i className={chevClass}></i> {teiDocName}</span>
         return (
             <span>
@@ -28,10 +29,13 @@ export default class TitleBar extends Component {
     }
 
     render() {
+        const { isImageWindow } = this.props
+        
         return (
             <div id="TitleBar" >
                 <Typography component="h1" variant="h6">
-                    <span className="nav-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> { this.renderTitle() }
+                    { !isImageWindow && <span className="nav-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> }
+                    { this.renderTitle() }
                 </Typography>
             </div>
         )
