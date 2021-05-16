@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
 
+const maxTitleLength = 120
+
 export default class TitleBar extends Component {
     
     onClickHome = () => {
@@ -16,11 +18,21 @@ export default class TitleBar extends Component {
     renderTitle() {
         const { teiDocName, resourceName, surfaceName, isImageWindow, onClickResource } = this.props
 
+        let titleCount = 0
+        if( teiDocName ) titleCount++
+        if( resourceName ) titleCount++
+        if( surfaceName ) titleCount++
+        const titleLength = maxTitleLength/titleCount
+
+        const teiDocNameShort = teiDocName ? shorten( teiDocName, titleLength ) : ''
+        const resourceNameShort = resourceName ? shorten( resourceName, titleLength ) : ''
+        const surfaceNameShort = surfaceName ? shorten( surfaceName, titleLength ) : ''
+
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i className="far fa-images"></i> : <i className={chevClass}></i>
-        const surfaceNameEl = surfaceName && <span><i className={chevClass}></i> {surfaceName}</span>
-        const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceName}</span>
-        const teiDocNameEl = teiDocName && <span className="nav-link" onClick={this.onClickTeiDoc} ><i className={chevClass}></i> {teiDocName}</span>
+        const surfaceNameEl = surfaceName && <span><i className={chevClass}></i> {surfaceNameShort}</span>
+        const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>
+        const teiDocNameEl = teiDocName && <span className="nav-link" onClick={this.onClickTeiDoc} ><i className={chevClass}></i> {teiDocNameShort}</span>
         return (
             <span>
                 {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
@@ -40,4 +52,10 @@ export default class TitleBar extends Component {
             </div>
         )
     }
+}
+
+function shorten( originalString, length ) {
+    if( originalString.length <= length ) return originalString
+    let shortString = originalString.substr(0,length)
+    return `${shortString}...`
 }
