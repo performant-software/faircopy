@@ -68,7 +68,7 @@ hitDetection(offsetX,offsetY) {
 
   const el = document.elementFromPoint(offsetX,offsetY)
 
-  if( !el.className ) {
+  if( !el || !el.className ) {
     return { nodePos: lastNodePos, actionType: lastActionType }
   }
 
