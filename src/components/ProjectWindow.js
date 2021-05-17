@@ -84,8 +84,9 @@ export default class ProjectWindow extends Component {
                             value={filePath}
                             disabled
                         />
-                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Browse...</Button>
+                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Choose Save File Path</Button>
                     </li>
+                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> Give your project and name and a short description, then choose where you want the project file to be saved.</Typography></li>
                 </ul>
                 <div className='form-actions'>
                     <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Save</Button>

@@ -47,6 +47,10 @@
     margin-bottom: 10px;
 }
 
+#ProjectWindow .instructions {
+    margin-top: 30px;
+}
+
 #ProjectWindow .action-button {
     margin-right: 10px;
 }
@@ -63,13 +67,13 @@
 
 #ProjectWindow .left-side {
     width: 40%;
-    height: 300px;
+    height: 350px;
     margin-top: 30px;
 }
 
 #ProjectWindow .right-side {
     width: 40%;
-    height: 300px;
+    height: 350px;
     padding-left: 20px;
     border-left: 3px solid gray;
 }
