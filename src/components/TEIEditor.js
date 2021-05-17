@@ -99,6 +99,7 @@ export default class TEIEditor extends Component {
     }
 
     dispatchTransaction = (transaction) => {
+        const { noteID } = this.state
         const { teiDocument, onAlertMessage } = this.props
         const { editorView } = teiDocument
 
@@ -112,6 +113,7 @@ export default class TEIEditor extends Component {
             }
 
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
+            const nextNoteID = nextNotePopupAnchorEl ? noteID : null
             const selectedElements = this.getSelectedElements()
             this.broadcastZoneLinks(selectedElements)
 
@@ -123,7 +125,7 @@ export default class TEIEditor extends Component {
                 }, 100 )        
             }
             const scrollTop = (this.el) ? this.el.scrollTop : 0
-            this.setState({...this.state, selectedElements, scrollTop, notePopupAnchorEl: nextNotePopupAnchorEl })
+            this.setState({...this.state, selectedElements, scrollTop, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
         }
     }
 
@@ -145,6 +147,9 @@ export default class TEIEditor extends Component {
             if( notePos !== null ) {
                 const domPos = editorView.domAtPos(notePos)
                 return domPos.node.childNodes[domPos.offset]
+            } else {
+                // anchor element was probably deleted
+                return null
             }
         }
         return notePopupAnchorEl
