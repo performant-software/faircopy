@@ -6,7 +6,7 @@ const xmlStripSpaceNames = "TEI abstract additional address adminInfo altGrp alt
 export function parseText(textEl, teiDocument, teiSchema, subDocName) {
     // make the TEIDocument visible to the node spec parser for access to sub docs
     teiSchema.teiDocuments.push(teiDocument)
-    parseInterNodes(textEl,teiSchema.elementGroups)
+    parseInterNodes(textEl,teiSchema)
     stripSpaces(textEl)
     const domParser = subDocName ? teiSchema.docNodeParsers[subDocName] : teiSchema.domParser
     const doc = domParser.parse(textEl)
@@ -53,14 +53,20 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
 
 // Internodes are a set of elements that can be processed as either nodes or marks, depending on their
 // location in the document structure. They have to be determined before parsing with ProseMirror.
-function parseInterNodes(textEl,elementGroups) {
+function parseInterNodes(textEl,teiSchema) {
+    const { elements, elementGroups } = teiSchema
     const { hard, soft, inter, asides } = elementGroups
     const nodes = [...hard,...soft]
     const markPrefix = 'mark'
 
+    // asides which can't have textNode direct children
+    const hardAsides = asides.filter( aside => { 
+        return !elements[`${aside}X`].content.includes('textNode')
+    })
+
     // Node names are uppercase, so these are uppercased. Also, need to test against
     // both aside node name and the 'X' variant used in sub documents
-    const interMarkSet = [ ...hard.map(i => i.toUpperCase()), ...asides.map(i => i.toUpperCase()), ...asides.map(i => `${i.toUpperCase()}X`) ]
+    const interMarkSet = [ ...hard.map(i => i.toUpperCase()), ...hardAsides.map(i => i.toUpperCase()), ...hardAsides.map(i => `${i.toUpperCase()}X`) ]
 
     function isMark(markEl) {
         let parentNodeName = markEl.parentNode.nodeName.toUpperCase()
