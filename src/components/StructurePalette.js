@@ -128,9 +128,11 @@ renderSelectStructureGroup(menuGroups) {
 renderElement(elementID) {
   const { elementGroups } = this.props.teiDocument.fairCopyProject.teiSchema
 
-  const onStartDrag = () => {
+  const onStartDrag = (e) => {
     const { onDragElement } = this.props
-    onDragElement(elementID,{ x: 500, y: 500})
+    const x = e.clientX;
+    const y = e.clientY;
+    onDragElement(elementID,{x, y})
   }
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
