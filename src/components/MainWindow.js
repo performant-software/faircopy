@@ -96,6 +96,9 @@ export default class MainWindow extends Component {
             }
         }        
         if( doomedResources.length > 0 ) this.closeResources(doomedResources,false,false)
+
+        // push forward state to update resource entries in components
+        this.setState({...this.state})
     }
 
     requestExitApp = () => {
