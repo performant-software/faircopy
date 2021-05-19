@@ -47,7 +47,7 @@
     "subst": ["add","del"],
     "tagsDecl": ["rendition"],
     "taxonomy": ["category"],
-    "profileDesc": ["textDesc"],
+    "profileDesc": ["langUsage"],
     "particDesc": ["p"],
     "settingDesc": ["p"],
     "abstract": ["p"],
