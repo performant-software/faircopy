@@ -51,7 +51,7 @@ It is now possible to delete everything in a text resource down to the body (or 
 
 ### Choice and Subst Elements
 
-The Choice and Subst elements, located in Stamp->Asides on the toolbar, now work properly. Each requires certain elements to start with. For choice, it must have two elements (corr and sic). For Subst, add and del. Other elements are possible, but there must be two.
+The Choice and Subst elements, located in Stamp->Notes on the toolbar, now work properly. Each requires certain elements to start with. For Choice, it must have two elements (corr and sic). For Subst, add and del. Other elements are possible, but there must be two.
 
 ### Transcription Structure Elements 
 

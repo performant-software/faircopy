@@ -91,7 +91,7 @@ export default class EditorToolbar extends Component {
                     enabledMenus.inline,
                     (el)=> { elementMenuAnchors.inline = el }
                 )}
-                { this.renderButton("Erase Marks", "fas fa-eraser", ()=>{eraseSelection(teiDocument)}, enabledMenus.eraser) }
+                { this.renderButton("Erase Mark/Structure", "fas fa-eraser", ()=>{eraseSelection(teiDocument)}, enabledMenus.eraser) }
             </span>
         )
     }
