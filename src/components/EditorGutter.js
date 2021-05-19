@@ -102,10 +102,10 @@ export default class EditorGutter extends Component {
                 if( element && element.gutterMark ) {
                     gatherColumnThickness(name,column)
                     const endPos = startPos + processNode(node,startPos,column+1) + 1
-                    let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop
+                    let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop - 5
                     const endPosSamplePoint = (endPos >= 3) ? endPos-3 : endPos // trying the inside of text, if it exists
                     let bottom = editorView.coordsAtPos(endPosSamplePoint).bottom - gutterTop + scrollTop
-                    if( bottom - top < 30 ) bottom = top + 30
+                    if( bottom - top < 18 ) bottom = top + 18
                     let style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
                     if( node.attrs['__error__'] ) style = style.concat(' error')
 
