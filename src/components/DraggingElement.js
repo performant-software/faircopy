@@ -95,6 +95,7 @@ hitDetection(offsetX,offsetY) {
     const borderState = `${position} ${valid}`
     const nextAttrs = { ...node.attrs, '__border__': borderState}
     const $anchor = tr.doc.resolve(nodePos)
+    tr.setMeta('addToHistory',false)
     changeAttributes( node, nextAttrs, $anchor, tr )  
   }
 
@@ -107,6 +108,7 @@ clearNodeBorder(pos, doc, tr) {
   const node = doc.nodeAt(pos)
   const nextAttrs = { ...node.attrs, '__border__': false}
   const $anchor = tr.doc.resolve(pos)
+  tr.setMeta('addToHistory',false)
   changeAttributes( node, nextAttrs, $anchor, tr )
 }
 
