@@ -2,6 +2,12 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 0.9.10
+
+### More attribute data type validations
+
+FairCopy now validates the following data types: truthValue, probability, count, and numeric.
+
 ## Version 0.9.9
 
 ### Title Bar Breadcrumbs
