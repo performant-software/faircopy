@@ -15,6 +15,7 @@ import TEIDataTextField from './attribute-fields/TEIDataTextField'
 import TEIDataWordField from './attribute-fields/TEIDataWordField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
+import TEIDataNumericField from './attribute-fields/TEIDataNumericField'
 import IDField from './attribute-fields/IDField'
 import { checkID } from '../tei-document/attribute-validators';
 
@@ -152,6 +153,17 @@ export default class ParameterDrawer extends Component {
                     onChangeCallback={onChange}
                 ></TEIDataPointerField>
             )  
+        }
+        if( dataType === 'teidata.numeric' ) {
+            return (
+                <TEIDataNumericField
+                    attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIDataNumericField>
+            )
         }
 
         // TODO for now, this is the default

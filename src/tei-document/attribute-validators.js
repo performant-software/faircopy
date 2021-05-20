@@ -65,21 +65,22 @@ export function tokenValidator( value ) {
 // punctuation characters, or symbols: thus it cannot include
 // whitespace.
 export function teiDataWordValidator( value, minOccurs, maxOccurs ) {
-    let tokenStatus = tokenValidator(value)
-    if( tokenStatus.error ) return tokenStatus
+    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'words' )
+    if( quantityError.error ) return quantityError
+    return { error: false, errorMessage: "" }
+}
 
-    let min = (minOccurs !== null ) ? Number(minOccurs) : 1
-    let max = (maxOccurs === "unbounded" ) ? "unbounded" : (maxOccurs !== null ) ? Number(maxOccurs) : 1
-    
-    const match = value.match(/[\S]+/g)
-    const wordCount = (match) ? match.length : 0
+export function teiDataNumericValidator( value, minOccurs, maxOccurs ) {
+    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'numerics' )
+    if( quantityError.error ) return quantityError
 
-    if( max !== "unbounded" && wordCount > max ) {
-        return { error: true, errorMessage: "exceeded allowable number of words"}
-    }
+    const fractionRegEx = /(-?[\d]+\/-?[\d]+)/
 
-    if( wordCount < min ) {
-        return { error: true, errorMessage: "does not contain minimum number of words"}
+    const tokens = value.split(' ')
+    for( const token of tokens ) {
+        if( isNaN(token) && !token.match(fractionRegEx) ) {
+            return { error: true, errorMessage: "Must be an integer, decimal, or fraction."}
+        }
     }
 
     return { error: false, errorMessage: "" }
@@ -102,4 +103,25 @@ export function sanitizeID(value) {
         cleanID = `_${cleanID}`
     }
     return cleanID.length > 0 ? cleanID : null
+}
+
+function validateQuantity( value, minOccurs, maxOccurs, dataType ) {
+    let tokenStatus = tokenValidator(value)
+    if( tokenStatus.error ) return tokenStatus
+
+    let min = (minOccurs !== null ) ? Number(minOccurs) : 1
+    let max = (maxOccurs === "unbounded" ) ? "unbounded" : (maxOccurs !== null ) ? Number(maxOccurs) : 1
+    
+    const match = value.match(/[\S]+/g)
+    const wordCount = (match) ? match.length : 0
+
+    if( max !== "unbounded" && wordCount > max ) {
+        return { error: true, errorMessage: `exceeded allowable number of ${dataType}`}
+    }
+
+    if( wordCount < min ) {
+        return { error: true, errorMessage: `does not contain minimum number of ${dataType}`}
+    }
+
+    return { error: false, errorMessage: "" }
 }
