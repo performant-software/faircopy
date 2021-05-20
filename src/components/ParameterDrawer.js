@@ -12,13 +12,13 @@ import { getHighlightColor } from "../tei-document/highlighter"
 
 import TokenField from './attribute-fields/TokenField'
 import TEIDataTextField from './attribute-fields/TEIDataTextField'
-import TEIDataWordField from './attribute-fields/TEIDataWordField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
-import TEIDataNumericField from './attribute-fields/TEIDataNumericField'
-import TEIDataCountField from './attribute-fields/TEIDataCountField'
+import TEIDataWordLikeField from './attribute-fields/TEIDataWordLikeField'
 import IDField from './attribute-fields/IDField'
 import { checkID } from '../tei-document/attribute-validators';
+
+import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator } from '../tei-document/attribute-validators'
 
 export default class ParameterDrawer extends Component {
 
@@ -116,13 +116,14 @@ export default class ParameterDrawer extends Component {
         }
         if( dataType === 'teidata.word' ) {
             return (
-                <TEIDataWordField
+                <TEIDataWordLikeField
                     attrName={attrName}
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
+                    validator={teiDataWordValidator}
                     value={value}                        
                     onChangeCallback={onChange}
-                ></TEIDataWordField>
+                ></TEIDataWordLikeField>
             )
         }
         if( dataType === 'teidata.enumerated' ) {
@@ -157,24 +158,26 @@ export default class ParameterDrawer extends Component {
         }
         if( dataType === 'teidata.numeric' ) {
             return (
-                <TEIDataNumericField
+                <TEIDataWordLikeField
                     attrName={attrName}
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
+                    validator={teiDataNumericValidator}
                     value={value}                        
                     onChangeCallback={onChange}
-                ></TEIDataNumericField>
+                ></TEIDataWordLikeField>
             )
         }
         if( dataType === 'teidata.count' ) {
             return (
-                <TEIDataCountField
+                <TEIDataWordLikeField
                     attrName={attrName}
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
+                    validator={teiDataCountValidator}
                     value={value}                        
                     onChangeCallback={onChange}
-                ></TEIDataCountField>
+                ></TEIDataWordLikeField>
             )
         }
 
