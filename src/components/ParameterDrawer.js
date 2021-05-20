@@ -18,7 +18,7 @@ import TEIDataWordLikeField from './attribute-fields/TEIDataWordLikeField'
 import IDField from './attribute-fields/IDField'
 import { checkID } from '../tei-document/attribute-validators';
 
-import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator } from '../tei-document/attribute-validators'
+import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability } from '../tei-document/attribute-validators'
 
 export default class ParameterDrawer extends Component {
 
@@ -180,8 +180,20 @@ export default class ParameterDrawer extends Component {
                 ></TEIDataWordLikeField>
             )
         }
+        if( dataType === 'teidata.probability' ) {
+            return (
+                <TEIDataWordLikeField
+                    attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
+                    validator={teiDataProbability}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIDataWordLikeField>
+            )
+        }
 
-        // TODO for now, this is the default
+        // fallback to treating it as text if data type isn't supported
         return (
             <TEIDataTextField
                 attrName={attrName}

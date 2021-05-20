@@ -87,7 +87,7 @@ export function teiDataNumericValidator( value, minOccurs, maxOccurs ) {
 }
 
 export function teiDataCountValidator( value, minOccurs, maxOccurs ) {
-    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'numerics' )
+    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'integers' )
     if( quantityError.error ) return quantityError
 
     const tokens = value.split(' ')
@@ -95,6 +95,21 @@ export function teiDataCountValidator( value, minOccurs, maxOccurs ) {
         // must be a non negative integer (scientific notation not allowed)
         if( isNaN(token) || token.includes('.') || token.toLowerCase().includes('e') || parseInt(token) < 0 ) {
             return { error: true, errorMessage: "Must be a non-negative integer."}
+        }
+    }
+
+    return { error: false, errorMessage: "" }
+}
+
+export function teiDataProbability( value, minOccurs, maxOccurs ) {
+    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'values' )
+    if( quantityError.error ) return quantityError
+
+    const tokens = value.split(' ')
+    for( const token of tokens ) {
+        const probVal = parseFloat(token)
+        if( isNaN(probVal) || probVal < 0.0 || probVal > 1.0 ) {
+            return { error: true, errorMessage: "Must be a value between 0 and 1."}
         }
     }
 
