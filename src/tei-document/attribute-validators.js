@@ -116,6 +116,23 @@ export function teiDataProbability( value, minOccurs, maxOccurs ) {
     return { error: false, errorMessage: "" }
 }
 
+export function teiDataTruthValue( value, minOccurs, maxOccurs ) {
+    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'values' )
+    if( quantityError.error ) return quantityError
+
+    // 	The possible values of this datatype are 1 or true, or 0 or false.
+    const validValues = ['0','1','true','false','TRUE','FALSE']
+    
+    const tokens = value.split(' ')
+    for( const token of tokens ) {
+        if( !validValues.includes(token)) {
+            return { error: true, errorMessage: "Must be true or false, 0 or 1."}
+        }
+    }
+
+    return { error: false, errorMessage: "" }
+}
+
 export function validateURL(value) {
     try {
         new URL(value)

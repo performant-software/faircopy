@@ -18,7 +18,7 @@ import TEIDataWordLikeField from './attribute-fields/TEIDataWordLikeField'
 import IDField from './attribute-fields/IDField'
 import { checkID } from '../tei-document/attribute-validators';
 
-import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability } from '../tei-document/attribute-validators'
+import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability, teiDataTruthValue } from '../tei-document/attribute-validators'
 
 export default class ParameterDrawer extends Component {
 
@@ -187,6 +187,18 @@ export default class ParameterDrawer extends Component {
                     minOccurs={minOccurs}
                     maxOccurs={maxOccurs}
                     validator={teiDataProbability}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIDataWordLikeField>
+            )
+        }
+        if( dataType === 'teidata.truthValue' ) {
+            return (
+                <TEIDataWordLikeField
+                    attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
+                    validator={teiDataTruthValue}
                     value={value}                        
                     onChangeCallback={onChange}
                 ></TEIDataWordLikeField>
