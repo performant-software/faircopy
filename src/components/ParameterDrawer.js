@@ -16,6 +16,7 @@ import TEIDataWordField from './attribute-fields/TEIDataWordField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
 import TEIDataNumericField from './attribute-fields/TEIDataNumericField'
+import TEIDataCountField from './attribute-fields/TEIDataCountField'
 import IDField from './attribute-fields/IDField'
 import { checkID } from '../tei-document/attribute-validators';
 
@@ -163,6 +164,17 @@ export default class ParameterDrawer extends Component {
                     value={value}                        
                     onChangeCallback={onChange}
                 ></TEIDataNumericField>
+            )
+        }
+        if( dataType === 'teidata.count' ) {
+            return (
+                <TEIDataCountField
+                    attrName={attrName}
+                    minOccurs={minOccurs}
+                    maxOccurs={maxOccurs}
+                    value={value}                        
+                    onChangeCallback={onChange}
+                ></TEIDataCountField>
             )
         }
 

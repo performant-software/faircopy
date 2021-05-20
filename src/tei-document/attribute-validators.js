@@ -86,6 +86,21 @@ export function teiDataNumericValidator( value, minOccurs, maxOccurs ) {
     return { error: false, errorMessage: "" }
 }
 
+export function teiDataCountValidator( value, minOccurs, maxOccurs ) {
+    const quantityError = validateQuantity( value, minOccurs, maxOccurs, 'numerics' )
+    if( quantityError.error ) return quantityError
+
+    const tokens = value.split(' ')
+    for( const token of tokens ) {
+        // must be a non negative integer (scientific notation not allowed)
+        if( isNaN(token) || token.includes('.') || token.toLowerCase().includes('e') || parseInt(token) < 0 ) {
+            return { error: true, errorMessage: "Must be a non-negative integer."}
+        }
+    }
+
+    return { error: false, errorMessage: "" }
+}
+
 export function validateURL(value) {
     try {
         new URL(value)
