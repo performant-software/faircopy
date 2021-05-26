@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core'
 
+import { exportConfig } from '../tei-document/faircopy-config'
+
 export default class EditProjectDialog extends Component {
 
     constructor(props) {
@@ -49,6 +51,12 @@ export default class EditProjectDialog extends Component {
             onClose()
         }
 
+        const onExportConfig = () => {
+            const { projectConfig } = this.props
+            const exportPath = 'temp/project-config-export.json'
+            exportConfig(exportPath,projectConfig)
+        }
+
         const { name, description, projectFilePath, validationErrors } = this.state
 
         return (
@@ -77,6 +85,7 @@ export default class EditProjectDialog extends Component {
                         onChange={onChange}
                         label="Project Description" 
                     /><br/>
+                    <Button variant="contained" onClick={onExportConfig}>Export Project Config</Button>
                     <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>
 
                 </DialogContent>

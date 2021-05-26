@@ -114,7 +114,8 @@ class FairCopyApplication {
       }) 
     })
 
-    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })
+    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })    
+    ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.projectStore.exportFairCopyConfig(exportPath,fairCopyConfig) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
     
     ipcMain.on('requestPaste', (event) => { 

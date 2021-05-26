@@ -463,7 +463,7 @@ export default class MainWindow extends Component {
     renderDialogs() {
         const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
-        const { idMap } = fairCopyProject
+        const { idMap, fairCopyConfig } = fairCopyProject
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
@@ -527,6 +527,7 @@ export default class MainWindow extends Component {
                 ></AddImageDialog> }
                 { editProjectDialogMode && <EditProjectDialog
                     projectInfo={projectInfo}
+                    projectConfig={fairCopyConfig}
                     onSave={onSaveProjectInfo}
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }

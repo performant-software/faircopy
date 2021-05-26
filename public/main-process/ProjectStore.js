@@ -244,6 +244,17 @@ class ProjectStore {
         this.writeProjectArchive()
     }
 
+    exportFairCopyConfig( exportPath, fairCopyConfigJSONCompact ) {
+        try {
+            const fairCopyConfig = JSON.parse(fairCopyConfigJSONCompact)
+            const fairCopyConfigJSON = JSON.stringify(fairCopyConfig, null, '\t')
+            fs.writeFileSync(exportPath,fairCopyConfigJSON)    
+            log.info(`Exported project config to: ${exportPath}`)
+        } catch(e) {
+            log.error(`Error exporting project config: ${e}`)
+        }
+    }
+
     updateProjectInfo(projectInfoJSON) {
         const projectInfo = JSON.parse(projectInfoJSON)
         const { name, description } = projectInfo

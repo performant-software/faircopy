@@ -82,3 +82,7 @@ function getDefaultVocabKey(elementName,attributeName) {
 export function saveConfig( fairCopyConfig ) {
     fairCopy.services.ipcSend('requestSaveConfig', JSON.stringify(fairCopyConfig))
 }
+
+export function exportConfig( exportPath, fairCopyConfig ) {
+    fairCopy.services.ipcSend('requestExportConfig', exportPath, JSON.stringify(fairCopyConfig))
+}
