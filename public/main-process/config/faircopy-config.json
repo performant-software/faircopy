@@ -1,4 +1,262 @@
 {
+	"menus": {
+		"mark": {
+			"general": {
+				"id": "general",
+				"label": "General",
+				"members": [
+					"foreign",
+					"hi",
+					"name",
+					"q",
+					"quote",
+					"ref",
+					"s",
+					"seg",
+					"term",
+					"title"
+				]
+			},
+			"transcription": {
+				"id": "transcription",
+				"label": "Transcription",
+				"members": [
+					"abbr",
+					"add",
+					"corr",
+					"del",
+					"expan",
+					"orig",
+					"reg",
+					"rhyme",
+					"sic",
+					"supplied",
+					"unclear"
+				]
+			},
+			"data": {
+				"id": "data",
+				"label": "Data",
+				"members": [
+					"date",
+					"email",
+					"measure",
+					"num",
+					"rs",
+					"time"
+				]
+			}
+		},
+		"structure": {
+			"fileDesc": {
+				"id": "fileDesc",
+				"label": "File (Header)",
+				"members": [
+					"titleStmt",
+					"publicationStmt",
+					"sourceDesc",
+					"editionStmt",
+					"extent",
+					"notesStmt",
+					"seriesStmt",
+					"edition",
+					"distributor",
+					"idno",
+					"availability",
+					"licence",
+					"biblFull"
+				]
+			},
+			"encodingDesc": {
+				"id": "encodingDesc",
+				"label": "Encoding (Header)",
+				"members": [
+					"encodingDesc",
+					"editorialDecl",
+					"classDecl",
+					"listPrefixDef",
+					"projectDesc",
+					"refsDecl",
+					"samplingDecl",
+					"tagsDecl",
+					"rendition",
+					"namespace",
+					"tagUsage",
+					"taxonomy",
+					"catDesc",
+					"category",
+					"prefixDef"
+				]
+			},
+			"profileDesc": {
+				"id": "profileDesc",
+				"label": "Profile (Header)",
+				"members": [
+					"profileDesc",
+					"particDesc",
+					"settingDesc",
+					"abstract",
+					"creation",
+					"langUsage",
+					"classCode",
+					"keywords",
+					"language"
+				]
+			},
+			"revisionDesc": {
+				"id": "revisionDesc",
+				"label": "Revisions (Header)",
+				"members": [
+					"revisionDesc",
+					"listChange",
+					"change"
+				]
+			},
+			"structure": {
+				"id": "structure",
+				"label": "Sections",
+				"members": [
+					"back",
+					"body",
+					"div",
+					"floatingText",
+					"front"
+				]
+			},
+			"general": {
+				"id": "general",
+				"label": "Paragraphs",
+				"members": [
+					"ab",
+					"cit",
+					"p"
+				]
+			},
+			"lines": {
+				"id": "lines",
+				"label": "Lines and lists",
+				"members": [
+					"item",
+					"l",
+					"lg",
+					"list"
+				]
+			},
+			"titles": {
+				"id": "titles",
+				"label": "Headers",
+				"members": [
+					"argument",
+					"desc",
+					"epigraph",
+					"head",
+					"label",
+					"trailer"
+				]
+			},
+			"titlepage": {
+				"id": "titlepage",
+				"label": "Title Page",
+				"members": [
+					"docAuthor",
+					"docDate",
+					"docEdition",
+					"docImprint",
+					"docTitle",
+					"titlePage",
+					"titlePart"
+				]
+			},
+			"bilbiography": {
+				"id": "bilbiography",
+				"label": "Bibliography",
+				"members": [
+					"author",
+					"bibl",
+					"biblScope",
+					"editor",
+					"listBibl",
+					"publisher",
+					"pubPlace",
+					"relatedItem",
+					"resp",
+					"respStmt"
+				]
+			},
+			"prosopography": {
+				"id": "prosopography",
+				"label": "Prosopography",
+				"members": [
+					"listPerson",
+					"listPlace",
+					"person",
+					"place"
+				]
+			},
+			"drama": {
+				"id": "drama",
+				"label": "Drama",
+				"members": [
+					"actor",
+					"castGroup",
+					"castItem",
+					"castList",
+					"role",
+					"roleDesc",
+					"set",
+					"sp",
+					"speaker",
+					"stage"
+				]
+			},
+			"correspondence": {
+				"id": "correspondence",
+				"label": "Correspondence",
+				"members": [
+					"addrLine",
+					"byline",
+					"closer",
+					"dateline",
+					"imprimatur",
+					"opener",
+					"postscript",
+					"salute",
+					"signed"
+				]
+			}
+		},
+		"inline": {
+			"anchors": {
+				"id": "anchors",
+				"label": "Anchors",
+				"members": [
+					"anchor",
+					"milestone",
+					"catRef"
+				]
+			},
+			"asides": {
+				"id": "asides",
+				"label": "Notes",
+				"members": [
+					"choice",
+					"fw",
+					"note",
+					"subst"
+				]
+			},
+			"breaks": {
+				"id": "breaks",
+				"label": "Breaks",
+				"members": [
+					"cb",
+					"gap",
+					"lb",
+					"pb"
+				]
+			}
+		}
+	},
 	"elements": {
 		"argument": {
 			"attrState": {
@@ -4222,6 +4480,90 @@
 				"type": {
 					"active": false,
 					"vocabID": "cb[type]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"catRef": {
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"evaluate": {
+					"active": false,
+					"vocabID": "*[evaluate]"
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"scheme": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"target": {
+					"active": false
+				},
+				"targetLang": {
+					"active": false
 				},
 				"xml:base": {
 					"active": false
@@ -13199,6 +13541,20 @@
 				false
 			]
 		],
+		"*[evaluate]": [
+			[
+				"all",
+				false
+			],
+			[
+				"one",
+				false
+			],
+			[
+				"none",
+				false
+			]
+		],
 		"*[reason]": [
 			[
 				"cancelled",
@@ -13290,20 +13646,6 @@
 			],
 			[
 				"inspace",
-				false
-			]
-		],
-		"*[evaluate]": [
-			[
-				"all",
-				false
-			],
-			[
-				"one",
-				false
-			],
-			[
-				"none",
 				false
 			]
 		],

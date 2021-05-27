@@ -59,11 +59,9 @@ class ProjectStore {
         let fairCopyConfig = await this.readUTF8File(configSettingsEntryName)
         const idMap = await this.readUTF8File(idMapEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-        const menuGroups = fs.readFileSync(`${baseDir}/config/menu-groups.json`).toString('utf-8')
-        const headerMenuGroups = fs.readFileSync(`${baseDir}/config/header-menu-groups.json`).toString('utf-8')
         const baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
-        if( !teiSchema || !menuGroups || !baseConfig || !headerMenuGroups ) {
+        if( !teiSchema || !baseConfig ) {
             log.info('Application data is missing or corrupted.')
             return
         }
@@ -99,7 +97,7 @@ class ProjectStore {
         // temp folder for streaming zip data
         this.setupTempFolder()
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, menuGroups, headerMenuGroups, idMap }
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
@@ -349,6 +347,12 @@ function migrateConfig( baseConfigJSON, projectConfigJSON ) {
             changed = true
         }
     }
+
+    // if save file is pre v0.10.1, add menu data to config
+    // TODO while in development, override with latest default menu
+    // if( !projectConfig.menus ) {
+        projectConfig.menus = baseConfig.menus
+    // }
 
     return ( changed ) ? JSON.stringify(projectConfig) : null
 }

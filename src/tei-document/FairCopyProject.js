@@ -19,8 +19,6 @@ export default class FairCopyProject {
         this.loadManifest(projectData.fairCopyManifest)
         this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
         this.teiSchema = new TEISchema(projectData.teiSchema)
-        this.menus = this.parseMenus(projectData.menuGroups)
-        this.headerMenus = this.parseMenus(projectData.headerMenuGroups)
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 
@@ -45,33 +43,6 @@ export default class FairCopyProject {
 
     removeUpdateListener(listener) {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
-    }
-
-    parseMenus(json) {
-        const menuData = JSON.parse(json)
-
-        const menus = {}
-        for( const menuID of Object.keys(menuData) ) {
-            menus[menuID] = this.parseMenu(menuData[menuID])
-        }
-
-        return menus
-    }
-
-    parseMenu(menuEntries) {
-        const menuGroups = {}
-        for( const menuEntry of menuEntries ) {
-            // which ones are enabled?
-            const members = []
-            for( const member of menuEntry.members ) {
-                const enabled = ( this.teiSchema.elements[member] !== undefined )
-                members.push({ id: member, enabled })
-            }
-            menuEntry.members = members
-            menuGroups[menuEntry.id] = menuEntry
-        }
-
-        return menuGroups
     }
 
     loadManifest(json) {

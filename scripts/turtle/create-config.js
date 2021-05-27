@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const createConfig = function createConfig(teiSchema) {
     const { attrs } = teiSchema
 
@@ -44,7 +46,38 @@ const createConfig = function createConfig(teiSchema) {
         }
     }
 
-    return { elements, vocabs }
+    // initialize menus, parse from config file to internal format
+    const menuGroupsJSON = fs.readFileSync(`scripts/turtle/menu-groups.json`).toString('utf-8')
+    const menus = parseMenus(menuGroupsJSON,elements)
+
+    return { menus, elements, vocabs }
+}
+
+function parseMenus(json,elements) {
+    const menuData = JSON.parse(json)
+
+    const menus = {}
+    for( const menuID of Object.keys(menuData) ) {
+        menus[menuID] = parseMenu(menuData[menuID],elements)
+    }
+
+    return menus
+}
+
+function parseMenu(menuEntries, elements) {
+    const menuGroups = {}
+    for( const menuEntry of menuEntries ) {
+        const members = []
+        for( const member of menuEntry.members ) {
+            // cross check to make sure members are valid elements
+            if( elements[member] === undefined ) throw new Error(`Element "${member}" in menus not found in schema.`)
+            members.push(member)
+        }
+        menuEntry.members = members
+        menuGroups[menuEntry.id] = menuEntry
+    }
+
+    return menuGroups
 }
 
 function getDefaultVocabKey(elementName,attributeName) {

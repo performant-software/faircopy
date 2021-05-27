@@ -2070,6 +2070,40 @@
 			"desc": "marks the beginning of a new column of a text on a multi-column page."
 		},
 		{
+			"name": "catRef",
+			"pmType": "inline-node",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"evaluate",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scheme",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"target",
+				"targetLang",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "inline_node",
+			"desc": "specifies one or more defined categories within some taxonomy or text typology."
+		},
+		{
 			"name": "gap",
 			"pmType": "inline-node",
 			"validAttrs": [
@@ -6503,6 +6537,37 @@
 			],
 			"valListType": "open"
 		},
+		"targetLang": {
+			"ident": "targetLang",
+			"description": "specifies the language of the content to be found at the destination referenced by target, using a language tag generated according to BCP 47.",
+			"dataType": "teidata.language",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"evaluate": {
+			"ident": "evaluate",
+			"description": "specifies the intended meaning when the target of a pointer is itself a pointer.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "all",
+					"desc": "if the element pointed to is itself a pointer, then the target of that pointer will be taken, and so on, until an element is found which is not a pointer."
+				},
+				{
+					"ident": "one",
+					"desc": "if the element pointed to is itself a pointer, then its target (whether a pointer or not) is taken as the target of this pointer."
+				},
+				{
+					"ident": "none",
+					"desc": "no further evaluation of targets is carried out beyond that needed to find the element specified in the pointer's target."
+				}
+			],
+			"valListType": "closed"
+		},
 		"reason": {
 			"ident": "reason",
 			"description": "gives the reason for omission",
@@ -6781,37 +6846,6 @@
 				}
 			],
 			"valListType": "semi"
-		},
-		"targetLang": {
-			"ident": "targetLang",
-			"description": "specifies the language of the content to be found at the destination referenced by target, using a language tag generated according to BCP 47.",
-			"dataType": "teidata.language",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"evaluate": {
-			"ident": "evaluate",
-			"description": "specifies the intended meaning when the target of a pointer is itself a pointer.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "all",
-					"desc": "if the element pointed to is itself a pointer, then the target of that pointer will be taken, and so on, until an element is found which is not a pointer."
-				},
-				{
-					"ident": "one",
-					"desc": "if the element pointed to is itself a pointer, then its target (whether a pointer or not) is taken as the target of this pointer."
-				},
-				{
-					"ident": "none",
-					"desc": "no further evaluation of targets is carried out beyond that needed to find the element specified in the pointer's target."
-				}
-			],
-			"valListType": "closed"
 		},
 		"cause": {
 			"ident": "cause",
@@ -7344,6 +7378,7 @@
 		"inlines": [
 			"anchor",
 			"cb",
+			"catRef",
 			"gap",
 			"lb",
 			"milestone",

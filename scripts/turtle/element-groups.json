@@ -81,6 +81,7 @@
     "inlines": [
         "anchor",
         "cb",
+        "catRef",
         "gap",
         "lb",
         "milestone",

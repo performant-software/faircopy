@@ -18,7 +18,7 @@ export default class ElementMenu extends Component {
     getMenuGroups() {
         const { teiDocument, menuGroup } = this.props
         if(!teiDocument) return null
-        const menus = teiDocument.resourceType === 'header' ? teiDocument.fairCopyProject.headerMenus : teiDocument.fairCopyProject.menus
+        const {menus} = teiDocument.fairCopyProject.fairCopyConfig
         return menus[menuGroup]
     }
 
@@ -47,7 +47,7 @@ export default class ElementMenu extends Component {
             const { teiDocument, onClose } = this.props
 
             if( selection && !selection.node ) {
-                createPhraseElement(member.id, {}, teiDocument) 
+                createPhraseElement(member, {}, teiDocument) 
             }
             onClose()
         }
@@ -65,20 +65,20 @@ export default class ElementMenu extends Component {
             const selection = (editorView) ? editorView.state.selection : null 
 
             const setItemElRef = (el) => {
-                this.itemEls[member.id] = el
+                this.itemEls[member] = el
             }
 
             // const valid = !member.enabled ? false : validAction('mark', member.id, teiDocument, selection )
-            const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member.id })}
+            const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member })}
             const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
-            const elementSpec = elements[member.id]
+            const elementSpec = elements[member]
             const icon = elementSpec ? elementSpec.icon : null
-            const nameEl = icon ? <span><i className={`far ${icon} fa-sm`}></i><span className="element-menu-name">{member.id}</span></span> : <span>{member.id}</span>
+            const nameEl = icon ? <span><i className={`far ${icon} fa-sm`}></i><span className="element-menu-name">{member}</span></span> : <span>{member}</span>
 
             menuItems.push(
                 <MenuItem 
                     ref={setItemElRef}
-                    key={`submenu-${member.id}`}
+                    key={`submenu-${member}`}
                     disableRipple={true}
                     onMouseOver={onMouseOver}
                     onMouseLeave={onMouseLeave}

@@ -94,7 +94,7 @@ closeDragElement = () => {
 getMenuGroups() {
   const { teiDocument } = this.props
   if( !teiDocument || !teiDocument.fairCopyProject ) return null
-  const menus = teiDocument.resourceType === 'header' ? teiDocument.fairCopyProject.headerMenus : teiDocument.fairCopyProject.menus
+  const {menus} = teiDocument.fairCopyProject.fairCopyConfig
   return menus['structure']
 }
 
@@ -152,7 +152,7 @@ renderElement(elementID) {
 renderStructures( currentMenu ) {
   const structureEls = []
   for( const member of currentMenu.members ) {
-    const structureEl = this.renderElement(member.id)
+    const structureEl = this.renderElement(member)
     structureEls.push(structureEl)
   }
 

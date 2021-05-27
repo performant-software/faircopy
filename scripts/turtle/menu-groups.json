@@ -11,11 +11,6 @@
             "members": ["abbr", "add", "corr", "del", "expan", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
         },
         {
-            "id": "segmentation",
-            "label": "Characters",
-            "members": ["c","g","m","pc","w"]
-        },
-        {
             "id": "data",
             "label": "Data",
             "members": ["date","email","measure","num","rs","time"]
@@ -24,7 +19,7 @@
     "structure": [
         {
             "id": "fileDesc",
-            "label": "File",
+            "label": "File (Header)",
             "members": [
                 "titleStmt",
                 "publicationStmt",
@@ -43,7 +38,7 @@
         },
         {
             "id": "encodingDesc",
-            "label": "Encoding",
+            "label": "Encoding (Header)",
             "members": [      
                 "encodingDesc",
                 "editorialDecl",
@@ -64,7 +59,7 @@
         },
         {
             "id": "profileDesc",
-            "label": "Profile",
+            "label": "Profile (Header)",
             "members": [      
                 "profileDesc",
                 "particDesc",
@@ -72,7 +67,6 @@
                 "abstract",
                 "creation",
                 "langUsage",
-                "textClass",
                 "classCode",
                 "keywords",
                 "language"
@@ -80,7 +74,7 @@
         },
         {
             "id": "revisionDesc",
-            "label": "Revisions",
+            "label": "Revisions (Header)",
             "members": [      
                 "revisionDesc",
                 "listChange",
