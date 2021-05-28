@@ -39,6 +39,7 @@ export default class EditorGutter extends Component {
         const markKey = `gutter-mark-${index}`
         const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
         const className = `marker ${highlighted} ${style}`
+        const elementID = node.type.name
 
         const onClick = () => {
             const {tr,doc} = editorState
@@ -46,15 +47,31 @@ export default class EditorGutter extends Component {
             editorView.dispatch(tr)
         }
 
+        const onStartDrag = (e) => {
+            const ctrlDown = (e.ctrlKey || e.metaKey)
+            const { onDragElement } = this.props
+
+            // don't drag aside root elements
+            if( ctrlDown && !elementID.endsWith('X') ) {
+                const x = e.clientX;
+                const y = e.clientY;
+                onDragElement(elementID,{x, y},"gutter-copy")
+            } else {
+                // otherwise, ignore this event
+                return false
+            }
+        }
+
         return (
             <div 
                 key={markKey} 
                 onClick={onClick} 
+                onMouseDown={onStartDrag} 
                 datanodepos={targetPos-1}
                 style={markStyle} 
                 className={className}
                 >
-                {this.renderName(node.type.name)}
+                {this.renderName(elementID)}
             </div>
         )
     }

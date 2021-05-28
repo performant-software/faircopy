@@ -26,6 +26,26 @@ export function createPhraseElement( elementID, attrs, teiDocument ) {
     }
 }
 
+// create hard and soft elements
+export function createStructureElement( elementID, nodePos, actionType, teiDocument, tr ) {
+    // perform appropriate editor action on node
+    switch( actionType ) {
+      case 'addAbove':
+        return addAbove(elementID,teiDocument,nodePos,tr)
+      case 'addBelow':
+        return addBelow(elementID,teiDocument,nodePos,tr)
+      case 'addOutside':
+        return addOutside(elementID,teiDocument,nodePos,tr)
+      case 'addInside':
+        return addInside(elementID,teiDocument,nodePos,tr)
+      case 'replace':
+        return replaceElement(elementID,teiDocument,nodePos,tr)
+      default:
+        console.error(`Unknown action type: ${actionType}`)
+        return tr
+    } 
+}
+
 export function determineRules( elementID, teiDocument ) {
     const teiSchema = teiDocument.fairCopyProject.teiSchema
     const {elements} = teiSchema
@@ -160,7 +180,7 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
 }
 
 // changes the NodeType for a node element at a given pos
-export function replaceElement( elementID, teiDocument, pos, tr ) {
+function replaceElement( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state
     const nodeType = schema.nodes[elementID]
@@ -178,7 +198,7 @@ export function createInterNode( elementID, attrs, teiDocument ) {
     return createMark( markType, attrs, editorView )
 }
 
-export function addInside( elementID, teiDocument, pos, tr ) {
+function addInside( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
     const parentNode = doc.nodeAt(pos)
@@ -201,7 +221,7 @@ export function addInside( elementID, teiDocument, pos, tr ) {
     }
 }
     
-export function addOutside( elementID, teiDocument, pos, tr ) {
+function addOutside( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
 
@@ -215,7 +235,7 @@ export function addOutside( elementID, teiDocument, pos, tr ) {
     return tr
 }
 
-export function addAbove( elementID, teiDocument, pos, tr ) {
+function addAbove( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { teiSchema } = teiDocument.fairCopyProject
     const { schema } = editorView.state
@@ -236,7 +256,7 @@ export function addAbove( elementID, teiDocument, pos, tr ) {
     }
 }
 
-export function addBelow( elementID, teiDocument, pos, tr ) {
+function addBelow( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const { teiSchema } = teiDocument.fairCopyProject

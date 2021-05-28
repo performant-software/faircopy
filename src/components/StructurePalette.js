@@ -132,16 +132,17 @@ renderElement(elementID) {
     const { onDragElement } = this.props
     const x = e.clientX;
     const y = e.clientY;
-    onDragElement(elementID,{x, y})
+    onDragElement(elementID,{x, y},"palette-copy")
   }
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
   const className = `element-type ${elType}`
-
+  let i = 0
   return (
     <div 
         key={`structs-${elementID}`}
         onMouseDown={onStartDrag} 
+        datapalettepos={i++}
         className={className}
     >
       <div className="el-name">{elementID}</div>

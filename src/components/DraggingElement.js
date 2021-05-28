@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { changeAttributes } from '../tei-document/commands'
-import { addAbove, addBelow, addInside, addOutside, replaceElement, validNodeAction } from '../tei-document/editor-actions'
+import { validNodeAction, createStructureElement } from '../tei-document/editor-actions'
 
 const hitMargin = {
   top: 10,
@@ -27,6 +27,7 @@ export default class DraggingElement extends Component {
 
     this.initialState = {
       nodePos: null,
+      palettePos: null,
       actionType: null,
       startX,
       startY,
@@ -58,8 +59,8 @@ elementDrag = (e) => {
     // set the element's new position:
     const offsetX = (prevOffsetX - pos1)
     const offsetY = (prevOffsetY - pos2)
-    const { nodePos, actionType } = this.hitDetection(offsetX,offsetY)
-    this.setState({ ...this.state, nodePos, actionType, offsetX, offsetY, startX, startY })
+    const { nodePos, actionType, palettePos } = this.hitDetection(offsetX,offsetY)
+    this.setState({ ...this.state, nodePos, palettePos, actionType, offsetX, offsetY, startX, startY })
     e.preventDefault()
 }
 
@@ -74,9 +75,11 @@ hitDetection(offsetX,offsetY) {
 
   let nodePos = parseInt(el.getAttribute('datanodepos'))
   nodePos = isNaN(nodePos) ? null : nodePos
+  
   let actionType = null
+  let palettePos = null
 
-  const { teiDocument, elementID } = this.props
+  const { teiDocument, elementID, dragSource } = this.props
   const editorView = teiDocument.getActiveView()
   const { doc, tr } = editorView.state
 
@@ -84,7 +87,7 @@ hitDetection(offsetX,offsetY) {
     this.clearNodeBorder(lastNodePos,doc,tr)
   }
 
-  if( nodePos !== null ) {
+  if( nodePos !== null && dragSource === 'palette-copy' ) {
     // determine action type and whether it is valid
     const node = doc.nodeAt(nodePos)
     const position = this.determineBorderPosition(el,offsetX,offsetY)
@@ -97,11 +100,14 @@ hitDetection(offsetX,offsetY) {
     const $anchor = tr.doc.resolve(nodePos)
     tr.setMeta('addToHistory',false)
     changeAttributes( node, nextAttrs, $anchor, tr )  
+  } else if( dragSource === 'gutter-copy' ) {
+    palettePos = parseInt(el.getAttribute('datapalettepos'))
+    palettePos = isNaN(palettePos) ? null : palettePos
   }
 
   if( tr.docChanged ) editorView.dispatch(tr)
 
-  return { nodePos, actionType }
+  return { nodePos, actionType, palettePos }
 }
 
 clearNodeBorder(pos, doc, tr) {
@@ -139,35 +145,21 @@ determineBorderPosition(el,x,y) {
 }
 
 onDrop = () => {
-  const { teiDocument, elementID, onDrop } = this.props
-  const { nodePos, actionType } = this.state
+  const { teiDocument, elementID, onDrop, dragSource } = this.props
+  const { nodePos, actionType, palettePos } = this.state
 
-  if( nodePos !== null ) {
+  if( nodePos !== null && dragSource === 'palette-copy' ) {
     const editorView = teiDocument.getActiveView()
     let tr = editorView.state.tr
     this.clearNodeBorder(nodePos,tr.doc,tr)
-
-    // perform appropriate editor action on node
-    switch( actionType ) {
-      case 'addAbove':
-        tr = addAbove(elementID,teiDocument,nodePos,tr)
-        break
-      case 'addBelow':
-        tr = addBelow(elementID,teiDocument,nodePos,tr)
-        break
-      case 'addOutside':
-        tr = addOutside(elementID,teiDocument,nodePos,tr)
-        break
-      case 'addInside':
-        tr = addInside(elementID,teiDocument,nodePos,tr)
-        break
-      case 'replace':
-        tr = replaceElement(elementID,teiDocument,nodePos,tr)
-        break
-      default:
+    if( actionType ) {
+      tr = createStructureElement( elementID, nodePos, actionType, teiDocument, tr )
     }
-
     editorView.dispatch(tr)
+  } 
+  else if( palettePos !== null && dragSource === 'gutter-copy' ) {
+    //  TODO add element type to the palette after palettePos
+    console.log('dropped on palette')
   }
 
   this.setState(this.initialState)

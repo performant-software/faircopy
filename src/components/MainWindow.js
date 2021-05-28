@@ -315,8 +315,8 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, surfaceInfo: surfaceInfo, editSurfaceInfoMode: true} )
     }
 
-    onDragElement = (elementID, startingPoint) => {
-        const dragInfo = { elementID, startingPoint }
+    onDragElement = (elementID, startingPoint, dragSource) => {
+        const dragInfo = { elementID, startingPoint, dragSource }
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
@@ -383,6 +383,7 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onTogglePalette={this.onTogglePalette}
+                            onDragElement={this.onDragElement}
                             paletteActive={paletteWindowOpen}
                             onEditResource={this.onEditResource}
                             elementMenuAnchors={this.elementMenuAnchors}
@@ -541,6 +542,7 @@ export default class MainWindow extends Component {
                 { draggingElementActive && <DraggingElement
                     elementID={dragInfo.elementID}
                     teiDocument={selectedDoc}
+                    dragSource={dragInfo.dragSource}
                     startingPoint={dragInfo.startingPoint}
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></DraggingElement> }
