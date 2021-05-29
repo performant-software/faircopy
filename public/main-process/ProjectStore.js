@@ -97,7 +97,7 @@ class ProjectStore {
         // temp folder for streaming zip data
         this.setupTempFolder()
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, idMap }
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 

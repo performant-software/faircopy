@@ -493,6 +493,11 @@ export default class MainWindow extends Component {
             this.setState( {...this.state, editProjectDialogMode: false} )
         }
 
+        const onResetProjectConfig = () => {
+            fairCopyProject.resetConfig()
+            this.setState( {...this.state } )
+        }
+
         const onSaveSurfaceInfo = (surfaceInfo) => {
             const facsDocument = openResources[surfaceInfo.resourceID]
             facsDocument.updateSurfaceInfo(surfaceInfo)
@@ -530,6 +535,7 @@ export default class MainWindow extends Component {
                     projectInfo={projectInfo}
                     projectConfig={fairCopyConfig}
                     onSave={onSaveProjectInfo}
+                    onReset={onResetProjectConfig}
                     onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
                 ></EditProjectDialog> }
                 { paletteWindowOpen && <StructurePalette

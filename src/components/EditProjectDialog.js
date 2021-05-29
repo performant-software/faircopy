@@ -21,7 +21,7 @@ export default class EditProjectDialog extends Component {
     }
 
     render() {      
-        const { editDialogMode, onSave, onClose } = this.props
+        const { editDialogMode, onSave, onClose, onReset } = this.props
         
         const onChange = (e) => {
             const {name, value} = e.target
@@ -86,6 +86,7 @@ export default class EditProjectDialog extends Component {
                         label="Project Description" 
                     /><br/>
                     <Button variant="contained" onClick={onExportConfig}>Export Project Config</Button>
+                    <Button variant="contained" onClick={onReset}>Reset to Default</Button>
                     <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>
 
                 </DialogContent>

@@ -18,6 +18,7 @@ export default class FairCopyProject {
         this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
         this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
+        this.baseConfigJSON = projectData.baseConfig
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
@@ -54,6 +55,11 @@ export default class FairCopyProject {
         Object.values(fairCopyManifest.resources).forEach( entry => {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
+    }
+
+    resetConfig() {
+        this.fairCopyConfig = JSON.parse(this.baseConfigJSON)
+        saveConfig(this.fairCopyConfig)
     }
 
     getResources(parentResource) {
