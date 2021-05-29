@@ -4,9 +4,13 @@ const fairCopy = window.fairCopy
 export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyConfig) {
     const { menus } = fairCopyConfig
     const groupMembers = menus[menuID][groupID].members
+    if( groupMembers.includes(elementID) ) {
+        return { error: true, message: `${elementID} is already on this menu.`}        
+    }
     const start = groupMembers.slice(0,palettePos)
     const end = groupMembers.slice(palettePos)
     menus[menuID][groupID].members = [...start,elementID,...end]
+    return { error: false }
 }
 
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {

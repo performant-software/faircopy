@@ -542,6 +542,7 @@ export default class MainWindow extends Component {
                 { draggingElementActive && <DraggingElement
                     elementID={dragInfo.elementID}
                     teiDocument={selectedDoc}
+                    onAlertMessage={this.onAlertMessage}
                     dragSource={dragInfo.dragSource}
                     startingPoint={dragInfo.startingPoint}
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}

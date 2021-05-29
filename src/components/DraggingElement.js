@@ -153,7 +153,7 @@ determineBorderPosition(el,x,y) {
 }
 
 onDrop = () => {
-  const { teiDocument, elementID, onDrop, dragSource } = this.props
+  const { teiDocument, elementID, onDrop, dragSource, onAlertMessage } = this.props
   const { nodePos, actionType, menuID, groupID, palettePos } = this.state
 
   if( nodePos !== null && dragSource === 'palette-copy' ) {
@@ -167,8 +167,12 @@ onDrop = () => {
   } 
   else if( menuID && dragSource === 'gutter-copy' ) {
     const {fairCopyConfig} = teiDocument.fairCopyProject 
-    addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
-    saveConfig( fairCopyConfig )
+    const result = addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
+    if( result.error ) {
+      onAlertMessage(result.message)
+    } else {
+      saveConfig( fairCopyConfig )
+    }
   }
 
   this.setState(this.initialState)
