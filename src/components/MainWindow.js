@@ -315,8 +315,8 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, surfaceInfo: surfaceInfo, editSurfaceInfoMode: true} )
     }
 
-    onDragElement = (elementID, startingPoint, dragSource) => {
-        const dragInfo = { elementID, startingPoint, dragSource }
+    onDragElement = (elementID, startingPoint, dragTarget) => {
+        const dragInfo = { elementID, startingPoint, dragTarget }
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
@@ -549,7 +549,7 @@ export default class MainWindow extends Component {
                     elementID={dragInfo.elementID}
                     teiDocument={selectedDoc}
                     onAlertMessage={this.onAlertMessage}
-                    dragSource={dragInfo.dragSource}
+                    dragTarget={dragInfo.dragTarget}
                     startingPoint={dragInfo.startingPoint}
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></DraggingElement> }

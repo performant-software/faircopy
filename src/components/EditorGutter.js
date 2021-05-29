@@ -55,7 +55,7 @@ export default class EditorGutter extends Component {
             if( ctrlDown && !elementID.endsWith('X') ) {
                 const x = e.clientX;
                 const y = e.clientY;
-                onDragElement(elementID,{x, y},"gutter-copy")
+                onDragElement(elementID,{x, y},"palette")
             } else {
                 // otherwise, ignore this event
                 return false

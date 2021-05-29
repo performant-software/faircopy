@@ -84,7 +84,7 @@ hitDetection(offsetX,offsetY) {
   let groupID = null
   let palettePos = null
 
-  const { teiDocument, elementID, dragSource } = this.props
+  const { teiDocument, elementID, dragTarget } = this.props
   const editorView = teiDocument.getActiveView()
   const { doc, tr } = editorView.state
 
@@ -92,7 +92,7 @@ hitDetection(offsetX,offsetY) {
     this.clearNodeBorder(lastNodePos,doc,tr)
   }
 
-  if( nodePos !== null && dragSource === 'palette-copy' ) {
+  if( nodePos !== null && dragTarget === 'document' ) {
     // determine action type and whether it is valid
     const node = doc.nodeAt(nodePos)
     const position = this.determineBorderPosition(el,offsetX,offsetY)
@@ -105,7 +105,7 @@ hitDetection(offsetX,offsetY) {
     const $anchor = tr.doc.resolve(nodePos)
     tr.setMeta('addToHistory',false)
     changeAttributes( node, nextAttrs, $anchor, tr )  
-  } else if( dragSource === 'gutter-copy' ) {
+  } else if( dragTarget === 'palette' ) {
     menuID = el.getAttribute('datamenuid')
     groupID = parseInt(el.getAttribute('datamenugroupid'))
     groupID = isNaN(groupID) ? null : groupID
@@ -153,10 +153,10 @@ determineBorderPosition(el,x,y) {
 }
 
 onDrop = () => {
-  const { teiDocument, elementID, onDrop, dragSource, onAlertMessage } = this.props
+  const { teiDocument, elementID, onDrop, dragTarget, onAlertMessage } = this.props
   const { nodePos, actionType, menuID, groupID, palettePos } = this.state
 
-  if( nodePos !== null && dragSource === 'palette-copy' ) {
+  if( nodePos !== null && dragTarget === 'document' ) {
     const editorView = teiDocument.getActiveView()
     let tr = editorView.state.tr
     this.clearNodeBorder(nodePos,tr.doc,tr)
@@ -165,7 +165,7 @@ onDrop = () => {
     }
     editorView.dispatch(tr)
   } 
-  else if( menuID && dragSource === 'gutter-copy' ) {
+  else if( menuID && dragTarget === 'palette' ) {
     const {fairCopyConfig} = teiDocument.fairCopyProject 
     const result = addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
     if( result.error ) {

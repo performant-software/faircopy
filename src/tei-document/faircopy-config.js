@@ -13,6 +13,17 @@ export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyCon
     return { error: false }
 }
 
+export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfig) {
+    const { menus } = fairCopyConfig
+    const groupMembers = menus[menuID][groupID].members
+    const index = groupMembers.indexOf(elementID)
+    if( index !== -1 ) {
+        const start = groupMembers.slice(0,index)
+        const end = groupMembers.slice(index+1)
+        menus[menuID][groupID].members = [...start,...end]    
+    }
+}
+
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
     const { subDocs } = tempDoc
     const { elements, vocabs } = fairCopyConfig

@@ -1,6 +1,8 @@
 import { Select, MenuItem, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
+import { saveConfig, removeElementFromMenu } from '../tei-document/faircopy-config'
+
 export default class StructurePalette extends Component {
 
   constructor(props) {
@@ -128,13 +130,22 @@ renderSelectStructureGroup(menuGroups) {
 }
 
 renderElement(elementID,groupID,paletteOrder) {
-  const { elementGroups } = this.props.teiDocument.fairCopyProject.teiSchema
+  const { teiDocument } = this.props
+  const { elementGroups } = teiDocument.fairCopyProject.teiSchema
 
   const onStartDrag = (e) => {
     const { onDragElement } = this.props
     const x = e.clientX;
     const y = e.clientY;
-    onDragElement(elementID,{x, y},"palette-copy")
+    const ctrlDown = (e.ctrlKey || e.metaKey)
+    const target = ctrlDown ? "palette" : "document"
+    
+    if( target === "palette" ) {
+      const {fairCopyConfig} = teiDocument.fairCopyProject 
+      removeElementFromMenu( elementID, groupID, "structure", fairCopyConfig)
+      saveConfig( fairCopyConfig )
+    }
+    onDragElement(elementID,{x, y},target)
   }
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
