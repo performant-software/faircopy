@@ -2100,6 +2100,7 @@
 				"xml:lang",
 				"xml:space"
 			],
+			"icon": "fa-book",
 			"group": "inline_node",
 			"desc": "specifies one or more defined categories within some taxonomy or text typology."
 		},

@@ -50,7 +50,7 @@ export default class MainWindow extends Component {
             feedbackMode: false,
             draggingElementActive: false,
             dragInfo: null,
-            currentSubmenuID: 'structure',
+            currentSubmenuID: 0,
             editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
@@ -185,7 +185,7 @@ export default class MainWindow extends Component {
                 parentResourceID,
                 openResources: nextResources, 
                 resourceBrowserOpen: false, 
-                currentSubmenuID: 'structure',
+                currentSubmenuID: 0,
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null
             })    

@@ -1,5 +1,14 @@
 const fairCopy = window.fairCopy
 
+// add the element to the menu and update the config
+export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyConfig) {
+    const { menus } = fairCopyConfig
+    const groupMembers = menus[menuID][groupID].members
+    const start = groupMembers.slice(0,palettePos)
+    const end = groupMembers.slice(palettePos)
+    menus[menuID][groupID].members = [...start,elementID,...end]
+}
+
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
     const { subDocs } = tempDoc
     const { elements, vocabs } = fairCopyConfig

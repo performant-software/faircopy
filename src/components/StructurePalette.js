@@ -107,10 +107,12 @@ renderSelectStructureGroup(menuGroups) {
   }
 
   const menuItemEls = []
-  for( const menuItem of Object.values(menuGroups) ) {
-    const { id, label } = menuItem
+  let id = 0
+  for( const menuItem of menuGroups ) {
+    const { label } = menuItem
     const menuItemEl = <MenuItem key={`structure-palette-${id}`} value={id}>{label}</MenuItem>
     menuItemEls.push(menuItemEl)
+    id++
   }
 
   return (
@@ -125,7 +127,7 @@ renderSelectStructureGroup(menuGroups) {
   )
 }
 
-renderElement(elementID) {
+renderElement(elementID,groupID,paletteOrder) {
   const { elementGroups } = this.props.teiDocument.fairCopyProject.teiSchema
 
   const onStartDrag = (e) => {
@@ -137,12 +139,13 @@ renderElement(elementID) {
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
   const className = `element-type ${elType}`
-  let i = 0
   return (
     <div 
-        key={`structs-${elementID}`}
+        key={`structs-${paletteOrder}`}
         onMouseDown={onStartDrag} 
-        datapalettepos={i++}
+        datamenuid="structure"
+        datamenugroupid={groupID}
+        datapalettepos={paletteOrder}
         className={className}
     >
       <div className="el-name">{elementID}</div>
@@ -150,10 +153,11 @@ renderElement(elementID) {
   )
 }
 
-renderStructures( currentMenu ) {
+renderStructures( currentMenu, currentSubmenuID ) {
   const structureEls = []
+  let paletteOrder = 0
   for( const member of currentMenu.members ) {
-    const structureEl = this.renderElement(member)
+    const structureEl = this.renderElement(member,currentSubmenuID,paletteOrder++)
     structureEls.push(structureEl)
   }
 
@@ -191,7 +195,7 @@ render() {
         </div>
         <div className="content">
           { this.renderSelectStructureGroup(menuGroups) }
-          { this.renderStructures(currentMenu) }
+          { this.renderStructures(currentMenu,currentSubmenuID) }
         </div>
       </div>
     )

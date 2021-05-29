@@ -1,24 +1,60 @@
 { 
     "mark": [
         {
-            "id": "general",
             "label": "General",
             "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term", "title"]
         },
         {
-            "id": "transcription",
             "label": "Transcription",
             "members": ["abbr", "add", "corr", "del", "expan", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
         },
         {
-            "id": "data",
             "label": "Data",
             "members": ["date","email","measure","num","rs","time"]
         }
     ],
     "structure": [
         {
-            "id": "fileDesc",
+            "label": "Sections",
+            "members": ["back","body","div","floatingText","front"]
+        },        
+        {
+            "label": "Paragraphs",
+            "members":["ab","cit","p"]
+        },
+        {
+            "label": "Transcription",
+            "members": ["add", "corr", "del", "hi", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
+        },
+        {
+            "label": "Lines and lists",
+            "members":["item","l","lg","list"]
+        },
+        {
+            "label": "Headers",
+            "members": ["argument","desc","epigraph","head","label","trailer"]
+        },
+        {
+            "label": "Title Page",
+            "members": ["docAuthor","docDate","docEdition","docImprint","docTitle","titlePage","titlePart"]
+        },
+        {
+            "label": "Bibliography",
+            "members": ["author","bibl","biblScope","editor","listBibl","publisher","pubPlace","relatedItem","resp","respStmt"]
+        },
+        {
+            "label": "Prosopography",
+            "members": ["listPerson","listPlace","person","place"]
+        },
+        {
+            "label": "Drama",
+            "members": ["actor","castGroup","castItem","castList","role","roleDesc","set","sp","speaker","stage"]
+        },
+        {
+            "label": "Correspondence",
+            "members": ["addrLine","byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
+        },
+        {
             "label": "File (Header)",
             "members": [
                 "titleStmt",
@@ -37,7 +73,6 @@
             ]
         },
         {
-            "id": "encodingDesc",
             "label": "Encoding (Header)",
             "members": [      
                 "encodingDesc",
@@ -58,7 +93,6 @@
             ]
         },
         {
-            "id": "profileDesc",
             "label": "Profile (Header)",
             "members": [      
                 "profileDesc",
@@ -73,73 +107,24 @@
             ]
         },
         {
-            "id": "revisionDesc",
             "label": "Revisions (Header)",
             "members": [      
                 "revisionDesc",
                 "listChange",
                 "change"
             ]
-        },
-        {
-            "id": "structure",
-            "label": "Sections",
-            "members": ["back","body","div","floatingText","front"]
-        },        
-        {
-            "id": "general",
-            "label": "Paragraphs",
-            "members":["ab","cit","p"]
-        },
-        {
-            "id": "lines",
-            "label": "Lines and lists",
-            "members":["item","l","lg","list"]
-        },
-        {
-            "id": "titles",
-            "label": "Headers",
-            "members": ["argument","desc","epigraph","head","label","trailer"]
-        },
-        {
-            "id": "titlepage",
-            "label": "Title Page",
-            "members": ["docAuthor","docDate","docEdition","docImprint","docTitle","titlePage","titlePart"]
-        },
-        {
-            "id": "bilbiography",
-            "label": "Bibliography",
-            "members": ["author","bibl","biblScope","editor","listBibl","publisher","pubPlace","relatedItem","resp","respStmt"]
-        },
-        {
-            "id": "prosopography",
-            "label": "Prosopography",
-            "members": ["listPerson","listPlace","person","place"]
-        },
-        {
-            "id": "drama",
-            "label": "Drama",
-            "members": ["actor","castGroup","castItem","castList","role","roleDesc","set","sp","speaker","stage"]
-        },
-        {
-            "id": "correspondence",
-            "label": "Correspondence",
-            "members": ["addrLine","byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
         }
     ],
     "inline": [
         {
-            "id": "anchors",
             "label": "Anchors",
             "members": ["anchor", "milestone", "catRef"]
         },
         {
-            "id": "asides",
             "label": "Notes",
             "members": ["choice","fw","note","subst"]
         },
         {
-            "id": "breaks",
             "label": "Breaks",
             "members": ["cb","gap","lb","pb"]
         }

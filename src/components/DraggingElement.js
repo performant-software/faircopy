@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { changeAttributes } from '../tei-document/commands'
 import { validNodeAction, createStructureElement } from '../tei-document/editor-actions'
+import { addElementToMenu, saveConfig } from '../tei-document/faircopy-config'
 
 const hitMargin = {
   top: 10,
@@ -27,6 +28,8 @@ export default class DraggingElement extends Component {
 
     this.initialState = {
       nodePos: null,
+      menuID: null,
+      groupID: null,
       palettePos: null,
       actionType: null,
       startX,
@@ -59,8 +62,8 @@ elementDrag = (e) => {
     // set the element's new position:
     const offsetX = (prevOffsetX - pos1)
     const offsetY = (prevOffsetY - pos2)
-    const { nodePos, actionType, palettePos } = this.hitDetection(offsetX,offsetY)
-    this.setState({ ...this.state, nodePos, palettePos, actionType, offsetX, offsetY, startX, startY })
+    const hitData = this.hitDetection(offsetX,offsetY)
+    this.setState({ ...this.state, ...hitData, offsetX, offsetY, startX, startY })
     e.preventDefault()
 }
 
@@ -77,6 +80,8 @@ hitDetection(offsetX,offsetY) {
   nodePos = isNaN(nodePos) ? null : nodePos
   
   let actionType = null
+  let menuID = null
+  let groupID = null
   let palettePos = null
 
   const { teiDocument, elementID, dragSource } = this.props
@@ -101,13 +106,16 @@ hitDetection(offsetX,offsetY) {
     tr.setMeta('addToHistory',false)
     changeAttributes( node, nextAttrs, $anchor, tr )  
   } else if( dragSource === 'gutter-copy' ) {
+    menuID = el.getAttribute('datamenuid')
+    groupID = parseInt(el.getAttribute('datamenugroupid'))
+    groupID = isNaN(groupID) ? null : groupID
     palettePos = parseInt(el.getAttribute('datapalettepos'))
     palettePos = isNaN(palettePos) ? null : palettePos
   }
 
   if( tr.docChanged ) editorView.dispatch(tr)
 
-  return { nodePos, actionType, palettePos }
+  return { nodePos, actionType, menuID, groupID, palettePos }
 }
 
 clearNodeBorder(pos, doc, tr) {
@@ -146,7 +154,7 @@ determineBorderPosition(el,x,y) {
 
 onDrop = () => {
   const { teiDocument, elementID, onDrop, dragSource } = this.props
-  const { nodePos, actionType, palettePos } = this.state
+  const { nodePos, actionType, menuID, groupID, palettePos } = this.state
 
   if( nodePos !== null && dragSource === 'palette-copy' ) {
     const editorView = teiDocument.getActiveView()
@@ -157,9 +165,10 @@ onDrop = () => {
     }
     editorView.dispatch(tr)
   } 
-  else if( palettePos !== null && dragSource === 'gutter-copy' ) {
-    //  TODO add element type to the palette after palettePos
-    console.log('dropped on palette')
+  else if( menuID && dragSource === 'gutter-copy' ) {
+    const {fairCopyConfig} = teiDocument.fairCopyProject 
+    addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
+    saveConfig( fairCopyConfig )
   }
 
   this.setState(this.initialState)

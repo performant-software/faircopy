@@ -97,8 +97,8 @@ export default class ElementMenu extends Component {
 
         // generate the menu items
         const menuItems = []
-        for( const menuGroup of Object.values(menuGroups) ) {
-            const menuGroupID = menuGroup.id
+        let menuGroupID=0
+        for( const menuGroup of menuGroups ) {
             const key = `menugroup-${menuGroupID}`
             menuItems.push(
                 <NestedMenuItem 
@@ -106,7 +106,7 @@ export default class ElementMenu extends Component {
                     disableRipple={true}
                     mainMenuOpen={true}
                     className="menu-item"
-                    value={menuGroupID}
+                    value={menuGroupID++}
                     label={menuGroup.label}
                     rightIcon={<i className="menu-chevron fas fa-chevron-right"></i>}
                 >

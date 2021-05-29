@@ -47,7 +47,7 @@ const createConfig = function createConfig(teiSchema) {
     }
 
     // initialize menus, parse from config file to internal format
-    const menuGroupsJSON = fs.readFileSync(`scripts/turtle/menu-groups.json`).toString('utf-8')
+    const menuGroupsJSON = fs.readFileSync(`scripts/turtle/menu-groups-en.json`).toString('utf-8')
     const menus = parseMenus(menuGroupsJSON,elements)
 
     return { menus, elements, vocabs }
@@ -65,7 +65,7 @@ function parseMenus(json,elements) {
 }
 
 function parseMenu(menuEntries, elements) {
-    const menuGroups = {}
+    const menuGroups = []
     for( const menuEntry of menuEntries ) {
         const members = []
         for( const member of menuEntry.members ) {
@@ -74,7 +74,7 @@ function parseMenu(menuEntries, elements) {
             members.push(member)
         }
         menuEntry.members = members
-        menuGroups[menuEntry.id] = menuEntry
+        menuGroups.push( menuEntry )
     }
 
     return menuGroups
