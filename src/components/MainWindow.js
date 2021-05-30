@@ -10,7 +10,6 @@ import TEIEditor from './TEIEditor'
 import ResourceBrowser from './ResourceBrowser'
 import ElementMenu from './ElementMenu'
 import EditResourceDialog from './EditResourceDialog'
-import EditProjectDialog from './EditProjectDialog'
 import IIIFImportDialog from './IIIFImportDialog'
 import AddImageDialog from './AddImageDialog'
 import PopupMenu from './PopupMenu'
@@ -51,7 +50,6 @@ export default class MainWindow extends Component {
             draggingElementActive: false,
             dragInfo: null,
             currentSubmenuID: 0,
-            editProjectDialogMode: false,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
             editTEIDocDialogMode: false,
@@ -291,10 +289,6 @@ export default class MainWindow extends Component {
         this.setState({...this.state, editDialogMode: true })
     }
 
-    onEditProjectInfo = () => {
-        this.setState({...this.state, editProjectDialogMode: true })
-    }
-
     onImportResource = (importType) => {
         if( importType === 'xml' ) {
             fairCopy.services.ipcSend('requestImport')
@@ -464,14 +458,13 @@ export default class MainWindow extends Component {
     renderDialogs() {
         const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
-        const { idMap, fairCopyConfig } = fairCopyProject
+        const { idMap } = fairCopyProject
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
         const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : fairCopyProject.getResourceEntry(parentResourceID)
-        const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description, projectFilePath: fairCopyProject.projectFilePath }
 
-        const { editProjectDialogMode, alertMessage, editSurfaceInfoMode, iiifDialogMode, surfaceInfo } = this.state
+        const { alertMessage, editSurfaceInfoMode, iiifDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
 
         const onSaveResource = (name,localID,type) => {
@@ -487,16 +480,6 @@ export default class MainWindow extends Component {
             fairCopyProject.updateResource({ ...parentEntry, name, localID, type })
             this.setState( {...this.state, editTEIDocDialogMode: false} )
         }        
-
-        const onSaveProjectInfo = (name,description) => {
-            fairCopyProject.updateProjectInfo({name, description})
-            this.setState( {...this.state, editProjectDialogMode: false} )
-        }
-
-        const onResetProjectConfig = () => {
-            fairCopyProject.resetConfig()
-            this.setState( {...this.state } )
-        }
 
         const onSaveSurfaceInfo = (surfaceInfo) => {
             const facsDocument = openResources[surfaceInfo.resourceID]
@@ -531,13 +514,6 @@ export default class MainWindow extends Component {
                     facsDocument={selectedDoc}
                     onClose={()=>{ this.setState( {...this.state, addImagesMode: false} )}}
                 ></AddImageDialog> }
-                { editProjectDialogMode && <EditProjectDialog
-                    projectInfo={projectInfo}
-                    projectConfig={fairCopyConfig}
-                    onSave={onSaveProjectInfo}
-                    onReset={onResetProjectConfig}
-                    onClose={()=>{ this.setState( {...this.state, editProjectDialogMode: false} )}}
-                ></EditProjectDialog> }
                 { paletteWindowOpen && <StructurePalette
                     onDragElement={this.onDragElement}
                     teiDocument={selectedDoc}
@@ -594,7 +570,7 @@ export default class MainWindow extends Component {
 
     renderProjectSidebar() {
         const { openResources, selectedResource, leftPaneWidth } = this.state
-        const { fairCopyProject } = this.props
+        const { fairCopyProject, onProjectSettings } = this.props
 
         const onSelectResource = ( resourceID ) => {
             this.onResourceAction( 'open', [resourceID] )
@@ -612,7 +588,7 @@ export default class MainWindow extends Component {
                 selectedResource={selectedResource}
                 onSelectResource={onSelectResource}   
                 onCloseResource={onCloseResource}
-                onEditProjectInfo={this.onEditProjectInfo}
+                onEditProjectInfo={onProjectSettings}
             ></ProjectSidebar>    
         )
     }
@@ -646,14 +622,17 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { appConfig } = this.props
+        const { appConfig, hidden } = this.props
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
    
+        // hide the interface (to suspend state)
+        const style = hidden ? { display: 'none' } : {}
+
         return (
-            <div>
+            <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
                     <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                         { this.renderProjectSidebar() }

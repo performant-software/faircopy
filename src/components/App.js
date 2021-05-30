@@ -8,6 +8,7 @@ import FairCopyProject from '../tei-document/FairCopyProject'
 import ImageView from '../tei-document/ImageView'
 import { initLicenseData } from '../tei-document/license-key.js'
 import IncompatDialog from './IncompatDialog'
+import ProjectSettingsWindow from './ProjectSettingsWindow'
 
 const fairCopy = window.fairCopy
 
@@ -24,7 +25,8 @@ export default class App extends Component {
       licenseData,
       incompatInfo: null,
       imageView: null,
-      appConfig: null
+      appConfig: null,
+      projectSettingsActive: false
     }
   }
 
@@ -111,7 +113,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo } = this.state
+    const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo, projectSettingsActive } = this.state
     const {rootComponent} = window.fairCopy
     if( !licenseData.activated ) {
       return (
@@ -133,12 +135,20 @@ export default class App extends Component {
     }
 
     if( rootComponent === "MainWindow" && fairCopyProject ) {
-        return (
+      return (
+        <div>
+          { projectSettingsActive && <ProjectSettingsWindow
+            onClose={ ()=> { this.setState( { ...this.state, projectSettingsActive: false } )}}
+            fairCopyProject={fairCopyProject}
+          ></ProjectSettingsWindow> }
           <MainWindow
             appConfig={appConfig}
+            hidden={projectSettingsActive}
+            onProjectSettings={ ()=> { this.setState( { ...this.state, projectSettingsActive: true } )}}
             fairCopyProject={fairCopyProject}
           ></MainWindow>
-        ) 
+        </div>
+      )
     } else if( rootComponent === "ImageWindow" && imageView ) {
         return (
             <ImageWindow

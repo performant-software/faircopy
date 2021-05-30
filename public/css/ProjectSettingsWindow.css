@@ -1,0 +1,44 @@
+#ProjectSettingsWindow .title {
+    background: #3787AA;
+    color: white;
+    padding: 10px;
+    height: 42px;
+}
+
+#ProjectSettingsWindow .title h1 {
+    padding-top: 5px;
+}
+
+#ProjectSettingsWindow .sidebar {
+    min-width: 200px;
+    height: 100%;
+    border-right: 1px solid gray;
+    position: fixed;
+    left: 0px;
+}
+
+#ProjectSettingsWindow .content-area {
+    height: 100%;
+    position: fixed;
+    padding: 10px;
+    left: 200px;
+}
+
+#ProjectSettingsWindow .footer { 
+    position: fixed;
+    color: white;
+    background: #3787AA;
+    width: 100%;
+    bottom: 0px;
+    z-index: 800;
+    padding: 10px; 
+}
+
+#ProjectSettingsWindow .window-actions {
+    padding-right: 20px;
+    float: right;
+}
+
+#ProjectSettingsWindow .action-button {
+    margin-left: 10px;
+}
