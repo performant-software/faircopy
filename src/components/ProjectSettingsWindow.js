@@ -1,11 +1,18 @@
 import React, { Component } from 'react'
 import { Button, Typography } from '@material-ui/core'
 
+import SchemaEditor from './SchemaEditor'
+
 export default class ProjectSettingsWindow extends Component {
 
-    constructor() {
+    constructor(props) {
         super()
+
+        // make an editable copy of the config
+        const fairCopyConfig = JSON.parse(JSON.stringify(props.fairCopyProject.fairCopyConfig))
+
         this.state = {
+            fairCopyConfig
         }	
     }
 
@@ -34,9 +41,13 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderContentArea() {
+        const { fairCopyConfig } = this.state
+
         return (
             <div className="content-area">
-                <h1>HELLO</h1>
+                <SchemaEditor
+                    fairCopyConfig={fairCopyConfig}
+                ></SchemaEditor>
             </div>
         )
     }
@@ -47,7 +58,7 @@ export default class ProjectSettingsWindow extends Component {
         return (
             <div id="ProjectSettingsWindow">
                 <div className="title" >
-                    <Typography component="h1" variant="h6">Project Settings</Typography>
+                    <Typography component="h1" variant="h6"><i className="fas fa-cog"></i> Project Settings</Typography>
                 </div>
                 <div>
                     { this.renderSidebar() }
