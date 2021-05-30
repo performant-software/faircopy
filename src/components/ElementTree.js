@@ -7,16 +7,18 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 export default class ElementTree extends Component {
 
     renderGroup(elementGroup,groupIndex) {
+        const { onSelect } = this.props
         const members = []
         let i=0
         for( const member of elementGroup.members ) {
             const nodeId = `${groupIndex}.${i++}`
-            const memberItem = <TreeItem nodeId={nodeId} label={member}></TreeItem>
+            const onClick = () => { onSelect(member) }
+            const memberItem = <TreeItem key={nodeId} nodeId={nodeId} label={member} onLabelClick={onClick}></TreeItem>
             members.push(memberItem)
         }
-
+        const groupID = `${groupIndex}`
         return (
-            <TreeItem nodeId={groupIndex} label={elementGroup.label}>
+            <TreeItem key={groupID} nodeId={groupID} label={elementGroup.label}>
                 { members }
             </TreeItem>
         )

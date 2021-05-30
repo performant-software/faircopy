@@ -41,12 +41,14 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderContentArea() {
+        const { teiSchema } = this.props.fairCopyProject
         const { fairCopyConfig } = this.state
 
         return (
             <div className="content-area">
                 <SchemaEditor
                     fairCopyConfig={fairCopyConfig}
+                    teiSchema={teiSchema}
                 ></SchemaEditor>
             </div>
         )
