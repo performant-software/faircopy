@@ -9,7 +9,7 @@ export default class ElementInspector extends Component {
         const onClick = (e) => { }
 
         return (
-            <div className="attrField" key={`attr-${attr}`} onClick={onClick}>{ attr }</div>
+            <Button variant="outlined" className="attr" key={`attr-${attr}`} onClick={onClick}>{ attr }</Button>
         )
     }
 
@@ -30,7 +30,7 @@ export default class ElementInspector extends Component {
         }
 
         return ( attrFields.length > 0 ? 
-            <div className="attributeFields">
+            <div className="attrs">
                 {attrFields}
             </div> 
             : <Typography variant="body1">This element has no attributes.</Typography>

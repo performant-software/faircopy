@@ -1,0 +1,17 @@
+#SchemaEditor .top {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#SchemaEditor .top-left {
+    min-width: calc(50vw-200px);
+    border-right: 1px solid gray;
+
+}
+#SchemaEditor .top-right {
+
+}
+
+#SchemaEditor .bottom {
+
+}

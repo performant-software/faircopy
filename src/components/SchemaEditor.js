@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import ElementTree from './ElementTree'
 import ElementInspector from './ElementInspector'
+import ElementLibrary from './ElementLibrary'
 
 export default class SchemaEditor extends Component {
 
@@ -24,17 +25,27 @@ export default class SchemaEditor extends Component {
 
         return (
             <div id="SchemaEditor">
-                <ElementTree
-                    elementGroups={elementGroups}
-                    onSelect={onSelect}
-                ></ElementTree>
-                <ElementInspector
-                    teiSchema={teiSchema}
-                    elements={fairCopyConfig.elements}
-                    elementID={selectedElement}
-                ></ElementInspector>
+                <div className="top">
+                    <div className="top-left">
+                        <ElementTree
+                            elementGroups={elementGroups}
+                            onSelect={onSelect}
+                        ></ElementTree>
+                    </div>
+                    <div className="top-right">
+                        <ElementLibrary
+
+                        ></ElementLibrary>
+                    </div>
+                </div>
+                <div className="bottom">
+                    <ElementInspector
+                        teiSchema={teiSchema}
+                        elements={fairCopyConfig.elements}
+                        elementID={selectedElement}
+                    ></ElementInspector>
+                </div>
             </div>
         )
-        // <ElementLibrary></ElementLibrary>
     }
 }
