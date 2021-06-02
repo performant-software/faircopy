@@ -22,6 +22,8 @@
 #SchemaEditor .top-right {
     padding: 10px;
     overflow-y: scroll;
+    min-height: 45vw;
+    max-height: 45vw;
 }
 
 #SchemaEditor .bottom {

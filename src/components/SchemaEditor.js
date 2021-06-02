@@ -34,7 +34,7 @@ export default class SchemaEditor extends Component {
                     </div>
                     <div className="top-right">
                         <ElementLibrary
-
+                            teiSchema={teiSchema}
                         ></ElementLibrary>
                     </div>
                 </div>

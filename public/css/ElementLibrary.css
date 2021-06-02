@@ -1,0 +1,11 @@
+#ElementLibrary .element-item {
+    border-radius: 5px;
+    border: 1px solid gray;
+    padding: 5px;
+    margin:5px;
+}
+
+#ElementLibrary .elements {
+    display: flex;
+    flex-wrap: wrap;
+}
