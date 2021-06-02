@@ -1,17 +1,30 @@
+#SchemaEditor {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: calc(100vw - 200px);
+}
+
 #SchemaEditor .top {
-    display: flex;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid gray;
 }
 
 #SchemaEditor .top-left {
-    min-width: calc(50vw-200px);
+    padding: 10px;
     border-right: 1px solid gray;
-
+    overflow-y: scroll;
+    min-height: 45vw;
+    max-height: 45vw;
 }
-#SchemaEditor .top-right {
 
+#SchemaEditor .top-right {
+    padding: 10px;
+    overflow-y: scroll;
 }
 
 #SchemaEditor .bottom {
-
+    padding: 5px;
+    overflow-y: scroll;
 }
