@@ -1,11 +1,31 @@
 #ElementLibrary .element-item {
+    border: 1px solid #ccc;
     border-radius: 5px;
-    border: 1px solid gray;
-    padding: 5px;
     margin:5px;
+    display: inline-block;
+    pointer-events: none;
+    user-select: none;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #ElementLibrary .elements {
     display: flex;
     flex-wrap: wrap;
+}
+
+#ElementLibrary .elements .hard {
+    background: #D4C3FC;
+}
+
+#ElementLibrary .elements .soft {
+    background:#e7ddff;
+}
+
+#ElementLibrary .elements .marks,.inter {
+    background: cyan;
+}
+
+#ElementLibrary .elements .inlines,.asides {
+    background: lightgreen;
 }

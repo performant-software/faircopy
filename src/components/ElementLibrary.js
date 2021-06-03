@@ -4,10 +4,22 @@ import React, { Component } from 'react'
 
 export default class ElementLibrary extends Component {
 
+    getElementType(elementID) {
+        const { elementGroups } = this.props.teiSchema
+
+        for( const groupID of Object.keys(elementGroups) ) {
+            if( elementGroups[groupID].includes(elementID) ) {
+                return groupID
+            }
+        }
+        return 'notype'
+    }
+
     renderElement(elementID) {
+        const elementType = this.getElementType(elementID)        
         const key = `element-${elementID}`
         return (
-            <div className="element-item" key={key}>
+            <div className={`element-item ${elementType}`} key={key}>
                 <Typography>{elementID}</Typography>
             </div>
         )
@@ -23,7 +35,7 @@ export default class ElementLibrary extends Component {
         }
 
         return (
-            <div className="module">
+            <div key={`module-${moduleID}`} className="module">
                 <Typography>{moduleID}</Typography>
                 <div className="elements">
                     { elements }
@@ -34,9 +46,10 @@ export default class ElementLibrary extends Component {
 
     render() {
         const { modules } = this.props.teiSchema
+        const moduleIDs = Object.keys(modules).sort()
 
         const moduleEls = []
-        for( const moduleID of Object.keys(modules) ) {
+        for( const moduleID of moduleIDs ) {
             moduleEls.push( this.renderModule(moduleID) )
         }
 
