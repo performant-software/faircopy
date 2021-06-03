@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import ElementTree from './ElementTree'
 import ElementInspector from './ElementInspector'
 import ElementLibrary from './ElementLibrary'
+import AttributeDialog from './AttributeDialog'
 
 export default class SchemaEditor extends Component {
 
@@ -10,17 +11,26 @@ export default class SchemaEditor extends Component {
         super(props)
 
         this.state = {
-            selectedElement: null
+            selectedElement: null,
+            attributeDialogOpen: false
         }
     }
 
     render() {
-        const { fairCopyConfig, teiSchema } = this.props
-        const { selectedElement } = this.state
+        const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
+        const { selectedElement, attributeDialogOpen } = this.state
         const elementGroups = fairCopyConfig.menus['structure']
 
         const onSelect = (elementID) => {
             this.setState({...this.state, selectedElement: elementID })
+        }
+
+        const closeAttributeDialog = () => {
+            this.setState({...this.state, attributeDialogOpen: false })
+        }
+
+        const openAttributeDialog = () => {
+            this.setState({...this.state, attributeDialogOpen: true })
         }
 
         return (
@@ -43,7 +53,18 @@ export default class SchemaEditor extends Component {
                         teiSchema={teiSchema}
                         elements={fairCopyConfig.elements}
                         elementID={selectedElement}
+                        openAttributeDialog={openAttributeDialog}
                     ></ElementInspector>
+                </div>
+                <div>
+                    { attributeDialogOpen && <AttributeDialog 
+                        elementName={selectedElement}
+                        fairCopyConfig={fairCopyConfig}
+                        teiSchema={teiSchema} 
+                        open={attributeDialogOpen} 
+                        onUpdateConfig={onUpdateConfig}
+                        onClose={closeAttributeDialog} 
+                    ></AttributeDialog> }
                 </div>
             </div>
         )

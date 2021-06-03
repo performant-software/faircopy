@@ -38,12 +38,11 @@ export default class ElementInspector extends Component {
     }
 
     render() {
-        const { elementID, teiSchema } = this.props
+        const { elementID, teiSchema, openAttributeDialog } = this.props
 
         if( !elementID ) return null
 
         const elementSpec = teiSchema.elements[elementID]
-        const openAttributeDialog = () => {}
  
         return (
             <Card id="ElementInspector" variant="outlined" className="element" >

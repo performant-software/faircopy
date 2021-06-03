@@ -44,18 +44,28 @@ export default class ProjectSettingsWindow extends Component {
         const { teiSchema } = this.props.fairCopyProject
         const { fairCopyConfig } = this.state
 
+        const onUpdate = (nextConfig) => {
+            this.setState({...this.state,fairCopyConfig: nextConfig})
+        }
+
         return (
             <div className="content-area">
                 <SchemaEditor
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
+                    onUpdateConfig={onUpdate}
                 ></SchemaEditor>
             </div>
         )
     }
 
     render() {
-        const { onClose } = this.props
+        const { onClose, onSave } = this.props
+
+        const onSaveConfig = () => {
+            const { fairCopyConfig } = this.state
+            onSave(fairCopyConfig)
+        }
 
         return (
             <div id="ProjectSettingsWindow">
@@ -68,7 +78,7 @@ export default class ProjectSettingsWindow extends Component {
                 </div>
                 <div className="footer">
                     <div className="window-actions">
-                        <Button className="action-button" variant="contained" >Save</Button>
+                        <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
                         <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>
                     </div>
                 </div>

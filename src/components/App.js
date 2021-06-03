@@ -10,6 +10,8 @@ import { initLicenseData } from '../tei-document/license-key.js'
 import IncompatDialog from './IncompatDialog'
 import ProjectSettingsWindow from './ProjectSettingsWindow'
 
+import { saveConfig } from '../tei-document/faircopy-config'
+
 const fairCopy = window.fairCopy
 
 export default class App extends Component {
@@ -134,12 +136,23 @@ export default class App extends Component {
       )
     }
 
+    const onClose = () => {
+      this.setState( { ...this.state, projectSettingsActive: false } )
+    }
+
+    const onSave = ( fairCopyConfig ) => {
+      const { fairCopyProject } = this.state
+      fairCopyProject.fairCopyConfig = fairCopyConfig
+      this.setState( { ...this.state, projectSettingsActive: false } )
+    }
+
     if( rootComponent === "MainWindow" && fairCopyProject ) {
       return (
         <div>
           { projectSettingsActive && <ProjectSettingsWindow
-            onClose={ ()=> { this.setState( { ...this.state, projectSettingsActive: false } )}}
             fairCopyProject={fairCopyProject}
+            onSave={ onSave }
+            onClose={ onClose }
           ></ProjectSettingsWindow> }
           <MainWindow
             appConfig={appConfig}

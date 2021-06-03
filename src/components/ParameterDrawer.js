@@ -7,17 +7,17 @@ import {Node} from 'prosemirror-model'
 
 import AttributeDialog from './AttributeDialog'
 import VocabDialog from './VocabDialog'
-import { changeAttributes } from "../tei-document/commands"
-import { getHighlightColor } from "../tei-document/highlighter"
-
 import TokenField from './attribute-fields/TokenField'
 import TEIDataTextField from './attribute-fields/TEIDataTextField'
 import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
 import TEIDataWordLikeField from './attribute-fields/TEIDataWordLikeField'
 import IDField from './attribute-fields/IDField'
-import { checkID } from '../tei-document/attribute-validators';
 
+import { changeAttributes } from "../tei-document/commands"
+import { getHighlightColor } from "../tei-document/highlighter"
+import { checkID } from '../tei-document/attribute-validators'
+import { saveConfig } from '../tei-document/faircopy-config'
 import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability, teiDataTruthValue } from '../tei-document/attribute-validators'
 
 export default class ParameterDrawer extends Component {
@@ -335,10 +335,16 @@ export default class ParameterDrawer extends Component {
 
     renderDialogs() {
         const { teiDocument } = this.props
+        const { fairCopyConfig, teiSchema } = teiDocument.fairCopyProject
         const { attributeDialogOpen, openElementName, vocabDialogOpen, openAttrName } = this.state
 
         const onCloseAttributeDialog = () => {
             this.setState({...this.state, openElementName: null, attributeDialogOpen: false })
+        }
+
+        const onUpdateConfig = (nextConfig) => {
+            saveConfig(nextConfig)
+            teiDocument.refreshView()
         }
 
         const onCloseVocabDialog = () => {
@@ -349,8 +355,10 @@ export default class ParameterDrawer extends Component {
             <div>
                 { attributeDialogOpen && <AttributeDialog 
                     elementName={openElementName} 
-                    teiDocument={teiDocument} 
+                    fairCopyConfig={fairCopyConfig}
+                    teiSchema={teiSchema}
                     open={attributeDialogOpen} 
+                    onUpdateConfig={onUpdateConfig}
                     onClose={onCloseAttributeDialog} 
                 ></AttributeDialog> }
                 { vocabDialogOpen && <VocabDialog 
