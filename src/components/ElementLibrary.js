@@ -4,21 +4,47 @@ import React, { Component } from 'react'
 
 export default class ElementLibrary extends Component {
 
-    render() {
-        const { teiSchema } = this.props
+    renderElement(elementID) {
+        const key = `element-${elementID}`
+        return (
+            <div className="element-item" key={key}>
+                <Typography>{elementID}</Typography>
+            </div>
+        )
+    }
+
+    renderModule(moduleID) {
+        const { modules } = this.props.teiSchema
+        const module = modules[moduleID]
 
         const elements = []
-        for( const element of Object.values(teiSchema.elements) ) {
-            const { name } = element
-            const key = `element-${name}`
-            elements.push(<div className="element-item" key={key}><Typography>{name}</Typography></div>)
+        for( const elementID of module ) {
+            elements.push( this.renderElement(elementID) )
+        }
+
+        return (
+            <div className="module">
+                <Typography>{moduleID}</Typography>
+                <div className="elements">
+                    { elements }
+                </div>
+            </div>
+        )
+    }
+
+    render() {
+        const { modules } = this.props.teiSchema
+
+        const moduleEls = []
+        for( const moduleID of Object.keys(modules) ) {
+            moduleEls.push( this.renderModule(moduleID) )
         }
 
         return (
             <div id="ElementLibrary">
                 <Typography>TEI Elements</Typography>
-                <div className="elements">
-                    { elements }
+                <div className="modules">
+                    { moduleEls }
                 </div>
             </div>
         )

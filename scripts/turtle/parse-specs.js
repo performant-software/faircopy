@@ -106,6 +106,7 @@ function parseAttList( el ) {
 
 function parseElementSpec( el ) {
     const ident = el.getAttribute('ident')
+    const module = el.getAttribute('module')
     const classesEl = el.getElementsByTagName('classes')[0]
     const memberships = getKeys(classesEl,'memberOf')
     const description = loadLocalizedString(el, "desc")
@@ -115,7 +116,7 @@ function parseElementSpec( el ) {
     const contentEl = el.getElementsByTagName('content')[0]
     const content = parseContent(contentEl)
 
-    return { ident, gloss, memberships, description, attrs, content }
+    return { ident, module, gloss, memberships, description, attrs, content }
 }
 
 function parseMacroSpec( el ) {

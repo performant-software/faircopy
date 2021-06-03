@@ -7,10 +7,11 @@ export default class TEISchema {
         this.teiDocuments = []
         this.schemaJSON = json
         this.teiMode = false
-        const { schemaSpec, elements, attrs, elementGroups } = this.parseSchemaConfig(json)
+        const { schemaSpec, elements, attrs, elementGroups, modules } = this.parseSchemaConfig(json)
         this.elementGroups = elementGroups
         this.elements = elements
         this.attrs = attrs
+        this.modules = modules
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
         this.createSubDocSchemas(schemaSpec)
@@ -97,7 +98,7 @@ export default class TEISchema {
             elements[name] = element            
         }
 
-        return { schemaSpec: { nodes, marks }, elements, attrs, elementGroups: teiSimple.elementGroups }
+        return { schemaSpec: { nodes, marks }, elements, attrs, elementGroups: teiSimple.elementGroups, modules: teiSimple.modules }
     }
 
     filterOutBlanks( attrObj ) {
