@@ -4,19 +4,9 @@ import React, { Component } from 'react'
 
 export default class ElementLibrary extends Component {
 
-    getElementType(elementID) {
-        const { elementGroups } = this.props.teiSchema
-
-        for( const groupID of Object.keys(elementGroups) ) {
-            if( elementGroups[groupID].includes(elementID) ) {
-                return groupID
-            }
-        }
-        return 'notype'
-    }
-
     renderElement(elementID) {
-        const elementType = this.getElementType(elementID)        
+        const { teiSchema } = this.props
+        const elementType = teiSchema.getElementType(elementID)        
         const key = `element-${elementID}`
         return (
             <div className={`element-item ${elementType}`} key={key}>

@@ -38,6 +38,7 @@ export default class SchemaEditor extends Component {
                 <div className="top">
                     <div className="top-left">
                         <ElementTree
+                            teiSchema={teiSchema}
                             elementGroups={elementGroups}
                             onSelect={onSelect}
                         ></ElementTree>

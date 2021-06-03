@@ -1,3 +1,4 @@
+import { ThreeDRotationSharp } from "@material-ui/icons"
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
 
@@ -242,4 +243,14 @@ export default class TEISchema {
             return parsedAttrs    
         }
     }
+
+    getElementType(elementID) {
+        for( const groupID of Object.keys(this.elementGroups) ) {
+            if( this.elementGroups[groupID].includes(elementID) ) {
+                return groupID
+            }
+        }
+        return null
+    }
+
 }
