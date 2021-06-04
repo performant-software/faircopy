@@ -1,4 +1,3 @@
-import { ThreeDRotationSharp } from "@material-ui/icons"
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
 

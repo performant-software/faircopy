@@ -12,17 +12,21 @@ export default class SchemaEditor extends Component {
 
         this.state = {
             selectedElement: null,
+            selectedMenu: 'structure',
             attributeDialogOpen: false
         }
     }
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen } = this.state
-        const elementGroups = fairCopyConfig.menus['structure']
+        const { selectedElement, attributeDialogOpen, selectedMenu } = this.state
 
         const onSelect = (elementID) => {
             this.setState({...this.state, selectedElement: elementID })
+        }
+
+        const onChangeMenu = (e,nextMenu) => {
+            this.setState({...this.state, selectedMenu: nextMenu })
         }
 
         const closeAttributeDialog = () => {
@@ -39,13 +43,16 @@ export default class SchemaEditor extends Component {
                     <div className="top-left">
                         <ElementTree
                             teiSchema={teiSchema}
-                            elementGroups={elementGroups}
+                            fairCopyConfig={fairCopyConfig}
+                            selectedMenu={selectedMenu}
                             onSelect={onSelect}
+                            onChangeMenu={onChangeMenu}
                         ></ElementTree>
                     </div>
                     <div className="top-right">
                         <ElementLibrary
                             teiSchema={teiSchema}
+                            selectedMenu={selectedMenu}
                         ></ElementLibrary>
                     </div>
                 </div>

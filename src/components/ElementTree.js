@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Typography } from '@material-ui/core'
+import { Typography, AppBar, Tabs, Tab } from '@material-ui/core'
 import { TreeView, TreeItem } from '@material-ui/lab'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -27,8 +27,9 @@ export default class ElementTree extends Component {
         )
     }
 
-    render() {
-        const { elementGroups } = this.props
+    renderTree() {
+        const { fairCopyConfig, selectedMenu } = this.props
+        const elementGroups = fairCopyConfig.menus[selectedMenu]
 
         const groups = []
         let i=0
@@ -38,13 +39,30 @@ export default class ElementTree extends Component {
         }
 
         return (
+            <TreeView className="tree-view"
+                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultExpandIcon={<ChevronRightIcon />}
+                >
+                { groups }
+            </TreeView>
+        )
+    }
+
+    render() {
+        const { selectedMenu, onChangeMenu } = this.props
+
+        const structureLabel = <span><i className="fas fa-palette"></i> Structures</span>
+        const markLabel = <span><i className="fas fa-marker"></i> Marks</span>
+        const inlineLabel = <span><i className="fas fa-stamp"></i> Inlines</span>
+
+        return (
             <div id="ElementTree">
-                <TreeView
-                    defaultCollapseIcon={<ExpandMoreIcon />}
-                    defaultExpandIcon={<ChevronRightIcon />}
-                    >
-                    { groups }
-                </TreeView>
+                <Tabs value={selectedMenu} onChange={onChangeMenu}>
+                    <Tab value="structure" label={structureLabel} />
+                    <Tab value="mark" label={markLabel}/>
+                    <Tab value="inline" label={inlineLabel}/>
+                </Tabs>
+                { this.renderTree(selectedMenu) }
             </div>
         )
     }

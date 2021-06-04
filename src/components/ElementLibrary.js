@@ -1,12 +1,15 @@
 import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
+const menusToElementTypes = {
+    structure: ['hard','soft','inter'],
+    mark: ['marks','limited-marks','inter'],
+    inline: ['inlines','asides']
+}
 
 export default class ElementLibrary extends Component {
 
-    renderElement(elementID) {
-        const { teiSchema } = this.props
-        const elementType = teiSchema.getElementType(elementID)        
+    renderElement(elementID,elementType) {
         const key = `element-${elementID}`
         return (
             <div className={`element-item ${elementType}`} key={key}>
@@ -14,15 +17,21 @@ export default class ElementLibrary extends Component {
             </div>
         )
     }
-
+    
     renderModule(moduleID) {
-        const { modules } = this.props.teiSchema
+        const { teiSchema, selectedMenu } = this.props
+        const { modules } = teiSchema
         const module = modules[moduleID]
 
         const elements = []
         for( const elementID of module ) {
-            elements.push( this.renderElement(elementID) )
+            const elementType = teiSchema.getElementType(elementID)
+            if( menusToElementTypes[selectedMenu].includes(elementType) ) {
+                elements.push( this.renderElement(elementID,elementType) )
+            }    
         }
+
+        if( elements.length === 0 ) return null
 
         return (
             <div key={`module-${moduleID}`} className="module">
@@ -40,7 +49,10 @@ export default class ElementLibrary extends Component {
 
         const moduleEls = []
         for( const moduleID of moduleIDs ) {
-            moduleEls.push( this.renderModule(moduleID) )
+            const module = this.renderModule(moduleID)
+            if( module ) {
+                moduleEls.push(module)
+            }
         }
 
         return (
