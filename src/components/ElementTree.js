@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Typography, AppBar, Tabs, Tab } from '@material-ui/core'
+import { Typography, Tabs, Tab } from '@material-ui/core'
 import { TreeView, TreeItem } from '@material-ui/lab'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';

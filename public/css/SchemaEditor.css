@@ -50,10 +50,16 @@
     background:#e7ddff;
 }
 
-#SchemaEditor .marks,.inter {
+#SchemaEditor .marks {
     background: cyan;
 }
 
 #SchemaEditor .inlines,.asides {
     background: lightgreen;
+}
+
+#SchemaEditor .inter {
+    border-color: purple;
+    border-width: 2px;
+    background: cyan;
 }
