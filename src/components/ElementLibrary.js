@@ -10,10 +10,13 @@ const menusToElementTypes = {
 export default class ElementLibrary extends Component {
 
     renderElement(elementID,elementType) {
+        const { teiSchema } = this.props
         const key = `element-${elementID}`
+        const icon = teiSchema.getElementIcon(elementID)
+        const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         return (
             <div className={`element-item ${elementType}`} key={key}>
-                <Typography>{elementID}</Typography>
+                <Typography>{elementIcon}{elementID}</Typography>
             </div>
         )
     }

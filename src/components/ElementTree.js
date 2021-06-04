@@ -15,7 +15,9 @@ export default class ElementTree extends Component {
             const nodeId = `${groupIndex}.${i++}`
             const onClick = () => { onSelect(member) }
             const elementType = teiSchema.getElementType(member)
-            const label =  <div className={`element-item ${elementType}`}><Typography>{member}</Typography></div>
+            const icon = teiSchema.getElementIcon(member)
+            const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
+            const label =  <div className={`element-item ${elementType}`}><Typography>{elementIcon}{member}</Typography></div>
             const memberItem = <TreeItem key={nodeId} nodeId={nodeId} label={label} onLabelClick={onClick}></TreeItem>
             members.push(memberItem)
         }

@@ -63,3 +63,7 @@
     border-width: 2px;
     background: cyan;
 }
+
+#SchemaEditor .element-icon {
+    padding-right: 5px;
+}

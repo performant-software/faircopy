@@ -252,4 +252,9 @@ export default class TEISchema {
         return null
     }
 
+    getElementIcon(elementID) {
+        const elementSpec = this.elements[elementID]
+        return elementSpec ? `far ${elementSpec.icon}` : null
+    }
+    
 }
