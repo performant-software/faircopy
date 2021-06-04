@@ -38,7 +38,7 @@ export default class ElementLibrary extends Component {
 
         return (
             <div key={`module-${moduleID}`} className="module">
-                <Typography>{moduleID}</Typography>
+                <Typography><b>{moduleID}</b></Typography>
                 <div className="elements">
                     { elements }
                 </div>

@@ -8,6 +8,10 @@
     padding: 10px;
 }
 
+#ElementLibrary .module {
+    margin-bottom: 20px;
+}
+
 #ElementLibrary .header {
     position: sticky;
     top: 0;
