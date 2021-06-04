@@ -3,3 +3,15 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+#ElementLibrary .modules {
+    padding: 10px;
+}
+
+#ElementLibrary .header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 100;
+    padding: 10px;
+}

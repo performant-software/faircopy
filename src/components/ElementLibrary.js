@@ -60,7 +60,9 @@ export default class ElementLibrary extends Component {
 
         return (
             <div id="ElementLibrary">
-                <Typography>TEI Elements</Typography>
+                <div className="header">
+                    <Typography variant="h5" >TEI Elements</Typography>
+                </div>
                 <div className="modules">
                     { moduleEls }
                 </div>

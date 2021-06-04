@@ -1,3 +1,10 @@
 #ElementTree .tree-view {
-    margin: 10px;
+    padding: 10px;
+}
+
+#ElementTree .header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 100;
 }

@@ -20,7 +20,6 @@
 #ProjectSettingsWindow .content-area {
     height: 100%;
     position: fixed;
-    padding: 10px;
     left: 200px;
 }
 

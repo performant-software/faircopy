@@ -59,11 +59,13 @@ export default class ElementTree extends Component {
 
         return (
             <div id="ElementTree">
-                <Tabs value={selectedMenu} onChange={onChangeMenu}>
-                    <Tab value="structure" label={structureLabel} />
-                    <Tab value="mark" label={markLabel}/>
-                    <Tab value="inline" label={inlineLabel}/>
-                </Tabs>
+                <div className="header">
+                    <Tabs value={selectedMenu} onChange={onChangeMenu}>
+                        <Tab value="structure" label={structureLabel} />
+                        <Tab value="mark" label={markLabel}/>
+                        <Tab value="inline" label={inlineLabel}/>
+                    </Tabs>
+                </div>
                 { this.renderTree(selectedMenu) }
             </div>
         )
