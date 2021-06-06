@@ -7,18 +7,35 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 export default class ElementTree extends Component {
 
+    renderElement(elementID) {
+        const { teiSchema } = this.props
+        const icon = teiSchema.getElementIcon(elementID)
+        const elementType = teiSchema.getElementType(elementID)
+        const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
+
+        return (
+            <div className={`element-item ${elementType}`} >
+                <Typography>{elementIcon}{elementID}</Typography>
+            </div>
+        )
+    }
+
     renderGroup(elementGroup,groupIndex) {
-        const { onSelect, teiSchema } = this.props
+        const { onSelect, onDragElement } = this.props
         const members = []
         let i=0
         for( const member of elementGroup.members ) {
             const nodeId = `${groupIndex}.${i++}`
             const onClick = () => { onSelect(member) }
-            const elementType = teiSchema.getElementType(member)
-            const icon = teiSchema.getElementIcon(member)
-            const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
-            const label =  <div className={`element-item ${elementType}`}><Typography>{elementIcon}{member}</Typography></div>
-            const memberItem = <TreeItem key={nodeId} nodeId={nodeId} label={label} onLabelClick={onClick}></TreeItem>
+
+            const onStartDrag = (e) => {
+                const x = e.clientX
+                const y = e.clientY
+                onDragElement(member,{x, y})
+            }
+        
+            const label = this.renderElement(member) 
+            const memberItem = <TreeItem onMouseDown={onStartDrag} key={nodeId} nodeId={nodeId} label={label} onLabelClick={onClick}></TreeItem>
             members.push(memberItem)
         }
         const groupID = `${groupIndex}`

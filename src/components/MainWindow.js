@@ -22,7 +22,7 @@ import MainWindowStatusBar from './MainWindowStatusBar'
 import ReleaseNotesDialog from './ReleaseNotesDialog'
 import FeedbackDialog from './FeedbackDialog'
 import StructurePalette from './StructurePalette'
-import DraggingElement from './DraggingElement';
+import EditorDraggingElement from './EditorDraggingElement';
 
 const fairCopy = window.fairCopy
 
@@ -521,14 +521,14 @@ export default class MainWindow extends Component {
                     onChangeMenu={(currentSubmenuID)=>{ this.setState( {...this.state, currentSubmenuID} )}}
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
                 ></StructurePalette> }
-                { draggingElementActive && <DraggingElement
+                { draggingElementActive && <EditorDraggingElement
                     elementID={dragInfo.elementID}
                     teiDocument={selectedDoc}
                     onAlertMessage={this.onAlertMessage}
                     dragTarget={dragInfo.dragTarget}
                     startingPoint={dragInfo.startingPoint}
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
-                ></DraggingElement> }
+                ></EditorDraggingElement> }
                 { elementMenuOptions && <ElementMenu
                     teiDocument={selectedDoc}
                     onClose={this.onCloseElementMenu}

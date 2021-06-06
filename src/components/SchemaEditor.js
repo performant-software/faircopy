@@ -4,6 +4,7 @@ import ElementTree from './ElementTree'
 import ElementInspector from './ElementInspector'
 import ElementLibrary from './ElementLibrary'
 import AttributeDialog from './AttributeDialog'
+import SettingsDraggingElement from './SettingsDraggingElement'
 
 export default class SchemaEditor extends Component {
 
@@ -13,13 +14,20 @@ export default class SchemaEditor extends Component {
         this.state = {
             selectedElement: null,
             selectedMenu: 'structure',
-            attributeDialogOpen: false
+            attributeDialogOpen: false,
+            draggingElementActive: false,
+            dragInfo: null
         }
+    }
+
+    onDragElement = (elementID, startingPoint) => {
+        const dragInfo = { elementID, startingPoint }
+        this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, selectedMenu } = this.state
+        const { selectedElement, attributeDialogOpen, draggingElementActive, dragInfo, selectedMenu } = this.state
 
         const onSelect = (elementID) => {
             this.setState({...this.state, selectedElement: elementID })
@@ -46,6 +54,7 @@ export default class SchemaEditor extends Component {
                             fairCopyConfig={fairCopyConfig}
                             selectedMenu={selectedMenu}
                             onSelect={onSelect}
+                            onDragElement={this.onDragElement}
                             onChangeMenu={onChangeMenu}
                         ></ElementTree>
                     </div>
@@ -73,6 +82,14 @@ export default class SchemaEditor extends Component {
                         onUpdateConfig={onUpdateConfig}
                         onClose={closeAttributeDialog} 
                     ></AttributeDialog> }
+                    { draggingElementActive && <SettingsDraggingElement
+                        fairCopyConfig={fairCopyConfig}
+                        elementID={dragInfo.elementID}
+                        startingPoint={dragInfo.startingPoint}
+                        onUpdateConfig={onUpdateConfig}
+                        onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
+                    ></SettingsDraggingElement> }
+
                 </div>
             </div>
         )
