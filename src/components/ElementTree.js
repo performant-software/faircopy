@@ -1,48 +1,55 @@
 import React, { Component } from 'react'
 
 import { Typography, Tabs, Tab } from '@material-ui/core'
-import { TreeView, TreeItem } from '@material-ui/lab'
+import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
+const clientOffset = { x: 200, y: 65 }
 
 export default class ElementTree extends Component {
 
     renderElement(elementID) {
-        const { teiSchema } = this.props
+        const { teiSchema, onSelect, onDragElement } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
 
+        const onClick = () => { onSelect(elementID) }
+
+        const onStartDrag = (e) => {
+            onDragElement(elementID,clientOffset)
+        }
+
         return (
-            <div className={`element-item ${elementType}`} >
+            <div key={`tree-element-${elementID}`} onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType}`} >
                 <Typography>{elementIcon}{elementID}</Typography>
             </div>
         )
     }
 
     renderGroup(elementGroup,groupIndex) {
-        const { onSelect, onDragElement } = this.props
         const members = []
-        let i=0
         for( const member of elementGroup.members ) {
-            const nodeId = `${groupIndex}.${i++}`
-            const onClick = () => { onSelect(member) }
-
-            const onStartDrag = (e) => {
-                const x = e.clientX
-                const y = e.clientY
-                onDragElement(member,{x, y})
-            }
-        
-            const label = this.renderElement(member) 
-            const memberItem = <TreeItem onMouseDown={onStartDrag} key={nodeId} nodeId={nodeId} label={label} onLabelClick={onClick}></TreeItem>
+            const memberItem = this.renderElement(member)
             members.push(memberItem)
         }
+
         const groupID = `${groupIndex}`
         return (
-            <TreeItem key={groupID} nodeId={groupID} label={elementGroup.label}>
-                { members }
-            </TreeItem>
+            <Accordion key={groupID} >
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2a-content"
+                    id="panel2a-header"
+                >
+                    <Typography>{elementGroup.label}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <div>
+                        { members }
+                    </div>
+                </AccordionDetails>
+            </Accordion>
         )
     }
 
@@ -58,12 +65,9 @@ export default class ElementTree extends Component {
         }
 
         return (
-            <TreeView className="tree-view"
-                defaultCollapseIcon={<ExpandMoreIcon />}
-                defaultExpandIcon={<ChevronRightIcon />}
-                >
+            <div className="tree-view">
                 { groups }
-            </TreeView>
+            </div>
         )
     }
 

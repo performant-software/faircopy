@@ -33,11 +33,9 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     margin:5px;
-    display: inline-block;
-    pointer-events: none;
-    user-select: none;
     padding-left: 10px;
     padding-right: 10px;
+    user-select: none;
 }
 
 #SchemaEditor .hard {

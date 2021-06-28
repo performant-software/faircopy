@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 
 import { saveConfig, removeElementFromMenu } from '../tei-document/faircopy-config'
 
+const clientOffset = { x: 0, y: 0 }
+
 export default class StructurePalette extends Component {
 
   constructor(props) {
@@ -135,8 +137,6 @@ renderElement(elementID,groupID,paletteOrder) {
 
   const onStartDrag = (e) => {
     const { onDragElement } = this.props
-    const x = e.clientX;
-    const y = e.clientY;
     const ctrlDown = (e.ctrlKey || e.metaKey)
     const target = ctrlDown ? "palette" : "document"
     
@@ -145,7 +145,7 @@ renderElement(elementID,groupID,paletteOrder) {
       removeElementFromMenu( elementID, groupID, "structure", fairCopyConfig)
       saveConfig( fairCopyConfig )
     }
-    onDragElement(elementID,{x, y},target)
+    onDragElement(elementID,clientOffset,target)
   }
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'

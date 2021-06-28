@@ -5,13 +5,9 @@ export default class DraggingElement extends Component {
   constructor(props) {
     super(props)
 
-    const { x: startX, y: startY } = props.startingPoint
-
     this.baseState = {
-      startX,
-      startY,
-      offsetX: startX,
-      offsetY: startY
+      x: null,
+      y: null
     }
 }
 
@@ -34,29 +30,24 @@ componentWillUnmount() {
 }
 
 elementDrag = (e) => {
-    const { offsetX: prevOffsetX, offsetY: prevOffsetY, startX: prevStartX, startY: prevStartY } = this.state
-
-    // calculate the new cursor position:
-    const pos1 = prevStartX - e.clientX;
-    const pos2 = prevStartY - e.clientY;
-    const startX = e.clientX;
-    const startY = e.clientY;
-
-    // set the element's new position:
-    const offsetX = (prevOffsetX - pos1)
-    const offsetY = (prevOffsetY - pos2)
-    const hitData = this.hitDetection(offsetX,offsetY)
-    this.setState({ ...this.state, ...hitData, offsetX, offsetY, startX, startY })
+    const { x: offsetX, y: offsetY } = this.props.clientOffset
+    const x = e.clientX-offsetX
+    const y = e.clientY-offsetY
+    const hitData = this.hitDetection(x,y)
+    this.setState({ ...this.state, ...hitData, x, y })
     e.preventDefault()
 }
 
 render() {      
     const { elementID } = this.props
-    const { offsetX, offsetY } = this.state
+    const { x, y } = this.state
+
+    // hasn't moved yet
+    if( x === null ) return null
   
     const style = {
-      left: offsetX,
-      top: offsetY
+      left: x,
+      top: y
     }
 
     return (
