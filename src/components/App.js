@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
-import MainWindow from './MainWindow'
-import ImageWindow from './ImageWindow'
-import ProjectWindow from './ProjectWindow'
-import LicenseWindow from './LicenseWindow'
+import MainWindow from './main-window/MainWindow'
+import ImageWindow from './image-window/ImageWindow'
+import ProjectWindow from './project-window/ProjectWindow'
+import LicenseWindow from './license-window/LicenseWindow'
 
-import FairCopyProject from '../tei-document/FairCopyProject'
-import ImageView from '../tei-document/ImageView'
-import { initLicenseData } from '../tei-document/license-key.js'
+import FairCopyProject from '../model/FairCopyProject'
+import ImageView from '../model/ImageView'
+import { initLicenseData } from '../model/license-key.js'
 import IncompatDialog from './IncompatDialog'
-import ProjectSettingsWindow from './ProjectSettingsWindow'
-
-import { saveConfig } from '../tei-document/faircopy-config'
+import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
 
 const fairCopy = window.fairCopy
 
