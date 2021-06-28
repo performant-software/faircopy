@@ -17,7 +17,8 @@ export default class ElementTree extends Component {
         const onClick = () => { onSelect(elementID) }
 
         const onStartDrag = (e) => {
-            onDragElement(elementID,clientOffset)
+            const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
+            onDragElement(elementID,clientOffset,startingPoint)
         }
 
         return (

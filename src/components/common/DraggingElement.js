@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+const dragThreshold = 5
+
 export default class DraggingElement extends Component {
 
   constructor(props) {
@@ -30,11 +32,18 @@ componentWillUnmount() {
 }
 
 elementDrag = (e) => {
+    const { x: currentX } = this.state
     const { x: offsetX, y: offsetY } = this.props.clientOffset
+    const { x: startX, y: startY } = this.props.startingPoint
     const x = e.clientX-offsetX
     const y = e.clientY-offsetY
-    const hitData = this.hitDetection(x,y)
-    this.setState({ ...this.state, ...hitData, x, y })
+
+    // don't start dragging until the drag threshold is reached
+    if( currentX !== null || distance(startX,startY,x,y) > dragThreshold ) {
+      const hitData = this.hitDetection(x,y)
+      this.setState({ ...this.state, ...hitData, x, y })  
+    } 
+
     e.preventDefault()
 }
 
@@ -59,4 +68,10 @@ render() {
       </div>
     )
   }
+}
+
+function distance(x1,y1,x2,y2) {
+  const a = x1 - x2;
+  const b = y1 - y2;
+  return Math.sqrt( a*a + b*b );
 }

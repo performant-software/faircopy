@@ -145,7 +145,8 @@ renderElement(elementID,groupID,paletteOrder) {
       removeElementFromMenu( elementID, groupID, "structure", fairCopyConfig)
       saveConfig( fairCopyConfig )
     }
-    onDragElement(elementID,clientOffset,target)
+    const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
+    onDragElement(elementID,clientOffset,startingPoint,target)
   }
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
