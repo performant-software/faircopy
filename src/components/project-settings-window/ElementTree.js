@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Typography, Tabs, Tab } from '@material-ui/core'
+import { Typography, Tabs, Tab, Collapse } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -9,7 +9,7 @@ const clientOffset = { x: 200, y: 65 }
 export default class ElementTree extends Component {
 
     renderElement(elementID) {
-        const { teiSchema, onSelect, onDragElement } = this.props
+        const { teiSchema, onSelect, onDragElement, draggedAwayElementID } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
@@ -21,10 +21,15 @@ export default class ElementTree extends Component {
             onDragElement(elementID,clientOffset,startingPoint)
         }
 
+        // if this element has been dragged away, collapse it
+        const collapsed = (draggedAwayElementID !== elementID)
+
         return (
-            <div key={`tree-element-${elementID}`} onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType}`} >
-                <Typography>{elementIcon}{elementID}</Typography>
-            </div>
+            <Collapse in={collapsed}>
+                <div key={`tree-element-${elementID}`} onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType}`} >
+                    <Typography>{elementIcon}{elementID}</Typography>
+                </div>
+            </Collapse>
         )
     }
 

@@ -32,6 +32,7 @@ componentWillUnmount() {
 }
 
 elementDrag = (e) => {
+    const { onDraggedAway } = this.props
     const { x: currentX } = this.state
     const { x: offsetX, y: offsetY } = this.props.clientOffset
     const { x: startX, y: startY } = this.props.startingPoint
@@ -42,6 +43,7 @@ elementDrag = (e) => {
     if( currentX !== null || distance(startX,startY,x,y) > dragThreshold ) {
       const hitData = this.hitDetection(x,y)
       this.setState({ ...this.state, ...hitData, x, y })  
+      if( currentX === null ) onDraggedAway()
     } 
 
     e.preventDefault()

@@ -16,6 +16,7 @@ export default class SchemaEditor extends Component {
             selectedMenu: 'structure',
             attributeDialogOpen: false,
             draggingElementActive: false,
+            draggedAwayElementID: null,
             dragInfo: null
         }
     }
@@ -27,7 +28,7 @@ export default class SchemaEditor extends Component {
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, draggingElementActive, dragInfo, selectedMenu } = this.state
+        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, dragInfo, selectedMenu } = this.state
 
         const onSelect = (elementID) => {
             this.setState({...this.state, selectedElement: elementID })
@@ -53,6 +54,7 @@ export default class SchemaEditor extends Component {
                             teiSchema={teiSchema}
                             fairCopyConfig={fairCopyConfig}
                             selectedMenu={selectedMenu}
+                            draggedAwayElementID={draggedAwayElementID}
                             onSelect={onSelect}
                             onDragElement={this.onDragElement}
                             onChangeMenu={onChangeMenu}
@@ -88,7 +90,8 @@ export default class SchemaEditor extends Component {
                         startingPoint={dragInfo.startingPoint}
                         clientOffset={dragInfo.clientOffset}
                         onUpdateConfig={onUpdateConfig}
-                        onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
+                        onDraggedAway={()=>{ this.setState( { draggedAwayElementID: dragInfo.elementID })}}
+                        onDrop={()=>{ this.setState( {...this.state, dragInfo: null, dragging: false, draggingElementActive: false, draggedAwayElementID: null} )}}
                     ></SettingsDraggingElement> }
 
                 </div>
