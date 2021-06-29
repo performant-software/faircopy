@@ -528,6 +528,7 @@ export default class MainWindow extends Component {
                     dragTarget={dragInfo.dragTarget}
                     startingPoint={dragInfo.startingPoint}
                     clientOffset={dragInfo.clientOffset}
+                    onDraggedAway={()=>{}}
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></EditorDraggingElement> }
                 { elementMenuOptions && <ElementMenu

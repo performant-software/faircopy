@@ -25,8 +25,8 @@ export default class ElementTree extends Component {
         const collapsed = (draggedAwayElementID !== elementID)
 
         return (
-            <Collapse in={collapsed}>
-                <div key={`tree-element-${elementID}`} onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType}`} >
+            <Collapse key={`tree-element-${elementID}`} in={collapsed}>
+                <div onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType}`} >
                     <Typography>{elementIcon}{elementID}</Typography>
                 </div>
             </Collapse>
