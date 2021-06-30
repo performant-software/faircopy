@@ -54,12 +54,13 @@ export default class SettingsDraggingElement extends DraggingElement {
     }
 
     onDrop = () => {
-        const { fairCopyConfig, elementID, onDrop, onHover, onUpdateConfig } = this.props
+        const { fairCopyConfig, elementID, originGroupID, onDrop, onHover, onUpdateConfig } = this.props
         const { menuID, groupID, palettePos } = this.state
 
         if( palettePos !== null ) {
-            removeElementFromMenu( elementID, groupID, menuID, fairCopyConfig)
-            const result = addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
+            const formerPos = removeElementFromMenu( elementID, originGroupID, menuID, fairCopyConfig)
+            const finalPos = (originGroupID === groupID && formerPos <= palettePos ) ? palettePos-1 : palettePos
+            const result = addElementToMenu( elementID, finalPos, groupID, menuID, fairCopyConfig)
             if( result.error ) {
                 console.log(result.message)
             } else {

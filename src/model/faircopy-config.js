@@ -22,6 +22,7 @@ export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfi
         const end = groupMembers.slice(index+1)
         menus[menuID][groupID].members = [...start,...end]    
     }
+    return index
 }
 
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {

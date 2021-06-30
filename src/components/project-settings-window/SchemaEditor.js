@@ -22,8 +22,8 @@ export default class SchemaEditor extends Component {
         }
     }
 
-    onDragElement = (elementID, clientOffset, startingPoint ) => {
-        const dragInfo = { elementID, clientOffset, startingPoint }
+    onDragElement = (elementID, clientOffset, startingPoint, originGroupID ) => {
+        const dragInfo = { elementID, clientOffset, startingPoint, originGroupID }
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
@@ -91,6 +91,7 @@ export default class SchemaEditor extends Component {
                     { draggingElementActive && <SettingsDraggingElement
                         fairCopyConfig={fairCopyConfig}
                         elementID={dragInfo.elementID}
+                        originGroupID={dragInfo.originGroupID}
                         startingPoint={dragInfo.startingPoint}
                         clientOffset={dragInfo.clientOffset}
                         onUpdateConfig={onUpdateConfig}

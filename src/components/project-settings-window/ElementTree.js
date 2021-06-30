@@ -8,7 +8,7 @@ const clientOffset = { x: 200, y: 65 }
 
 export default class ElementTree extends Component {
 
-    renderElement(elementID) {
+    renderElement(groupID,elementID) {
         const { teiSchema, onSelect, onDragElement, draggedAwayElementID } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
@@ -18,7 +18,7 @@ export default class ElementTree extends Component {
 
         const onStartDrag = (e) => {
             const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
-            onDragElement(elementID,clientOffset,startingPoint)
+            onDragElement(elementID,clientOffset,startingPoint,groupID)
         }
 
         // if this element has been dragged away, collapse it
@@ -58,12 +58,13 @@ export default class ElementTree extends Component {
         const members = []
         let i=0
         for( const member of elementGroup.members ) {
-            const memberItem = this.renderElement(member)
+            const memberItem = this.renderElement(groupIndex,member)
             const dropZone = this.renderDropZone(member,groupIndex,i++)
             members.push(dropZone)
             members.push(memberItem)
         }
-        // TODO add one more drop zone 
+        const dropZone = this.renderDropZone('--PLACEHOLDER--',groupIndex,i)
+        members.push(dropZone)
 
         const groupID = `${groupIndex}`
         return (
