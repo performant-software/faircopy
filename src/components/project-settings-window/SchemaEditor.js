@@ -47,8 +47,10 @@ export default class SchemaEditor extends Component {
             this.setState({...this.state, attributeDialogOpen: true })
         }
 
+        const style = draggingElementActive ? { cursor: 'none' } : {}
+
         return (
-            <div id="SchemaEditor">
+            <div id="SchemaEditor" style={style}>
                 <div className="top">
                     <div className="top-left">
                         <ElementTree

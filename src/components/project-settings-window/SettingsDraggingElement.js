@@ -43,8 +43,11 @@ export default class SettingsDraggingElement extends DraggingElement {
 
         const hoverElementID = el.getAttribute('dataelementid')
         const menuID = el.getAttribute('datamenuid')
-        const groupID = parseInt(el.getAttribute('datamenugroupid'))
-        const palettePos = parseInt(el.getAttribute('datapalettepos'))
+        
+        let groupID = parseInt(el.getAttribute('datamenugroupid'))
+        groupID = isNaN(groupID) ? null : groupID
+        let palettePos = parseInt(el.getAttribute('datapalettepos'))
+        palettePos = isNaN(palettePos) ? null : palettePos
 
         if( hoverElementID !== prevHoverElementID ) onHover(hoverElementID)
         return { menuID, groupID, palettePos, hoverElementID, hoverOffCounter: hoverOffThreshold }
