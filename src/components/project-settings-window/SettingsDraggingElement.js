@@ -27,8 +27,8 @@ export default class SettingsDraggingElement extends DraggingElement {
         const { hoverElementID: prevHoverElementID, hoverOffCounter } = this.state
         const { onHover } = this.props
         const el = document.elementFromPoint(offsetX,offsetY)
-
-        if( !inDropZone(el) ) {
+        const dropZone = findDropZone(el)
+        if( !dropZone ) {
             if( prevHoverElementID ) {
                 if( hoverOffCounter <= 0 ) { 
                     onHover(null)
@@ -36,21 +36,21 @@ export default class SettingsDraggingElement extends DraggingElement {
                 } else {
                     // document.elementFromPoint() bounces between returning the top and bottom of the DOM tree, 
                     // so wait for the threshold to be reached before hovering off
-                    return { ...this.noTarget, hoverElementID: prevHoverElementID, hoverOffCounter: hoverOffCounter-1 }
+                    return { hoverOffCounter: hoverOffCounter-1 }
                 }
             }
+        } else {
+            // record information about drop zone in case element is dropped here
+            const hoverElementID = dropZone.getAttribute('dataelementid')
+            const menuID = dropZone.getAttribute('datamenuid')
+            let groupID = parseInt(dropZone.getAttribute('datamenugroupid'))
+            groupID = isNaN(groupID) ? null : groupID
+            let palettePos = parseInt(dropZone.getAttribute('datapalettepos'))
+            palettePos = isNaN(palettePos) ? null : palettePos
+    
+            if( hoverElementID !== prevHoverElementID ) onHover(hoverElementID)
+            return { menuID, groupID, palettePos, hoverElementID, hoverOffCounter: hoverOffThreshold }    
         }
-
-        const hoverElementID = el.getAttribute('dataelementid')
-        const menuID = el.getAttribute('datamenuid')
-        
-        let groupID = parseInt(el.getAttribute('datamenugroupid'))
-        groupID = isNaN(groupID) ? null : groupID
-        let palettePos = parseInt(el.getAttribute('datapalettepos'))
-        palettePos = isNaN(palettePos) ? null : palettePos
-
-        if( hoverElementID !== prevHoverElementID ) onHover(hoverElementID)
-        return { menuID, groupID, palettePos, hoverElementID, hoverOffCounter: hoverOffThreshold }
     }
 
     onDrop = () => {
@@ -74,8 +74,8 @@ export default class SettingsDraggingElement extends DraggingElement {
 
 }
 
-function inDropZone(el) {
-    if( !el ) return false
-    if( el.className && el.className.includes('drop-zone') ) return true
-    return inDropZone(el.parentNode) 
+function findDropZone(el) {
+    if( !el ) return null
+    if( el.className && el.className.includes('drop-zone') ) return el
+    return findDropZone(el.parentNode) 
 }

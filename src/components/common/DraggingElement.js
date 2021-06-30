@@ -1,3 +1,4 @@
+import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
 const dragThreshold = 5
@@ -66,7 +67,7 @@ render() {
         id="DraggingElement"
         style={style}
       >
-        <div className="el-name">{elementID}</div>
+        <div className="el-name"><Typography>{elementID}</Typography></div>
       </div>
     )
   }

@@ -42,13 +42,13 @@ export default class ElementTree extends Component {
                 className="drop-zone"
                 key={`drop-zone-${elementID}`} 
                 collapsedHeight={10}
-            >
+                dataelementid={elementID}
+                datamenuid={selectedMenu}
+                datamenugroupid={groupID}
+                datapalettepos={paletteOrder}
+        >
                 <div 
                     className={`landing-pad ${ collapsed ? 'hover-over' : ''}`}                    
-                    dataelementid={elementID}
-                    datamenuid={selectedMenu}
-                    datamenugroupid={groupID}
-                    datapalettepos={paletteOrder}
                 ></div>
             </Collapse>
         )
