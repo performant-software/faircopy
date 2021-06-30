@@ -8,3 +8,12 @@
     background: white;
     z-index: 100;
 }
+
+#ElementTree .landing-pad {
+    min-height: 25px;
+}
+
+#ElementTree .hover-over {
+    margin: 2px;
+    border: 3px dashed gray;
+}

@@ -15,7 +15,7 @@ export default class ElementLibrary extends Component {
         const icon = teiSchema.getElementIcon(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         return (
-            <div className={`element-item ${elementType}`} key={key}>
+            <div className={`element-item ${elementType} library-element`} key={key}>
                 <Typography>{elementIcon}{elementID}</Typography>
             </div>
         )

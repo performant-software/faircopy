@@ -19,3 +19,7 @@
     z-index: 100;
     padding: 10px;
 }
+
+#ElementLibrary .library-element {
+    margin: 3px;
+}

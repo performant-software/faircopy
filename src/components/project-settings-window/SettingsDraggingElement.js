@@ -1,100 +1,78 @@
 import DraggingElement from '../common/DraggingElement'
-import { addElementToMenu } from '../../model/faircopy-config'
+import { addElementToMenu, removeElementFromMenu } from '../../model/faircopy-config'
 
-// const hitMargin = {
-//   top: 10,
-//   bottom: 10,
-//   left: 10,
-//   right: 10
-// }
-
-// const positionToAction = {
-//   'Top': 'addAbove',
-//   'Bottom': 'addBelow',
-//   'Left': 'addOutside',
-//   'Right': 'addInside',
-//   'Center': 'replace'
-// }
+const hoverOffThreshold = 150
 
 export default class SettingsDraggingElement extends DraggingElement {
 
-  constructor(props) {
-    super(props)
+    constructor(props) {
+        super(props)
 
-    this.initialState = {
-      menuID: null,
-      groupID: null,
-      palettePos: null,
-      ...this.baseState
-    }
-    this.state = this.initialState
-}
+        this.noTarget = {
+            menuID: null,
+            groupID: null,
+            palettePos: null
+        }
 
-hitDetection(offsetX,offsetY) {
-    const { nodePos: lastNodePos, actionType: lastActionType } = this.state
-
-    const el = document.elementFromPoint(offsetX,offsetY)
-
-    if( !el || !el.className ) {
-    return { nodePos: lastNodePos, actionType: lastActionType }
+        this.initialState = {
+            hoverElementID: null,
+            hoverOffCounter: hoverOffThreshold,
+            ...this.noTarget,
+            ...this.baseState
+        }
+        this.state = this.initialState
     }
 
-    let menuID = null
-    let groupID = null
-    let palettePos = null
+    hitDetection(offsetX,offsetY) {
+        const { hoverElementID: prevHoverElementID, hoverOffCounter } = this.state
+        const { onHover } = this.props
+        const el = document.elementFromPoint(offsetX,offsetY)
 
-    menuID = el.getAttribute('datamenuid')
-    groupID = parseInt(el.getAttribute('datamenugroupid'))
-    groupID = isNaN(groupID) ? null : groupID
-    palettePos = parseInt(el.getAttribute('datapalettepos'))
-    palettePos = isNaN(palettePos) ? null : palettePos
+        if( !inDropZone(el) ) {
+            if( prevHoverElementID ) {
+                if( hoverOffCounter <= 0 ) { 
+                    onHover(null)
+                    return { ...this.noTarget, hoverElementID: null, hoverOffCounter: hoverOffThreshold }    
+                } else {
+                    // document.elementFromPoint() bounces between returning the top and bottom of the DOM tree, 
+                    // so wait for the threshold to be reached before hovering off
+                    return { ...this.noTarget, hoverElementID: prevHoverElementID, hoverOffCounter: hoverOffCounter-1 }
+                }
+            }
+        }
 
-    return { menuID, groupID, palettePos }
-}
+        const hoverElementID = el.getAttribute('dataelementid')
+        const menuID = el.getAttribute('datamenuid')
+        const groupID = parseInt(el.getAttribute('datamenugroupid'))
+        const palettePos = parseInt(el.getAttribute('datapalettepos'))
 
-// clearNodeBorder(pos, doc, tr) {
-//   const node = doc.nodeAt(pos)
-//   const nextAttrs = { ...node.attrs, '__border__': false}
-//   const $anchor = tr.doc.resolve(pos)
-//   tr.setMeta('addToHistory',false)
-//   changeAttributes( node, nextAttrs, $anchor, tr )
-// }
-
-// determineBorderPosition(el,x,y) {
-//   const { top, bottom, left, right } = el.getBoundingClientRect()
-//   let position = 'Center'
-
-//   if( bottom-y <= hitMargin.bottom ) {
-//     position = 'Bottom'
-//   } 
-//   else if( y-top <= hitMargin.top ) {
-//     position = 'Top'
-//   }
-//   else if( x-left <= hitMargin.left ) {
-//     position = 'Left'
-//   } 
-//   else if( right-x <= hitMargin.right ) {
-//     position = 'Right'
-//   }
-
-//   return position
-// }
-
-onDrop = () => {
-    const { fairCopyConfig, elementID, onDrop, onUpdateConfig } = this.props
-    const { menuID, groupID, palettePos } = this.state
-
-    if( palettePos !== null ) {
-        const result = addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
-        if( result.error ) {
-            console.log(result.message)
-        } else {
-            onUpdateConfig( fairCopyConfig )
-        }    
+        if( hoverElementID !== prevHoverElementID ) onHover(hoverElementID)
+        return { menuID, groupID, palettePos, hoverElementID, hoverOffCounter: hoverOffThreshold }
     }
 
-    this.setState(this.initialState)
-    onDrop()
+    onDrop = () => {
+        const { fairCopyConfig, elementID, onDrop, onHover, onUpdateConfig } = this.props
+        const { menuID, groupID, palettePos } = this.state
+
+        if( palettePos !== null ) {
+            removeElementFromMenu( elementID, groupID, menuID, fairCopyConfig)
+            const result = addElementToMenu( elementID, palettePos, groupID, menuID, fairCopyConfig)
+            if( result.error ) {
+                console.log(result.message)
+            } else {
+                onUpdateConfig( fairCopyConfig )
+            }    
+        }
+
+        this.setState(this.initialState)
+        onDrop()
+        onHover(null)
+    }
+
 }
 
+function inDropZone(el) {
+    if( !el ) return false
+    if( el.className && el.className.includes('drop-zone') ) return true
+    return inDropZone(el.parentNode) 
 }

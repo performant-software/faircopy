@@ -33,12 +33,37 @@ export default class ElementTree extends Component {
         )
     }
 
+    renderDropZone( elementID, groupID, paletteOrder ) {
+        const { selectedMenu, hoverOverElementID } = this.props
+        const collapsed = (hoverOverElementID === elementID)
+        return (
+            <Collapse 
+                in={collapsed}
+                className="drop-zone"
+                key={`drop-zone-${elementID}`} 
+                collapsedHeight={10}
+            >
+                <div 
+                    className={`landing-pad ${ collapsed ? 'hover-over' : ''}`}                    
+                    dataelementid={elementID}
+                    datamenuid={selectedMenu}
+                    datamenugroupid={groupID}
+                    datapalettepos={paletteOrder}
+                ></div>
+            </Collapse>
+        )
+    }
+
     renderGroup(elementGroup,groupIndex) {
         const members = []
+        let i=0
         for( const member of elementGroup.members ) {
             const memberItem = this.renderElement(member)
+            const dropZone = this.renderDropZone(member,groupIndex,i++)
+            members.push(dropZone)
             members.push(memberItem)
         }
+        // TODO add one more drop zone 
 
         const groupID = `${groupIndex}`
         return (

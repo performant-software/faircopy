@@ -17,6 +17,7 @@ export default class SchemaEditor extends Component {
             attributeDialogOpen: false,
             draggingElementActive: false,
             draggedAwayElementID: null,
+            hoverOverElementID: null,
             dragInfo: null
         }
     }
@@ -28,7 +29,7 @@ export default class SchemaEditor extends Component {
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, dragInfo, selectedMenu } = this.state
+        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, hoverOverElementID, dragInfo, selectedMenu } = this.state
 
         const onSelect = (elementID) => {
             this.setState({...this.state, selectedElement: elementID })
@@ -55,6 +56,7 @@ export default class SchemaEditor extends Component {
                             fairCopyConfig={fairCopyConfig}
                             selectedMenu={selectedMenu}
                             draggedAwayElementID={draggedAwayElementID}
+                            hoverOverElementID={hoverOverElementID}
                             onSelect={onSelect}
                             onDragElement={this.onDragElement}
                             onChangeMenu={onChangeMenu}
@@ -90,7 +92,8 @@ export default class SchemaEditor extends Component {
                         startingPoint={dragInfo.startingPoint}
                         clientOffset={dragInfo.clientOffset}
                         onUpdateConfig={onUpdateConfig}
-                        onDraggedAway={()=>{ this.setState( { draggedAwayElementID: dragInfo.elementID })}}
+                        onDraggedAway={()=>{ this.setState( { ...this.state, draggedAwayElementID: dragInfo.elementID })}}
+                        onHover={(hoverOverElementID)=>{ this.setState( { ...this.state, hoverOverElementID })}}
                         onDrop={()=>{ this.setState( {...this.state, dragInfo: null, dragging: false, draggingElementActive: false, draggedAwayElementID: null} )}}
                     ></SettingsDraggingElement> }
 

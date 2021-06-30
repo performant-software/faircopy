@@ -41,7 +41,7 @@ elementDrag = (e) => {
 
     // don't start dragging until the drag threshold is reached
     if( currentX !== null || distance(startX,startY,x,y) > dragThreshold ) {
-      const hitData = this.hitDetection(x,y)
+      const hitData = this.hitDetection(e.clientX,e.clientY)
       this.setState({ ...this.state, ...hitData, x, y })  
       if( currentX === null ) onDraggedAway()
     } 
