@@ -7,15 +7,25 @@ const menusToElementTypes = {
     inline: ['inlines','asides']
 }
 
+const clientOffset = { x: 200, y: 65 }
+
 export default class ElementLibrary extends Component {
 
     renderElement(elementID,elementType) {
-        const { teiSchema } = this.props
+        const { teiSchema, onSelect, onDragElement } = this.props
         const key = `element-${elementID}`
         const icon = teiSchema.getElementIcon(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
+
+        const onClick = () => { onSelect(elementID) }
+
+        const onStartDrag = (e) => {
+            const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
+            onDragElement(elementID,clientOffset,startingPoint,-1)
+        }
+
         return (
-            <div className={`element-item ${elementType} library-element`} key={key}>
+            <div onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType} library-element`} key={key}>
                 <Typography>{elementIcon}{elementID}</Typography>
             </div>
         )

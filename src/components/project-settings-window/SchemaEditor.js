@@ -68,6 +68,8 @@ export default class SchemaEditor extends Component {
                         <ElementLibrary
                             teiSchema={teiSchema}
                             selectedMenu={selectedMenu}
+                            onSelect={onSelect}
+                            onDragElement={this.onDragElement}
                         ></ElementLibrary>
                     </div>
                 </div>
@@ -95,6 +97,7 @@ export default class SchemaEditor extends Component {
                         startingPoint={dragInfo.startingPoint}
                         clientOffset={dragInfo.clientOffset}
                         onUpdateConfig={onUpdateConfig}
+                        enableDragAway={dragInfo.originGroupID !== -1}
                         onDraggedAway={()=>{ this.setState( { ...this.state, draggedAwayElementID: dragInfo.elementID })}}
                         onHover={(hoverOverElementID)=>{ this.setState( { ...this.state, hoverOverElementID })}}
                         onDrop={()=>{ this.setState( {...this.state, dragInfo: null, dragging: false, draggingElementActive: false, draggedAwayElementID: null} )}}

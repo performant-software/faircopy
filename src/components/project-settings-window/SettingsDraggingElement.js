@@ -58,7 +58,7 @@ export default class SettingsDraggingElement extends DraggingElement {
         const { menuID, groupID, palettePos } = this.state
 
         if( palettePos !== null ) {
-            const formerPos = removeElementFromMenu( elementID, originGroupID, menuID, fairCopyConfig)
+            const formerPos = originGroupID !== -1 ? removeElementFromMenu( elementID, originGroupID, menuID, fairCopyConfig) : null
             const finalPos = (originGroupID === groupID && formerPos <= palettePos ) ? palettePos-1 : palettePos
             const result = addElementToMenu( elementID, finalPos, groupID, menuID, fairCopyConfig)
             if( result.error ) {
@@ -77,6 +77,6 @@ export default class SettingsDraggingElement extends DraggingElement {
 
 function findDropZone(el) {
     if( !el ) return null
-    if( el.className && el.className.includes('drop-zone') ) return el
+    if( el.className && el.className.includes && el.className.includes('drop-zone') ) return el
     return findDropZone(el.parentNode) 
 }
