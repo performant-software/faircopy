@@ -17,3 +17,13 @@
     margin: 2px;
     border: 3px dashed gray;
 }
+
+#ElementTree .grab-handle {
+    color: gray;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+#ElementTree .add-group-button {
+    margin-top: 10px;
+}

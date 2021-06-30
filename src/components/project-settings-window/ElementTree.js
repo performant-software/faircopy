@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Typography, Tabs, Tab, Collapse } from '@material-ui/core'
+import { Typography, Tabs, Tab, Collapse, Tooltip, Divider, AccordionActions, Button, IconButton } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -74,13 +74,21 @@ export default class ElementTree extends Component {
                     aria-controls="panel2a-content"
                     id="panel2a-header"
                 >
-                    <Typography>{elementGroup.label}</Typography>
+                    <Typography>
+                        <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
+                        {elementGroup.label}
+                    </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <div>
                         { members }
                     </div>
                 </AccordionDetails>
+                <Divider />
+                <AccordionActions>
+                    <Tooltip title="Edit the name of this group."><IconButton><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
+                    <Tooltip title="Delete this group."><IconButton><i className="fas fa-trash fa-sm"></i></IconButton></Tooltip>                    
+                </AccordionActions>
             </Accordion>
         )
     }
@@ -95,6 +103,7 @@ export default class ElementTree extends Component {
             const group = this.renderGroup(elementGroup,i++)
             groups.push(group)
         }
+        groups.push(<Button className="add-group-button" variant="outlined" key="add-group-button"><i className="fas fa-plus fa-sm"></i> Add Group</Button>)
 
         return (
             <div className="tree-view">
