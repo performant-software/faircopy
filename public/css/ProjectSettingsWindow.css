@@ -10,6 +10,7 @@
 }
 
 #ProjectSettingsWindow .sidebar {
+    padding-top: 50px;
     min-width: 200px;
     height: 100%;
     border-right: 1px solid gray;

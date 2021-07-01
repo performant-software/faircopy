@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 
+import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
 
 export default class ProjectSettingsWindow extends Component {
@@ -12,37 +13,32 @@ export default class ProjectSettingsWindow extends Component {
         const fairCopyConfig = JSON.parse(JSON.stringify(props.fairCopyProject.fairCopyConfig))
 
         this.state = {
-            fairCopyConfig
+            fairCopyConfig,
+            selectedPage: 'general'
         }	
     }
 
-    // const onSaveProjectInfo = (name,description) => {
-    //     fairCopyProject.updateProjectInfo({name, description})
-    //     this.setState( {...this.state, editProjectDialogMode: false} )
-    // }
-
-    // const onResetProjectConfig = () => {
-    //     fairCopyProject.resetConfig()
-    //     this.setState( {...this.state } )
-    // }
-
-    // const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description, projectFilePath: fairCopyProject.projectFilePath }
-
     renderSidebar() {
+        const { selectedPage } = this.state
+
+        const onChangeMenu = (e,nextPage) => {
+            this.setState({...this.state, selectedPage: nextPage })
+        }
+
         return (
             <div className="sidebar">
-                <ul>
-                    <li>General</li>
-                    <li>Elements</li>
-                    <li>Vocabularies</li>
-                </ul>
+                <Tabs orientation="vertical" value={selectedPage} onChange={onChangeMenu}>
+                    <Tab value="general" label="General" />
+                    <Tab value="elements" label="Elements"/>
+                    <Tab value="vocabs" label="Vocabs"/>
+                </Tabs>
             </div>
         )
     }
 
     renderContentArea() {
         const { teiSchema } = this.props.fairCopyProject
-        const { fairCopyConfig } = this.state
+        const { fairCopyConfig, selectedPage } = this.state
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
@@ -50,11 +46,18 @@ export default class ProjectSettingsWindow extends Component {
 
         return (
             <div className="content-area">
-                <SchemaEditor
+                { selectedPage === 'general' && <GeneralSettings
+                    fairCopyConfig={fairCopyConfig}
+                    onUpdateConfig={onUpdate}
+                ></GeneralSettings> }
+                { selectedPage === 'elements' && <SchemaEditor
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
                     onUpdateConfig={onUpdate}
-                ></SchemaEditor>
+                ></SchemaEditor> }
+                { selectedPage === 'vocabs' && <div>
+                    <h1>VOCAB EDITOR</h1>
+                </div> }
             </div>
         )
     }
