@@ -3,10 +3,20 @@ import React, { Component } from 'react'
 import { Typography, Tabs, Tab, Collapse, Tooltip, Divider, AccordionActions, Button, IconButton } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { removeGroupFromMenu } from '../../model/faircopy-config'
 
 const clientOffset = { x: 200, y: 65 }
 
 export default class ElementTree extends Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            accordionStates: { 'structure': [], 'mark': [], 'inline': []}
+        }
+    }
+
 
     renderElement(groupID,elementID) {
         const { teiSchema, onSelect, onDragElement, draggedAwayElementID } = this.props
@@ -54,8 +64,35 @@ export default class ElementTree extends Component {
         )
     }
 
+    closeAllAccordions() {
+        const { selectedMenu } = this.props
+        const { accordionStates } = this.state
+        const nextAccordionStates = { ...accordionStates }
+        nextAccordionStates[selectedMenu] = []
+        this.setState( { ...this.state, accordionStates: nextAccordionStates })
+    }
+
+    getAccordionState(groupIndex) {
+        const { selectedMenu } = this.props
+        const { accordionStates } = this.state
+        return accordionStates[selectedMenu][groupIndex] === true
+    }
+
+    createAccordionCallback(groupIndex) {
+        const { selectedMenu } = this.props
+
+        return (e,expanded) => {
+            const { accordionStates } = this.state
+            const nextGroup = [ ...accordionStates[selectedMenu] ]
+            nextGroup[groupIndex] = expanded
+            const nextAccordionStates = { ...accordionStates }
+            nextAccordionStates[selectedMenu] = nextGroup
+            this.setState( { ...this.state, accordionStates: nextAccordionStates })
+        }
+    }
+
     renderGroup(elementGroup,groupIndex) {
-        const { onEditGroupName } = this.props
+        const { onEditGroupName, fairCopyConfig, selectedMenu, onUpdateConfig } = this.props
 
         const members = []
         let i=0
@@ -69,10 +106,18 @@ export default class ElementTree extends Component {
         members.push(dropZone)
 
         const onEditName = () => { onEditGroupName( groupIndex ) }
+        const onDelete = () => {
+            removeGroupFromMenu( groupIndex, selectedMenu, fairCopyConfig)
+            this.closeAllAccordions()
+            onUpdateConfig(fairCopyConfig)
+        }
 
         const groupID = `${groupIndex}`
         return (
-            <Accordion key={groupID} >
+            <Accordion key={groupID}
+                expanded={this.getAccordionState(groupID)} 
+                onChange={this.createAccordionCallback(groupID)}            
+            >
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel2a-content"
@@ -91,7 +136,7 @@ export default class ElementTree extends Component {
                 <Divider />
                 <AccordionActions>
                     <Tooltip title="Edit the name of this group."><IconButton onClick={onEditName}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
-                    <Tooltip title="Delete this group."><IconButton><i className="fas fa-trash fa-sm"></i></IconButton></Tooltip>                    
+                    <Tooltip title="Delete this group."><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></Tooltip>                    
                 </AccordionActions>
             </Accordion>
         )

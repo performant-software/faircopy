@@ -69,6 +69,7 @@ export default class SchemaEditor extends Component {
                             onDragElement={this.onDragElement}
                             onChangeMenu={onChangeMenu}
                             onEditGroupName={onEditGroupName}
+                            onUpdateConfig={onUpdateConfig}
                         ></ElementTree>
                     </div>
                     <div className="top-right">
