@@ -11,6 +11,7 @@
 
 #ElementTree .landing-pad {
     min-height: 25px;
+    min-width: 150px;
 }
 
 #ElementTree .hover-over {

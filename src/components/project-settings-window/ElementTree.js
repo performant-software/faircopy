@@ -92,7 +92,7 @@ export default class ElementTree extends Component {
     }
 
     renderGroup(elementGroup,groupIndex) {
-        const { onEditGroupName, fairCopyConfig, selectedMenu, onUpdateConfig } = this.props
+        const { onEditGroup, fairCopyConfig, selectedMenu, onUpdateConfig } = this.props
 
         const members = []
         let i=0
@@ -105,7 +105,7 @@ export default class ElementTree extends Component {
         const dropZone = this.renderDropZone('--PLACEHOLDER--',groupIndex,i)
         members.push(dropZone)
 
-        const onEditName = () => { onEditGroupName( groupIndex ) }
+        const onEditName = () => { onEditGroup( groupIndex ) }
         const onDelete = () => {
             removeGroupFromMenu( groupIndex, selectedMenu, fairCopyConfig)
             this.closeAllAccordions()
@@ -143,8 +143,12 @@ export default class ElementTree extends Component {
     }
 
     renderTree() {
-        const { fairCopyConfig, selectedMenu } = this.props
+        const { fairCopyConfig, selectedMenu, onEditGroup } = this.props
         const elementGroups = fairCopyConfig.menus[selectedMenu]
+
+        const onAddGroup = () => {
+            onEditGroup( -1 )
+        }
 
         const groups = []
         let i=0
@@ -152,7 +156,7 @@ export default class ElementTree extends Component {
             const group = this.renderGroup(elementGroup,i++)
             groups.push(group)
         }
-        groups.push(<Button className="add-group-button" variant="outlined" key="add-group-button"><i className="fas fa-plus fa-sm"></i> Add Group</Button>)
+        groups.push(<Button onClick={onAddGroup} className="add-group-button" variant="outlined" key="add-group-button"><i className="fas fa-plus fa-sm"></i> Add Group</Button>)
 
         return (
             <div className="tree-view">

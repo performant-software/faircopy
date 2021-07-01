@@ -3,13 +3,15 @@ import React, { Component } from 'react'
 import { Button } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core'
 
-export default class EditGroupNameDialog extends Component {
+import { addGroupToMenu } from '../../model/faircopy-config'
+
+export default class EditGroupDialog extends Component {
 
     constructor(props) {
         super(props)
 
         const { fairCopyConfig, menuID, groupIndex } = this.props
-        const name = fairCopyConfig.menus[menuID][groupIndex].label
+        const name = groupIndex !== -1 ? fairCopyConfig.menus[menuID][groupIndex].label : ''
         this.initialState = {
             name,
             validationErrors: {}
@@ -18,7 +20,7 @@ export default class EditGroupNameDialog extends Component {
     }
 
     render() {      
-        const { onClose } = this.props
+        const { onClose, groupIndex } = this.props
         
         const onChange = (e) => {
             const {name, value} = e.target
@@ -28,7 +30,7 @@ export default class EditGroupNameDialog extends Component {
         }
 
         const onSaveInfo = () => {
-            const { fairCopyConfig, onUpdateConfig, menuID, groupIndex } = this.props
+            const { fairCopyConfig, onUpdateConfig, menuID } = this.props
     
             const { name } = this.state
 
@@ -40,10 +42,14 @@ export default class EditGroupNameDialog extends Component {
             if( hasErrors ) {
                 this.setState({ ...this.state, validationErrors: nextErrors })
             } else {
-                fairCopyConfig.menus[menuID][groupIndex].label = name
+                if( groupIndex === -1 ) {
+                    addGroupToMenu(trimmedName, menuID, fairCopyConfig)
+                } else {
+                    fairCopyConfig.menus[menuID][groupIndex].label = trimmedName
+                }
                 onUpdateConfig(fairCopyConfig)
                 this.setState(this.initialState)
-                onClose(trimmedName)    
+                onClose()
             }
         }
 
@@ -53,16 +59,17 @@ export default class EditGroupNameDialog extends Component {
         }
 
         const { name, validationErrors } = this.state
+        const title = groupIndex === -1 ? "Add Group" : "Edit Group"
 
         return (
             <Dialog
-                id="EditGroupNameDialog"
+                id="EditGroupDialog"
                 open={true}
                 onClose={onClickClose}
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Edit Group Name</DialogTitle>
+                <DialogTitle id="edit-resource-title">{title}</DialogTitle>
                 <DialogContent>
                     <TextField 
                         name="name"

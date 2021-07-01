@@ -25,6 +25,14 @@ export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfi
     return index
 }
 
+export function addGroupToMenu( label, menuID, fairCopyConfig ) {
+    const group = {
+        label,
+        members: []
+    }
+    fairCopyConfig.menus[menuID].push(group)
+}
+
 export function removeGroupFromMenu( groupIndex, menuID, fairCopyConfig) {
     const { menus } = fairCopyConfig
     const groups = menus[menuID]
