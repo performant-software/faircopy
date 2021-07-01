@@ -30,33 +30,11 @@
 }
 
 #SchemaEditor .element-item {
-    border: 1px solid #ccc;
+    border: 1px solid black;
     border-radius: 5px;
     padding-left: 10px;
     padding-right: 10px;
     user-select: none;
-}
-
-#SchemaEditor .hard {
-    background: #D4C3FC;
-}
-
-#SchemaEditor .soft {
-    background:#e7ddff;
-}
-
-#SchemaEditor .marks {
-    background: cyan;
-}
-
-#SchemaEditor .inlines,.asides {
-    background: lightgreen;
-}
-
-#SchemaEditor .inter {
-    border-color: purple;
-    border-width: 2px;
-    background: cyan;
 }
 
 #SchemaEditor .element-icon {

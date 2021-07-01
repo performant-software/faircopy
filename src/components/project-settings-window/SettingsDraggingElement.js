@@ -17,6 +17,7 @@ export default class SettingsDraggingElement extends DraggingElement {
         this.initialState = {
             hoverElementID: null,
             hoverOffCounter: hoverOffThreshold,
+            backgroundColor: '#ccc',
             ...this.noTarget,
             ...this.baseState
         }

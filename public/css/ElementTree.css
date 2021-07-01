@@ -15,7 +15,8 @@
 
 #ElementTree .hover-over {
     margin: 2px;
-    border: 3px dashed gray;
+    border-radius: 5px;
+    border: 1px dashed black;
 }
 
 #ElementTree .grab-handle {

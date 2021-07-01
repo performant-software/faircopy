@@ -29,6 +29,7 @@ export default class EditorDraggingElement extends DraggingElement {
       groupID: null,
       palettePos: null,
       actionType: null,
+      backgroundColor: '#e7ddff',
       ...this.baseState
     }
     this.state = this.initialState

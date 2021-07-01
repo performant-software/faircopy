@@ -52,14 +52,15 @@ elementDrag = (e) => {
 
 render() {      
     const { elementID } = this.props
-    const { x, y } = this.state
+    const { x, y, backgroundColor } = this.state
 
     // hasn't moved yet
     if( x === null ) return null
   
     const style = {
       left: x,
-      top: y
+      top: y,
+      background: backgroundColor
     }
 
     return (
