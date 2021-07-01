@@ -5,6 +5,7 @@ import ElementInspector from './ElementInspector'
 import ElementLibrary from './ElementLibrary'
 import AttributeDialog from '../main-window/dialogs/AttributeDialog'
 import SettingsDraggingElement from './SettingsDraggingElement'
+import EditGroupNameDialog from './EditGroupNameDialog'
 
 export default class SchemaEditor extends Component {
 
@@ -16,6 +17,7 @@ export default class SchemaEditor extends Component {
             selectedMenu: 'structure',
             attributeDialogOpen: false,
             draggingElementActive: false,
+            editGroupNameOpen: false,
             draggedAwayElementID: null,
             hoverOverElementID: null,
             dragInfo: null
@@ -29,7 +31,7 @@ export default class SchemaEditor extends Component {
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, hoverOverElementID, dragInfo, selectedMenu } = this.state
+        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, hoverOverElementID, dragInfo, selectedMenu, editGroupNameOpen, groupIndex } = this.state
 
         const onSelect = (elementID) => {
             this.setState({...this.state, selectedElement: elementID })
@@ -47,6 +49,10 @@ export default class SchemaEditor extends Component {
             this.setState({...this.state, attributeDialogOpen: true })
         }
 
+        const onEditGroupName = ( groupIndex ) => {
+            this.setState({...this.state, groupIndex, editGroupNameOpen: true })
+        }
+
         const style = draggingElementActive ? { cursor: 'none' } : {}
 
         return (
@@ -62,6 +68,7 @@ export default class SchemaEditor extends Component {
                             onSelect={onSelect}
                             onDragElement={this.onDragElement}
                             onChangeMenu={onChangeMenu}
+                            onEditGroupName={onEditGroupName}
                         ></ElementTree>
                     </div>
                     <div className="top-right">
@@ -90,6 +97,13 @@ export default class SchemaEditor extends Component {
                         onUpdateConfig={onUpdateConfig}
                         onClose={closeAttributeDialog} 
                     ></AttributeDialog> }
+                    { editGroupNameOpen && <EditGroupNameDialog
+                        groupIndex={groupIndex}
+                        menuID={selectedMenu}
+                        fairCopyConfig={fairCopyConfig}
+                        onUpdateConfig={onUpdateConfig}
+                        onClose={() => { this.setState( { ...this.state, editGroupNameOpen: false }) }}
+                    ></EditGroupNameDialog>}
                     { draggingElementActive && <SettingsDraggingElement
                         fairCopyConfig={fairCopyConfig}
                         elementID={dragInfo.elementID}

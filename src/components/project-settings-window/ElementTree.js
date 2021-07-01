@@ -55,6 +55,8 @@ export default class ElementTree extends Component {
     }
 
     renderGroup(elementGroup,groupIndex) {
+        const { onEditGroupName } = this.props
+
         const members = []
         let i=0
         for( const member of elementGroup.members ) {
@@ -65,6 +67,8 @@ export default class ElementTree extends Component {
         }
         const dropZone = this.renderDropZone('--PLACEHOLDER--',groupIndex,i)
         members.push(dropZone)
+
+        const onEditName = () => { onEditGroupName( groupIndex ) }
 
         const groupID = `${groupIndex}`
         return (
@@ -86,7 +90,7 @@ export default class ElementTree extends Component {
                 </AccordionDetails>
                 <Divider />
                 <AccordionActions>
-                    <Tooltip title="Edit the name of this group."><IconButton><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
+                    <Tooltip title="Edit the name of this group."><IconButton onClick={onEditName}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
                     <Tooltip title="Delete this group."><IconButton><i className="fas fa-trash fa-sm"></i></IconButton></Tooltip>                    
                 </AccordionActions>
             </Accordion>
