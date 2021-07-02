@@ -2,19 +2,19 @@ import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './a
 import { changeAttributes } from "./commands"
 
 // Ammends the document with run time only elements such as text node and error flags
-export function scanForErrors(teiSchema, idMap, parentLocalID, tr) {
+export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     tr.doc.descendants((node,pos) => {
-        markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema)
+        markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
         return true
     })
 }
 
 // validate all attrs and mark any errors.
-function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
+function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfig) {
     const attrSpecs = teiSchema.attrs
     const $anchor = tr.doc.resolve(pos)
 
-    if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) ) {
+    if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) || scanElement(node,fairCopyConfig) ) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
     } else {
@@ -25,7 +25,7 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
     }
 
     for( const mark of node.marks ) {
-        if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) ) {
+        if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) || scanElement(mark,fairCopyConfig)) {
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
             return
@@ -36,6 +36,12 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema) {
             }
         }
     }
+}
+
+function scanElement( node, fairCopyConfig ) {
+    let elementID = node.type.name
+    elementID = elementID.startsWith('mark') ? elementID.slice(4) : elementID
+    return fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false
 }
 
 function scanAttrs(attrs, attrSpecs, parentLocalID, idMap) {

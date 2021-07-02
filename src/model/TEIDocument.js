@@ -115,7 +115,7 @@ export default class TEIDocument {
 
     // called by dispatch transaction for every change to doc state
     onUpdate(transaction) {
-        const { idMap, teiSchema } = this.fairCopyProject
+        const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
         const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
         const parentEntry = this.fairCopyProject.getParent(resourceEntry)
 
@@ -124,9 +124,9 @@ export default class TEIDocument {
         idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
         idMap.update()
         
-        // scan for attribute errors
+        // scan for errors 
         const relativeParentID = this.getRelativeParentID()
-        scanForErrors(teiSchema,idMap,relativeParentID,transaction)
+        scanForErrors(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
 
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)

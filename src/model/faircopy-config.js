@@ -2,11 +2,15 @@ const fairCopy = window.fairCopy
 
 // add the element to the menu and update the config
 export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyConfig) {
-    const { menus } = fairCopyConfig
+    const { elements, menus } = fairCopyConfig
     const groupMembers = menus[menuID][groupID].members
     if( groupMembers.includes(elementID) ) {
         return { error: true, message: `${elementID} is already on this menu.`}        
     }
+    if( !elements[elementID] ) {
+        return { error: true, message: `${elementID} is not in the config schema.`}   
+    }
+    elements[elementID].active = true
     const start = groupMembers.slice(0,palettePos)
     const end = groupMembers.slice(palettePos)
     menus[menuID][groupID].members = [...start,elementID,...end]
@@ -14,7 +18,7 @@ export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyCon
 }
 
 export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfig) {
-    const { menus } = fairCopyConfig
+    const { elements, menus } = fairCopyConfig
     const groupMembers = menus[menuID][groupID].members
     const index = groupMembers.indexOf(elementID)
     if( index !== -1 ) {
@@ -22,7 +26,24 @@ export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfi
         const end = groupMembers.slice(index+1)
         menus[menuID][groupID].members = [...start,...end]    
     }
+    if( !findElementInMenus(elementID, fairCopyConfig) ) {
+        // not referenced in menus, becomes inactive
+        elements[elementID].active = false  
+    }
     return index
+}
+
+export function findElementInMenus( elementID, fairCopyConfig ) {
+    const { menus } = fairCopyConfig
+
+    for( const groups of Object.values(menus) ) {
+        for( const group of groups ) {
+            for( const member of group.members ) {
+                if( member === elementID ) return true
+            } 
+        }
+    }
+    return false
 }
 
 export function addGroupToMenu( label, menuID, fairCopyConfig ) {
@@ -34,11 +55,19 @@ export function addGroupToMenu( label, menuID, fairCopyConfig ) {
 }
 
 export function removeGroupFromMenu( groupIndex, menuID, fairCopyConfig) {
-    const { menus } = fairCopyConfig
+    const { elements, menus } = fairCopyConfig
     const groups = menus[menuID]
+    const group = groups[groupIndex]
     const start = groups.slice(0,groupIndex)
     const end = groups.slice(groupIndex+1)
     menus[menuID] = [...start,...end]    
+
+    // deactivate member elements as necessary
+    for( const member of group.members ) {
+        if( !findElementInMenus(member, fairCopyConfig) ) {
+            elements[member].active = false  
+        }
+    }
 }
 
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {

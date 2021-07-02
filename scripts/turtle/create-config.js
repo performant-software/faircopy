@@ -10,6 +10,7 @@ const createConfig = function createConfig(teiSchema) {
     for( const element of teiSchema.elements ) {
         const { validAttrs } = element
         const configElement = {
+            active: false,
             attrState: {}
         }
         if( validAttrs ) {
@@ -71,6 +72,7 @@ function parseMenu(menuEntries, elements) {
         for( const member of menuEntry.members ) {
             // cross check to make sure members are valid elements
             if( elements[member] === undefined ) throw new Error(`Element "${member}" in menus not found in schema.`)
+            elements[member].active = true 
             members.push(member)
         }
         menuEntry.members = members
