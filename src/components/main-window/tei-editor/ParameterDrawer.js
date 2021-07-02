@@ -314,6 +314,7 @@ export default class ParameterDrawer extends Component {
 
         const headerAction = (element instanceof Node) ? this.renderIDField(element) : null
         const displayName = name.startsWith('mark') ? name.slice('mark'.length) : name
+        const inactiveElement = fairCopyConfig.elements[displayName] && fairCopyConfig.elements[displayName].active === false
 
         return (
             <Card variant="outlined" className="element" key={key} >
@@ -324,6 +325,7 @@ export default class ParameterDrawer extends Component {
                     action={headerAction}
                 ></CardHeader>
                 <CardContent>
+                    { inactiveElement && <Typography className="missing-element">This element is not in the project schema.</Typography> }
                     { this.renderAttributes(element,attrState) }
                 </CardContent>
                 <CardActions>

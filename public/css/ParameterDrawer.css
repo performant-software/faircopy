@@ -82,6 +82,10 @@
     flex-wrap: wrap;
 }
 
+#ParameterDrawer .missing-element {
+    color: red;
+}
+
 #VocabDialog .vocab-content {
     width: 400px;
 }
