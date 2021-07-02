@@ -1,0 +1,20 @@
+#GeneralSettings {
+    margin: 100px;
+}
+
+#GeneralSettings .actions {
+    margin-top: 20px;
+}
+
+
+#GeneralSettings .action {
+    margin-right: 10px;
+}
+
+#GeneralSettings .name-field {
+    margin-top: 20px;
+}
+
+#GeneralSettings .info {
+    margin-top: 20px;
+}

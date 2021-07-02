@@ -138,9 +138,14 @@ export default class App extends Component {
       this.setState( { ...this.state, projectSettingsActive: false } )
     }
 
-    const onSave = ( fairCopyConfig ) => {
+    const onSave = ( fairCopyConfig, projectInfo ) => {
       const { fairCopyProject } = this.state
       fairCopyProject.fairCopyConfig = fairCopyConfig
+      const { name, description } = projectInfo
+      fairCopyProject.projectName = name
+      fairCopyProject.description = description
+      // TODO save project info
+      // save this stuff to disk
       this.setState( { ...this.state, projectSettingsActive: false } )
     }
 

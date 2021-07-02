@@ -1,25 +1,83 @@
-import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
+import { Typography, TextField, Button } from '@material-ui/core'
+
+import { exportConfig } from '../../model/faircopy-config'
+
 export default class GeneralSettings extends Component {
+    
+    constructor(props) {
+        super(props)
 
-        // const onSaveProjectInfo = (name,description) => {
-    //     fairCopyProject.updateProjectInfo({name, description})
-    //     this.setState( {...this.state, editProjectDialogMode: false} )
-    // }
+        this.initialState = {
+            validationErrors: {}
+        }
+        this.state = this.initialState
+    }
 
-    // const onResetProjectConfig = () => {
-    //     fairCopyProject.resetConfig()
-    //     this.setState( {...this.state } )
-    // }
+    render() {        
+        const onChange = (e) => {
+            const { projectInfo, onUpdateProject } = this.props
+            let {name, value} = e.target
+            const nextErrors = {}
+            const nextProjectInfo = { ...projectInfo }
 
-    // const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description, projectFilePath: fairCopyProject.projectFilePath }
+            if( name === 'name' ) {
+                value = value.trim()
+                if( value.length === 0 ) nextErrors['name'] = "Name cannot be blank."
+            }
+            nextProjectInfo[name] = value
 
-    render() {
-        
+            const hasErrors = Object.keys(nextErrors).length > 0
+            if( hasErrors ) {
+                this.setState({ ...this.state, validationErrors: nextErrors })
+            } else {
+                this.setState(this.initialState)
+                onUpdateProject(nextProjectInfo)
+            }
+        }
+
+        const onExportConfig = () => {
+            const { projectConfig } = this.props
+            const exportPath = 'temp/project-config-export.json'
+            exportConfig(exportPath,projectConfig)
+        }
+
+        const onReset = () => {
+            // TODO
+            // fairCopyProject.resetConfig()
+        }
+
+        const { projectInfo } = this.props
+        const { validationErrors } = this.state
+        const { name, description, projectFilePath } = projectInfo
+
         return (
             <div id="GeneralSettings">
-               <Typography>GENERAL SETTINGS</Typography>
+                <Typography variant="h4">Project Settings</Typography>
+                <TextField 
+                    name="name"
+                    className="name-field"
+                    value={name}
+                    onChange={onChange}
+                    error={validationErrors['name'] !== undefined }
+                    helperText={validationErrors['name']}
+                    label="Project Name" 
+                /><br/>
+                <TextField 
+                    name="description"
+                    className="name-field"
+                    value={description}
+                    onChange={onChange}
+                    label="Project Description" 
+                /><br/>
+                <div className="actions">
+                    <Button className="action" variant="contained" onClick={onExportConfig}>Export Project Config</Button>
+                    <Button className="action" variant="contained" onClick={onReset}>Reset to Default</Button>
+                </div>
+                <div className="info">
+                    <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>
+                </div>
             </div>
         )
     }

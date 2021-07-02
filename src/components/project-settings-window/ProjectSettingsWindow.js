@@ -10,10 +10,13 @@ export default class ProjectSettingsWindow extends Component {
         super()
 
         // make an editable copy of the config
-        const fairCopyConfig = JSON.parse(JSON.stringify(props.fairCopyProject.fairCopyConfig))
+        const { fairCopyProject } = props
+        const fairCopyConfig = JSON.parse(JSON.stringify(fairCopyProject.fairCopyConfig))
+        const projectInfo = { name: fairCopyProject.projectName, description: fairCopyProject.description, projectFilePath: fairCopyProject.projectFilePath } 
 
         this.state = {
             fairCopyConfig,
+            projectInfo,
             selectedPage: 'general'
         }	
     }
@@ -30,7 +33,7 @@ export default class ProjectSettingsWindow extends Component {
                 <Tabs orientation="vertical" value={selectedPage} onChange={onChangeMenu}>
                     <Tab value="general" label="General" />
                     <Tab value="elements" label="Elements"/>
-                    <Tab value="vocabs" label="Vocabs"/>
+                    <Tab disabled value="vocabs" label="Vocabs"/>
                 </Tabs>
             </div>
         )
@@ -38,16 +41,22 @@ export default class ProjectSettingsWindow extends Component {
 
     renderContentArea() {
         const { teiSchema } = this.props.fairCopyProject
-        const { fairCopyConfig, selectedPage } = this.state
+        const { fairCopyConfig, projectInfo, selectedPage } = this.state
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
         }
 
+        const onUpdateProject = (nextProjectInfo) => {
+            this.setState({...this.state,projectInfo: nextProjectInfo})            
+        }
+
         return (
             <div className="content-area">
                 { selectedPage === 'general' && <GeneralSettings
+                    projectInfo={projectInfo}
                     fairCopyConfig={fairCopyConfig}
+                    onUpdateProject={onUpdateProject}
                     onUpdateConfig={onUpdate}
                 ></GeneralSettings> }
                 { selectedPage === 'elements' && <SchemaEditor
@@ -66,8 +75,8 @@ export default class ProjectSettingsWindow extends Component {
         const { onClose, onSave } = this.props
 
         const onSaveConfig = () => {
-            const { fairCopyConfig } = this.state
-            onSave(fairCopyConfig)
+            const { fairCopyConfig, projectInfo } = this.state
+            onSave(fairCopyConfig, projectInfo)
         }
 
         return (
