@@ -3,12 +3,13 @@ import MainWindow from './main-window/MainWindow'
 import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
 import LicenseWindow from './license-window/LicenseWindow'
+import IncompatDialog from './IncompatDialog'
+import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
 
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
-import { initLicenseData } from '../model/license-key.js'
-import IncompatDialog from './IncompatDialog'
-import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
+import { initLicenseData } from '../model/license-key'
+import { saveConfig } from '../model/faircopy-config'
 
 const fairCopy = window.fairCopy
 
@@ -141,12 +142,8 @@ export default class App extends Component {
     const onSave = ( fairCopyConfig, projectInfo ) => {
       const { fairCopyProject } = this.state
       fairCopyProject.fairCopyConfig = fairCopyConfig
-      const { name, description } = projectInfo
-      fairCopyProject.projectName = name
-      fairCopyProject.description = description
-      // TODO save project info
-      // save this stuff to disk
-      // saveConfig(this.fairCopyConfig)
+      saveConfig(fairCopyConfig)
+      fairCopyProject.updateProjectInfo( projectInfo )
       this.setState( { ...this.state, projectSettingsActive: false } )
     }
 

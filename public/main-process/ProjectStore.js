@@ -3,9 +3,10 @@ const fs = require('fs')
 const os = require('os')
 const debounce = require('debounce')
 const log = require('electron-log')
-const { IDMapAuthority } = require('./IDMapAuthority')
 const { v4: uuidv4 } = require('uuid')
-const semver = require('semver')
+
+const { IDMapAuthority } = require('./IDMapAuthority')
+const { compatibleProject, migrateConfig } = require('./data-migration')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -78,7 +79,8 @@ class ProjectStore {
             return
         }
 
-        if( !this.compatibleProject() ) {
+        const currentVersion = this.fairCopyApplication.config.version
+        if( !this.fairCopyApplication.isDebugMode() && !compatibleProject(this.manifestData, currentVersion) ) {
             log.info('Project file is incompatible.')
             const incompatInfo = { projectFilePath, projectFileVersion: this.manifestData.generatedWith }
             this.fairCopyApplication.sendToMainWindow('projectIncompatible', incompatInfo)
@@ -86,7 +88,7 @@ class ProjectStore {
         }
         
         // if elements changed in config, migrate project config
-        this.migratedConfig = migrateConfig(baseConfig,fairCopyConfig)
+        this.migratedConfig = migrateConfig(currentVersion,this.manifestData.generatedWith,baseConfig,fairCopyConfig)
         if( this.migratedConfig ) {
             fairCopyConfig = this.migratedConfig
         }        
@@ -114,19 +116,6 @@ class ProjectStore {
             const imageViewData = { resourceEntry, parentEntry, xmlID, resource, teiSchema, idMap: JSON.stringify(idMapNext) }
             imageView.webContents.send('imageViewOpened', imageViewData )    
         }
-    }
-
-    // project files are backward compatible but not forward compatible
-    compatibleProject() {
-        if( this.fairCopyApplication.isDebugMode() ) return true
-        const currentVersion = this.fairCopyApplication.config.version
-        const projectVersion = this.manifestData.generatedWith ? this.manifestData.generatedWith : '0.9.4'  // this field was added in 0.9.5
-        return currentVersion === projectVersion || semver.gt(currentVersion, projectVersion)
-    }
-
-    setProjectVersion() {
-        const currentVersion = this.fairCopyApplication.config.version
-        this.manifestData.generatedWith = currentVersion
     }
 
     quitSafely = (quitCallback) => {
@@ -231,7 +220,8 @@ class ProjectStore {
     }
 
     saveManifest() {
-        this.setProjectVersion()
+        const currentVersion = this.fairCopyApplication.config.version
+        this.manifestData.generatedWith = currentVersion
         this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
         this.writeProjectArchive()
     }
@@ -239,7 +229,7 @@ class ProjectStore {
     saveFairCopyConfig( fairCopyConfig ) {
         this.migratedConfig = null
         this.writeUTF8File( configSettingsEntryName, fairCopyConfig)
-        this.writeProjectArchive()
+        this.saveManifest()
     }
 
     exportFairCopyConfig( exportPath, fairCopyConfigJSONCompact ) {
@@ -332,29 +322,6 @@ function getExtensionForMIMEType( mimeType ) {
         default:
             throw new Error(`Unknown MIMEType: ${mimeType}`)
     }        
-}
-
-function migrateConfig( baseConfigJSON, projectConfigJSON ) {
-    const baseConfig = JSON.parse(baseConfigJSON)
-    const projectConfig = JSON.parse(projectConfigJSON)
-    const baseElements = Object.keys(baseConfig.elements)
-    const projectElements = Object.keys(projectConfig.elements)
-    let changed = false
-
-    for( const baseElement of baseElements ) {
-        if( !projectElements.includes(baseElement) ) {
-            projectConfig.elements[baseElement] = baseConfig.elements[baseElement]
-            changed = true
-        }
-    }
-
-    // if save file is pre v0.10.1, add menu data to config
-    // TODO while in development, override with latest default menu
-    // if( !projectConfig.menus ) {
-        projectConfig.menus = baseConfig.menus
-    // }
-
-    return ( changed ) ? JSON.stringify(projectConfig) : null
 }
 
 const createProjectArchive = function createProjectArchive(projectInfo,baseDir) {
