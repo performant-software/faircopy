@@ -51,6 +51,12 @@ export default class ProjectSettingsWindow extends Component {
             this.setState({...this.state,projectInfo: nextProjectInfo})            
         }
 
+        const onReset = () => {
+            const { baseConfigJSON } = this.props.fairCopyProject
+            const nextConfig = JSON.parse(baseConfigJSON)
+            this.setState({...this.state,fairCopyConfig: nextConfig})     
+        }
+
         return (
             <div className="content-area">
                 { selectedPage === 'general' && <GeneralSettings
@@ -58,6 +64,7 @@ export default class ProjectSettingsWindow extends Component {
                     fairCopyConfig={fairCopyConfig}
                     onUpdateProject={onUpdateProject}
                     onUpdateConfig={onUpdate}
+                    onReset={onReset}
                 ></GeneralSettings> }
                 { selectedPage === 'elements' && <SchemaEditor
                     fairCopyConfig={fairCopyConfig}

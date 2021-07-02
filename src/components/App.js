@@ -146,6 +146,7 @@ export default class App extends Component {
       fairCopyProject.description = description
       // TODO save project info
       // save this stuff to disk
+      // saveConfig(this.fairCopyConfig)
       this.setState( { ...this.state, projectSettingsActive: false } )
     }
 

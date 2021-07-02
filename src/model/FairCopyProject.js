@@ -57,11 +57,6 @@ export default class FairCopyProject {
         })
     }
 
-    resetConfig() {
-        this.fairCopyConfig = JSON.parse(this.baseConfigJSON)
-        saveConfig(this.fairCopyConfig)
-    }
-
     getResources(parentResource) {
         const selectedResources = {}
         if( parentResource ) {

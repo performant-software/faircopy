@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { Typography, TextField, Button } from '@material-ui/core'
 
-import { exportConfig } from '../../model/faircopy-config'
+// import { exportConfig } from '../../model/faircopy-config'
 
 export default class GeneralSettings extends Component {
     
@@ -37,18 +37,14 @@ export default class GeneralSettings extends Component {
             }
         }
 
-        const onExportConfig = () => {
-            const { projectConfig } = this.props
-            const exportPath = 'temp/project-config-export.json'
-            exportConfig(exportPath,projectConfig)
-        }
+        // const onExportConfig = () => {
+        //     const { projectConfig } = this.props
+        //     const exportPath = 'temp/project-config-export.json'
+        //     exportConfig(exportPath,projectConfig)
+        // }
+        // <Button className="action" variant="contained" onClick={onExportConfig}>Export Project Config</Button>
 
-        const onReset = () => {
-            // TODO
-            // fairCopyProject.resetConfig()
-        }
-
-        const { projectInfo } = this.props
+        const { projectInfo, onReset } = this.props
         const { validationErrors } = this.state
         const { name, description, projectFilePath } = projectInfo
 
@@ -72,8 +68,7 @@ export default class GeneralSettings extends Component {
                     label="Project Description" 
                 /><br/>
                 <div className="actions">
-                    <Button className="action" variant="contained" onClick={onExportConfig}>Export Project Config</Button>
-                    <Button className="action" variant="contained" onClick={onReset}>Reset to Default</Button>
+                    <Button className="action" variant="contained" onClick={onReset}>Reset Config</Button>
                 </div>
                 <div className="info">
                     <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>
