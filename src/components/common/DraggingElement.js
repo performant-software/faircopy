@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
-const dragThreshold = 5
+const dragThreshold = 3
 
 export default class DraggingElement extends Component {
 

@@ -78,6 +78,9 @@ export default class SettingsDraggingElement extends DraggingElement {
 
 function findDropZone(el) {
     if( !el ) return null
-    if( el.className && el.className.includes && el.className.includes('drop-zone') ) return el
+    if( el.className && el.className.includes ) {
+        if( el.className.includes('content-area') ) return null
+        if( el.className.includes('drop-zone') ) return el
+    }
     return findDropZone(el.parentNode) 
 }
