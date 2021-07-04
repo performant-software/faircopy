@@ -7,6 +7,8 @@ import AttributeDialog from '../main-window/dialogs/AttributeDialog'
 import SettingsDraggingElement from './SettingsDraggingElement'
 import EditGroupDialog from './EditGroupDialog'
 
+import { removeElementFromMenu  } from '../../model/faircopy-config'
+
 export default class SchemaEditor extends Component {
 
     constructor(props) {
@@ -14,6 +16,7 @@ export default class SchemaEditor extends Component {
 
         this.state = {
             selectedElement: null,
+            selectedGroup: null,
             selectedMenu: 'structure',
             attributeDialogOpen: false,
             draggingElementActive: false,
@@ -31,10 +34,10 @@ export default class SchemaEditor extends Component {
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, hoverOverElementID, dragInfo, selectedMenu, editGroupOpen, groupIndex } = this.state
+        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, hoverOverElementID, dragInfo, selectedGroup, selectedMenu, editGroupOpen, groupIndex } = this.state
 
-        const onSelect = (elementID) => {
-            this.setState({...this.state, selectedElement: elementID })
+        const onSelect = (elementID,groupID) => {
+            this.setState({...this.state, selectedElement: elementID, selectedGroup: groupID })
         }
 
         const onChangeMenu = (e,nextMenu) => {
@@ -51,6 +54,12 @@ export default class SchemaEditor extends Component {
 
         const onEditGroup = ( groupIndex ) => {
             this.setState({...this.state, groupIndex, editGroupOpen: true })
+        }
+
+        const onRemoveElement = () => {
+            removeElementFromMenu(selectedElement,selectedGroup,selectedMenu,fairCopyConfig)
+            this.setState({...this.state, selectedElement: null, selectedGroup: null })
+            onUpdateConfig(fairCopyConfig)
         }
 
         const style = draggingElementActive ? { cursor: 'none' } : {}
@@ -84,9 +93,12 @@ export default class SchemaEditor extends Component {
                 <div className="bottom">
                     <ElementInspector
                         teiSchema={teiSchema}
-                        elements={fairCopyConfig.elements}
+                        fairCopyConfig={fairCopyConfig}
                         elementID={selectedElement}
+                        onMenu={!!selectedGroup}
+                        onRemoveElement={onRemoveElement}
                         openAttributeDialog={openAttributeDialog}
+                        onUpdateConfig={onUpdateConfig}
                     ></ElementInspector>
                 </div>
                 <div>

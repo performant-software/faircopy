@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Button } from '@material-ui/core'
+import { Button, IconButton, Tooltip } from '@material-ui/core'
 import { Typography, Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
-
 
 export default class ElementInspector extends Component {
 
@@ -14,9 +13,9 @@ export default class ElementInspector extends Component {
     }
 
     renderAttributes() {
-        const { elementID, elements, teiSchema } = this.props
+        const { elementID, fairCopyConfig, teiSchema } = this.props
         const attrSpecs = teiSchema.attrs
-        const { attrState } = elements[elementID]
+        const { attrState } = fairCopyConfig.elements[elementID]
 
         const attrFields = []
 
@@ -38,17 +37,19 @@ export default class ElementInspector extends Component {
     }
 
     render() {
-        const { elementID, teiSchema, openAttributeDialog } = this.props
+        const { elementID, onMenu, teiSchema, openAttributeDialog, onRemoveElement } = this.props
 
         if( !elementID ) return null
 
         const elementSpec = teiSchema.elements[elementID]
+        const headerAction = onMenu ? <Tooltip title="Remove element from group."><IconButton onClick={onRemoveElement}><i className="fas fa-trash"></i></IconButton></Tooltip> : null
  
         return (
             <Card id="ElementInspector" variant="outlined" className="element" >
                 <CardHeader 
                     title={elementID} 
                     subheader={elementSpec.desc}
+                    action={headerAction}
                 ></CardHeader>
                 <CardContent>
                     { this.renderAttributes() }

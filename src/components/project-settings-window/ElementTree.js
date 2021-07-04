@@ -24,7 +24,7 @@ export default class ElementTree extends Component {
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
 
-        const onClick = () => { onSelect(elementID) }
+        const onClick = () => { onSelect(elementID,groupID) }
 
         const onStartDrag = (e) => {
             const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
