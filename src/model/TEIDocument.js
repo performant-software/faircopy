@@ -18,6 +18,7 @@ export default class TEIDocument {
     constructor( resourceID, resourceType, fairCopyProject ) {
         this.subDocs = {}
         this.subDocCounter = 0
+        this.errorCount = 0
         this.editorView = null
         this.lastMessageID = null
         this.noteEditorView = null
@@ -126,7 +127,7 @@ export default class TEIDocument {
         
         // scan for errors 
         const relativeParentID = this.getRelativeParentID()
-        scanForErrors(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
+        this.errorCount = scanForErrors(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
 
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)

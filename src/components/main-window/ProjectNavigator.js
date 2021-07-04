@@ -4,7 +4,7 @@ import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography, Chip } from '@material-ui/core';
 
 export default class ProjectNavigator extends Component {
 
@@ -23,7 +23,7 @@ export default class ProjectNavigator extends Component {
       )    
     }
 
-    renderTreeItemLabel(resourceName, resourceID) {
+    renderTreeItemLabel(resourceName, resourceID, errorCount) {
       const { onCloseResource } = this.props
 
       const onClick = (event) => {
@@ -31,9 +31,17 @@ export default class ProjectNavigator extends Component {
         event.preventDefault() 
       }
 
+      const errorCountLabel = ( errorCount > 999 ) ? "1k+" : errorCount
+
       return (
         <div className='tree-item'>
           <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceName}</Typography>
+          { errorCount && <Chip
+            className="error-chip"
+            label={errorCountLabel}
+            size="small"
+            color="secondary"
+          /> }
           <Button 
             className="tree-item-close"
             onClick={onClick}
@@ -53,9 +61,10 @@ export default class ProjectNavigator extends Component {
         const {name, type} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
         const resourceIcon = type === 'text' ? 'far fa-book-open' : type === 'facs' ? 'far fa-images' : type === 'header' ? 'far fa-file-alt' : 'far fa-books'
+        const errorCount = type === 'text' ? resource.errorCount : 0
         const icon = <i className={`${resourceIcon} fa-lg`}></i>
-        const label = this.renderTreeItemLabel(name,resourceID)
-        const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth-105 }
+        const label = this.renderTreeItemLabel(name,resourceID, errorCount)
+        const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth }
         treeNodes.push(
           <TreeItem 
             className="tree-item"

@@ -26,7 +26,7 @@ import EditorDraggingElement from './tei-editor/EditorDraggingElement';
 
 const fairCopy = window.fairCopy
 
-const initialLeftPaneWidth = 250
+const initialLeftPaneWidth = 300
 const maxLeftPaneWidth = 630
 const resizeRefreshRate = 100
 

@@ -3,20 +3,24 @@ import { changeAttributes } from "./commands"
 
 // Ammends the document with run time only elements such as text node and error flags
 export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
+    let errorCount = 0
     tr.doc.descendants((node,pos) => {
-        markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        errorCount += markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
         return true
     })
+    return errorCount
 }
 
 // validate all attrs and mark any errors.
 function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfig) {
     const attrSpecs = teiSchema.attrs
     const $anchor = tr.doc.resolve(pos)
+    let errorCount = 0
 
     if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) || scanElement(node,fairCopyConfig) ) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
+        errorCount++
     } else {
         if( node.attrs['__error__'] ) {
             const nextAttrs = { ...node.attrs, '__error__': false }
@@ -28,6 +32,7 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyC
         if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) || scanElement(mark,fairCopyConfig)) {
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
+            errorCount++
             return
         } else {
             if( mark.attrs['__error__'] ) {
@@ -36,6 +41,8 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyC
             }
         }
     }
+
+    return errorCount
 }
 
 function scanElement( node, fairCopyConfig ) {

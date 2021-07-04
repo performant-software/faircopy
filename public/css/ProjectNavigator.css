@@ -19,6 +19,11 @@
     margin-top: 5px;
 }
 
+#ProjectNavigator .error-chip {
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
 #ProjectNavigator .tree-item-close {
     float: right;
 }
