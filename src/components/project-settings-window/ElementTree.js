@@ -91,7 +91,7 @@ export default class ElementTree extends Component {
         }
     }
 
-    renderGroup(elementGroup,groupIndex) {
+    renderGroup(elementGroup,groupIndex,oneLeft) {
         const { onEditGroup, fairCopyConfig, selectedMenu, onUpdateConfig } = this.props
 
         const members = []
@@ -136,7 +136,7 @@ export default class ElementTree extends Component {
                 <Divider />
                 <AccordionActions>
                     <Tooltip title="Edit the name of this group."><IconButton onClick={onEditName}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
-                    <Tooltip title="Delete this group."><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></Tooltip>                    
+                    <Tooltip title="Delete this group."><span><IconButton disabled={oneLeft} onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip>                    
                 </AccordionActions>
             </Accordion>
         )
@@ -153,7 +153,7 @@ export default class ElementTree extends Component {
         const groups = []
         let i=0
         for( const elementGroup of elementGroups ) {
-            const group = this.renderGroup(elementGroup,i++)
+            const group = this.renderGroup(elementGroup,i++,elementGroups.length === 1)
             groups.push(group)
         }
         groups.push(<Button onClick={onAddGroup} className="add-group-button" variant="outlined" key="add-group-button"><i className="fas fa-plus fa-sm"></i> Add Group</Button>)

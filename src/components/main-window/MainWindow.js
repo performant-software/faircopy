@@ -461,7 +461,7 @@ export default class MainWindow extends Component {
 
     renderDialogs() {
         const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
-        const { fairCopyProject, appConfig } = this.props
+        const { fairCopyProject, appConfig, onProjectSettings } = this.props
         const { idMap } = fairCopyProject
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
@@ -522,6 +522,7 @@ export default class MainWindow extends Component {
                     onDragElement={this.onDragElement}
                     teiDocument={selectedDoc}
                     currentSubmenuID={currentSubmenuID}
+                    onProjectSettings={onProjectSettings}
                     onChangeMenu={(currentSubmenuID)=>{ this.setState( {...this.state, currentSubmenuID} )}}
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
                 ></StructurePalette> }

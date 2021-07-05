@@ -1,5 +1,6 @@
 import { Select, MenuItem, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
+import EmptyGroup from './EmptyGroup'
 
 const clientOffset = { x: 0, y: 0 }
 
@@ -100,8 +101,16 @@ getMenuGroups() {
   return menus['structure']
 }
 
-renderSelectStructureGroup(menuGroups) {
-  const { currentSubmenuID, onChangeMenu } = this.props
+getValidSubMenuID(menuGroups,subMenuID) {
+  if( menuGroups.length-1 >= subMenuID ) {
+    return 0
+  } else {
+    return subMenuID
+  }
+}
+
+renderSelectStructureGroup(menuGroups, subMenuID) {
+  const { onChangeMenu } = this.props
 
   const onChange = (e) => {
     const { value } = e.target
@@ -121,7 +130,7 @@ renderSelectStructureGroup(menuGroups) {
     <Select
         name="type"
         className="select-structure-group"
-        value={currentSubmenuID}
+        value={subMenuID}
         onChange={onChange}
     >
       { menuItemEls }
@@ -157,10 +166,16 @@ renderElement(elementID,groupID,paletteOrder) {
 
 renderStructures( currentMenu, currentSubmenuID ) {
   const structureEls = []
-  let paletteOrder = 0
-  for( const member of currentMenu.members ) {
-    const structureEl = this.renderElement(member,currentSubmenuID,paletteOrder++)
-    structureEls.push(structureEl)
+
+  if( currentMenu.members.length === 0 ) {
+    const {onProjectSettings} = this.props
+    structureEls.push(<EmptyGroup key="empty-group" onProjectSettings={onProjectSettings}></EmptyGroup>)
+  } else {
+    let paletteOrder = 0
+    for( const member of currentMenu.members ) {
+      const structureEl = this.renderElement(member,currentSubmenuID,paletteOrder++)
+      structureEls.push(structureEl)
+    }  
   }
 
   return structureEls
@@ -173,8 +188,10 @@ render() {
     const menuGroups = this.getMenuGroups()
     if( !menuGroups ) return null
 
-    const currentMenu = menuGroups[currentSubmenuID]
-  
+    // if the list of groups changed length out from under subMenuID
+    const validSubMenuID = ( menuGroups.length-1 >= currentSubmenuID ) ? currentSubmenuID : 0
+    const currentMenu = menuGroups[validSubMenuID]
+
     const style = {
       left: offsetX,
       top: offsetY,
@@ -196,8 +213,8 @@ render() {
           <Typography><i className="fas fa-palette fa-sm"></i><span className="title">Elements</span></Typography>
         </div>
         <div className="content">
-          { this.renderSelectStructureGroup(menuGroups) }
-          { this.renderStructures(currentMenu,currentSubmenuID) }
+          { this.renderSelectStructureGroup(menuGroups,validSubMenuID) }
+          { this.renderStructures(currentMenu,validSubMenuID) }
         </div>
       </div>
     )
