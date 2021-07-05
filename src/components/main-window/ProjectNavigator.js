@@ -4,7 +4,8 @@ import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
-import { Button, Typography, Chip } from '@material-ui/core';
+import { Button, Icon, Typography, Chip } from '@material-ui/core';
+
 
 export default class ProjectNavigator extends Component {
 
@@ -23,6 +24,24 @@ export default class ProjectNavigator extends Component {
       )    
     }
 
+    renderStatusChip(errorCount) {
+      if( errorCount === 0 ) {
+        return (
+          <Icon className="fa fa-check-circle fa-xs" />
+        )
+      } else {
+        const errorCountLabel = ( errorCount > 999 ) ? "1k+" : errorCount
+        return (
+          <Chip
+              className="error-chip"
+              label={errorCountLabel}
+              size="small"
+              color="secondary"
+            />
+        )  
+      }
+    }
+
     renderTreeItemLabel(resourceName, resourceID, errorCount) {
       const { onCloseResource } = this.props
 
@@ -31,17 +50,10 @@ export default class ProjectNavigator extends Component {
         event.preventDefault() 
       }
 
-      const errorCountLabel = ( errorCount > 999 ) ? "1k+" : errorCount
-
       return (
         <div className='tree-item'>
           <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceName}</Typography>
-          { errorCount && <Chip
-            className="error-chip"
-            label={errorCountLabel}
-            size="small"
-            color="secondary"
-          /> }
+          { this.renderStatusChip(errorCount) }
           <Button 
             className="tree-item-close"
             onClick={onClick}

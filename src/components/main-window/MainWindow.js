@@ -362,6 +362,9 @@ export default class MainWindow extends Component {
             const onConfirmDeleteImages = ( alertOptions ) => {
                 this.setState({ ...this.state, alertDialogMode: 'confirmDeleteImages', alertOptions })
             }
+
+            // bump state to update sidebar
+            const onErrorCountChange = () => { this.setState({...this.state})}
         
             if( resource.loading ) {
                 editors.push(<div key={key}></div>)
@@ -383,6 +386,7 @@ export default class MainWindow extends Component {
                             elementMenuAnchors={this.elementMenuAnchors}
                             onAlertMessage={this.onAlertMessage}
                             onResourceAction={this.onResourceAction}
+                            onErrorCountChange={onErrorCountChange}
                             onSave={onSave}
                             leftPaneWidth={leftPaneWidth}
                             expandedGutter={expandedGutter}
