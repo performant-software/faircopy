@@ -29,7 +29,7 @@ export default class ProjectSidebar extends Component {
             <div id="ProjectSidebar">
                 <div className="title-bar">
                     <Typography  variant="h6" className="project-title">{fairCopyProject.projectName}</Typography>
-                    { this.renderButton('Edit Project Info', 'fas fa-cog', onEditProjectInfo )}
+                    { this.renderButton('Edit Project Settings', 'fas fa-cog', onEditProjectInfo )}
                 </div>
                 <ProjectNavigator
                     openResources={openResources}

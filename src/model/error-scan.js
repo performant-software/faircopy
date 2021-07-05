@@ -5,14 +5,14 @@ import { changeAttributes } from "./commands"
 export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     let errorCount = 0
     tr.doc.descendants((node,pos) => {
-        errorCount += markAttrErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
         return true
     })
     return errorCount
 }
 
-// validate all attrs and mark any errors.
-function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfig) {
+// validate all els and attrs and mark any errors.
+function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfig) {
     const attrSpecs = teiSchema.attrs
     const $anchor = tr.doc.resolve(pos)
     let errorCount = 0
