@@ -1,6 +1,12 @@
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
 
+const menusToElementTypes = {
+    structure: ['hard','soft','inter'],
+    mark: ['marks','limited-marks','inter'],
+    inline: ['inlines','asides']
+}
+
 export default class TEISchema {
 
     constructor(json) {
@@ -247,6 +253,17 @@ export default class TEISchema {
         for( const groupID of Object.keys(this.elementGroups) ) {
             if( this.elementGroups[groupID].includes(elementID) ) {
                 return groupID
+            }
+        }
+        return null
+    }
+
+    getElementMenu(elementID) {
+        const elementType = this.getElementType(elementID)
+
+        for( const elementMenu of Object.keys(menusToElementTypes)) {
+            if( menusToElementTypes[elementMenu].includes(elementType) ) {
+                return elementMenu
             }
         }
         return null

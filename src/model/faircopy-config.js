@@ -1,5 +1,7 @@
 const fairCopy = window.fairCopy
 
+const importGroupName = "Untitled Group"
+
 // add the element to the menu and update the config
 export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyConfig) {
     const { elements, menus } = fairCopyConfig
@@ -31,6 +33,19 @@ export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfi
         elements[elementID].active = false  
     }
     return index
+}
+
+export function addElementToSchema( elementID, teiSchema, fairCopyConfig ) {
+    const { elements } = fairCopyConfig 
+    const elementMenu = teiSchema.getElementMenu(elementID)
+    const groups = fairCopyConfig.menus[elementMenu]
+    const group = groups.find((g) => g.label === importGroupName )
+    if( group ) {
+        group.members.push(elementID)
+    } else {
+        groups.push({ label: importGroupName, members: [ elementID ]})
+    }   
+    elements[elementID].active = true
 }
 
 export function findElementInMenus( elementID, fairCopyConfig ) {

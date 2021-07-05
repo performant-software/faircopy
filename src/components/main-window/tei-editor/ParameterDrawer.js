@@ -17,7 +17,7 @@ import IDField from './attribute-fields/IDField'
 import { changeAttributes } from "../../../model/commands"
 import { getHighlightColor } from "../../../model/highlighter"
 import { checkID } from '../../../model/attribute-validators'
-import { saveConfig } from '../../../model/faircopy-config'
+import { saveConfig, addElementToSchema } from '../../../model/faircopy-config'
 import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability, teiDataTruthValue } from '../../../model/attribute-validators'
 
 export default class ParameterDrawer extends Component {
@@ -307,29 +307,36 @@ export default class ParameterDrawer extends Component {
         const name = element.type.name
         const elementSpec = elements[name]
         const {attrState} = configElements[name]
+        const elementID = name.startsWith('mark') ? name.slice('mark'.length) : name
 
         const openAttributeDialog = () => {
             this.setState({...this.state, openElementName: name, attributeDialogOpen: true })
         }
 
+        const onAddToSchema = () => {
+            addElementToSchema(elementID,teiSchema,fairCopyConfig)
+            saveConfig(fairCopyConfig)
+            teiDocument.refreshView()
+        }
+
         const headerAction = (element instanceof Node) ? this.renderIDField(element) : null
-        const displayName = name.startsWith('mark') ? name.slice('mark'.length) : name
-        const inactiveElement = fairCopyConfig.elements[displayName] && fairCopyConfig.elements[displayName].active === false
+        const inactiveElement = fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false
 
         return (
             <Card variant="outlined" className="element" key={key} >
                 <CardHeader 
                     avatar={this.renderLegendBox(count)} 
-                    title={displayName} 
+                    title={elementID} 
                     subheader={elementSpec.desc}
                     action={headerAction}
                 ></CardHeader>
                 <CardContent>
-                    { inactiveElement && <Typography className="missing-element">This element is not in the project schema.</Typography> }
                     { this.renderAttributes(element,attrState) }
+                    { inactiveElement && <Typography className="missing-element">This element is not in the project schema.</Typography> }
                 </CardContent>
                 <CardActions>
-                    <Button onClick={openAttributeDialog}>Add/Remove Attributes</Button>
+                    <Button variant="outlined" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
+                    { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add to schema</Button> }
                 </CardActions>
             </Card>
         )    

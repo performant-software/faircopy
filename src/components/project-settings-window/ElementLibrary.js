@@ -1,17 +1,11 @@
 import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 
-const menusToElementTypes = {
-    structure: ['hard','soft','inter'],
-    mark: ['marks','limited-marks','inter'],
-    inline: ['inlines','asides']
-}
-
 const clientOffset = { x: 200, y: 65 }
 
 export default class ElementLibrary extends Component {
 
-    renderElement(elementID,elementType) {
+    renderElement(elementID) {
         const { teiSchema, onSelect, onDragElement } = this.props
         const key = `element-${elementID}`
         const icon = teiSchema.getElementIcon(elementID)
@@ -25,7 +19,7 @@ export default class ElementLibrary extends Component {
         }
 
         return (
-            <div onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType} library-element`} key={key}>
+            <div onMouseDown={onStartDrag} onClick={onClick} className={`element-item library-element`} key={key}>
                 <Typography>{elementIcon}{elementID}</Typography>
             </div>
         )
@@ -38,9 +32,9 @@ export default class ElementLibrary extends Component {
 
         const elements = []
         for( const elementID of module ) {
-            const elementType = teiSchema.getElementType(elementID)
-            if( menusToElementTypes[selectedMenu].includes(elementType) ) {
-                elements.push( this.renderElement(elementID,elementType) )
+            const elementMenu = teiSchema.getElementMenu(elementID)
+            if( elementMenu === selectedMenu ) {
+                elements.push( this.renderElement(elementID) )
             }    
         }
 
