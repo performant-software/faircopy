@@ -230,36 +230,42 @@ export default class ParameterDrawer extends Component {
         const attrSpecs = teiSchema.attrs
         const elementName = element.type.name
         
-        let attrFields = []
+        let attrFields = [], inactiveErrors = []
 
         for( const key of Object.keys(attrState) ) {
-            if( attrState[key].active ) {
-                const attrSpec = attrSpecs[key]
-                if( !attrSpec.hidden ) {
-                    const fieldKey = `attr-${key}`
-                    const {attrs} = element
-                    const value = attrs[key] ? attrs[key] : ""
-                    const onChange = this.changeAttributeHandler(element,key)
+            const attrSpec = attrSpecs[key]
+            const {attrs} = element
+            const value = attrs[key] ? attrs[key] : ""
+            const active = attrState[key].active
+    
+            if( !attrSpec.hidden && (active || value !== "")) {
+                const fieldKey = `attr-${key}`
+                const onChange = this.changeAttributeHandler(element,key)
 
-                    const handleClick = (e) => {
-                        this.setState({ ...this.state, selectedAttr: key, anchorEl: e.currentTarget })
-                    }
-                    attrFields.push(
-                        <div className="attrField" key={fieldKey} >
-                            { this.renderAttributeField(elementName,key,value,attrSpec,onChange) }
-                            <IconButton className="attr-info-button" onClick={handleClick}>
-                                <i className="fas fa-info-circle" ></i>
-                            </IconButton>
-                        </div>
-                    )    
-                }    
-            }
+                const handleClick = (e) => {
+                    this.setState({ ...this.state, selectedAttr: key, anchorEl: e.currentTarget })
+                }
+                attrFields.push(
+                    <div className="attrField" key={fieldKey} >
+                        { this.renderAttributeField(elementName,key,value,attrSpec,onChange) }
+                        <IconButton className="attr-info-button" onClick={handleClick}>
+                            <i className="fas fa-info-circle" ></i>
+                        </IconButton>
+                    </div>
+                )
+                if( !active ) {
+                    inactiveErrors.push(this.renderInactiveError(key))
+                }
+            }    
         }           
 
         return ( attrFields.length > 0 ? 
-            <div className="attributeFields">
-                {attrFields}
-            </div> 
+            <div>
+                <div className="attributeFields">
+                    {attrFields}
+                </div> 
+                {inactiveErrors}
+            </div>
             : <Typography variant="body1">This element has no attributes.</Typography>
         )
     }
@@ -299,6 +305,12 @@ export default class ParameterDrawer extends Component {
         )
     }
 
+    renderInactiveError(missing) {
+        return (
+            <Typography key={`inactive-${missing}`} className="missing-element"><i className="fas fa-exclamation-triangle fa-sm"></i><b>{missing}</b> is not in the project schema.</Typography>
+        )
+    }
+
     renderElement(element,count,key) {
         const { teiDocument } = this.props
         const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
@@ -332,11 +344,11 @@ export default class ParameterDrawer extends Component {
                 ></CardHeader>
                 <CardContent>
                     { this.renderAttributes(element,attrState) }
-                    { inactiveElement && <Typography className="missing-element">This element is not in the project schema.</Typography> }
+                    { inactiveElement && this.renderInactiveError(elementID) }
                 </CardContent>
                 <CardActions>
                     <Button variant="outlined" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
-                    { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add to schema</Button> }
+                    { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add element to schema</Button> }
                 </CardActions>
             </Card>
         )    

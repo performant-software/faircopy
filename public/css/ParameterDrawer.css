@@ -82,8 +82,9 @@
     flex-wrap: wrap;
 }
 
-#ParameterDrawer .missing-element {
+#ParameterDrawer .fa-exclamation-triangle {
     color: red;
+    margin-right: 5px;
 }
 
 #VocabDialog .vocab-content {

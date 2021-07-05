@@ -95,7 +95,7 @@ export default class SchemaEditor extends Component {
                         teiSchema={teiSchema}
                         fairCopyConfig={fairCopyConfig}
                         elementID={selectedElement}
-                        onMenu={!!selectedGroup}
+                        onMenu={selectedGroup !== null}
                         onRemoveElement={onRemoveElement}
                         openAttributeDialog={openAttributeDialog}
                         onUpdateConfig={onUpdateConfig}
