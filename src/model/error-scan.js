@@ -33,7 +33,7 @@ function markAttrErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyC
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
             errorCount++
-            return
+            return errorCount
         } else {
             if( mark.attrs['__error__'] ) {
                 const nextAttrs = { ...mark.attrs, '__error__': false }
