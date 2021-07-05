@@ -66,6 +66,7 @@ export default class ElementLibrary extends Component {
             <div id="ElementLibrary">
                 <div className="header">
                     <Typography variant="h5" >TEI Elements</Typography>
+                    <Typography>Drag elements from here to customize the editor menus.</Typography>
                 </div>
                 <div className="modules">
                     { moduleEls }
