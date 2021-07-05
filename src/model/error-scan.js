@@ -1,7 +1,7 @@
 import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './attribute-validators'
 import { changeAttributes } from "./commands"
 
-// Ammends the document with run time only elements such as text node and error flags
+// Ammends the document with run time only error flags
 export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     let errorCount = 0
     tr.doc.descendants((node,pos) => {
@@ -11,13 +11,15 @@ export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, t
     return errorCount
 }
 
-// validate all els and attrs and mark any errors.
+// validate node and mark any errors.
 function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfig) {
     const attrSpecs = teiSchema.attrs
+    const elementID = node.type.name
+    const attrState = fairCopyConfig.elements[elementID] ? fairCopyConfig.elements[elementID].attrState : null
     const $anchor = tr.doc.resolve(pos)
     let errorCount = 0
 
-    if( scanAttrs(node.attrs,attrSpecs,parentLocalID,idMap) || scanElement(node,fairCopyConfig) ) {
+    if( scanAttrs(node.attrs,attrSpecs,attrState,parentLocalID,idMap) || scanElement(elementID,fairCopyConfig) ) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
         errorCount++
@@ -29,7 +31,10 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
     }
 
     for( const mark of node.marks ) {
-        if( scanAttrs(mark.attrs,attrSpecs,parentLocalID,idMap) || scanElement(mark,fairCopyConfig)) {
+        const name = mark.type.name 
+        const markElementID = name.startsWith('mark') ? name.slice(4) : name
+        const markAttrState = fairCopyConfig.elements[markElementID] ? fairCopyConfig.elements[markElementID].attrState : null
+        if( scanAttrs(mark.attrs,attrSpecs,markAttrState,parentLocalID,idMap) || scanElement(markElementID,fairCopyConfig)) {
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
             errorCount++
@@ -45,16 +50,19 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
     return errorCount
 }
 
-function scanElement( node, fairCopyConfig ) {
-    let elementID = node.type.name
-    elementID = elementID.startsWith('mark') ? elementID.slice(4) : elementID
+function scanElement( elementID, fairCopyConfig ) {
     return fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false
 }
 
-function scanAttrs(attrs, attrSpecs, parentLocalID, idMap) {
+function scanAttrs(attrs, attrSpecs, attrState, parentLocalID, idMap) {
     for( const key of Object.keys(attrs) ) {        
         const attrSpec = attrSpecs[key]
         const value = attrs[key]
+        // flag deactivate attrs that have values
+        if( attrState && attrState[key] && attrState[key].active === false && value && value !== "" ) {
+            return true
+        }
+        // flag activate attrs that don't validate
         if( value && attrSpec ) {
             const validState = validateAttribute(value,parentLocalID,idMap,attrSpec)
             if( validState.error ) return true

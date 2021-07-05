@@ -225,10 +225,9 @@ export default class ParameterDrawer extends Component {
         })
     }
 
-    renderAttributes(element,attrState) {
+    renderAttributes(element,elementID,attrState) {
         const {teiSchema} = this.props.teiDocument.fairCopyProject
         const attrSpecs = teiSchema.attrs
-        const elementName = element.type.name
         
         let attrFields = [], inactiveErrors = []
 
@@ -247,7 +246,7 @@ export default class ParameterDrawer extends Component {
                 }
                 attrFields.push(
                     <div className="attrField" key={fieldKey} >
-                        { this.renderAttributeField(elementName,key,value,attrSpec,onChange) }
+                        { this.renderAttributeField(elementID,key,value,attrSpec,onChange) }
                         <IconButton className="attr-info-button" onClick={handleClick}>
                             <i className="fas fa-info-circle" ></i>
                         </IconButton>
@@ -318,11 +317,11 @@ export default class ParameterDrawer extends Component {
         const configElements = fairCopyConfig.elements
         const name = element.type.name
         const elementSpec = elements[name]
-        const {attrState} = configElements[name]
         const elementID = name.startsWith('mark') ? name.slice('mark'.length) : name
+        const {attrState} = configElements[elementID]
 
         const openAttributeDialog = () => {
-            this.setState({...this.state, openElementName: name, attributeDialogOpen: true })
+            this.setState({...this.state, openElementName: elementID, attributeDialogOpen: true })
         }
 
         const onAddToSchema = () => {
@@ -343,7 +342,7 @@ export default class ParameterDrawer extends Component {
                     action={headerAction}
                 ></CardHeader>
                 <CardContent>
-                    { this.renderAttributes(element,attrState) }
+                    { this.renderAttributes(element,elementID,attrState) }
                     { inactiveElement && this.renderInactiveError(elementID) }
                 </CardContent>
                 <CardActions>
