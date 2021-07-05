@@ -1,0 +1,12 @@
+#EmptyGroup { 
+    padding: 15px;
+    max-width: 200px;
+}
+
+#EmptyGroup .project-settings-button {
+    margin-top: 10px;
+}
+
+#EmptyGroup .fa-cog {
+    margin-right: 5px;
+}

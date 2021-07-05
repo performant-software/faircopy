@@ -540,6 +540,10 @@ export default class MainWindow extends Component {
                     teiDocument={selectedDoc}
                     onClose={this.onCloseElementMenu}
                     elementMenuAnchors={this.elementMenuAnchors}
+                    onProjectSettings={() => { 
+                        onProjectSettings()
+                        this.setState({...this.state, elementMenuOptions: null }) }
+                    }
                     {...elementMenuOptions}
                 ></ElementMenu> }
                 { moveResourceMode && <MoveResourceDialog

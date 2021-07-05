@@ -3,6 +3,7 @@ import { Menu, MenuItem } from '@material-ui/core'
 
 import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
+import EmptyGroup from './EmptyGroup';
 import { createPhraseElement } from "../../../model/editor-actions"
 
 export default class ElementMenu extends Component {
@@ -54,12 +55,19 @@ export default class ElementMenu extends Component {
     }
 
     renderGroup(menuGroup) {
-        const { teiDocument } = this.props
+        const { teiDocument, onProjectSettings } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
         const { members } = menuGroup
 
         // generate the sub menu items
         const menuItems = []
+
+        if( members.length === 0 ) {
+            const {onProjectSettings} = this.props
+            menuItems.push(<EmptyGroup key="empty-group" onProjectSettings={onProjectSettings}></EmptyGroup>)
+            return menuItems
+        }
+
         for( const member of members ) {
             const editorView = teiDocument.getActiveView()
             const selection = (editorView) ? editorView.state.selection : null 

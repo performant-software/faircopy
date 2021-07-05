@@ -7,8 +7,8 @@ export default class EmptyGroup extends Component {
 
         return (
             <div id="EmptyGroup">
-                <Typography>This menu is empty. You can add elements to it in Project Settings<i className="fa fa-arrow-right fa-sm"></i>Elements.</Typography>
-                <Button onClick={onProjectSettings}><i className="fas fa-cog fa-sm"></i> Project Settings</Button>
+                <Typography>This menu has no elements. You can add elements in Project Settings.</Typography>
+                <Button className="project-settings-button" onClick={onProjectSettings}><i className="fas fa-cog fa-sm"></i> Project Settings</Button>
             </div>
         )
     }
