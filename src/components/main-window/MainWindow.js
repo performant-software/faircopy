@@ -82,6 +82,17 @@ export default class MainWindow extends Component {
         fairCopyProject.removeUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.removeUpdateListener(this.receivedUpdate)
     }
+
+    refreshWindow() {
+        const { selectedResource, openResources } = this.state
+
+        if( selectedResource ) {
+            const resource = openResources[selectedResource]
+            if( resource instanceof TEIDocument && resource.editorView ) {
+                this.setState({...this.state})
+            }
+        }
+    }
     
     receivedUpdate = () => { 
         const { openResources } = this.state

@@ -29,6 +29,8 @@ export default class App extends Component {
       appConfig: null,
       projectSettingsActive: false
     }
+
+    this.mainWindowRef = React.createRef()
   }
 
   componentDidMount() {
@@ -113,6 +115,10 @@ export default class App extends Component {
     localStorage.setItem('recentProjects', JSON.stringify(nextProjects));
   }
 
+  refreshMainWindow() {
+    setTimeout( () => { this.mainWindowRef.current.refreshWindow() }, 100 )
+  }
+
   render() {
     const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo, projectSettingsActive } = this.state
     const {rootComponent} = window.fairCopy
@@ -137,6 +143,7 @@ export default class App extends Component {
 
     const onClose = () => {
       this.setState( { ...this.state, projectSettingsActive: false } )
+      this.refreshMainWindow()
     }
 
     const onSave = ( fairCopyConfig, projectInfo ) => {
@@ -145,6 +152,7 @@ export default class App extends Component {
       saveConfig(fairCopyConfig)
       fairCopyProject.updateProjectInfo( projectInfo )
       this.setState( { ...this.state, projectSettingsActive: false } )
+      this.refreshMainWindow()
     }
 
     if( rootComponent === "MainWindow" && fairCopyProject ) {
@@ -160,6 +168,7 @@ export default class App extends Component {
             hidden={projectSettingsActive}
             onProjectSettings={ ()=> { this.setState( { ...this.state, projectSettingsActive: true } )}}
             fairCopyProject={fairCopyProject}
+            ref={this.mainWindowRef}
           ></MainWindow>
         </div>
       )
