@@ -8,6 +8,9 @@ const createConfig = function createConfig(teiSchema) {
     
     // intialize the elements
     for( const element of teiSchema.elements ) {
+        // skip over mark inters
+        if( element.name.startsWith('mark') ) continue
+
         const { validAttrs } = element
         const configElement = {
             active: false,
@@ -30,8 +33,6 @@ const createConfig = function createConfig(teiSchema) {
     // set some default attrs 
     elements.hi.attrState.rend.active = true
     elements.ref.attrState.target.active = true
-    elements.markhi.attrState.rend.active = true
-    elements.markref.attrState.target.active = true
 
     // initialize vocabs
     for( const attr of Object.values(attrs) ) {
