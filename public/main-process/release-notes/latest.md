@@ -2,6 +2,14 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 0.10.1
+
+### Improvements
+
+* Project Settings Page - Clicking on the gear in the top left corner now brings up the Project Settings Page.
+* Project Schema - The user can now customize the TEI editor menus and the project schema. 
+* Schema Validation - Error
+
 ## Version 0.10.0
 
 ### Improvements
