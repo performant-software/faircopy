@@ -11,7 +11,7 @@ export default class ElementLibrary extends Component {
         const icon = teiSchema.getElementIcon(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
 
-        const onClick = () => { onSelect(elementID) }
+        const onClick = () => { onSelect(elementID,null) }
 
         const onStartDrag = (e) => {
             const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
