@@ -59,7 +59,7 @@ function scanAttrs(attrs, attrSpecs, attrState, parentLocalID, idMap) {
         const attrSpec = attrSpecs[key]
         const value = attrs[key]
         // flag deactivate attrs that have values
-        if( attrState && attrState[key] && attrState[key].active === false && value && value !== "" ) {
+        if( attrState && attrState[key] && attrSpec.hidden !== true && attrState[key].active === false && value && value !== "" ) {
             return true
         }
         // flag activate attrs that don't validate
