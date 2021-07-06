@@ -67,7 +67,7 @@ export default class EditorToolbar extends Component {
             </IconButton> 
         )
              
-        return enabled ? <Tooltip title={title}>{iconButton}</Tooltip> : iconButton
+        return <Tooltip title={title}><span>{iconButton}</span></Tooltip>
     }
 
     renderActionButtons() {
