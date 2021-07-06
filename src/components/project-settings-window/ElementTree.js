@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { Typography, Tabs, Tab, Collapse, Tooltip, Divider, AccordionActions, Button, IconButton } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
 import { removeGroupFromMenu } from '../../model/faircopy-config'
 
 const clientOffset = { x: 200, y: 65 }
@@ -143,24 +145,65 @@ export default class ElementTree extends Component {
     }
 
     renderTree() {
-        const { fairCopyConfig, selectedMenu, onEditGroup } = this.props
+        const { fairCopyConfig, selectedMenu, onEditGroup, onUpdateConfig } = this.props
         const elementGroups = fairCopyConfig.menus[selectedMenu]
 
         const onAddGroup = () => {
             onEditGroup( -1 )
         }
 
-        const groups = []
-        let i=0
-        for( const elementGroup of elementGroups ) {
-            const group = this.renderGroup(elementGroup,i++,elementGroups.length === 1)
-            groups.push(group)
+        const onDragEnd = (result) => {
+            // dropped outside the list
+            if (!result.destination) return
+        
+            const nextElementGroups = reorder(
+                elementGroups,
+                result.source.index,
+                result.destination.index
+            )
+            
+            fairCopyConfig.menus[selectedMenu] = nextElementGroups
+            onUpdateConfig(fairCopyConfig)
         }
-        groups.push(<Button onClick={onAddGroup} className="add-group-button" variant="outlined" key="add-group-button"><i className="fas fa-plus fa-sm"></i> Add Group</Button>)
 
         return (
-            <div className="tree-view">
-                { groups }
+            <div>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="element-tree">
+                        { (provided) => (
+                            <div 
+                                className="tree-view"
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                            >
+                                { elementGroups.map( (elementGroup,i) => {
+                                    const groupID = `elementGroup-${i}`
+                                    return (
+                                        <Draggable key={groupID} draggableId={groupID} index={i}>
+                                            { (provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                >
+                                                    { this.renderGroup(elementGroup,i,elementGroups.length === 1) }
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+                <Button 
+                    onClick={onAddGroup} 
+                    className="add-group-button" 
+                    variant="outlined" 
+                    key="add-group-button"
+                >
+                    <i className="fas fa-plus fa-sm"></i> Add Group
+                </Button>
             </div>
         )
     }
@@ -185,4 +228,13 @@ export default class ElementTree extends Component {
             </div>
         )
     }
+}
+
+// a little function to help us with reordering the result
+const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+  
+    return result;
 }
