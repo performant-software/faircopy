@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 
-import { Typography, Tabs, Tab, Collapse, Tooltip, Divider, AccordionActions, Button, IconButton } from '@material-ui/core'
+import { Typography, Tabs, Tab, Tooltip, Divider, AccordionActions, Button, IconButton } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { removeGroupFromMenu } from '../../model/faircopy-config'
-
-const clientOffset = { x: 200, y: 65 }
 
 export default class ElementTree extends Component {
 
@@ -20,49 +18,29 @@ export default class ElementTree extends Component {
     }
 
 
-    renderElement(groupID,elementID) {
-        const { teiSchema, onSelect, onDragElement, draggedAwayElementID } = this.props
+    renderElement(groupID,elementID,index) {
+        const { teiSchema, onSelect } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
+        const elementKey = `element-${elementID}`
 
         const onClick = () => { onSelect(elementID,groupID) }
 
-        const onStartDrag = (e) => {
-            const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
-            onDragElement(elementID,clientOffset,startingPoint,groupID)
-        }
-
-        // if this element has been dragged away, collapse it
-        const collapsed = (draggedAwayElementID !== elementID)
-
         return (
-            <Collapse key={`tree-element-${elementID}`} in={collapsed}>
-                <div onMouseDown={onStartDrag} onClick={onClick} className={`element-item ${elementType}`} >
-                    <Typography>{elementIcon}{elementID}</Typography>
-                </div>
-            </Collapse>
-        )
-    }
-
-    renderDropZone( elementID, groupID, paletteOrder ) {
-        const { selectedMenu, hoverOverElementID } = this.props
-        const collapsed = (hoverOverElementID === elementID)
-        return (
-            <Collapse 
-                in={collapsed}
-                className="drop-zone"
-                key={`drop-zone-${elementID}`} 
-                collapsedHeight={10}
-                dataelementid={elementID}
-                datamenuid={selectedMenu}
-                datamenugroupid={groupID}
-                datapalettepos={paletteOrder}
-        >
-                <div 
-                    className={`landing-pad ${ collapsed ? 'hover-over' : ''}`}                    
-                ></div>
-            </Collapse>
+            <Draggable key={elementKey} draggableId={elementKey} index={index}>
+                { (provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                    >
+                        <div onClick={onClick} className={`element-item ${elementType}`} >
+                            <Typography>{elementIcon}{elementID}</Typography>
+                        </div>                        
+                    </div>
+                )}
+            </Draggable>
         )
     }
 
@@ -96,17 +74,6 @@ export default class ElementTree extends Component {
     renderGroup(elementGroup,groupIndex,oneLeft) {
         const { onEditGroup, fairCopyConfig, selectedMenu, onUpdateConfig } = this.props
 
-        const members = []
-        let i=0
-        for( const member of elementGroup.members ) {
-            const memberItem = this.renderElement(groupIndex,member)
-            const dropZone = this.renderDropZone(member,groupIndex,i++)
-            members.push(dropZone)
-            members.push(memberItem)
-        }
-        const dropZone = this.renderDropZone('--PLACEHOLDER--',groupIndex,i)
-        members.push(dropZone)
-
         const onEditName = () => { onEditGroup( groupIndex ) }
         const onDelete = () => {
             removeGroupFromMenu( groupIndex, selectedMenu, fairCopyConfig)
@@ -131,9 +98,17 @@ export default class ElementTree extends Component {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div>
-                        { members }
-                    </div>
+                    <Droppable droppableId={`group-members-${groupID}`} type="members">
+                        { (provided) => (
+                            <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                            >
+                                { elementGroup.members.map( (member,index) => this.renderElement(groupIndex,member,index)) }
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
                 </AccordionDetails>
                 <Divider />
                 <AccordionActions>
@@ -154,22 +129,23 @@ export default class ElementTree extends Component {
 
         const onDragEnd = (result) => {
             // dropped outside the list
-            if (!result.destination) return
+            return
+            // if (!result.destination) return
         
-            const nextElementGroups = reorder(
-                elementGroups,
-                result.source.index,
-                result.destination.index
-            )
+            // const nextElementGroups = reorder(
+            //     elementGroups,
+            //     result.source.index,
+            //     result.destination.index
+            // )
             
-            fairCopyConfig.menus[selectedMenu] = nextElementGroups
-            onUpdateConfig(fairCopyConfig)
+            // fairCopyConfig.menus[selectedMenu] = nextElementGroups
+            // onUpdateConfig(fairCopyConfig)
         }
 
         return (
             <div>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="element-tree">
+                    <Droppable droppableId="element-tree" type="groups">
                         { (provided) => (
                             <div 
                                 className="tree-view"
@@ -178,6 +154,7 @@ export default class ElementTree extends Component {
                             >
                                 { elementGroups.map( (elementGroup,i) => {
                                     const groupID = `elementGroup-${i}`
+                                    const onlyOne = elementGroups.length === 1
                                     return (
                                         <Draggable key={groupID} draggableId={groupID} index={i}>
                                             { (provided) => (
@@ -186,12 +163,13 @@ export default class ElementTree extends Component {
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
                                                 >
-                                                    { this.renderGroup(elementGroup,i,elementGroups.length === 1) }
+                                                    { this.renderGroup(elementGroup,i,onlyOne) }
                                                 </div>
                                             )}
                                         </Draggable>
                                     )
                                 })}
+                                {provided.placeholder}
                             </div>
                         )}
                     </Droppable>
