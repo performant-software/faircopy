@@ -42,7 +42,7 @@ export default class ElementLibrary extends Component {
         return (
             <div key={`module-${moduleID}`} className="module">
                 <Typography><b>{moduleID}</b></Typography>
-                <Droppable droppableId={`module-members-${moduleID}`} type="members">
+                <Droppable droppableId={`module-members-${moduleID}`} type="members" isDropDisabled={true}>
                     { (provided) => (
                         <div
                             {...provided.droppableProps}
