@@ -32,10 +32,7 @@ export default class ElementLibrary extends Component {
     renderModule(moduleID) {
         const { teiSchema, selectedMenu } = this.props
         const { modules } = teiSchema
-        const module = modules[moduleID].filter( (elementID) => {
-            const elementMenu = teiSchema.getElementMenu(elementID)
-            return ( elementMenu === selectedMenu )
-        })
+        const module = modules[moduleID].filter( (elementID) => teiSchema.validElementMenu(selectedMenu,elementID))
 
         if( module.length === 0 ) return null
 

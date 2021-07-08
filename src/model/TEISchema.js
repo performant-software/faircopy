@@ -1,10 +1,23 @@
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
 
-const menusToElementTypes = {
-    structure: ['hard','soft','inter'],
-    mark: ['marks','limited-marks','inter'],
-    inline: ['inlines','asides']
+const pmTypeToMenu = {
+    "node": 'structure',
+    "mark": 'mark',
+    "inline-node": 'inline'
+}
+
+const elementTypeToPmTypes = {
+    'docNodes': [],
+    'embed':[],
+    'exclude':[],
+    'hard': ['node'],
+    'soft': ['node'],
+    'marks': ['mark'],
+    'limited-marks': ['mark'],
+    'inter': ['node','mark'],
+    'inlines': ['inline-node'],
+    'asides': ['inline-node']
 }
 
 export default class TEISchema {
@@ -258,15 +271,15 @@ export default class TEISchema {
         return null
     }
 
-    getElementMenu(elementID) {
-        const elementType = this.getElementType(elementID)
+    getElementMenu(pmType) {
+        return pmTypeToMenu[pmType]
+    }
 
-        for( const elementMenu of Object.keys(menusToElementTypes)) {
-            if( menusToElementTypes[elementMenu].includes(elementType) ) {
-                return elementMenu
-            }
-        }
-        return null
+    validElementMenu(elementMenu,elementID) {
+        const elementType = this.getElementType(elementID)
+        const pmTypes = elementTypeToPmTypes[elementType]
+        const menus = pmTypes.map( pmType => pmTypeToMenu[pmType] )
+        return menus.includes(elementMenu)
     }
 
     getElementIcon(elementID) {

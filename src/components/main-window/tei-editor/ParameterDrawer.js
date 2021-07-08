@@ -325,7 +325,8 @@ export default class ParameterDrawer extends Component {
         }
 
         const onAddToSchema = () => {
-            addElementToSchema(elementID,teiSchema,fairCopyConfig)
+            const elementMenu = teiSchema.getElementMenu(elementSpec.pmType)
+            addElementToSchema(elementID,elementMenu,fairCopyConfig)
             saveConfig(fairCopyConfig)
             teiDocument.refreshView()
         }

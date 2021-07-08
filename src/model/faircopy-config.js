@@ -35,9 +35,8 @@ export function removeElementFromMenu( elementID, groupID, menuID, fairCopyConfi
     return index
 }
 
-export function addElementToSchema( elementID, teiSchema, fairCopyConfig ) {
+export function addElementToSchema( elementID, elementMenu, fairCopyConfig ) {
     const { elements } = fairCopyConfig 
-    const elementMenu = teiSchema.getElementMenu(elementID)
     const groups = fairCopyConfig.menus[elementMenu]
     const group = groups.find((g) => g.label === importGroupName )
     if( group ) {
