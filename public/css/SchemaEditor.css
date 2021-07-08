@@ -31,6 +31,7 @@
 
 #SchemaEditor .element-item {
     border: 1px solid black;
+    background-color: white;
     border-radius: 5px;
     padding-left: 10px;
     padding-right: 10px;

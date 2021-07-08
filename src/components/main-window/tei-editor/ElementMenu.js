@@ -55,7 +55,7 @@ export default class ElementMenu extends Component {
     }
 
     renderGroup(menuGroup) {
-        const { teiDocument, onProjectSettings } = this.props
+        const { teiDocument } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
         const { members } = menuGroup
 

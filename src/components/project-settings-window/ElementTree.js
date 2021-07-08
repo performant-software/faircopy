@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-
 import { Typography, Tabs, Tab, Tooltip, Divider, AccordionActions, Button, IconButton } from '@material-ui/core'
 import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { Droppable, Draggable } from "react-beautiful-dnd"
 
 import { removeGroupFromMenu } from '../../model/faircopy-config'
 
@@ -13,17 +12,16 @@ export default class ElementTree extends Component {
         super(props)
 
         this.state = {
-            accordionStates: { 'structure': [], 'mark': [], 'inline': []}
+            accordionStates: { 'structure': {}, 'mark': {}, 'inline': {}}
         }
     }
-
 
     renderElement(groupID,elementID,index) {
         const { teiSchema, onSelect } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
-        const elementKey = `element-${elementID}`
+        const elementKey = `group${groupID}_element-${elementID}`
 
         const onClick = () => { onSelect(elementID,groupID) }
 
@@ -48,7 +46,7 @@ export default class ElementTree extends Component {
         const { selectedMenu } = this.props
         const { accordionStates } = this.state
         const nextAccordionStates = { ...accordionStates }
-        nextAccordionStates[selectedMenu] = []
+        nextAccordionStates[selectedMenu] = {}
         this.setState( { ...this.state, accordionStates: nextAccordionStates })
     }
 
@@ -63,7 +61,7 @@ export default class ElementTree extends Component {
 
         return (e,expanded) => {
             const { accordionStates } = this.state
-            const nextGroup = [ ...accordionStates[selectedMenu] ]
+            const nextGroup = { ...accordionStates[selectedMenu] }
             nextGroup[groupIndex] = expanded
             const nextAccordionStates = { ...accordionStates }
             nextAccordionStates[selectedMenu] = nextGroup
@@ -81,34 +79,34 @@ export default class ElementTree extends Component {
             onUpdateConfig(fairCopyConfig)
         }
 
-        const groupID = `${groupIndex}`
+        const groupKey = `acc-${groupIndex}`
+        const expanded = this.getAccordionState(groupKey)
         return (
-            <Accordion key={groupID}
-                expanded={this.getAccordionState(groupID)} 
-                onChange={this.createAccordionCallback(groupID)}            
+            <Accordion key={groupKey}
+                expanded={expanded} 
+                onChange={this.createAccordionCallback(groupKey)}                
             >
                 <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2a-content"
-                    id="panel2a-header"
-                >
+                    expandIcon={<ExpandMoreIcon />}                >
                     <Typography>
                         <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
                         {elementGroup.label}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Droppable droppableId={`group-members-${groupID}`} type="members">
-                        { (provided) => (
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                { elementGroup.members.map( (member,index) => this.renderElement(groupIndex,member,index)) }
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
+                    { expanded && 
+                        <Droppable droppableId={`group-${groupIndex}`} type="members">
+                            { (provided) => (
+                                <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                >
+                                    { elementGroup.members.map( (member,index) => this.renderElement(groupIndex,member,index)) }
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    }
                 </AccordionDetails>
                 <Divider />
                 <AccordionActions>
@@ -120,60 +118,43 @@ export default class ElementTree extends Component {
     }
 
     renderTree() {
-        const { fairCopyConfig, selectedMenu, onEditGroup, onUpdateConfig } = this.props
+        const { fairCopyConfig, selectedMenu, onEditGroup } = this.props
         const elementGroups = fairCopyConfig.menus[selectedMenu]
 
         const onAddGroup = () => {
             onEditGroup( -1 )
         }
 
-        const onDragEnd = (result) => {
-            // dropped outside the list
-            return
-            // if (!result.destination) return
-        
-            // const nextElementGroups = reorder(
-            //     elementGroups,
-            //     result.source.index,
-            //     result.destination.index
-            // )
-            
-            // fairCopyConfig.menus[selectedMenu] = nextElementGroups
-            // onUpdateConfig(fairCopyConfig)
-        }
-
         return (
             <div>
-                <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="element-tree" type="groups">
-                        { (provided) => (
-                            <div 
-                                className="tree-view"
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                { elementGroups.map( (elementGroup,i) => {
-                                    const groupID = `elementGroup-${i}`
-                                    const onlyOne = elementGroups.length === 1
-                                    return (
-                                        <Draggable key={groupID} draggableId={groupID} index={i}>
-                                            { (provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                >
-                                                    { this.renderGroup(elementGroup,i,onlyOne) }
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    )
-                                })}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                <Droppable droppableId="element-tree" type="groups">
+                    { (provided) => (
+                        <div 
+                            className="tree-view"
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            { elementGroups.map( (elementGroup,i) => {
+                                const groupID = `elementGroup-${i}`
+                                const onlyOne = elementGroups.length === 1
+                                return (
+                                    <Draggable key={groupID} draggableId={groupID} index={i}>
+                                        { (provided) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                            >
+                                                { this.renderGroup(elementGroup,i,onlyOne) }
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                )
+                            })}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
                 <Button 
                     onClick={onAddGroup} 
                     className="add-group-button" 
@@ -206,13 +187,4 @@ export default class ElementTree extends Component {
             </div>
         )
     }
-}
-
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-  
-    return result;
 }

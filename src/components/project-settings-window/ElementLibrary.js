@@ -1,51 +1,62 @@
 import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
-
-const clientOffset = { x: 200, y: 65 }
+import { Droppable, Draggable } from "react-beautiful-dnd"
 
 export default class ElementLibrary extends Component {
 
-    renderElement(elementID) {
-        const { teiSchema, onSelect, onDragElement } = this.props
+    renderElement(elementID,index) {
+        const { teiSchema, onSelect } = this.props
         const key = `element-${elementID}`
         const icon = teiSchema.getElementIcon(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
 
         const onClick = () => { onSelect(elementID,null) }
 
-        const onStartDrag = (e) => {
-            const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
-            onDragElement(elementID,clientOffset,startingPoint,-1)
-        }
-
         return (
-            <div onMouseDown={onStartDrag} onClick={onClick} className={`element-item library-element`} key={key}>
-                <Typography>{elementIcon}{elementID}</Typography>
-            </div>
+            <Draggable key={key} draggableId={key} index={index}>
+                { (provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                    >
+                        <div onClick={onClick} className={`element-item library-element`} >
+                            <Typography>{elementIcon}{elementID}</Typography>
+                        </div>                        
+                    </div>
+                )}
+            </Draggable>
         )
     }
     
     renderModule(moduleID) {
         const { teiSchema, selectedMenu } = this.props
         const { modules } = teiSchema
-        const module = modules[moduleID]
-
-        const elements = []
-        for( const elementID of module ) {
+        const module = modules[moduleID].filter( (elementID) => {
             const elementMenu = teiSchema.getElementMenu(elementID)
-            if( elementMenu === selectedMenu ) {
-                elements.push( this.renderElement(elementID) )
-            }    
-        }
+            return ( elementMenu === selectedMenu )
+        })
 
-        if( elements.length === 0 ) return null
+        if( module.length === 0 ) return null
 
         return (
             <div key={`module-${moduleID}`} className="module">
                 <Typography><b>{moduleID}</b></Typography>
-                <div className="elements">
-                    { elements }
-                </div>
+                <Droppable droppableId={`module-members-${moduleID}`} type="members">
+                    { (provided) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            <div className="elements">
+                                { module.map( (elementID,index) => {
+                                    return this.renderElement(elementID,index)
+                                })}
+                                {provided.placeholder}
+                            </div>
+                        </div>
+                    )}
+                </Droppable>
             </div>
         )
     }
