@@ -22,3 +22,8 @@
 #ElementTree .element-item {
     margin-top: 5px;
 }
+
+#ElementTree .drop-zone {
+    min-width: 150px;
+    min-height: 20px;
+}

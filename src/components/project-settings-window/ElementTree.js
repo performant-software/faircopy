@@ -97,7 +97,7 @@ export default class ElementTree extends Component {
                     { expanded && 
                         <Droppable droppableId={`group-${groupIndex}`} type="members">
                             { (provided) => (
-                                <div
+                                <div className="drop-zone"
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
                                 >
