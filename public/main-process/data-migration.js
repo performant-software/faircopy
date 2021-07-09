@@ -24,6 +24,7 @@ const migrateConfig = function migrateConfig( currentVersion, generatedWith, bas
 
     if( semver.lt(projectVersion,'0.10.2') ) {
         migrationRemoveElements(projectConfig,baseConfig)
+        migrationAddNewElements(baseConfig,projectConfig)
         log.info('applying migrations for v0.10.2')
     }
 
