@@ -21,7 +21,6 @@ const createElements = function createElements(elGroups,specs) {
 function createMarks(elGroups,specs) {
     const marks = elGroups.marks
 
-    // TODO filter nodes out of mark group
     const markElements = []
     for(let mark of marks) {
         const spec = specs[mark]
@@ -30,7 +29,8 @@ function createMarks(elGroups,specs) {
             pmType: "mark",
             validAttrs: [],
             group: spec.group,
-            desc: spec.description
+            desc: spec.description,
+            synth: false
         })
     }
     return markElements
@@ -51,7 +51,8 @@ function createInters(elGroups,defaultNodes,specs) {
             pmType: "mark",
             validAttrs: [],
             group: spec.group,
-            desc: spec.description
+            desc: spec.description,
+            synth: true
         })
 
         const nodeEl = {
@@ -63,7 +64,8 @@ function createInters(elGroups,defaultNodes,specs) {
             gutterMark: true,
             defaultNodes: defaultNodes[inter] ? defaultNodes[inter] : null,
             validAttrs: [],
-            desc: spec.description
+            desc: spec.description,
+            synth: false
         }
         interElements.push(nodeEl)    
     }
@@ -83,7 +85,8 @@ function createInlineNodes(elGroups,icons,specs) {
             validAttrs: [],
             icon: icons[inline],
             group: 'inline_node',
-            desc: spec.description
+            desc: spec.description,
+            synth: false
         } )
     }
     return inlineElements
@@ -109,7 +112,8 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
             icon: icons[aside],
             group: 'inline_node',
             defaultNodes: defaultNodes[aside] ? defaultNodes[aside] : null,
-            desc: spec.description
+            desc: spec.description,
+            synth: false
         } )
 
         // create the node that will contain the aside's content 
@@ -118,7 +122,8 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": content
+            "content": content,
+            synth: true
         })
 
         // create the root node for the aside's subDocument
@@ -126,7 +131,8 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
             "name": docName,
             "pmType": "node",
             "isolating": true,
-            "content": contentName
+            "content": contentName,
+            synth: true
         })
     }
 
@@ -141,14 +147,16 @@ const createDocNode = function createDocNode() {
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": '((front)? (body) (back)?)'
+            "content": '((front)? (body) (back)?)',
+            synth: true
         },
         {
             "name": "headerDoc",
             "pmType": "node",
             "isolating": true,
             "gutterMark": true,
-            "content": '(fileDesc model_teiHeaderPart* revisionDesc?)'
+            "content": '(fileDesc model_teiHeaderPart* revisionDesc?)',
+            synth: true
         }
     ]
 }
@@ -216,7 +224,8 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
             gutterMark: true,
             validAttrs: [],
             defaultNodes: defaultNodes[node] ? defaultNodes[node] : null,
-            desc: spec.description
+            desc: spec.description,
+            synth: false
         }
         nodeElements.push(nodeEl)
     }

@@ -5149,14 +5149,6 @@
 				}
 			}
 		},
-		"noteX": {
-			"active": false,
-			"attrState": {}
-		},
-		"noteDoc": {
-			"active": false,
-			"attrState": {}
-		},
 		"choice": {
 			"active": true,
 			"attrState": {
@@ -5228,14 +5220,6 @@
 					"vocabID": "*[xml:space]"
 				}
 			}
-		},
-		"choiceX": {
-			"active": false,
-			"attrState": {}
-		},
-		"choiceDoc": {
-			"active": false,
-			"attrState": {}
 		},
 		"fw": {
 			"active": true,
@@ -5323,14 +5307,6 @@
 					"vocabID": "*[xml:space]"
 				}
 			}
-		},
-		"fwX": {
-			"active": false,
-			"attrState": {}
-		},
-		"fwDoc": {
-			"active": false,
-			"attrState": {}
 		},
 		"subst": {
 			"active": true,
@@ -5456,14 +5432,6 @@
 					"vocabID": "*[xml:space]"
 				}
 			}
-		},
-		"substX": {
-			"active": false,
-			"attrState": {}
-		},
-		"substDoc": {
-			"active": false,
-			"attrState": {}
 		},
 		"add": {
 			"active": true,
@@ -12227,14 +12195,6 @@
 					"vocabID": "*[xml:space]"
 				}
 			}
-		},
-		"doc": {
-			"active": false,
-			"attrState": {}
-		},
-		"headerDoc": {
-			"active": false,
-			"attrState": {}
 		}
 	},
 	"vocabs": {

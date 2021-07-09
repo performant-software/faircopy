@@ -8,8 +8,8 @@ const createConfig = function createConfig(teiSchema) {
     
     // intialize the elements
     for( const element of teiSchema.elements ) {
-        // skip over mark inters
-        if( element.name.startsWith('mark') ) continue
+        // skip over synthetic elements
+        if( element.synth ) continue
 
         const { validAttrs } = element
         const configElement = {

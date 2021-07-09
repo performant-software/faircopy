@@ -1,4 +1,5 @@
 const semver = require('semver')
+const log = require('electron-log')
 
 // project files are backward compatible but not forward compatible
 const compatibleProject = function compatibleProject(manifestData, currentVersion) {
@@ -14,11 +15,16 @@ const migrateConfig = function migrateConfig( currentVersion, generatedWith, bas
     // same project version
     if( currentVersion === projectVersion ) return null
 
-    // migrations for 0.10.1
     if( semver.lt(projectVersion,'0.10.1') ) {
         migrationAddMenus(projectConfig,baseConfig)
         migrationAddActiveState(projectConfig)
         migrationAddNewElements(baseConfig,projectConfig)
+        log.info('applying migrations for v0.10.1')
+    }
+
+    if( semver.lt(projectVersion,'0.10.2') ) {
+        migrationRemoveElements(projectConfig,baseConfig)
+        log.info('applying migrations for v0.10.2')
     }
 
     return JSON.stringify(projectConfig)
@@ -51,5 +57,17 @@ function migrationAddMenus(projectConfig,baseConfig) {
 function migrationAddActiveState(projectConfig) {
     for( const element of Object.values(projectConfig.elements) ) {
         element.active = true
+    }
+}
+
+function migrationRemoveElements(projectConfig,baseConfig) {
+    const baseElements = Object.keys(baseConfig.elements)
+    const projectElements = Object.keys(projectConfig.elements)
+
+    // remove any elements that are no longer in the schema 
+    for( const projectElement of projectElements ) {
+        if( !baseElements.includes(projectElement) ) {
+            delete projectElements[projectElement]
+        }
     }
 }

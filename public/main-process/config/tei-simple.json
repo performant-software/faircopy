@@ -34,7 +34,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a formal list or prose description of the topics addressed by a subdivision of a text."
+			"desc": "contains a formal list or prose description of the topics addressed by a subdivision of a text.",
+			"synth": false
 		},
 		{
 			"name": "back",
@@ -71,7 +72,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains any appendixes, etc. following the main part of a text."
+			"desc": "contains any appendixes, etc. following the main part of a text.",
+			"synth": false
 		},
 		{
 			"name": "body",
@@ -108,7 +110,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains the whole body of a single unitary text, excluding any front or back matter."
+			"desc": "contains the whole body of a single unitary text, excluding any front or back matter.",
+			"synth": false
 		},
 		{
 			"name": "castGroup",
@@ -144,7 +147,8 @@
 			"defaultNodes": [
 				"castItem"
 			],
-			"desc": "groups one or more individual castItem elements within a cast list."
+			"desc": "groups one or more individual castItem elements within a cast list.",
+			"synth": false
 		},
 		{
 			"name": "castList",
@@ -180,7 +184,8 @@
 			"defaultNodes": [
 				"castGroup"
 			],
-			"desc": "contains a single cast list or dramatis personae."
+			"desc": "contains a single cast list or dramatis personae.",
+			"synth": false
 		},
 		{
 			"name": "cit",
@@ -218,7 +223,8 @@
 			"defaultNodes": [
 				"quote"
 			],
-			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example."
+			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example.",
+			"synth": false
 		},
 		{
 			"name": "div",
@@ -264,7 +270,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a subdivision of the front, body, or back of a text."
+			"desc": "contains a subdivision of the front, body, or back of a text.",
+			"synth": false
 		},
 		{
 			"name": "docTitle",
@@ -302,7 +309,8 @@
 			"defaultNodes": [
 				"titlePart"
 			],
-			"desc": "contains the title of a document, including all its constituents, as given on a title page."
+			"desc": "contains the title of a document, including all its constituents, as given on a title page.",
+			"synth": false
 		},
 		{
 			"name": "editionStmt",
@@ -338,7 +346,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "groups information relating to one edition of a text."
+			"desc": "groups information relating to one edition of a text.",
+			"synth": false
 		},
 		{
 			"name": "epigraph",
@@ -374,7 +383,8 @@
 			"defaultNodes": [
 				"quote"
 			],
-			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page."
+			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page.",
+			"synth": false
 		},
 		{
 			"name": "fileDesc",
@@ -410,7 +420,8 @@
 			"defaultNodes": [
 				"titleStmt"
 			],
-			"desc": "contains a full bibliographic description of an electronic file."
+			"desc": "contains a full bibliographic description of an electronic file.",
+			"synth": false
 		},
 		{
 			"name": "floatingText",
@@ -449,7 +460,8 @@
 			"defaultNodes": [
 				"body"
 			],
-			"desc": "contains a single text of any kind, whether unitary or composite, which interrupts the text containing it at any point and after which the surrounding text resumes."
+			"desc": "contains a single text of any kind, whether unitary or composite, which interrupts the text containing it at any point and after which the surrounding text resumes.",
+			"synth": false
 		},
 		{
 			"name": "front",
@@ -486,7 +498,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains any prefatory matter (headers, abstracts, title page, prefaces, dedications, etc.) found at the start of a document, before the main body."
+			"desc": "contains any prefatory matter (headers, abstracts, title page, prefaces, dedications, etc.) found at the start of a document, before the main body.",
+			"synth": false
 		},
 		{
 			"name": "lg",
@@ -531,7 +544,8 @@
 			"defaultNodes": [
 				"l"
 			],
-			"desc": "contains one or more verse lines functioning as a formal unit, e.g. a stanza, refrain, verse paragraph, etc."
+			"desc": "contains one or more verse lines functioning as a formal unit, e.g. a stanza, refrain, verse paragraph, etc.",
+			"synth": false
 		},
 		{
 			"name": "list",
@@ -571,7 +585,8 @@
 			"defaultNodes": [
 				"item"
 			],
-			"desc": "contains any sequence of items organized as a list."
+			"desc": "contains any sequence of items organized as a list.",
+			"synth": false
 		},
 		{
 			"name": "listBibl",
@@ -611,7 +626,8 @@
 			"defaultNodes": [
 				"bibl"
 			],
-			"desc": "contains a list of bibliographic citations of any kind."
+			"desc": "contains a list of bibliographic citations of any kind.",
+			"synth": false
 		},
 		{
 			"name": "listPerson",
@@ -651,7 +667,8 @@
 			"defaultNodes": [
 				"person"
 			],
-			"desc": "contains a list of descriptions, each of which provides information about an identifiable person or a group of people, for example the participants in a language interaction, or the people referred to in a historical source."
+			"desc": "contains a list of descriptions, each of which provides information about an identifiable person or a group of people, for example the participants in a language interaction, or the people referred to in a historical source.",
+			"synth": false
 		},
 		{
 			"name": "listPlace",
@@ -691,7 +708,8 @@
 			"defaultNodes": [
 				"place"
 			],
-			"desc": "contains a list of places, optionally followed by a list of relationships (other than containment) defined amongst them."
+			"desc": "contains a list of places, optionally followed by a list of relationships (other than containment) defined amongst them.",
+			"synth": false
 		},
 		{
 			"name": "notesStmt",
@@ -727,7 +745,8 @@
 			"defaultNodes": [
 				"relatedItem"
 			],
-			"desc": "collects together any notes providing information about a text additional to that recorded in other parts of the bibliographic description."
+			"desc": "collects together any notes providing information about a text additional to that recorded in other parts of the bibliographic description.",
+			"synth": false
 		},
 		{
 			"name": "person",
@@ -769,7 +788,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "provides information about an identifiable individual, for example a participant in a language interaction, or a person referred to in a historical source."
+			"desc": "provides information about an identifiable individual, for example a participant in a language interaction, or a person referred to in a historical source.",
+			"synth": false
 		},
 		{
 			"name": "place",
@@ -810,7 +830,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains data about a geographic location"
+			"desc": "contains data about a geographic location",
+			"synth": false
 		},
 		{
 			"name": "postscript",
@@ -847,7 +868,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a postscript, e.g. to a letter."
+			"desc": "contains a postscript, e.g. to a letter.",
+			"synth": false
 		},
 		{
 			"name": "publicationStmt",
@@ -883,7 +905,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "groups information concerning the publication or distribution of an electronic or other text."
+			"desc": "groups information concerning the publication or distribution of an electronic or other text.",
+			"synth": false
 		},
 		{
 			"name": "relatedItem",
@@ -922,7 +945,8 @@
 			"defaultNodes": [
 				"bibl"
 			],
-			"desc": "contains or references some other bibliographic item which is related to the present one in some specified manner, for example as a constituent or alternative version of it."
+			"desc": "contains or references some other bibliographic item which is related to the present one in some specified manner, for example as a constituent or alternative version of it.",
+			"synth": false
 		},
 		{
 			"name": "respStmt",
@@ -960,7 +984,8 @@
 			"defaultNodes": [
 				"resp"
 			],
-			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition, recording, or series, where the specialized elements for authors, editors, etc. do not suffice or do not apply. May also be used to encode information about individuals or organizations which have played a role in the production or distribution of a bibliographic work."
+			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition, recording, or series, where the specialized elements for authors, editors, etc. do not suffice or do not apply. May also be used to encode information about individuals or organizations which have played a role in the production or distribution of a bibliographic work.",
+			"synth": false
 		},
 		{
 			"name": "seriesStmt",
@@ -996,7 +1021,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "groups information about the series, if any, to which a publication belongs."
+			"desc": "groups information about the series, if any, to which a publication belongs.",
+			"synth": false
 		},
 		{
 			"name": "set",
@@ -1032,7 +1058,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a play, typically found in the front matter of a printed performance text (not a stage direction)."
+			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a play, typically found in the front matter of a printed performance text (not a stage direction).",
+			"synth": false
 		},
 		{
 			"name": "sourceDesc",
@@ -1069,7 +1096,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as \"born digital\" for a text which has no previous existence."
+			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as \"born digital\" for a text which has no previous existence.",
+			"synth": false
 		},
 		{
 			"name": "sp",
@@ -1107,7 +1135,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or verse text."
+			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or verse text.",
+			"synth": false
 		},
 		{
 			"name": "titlePage",
@@ -1146,7 +1175,8 @@
 			"defaultNodes": [
 				"docTitle"
 			],
-			"desc": "contains the title page of a text, appearing within the front or back matter."
+			"desc": "contains the title page of a text, appearing within the front or back matter.",
+			"synth": false
 		},
 		{
 			"name": "titleStmt",
@@ -1182,7 +1212,8 @@
 			"defaultNodes": [
 				"title"
 			],
-			"desc": "groups information about the title of a work and those responsible for its content."
+			"desc": "groups information about the title of a work and those responsible for its content.",
+			"synth": false
 		},
 		{
 			"name": "availability",
@@ -1220,7 +1251,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "supplies information about the availability of a text, for example any restrictions on its use or distribution, its copyright status, any licence applying to it, etc."
+			"desc": "supplies information about the availability of a text, for example any restrictions on its use or distribution, its copyright status, any licence applying to it, etc.",
+			"synth": false
 		},
 		{
 			"name": "biblFull",
@@ -1259,7 +1291,8 @@
 			"defaultNodes": [
 				"titleStmt"
 			],
-			"desc": "contains a fully-structured bibliographic citation, in which all components of the TEI file description are present."
+			"desc": "contains a fully-structured bibliographic citation, in which all components of the TEI file description are present.",
+			"synth": false
 		},
 		{
 			"name": "category",
@@ -1295,7 +1328,8 @@
 			"defaultNodes": [
 				"catDesc"
 			],
-			"desc": "contains an individual descriptive category, possibly nested within a superordinate category, within a user-defined taxonomy."
+			"desc": "contains an individual descriptive category, possibly nested within a superordinate category, within a user-defined taxonomy.",
+			"synth": false
 		},
 		{
 			"name": "encodingDesc",
@@ -1331,7 +1365,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "documents the relationship between an electronic text and the source or sources from which it was derived."
+			"desc": "documents the relationship between an electronic text and the source or sources from which it was derived.",
+			"synth": false
 		},
 		{
 			"name": "editorialDecl",
@@ -1368,7 +1403,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "provides details of editorial principles and practices applied during the encoding of a text."
+			"desc": "provides details of editorial principles and practices applied during the encoding of a text.",
+			"synth": false
 		},
 		{
 			"name": "classDecl",
@@ -1404,7 +1440,8 @@
 			"defaultNodes": [
 				"taxonomy"
 			],
-			"desc": "contains one or more taxonomies defining any classificatory codes used elsewhere in the text."
+			"desc": "contains one or more taxonomies defining any classificatory codes used elsewhere in the text.",
+			"synth": false
 		},
 		{
 			"name": "keywords",
@@ -1441,7 +1478,8 @@
 			"defaultNodes": [
 				"term"
 			],
-			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text."
+			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text.",
+			"synth": false
 		},
 		{
 			"name": "listPrefixDef",
@@ -1477,7 +1515,8 @@
 			"defaultNodes": [
 				"desc"
 			],
-			"desc": "contains a list of definitions of prefixing schemes used in data.pointer values, showing how abbreviated URIs using each scheme may be expanded into full URIs."
+			"desc": "contains a list of definitions of prefixing schemes used in data.pointer values, showing how abbreviated URIs using each scheme may be expanded into full URIs.",
+			"synth": false
 		},
 		{
 			"name": "namespace",
@@ -1514,7 +1553,8 @@
 			"defaultNodes": [
 				"tagUsage"
 			],
-			"desc": "supplies the formal name of the namespace to which the elements documented by its children belong."
+			"desc": "supplies the formal name of the namespace to which the elements documented by its children belong.",
+			"synth": false
 		},
 		{
 			"name": "projectDesc",
@@ -1551,7 +1591,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "describes in detail the aim or purpose for which an electronic file was encoded, together with any other relevant information concerning the process by which it was assembled or collected."
+			"desc": "describes in detail the aim or purpose for which an electronic file was encoded, together with any other relevant information concerning the process by which it was assembled or collected.",
+			"synth": false
 		},
 		{
 			"name": "prefixDef",
@@ -1590,7 +1631,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "defines a prefixing scheme used in data.pointer values, showing how abbreviated URIs using the scheme may be expanded into full URIs."
+			"desc": "defines a prefixing scheme used in data.pointer values, showing how abbreviated URIs using the scheme may be expanded into full URIs.",
+			"synth": false
 		},
 		{
 			"name": "refsDecl",
@@ -1627,7 +1669,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "specifies how canonical references are constructed for this text."
+			"desc": "specifies how canonical references are constructed for this text.",
+			"synth": false
 		},
 		{
 			"name": "samplingDecl",
@@ -1664,7 +1707,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a prose description of the rationale and methods used in sampling texts in the creation of a corpus or collection."
+			"desc": "contains a prose description of the rationale and methods used in sampling texts in the creation of a corpus or collection.",
+			"synth": false
 		},
 		{
 			"name": "tagsDecl",
@@ -1701,7 +1745,8 @@
 			"defaultNodes": [
 				"rendition"
 			],
-			"desc": "provides detailed information about the tagging applied to a document."
+			"desc": "provides detailed information about the tagging applied to a document.",
+			"synth": false
 		},
 		{
 			"name": "taxonomy",
@@ -1737,7 +1782,8 @@
 			"defaultNodes": [
 				"category"
 			],
-			"desc": "defines a typology either implicitly, by means of a bibliographic citation, or explicitly by a structured taxonomy."
+			"desc": "defines a typology either implicitly, by means of a bibliographic citation, or explicitly by a structured taxonomy.",
+			"synth": false
 		},
 		{
 			"name": "profileDesc",
@@ -1773,7 +1819,8 @@
 			"defaultNodes": [
 				"langUsage"
 			],
-			"desc": "provides a detailed description of non-bibliographic aspects of a text, specifically the languages and sublanguages used, the situation in which it was produced, the participants and their setting."
+			"desc": "provides a detailed description of non-bibliographic aspects of a text, specifically the languages and sublanguages used, the situation in which it was produced, the participants and their setting.",
+			"synth": false
 		},
 		{
 			"name": "particDesc",
@@ -1810,7 +1857,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "describes the identifiable speakers, voices, or other participants in any kind of text or other persons named or otherwise referred to in a text, edition, or metadata."
+			"desc": "describes the identifiable speakers, voices, or other participants in any kind of text or other persons named or otherwise referred to in a text, edition, or metadata.",
+			"synth": false
 		},
 		{
 			"name": "settingDesc",
@@ -1847,7 +1895,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "describes the setting or settings within which a language interaction takes place, or other places otherwise referred to in a text, edition, or metadata."
+			"desc": "describes the setting or settings within which a language interaction takes place, or other places otherwise referred to in a text, edition, or metadata.",
+			"synth": false
 		},
 		{
 			"name": "abstract",
@@ -1883,7 +1932,8 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a summary or formal abstract prefixed to an existing source document by the encoder."
+			"desc": "contains a summary or formal abstract prefixed to an existing source document by the encoder.",
+			"synth": false
 		},
 		{
 			"name": "langUsage",
@@ -1920,7 +1970,8 @@
 			"defaultNodes": [
 				"language"
 			],
-			"desc": "describes the languages, sublanguages, registers, dialects, etc. represented within a text."
+			"desc": "describes the languages, sublanguages, registers, dialects, etc. represented within a text.",
+			"synth": false
 		},
 		{
 			"name": "revisionDesc",
@@ -1957,7 +2008,8 @@
 			"defaultNodes": [
 				"change"
 			],
-			"desc": "summarizes the revision history for a file."
+			"desc": "summarizes the revision history for a file.",
+			"synth": false
 		},
 		{
 			"name": "listChange",
@@ -1997,7 +2049,8 @@
 			"defaultNodes": [
 				"change"
 			],
-			"desc": "groups a number of change descriptions associated with either the creation of a source text or the revision of an encoded text."
+			"desc": "groups a number of change descriptions associated with either the creation of a source text or the revision of an encoded text.",
+			"synth": false
 		},
 		{
 			"name": "anchor",
@@ -2030,7 +2083,8 @@
 			],
 			"icon": "fa-anchor",
 			"group": "inline_node",
-			"desc": "attaches an identifier to a point within a text, whether or not it corresponds with a textual element."
+			"desc": "attaches an identifier to a point within a text, whether or not it corresponds with a textual element.",
+			"synth": false
 		},
 		{
 			"name": "cb",
@@ -2067,7 +2121,8 @@
 			],
 			"icon": "fa-line-columns",
 			"group": "inline_node",
-			"desc": "marks the beginning of a new column of a text on a multi-column page."
+			"desc": "marks the beginning of a new column of a text on a multi-column page.",
+			"synth": false
 		},
 		{
 			"name": "catRef",
@@ -2102,7 +2157,8 @@
 			],
 			"icon": "fa-book",
 			"group": "inline_node",
-			"desc": "specifies one or more defined categories within some taxonomy or text typology."
+			"desc": "specifies one or more defined categories within some taxonomy or text typology.",
+			"synth": false
 		},
 		{
 			"name": "gap",
@@ -2151,7 +2207,8 @@
 			],
 			"icon": "fa-dot-circle",
 			"group": "inline_node",
-			"desc": "indicates a point where material has been omitted in a transcription, whether for editorial reasons described in the TEI header, as part of sampling practice, or because the material is illegible, invisible, or inaudible."
+			"desc": "indicates a point where material has been omitted in a transcription, whether for editorial reasons described in the TEI header, as part of sampling practice, or because the material is illegible, invisible, or inaudible.",
+			"synth": false
 		},
 		{
 			"name": "lb",
@@ -2188,7 +2245,8 @@
 			],
 			"icon": "fa-angle-double-right",
 			"group": "inline_node",
-			"desc": "marks the beginning of a new (typographic) line in some edition or version of a text."
+			"desc": "marks the beginning of a new (typographic) line in some edition or version of a text.",
+			"synth": false
 		},
 		{
 			"name": "milestone",
@@ -2226,7 +2284,8 @@
 			],
 			"icon": "fa-map-marker",
 			"group": "inline_node",
-			"desc": "marks a boundary point separating any kind of section of a text, typically but not necessarily indicating a point at which some part of a standard reference system changes, where the change is not represented by a structural element."
+			"desc": "marks a boundary point separating any kind of section of a text, typically but not necessarily indicating a point at which some part of a standard reference system changes, where the change is not represented by a structural element.",
+			"synth": false
 		},
 		{
 			"name": "pb",
@@ -2263,7 +2322,8 @@
 			],
 			"icon": "fa-file-alt",
 			"group": "inline_node",
-			"desc": "marks the beginning of a new page in a paginated document."
+			"desc": "marks the beginning of a new page in a paginated document.",
+			"synth": false
 		},
 		{
 			"name": "note",
@@ -2304,20 +2364,23 @@
 			"icon": "fa-comment-alt",
 			"group": "inline_node",
 			"defaultNodes": null,
-			"desc": "contains a note or annotation."
+			"desc": "contains a note or annotation.",
+			"synth": false
 		},
 		{
 			"name": "noteX",
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(textNode|model_phrase|model_inter|model_divPart|model_global)*"
+			"content": "(textNode|model_phrase|model_inter|model_divPart|model_global)*",
+			"synth": true
 		},
 		{
 			"name": "noteDoc",
 			"pmType": "node",
 			"isolating": true,
-			"content": "noteX"
+			"content": "noteX",
+			"synth": true
 		},
 		{
 			"name": "choice",
@@ -2352,20 +2415,23 @@
 				"sic",
 				"corr"
 			],
-			"desc": "groups a number of alternative encodings for the same point in a text."
+			"desc": "groups a number of alternative encodings for the same point in a text.",
+			"synth": false
 		},
 		{
 			"name": "choiceX",
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(model_choicePart){2,}"
+			"content": "(model_choicePart){2,}",
+			"synth": true
 		},
 		{
 			"name": "choiceDoc",
 			"pmType": "node",
 			"isolating": true,
-			"content": "choiceX"
+			"content": "choiceX",
+			"synth": true
 		},
 		{
 			"name": "fw",
@@ -2402,20 +2468,23 @@
 			"icon": "fa-heading",
 			"group": "inline_node",
 			"defaultNodes": null,
-			"desc": "contains a running head (e.g. a header, footer), catchword, or similar material appearing on the current page."
+			"desc": "contains a running head (e.g. a header, footer), catchword, or similar material appearing on the current page.",
+			"synth": false
 		},
 		{
 			"name": "fwX",
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(textNode|model_qLike|model_phrase|model_global)*"
+			"content": "(textNode|model_qLike|model_phrase|model_global)*",
+			"synth": true
 		},
 		{
 			"name": "fwDoc",
 			"pmType": "node",
 			"isolating": true,
-			"content": "fwX"
+			"content": "fwX",
+			"synth": true
 		},
 		{
 			"name": "subst",
@@ -2466,20 +2535,23 @@
 				"add",
 				"del"
 			],
-			"desc": "groups one or more deletions with one or more additions when the combination is to be regarded as a single intervention in the text."
+			"desc": "groups one or more deletions with one or more additions when the combination is to be regarded as a single intervention in the text.",
+			"synth": false
 		},
 		{
 			"name": "substX",
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(add|del|model_milestoneLike)+"
+			"content": "(add|del|model_milestoneLike)+",
+			"synth": true
 		},
 		{
 			"name": "substDoc",
 			"pmType": "node",
 			"isolating": true,
-			"content": "substX"
+			"content": "substX",
+			"synth": true
 		},
 		{
 			"name": "markadd",
@@ -2528,7 +2600,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector."
+			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector.",
+			"synth": true
 		},
 		{
 			"name": "add",
@@ -2581,7 +2654,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector."
+			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector.",
+			"synth": false
 		},
 		{
 			"name": "markcorr",
@@ -2615,7 +2689,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "contains the correct form of a passage apparently erroneous in the copy text."
+			"desc": "contains the correct form of a passage apparently erroneous in the copy text.",
+			"synth": true
 		},
 		{
 			"name": "corr",
@@ -2653,7 +2728,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains the correct form of a passage apparently erroneous in the copy text."
+			"desc": "contains the correct form of a passage apparently erroneous in the copy text.",
+			"synth": false
 		},
 		{
 			"name": "markdel",
@@ -2701,7 +2777,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
+			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector.",
+			"synth": true
 		},
 		{
 			"name": "del",
@@ -2753,7 +2830,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector."
+			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector.",
+			"synth": false
 		},
 		{
 			"name": "markhi",
@@ -2784,7 +2862,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
-			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made."
+			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
+			"synth": true
 		},
 		{
 			"name": "hi",
@@ -2819,7 +2898,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made."
+			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
+			"synth": false
 		},
 		{
 			"name": "markorig",
@@ -2849,7 +2929,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected."
+			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected.",
+			"synth": true
 		},
 		{
 			"name": "orig",
@@ -2883,7 +2964,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected."
+			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected.",
+			"synth": false
 		},
 		{
 			"name": "markq",
@@ -2916,7 +2998,8 @@
 				"xml:space"
 			],
 			"group": "model_common model_inter model_qLike",
-			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used."
+			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
+			"synth": true
 		},
 		{
 			"name": "q",
@@ -2953,7 +3036,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used."
+			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
+			"synth": false
 		},
 		{
 			"name": "markquote",
@@ -2987,7 +3071,8 @@
 				"xml:space"
 			],
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
-			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text."
+			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text.",
+			"synth": true
 		},
 		{
 			"name": "quote",
@@ -3025,7 +3110,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text."
+			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text.",
+			"synth": false
 		},
 		{
 			"name": "markref",
@@ -3063,7 +3149,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
-			"desc": "defines a reference to another location, possibly modified by additional text or comment."
+			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
+			"synth": true
 		},
 		{
 			"name": "ref",
@@ -3105,7 +3192,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "defines a reference to another location, possibly modified by additional text or comment."
+			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
+			"synth": false
 		},
 		{
 			"name": "markreg",
@@ -3139,7 +3227,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "contains a reading which has been regularized or normalized in some sense."
+			"desc": "contains a reading which has been regularized or normalized in some sense.",
+			"synth": true
 		},
 		{
 			"name": "reg",
@@ -3177,7 +3266,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a reading which has been regularized or normalized in some sense."
+			"desc": "contains a reading which has been regularized or normalized in some sense.",
+			"synth": false
 		},
 		{
 			"name": "markrhyme",
@@ -3210,7 +3300,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_lPart",
-			"desc": "marks the rhyming part of a metrical line."
+			"desc": "marks the rhyming part of a metrical line.",
+			"synth": true
 		},
 		{
 			"name": "rhyme",
@@ -3247,7 +3338,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "marks the rhyming part of a metrical line."
+			"desc": "marks the rhyming part of a metrical line.",
+			"synth": false
 		},
 		{
 			"name": "markseg",
@@ -3288,7 +3380,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
-			"desc": "represents any segmentation of text below the chunk level."
+			"desc": "represents any segmentation of text below the chunk level.",
+			"synth": true
 		},
 		{
 			"name": "seg",
@@ -3333,7 +3426,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "represents any segmentation of text below the chunk level."
+			"desc": "represents any segmentation of text below the chunk level.",
+			"synth": false
 		},
 		{
 			"name": "marksic",
@@ -3363,7 +3457,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "contains text reproduced although apparently incorrect or inaccurate."
+			"desc": "contains text reproduced although apparently incorrect or inaccurate.",
+			"synth": true
 		},
 		{
 			"name": "sic",
@@ -3397,7 +3492,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains text reproduced although apparently incorrect or inaccurate."
+			"desc": "contains text reproduced although apparently incorrect or inaccurate.",
+			"synth": false
 		},
 		{
 			"name": "marksupplied",
@@ -3440,7 +3536,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe."
+			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe.",
+			"synth": true
 		},
 		{
 			"name": "supplied",
@@ -3487,7 +3584,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe."
+			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe.",
+			"synth": false
 		},
 		{
 			"name": "markunclear",
@@ -3531,7 +3629,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
-			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source."
+			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source.",
+			"synth": true
 		},
 		{
 			"name": "unclear",
@@ -3579,7 +3678,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source."
+			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source.",
+			"synth": false
 		},
 		{
 			"name": "abbr",
@@ -3612,7 +3712,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
-			"desc": "contains an abbreviation of any sort."
+			"desc": "contains an abbreviation of any sort.",
+			"synth": false
 		},
 		{
 			"name": "date",
@@ -3679,7 +3780,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike model_publicationStmtPart_detail",
-			"desc": "contains a date in any format."
+			"desc": "contains a date in any format.",
+			"synth": false
 		},
 		{
 			"name": "email",
@@ -3709,7 +3811,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike",
-			"desc": "contains an email address identifying a location to which email messages can be delivered."
+			"desc": "contains an email address identifying a location to which email messages can be delivered.",
+			"synth": false
 		},
 		{
 			"name": "expan",
@@ -3741,7 +3844,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
-			"desc": "contains the expansion of an abbreviation."
+			"desc": "contains the expansion of an abbreviation.",
+			"synth": false
 		},
 		{
 			"name": "foreign",
@@ -3771,7 +3875,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"desc": "identifies a word or phrase as belonging to some language other than that of the surrounding text."
+			"desc": "identifies a word or phrase as belonging to some language other than that of the surrounding text.",
+			"synth": false
 		},
 		{
 			"name": "measure",
@@ -3808,7 +3913,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
-			"desc": "contains a word or phrase referring to some quantity of an object or commodity, usually comprising a number, a unit, and a commodity name."
+			"desc": "contains a word or phrase referring to some quantity of an object or commodity, usually comprising a number, a unit, and a commodity name.",
+			"synth": false
 		},
 		{
 			"name": "name",
@@ -3867,7 +3973,8 @@
 				"xml:space"
 			],
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
-			"desc": "contains a proper noun or noun phrase."
+			"desc": "contains a proper noun or noun phrase.",
+			"synth": false
 		},
 		{
 			"name": "num",
@@ -3906,7 +4013,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
-			"desc": "contains a number, written in any form."
+			"desc": "contains a number, written in any form.",
+			"synth": false
 		},
 		{
 			"name": "rs",
@@ -3942,7 +4050,8 @@
 				"xml:space"
 			],
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
-			"desc": "contains a general purpose name or referring string."
+			"desc": "contains a general purpose name or referring string.",
+			"synth": false
 		},
 		{
 			"name": "s",
@@ -3982,7 +4091,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike",
-			"desc": "contains a sentence-like division of a text."
+			"desc": "contains a sentence-like division of a text.",
+			"synth": false
 		},
 		{
 			"name": "term",
@@ -4022,7 +4132,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term."
+			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term.",
+			"synth": false
 		},
 		{
 			"name": "time",
@@ -4089,7 +4200,8 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike",
-			"desc": "contains a phrase defining a time of day in any format."
+			"desc": "contains a phrase defining a time of day in any format.",
+			"synth": false
 		},
 		{
 			"name": "ab",
@@ -4128,7 +4240,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains any arbitrary component-level unit of text, acting as an anonymous container for phrase or inter level elements analogous to, but without the semantic baggage of, a paragraph."
+			"desc": "contains any arbitrary component-level unit of text, acting as an anonymous container for phrase or inter level elements analogous to, but without the semantic baggage of, a paragraph.",
+			"synth": false
 		},
 		{
 			"name": "actor",
@@ -4164,7 +4277,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the name of an actor appearing within a cast list."
+			"desc": "contains the name of an actor appearing within a cast list.",
+			"synth": false
 		},
 		{
 			"name": "addrLine",
@@ -4198,7 +4312,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains one line of a postal address."
+			"desc": "contains one line of a postal address.",
+			"synth": false
 		},
 		{
 			"name": "author",
@@ -4236,7 +4351,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "in a bibliographic reference, contains the name(s) of an author, personal or corporate, of a work; for example in the same form as that provided by a recognized bibliographic name authority."
+			"desc": "in a bibliographic reference, contains the name(s) of an author, personal or corporate, of a work; for example in the same form as that provided by a recognized bibliographic name authority.",
+			"synth": false
 		},
 		{
 			"name": "bibl",
@@ -4275,7 +4391,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a loosely-structured bibliographic citation of which the sub-components may or may not be explicitly tagged."
+			"desc": "contains a loosely-structured bibliographic citation of which the sub-components may or may not be explicitly tagged.",
+			"synth": false
 		},
 		{
 			"name": "biblScope",
@@ -4312,7 +4429,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "defines the scope of a bibliographic reference, for example as a list of page numbers, or a named subdivision of a larger work."
+			"desc": "defines the scope of a bibliographic reference, for example as a list of page numbers, or a named subdivision of a larger work.",
+			"synth": false
 		},
 		{
 			"name": "byline",
@@ -4346,7 +4464,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the primary statement of responsibility given for a work on its title page or at the head or end of the work."
+			"desc": "contains the primary statement of responsibility given for a work on its title page or at the head or end of the work.",
+			"synth": false
 		},
 		{
 			"name": "castItem",
@@ -4383,7 +4502,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a single entry within a cast list, describing either a single role or a list of non-speaking roles."
+			"desc": "contains a single entry within a cast list, describing either a single role or a list of non-speaking roles.",
+			"synth": false
 		},
 		{
 			"name": "closer",
@@ -4418,7 +4538,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at the end of a division, especially of a letter."
+			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at the end of a division, especially of a letter.",
+			"synth": false
 		},
 		{
 			"name": "dateline",
@@ -4452,7 +4573,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a brief description of the place, date, time, etc. of production of a letter, newspaper story, or other work, prefixed or suffixed to it as a kind of heading or trailer."
+			"desc": "contains a brief description of the place, date, time, etc. of production of a letter, newspaper story, or other work, prefixed or suffixed to it as a kind of heading or trailer.",
+			"synth": false
 		},
 		{
 			"name": "desc",
@@ -4490,7 +4612,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a brief description of the object documented by its parent element, typically a documentation element or an entity."
+			"desc": "contains a brief description of the object documented by its parent element, typically a documentation element or an entity.",
+			"synth": false
 		},
 		{
 			"name": "distributor",
@@ -4526,7 +4649,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "supplies the name of a person or other agency responsible for the distribution of a text."
+			"desc": "supplies the name of a person or other agency responsible for the distribution of a text.",
+			"synth": false
 		},
 		{
 			"name": "docAuthor",
@@ -4562,7 +4686,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the name of the author of the document, as given on the title page (often but not always contained in a byline)."
+			"desc": "contains the name of the author of the document, as given on the title page (often but not always contained in a byline).",
+			"synth": false
 		},
 		{
 			"name": "docDate",
@@ -4597,7 +4722,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the date of a document, as given on a title page or in a dateline."
+			"desc": "contains the date of a document, as given on a title page or in a dateline.",
+			"synth": false
 		},
 		{
 			"name": "docEdition",
@@ -4631,7 +4757,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains an edition statement as presented on a title page of a document."
+			"desc": "contains an edition statement as presented on a title page of a document.",
+			"synth": false
 		},
 		{
 			"name": "docImprint",
@@ -4665,7 +4792,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the imprint statement (place and date of publication, publisher name), as given (usually) at the foot of a title page."
+			"desc": "contains the imprint statement (place and date of publication, publisher name), as given (usually) at the foot of a title page.",
+			"synth": false
 		},
 		{
 			"name": "editor",
@@ -4703,7 +4831,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an individual, institution or organization, (or of several such) acting as editor, compiler, translator, etc."
+			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an individual, institution or organization, (or of several such) acting as editor, compiler, translator, etc.",
+			"synth": false
 		},
 		{
 			"name": "extent",
@@ -4737,7 +4866,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "describes the approximate size of a text stored on some carrier medium or of some other object, digital or non-digital, specified in any convenient units."
+			"desc": "describes the approximate size of a text stored on some carrier medium or of some other object, digital or non-digital, specified in any convenient units.",
+			"synth": false
 		},
 		{
 			"name": "head",
@@ -4775,7 +4905,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains any type of heading, for example the title of a section, or the heading of a list, glossary, manuscript description, etc."
+			"desc": "contains any type of heading, for example the title of a section, or the heading of a list, glossary, manuscript description, etc.",
+			"synth": false
 		},
 		{
 			"name": "imprimatur",
@@ -4809,7 +4940,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a formal statement authorizing the publication of a work, sometimes required to appear on a title page or its verso."
+			"desc": "contains a formal statement authorizing the publication of a work, sometimes required to appear on a title page or its verso.",
+			"synth": false
 		},
 		{
 			"name": "item",
@@ -4844,7 +4976,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains one component of a list."
+			"desc": "contains one component of a list.",
+			"synth": false
 		},
 		{
 			"name": "l",
@@ -4883,7 +5016,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a single, possibly incomplete, line of verse."
+			"desc": "contains a single, possibly incomplete, line of verse.",
+			"synth": false
 		},
 		{
 			"name": "label",
@@ -4921,7 +5055,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains any label or heading used to identify part of a text, typically but not exclusively in a list or glossary."
+			"desc": "contains any label or heading used to identify part of a text, typically but not exclusively in a list or glossary.",
+			"synth": false
 		},
 		{
 			"name": "opener",
@@ -4956,7 +5091,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "groups together dateline, byline, salutation, and similar phrases appearing as a preliminary group at the start of a division, especially of a letter."
+			"desc": "groups together dateline, byline, salutation, and similar phrases appearing as a preliminary group at the start of a division, especially of a letter.",
+			"synth": false
 		},
 		{
 			"name": "p",
@@ -4993,7 +5129,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "marks paragraphs in prose."
+			"desc": "marks paragraphs in prose.",
+			"synth": false
 		},
 		{
 			"name": "publisher",
@@ -5029,7 +5166,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "provides the name of the organization responsible for the publication or distribution of a bibliographic item."
+			"desc": "provides the name of the organization responsible for the publication or distribution of a bibliographic item.",
+			"synth": false
 		},
 		{
 			"name": "pubPlace",
@@ -5067,7 +5205,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the name of the place where a bibliographic item was published."
+			"desc": "contains the name of the place where a bibliographic item was published.",
+			"synth": false
 		},
 		{
 			"name": "resp",
@@ -5122,7 +5261,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a phrase describing the nature of a person's intellectual responsibility, or an organization's role in the production or distribution of a work."
+			"desc": "contains a phrase describing the nature of a person's intellectual responsibility, or an organization's role in the production or distribution of a work.",
+			"synth": false
 		},
 		{
 			"name": "role",
@@ -5156,7 +5296,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the name of a dramatic role, as given in a cast list."
+			"desc": "contains the name of a dramatic role, as given in a cast list.",
+			"synth": false
 		},
 		{
 			"name": "roleDesc",
@@ -5190,7 +5331,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "describes a character's role in a drama."
+			"desc": "describes a character's role in a drama.",
+			"synth": false
 		},
 		{
 			"name": "salute",
@@ -5225,7 +5367,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a salutation or greeting prefixed to a foreword, dedicatory epistle, or other division of a text, or the salutation in the closing of a letter, preface, etc."
+			"desc": "contains a salutation or greeting prefixed to a foreword, dedicatory epistle, or other division of a text, or the salutation in the closing of a letter, preface, etc.",
+			"synth": false
 		},
 		{
 			"name": "signed",
@@ -5260,7 +5403,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the closing salutation, etc., appended to a foreword, dedicatory epistle, or other division of a text."
+			"desc": "contains the closing salutation, etc., appended to a foreword, dedicatory epistle, or other division of a text.",
+			"synth": false
 		},
 		{
 			"name": "speaker",
@@ -5294,7 +5438,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment."
+			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment.",
+			"synth": false
 		},
 		{
 			"name": "stage",
@@ -5332,7 +5477,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains any kind of stage direction within a dramatic text or fragment."
+			"desc": "contains any kind of stage direction within a dramatic text or fragment.",
+			"synth": false
 		},
 		{
 			"name": "title",
@@ -5391,7 +5537,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a title for any kind of work."
+			"desc": "contains a title for any kind of work.",
+			"synth": false
 		},
 		{
 			"name": "titlePart",
@@ -5428,7 +5575,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a subsection or division of the title of a work, as indicated on a title page."
+			"desc": "contains a subsection or division of the title of a work, as indicated on a title page.",
+			"synth": false
 		},
 		{
 			"name": "trailer",
@@ -5466,7 +5614,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a closing title or footer appearing at the end of a division of a text."
+			"desc": "contains a closing title or footer appearing at the end of a division of a text.",
+			"synth": false
 		},
 		{
 			"name": "creation",
@@ -5519,7 +5668,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains information about the creation of a text."
+			"desc": "contains information about the creation of a text.",
+			"synth": false
 		},
 		{
 			"name": "edition",
@@ -5553,7 +5703,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "describes the particularities of one edition of a text."
+			"desc": "describes the particularities of one edition of a text.",
+			"synth": false
 		},
 		{
 			"name": "idno",
@@ -5610,7 +5761,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "supplies any form of identifier used to identify some object, such as a bibliographic item, a person, a title, an organization, etc. in a standardized way."
+			"desc": "supplies any form of identifier used to identify some object, such as a bibliographic item, a person, a title, an organization, etc. in a standardized way.",
+			"synth": false
 		},
 		{
 			"name": "licence",
@@ -5666,7 +5818,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains information about a licence or other legal agreement applicable to the text."
+			"desc": "contains information about a licence or other legal agreement applicable to the text.",
+			"synth": false
 		},
 		{
 			"name": "rendition",
@@ -5704,7 +5857,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "supplies information about the rendition or appearance of one or more elements in the source text."
+			"desc": "supplies information about the rendition or appearance of one or more elements in the source text.",
+			"synth": false
 		},
 		{
 			"name": "tagUsage",
@@ -5741,7 +5895,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "documents the usage of a specific element within a specified document."
+			"desc": "documents the usage of a specific element within a specified document.",
+			"synth": false
 		},
 		{
 			"name": "catDesc",
@@ -5777,7 +5932,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "describes some category within a taxonomy or text typology, either in the form of a brief prose description or in terms of the situational parameters used by the TEI formal textDesc."
+			"desc": "describes some category within a taxonomy or text typology, either in the form of a brief prose description or in terms of the situational parameters used by the TEI formal textDesc.",
+			"synth": false
 		},
 		{
 			"name": "change",
@@ -5835,7 +5991,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "documents a change or set of changes made during the production of a source document, or during the revision of an electronic file."
+			"desc": "documents a change or set of changes made during the production of a source document, or during the revision of an electronic file.",
+			"synth": false
 		},
 		{
 			"name": "classCode",
@@ -5870,7 +6027,8 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the classification code used for this text in some standard classification system."
+			"desc": "contains the classification code used for this text in some standard classification system.",
+			"synth": false
 		},
 		{
 			"name": "language",
@@ -5906,21 +6064,24 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "characterizes a single language or sublanguage used within a text."
+			"desc": "characterizes a single language or sublanguage used within a text.",
+			"synth": false
 		},
 		{
 			"name": "doc",
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "((front)? (body) (back)?)"
+			"content": "((front)? (body) (back)?)",
+			"synth": true
 		},
 		{
 			"name": "headerDoc",
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(fileDesc model_teiHeaderPart* revisionDesc?)"
+			"content": "(fileDesc model_teiHeaderPart* revisionDesc?)",
+			"synth": true
 		}
 	],
 	"attrs": {

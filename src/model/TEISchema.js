@@ -20,6 +20,10 @@ const elementTypeToPmTypes = {
     'asides': ['inline-node']
 }
 
+export const systemElements = [
+    'text', 'textNode', 'globalNode'
+]
+
 export default class TEISchema {
 
     constructor(json) {

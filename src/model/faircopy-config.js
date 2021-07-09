@@ -1,3 +1,5 @@
+import { systemElements } from './TEISchema'
+
 const fairCopy = window.fairCopy
 
 const importGroupName = "Untitled Group"
@@ -86,7 +88,7 @@ export function removeGroupFromMenu( groupIndex, menuID, fairCopyConfig) {
 
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
     const { subDocs } = tempDoc
-    const { elements, vocabs } = fairCopyConfig
+    const { elements, vocabs, menus } = fairCopyConfig
 
     const addTerm = ( vocabID, term ) => {
         const vocabEntry = vocabs[vocabID]
@@ -104,6 +106,17 @@ export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
     const compareToActive = ( element ) => {
         const {attrs, type} = element
         const {name} = type
+
+        // ignore system elements and synth elements
+        if( systemElements.includes(name) || teiSchema.elements[name].synth ) return
+
+        // if this element is not active, activate it
+        if( !elements[name].active ) {
+            const {pmType} = teiSchema.elements[name]
+            const elementMenu = teiSchema.getElementMenu(pmType)
+            addElementToSchema( name, elementMenu, fairCopyConfig )
+        }
+
         for( const attrName of Object.keys(attrs)) {
             const val = attrs[attrName]
             if( val && val !== "" ) {
@@ -156,7 +169,7 @@ export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
         scanNode(subDoc)
     }
 
-    return { elements, vocabs }
+    return { elements, vocabs, menus }
 }
 
 function getDefaultVocabKey(elementName,attributeName) {
