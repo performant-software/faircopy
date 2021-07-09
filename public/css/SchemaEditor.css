@@ -37,6 +37,10 @@
     padding-right: 10px;
 }
 
+#SchemaEditor .selected-item {
+    background-color: #FCFC01;
+}
+
 #SchemaEditor .element-icon {
     padding-right: 5px;
 }

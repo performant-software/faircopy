@@ -17,11 +17,12 @@ export default class ElementTree extends Component {
     }
 
     renderElement(groupID,elementID,index) {
-        const { teiSchema, onSelect } = this.props
+        const { teiSchema, onSelect, selectedElement, selectedGroup } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         const elementKey = `group${groupID}_element-${elementID}`
+        const selected = ( groupID === selectedGroup && elementID === selectedElement ) ? "selected-item" : ""
 
         const onClick = () => { onSelect(elementID,groupID) }
 
@@ -33,7 +34,7 @@ export default class ElementTree extends Component {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                     >
-                        <div onClick={onClick} className={`element-item ${elementType}`} >
+                        <div onClick={onClick} className={`element-item ${elementType} ${selected}`} >
                             <Typography>{elementIcon}{elementID}</Typography>
                         </div>                        
                     </div>

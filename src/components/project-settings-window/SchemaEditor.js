@@ -5,7 +5,6 @@ import ElementTree from './ElementTree'
 import ElementInspector from './ElementInspector'
 import ElementLibrary from './ElementLibrary'
 import AttributeDialog from '../main-window/dialogs/AttributeDialog'
-import SettingsDraggingElement from './SettingsDraggingElement'
 import EditGroupDialog from './EditGroupDialog'
 import { reorder } from '../common/dnd';
 
@@ -21,22 +20,13 @@ export default class SchemaEditor extends Component {
             selectedGroup: null,
             selectedMenu: 'structure',
             attributeDialogOpen: false,
-            draggingElementActive: false,
-            editGroupOpen: false,
-            draggedAwayElementID: null,
-            hoverOverElementID: null,
-            dragInfo: null
+            editGroupOpen: false
         }
-    }
-
-    onDragElement = (elementID, clientOffset, startingPoint, originGroupID ) => {
-        const dragInfo = { elementID, clientOffset, startingPoint, originGroupID }
-        this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, draggingElementActive, draggedAwayElementID, hoverOverElementID, dragInfo, selectedGroup, selectedMenu, editGroupOpen, groupIndex } = this.state
+        const { selectedElement, attributeDialogOpen, selectedGroup, selectedMenu, editGroupOpen, groupIndex } = this.state
 
         const onSelect = (elementID,groupID) => {
             this.setState({...this.state, selectedElement: elementID, selectedGroup: groupID })
@@ -101,21 +91,18 @@ export default class SchemaEditor extends Component {
             }
         }
 
-        const style = draggingElementActive ? { cursor: 'none' } : {}
-
         return (
-            <div id="SchemaEditor" style={style}>
+            <div id="SchemaEditor">
                 <div className="top">
                     <DragDropContext onDragEnd={onDragEnd}>
                         <div className="top-left">
                             <ElementTree
                                 teiSchema={teiSchema}
                                 fairCopyConfig={fairCopyConfig}
+                                selectedElement={ selectedGroup ? selectedElement : null }
+                                selectedGroup={selectedGroup}
                                 selectedMenu={selectedMenu}
-                                draggedAwayElementID={draggedAwayElementID}
-                                hoverOverElementID={hoverOverElementID}
                                 onSelect={onSelect}
-                                onDragElement={this.onDragElement}
                                 onChangeMenu={onChangeMenu}
                                 onEditGroup={onEditGroup}
                                 onUpdateConfig={onUpdateConfig}
@@ -124,9 +111,9 @@ export default class SchemaEditor extends Component {
                         <div className="top-right">
                             <ElementLibrary
                                 teiSchema={teiSchema}
+                                selectedElement={ selectedGroup === null ? selectedElement : null}
                                 selectedMenu={selectedMenu}
                                 onSelect={onSelect}
-                                onDragElement={this.onDragElement}
                             ></ElementLibrary>
                         </div>
                     </DragDropContext>
@@ -158,19 +145,6 @@ export default class SchemaEditor extends Component {
                         onUpdateConfig={onUpdateConfig}
                         onClose={() => { this.setState( { ...this.state, editGroupOpen: false }) }}
                     ></EditGroupDialog>}
-                    { draggingElementActive && <SettingsDraggingElement
-                        fairCopyConfig={fairCopyConfig}
-                        elementID={dragInfo.elementID}
-                        originGroupID={dragInfo.originGroupID}
-                        startingPoint={dragInfo.startingPoint}
-                        clientOffset={dragInfo.clientOffset}
-                        onUpdateConfig={onUpdateConfig}
-                        enableDragAway={dragInfo.originGroupID !== -1}
-                        onDraggedAway={()=>{ this.setState( { ...this.state, draggedAwayElementID: dragInfo.elementID })}}
-                        onHover={(hoverOverElementID)=>{ this.setState( { ...this.state, hoverOverElementID })}}
-                        onDrop={()=>{ this.setState( {...this.state, dragInfo: null, dragging: false, draggingElementActive: false, draggedAwayElementID: null} )}}
-                    ></SettingsDraggingElement> }
-
                 </div>
             </div>
         )
