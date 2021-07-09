@@ -2,13 +2,25 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 0.10.2
+
+### Improvements
+
+* The currently selected element in the schema editor is now highlighted.
+* You can now re-order the menu groups in the schema editor
+
+### Bug Fixes
+
+* Fixed bugs related to XML import 
+* Improved the feel of drag and drop in the schema editor
+
 ## Version 0.10.1
 
 ### Improvements
 
 * Project Settings Page - Clicking on the gear in the top left corner now brings up the Project Settings Page.
 * Project Schema - The user can now customize the TEI editor menus and the project schema. 
-* Schema Validation - Error
+* Schema Validation - The texts in the project are validated against the project schema. 
 
 ## Version 0.10.0
 
