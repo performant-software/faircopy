@@ -1,6 +1,7 @@
 {
     "argument": ["p"],
     "back": ["p"],
+    "bibl": ["author"],
     "body": ["p"],
     "castGroup": ["castItem"],
     "castList": ["castGroup"],
