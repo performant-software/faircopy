@@ -1,6 +1,8 @@
 import { NodeSelection } from "prosemirror-state"
 import { Node, Fragment } from "prosemirror-model"
 
+import { getTextNodeName } from './xml'
+
 function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {
         let {$from, $to} = ranges[i]
@@ -133,7 +135,8 @@ function createValidNode( elementID, schema, elements ) {
         node = nodeType.create({}, nodes)
     } else {
         // otherwise, find wrapping 
-        const textNodeType = schema.nodes['textNode']
+        const textNodeName = getTextNodeName(nodeType.spec.content)
+        const textNodeType = schema.nodes[textNodeName]
         const connective = nodeType.contentMatch.findWrapping(textNodeType)
         if( connective ) {
             let wrap = textNodeType.create()

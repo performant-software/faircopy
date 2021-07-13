@@ -8,7 +8,7 @@ const {getAllElements} = require('./parse-util')
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
 const runReport = async function runReport() {
-    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/exp-element-groups.json`).toString('utf-8'))
+    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/element-groups.json`).toString('utf-8'))
     const allElements = getAllElements(elementGroups)
     const specs = load( teiSpecsDir, allElements )
 
@@ -16,8 +16,8 @@ const runReport = async function runReport() {
 
     const reportRows = []
     for( const element of elements ) {
-        const { name, content, group } = element
-            reportRows.push(`${name}:${content}:${group}`)    
+        const { name, content, markContent, group, pmType } = element
+        reportRows.push(`${name}:${pmType}:${content}:${group}:${markContent}`)    
     }    
 
     // export as CSV

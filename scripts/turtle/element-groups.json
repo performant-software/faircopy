@@ -127,14 +127,12 @@
         "supplied",
         "unclear"
     ],
-    "limited-marks": [
+    "marks": [
+        "abbr",
         "c",
         "g",
         "pc",
-        "w"
-    ],
-    "marks": [
-        "abbr",
+        "w",
         "catchwords",
         "date",
         "email",

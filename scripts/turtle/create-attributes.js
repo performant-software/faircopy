@@ -2,12 +2,14 @@ const {getAllElements} = require('./parse-util')
 
 const createAttributes = function createAttributes( elements, elementGroups, specs ) {
 
-    function getValidElementName(name) {
-        const { asides, docNodes } = elementGroups
-        if( docNodes.includes(name) ) return null
-        if( name.endsWith('X') && asides.includes(name.slice(0,-1)) ) return null
-        const markPrefix = 'mark'
-        return name.startsWith(markPrefix) ? name.slice(markPrefix.length) : name
+    function getValidElementName(element) {
+        // for synthetic elements, only add attributes to inter marks
+        if( element.synth ) {
+            const markPrefix = 'mark'
+            const name = element.name
+            return name.startsWith(markPrefix) ? name.slice(markPrefix.length) : null
+        } 
+        return null
     }
 
     // for each element, add the attrs to its list of possible attrs
@@ -29,7 +31,7 @@ const createAttributes = function createAttributes( elements, elementGroups, spe
 
     // create a global dictionary of attr definitions and record attrs for each element
     for( const element of elements ) {
-        const elementName = validElements.includes(element.name) ? element.name : getValidElementName(element.name)
+        const elementName = validElements.includes(element.name) ? element.name : getValidElementName(element)
         if( !elementName ) continue
 
         const attrs = findAttrs(elementName)

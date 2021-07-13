@@ -51,6 +51,16 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
     return domFragment
 }
 
+export function getTextNodeName(content) {
+    // find the text node in the content expression
+    if( content.includes('textNode') ) {
+        const pos = content.indexOf('textNode')
+        const textNodeName = content.slice(pos,pos+'textNode'.length+1)
+        return textNodeName
+    }
+    return null
+}
+
 // Internodes are a set of elements that can be processed as either nodes or marks, depending on their
 // location in the document structure. They have to be determined before parsing with ProseMirror.
 function parseInterNodes(textEl,teiSchema) {

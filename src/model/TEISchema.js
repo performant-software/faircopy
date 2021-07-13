@@ -14,7 +14,6 @@ const elementTypeToPmTypes = {
     'hard': ['node'],
     'soft': ['node'],
     'marks': ['mark'],
-    'limited-marks': ['mark'],
     'inter': ['node','mark'],
     'inlines': ['inline-node'],
     'asides': ['inline-node']
@@ -99,11 +98,11 @@ export default class TEISchema {
         const marks = {}
 
         for( const element of teiSimple.elements ) {
-            const { pmType, name, content, group, isolating, icon } = element
+            const { pmType, name, marks: markContent, content, group, isolating, icon } = element
             const validAttrs = element.validAttrs ? element.validAttrs : []
             if( pmType === 'mark' || pmType === 'node') {
                 const phraseLvl = (pmType === 'mark')
-                const elSpec = this.createElementSpec({ name, attrs: validAttrs, content, group, phraseLvl, isolating })
+                const elSpec = this.createElementSpec({ name, attrs: validAttrs, content, group, markContent, phraseLvl, isolating })
                 if( pmType === 'mark' ) {
                     marks[name] = elSpec
                 } else {
@@ -149,14 +148,15 @@ export default class TEISchema {
     }
 
     createElementSpec(elSpec) {
-        const { name, content, group, phraseLvl, isolating } = elSpec
+        const { name, markContent, content, group, phraseLvl, isolating } = elSpec
+        const marks = markContent ? markContent : null
         const attrs = this.getAttrSpec(elSpec.attrs)
         return {
             content,
             group,
             attrs,
             isolating,
-            marks: "",
+            marks,
             parseDOM: [
                 {
                     tag: name,

@@ -55,6 +55,20 @@ function encodeOccurence( content ) {
     }
 }
 
+// turn content array into mark group list
+const encodeMarkContent = function encodeMarkContent( content ) {
+    if( !content ) return ''
+    
+    if( content.type === 'alternate' ) {
+        const altItems = []
+        for( const item of content.content ) {
+            altItems.push(item.content)
+        }
+        return altItems.join(' ')
+    }
+    return ''
+}
+
 // take the completed content array and turn it into a content string
 const encodeContent = function encodeContent( content ) {
     if( !content ) return ''
@@ -127,3 +141,4 @@ const parseGroups = function parseGroups(specs) {
 module.exports.parseContent = parseContent
 module.exports.parseGroups = parseGroups
 module.exports.encodeContent = encodeContent
+module.exports.encodeMarkContent = encodeMarkContent
