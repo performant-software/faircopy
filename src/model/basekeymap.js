@@ -2,6 +2,7 @@ import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirro
 import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
 import {deleteParentNode} from "./commands"
+import {getTextNodeName} from "./xml"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
 // Delete the selection, if there is one.
@@ -390,15 +391,18 @@ function deleteBarrier(state, $cut, dispatch) {
   if (before.type.spec.isolating || after.type.spec.isolating) return false
 
   // check depth of textNodes
-  const beforeDepth = depthToLast(before,'textNode')
-  const afterDepth = depthToLast(after,'textNode')
+  const beforeType = getTextNodeName(before.type.spec.content)
+  const afterType = getTextNodeName(after.type.spec.content)
+  const beforeDepth = depthToLast(before,beforeType)
+  const afterDepth = depthToLast(after,afterType)
   if( beforeDepth === null || afterDepth === null ) return true 
 
   try {
     if( beforeDepth === afterDepth ) {
       // both textNodes at same depth
+      const clearPos = after.textContent.length === 0 ? $cut.pos+1 : $cut.pos+2
       dispatch(tr
-        .clearIncompatible($cut.pos, before.type, before.contentMatchAt(before.childCount))
+        .clearIncompatible(clearPos, before.type, before.contentMatchAt(before.childCount))
         .join($cut.pos,beforeDepth + 1)  // to capture the textNode
         .scrollIntoView())    
       return true
@@ -423,6 +427,7 @@ function deleteBarrier(state, $cut, dispatch) {
       return true
     }  
   } catch (e) {
+    debugger
     return true
   }
 }

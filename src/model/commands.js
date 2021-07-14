@@ -180,7 +180,7 @@ function isBlank(node) {
     if( node.childCount === 0 ) return true
     if( node.childCount > 1 ) return false
     const child = node.child(0)
-    if( child.type.name === 'textNode' ) {
+    if( child.type.name.includes('textNode') ) {
         if( child.textContent.match(/\S+/) ) return false
         return true
     }
