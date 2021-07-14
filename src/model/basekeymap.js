@@ -427,7 +427,6 @@ function deleteBarrier(state, $cut, dispatch) {
       return true
     }  
   } catch (e) {
-    debugger
     return true
   }
 }
