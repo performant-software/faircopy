@@ -70,17 +70,17 @@ export default class TEISchema {
             text: {
                 inline: true
             },
-            textNode: {
-                content: "(inline_node|text)*",
-                selectable: false,
-                draggable: false,
-                parseDOM: [
-                    {
-                        tag: "textNode"
-                    } 
-                ],
-                toDOM: () => ["textNode",0]   
-            },
+            // textNode: {
+            //     content: "(inline_node|text)*",
+            //     selectable: false,
+            //     draggable: false,
+            //     parseDOM: [
+            //         {
+            //             tag: "textNode"
+            //         } 
+            //     ],
+            //     toDOM: () => ["textNode",0]   
+            // },
             globalNode: {
                 content: "inline_node+",
                 group: "model_milestoneLike model_noteLike model_global",

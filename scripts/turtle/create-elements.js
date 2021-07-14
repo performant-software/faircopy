@@ -103,12 +103,14 @@ function createInlineNodes(elGroups,icons,specs) {
 
 function createAsides(elGroups,icons,defaultNodes,specs) {
     const {asides} = elGroups
+    const markGroups = getMarkGroups( elGroups, specs ) 
 
     const asideElements = []
     for( const aside of asides ) {
         const spec = specs[aside]
         const nodeGroups = getNodeGroups( elGroups, specs )
         const nodeContent = onlyGroups( nodeGroups, spec.content )
+        const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
         const content = encodeContent(nodeContent)
         const contentName = `${aside}X`
         const docName = `${aside}Doc`
@@ -127,11 +129,12 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
 
         // create the node that will contain the aside's content 
         asideElements.push({
-            "name": contentName,
-            "pmType": "node",
-            "isolating": true,
-            "gutterMark": true,
-            "content": content,
+            name: contentName,
+            pmType: "node",
+            isolating: true,
+            gutterMark: true,
+            content,
+            markContent,
             synth: true
         })
 
@@ -181,7 +184,8 @@ function getMarkGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror marks
     const markIdents = [ elGroups.marks, elGroups.inter ].flat()
     const groups = getGroups( markIdents, specs )
-    return [ markIdents, groups ].flat()
+    const markInters = elGroups.inter.map( inter => `mark${inter}`)
+    return [ [elGroups.marks, markInters ], groups ].flat()
 }
 
 function getGroups( idents, specs ) {

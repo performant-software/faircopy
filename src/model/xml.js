@@ -44,7 +44,12 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
     const schema = subDocName ? teiSchema.docNodeSchemas[subDocName] : teiSchema.schema
     const domSerializer = DOMSerializer.fromSchema( schema )
     const domFragment = domSerializer.serializeFragment(content)
-    removeNodes(domFragment, 'textNode')
+
+    // remove all text node channels
+    for( let i=0; i<10; i++ )  {
+        removeNodes(domFragment, `textNode${i}`)
+    }
+
     removeNodes(domFragment, 'globalNode')
     renameInterMarks(inter, domFragment)
     teiSchema.teiDocuments.pop()
@@ -172,12 +177,13 @@ export function htmlToXML(html,elements,attrs) {
 
 export function addTextNodes(editorView) {
     const { tr, schema } = editorView.state
-    const textNodeType = schema.nodes['textNode'] 
 
     // if an element could have a textnode, but is instead empty, add a textnode to it
     tr.doc.descendants((node,pos) => {
         const contentExp = node.type.spec.content
         if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
+            const textNodeName = getTextNodeName(contentExp)
+            const textNodeType = schema.nodes[textNodeName]
             const insertPos = tr.mapping.map(pos+1)
             tr.insert( insertPos, textNodeType.create() )
         }
