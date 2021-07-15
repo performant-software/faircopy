@@ -407,6 +407,7 @@ function deleteBarrier(state, $cut, dispatch) {
         .scrollIntoView())    
       return true
     } else if( afterDepth <= 1 ) {
+      // TODO not sure this is reachable code
       // move after's textNode into before and join with before's textNode
       const joinPos = $cut.pos-beforeDepth
       dispatch( tr
@@ -416,6 +417,7 @@ function deleteBarrier(state, $cut, dispatch) {
         .scrollIntoView())
       return true
     } else {
+      // TODO not sure this is reachable code
       // delete nested soft node in after 
       const nestedPos = $cut.pos+afterDepth
       const nestedNode = tr.doc.resolve(nestedPos).node()
@@ -427,6 +429,7 @@ function deleteBarrier(state, $cut, dispatch) {
       return true
     }  
   } catch (e) {
+    dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its marks are not valid in ${before.type.name}.`) )
     return true
   }
 }
