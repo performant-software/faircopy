@@ -3,7 +3,7 @@ import { Node, Fragment } from "prosemirror-model"
 
 import { getTextNodeName } from './xml'
 
-function markApplies(doc, ranges, type) {
+export function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {
         let {$from, $to} = ranges[i]
         let can = $from.depth === 0 ? doc.type.allowsMarkType(type) : false
@@ -19,7 +19,10 @@ function markApplies(doc, ranges, type) {
 export function addMark(markType,attrs) {
     return function(state, dispatch) {
         let {empty, $cursor, ranges} = state.selection
-        if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) return false
+        if ((empty && !$cursor) || !markApplies(state.doc, ranges, markType)) {
+            dispatch( state.tr.setMeta('alertMessage', `Cannot apply mark at this location.`) )
+            return false
+        } 
         if (dispatch) {
             if ($cursor) {
                 dispatch(state.tr.addStoredMark(markType.create(null)))

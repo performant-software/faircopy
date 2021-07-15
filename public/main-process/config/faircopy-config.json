@@ -12,8 +12,7 @@
 					"ref",
 					"s",
 					"seg",
-					"term",
-					"title"
+					"term"
 				]
 			},
 			{
@@ -152,7 +151,6 @@
 			{
 				"label": "Correspondence",
 				"members": [
-					"addrLine",
 					"byline",
 					"closer",
 					"dateline",
@@ -11854,7 +11852,7 @@
 			}
 		},
 		"addrLine": {
-			"active": true,
+			"active": false,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -16051,7 +16049,7 @@
 			}
 		},
 		"title": {
-			"active": true,
+			"active": false,
 			"attrState": {
 				"ana": {
 					"active": false

@@ -1,6 +1,6 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies } from "./commands"
 
 // creates inlines, marks, and inter marks
 export function createPhraseElement( elementID, attrs, teiDocument ) {
@@ -85,50 +85,30 @@ export function determineRules( elementID, teiDocument ) {
     }
 }
 
-export function validAction( actionType, elementID, teiDocument, selection ) {
+export function validAction( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
+    const { pmType } = fairCopyProject.teiSchema.elements[elementID]
     const { inter } = fairCopyProject.teiSchema.elementGroups
-    const {pmType} = fairCopyProject.teiSchema.elements[elementID]
 
-    if( pmType === 'mark' ) return true
-
-    if( inter.includes(elementID) ) {
-        return true // TODO validate inters 
-    } else {
-        if( pmType === 'node' ) {
-            if( selection.node ) {
-                return validNodeAction( actionType, elementID, teiDocument, selection.anchor )
-            } else {
-                return validRangeAction( elementID, teiDocument, selection)
-            }
-        } else {
-            // inline-nodes
-            if( pmType === 'inline-node' ) {
-                if( selection.$cursor ) return true
-                if( actionType === 'addAbove' || 'addBelow' ) return true
-            } 
-        }
+    if( pmType === 'mark' ) {
+        return validRangeAction(elementID, teiDocument)
+    } else if( inter.includes(elementID) ) {
+        return validRangeAction(`mark${elementID}`, teiDocument)
     }
-    return false
+    return true
 }
 
-function validRangeAction(elementID, teiDocument, selection) {
-    // TODO hack for now, just allow lines.
-    if( elementID === 'l' ) return true
-    return false
-    // const editorView = teiDocument.getActiveView()
-    // const { doc, schema } = editorView.state
-    // const nodeType = schema.nodes[elementID]
+function validRangeAction(elementID, teiDocument) {
+    const editorView = teiDocument.getActiveView()
+    const { doc, schema, selection } = editorView.state
+    const markType = schema.marks[elementID]
 
-    // // dry run the transform and then test the result
-    // try {
-    //     let tr = new Transform(doc)
-    //     createNode( nodeType, tr, selection, schema )  
-    // } catch(e) {
-    //     // not a valid range
-    //     return false
-    // }
-    // return true // all good
+    let {empty, $cursor, ranges} = selection
+    if ((empty && !$cursor) || !markApplies(doc, ranges, markType)) {
+        return false
+    } else {
+        return true
+    }
 }
 
 export function validNodeAction( actionType, elementID, teiDocument, pos ) {

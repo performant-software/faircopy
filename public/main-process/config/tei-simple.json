@@ -5980,9 +5980,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": [
-				"author"
-			],
+			"defaultNodes": null,
 			"desc": "contains a loosely-structured bibliographic citation of which the sub-components may or may not be explicitly tagged.",
 			"synth": false
 		},

@@ -2,7 +2,7 @@
     "mark": [
         {
             "label": "General",
-            "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term", "title"]
+            "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term" ]
         },
         {
             "label": "Transcription",
@@ -52,7 +52,7 @@
         },
         {
             "label": "Correspondence",
-            "members": ["addrLine","byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
+            "members": ["byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
         },
         {
             "label": "File (Header)",

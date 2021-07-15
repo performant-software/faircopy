@@ -4,7 +4,7 @@ import { Menu, MenuItem } from '@material-ui/core'
 import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
 import EmptyGroup from './EmptyGroup';
-import { createPhraseElement } from "../../../model/editor-actions"
+import { createPhraseElement, validAction } from "../../../model/editor-actions"
 
 export default class ElementMenu extends Component {
 
@@ -76,7 +76,7 @@ export default class ElementMenu extends Component {
                 this.itemEls[member] = el
             }
 
-            // const valid = !member.enabled ? false : validAction('mark', member.id, teiDocument, selection )
+            const valid = validAction( member, teiDocument )
             const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member })}
             const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
             const icon = teiSchema.getElementIcon(member)
@@ -86,6 +86,7 @@ export default class ElementMenu extends Component {
                 <MenuItem 
                     ref={setItemElRef}
                     key={`submenu-${member}`}
+                    disabled={!valid}
                     disableRipple={true}
                     onMouseOver={onMouseOver}
                     onMouseLeave={onMouseLeave}
