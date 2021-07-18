@@ -14,6 +14,7 @@ const createElements = function createElements(elGroups,specs) {
     elements.push( ...createMarks(elGroups,specs) )
     elements.push( ...createNodes(elGroups,false,defaultNodes,specs) )
     elements.push( ...createTextNodes(elements) )
+    elements.push( ...createGlobalNodes(elGroups,specs) )
     elements.push( ...createDocNode() )
 
     return elements
@@ -44,13 +45,15 @@ function createInters(elGroups,defaultNodes,specs) {
     const inters = elGroups.inter
     const nodeGroups = getNodeGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
+    const inlineGroups = getInlineGroups( elGroups, specs )
 
     // Inter elements generate both a mark and a soft node
     const interElements = []
     for(let inter of inters) {
         const spec = specs[inter]
-        const nodeContent = onlyGroups( nodeGroups, spec.content )
+        const nodeContent = onlyGroups( inlineGroups, onlyGroups( nodeGroups, spec.content), true )
         const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
+        const inlineContent = encodeContent( onlyGroups( inlineGroups, spec.content ), '_i' )
 
         interElements.push({
             name: `mark${inter}`,
@@ -69,6 +72,7 @@ function createInters(elGroups,defaultNodes,specs) {
             isolating: false,
             content: encodeContent(nodeContent),
             markContent,
+            inlineContent,
             group: spec.group,
             gutterMark: true,
             defaultNodes: defaultNodes[inter] ? defaultNodes[inter] : null,
@@ -88,12 +92,13 @@ function createInlineNodes(elGroups,icons,specs) {
     const inlineElements = []
     for(let inline of inlines ) {
         const spec = specs[inline]
+        const group = spec.group.split(' ').map(g=>`${g}_i`).join(' ')
         inlineElements.push( {
             name: inline,
             pmType: "inline-node",
             validAttrs: [],
             icon: icons[inline],
-            group: 'inline_node',
+            group,
             desc: spec.description,
             synth: false
         } )
@@ -114,14 +119,15 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
         const content = encodeContent(nodeContent)
         const contentName = `${aside}X`
         const docName = `${aside}Doc`
-    
+        const group = spec.group.split(' ').map(g=>`${g}_i`).join(' ')
+
         // create the inline node which will represent the element in the document
         asideElements.push( {
             name: aside,
             pmType: "inline-node",
             validAttrs: [],
             icon: icons[aside],
-            group: 'inline_node',
+            group,
             defaultNodes: defaultNodes[aside] ? defaultNodes[aside] : null,
             desc: spec.description,
             synth: false
@@ -188,6 +194,12 @@ function getMarkGroups(elGroups,specs) {
     return [ [elGroups.marks, markInters ], groups ].flat()
 }
 
+function getInlineGroups(elGroups,specs) {
+    const inlineIdents = [ elGroups.inlines, elGroups.asides ].flat()
+    const groups = getGroups( inlineIdents, specs )
+    return groups
+}
+
 function getGroups( idents, specs ) {
     const uniqueGroups = []
     for( const ident of idents ) {
@@ -201,16 +213,16 @@ function getGroups( idents, specs ) {
 }
 
 // recurse content and remove targetGroups 
-function onlyGroups( targetGroups, content ) {
+function onlyGroups( targetGroups, content, not ) {
     const filteredContent = { ...content }
     if( !content ) return null
     if( content.type === 'group' ) {
-        filteredContent.content = content.content.filter( group => targetGroups.includes(group) )
+        filteredContent.content = not ? content.content.filter( group => !targetGroups.includes(group) ) : content.content.filter( group => targetGroups.includes(group) )
         if( filteredContent.content.length === 0 ) return null
     } else {
         const contents = []
         for( const item of content.content ) {
-            const only = onlyGroups( targetGroups, item )
+            const only = onlyGroups( targetGroups, item, not )
             if( only ) {
                 contents.push( only )
             }
@@ -226,16 +238,22 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
     const nodes = hard ? elGroups.hard : elGroups.soft 
     const nodeGroups = getNodeGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
+    const inlineGroups = getInlineGroups( elGroups, specs )
 
     const nodeElements = []
     for( let node of nodes) {
         const spec = specs[node]
-        const nodeContent = onlyGroups( nodeGroups, spec.content )
-        let content = encodeContent(nodeContent)
 
-        let markContent = null
-        if( !hard ) {
+        let markContent = null, inlineContent = null, content
+        if( hard ) {
+            const nodeContent = onlyGroups( nodeGroups, spec.content )
+            content = encodeContent(nodeContent)
+        } else {
+            // filter out inlines and place them in inlineContent 
+            const nodeContent = onlyGroups( inlineGroups, onlyGroups( nodeGroups, spec.content), true )
+            content = encodeContent(nodeContent)
             markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
+            inlineContent = encodeContent( onlyGroups( inlineGroups, spec.content ), '_i' )
         }
 
         // This hack replaces note with model_noteLike in this one case. inline nodes canot be referenced
@@ -248,6 +266,7 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
             isolating: hard,
             content,
             markContent,
+            inlineContent,
             group: spec.group,
             gutterMark: true,
             validAttrs: [],
@@ -265,16 +284,17 @@ function createTextNodes(elements) {
     let textNodeCount = 0
     const textNodes = {}
     for( const element of elements ) {
-        const textNodeSignature = element.content && element.markContent ? element.markContent : null
+        const textNodeSignature = element.content && element.markContent ? `${element.markContent}-${element.inlineContent}` : null
         if( textNodeSignature ) {
             // if there isn't one like this yet, create it
             if( !textNodes[textNodeSignature] ) {
                 const textNodeName = `textNode${textNodeCount++}`                
+                const content = element.inlineContent ? `(${element.inlineContent}|text)*` : 'text*'
                 textNodes[textNodeSignature] = {
                     name: textNodeName,
                     pmType: "node",
                     synth: true,
-                    content: "(inline_node|text)*",
+                    content,
                     selectable: false,
                     marks: element.markContent,
                     draggable: false,
@@ -291,13 +311,40 @@ function createTextNodes(elements) {
             const textNodeName = textNodes[textNodeSignature].name
             element.content = element.content.replace('textNode',textNodeName)
         }
-        if( element.markContent !== undefined ) delete element.markContent
+        // if( element.markContent !== undefined ) delete element.markContent
+        // if( element.inlineContent !== undefined ) delete element.inlineContent
     }       
 
     return Object.values(textNodes)
 }
 
+function createGlobalNodes( elGroups, specs ) {
+    const inlineGroups = getInlineGroups( elGroups, specs )
 
+    const globalNodes = []
+    let globalNodeCount = 0
+    for( const inlineGroup of inlineGroups ) {
+        const globalNodeName = `globalNode${globalNodeCount++}`     
+        const content = `${inlineGroup}_i*`  
+        globalNodes.push({
+            name: globalNodeName,
+            pmType: "node",
+            content,
+            group: inlineGroup,
+            atom: true,
+            selectable: false,
+            synth: true,
+            parseDOM: [
+                {
+                    tag: globalNodeName
+                } 
+            ],
+            toDOM: () => [globalNodeName,0]
+        })
+    }
+
+    return globalNodes
+}
 
 // EXPORTS /////////////
 module.exports.createElements = createElements

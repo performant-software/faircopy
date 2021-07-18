@@ -94,8 +94,9 @@ export function validAction( elementID, teiDocument ) {
         return validRangeAction(elementID, teiDocument)
     } else if( inter.includes(elementID) ) {
         return validRangeAction(`mark${elementID}`, teiDocument)
+    } else {
+        return validInlineAction(elementID, teiDocument)
     }
-    return true
 }
 
 function validRangeAction(elementID, teiDocument) {
@@ -156,6 +157,23 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
             return parentNode.type.validContent(testFragment)
         default:
             throw new Error('Unrecognized action type.')
+    }
+}
+
+function validInlineAction(elementID, teiDocument ) {
+    const editorView = teiDocument.getActiveView()
+    const { doc, schema, selection } = editorView.state
+    const nodeType = schema.nodes[elementID]
+
+    let {empty, $cursor} = selection
+    if (empty && $cursor) {
+        const pos = $cursor.pos
+        const $targetPos = doc.resolve(pos)
+        const parentNode = $targetPos.parent
+        const testFragment = Fragment.from(nodeType.create({__id__: 'test'}))
+        return parentNode.type.validContent(testFragment)
+    } else {
+        return true
     }
 }
 

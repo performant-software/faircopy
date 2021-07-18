@@ -20,7 +20,7 @@ const elementTypeToPmTypes = {
 }
 
 export const systemElements = [
-    'text', 'globalNode'
+    'text'
 ]
 
 export default class TEISchema {
@@ -70,18 +70,18 @@ export default class TEISchema {
             text: {
                 inline: true
             },
-            globalNode: {
-                content: "inline_node+",
-                group: "model_milestoneLike model_noteLike model_global",
-                atom: true,
-                selectable: false,
-                parseDOM: [
-                    {
-                        tag: "globalNode"
-                    } 
-                ],
-                toDOM: () => ["globalNode",0]
-            }
+            // globalNode: {
+            //     content: "inline_node+",
+            //     group: "model_milestoneLike model_noteLike model_global",
+            //     atom: true,
+            //     selectable: false,
+            //     parseDOM: [
+            //         {
+            //             tag: "globalNode"
+            //         } 
+            //     ],
+            //     toDOM: () => ["globalNode",0]
+            // }
         }
         
         const marks = {}

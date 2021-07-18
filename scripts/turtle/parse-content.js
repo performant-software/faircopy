@@ -70,7 +70,7 @@ const encodeMarkContent = function encodeMarkContent( content ) {
 }
 
 // take the completed content array and turn it into a content string
-const encodeContent = function encodeContent( content ) {
+const encodeContent = function encodeContent( content, suffix='' ) {
     if( !content ) return ''
 
     const occurs = encodeOccurence(content)
@@ -78,19 +78,19 @@ const encodeContent = function encodeContent( content ) {
     if( content.type === 'sequence' ) {
         const seqItems = []
         for( const item of content.content ) {
-            seqItems.push(encodeContent(item))
+            seqItems.push(encodeContent(item,suffix))
         }
         return `(${seqItems.join(' ')})${occurs}`
     }
     if( content.type === 'alternate' ) {
         const altItems = []
         for( const item of content.content ) {
-            altItems.push(encodeContent(item))
+            altItems.push(encodeContent(item,suffix))
         }
         return `(${altItems.join('|')})${occurs}`
     }
     if( content.type === 'group' ) {
-        return `${content.content}${occurs}`
+        return `${content.content}${suffix}${occurs}`
     }    
     return ''
 }

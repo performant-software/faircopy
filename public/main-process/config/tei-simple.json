@@ -5,6 +5,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(surrogates? listBibl?)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -40,6 +42,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_global|model_headLike)* (model_common model_global*)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -77,6 +81,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_frontPart|model_pLike_front|model_pLike|model_listLike|model_global)* (((model_frontPart|model_global)*)|(model_divLike (model_frontPart|model_divLike|model_global)*))? (model_divBottomPart (model_divBottomPart|model_global)*)?)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -115,6 +121,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike|condition|decoNote)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -170,6 +178,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_pLike|decoNote|condition)+|binding+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -205,6 +215,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_global* (model_divTop (model_global|model_divTop)*)? ((model_global)*)? ((model_divLike (model_global)*)+|((model_global)*)+|((model_common model_global*)+ ((model_divLike (model_global)*)+|((model_global)*)+)?)) (model_divBottom model_global*)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -243,6 +255,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_global|model_headLike)* ((castItem|castGroup|roleDesc) model_global*)+ (trailer model_global*)?)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -280,6 +294,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_common model_global*)* ((castItem|castGroup) model_global*)+ (model_common model_global*)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_inter model_frontPart model_frontPart_drama model_standOffPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -317,6 +333,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_qLike|model_biblLike|model_ptrLike|model_global)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike model_entryPart_top",
 			"gutterMark": true,
 			"validAttrs": [
@@ -356,6 +374,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|custEvent+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -391,6 +411,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? decoNote+))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -426,6 +448,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* ((((model_divLike) model_global*)+|((model_common model_global*)+ ((model_divLike) model_global*)*)) (model_divBottom model_global*)*)?)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_divLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -473,6 +497,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_global* (titlePart model_global*)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -512,6 +538,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(edition model_respLike*))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -549,6 +577,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_common|model_global)*",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -586,6 +616,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -623,6 +655,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_global* (front model_global*)? (body) model_global* (back model_global*)?)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_inter model_qLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -663,6 +697,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_frontPart|model_pLike|model_pLike_front|model_global)* ((((model_frontPart|model_global)*)|(model_divLike (model_divLike|model_frontPart|model_global)*)) (model_divBottom (model_divBottom|model_global)*)?)?)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -701,6 +737,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary?))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -737,6 +775,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? origin? provenance* acquisition?))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -772,6 +812,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? layout+))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -807,6 +849,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_lLike|model_stageLike|model_labelLike|lg) (model_lLike|model_stageLike|model_labelLike|model_global|lg)* (model_divBottom model_global*)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -853,6 +897,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_divTop|model_global|desc*)* ((item model_global*)+|((label model_global* item model_global*)+)) (model_divBottom model_global*)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_standOffPart model_common model_inter model_listLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -894,6 +940,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_biblLike|model_milestoneLike)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_frontPart model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -935,6 +983,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_personLike|listPerson)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -976,6 +1026,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_placeLike|listPlace)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1017,6 +1069,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? titlePage? (msItem|msItemStruct)*))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1054,6 +1108,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? (msPart*|msFrag*))))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1094,6 +1150,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((msIdentifier) model_headLike* (model_pLike+|(msContents? physDesc? history? additional?)))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1131,6 +1189,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((idno*))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1166,6 +1226,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_pLike+|(model_titlepagePart|model_msItemPart|model_global)+))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_msItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1203,6 +1265,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_pLike+|(author* respStmt* title* rubric? incipit? msItemStruct* explicit? finalRubric? colophon* decoNote* listBibl* (bibl)* filiation?)))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_msItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1240,6 +1304,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? msPart*)))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1277,6 +1343,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(relatedItem)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1314,6 +1382,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(supportDesc? layoutDesc?))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1350,6 +1420,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(model_personPart|model_global)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_personLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1393,6 +1465,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_biblLike|idno)* (model_placeLike|listPlace)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_placeLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1435,6 +1509,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike* model_physDescPart)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1470,6 +1546,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_global|model_divTopPart)* model_common (model_global|model_common)* (model_divBottomPart model_global*)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_divBottom model_divBottomPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1508,6 +1586,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_publicationStmtPart_agency model_publicationStmtPart_detail*)+|model_pLike+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1545,6 +1625,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(source change*))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1580,6 +1662,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_biblLike|model_ptrLike)?",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1620,6 +1704,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(((resp+)|(resp+)))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_biblPart model_msItemPart model_respLike model_recordingPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1659,6 +1745,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary?))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1694,6 +1782,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(title+ (editor|respStmt)* (idno|biblScope)*))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1731,6 +1821,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike|decoNote)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1788,6 +1880,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? (decoNote|seal|condition)+))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1823,6 +1917,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((model_headLike|model_global)* (model_common model_global*)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_frontPart model_frontPart_drama",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1860,6 +1956,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(model_biblLike|model_listLike)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1898,6 +1996,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(support? extent? foliation* collation? condition?))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1934,6 +2034,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_qLike) model_global*)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1973,6 +2075,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_global* model_titlepagePart (model_titlepagePart|model_global)*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_frontPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2013,6 +2117,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(title+ model_respLike*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2050,6 +2156,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? typeNote+))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2085,6 +2193,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_availabilityPart|model_pLike)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_publicationStmtPart_detail model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2124,6 +2234,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc*)|(fileDesc profileDesc))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2164,6 +2276,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "((catDesc+|(model_descLike)*) category*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2201,6 +2315,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_encodingDescPart|model_pLike)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_teiHeaderPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2238,6 +2354,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2276,6 +2394,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "taxonomy+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2313,6 +2433,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(list)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2351,6 +2473,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(desc* (prefixDef|listPrefixDef)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2388,6 +2512,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "tagUsage+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2426,6 +2552,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "model_pLike+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2464,6 +2592,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "model_pLike*",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2504,6 +2634,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2542,6 +2674,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "model_pLike+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2580,6 +2714,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(rendition* namespace*)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_encodingDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2618,6 +2754,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(((category|taxonomy)+|((model_descLike)+ (category|taxonomy)*))|(model_biblLike (category|taxonomy)*))",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2655,6 +2793,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "model_profileDescPart*",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_teiHeaderPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2692,6 +2832,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(model_personLike|listPerson)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_profileDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2730,6 +2872,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|(model_placeLike|listPlace)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_profileDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2768,6 +2912,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike|model_listLike)+",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_profileDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2805,6 +2951,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(model_pLike+|language+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_profileDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2843,6 +2991,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(list|listChange|change+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2881,6 +3031,8 @@
 			"pmType": "node",
 			"isolating": true,
 			"content": "(desc* (listChange|change)+)",
+			"markContent": null,
+			"inlineContent": null,
 			"group": "model_standOffPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -2947,7 +3099,7 @@
 				"xml:space"
 			],
 			"icon": "fa-anchor",
-			"group": "inline_node",
+			"group": "model_global_i model_milestoneLike_i",
 			"desc": "attaches an identifier to a point within a text, whether or not it corresponds with a textual element.",
 			"synth": false
 		},
@@ -2985,7 +3137,7 @@
 				"xml:space"
 			],
 			"icon": "fa-line-columns",
-			"group": "inline_node",
+			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new column of a text on a multi-column page.",
 			"synth": false
 		},
@@ -3021,7 +3173,7 @@
 				"xml:space"
 			],
 			"icon": "fa-book",
-			"group": "inline_node",
+			"group": "_i",
 			"desc": "specifies one or more defined categories within some taxonomy or text typology.",
 			"synth": false
 		},
@@ -3071,7 +3223,7 @@
 				"xml:space"
 			],
 			"icon": "fa-dot-circle",
-			"group": "inline_node",
+			"group": "model_global_i model_global_edit_i",
 			"desc": "indicates a point where material has been omitted in a transcription, whether for editorial reasons described in the TEI header, as part of sampling practice, or because the material is illegible, invisible, or inaudible.",
 			"synth": false
 		},
@@ -3109,7 +3261,7 @@
 				"xml:space"
 			],
 			"icon": "fa-angle-double-right",
-			"group": "inline_node",
+			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new (typographic) line in some edition or version of a text.",
 			"synth": false
 		},
@@ -3148,7 +3300,7 @@
 				"xml:space"
 			],
 			"icon": "fa-map-marker",
-			"group": "inline_node",
+			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks a boundary point separating any kind of section of a text, typically but not necessarily indicating a point at which some part of a standard reference system changes, where the change is not represented by a structural element.",
 			"synth": false
 		},
@@ -3186,7 +3338,7 @@
 				"xml:space"
 			],
 			"icon": "fa-file-alt",
-			"group": "inline_node",
+			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new page in a paginated document.",
 			"synth": false
 		},
@@ -3227,7 +3379,7 @@
 				"xml:space"
 			],
 			"icon": "fa-comment-alt",
-			"group": "inline_node",
+			"group": "model_global_i model_noteLike_i model_correspDescPart_i model_correspActionPart_i model_correspContextPart_i",
 			"defaultNodes": null,
 			"desc": "contains a note or annotation.",
 			"synth": false
@@ -3238,6 +3390,7 @@
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"markContent": "model_gLike model_phrase model_inter",
 			"synth": true
 		},
 		{
@@ -3275,7 +3428,7 @@
 				"xml:space"
 			],
 			"icon": "fa-question-circle",
-			"group": "inline_node",
+			"group": "model_phrase_i model_pPart_edit_i model_limitedPhrase_i model_pPart_editorial_i model_linePart_i",
 			"defaultNodes": [
 				"sic",
 				"corr"
@@ -3289,6 +3442,7 @@
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(model_choicePart){2,}",
+			"markContent": "model_choicePart",
 			"synth": true
 		},
 		{
@@ -3331,7 +3485,7 @@
 				"xml:space"
 			],
 			"icon": "fa-heading",
-			"group": "inline_node",
+			"group": "model_global_i model_milestoneLike_i",
 			"defaultNodes": null,
 			"desc": "contains a running head (e.g. a header, footer), catchword, or similar material appearing on the current page.",
 			"synth": false
@@ -3342,6 +3496,7 @@
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"synth": true
 		},
 		{
@@ -3395,7 +3550,7 @@
 				"xml:space"
 			],
 			"icon": "fa-random",
-			"group": "inline_node",
+			"group": "model_phrase_i model_pPart_edit_i model_limitedPhrase_i model_pPart_editorial_i",
 			"defaultNodes": [
 				"add",
 				"del"
@@ -3409,6 +3564,7 @@
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(add|del|model_milestoneLike)+",
+			"markContent": "",
 			"synth": true
 		},
 		{
@@ -3465,6 +3621,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector.",
 			"synth": true
 		},
@@ -3472,7 +3629,9 @@
 			"name": "add",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -3554,6 +3713,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains the correct form of a passage apparently erroneous in the copy text.",
 			"synth": true
 		},
@@ -3561,7 +3721,9 @@
 			"name": "corr",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -3642,6 +3804,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector.",
 			"synth": true
 		},
@@ -3649,7 +3812,9 @@
 			"name": "del",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -3727,6 +3892,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
 			"synth": true
 		},
@@ -3734,7 +3900,9 @@
 			"name": "hi",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -3794,6 +3962,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected.",
 			"synth": true
 		},
@@ -3801,7 +3970,9 @@
 			"name": "orig",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -3863,6 +4034,7 @@
 				"xml:space"
 			],
 			"group": "model_common model_inter model_qLike",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
 			"synth": true
 		},
@@ -3870,7 +4042,9 @@
 			"name": "q",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_inter model_qLike",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -3936,6 +4110,7 @@
 				"xml:space"
 			],
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text.",
 			"synth": true
 		},
@@ -3943,7 +4118,9 @@
 			"name": "quote",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4014,6 +4191,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
 			"synth": true
 		},
@@ -4021,7 +4199,9 @@
 			"name": "ref",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4092,6 +4272,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains a reading which has been regularized or normalized in some sense.",
 			"synth": true
 		},
@@ -4099,7 +4280,9 @@
 			"name": "reg",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4165,6 +4348,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_lPart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "marks the rhyming part of a metrical line.",
 			"synth": true
 		},
@@ -4172,7 +4356,9 @@
 			"name": "rhyme",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_lPart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4245,6 +4431,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "represents any segmentation of text below the chunk level.",
 			"synth": true
 		},
@@ -4252,7 +4439,9 @@
 			"name": "seg",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4322,6 +4511,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains text reproduced although apparently incorrect or inaccurate.",
 			"synth": true
 		},
@@ -4329,7 +4519,9 @@
 			"name": "sic",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4388,6 +4580,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains discussion of the leaf or quire signatures found within a codex or similar object.",
 			"synth": true
 		},
@@ -4395,7 +4588,9 @@
 			"name": "signatures",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4467,6 +4662,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe.",
 			"synth": true
 		},
@@ -4474,7 +4670,9 @@
 			"name": "supplied",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4560,6 +4758,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
+			"markContent": "model_gLike model_phrase model_inter",
 			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source.",
 			"synth": true
 		},
@@ -4567,7 +4766,9 @@
 			"name": "unclear",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
 			"gutterMark": true,
 			"defaultNodes": null,
@@ -4643,6 +4844,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains an abbreviation of any sort.",
 			"synth": false
 		},
@@ -4684,6 +4886,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike model_linePart",
+			"markContent": "model_gLike",
 			"desc": "represents a character.",
 			"synth": false
 		},
@@ -4718,6 +4921,7 @@
 				"xml:space"
 			],
 			"group": "model_gLike",
+			"markContent": "",
 			"desc": "represents a glyph, or a non-standard character.",
 			"synth": false
 		},
@@ -4766,6 +4970,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike model_linePart",
+			"markContent": "model_gLike model_pPart_edit",
 			"desc": "contains a character or string of characters regarded as constituting a single punctuation mark.",
 			"synth": false
 		},
@@ -4812,6 +5017,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike model_linePart",
+			"markContent": "model_gLike model_lPart model_hiLike model_pPart_edit",
 			"desc": "represents a grammatical (not necessarily orthographic) word.",
 			"synth": false
 		},
@@ -4843,6 +5049,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "describes the system used to ensure correct ordering of the quires or similar making up a codex, incunable, or other object typically by means of annotations at the foot of the page.",
 			"synth": false
 		},
@@ -4911,6 +5118,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike model_publicationStmtPart_detail",
+			"markContent": "model_gLike model_phrase",
 			"desc": "contains a date in any format.",
 			"synth": false
 		},
@@ -4942,6 +5150,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains an email address identifying a location to which email messages can be delivered.",
 			"synth": false
 		},
@@ -4975,6 +5184,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains the expansion of an abbreviation.",
 			"synth": false
 		},
@@ -5006,6 +5216,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "identifies a word or phrase as belonging to some language other than that of the surrounding text.",
 			"synth": false
 		},
@@ -5037,6 +5248,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a heraldic formula or phrase, typically found as part of a blazon, coat of arms, etc. ",
 			"synth": false
 		},
@@ -5070,6 +5282,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a word or phrase describing the material of which the object being described is composed.",
 			"synth": false
 		},
@@ -5108,6 +5321,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a word or phrase referring to some quantity of an object or commodity, usually comprising a number, a unit, and a commodity name.",
 			"synth": false
 		},
@@ -5168,6 +5382,7 @@
 				"xml:space"
 			],
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a proper noun or noun phrase.",
 			"synth": false
 		},
@@ -5208,6 +5423,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a number, written in any form.",
 			"synth": false
 		},
@@ -5241,6 +5457,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a word or phrase describing the type of object being referred to.",
 			"synth": false
 		},
@@ -5305,6 +5522,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_phrase",
 			"desc": "contains any form of date, used to identify the date of origin for a manuscript, manuscript part, or other object.",
 			"synth": false
 		},
@@ -5363,6 +5581,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains any form of place name, used to identify the place of origin for a manuscript, manuscript part, or other object.",
 			"synth": false
 		},
@@ -5400,6 +5619,7 @@
 				"xml:space"
 			],
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a general purpose name or referring string.",
 			"synth": false
 		},
@@ -5441,6 +5661,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_segLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a sentence-like division of a text.",
 			"synth": false
 		},
@@ -5472,6 +5693,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "marks the word or words taken from a fixed point in a codex (typically the beginning of the second leaf) in order to provide a unique identifier for it. ",
 			"synth": false
 		},
@@ -5524,6 +5746,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a word or phrase describing a stamp or similar device.",
 			"synth": false
 		},
@@ -5565,6 +5788,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term.",
 			"synth": false
 		},
@@ -5633,6 +5857,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike",
+			"markContent": "model_gLike model_phrase",
 			"desc": "contains a phrase defining a time of day in any format.",
 			"synth": false
 		},
@@ -5664,6 +5889,7 @@
 				"xml:space"
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
+			"markContent": "model_gLike model_qLike model_phrase",
 			"desc": "contains a word or phrase describing a watermark or similar device.",
 			"synth": false
 		},
@@ -5671,7 +5897,9 @@
 			"name": "ab",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5711,7 +5939,9 @@
 			"name": "actor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5748,7 +5978,9 @@
 			"name": "accMat",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5785,7 +6017,9 @@
 			"name": "acquisition",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5839,7 +6073,9 @@
 			"name": "additions",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5874,7 +6110,9 @@
 			"name": "addrLine",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_addrPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5909,7 +6147,9 @@
 			"name": "author",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5948,7 +6188,9 @@
 			"name": "bibl",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode3|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
+			"content": "(textNode5|model_highlighted|model_pPart_data|model_segLike|model_ptrLike|model_biblPart)*",
+			"markContent": "model_gLike model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
+			"inlineContent": "(model_pPart_edit_i|model_global_i)*",
 			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -5988,7 +6230,9 @@
 			"name": "biblScope",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart model_imprintPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6026,7 +6270,9 @@
 			"name": "byline",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode4|model_phrase|docAuthor|model_global)*",
+			"content": "(textNode6|docAuthor)*",
+			"markContent": "model_gLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6061,7 +6307,9 @@
 			"name": "castItem",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode4|model_castItemPart|model_phrase|model_global)*",
+			"content": "(textNode6|model_castItemPart)*",
+			"markContent": "model_gLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6099,7 +6347,9 @@
 			"name": "closer",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode4|signed|dateline|salute|model_phrase|model_global)*",
+			"content": "(textNode6|signed|dateline|salute)*",
+			"markContent": "model_gLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divBottom model_divBottomPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6135,7 +6385,9 @@
 			"name": "collation",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6170,7 +6422,9 @@
 			"name": "colophon",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6206,7 +6460,9 @@
 			"name": "condition",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6241,7 +6497,9 @@
 			"name": "custEvent",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6297,7 +6555,9 @@
 			"name": "dateline",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode4|model_phrase|model_global|docDate)*",
+			"content": "(textNode6|docDate)*",
+			"markContent": "model_gLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6332,7 +6592,9 @@
 			"name": "decoNote",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6369,7 +6631,9 @@
 			"name": "desc",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode5|model_limitedPhrase|model_inter)*",
+			"content": "(textNode7|model_inter)*",
+			"markContent": "model_limitedPhrase model_inter",
+			"inlineContent": "(model_limitedPhrase_i)*",
 			"group": "model_descLike model_common model_inter model_labelLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6408,7 +6672,9 @@
 			"name": "distributor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6445,7 +6711,9 @@
 			"name": "docAuthor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6482,7 +6750,9 @@
 			"name": "docDate",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6518,7 +6788,9 @@
 			"name": "docEdition",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6553,7 +6825,9 @@
 			"name": "docImprint",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode4|model_phrase|pubPlace|docDate|publisher|model_global)*",
+			"content": "(textNode6|pubPlace|docDate|publisher)*",
+			"markContent": "model_gLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6588,7 +6862,9 @@
 			"name": "editor",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6627,7 +6903,9 @@
 			"name": "explicit",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6665,7 +6943,9 @@
 			"name": "extent",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6700,7 +6980,9 @@
 			"name": "filiation",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6737,7 +7019,9 @@
 			"name": "finalRubric",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6775,7 +7059,9 @@
 			"name": "foliation",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6810,7 +7096,9 @@
 			"name": "head",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|lg|model_phrase|model_inter|model_lLike|model_global)*",
+			"content": "(textNode3|lg|model_inter|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divTop model_divTopPart model_headLike model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6849,7 +7137,9 @@
 			"name": "imprimatur",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_titlepagePart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6884,7 +7174,9 @@
 			"name": "incipit",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6922,7 +7214,9 @@
 			"name": "item",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6958,7 +7252,9 @@
 			"name": "l",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global)*",
+			"content": "(textNode3|model_inter)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_divPart model_lLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -6998,7 +7294,9 @@
 			"name": "label",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_inter model_labelLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7037,7 +7335,9 @@
 			"name": "layout",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7076,7 +7376,9 @@
 			"name": "musicNotation",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_physDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7111,7 +7413,9 @@
 			"name": "opener",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode4|model_phrase|argument|byline|dateline|epigraph|salute|signed|model_global)*",
+			"content": "(textNode6|argument|byline|dateline|epigraph|salute|signed)*",
+			"markContent": "model_gLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divTop model_divTopPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7147,7 +7451,9 @@
 			"name": "origin",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7203,7 +7509,9 @@
 			"name": "p",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7241,7 +7549,9 @@
 			"name": "provenance",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7297,7 +7607,9 @@
 			"name": "publisher",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7334,7 +7646,9 @@
 			"name": "pubPlace",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_detail",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7373,7 +7687,9 @@
 			"name": "resp",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode6|model_limitedPhrase|model_global)*",
+			"content": "(textNode8)*",
+			"markContent": "model_limitedPhrase",
+			"inlineContent": "(model_limitedPhrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7429,7 +7745,9 @@
 			"name": "role",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7464,7 +7782,9 @@
 			"name": "roleDesc",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7499,7 +7819,9 @@
 			"name": "rubric",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7537,7 +7859,9 @@
 			"name": "salute",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divTop model_divBottom model_divWrapper",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7573,7 +7897,9 @@
 			"name": "signed",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divBottom model_divBottomPart model_divTop model_divTopPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7609,7 +7935,9 @@
 			"name": "source",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7644,7 +7972,9 @@
 			"name": "speaker",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7679,7 +8009,9 @@
 			"name": "stage",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_common model_inter model_stageLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7718,7 +8050,9 @@
 			"name": "summary",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7753,7 +8087,9 @@
 			"name": "support",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7788,7 +8124,9 @@
 			"name": "surrogates",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7823,7 +8161,9 @@
 			"name": "title",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7883,7 +8223,9 @@
 			"name": "titlePart",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode3|model_inter|lg|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7921,7 +8263,9 @@
 			"name": "trailer",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|lg|model_phrase|model_inter|model_lLike|model_global)*",
+			"content": "(textNode3|lg|model_inter|model_lLike)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_divBottom model_divBottomPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7960,7 +8304,9 @@
 			"name": "typeNote",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8001,7 +8347,9 @@
 			"name": "creation",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode6|model_limitedPhrase|listChange)*",
+			"content": "(textNode9|listChange)*",
+			"markContent": "model_limitedPhrase",
+			"inlineContent": "(model_limitedPhrase_i)*",
 			"group": "model_profileDescPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8055,7 +8403,9 @@
 			"name": "edition",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode2|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode4|model_qLike)*",
+			"markContent": "model_gLike model_qLike model_phrase",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8090,7 +8440,9 @@
 			"name": "idno",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode7|idno)*",
+			"content": "(textNode10|idno)*",
+			"markContent": "model_gLike",
+			"inlineContent": "",
 			"group": "model_msItemPart model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_publicationStmtPart_detail model_personPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8148,7 +8500,9 @@
 			"name": "licence",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "model_availabilityPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8205,7 +8559,9 @@
 			"name": "rendition",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode5|model_limitedPhrase|model_inter)*",
+			"content": "(textNode7|model_inter)*",
+			"markContent": "model_limitedPhrase model_inter",
+			"inlineContent": "(model_limitedPhrase_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8244,7 +8600,9 @@
 			"name": "tagUsage",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode5|model_limitedPhrase|model_inter)*",
+			"content": "(textNode7|model_inter)*",
+			"markContent": "model_limitedPhrase model_inter",
+			"inlineContent": "(model_limitedPhrase_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8282,7 +8640,9 @@
 			"name": "catDesc",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode6|model_limitedPhrase)*",
+			"content": "(textNode9)*",
+			"markContent": "model_limitedPhrase",
+			"inlineContent": "(model_limitedPhrase_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8319,7 +8679,9 @@
 			"name": "change",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode3|model_inter|model_divPart)*",
+			"markContent": "model_gLike model_phrase model_inter",
+			"inlineContent": "(model_phrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8378,7 +8740,9 @@
 			"name": "classCode",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode6|model_limitedPhrase|model_global)*",
+			"content": "(textNode8)*",
+			"markContent": "model_limitedPhrase",
+			"inlineContent": "(model_limitedPhrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8414,7 +8778,9 @@
 			"name": "language",
 			"pmType": "node",
 			"isolating": false,
-			"content": "(textNode6|model_limitedPhrase|model_global)*",
+			"content": "(textNode8)*",
+			"markContent": "model_limitedPhrase",
+			"inlineContent": "(model_limitedPhrase_i|model_global_i)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8451,7 +8817,7 @@
 			"name": "textNode0",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "text*",
 			"selectable": false,
 			"marks": "model_gLike model_phrase model_inter",
 			"draggable": false,
@@ -8465,7 +8831,7 @@
 			"name": "textNode1",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "text*",
 			"selectable": false,
 			"marks": "model_choicePart",
 			"draggable": false,
@@ -8479,7 +8845,7 @@
 			"name": "textNode2",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "text*",
 			"selectable": false,
 			"marks": "model_gLike model_qLike model_phrase",
 			"draggable": false,
@@ -8493,9 +8859,9 @@
 			"name": "textNode3",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_gLike model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
+			"marks": "model_gLike model_phrase model_inter",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -8507,9 +8873,9 @@
 			"name": "textNode4",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_gLike model_phrase",
+			"marks": "model_gLike model_qLike model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -8521,9 +8887,9 @@
 			"name": "textNode5",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "((model_pPart_edit_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_limitedPhrase model_inter",
+			"marks": "model_gLike model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -8535,9 +8901,9 @@
 			"name": "textNode6",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_limitedPhrase",
+			"marks": "model_gLike model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -8549,13 +8915,237 @@
 			"name": "textNode7",
 			"pmType": "node",
 			"synth": true,
-			"content": "(inline_node|text)*",
+			"content": "((model_limitedPhrase_i)*|text)*",
+			"selectable": false,
+			"marks": "model_limitedPhrase model_inter",
+			"draggable": false,
+			"parseDOM": [
+				{
+					"tag": "textNode7"
+				}
+			]
+		},
+		{
+			"name": "textNode8",
+			"pmType": "node",
+			"synth": true,
+			"content": "((model_limitedPhrase_i|model_global_i)*|text)*",
+			"selectable": false,
+			"marks": "model_limitedPhrase",
+			"draggable": false,
+			"parseDOM": [
+				{
+					"tag": "textNode8"
+				}
+			]
+		},
+		{
+			"name": "textNode9",
+			"pmType": "node",
+			"synth": true,
+			"content": "((model_limitedPhrase_i)*|text)*",
+			"selectable": false,
+			"marks": "model_limitedPhrase",
+			"draggable": false,
+			"parseDOM": [
+				{
+					"tag": "textNode9"
+				}
+			]
+		},
+		{
+			"name": "textNode10",
+			"pmType": "node",
+			"synth": true,
+			"content": "text*",
 			"selectable": false,
 			"marks": "model_gLike",
 			"draggable": false,
 			"parseDOM": [
 				{
-					"tag": "textNode7"
+					"tag": "textNode10"
+				}
+			]
+		},
+		{
+			"name": "globalNode0",
+			"pmType": "node",
+			"content": "model_global_i*",
+			"group": "model_global",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode0"
+				}
+			]
+		},
+		{
+			"name": "globalNode1",
+			"pmType": "node",
+			"content": "model_milestoneLike_i*",
+			"group": "model_milestoneLike",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode1"
+				}
+			]
+		},
+		{
+			"name": "globalNode2",
+			"pmType": "node",
+			"content": "_i*",
+			"group": "",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode2"
+				}
+			]
+		},
+		{
+			"name": "globalNode3",
+			"pmType": "node",
+			"content": "model_global_edit_i*",
+			"group": "model_global_edit",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode3"
+				}
+			]
+		},
+		{
+			"name": "globalNode4",
+			"pmType": "node",
+			"content": "model_noteLike_i*",
+			"group": "model_noteLike",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode4"
+				}
+			]
+		},
+		{
+			"name": "globalNode5",
+			"pmType": "node",
+			"content": "model_correspDescPart_i*",
+			"group": "model_correspDescPart",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode5"
+				}
+			]
+		},
+		{
+			"name": "globalNode6",
+			"pmType": "node",
+			"content": "model_correspActionPart_i*",
+			"group": "model_correspActionPart",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode6"
+				}
+			]
+		},
+		{
+			"name": "globalNode7",
+			"pmType": "node",
+			"content": "model_correspContextPart_i*",
+			"group": "model_correspContextPart",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode7"
+				}
+			]
+		},
+		{
+			"name": "globalNode8",
+			"pmType": "node",
+			"content": "model_phrase_i*",
+			"group": "model_phrase",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode8"
+				}
+			]
+		},
+		{
+			"name": "globalNode9",
+			"pmType": "node",
+			"content": "model_pPart_edit_i*",
+			"group": "model_pPart_edit",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode9"
+				}
+			]
+		},
+		{
+			"name": "globalNode10",
+			"pmType": "node",
+			"content": "model_limitedPhrase_i*",
+			"group": "model_limitedPhrase",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode10"
+				}
+			]
+		},
+		{
+			"name": "globalNode11",
+			"pmType": "node",
+			"content": "model_pPart_editorial_i*",
+			"group": "model_pPart_editorial",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode11"
+				}
+			]
+		},
+		{
+			"name": "globalNode12",
+			"pmType": "node",
+			"content": "model_linePart_i*",
+			"group": "model_linePart",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode12"
 				}
 			]
 		},
