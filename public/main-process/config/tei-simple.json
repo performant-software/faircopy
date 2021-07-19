@@ -1119,7 +1119,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes the intellectual content of a manuscript, manuscript part, or other object either as a series of paragraphs or as a series of structured manuscript items.",
 			"synth": false
 		},
@@ -1272,7 +1274,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes an individual work or item within the intellectual content of a manuscript, manuscript part, or other object.",
 			"synth": false
 		},
@@ -1309,7 +1313,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a structured description for an individual work or item within the intellectual content of a manuscript, manuscript part, or other object.",
 			"synth": false
 		},

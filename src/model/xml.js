@@ -192,15 +192,14 @@ export function addTextNodes(editorView) {
 
 // Repair camel cased attrs that React munged
 function renameCamelCase(html,elements,attrs) {
-    const regex = /[a-z]+[A-Z]/
     let htmlBuffer = html
     for( const attr of Object.values(attrs) ) {
-        if( attr.ident && attr.ident.match(regex) ) {
+        if( attr.ident ) {
             htmlBuffer = renameAttrs(htmlBuffer, attr.ident.toLowerCase(), attr.ident)
         }
     }
     for( const el of Object.values(elements) ) {
-        if( el.name && el.name.match(regex) ) {
+        if( el.name ) {
             htmlBuffer = renameEls(htmlBuffer, el.name.toLowerCase(), el.name)
         }
     }
@@ -213,9 +212,10 @@ function renameAttrs(htmlFragment, oldAttrName, newAttrName) {
 }
 
 function renameEls(htmlFragment, oldElName, newElName) {
-    const regexOpen = new RegExp(`<${oldElName}`,'g')
-    const regexClose = new RegExp(`</${oldElName}`,'g')
-    return htmlFragment.replace(regexOpen,`<${newElName}`).replace(regexClose,`</${newElName}`)
+    // capture any attributes 
+    const regexOpen = new RegExp(`<${oldElName}(\\s+[^>]*)*>`,'g')
+    const regexClose = new RegExp(`</${oldElName}>`,'g')
+    return htmlFragment.replace(regexOpen,(match,attrs) => `<${newElName}${attrs ? attrs : ''}>`).replace(regexClose,`</${newElName}>`)
 }
 
 // copy all the attributes from one element to another
