@@ -1,7 +1,7 @@
 const { encodeContent, encodeMarkContent } = require('./parse-content');
 const fs = require('fs');
 
-const createElements = function createElements(elGroups,specs) {
+const createElements = function createElements(elGroups,specs,keepReportData) {
     const elements = []
     const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons.json`).toString('utf-8'))
     const defaultNodes = JSON.parse(fs.readFileSync(`scripts/turtle/default-nodes.json`).toString('utf-8'))
@@ -16,6 +16,13 @@ const createElements = function createElements(elGroups,specs) {
     elements.push( ...createTextNodes(elements) )
     elements.push( ...createGlobalNodes(elGroups,specs) )
     elements.push( ...createDocNode() )
+
+    if(!keepReportData) {
+        for( const element of elements ) {
+            if( element.markContent !== undefined ) delete element.markContent
+            if( element.inlineContent !== undefined ) delete element.inlineContent
+        }
+    }
 
     return elements
 }
@@ -46,6 +53,7 @@ function createInters(elGroups,defaultNodes,specs) {
     const nodeGroups = getNodeGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
     const inlineGroups = getInlineGroups( elGroups, specs )
+    const inlineIdents = getInlineIdents( elGroups )
 
     // Inter elements generate both a mark and a soft node
     const interElements = []
@@ -70,7 +78,7 @@ function createInters(elGroups,defaultNodes,specs) {
             name: inter,
             pmType: "node",
             isolating: false,
-            content: encodeContent(nodeContent),
+            content: encodeContent(nodeContent, '_g', inlineIdents ),
             markContent,
             inlineContent,
             group: spec.group,
@@ -109,6 +117,7 @@ function createInlineNodes(elGroups,icons,specs) {
 function createAsides(elGroups,icons,defaultNodes,specs) {
     const {asides} = elGroups
     const markGroups = getMarkGroups( elGroups, specs ) 
+    const inlineIdents = getInlineIdents( elGroups )
 
     const asideElements = []
     for( const aside of asides ) {
@@ -116,7 +125,7 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
         const nodeGroups = getNodeGroups( elGroups, specs )
         const nodeContent = onlyGroups( nodeGroups, spec.content )
         const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
-        const content = encodeContent(nodeContent)
+        const content = encodeContent(nodeContent, '_g', inlineIdents )
         const contentName = `${aside}X`
         const docName = `${aside}Doc`
         const group = spec.group.length > 0 ? spec.group.split(' ').map(g=>`${g}_i`).join(' ') : ''
@@ -181,7 +190,7 @@ const createDocNode = function createDocNode() {
 
 function getNodeGroups(elGroups,specs) {
     // these are elements that translate into ProseMirror nodes
-    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.inlines, elGroups.inter ].flat()
+    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.inlines, elGroups.asides, elGroups.inter ].flat()
     const groups = getGroups( nodeIdents, specs )
     return [ nodeIdents, groups, "textNode" ].flat()
 }
@@ -195,9 +204,13 @@ function getMarkGroups(elGroups,specs) {
 }
 
 function getInlineGroups(elGroups,specs) {
-    const inlineIdents = [ elGroups.inlines, elGroups.asides ].flat()
+    const inlineIdents = getInlineIdents(elGroups)
     const groups = getGroups( inlineIdents, specs )
     return groups
+}
+
+function getInlineIdents(elGroups) {
+    return [ elGroups.inlines, elGroups.asides ].flat()
 }
 
 function getGroups( idents, specs ) {
@@ -239,6 +252,7 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
     const nodeGroups = getNodeGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
     const inlineGroups = getInlineGroups( elGroups, specs )
+    const inlineIdents = getInlineIdents( elGroups )
 
     const nodeElements = []
     for( let node of nodes) {
@@ -247,19 +261,15 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
         let markContent = null, inlineContent = null, content
         if( hard ) {
             const nodeContent = onlyGroups( nodeGroups, spec.content )
-            content = encodeContent(nodeContent)
+            content = encodeContent(nodeContent, '_g', inlineIdents )
         } else {
             // filter out inlines and place them in inlineContent 
             const nodeContent = onlyGroups( inlineGroups, onlyGroups( nodeGroups, spec.content), true )
-            content = encodeContent(nodeContent)
+            content = encodeContent(nodeContent, '_g', inlineIdents )
             markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
             inlineContent = encodeContent( onlyGroups( inlineGroups, spec.content ), '_i' )
         }
 
-        // This hack replaces note with model_noteLike in this one case. inline nodes canot be referenced
-        // by element name since they are fronted by the globalNode element to shim 
-        // block vs. inline interface in ProseMirror.
-        if( node === 'respStmt' ) content = content.replace(/note/g,'model_noteLike')
         const nodeEl = {
             name: node,
             pmType: "node",
@@ -311,8 +321,6 @@ function createTextNodes(elements) {
             const textNodeName = textNodes[textNodeSignature].name
             element.content = element.content.replace('textNode',textNodeName)
         }
-        if( element.markContent !== undefined ) delete element.markContent
-        if( element.inlineContent !== undefined ) delete element.inlineContent
     }       
 
     return Object.values(textNodes)
@@ -320,18 +328,19 @@ function createTextNodes(elements) {
 
 function createGlobalNodes( elGroups, specs ) {
     const inlineGroups = getInlineGroups( elGroups, specs )
+    const inlineIdents = getInlineIdents( elGroups )
 
-    const globalNodes = []
     let globalNodeCount = 0
-    for( const inlineGroup of inlineGroups ) {
-        if( inlineGroup.length === 0 ) continue
+    const globalNodes = []
+
+    const createGlobalNode = function(content,group) {
         const globalNodeName = `globalNode${globalNodeCount++}`     
-        const content = `${inlineGroup}_i*`  
+        
         globalNodes.push({
             name: globalNodeName,
             pmType: "node",
             content,
-            group: inlineGroup,
+            group,
             atom: true,
             selectable: false,
             synth: true,
@@ -342,6 +351,19 @@ function createGlobalNodes( elGroups, specs ) {
             ],
             toDOM: () => [globalNodeName,0]
         })
+    }
+    
+    for( const inlineGroup of inlineGroups ) {
+        if( inlineGroup.length === 0 ) continue
+        const content = `${inlineGroup}_i*`  
+        const group = inlineGroup
+        createGlobalNode(content,group)
+    }
+
+    for( const inlineIdent of inlineIdents ) {
+        const content = `${inlineIdent}*`  
+        const group = `${inlineIdent}_g`
+        createGlobalNode(content,group)
     }
 
     return globalNodes

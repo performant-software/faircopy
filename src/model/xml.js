@@ -45,8 +45,8 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
     const domSerializer = DOMSerializer.fromSchema( schema )
     const domFragment = domSerializer.serializeFragment(content)
 
-    // remove all text node channels
-    for( let i=0; i<12; i++ )  {
+    // remove all text node channels TODO: what is max i?
+    for( let i=0; i<99; i++ )  {
         removeNodes(domFragment, `textNode${i}`)
         removeNodes(domFragment, `globalNode${i}`)
     }

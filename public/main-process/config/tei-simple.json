@@ -4,7 +4,7 @@
 			"name": "additional",
 			"pmType": "node",
 			"isolating": true,
-			"content": "(surrogates? listBibl?)",
+			"content": "(adminInfo? surrogates? listBibl?)",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -33,6 +33,80 @@
 			],
 			"defaultNodes": null,
 			"desc": "groups additional information, combining bibliographic information about a manuscript or other object, or surrogate copies of it, with curatorial or administrative information.",
+			"synth": false
+		},
+		{
+			"name": "adminInfo",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(recordHist? availability? custodialHist? model_noteLike?)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains information about the present custody and availability of the manuscript or other object, and also about the record description itself.",
+			"synth": false
+		},
+		{
+			"name": "altIdentifier",
+			"pmType": "node",
+			"isolating": true,
+			"content": "(idno note_g?)",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"idno"
+			],
+			"desc": "contains an alternative or former structured identifier used for a manuscript or other object, such as a former catalogue number.",
 			"synth": false
 		},
 		{
@@ -1085,7 +1159,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"msIdentifier"
+			],
 			"desc": "contains a description of a single identifiable manuscript or other text-bearing object such as early printed books.",
 			"synth": false
 		},
@@ -1093,7 +1169,7 @@
 			"name": "msFrag",
 			"pmType": "node",
 			"isolating": true,
-			"content": "((msIdentifier) model_headLike* (model_pLike+|(msContents? physDesc? history? additional?)))",
+			"content": "((altIdentifier|msIdentifier) model_headLike* (model_pLike+|(msContents? physDesc? history? additional?)))",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1130,7 +1206,7 @@
 			"name": "msIdentifier",
 			"pmType": "node",
 			"isolating": true,
-			"content": "((idno*))",
+			"content": "((idno*) (altIdentifier)*)",
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1157,7 +1233,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"idno"
+			],
 			"desc": "contains the information required to identify the manuscript or similar object being described.",
 			"synth": false
 		},
@@ -1202,7 +1280,7 @@
 			"name": "msItemStruct",
 			"pmType": "node",
 			"isolating": true,
-			"content": "((model_pLike+|(author* respStmt* title* rubric? incipit? msItemStruct* explicit? finalRubric? colophon* decoNote* listBibl* (bibl)* filiation?)))",
+			"content": "((model_pLike+|(author* respStmt* title* rubric? incipit? msItemStruct* explicit? finalRubric? colophon* decoNote* listBibl* (bibl)* filiation? model_noteLike*)))",
 			"group": "model_msItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1276,7 +1354,7 @@
 			"name": "notesStmt",
 			"pmType": "node",
 			"isolating": true,
-			"content": "(relatedItem)+",
+			"content": "(model_noteLike|relatedItem)+",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1392,7 +1470,7 @@
 			"name": "place",
 			"pmType": "node",
 			"isolating": true,
-			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_biblLike|idno)* (model_placeLike|listPlace)*)",
+			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_noteLike|model_biblLike|idno)* (model_placeLike|listPlace)*)",
 			"group": "model_placeLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1619,7 +1697,7 @@
 			"name": "respStmt",
 			"pmType": "node",
 			"isolating": true,
-			"content": "(((resp+)|(resp+)))",
+			"content": "(((resp+)|(resp+)) note_g*)",
 			"group": "model_biblPart model_msItemPart model_respLike model_recordingPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -3288,7 +3366,7 @@
 			"pmType": "node",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(model_choicePart){2,}",
+			"content": "(model_choicePart|choice_g){2,}",
 			"synth": true
 		},
 		{
@@ -8770,6 +8848,160 @@
 			]
 		},
 		{
+			"name": "globalNode12",
+			"pmType": "node",
+			"content": "anchor*",
+			"group": "anchor_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode12"
+				}
+			]
+		},
+		{
+			"name": "globalNode13",
+			"pmType": "node",
+			"content": "cb*",
+			"group": "cb_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode13"
+				}
+			]
+		},
+		{
+			"name": "globalNode14",
+			"pmType": "node",
+			"content": "catRef*",
+			"group": "catRef_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode14"
+				}
+			]
+		},
+		{
+			"name": "globalNode15",
+			"pmType": "node",
+			"content": "gap*",
+			"group": "gap_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode15"
+				}
+			]
+		},
+		{
+			"name": "globalNode16",
+			"pmType": "node",
+			"content": "lb*",
+			"group": "lb_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode16"
+				}
+			]
+		},
+		{
+			"name": "globalNode17",
+			"pmType": "node",
+			"content": "milestone*",
+			"group": "milestone_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode17"
+				}
+			]
+		},
+		{
+			"name": "globalNode18",
+			"pmType": "node",
+			"content": "pb*",
+			"group": "pb_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode18"
+				}
+			]
+		},
+		{
+			"name": "globalNode19",
+			"pmType": "node",
+			"content": "note*",
+			"group": "note_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode19"
+				}
+			]
+		},
+		{
+			"name": "globalNode20",
+			"pmType": "node",
+			"content": "choice*",
+			"group": "choice_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode20"
+				}
+			]
+		},
+		{
+			"name": "globalNode21",
+			"pmType": "node",
+			"content": "fw*",
+			"group": "fw_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode21"
+				}
+			]
+		},
+		{
+			"name": "globalNode22",
+			"pmType": "node",
+			"content": "subst*",
+			"group": "subst_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode22"
+				}
+			]
+		},
+		{
 			"name": "doc",
 			"pmType": "node",
 			"isolating": true,
@@ -8996,6 +9228,24 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"type": {
+			"ident": "type",
+			"description": "characterizes the element in some sense, using any convenient classification scheme or typology.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"subtype": {
+			"ident": "subtype",
+			"description": "provides a sub-categorization of the element, if needed",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
 		"decls": {
 			"ident": "decls",
 			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
@@ -9180,24 +9430,6 @@
 			"ident": "datingMethod",
 			"description": "supplies a pointer to a calendar element or other means of interpreting the values of the custom dating attributes.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"type": {
-			"ident": "type",
-			"description": "characterizes the element in some sense, using any convenient classification scheme or typology.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"subtype": {
-			"ident": "subtype",
-			"description": "provides a sub-categorization of the element, if needed",
-			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -10447,6 +10679,8 @@
 		],
 		"hard": [
 			"additional",
+			"adminInfo",
+			"altIdentifier",
 			"argument",
 			"back",
 			"binding",
@@ -10735,6 +10969,8 @@
 			"acquisition",
 			"additional",
 			"additions",
+			"adminInfo",
+			"altIdentifier",
 			"binding",
 			"bindingDesc",
 			"catchwords",

@@ -25,6 +25,8 @@
     ],
     "hard": [
         "additional",
+        "adminInfo",
+        "altIdentifier",
         "argument",
         "back",
         "binding",

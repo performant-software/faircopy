@@ -1,4 +1,5 @@
 {
+    "altIdentifier": ["idno"],
     "argument": ["p"],
     "back": ["p"],
     "body": ["p"],
@@ -18,6 +19,8 @@
     "listBibl": ["bibl"],
     "listPerson": [ "person" ],
     "listPlace": [ "place" ],
+    "msDesc": ["msIdentifier" ],
+    "msIdentifier": ["idno"],
     "notesStmt": ["relatedItem"],
     "person": ["p"],
     "place": [ "p"],

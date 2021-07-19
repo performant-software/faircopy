@@ -12,12 +12,12 @@ const runReport = async function runReport() {
     const allElements = getAllElements(elementGroups)
     const specs = load( teiSpecsDir, allElements )
 
-    const elements = createElements(elementGroups,specs)
+    const elements = createElements(elementGroups,specs,true)
 
     const reportRows = []
     for( const element of elements ) {
-        const { name, content, marks, group, pmType } = element
-        reportRows.push(`${name}:${pmType}:${content}:${group}:${marks}`)    
+        const { name, content, markContent, inlineContent, group, pmType } = element
+        reportRows.push(`${name}:${pmType}:${content}:${group}:${markContent}:${inlineContent}`)    
     }    
 
     // export as CSV

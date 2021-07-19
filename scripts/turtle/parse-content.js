@@ -70,7 +70,7 @@ const encodeMarkContent = function encodeMarkContent( content ) {
 }
 
 // take the completed content array and turn it into a content string
-const encodeContent = function encodeContent( content, suffix='' ) {
+const encodeContent = function encodeContent( content, suffix='', suffixSet=null ) {
     if( !content ) return ''
 
     const occurs = encodeOccurence(content)
@@ -78,19 +78,24 @@ const encodeContent = function encodeContent( content, suffix='' ) {
     if( content.type === 'sequence' ) {
         const seqItems = []
         for( const item of content.content ) {
-            seqItems.push(encodeContent(item,suffix))
+            seqItems.push(encodeContent(item,suffix,suffixSet))
         }
         return `(${seqItems.join(' ')})${occurs}`
     }
     if( content.type === 'alternate' ) {
         const altItems = []
         for( const item of content.content ) {
-            altItems.push(encodeContent(item,suffix))
+            altItems.push(encodeContent(item,suffix,suffixSet))
         }
         return `(${altItems.join('|')})${occurs}`
     }
     if( content.type === 'group' ) {
-        return `${content.content}${suffix}${occurs}`
+        // only add the suffix if group is a member of suffix set (or if set is not provided)
+        if( !suffixSet || suffixSet.includes( content.content[0] ) ) {
+            return `${content.content}${suffix}${occurs}`
+        } else {
+            return `${content.content}${occurs}`
+        }
     }    
     return ''
 }
