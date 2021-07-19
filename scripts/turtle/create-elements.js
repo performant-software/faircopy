@@ -92,7 +92,7 @@ function createInlineNodes(elGroups,icons,specs) {
     const inlineElements = []
     for(let inline of inlines ) {
         const spec = specs[inline]
-        const group = spec.group.split(' ').map(g=>`${g}_i`).join(' ')
+        const group = spec.group.length > 0 ? spec.group.split(' ').map(g=>`${g}_i`).join(' ') : ''
         inlineElements.push( {
             name: inline,
             pmType: "inline-node",
@@ -119,7 +119,7 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
         const content = encodeContent(nodeContent)
         const contentName = `${aside}X`
         const docName = `${aside}Doc`
-        const group = spec.group.split(' ').map(g=>`${g}_i`).join(' ')
+        const group = spec.group.length > 0 ? spec.group.split(' ').map(g=>`${g}_i`).join(' ') : ''
 
         // create the inline node which will represent the element in the document
         asideElements.push( {
@@ -311,8 +311,8 @@ function createTextNodes(elements) {
             const textNodeName = textNodes[textNodeSignature].name
             element.content = element.content.replace('textNode',textNodeName)
         }
-        // if( element.markContent !== undefined ) delete element.markContent
-        // if( element.inlineContent !== undefined ) delete element.inlineContent
+        if( element.markContent !== undefined ) delete element.markContent
+        if( element.inlineContent !== undefined ) delete element.inlineContent
     }       
 
     return Object.values(textNodes)
@@ -324,6 +324,7 @@ function createGlobalNodes( elGroups, specs ) {
     const globalNodes = []
     let globalNodeCount = 0
     for( const inlineGroup of inlineGroups ) {
+        if( inlineGroup.length === 0 ) continue
         const globalNodeName = `globalNode${globalNodeCount++}`     
         const content = `${inlineGroup}_i*`  
         globalNodes.push({

@@ -283,7 +283,7 @@ export default class TEIEditor extends Component {
             if( selection.node ) {
                 // don't display drawer for notes here, see below
                 const name = selection.node.type.name
-                if( !asides.includes(name) && name !== 'globalNode' && !name.endsWith('X') ) {
+                if( !asides.includes(name) && !name.includes('globalNode') && !name.endsWith('X') ) {
                     elements.push( selection.node )
                 } else {
                     if( noteID && name.endsWith('X') ) {

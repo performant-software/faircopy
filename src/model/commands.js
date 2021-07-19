@@ -119,7 +119,7 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr )
     const $prev = doc.resolve(insertPos+offset)
 
     // if there's already a globalNode, insert within it.
-    if( $prev && $prev.parent && $prev.parent.type.name === 'globalNode' ) {            
+    if( $prev && $prev.parent && $prev.parent.type.name.includes('globalNode') ) {            
         tr.insert(insertPos+offset,node)
     } else {
         tr.insert(insertPos,node)

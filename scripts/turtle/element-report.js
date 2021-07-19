@@ -16,8 +16,8 @@ const runReport = async function runReport() {
 
     const reportRows = []
     for( const element of elements ) {
-        const { name, content, markContent, group, pmType } = element
-        reportRows.push(`${name}:${pmType}:${content}:${group}:${markContent}`)    
+        const { name, content, marks, group, pmType } = element
+        reportRows.push(`${name}:${pmType}:${content}:${group}:${marks}`)    
     }    
 
     // export as CSV

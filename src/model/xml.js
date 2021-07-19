@@ -46,11 +46,11 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
     const domFragment = domSerializer.serializeFragment(content)
 
     // remove all text node channels
-    for( let i=0; i<10; i++ )  {
+    for( let i=0; i<12; i++ )  {
         removeNodes(domFragment, `textNode${i}`)
+        removeNodes(domFragment, `globalNode${i}`)
     }
 
-    removeNodes(domFragment, 'globalNode')
     renameInterMarks(inter, domFragment)
     teiSchema.teiDocuments.pop()
     return domFragment
@@ -58,12 +58,9 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
 
 export function getTextNodeName(content) {
     // find the text node in the content expression
-    if( content.includes('textNode') ) {
-        const pos = content.indexOf('textNode')
-        const textNodeName = content.slice(pos,pos+'textNode'.length+1)
-        return textNodeName
-    }
-    return null
+    const matches = content.match(/textNode[0-9]+/)
+    const textNodeName = matches && matches[0] ? matches[0] : null
+    return textNodeName
 }
 
 // Internodes are a set of elements that can be processed as either nodes or marks, depending on their
