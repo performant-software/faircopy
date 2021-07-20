@@ -31,7 +31,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"adminInfo"
+			],
 			"desc": "groups additional information, combining bibliographic information about a manuscript or other object, or surrogate copies of it, with curatorial or administrative information.",
 			"synth": false
 		},
@@ -66,7 +68,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"recordHist"
+			],
 			"desc": "contains information about the present custody and availability of the manuscript or other object, and also about the record description itself.",
 			"synth": false
 		},
@@ -235,7 +239,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of one binding, i.e. type of covering, boards, etc. applied to a manuscript or other object.",
 			"synth": false
 		},
@@ -270,7 +276,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "describes the present and former bindings of a manuscript or other object, either as a series of paragraphs or as a series of distinct binding elements, one for each binding of the manuscript.",
 			"synth": false
 		},
@@ -456,7 +464,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"custEvent"
+			],
 			"desc": "contains a description of a manuscript or other object's custodial history, either as running prose or as a series of dated custodial events.",
 			"synth": false
 		},
@@ -491,7 +501,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of the decoration of a manuscript or other object, either as in paragraphs, or as one or more decoNote elements.",
 			"synth": false
 		},
@@ -802,7 +814,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of all the different hands used in a manuscript or other object.",
 			"synth": false
 		},
@@ -837,7 +851,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": " groups elements describing the full history of a manuscript, manuscript part, or other object.",
 			"synth": false
 		},
@@ -872,7 +888,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "collects the set of layout descriptions applicable to a manuscript or other object.",
 			"synth": false
 		},
@@ -1200,7 +1218,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"msIdentifier"
+			],
 			"desc": "contains information about a fragment described in relation to a prior context, typically as a description of a virtual reconstruction of a manuscript or other object whose fragments were catalogued separately",
 			"synth": false
 		},
@@ -1352,7 +1372,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"msIdentifier"
+			],
 			"desc": "contains information about an originally distinct manuscript or part of a manuscript, which is now part of a composite manuscript.",
 			"synth": false
 		},
@@ -1425,7 +1447,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of the physical components making up the object which is being described.",
 			"synth": false
 		},
@@ -1545,7 +1569,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"objectDesc"
+			],
 			"desc": "contains a full physical description of a manuscript, manuscript part, or other object optionally subdivided using more specialized elements from the model.physDescPart class.",
 			"synth": false
 		},
@@ -1655,7 +1681,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "provides information about the source and revision status of the parent manuscript or object description itself.",
 			"synth": false
 		},
@@ -1769,7 +1797,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of the scripts used in a manuscript or other object.",
 			"synth": false
 		},
@@ -1863,7 +1893,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of one seal or similar applied to the object described",
 			"synth": false
 		},
@@ -1898,7 +1930,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"seal"
+			],
 			"desc": "describes the seals or similar items related to the object described, either as a series of paragraphs or as a series of seal elements.",
 			"synth": false
 		},
@@ -2009,7 +2043,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"support"
+			],
 			"desc": "groups elements describing the physical support for the written part of a manuscript or other object.",
 			"synth": false
 		},
@@ -2160,7 +2196,9 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"defaultNodes": null,
+			"defaultNodes": [
+				"p"
+			],
 			"desc": "contains a description of the typefaces or other aspects of the printing of an incunable or other printed source.",
 			"synth": false
 		},
