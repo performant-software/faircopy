@@ -88,10 +88,8 @@ class ProjectStore {
         }
         
         // if elements changed in config, migrate project config
-        this.migratedConfig = migrateConfig(currentVersion,this.manifestData.generatedWith,baseConfig,fairCopyConfig)
-        if( this.migratedConfig ) {
-            fairCopyConfig = this.migratedConfig
-        }        
+        this.migratedConfig = migrateConfig(this.manifestData.generatedWith,baseConfig,fairCopyConfig)
+        fairCopyConfig = this.migratedConfig
 
         // id map authority tracks ids across processes
         this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)

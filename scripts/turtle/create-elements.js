@@ -316,33 +316,34 @@ function createTextNodes(elements) {
     let textNodeCount = 0
     const textNodes = {}
     for( const element of elements ) {
-        const textNodeSignature = element.content && element.markContent ? `${element.markContent}-${element.inlineContent}` : null
-        if( textNodeSignature ) {
-            // if there isn't one like this yet, create it
-            if( !textNodes[textNodeSignature] ) {
-                const textNodeName = `textNode${textNodeCount++}`                
-                const content = element.inlineContent ? `(${element.inlineContent}|text)*` : 'text*'
-                textNodes[textNodeSignature] = {
-                    name: textNodeName,
-                    pmType: "node",
-                    synth: true,
-                    content,
-                    selectable: false,
-                    marks: element.markContent,
-                    draggable: false,
-                    parseDOM: [
-                        {
-                            tag: textNodeName
-                        } 
-                    ],
-                    toDOM: () => [textNodeName,0]
-                }
+        if( !element.content || !element.content.includes('textNode') ) continue        
+        const content = element.inlineContent ? `(${element.inlineContent}|text)*` : 'text*'
+
+        // if there isn't one like this yet, create it
+        if( !textNodes[content] ) {
+            const textNodeName = `textNode${textNodeCount++}`                
+            const content = element.inlineContent ? `(${element.inlineContent}|text)*` : 'text*'
+            textNodes[content] = {
+                name: textNodeName,
+                pmType: "node",
+                synth: true,
+                content,
+                selectable: false,
+                marks: element.markContent,
+                draggable: false,
+                parseDOM: [
+                    {
+                        tag: textNodeName
+                    } 
+                ],
+                toDOM: () => [textNodeName,0]
             }
-            // all content strings with same mark content reference same text nodes
-            // so that they can pick up the mark content definitions
-            const textNodeName = textNodes[textNodeSignature].name
-            element.content = element.content.replace('textNode',textNodeName)
         }
+
+        // all content strings with same mark content reference same text nodes
+        // so that they can pick up the mark content definitions
+        const textNodeName = textNodes[content].name
+        element.content = element.content.replace('textNode',textNodeName)
     }       
 
     return Object.values(textNodes)

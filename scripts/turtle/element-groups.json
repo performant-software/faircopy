@@ -14,7 +14,6 @@
         "substDoc"
     ],
     "embed": [
-        "address",
         "cell",
         "code",
         "figDesc",
@@ -26,6 +25,7 @@
     "hard": [
         "abstract",
         "additional",
+        "address",
         "adminInfo",
         "altIdentifier",
         "argument",
@@ -54,6 +54,7 @@
         "front",
         "handDesc",
         "history",
+        "imprint",
         "keywords",
         "langUsage",
         "layoutDesc",
@@ -223,6 +224,7 @@
         "opener",
         "origin",
         "p",
+        "postCode",
         "provenance",
         "publisher",
         "pubPlace",
@@ -237,6 +239,7 @@
         "source",
         "speaker",
         "stage",
+        "street",
         "summary",
         "support",
         "surrogates",

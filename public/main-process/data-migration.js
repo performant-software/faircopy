@@ -7,25 +7,19 @@ const compatibleProject = function compatibleProject(manifestData, currentVersio
     return currentVersion === projectVersion || semver.gt(currentVersion, projectVersion)
 }
 
-const migrateConfig = function migrateConfig( currentVersion, generatedWith, baseConfigJSON, projectConfigJSON ) {
+const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, projectConfigJSON ) {
     const projectVersion = generatedWith ? generatedWith : '0.9.4'
     const baseConfig = JSON.parse(baseConfigJSON)
     const projectConfig = JSON.parse(projectConfigJSON)
 
-    // same project version
-    if( currentVersion === projectVersion ) return null
+    // always keep projectConfig up to date with latest elements
+    migrationRemoveElements(projectConfig,baseConfig)
+    migrationAddNewElements(baseConfig,projectConfig)
 
     if( semver.lt(projectVersion,'0.10.1') ) {
         migrationAddMenus(projectConfig,baseConfig)
         migrationAddActiveState(projectConfig)
-        migrationAddNewElements(baseConfig,projectConfig)
         log.info('applying migrations for v0.10.1')
-    }
-
-    if( semver.lt(projectVersion,'0.10.2') ) {
-        migrationRemoveElements(projectConfig,baseConfig)
-        migrationAddNewElements(baseConfig,projectConfig)
-        log.info('applying migrations for v0.10.2')
     }
 
     return JSON.stringify(projectConfig)
