@@ -21,6 +21,7 @@ const createElements = function createElements(elGroups,specs,keepReportData) {
         for( const element of elements ) {
             if( element.markContent !== undefined ) delete element.markContent
             if( element.inlineContent !== undefined ) delete element.inlineContent
+            if( element.allContent !== undefined ) delete element.allContent
         }
     }
 
@@ -29,18 +30,19 @@ const createElements = function createElements(elGroups,specs,keepReportData) {
 
 function createMarks(elGroups,specs) {
     const marks = elGroups.marks
-    const markGroups = getMarkGroups( elGroups, specs ) 
+    const allGroups = getAllGroups( elGroups, specs ) 
 
     const markElements = []
     for(let mark of marks) {
         const spec = specs[mark]
-        const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
+        const allContent = encodeContent( onlyGroups( allGroups, spec.content) )
+
         markElements.push({
             name: mark,
             pmType: "mark",
             validAttrs: [],
             group: spec.group,
-            markContent,
+            allContent,
             desc: spec.description,
             synth: false
         })
@@ -50,6 +52,7 @@ function createMarks(elGroups,specs) {
 
 function createInters(elGroups,defaultNodes,specs) {
     const inters = elGroups.inter
+    const allGroups = getAllGroups( elGroups, specs )
     const nodeGroups = getNodeGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
     const inlineGroups = getInlineGroups( elGroups, specs )
@@ -62,13 +65,14 @@ function createInters(elGroups,defaultNodes,specs) {
         const nodeContent = onlyGroups( inlineGroups, onlyGroups( nodeGroups, spec.content), true )
         const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
         const inlineContent = encodeContent( onlyGroups( inlineGroups, spec.content ), '_i' )
+        const allContent = encodeContent( onlyGroups( allGroups, spec.content) )
 
         interElements.push({
             name: `mark${inter}`,
             pmType: "mark",
             validAttrs: [],
+            allContent,
             group: spec.group,
-            markContent,
             desc: spec.description,
             synth: true
         })
@@ -79,6 +83,7 @@ function createInters(elGroups,defaultNodes,specs) {
             pmType: "node",
             isolating: false,
             content: encodeContent(nodeContent, '_g', inlineIdents ),
+            allContent,
             markContent,
             inlineContent,
             group: spec.group,
@@ -96,17 +101,21 @@ function createInters(elGroups,defaultNodes,specs) {
 
 function createInlineNodes(elGroups,icons,specs) {
     const {inlines} = elGroups
+    const allGroups = getAllGroups( elGroups, specs )
 
     const inlineElements = []
     for(let inline of inlines ) {
         const spec = specs[inline]
         const group = spec.group.length > 0 ? spec.group.split(' ').map(g=>`${g}_i`).join(' ') : ''
+        const allContent = encodeContent( onlyGroups( allGroups, spec.content) )
+
         inlineElements.push( {
             name: inline,
             pmType: "inline-node",
             validAttrs: [],
             icon: icons[inline],
             group,
+            allContent,
             desc: spec.description,
             synth: false
         } )
@@ -116,6 +125,7 @@ function createInlineNodes(elGroups,icons,specs) {
 
 function createAsides(elGroups,icons,defaultNodes,specs) {
     const {asides} = elGroups
+    const allGroups = getAllGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
     const inlineIdents = getInlineIdents( elGroups )
 
@@ -126,6 +136,7 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
         const nodeContent = onlyGroups( nodeGroups, spec.content )
         const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
         const content = encodeContent(nodeContent, '_g', inlineIdents )
+        const allContent = encodeContent( onlyGroups( allGroups, spec.content) )
         const contentName = `${aside}X`
         const docName = `${aside}Doc`
         const group = spec.group.length > 0 ? spec.group.split(' ').map(g=>`${g}_i`).join(' ') : ''
@@ -136,6 +147,7 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
             pmType: "inline-node",
             validAttrs: [],
             icon: icons[aside],
+            allContent,
             group,
             defaultNodes: defaultNodes[aside] ? defaultNodes[aside] : null,
             desc: spec.description,
@@ -186,6 +198,13 @@ const createDocNode = function createDocNode() {
             synth: true
         }
     ]
+}
+
+function getAllGroups(elGroups,specs) {
+    // get all groups related to the elements in elGroups
+    const nodeIdents = [ elGroups.hard, elGroups.soft, elGroups.inlines, elGroups.asides, elGroups.inter, elGroups.marks ].flat()
+    const groups = getGroups( nodeIdents, specs )
+    return [ nodeIdents, groups, "textNode" ].flat()
 }
 
 function getNodeGroups(elGroups,specs) {
@@ -249,6 +268,7 @@ function onlyGroups( targetGroups, content, not ) {
 
 const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
     const nodes = hard ? elGroups.hard : elGroups.soft 
+    const allGroups = getAllGroups( elGroups, specs )
     const nodeGroups = getNodeGroups( elGroups, specs )
     const markGroups = getMarkGroups( elGroups, specs ) 
     const inlineGroups = getInlineGroups( elGroups, specs )
@@ -257,6 +277,7 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
     const nodeElements = []
     for( let node of nodes) {
         const spec = specs[node]
+        const allContent = encodeContent( onlyGroups( allGroups, spec.content ) )
 
         let markContent = null, inlineContent = null, content
         if( hard ) {
@@ -275,6 +296,7 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
             pmType: "node",
             isolating: hard,
             content,
+            allContent,
             markContent,
             inlineContent,
             group: spec.group,
