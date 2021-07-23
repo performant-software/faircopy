@@ -210,19 +210,11 @@ function addInside( elementID, teiDocument, pos, tr ) {
 
     if( parentNode.childCount > 0 ) {
         // take the content of the parent and put it inside the new node
-        debugger
         const nodeType = schema.nodes[elementID]
         const textNodeName = getTextNodeName(nodeType.spec.content)
         const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], parentNode.content) )
         tr.replaceWith(pos+1, pos+2+parentNode.content.size, fragment)
         return tr
-
-        // const $start = doc.resolve(pos+1)
-        // const $end = doc.resolve(pos+1+fragment.size)
-        // const nodeRange = new NodeRange($start,$end,$start.depth)
-    
-        // tr.wrap(nodeRange, [{type: nodeType}])    
-        // return tr
     } else {
         // insert node inside parent
         const { elements } = teiDocument.fairCopyProject.teiSchema
