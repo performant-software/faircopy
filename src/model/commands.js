@@ -270,3 +270,20 @@ export function createAsideNode( asideName, attrs, teiDocument, editorView ) {
     const subDocID = teiDocument.createSubDocument(document,asideName,attrs)
     return state.schema.node(asideName, { id: '', __id__: subDocID, ...attrs })
 }
+
+// take content fragment and replace any text nodes in there with text node type
+export function replaceTextNodes( textNodeType, fragment ) {
+    let siblings = []
+    for( let i=0; i < fragment.childCount; i++ ) { 
+        const sibling = fragment.child(i)
+        if( sibling.type.name.includes('textNode') && sibling.type.name !== textNodeType.name ) {
+            const nextSib = textNodeType.create(sibling.attr, sibling.content, sibling.marks )
+            siblings.push( nextSib ) 
+        } else {
+            siblings.push( sibling ) 
+        }
+    }
+
+    // return new content fragment or null if unsuccesful
+    return Fragment.from(siblings) 
+}

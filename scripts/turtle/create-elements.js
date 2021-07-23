@@ -317,19 +317,22 @@ function createTextNodes(elements) {
     const textNodes = {}
     for( const element of elements ) {
         if( !element.content || !element.content.includes('textNode') ) continue        
-        const content = element.inlineContent ? `(${element.inlineContent}|text)*` : 'text*'
+        const { inlineContent, markContent } = element
+        const content = inlineContent ? `(${inlineContent}|text)*` : 'text*'
+        const textNodeSig = `${content}-${markContent}`
 
         // if there isn't one like this yet, create it
-        if( !textNodes[content] ) {
+        if( !textNodes[textNodeSig] ) {
             const textNodeName = `textNode${textNodeCount++}`                
-            const content = element.inlineContent ? `(${element.inlineContent}|text)*` : 'text*'
-            textNodes[content] = {
+
+            textNodes[textNodeSig] = {
                 name: textNodeName,
                 pmType: "node",
                 synth: true,
                 content,
                 selectable: false,
-                marks: element.markContent,
+                markContent,
+                marks: markContent,
                 draggable: false,
                 parseDOM: [
                     {
@@ -342,7 +345,7 @@ function createTextNodes(elements) {
 
         // all content strings with same mark content reference same text nodes
         // so that they can pick up the mark content definitions
-        const textNodeName = textNodes[content].name
+        const textNodeName = textNodes[textNodeSig].name
         element.content = element.content.replace('textNode',textNodeName)
     }       
 

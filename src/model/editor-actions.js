@@ -1,6 +1,7 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies, replaceTextNodes } from "./commands"
+import { getTextNodeName } from './xml'
 
 // creates inlines, marks, and inter marks
 export function createPhraseElement( elementID, attrs, teiDocument ) {
@@ -120,7 +121,7 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
     const nodeIndex = $targetPos.index()
-    const testNode = nodeType.create() 
+    const testNode = nodeType.create()
 
     // create a fragment that places the created node in position with its future siblings
     let testFragment
@@ -142,14 +143,20 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
         testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
     } else {
         // addInside
-        testFragment = Fragment.from(testNode)
+        const textNodeName = getTextNodeName(nodeType.spec.content)
+        const nextContent = replaceTextNodes(schema.nodes[textNodeName], node.content)
+        if( nextContent ) {
+            testFragment = Fragment.from(nodeType.create(nextContent))
+        } else {
+            return false
+        }
     }
 
     switch(actionType) {
         case 'replace':
             return nodeType.validContent(node.content) && parentNode.type.validContent(testFragment)
         case 'addInside':
-            return nodeType.validContent(node.content) && node.type.validContent(testFragment) 
+            return node.type.validContent(testFragment) // nodeType.validContent(node.content) &&  
         case 'addOutside':
             return nodeType.validContent(Fragment.from(node)) && parentNode.type.validContent(testFragment)
         case 'addAbove':
@@ -203,15 +210,19 @@ function addInside( elementID, teiDocument, pos, tr ) {
 
     if( parentNode.childCount > 0 ) {
         // take the content of the parent and put it inside the new node
+        debugger
         const nodeType = schema.nodes[elementID]
-        const fragment = parentNode.content
-    
-        const $start = doc.resolve(pos+1)
-        const $end = doc.resolve(pos+1+fragment.size)
-        const nodeRange = new NodeRange($start,$end,$start.depth)
-    
-        tr.wrap(nodeRange, [{type: nodeType}])    
+        const textNodeName = getTextNodeName(nodeType.spec.content)
+        const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], parentNode.content) )
+        tr.replaceWith(pos+1, pos+2+parentNode.content.size, fragment)
         return tr
+
+        // const $start = doc.resolve(pos+1)
+        // const $end = doc.resolve(pos+1+fragment.size)
+        // const nodeRange = new NodeRange($start,$end,$start.depth)
+    
+        // tr.wrap(nodeRange, [{type: nodeType}])    
+        // return tr
     } else {
         // insert node inside parent
         const { elements } = teiDocument.fairCopyProject.teiSchema
