@@ -139,24 +139,38 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
         }   
         siblings = before.concat([testNode]).concat(after)
         testFragment = Fragment.from(siblings)  
-    } else if( actionType === 'replace' || actionType === 'addOutside' ) {
+    } else if( actionType === 'replace' ) {
+        const textNodeName = getTextNodeName(nodeType.spec.content)
+        if( textNodeName ) {
+            const testFragment = replaceTextNodes(schema.nodes[textNodeName], node.content)
+            const c = nodeType.validContent(testFragment) 
+            const d = parentNode.type.validContent(Fragment.from(nodeType.create()))  
+            console.log(`c: ${c}, d: ${d}`)
+            return c && d
+        } else {
+            testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
+            return nodeType.validContent(node.content) && parentNode.type.validContent(testFragment)
+        }
+    } else if( actionType === 'addOutside' ) {
         testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
     } else {
         // addInside
         const textNodeName = getTextNodeName(nodeType.spec.content)
-        const nextContent = replaceTextNodes(schema.nodes[textNodeName], node.content)
-        if( nextContent ) {
-            testFragment = Fragment.from(nodeType.create(nextContent))
+        // if the element can contain text nodes, 
+        // form the testFragment with the valid textNode type for this element
+        if( textNodeName ) {
+            const nextContent = replaceTextNodes(schema.nodes[textNodeName], node.content)
+            testFragment = Fragment.from(nodeType.create({},nextContent))
+            return nodeType.validContent(node.content) && node.type.validContent(testFragment) 
         } else {
-            return false
+            const a = node.type.validContent(Fragment.from(nodeType.create()))
+            const b = nodeType.validContent(node.content)
+            console.log(`a: ${a}, b: ${b}`)
+            return a && b
         }
     }
 
     switch(actionType) {
-        case 'replace':
-            return nodeType.validContent(node.content) && parentNode.type.validContent(testFragment)
-        case 'addInside':
-            return node.type.validContent(testFragment) // nodeType.validContent(node.content) &&  
         case 'addOutside':
             return nodeType.validContent(Fragment.from(node)) && parentNode.type.validContent(testFragment)
         case 'addAbove':
@@ -191,6 +205,15 @@ function replaceElement( elementID, teiDocument, pos, tr ) {
     const nodeType = schema.nodes[elementID]
     const node = tr.doc.nodeAt(pos)
 
+    if( node.childCount > 0 ) {
+        const textNodeName = getTextNodeName(nodeType.spec.content)
+        if( textNodeName ) {
+            const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], node.content) )
+            tr.replaceWith(pos, pos+2+node.content.size, fragment)    
+            return tr
+        } 
+    }
+
     tr.setNodeMarkup(pos, nodeType, node.attrs)
     return tr
 }
@@ -212,8 +235,16 @@ function addInside( elementID, teiDocument, pos, tr ) {
         // take the content of the parent and put it inside the new node
         const nodeType = schema.nodes[elementID]
         const textNodeName = getTextNodeName(nodeType.spec.content)
-        const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], parentNode.content) )
-        tr.replaceWith(pos+1, pos+2+parentNode.content.size, fragment)
+        if( textNodeName ) {
+            const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], parentNode.content) )
+            tr.replaceWith(pos, pos+2+parentNode.content.size, fragment)    
+        } else {
+            const fragment = parentNode.content
+            const $start = doc.resolve(pos+1)
+            const $end = doc.resolve(pos+1+fragment.size)
+            const nodeRange = new NodeRange($start,$end,$start.depth)
+            tr.wrap(nodeRange,[{type: nodeType}])
+        }
         return tr
     } else {
         // insert node inside parent
