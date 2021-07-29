@@ -62,7 +62,7 @@ function createInters(elGroups,defaultNodes,specs) {
     const interElements = []
     for(let inter of inters) {
         const spec = specs[inter]
-        const nodeContent = onlyGroups( inlineGroups, onlyGroups( nodeGroups, spec.content), true )
+        const nodeContent = onlyGroups( nodeGroups, spec.content )
         const markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
         const inlineContent = encodeContent( onlyGroups( inlineGroups, spec.content ), '_i' )
         const allContent = encodeContent( onlyGroups( allGroups, spec.content) )
@@ -285,7 +285,7 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
             content = encodeContent(nodeContent, '_g', inlineIdents )
         } else {
             // filter out inlines and place them in inlineContent 
-            const nodeContent = onlyGroups( inlineGroups, onlyGroups( nodeGroups, spec.content), true )
+            const nodeContent = onlyGroups( nodeGroups, spec.content )
             content = encodeContent(nodeContent, '_g', inlineIdents )
             markContent = encodeMarkContent( onlyGroups( markGroups, spec.content ) )
             inlineContent = encodeContent( onlyGroups( inlineGroups, spec.content ), '_i' )

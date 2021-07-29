@@ -19,6 +19,7 @@
     "classDecl": ["taxonomy"],
     "custodialHist": ["custEvent"],
     "decoDesc": ["p"],
+    "dimensions": ["width"],
     "div": ["p"],
     "docTitle": ["titlePart"],
     "editionStmt": ["p"],

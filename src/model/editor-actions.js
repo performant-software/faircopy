@@ -161,7 +161,10 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
         if( textNodeName ) {
             const nextContent = replaceTextNodes(schema.nodes[textNodeName], node.content)
             testFragment = Fragment.from(nodeType.create({},nextContent))
-            return nodeType.validContent(node.content) && node.type.validContent(testFragment) 
+            const e = nodeType.validContent(nextContent)
+            const f = node.type.validContent(testFragment) 
+            console.log(`e: ${e}, f: ${f}`)
+            return e && f
         } else {
             const a = node.type.validContent(Fragment.from(nodeType.create()))
             const b = nodeType.validContent(node.content)
@@ -237,7 +240,7 @@ function addInside( elementID, teiDocument, pos, tr ) {
         const textNodeName = getTextNodeName(nodeType.spec.content)
         if( textNodeName ) {
             const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], parentNode.content) )
-            tr.replaceWith(pos, pos+2+parentNode.content.size, fragment)    
+            tr.replaceWith(pos+1, pos+1+parentNode.content.size, fragment)    
         } else {
             const fragment = parentNode.content
             const $start = doc.resolve(pos+1)
