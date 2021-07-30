@@ -40,6 +40,7 @@ function createMarks(elGroups,specs) {
         markElements.push({
             name: mark,
             pmType: "mark",
+            fcType: "marks",
             validAttrs: [],
             group: spec.group,
             allContent,
@@ -70,6 +71,7 @@ function createInters(elGroups,defaultNodes,specs) {
         interElements.push({
             name: `mark${inter}`,
             pmType: "mark",
+            fcType: "inters",
             validAttrs: [],
             allContent,
             group: spec.group,
@@ -81,6 +83,7 @@ function createInters(elGroups,defaultNodes,specs) {
         const nodeEl = {
             name: inter,
             pmType: "node",
+            fcType: "inters",
             isolating: false,
             content: encodeContent(nodeContent, '_g', inlineIdents ),
             allContent,
@@ -112,6 +115,7 @@ function createInlineNodes(elGroups,icons,specs) {
         inlineElements.push( {
             name: inline,
             pmType: "inline-node",
+            fcType: "inlines",
             validAttrs: [],
             icon: icons[inline],
             group,
@@ -145,6 +149,7 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
         asideElements.push( {
             name: aside,
             pmType: "inline-node",
+            fcType: "asides",
             validAttrs: [],
             icon: icons[aside],
             allContent,
@@ -158,6 +163,7 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
         asideElements.push({
             name: contentName,
             pmType: "node",
+            fcType: "asides",
             isolating: true,
             gutterMark: true,
             content,
@@ -167,10 +173,11 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
 
         // create the root node for the aside's subDocument
         asideElements.push({
-            "name": docName,
-            "pmType": "node",
-            "isolating": true,
-            "content": contentName,
+            name: docName,
+            pmType: "node",
+            fcType: "docNodes",
+            isolating: true,
+            content: contentName,
             synth: true
         })
     }
@@ -182,19 +189,21 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
 const createDocNode = function createDocNode() {
     return [
         {
-            "name": "doc",
-            "pmType": "node",
-            "isolating": true,
-            "gutterMark": true,
-            "content": '((front)? (body) (back)?)',
+            name: "doc",
+            pmType: "node",
+            fcType: "docNodes",
+            isolating: true,
+            gutterMark: true,
+            content: '((front)? (body) (back)?)',
             synth: true
         },
         {
-            "name": "headerDoc",
-            "pmType": "node",
-            "isolating": true,
-            "gutterMark": true,
-            "content": '(fileDesc model_teiHeaderPart* revisionDesc?)',
+            name: "headerDoc",
+            pmType: "node",
+            fcType: "docNodes",
+            isolating: true,
+            gutterMark: true,
+            content: '(fileDesc model_teiHeaderPart* revisionDesc?)',
             synth: true
         }
     ]
@@ -294,6 +303,7 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
         const nodeEl = {
             name: node,
             pmType: "node",
+            fcType: hard ? "hard" : "soft",
             isolating: hard,
             content,
             allContent,
@@ -328,6 +338,7 @@ function createTextNodes(elements) {
             textNodes[textNodeSig] = {
                 name: textNodeName,
                 pmType: "node",
+                fcType: "textNodes",
                 synth: true,
                 content,
                 selectable: false,
@@ -365,6 +376,7 @@ function createGlobalNodes( elGroups, specs ) {
         globalNodes.push({
             name: globalNodeName,
             pmType: "node",
+            fcType: "globalNodes",
             content,
             group,
             atom: true,

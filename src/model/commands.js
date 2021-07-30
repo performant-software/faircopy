@@ -128,14 +128,24 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr )
 }
 
 export function createValidNode( elementID, content, schema, elements ) {
-    const { defaultNodes } = elements[elementID]
+    const { defaultNodes, fcType } = elements[elementID]
     const nodeType = schema.nodes[elementID]
     let node
 
-    if( defaultNodes ) {
+    if( fcType === 'hard' ) {
         // if default nodes are provided, use them to wrap the text node
-        const nodes = defaultNodes.map( elementID => createValidNode( elementID, content, schema, elements ) )
-        const fragment = Fragment.from(nodes)
+        let fragment
+        if( content.childCount === 0 ) {
+            const nodes = []
+            for( const defaultNode of defaultNodes ) {
+                const node = createValidNode( defaultNode, content, schema, elements )
+                if( !node ) return null
+                nodes.push(node)
+            }    
+            fragment = Fragment.from(nodes)
+        } else {
+            fragment = content
+        }
         if( !nodeType.validContent(fragment) ) return null
         node = nodeType.create({}, fragment)
     } else {
@@ -153,7 +163,7 @@ export function createValidNode( elementID, content, schema, elements ) {
                 node = nodeType.create({}, textNodeType.create() )
             }
         } else {
-            throw new Error("No path to textnode")
+            throw new Error(`${elementID} is required to have a textNode as a descendant.`)
         }
     }
     return node

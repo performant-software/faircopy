@@ -117,16 +117,13 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
     const { elements } = teiDocument.fairCopyProject.teiSchema
-    const nodeType = schema.nodes[elementID]
     const node = doc.nodeAt(pos)
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
     const nodeIndex = $targetPos.index()
-    const testNode = nodeType.create()
 
     // create a fragment that places the created node in position with its future siblings
     if( actionType === 'addAbove' || actionType === 'addBelow' ) {
-        // TODO can this be made to work like the others?
         const { content } = parentNode
         let siblings = []
         for( let i=0; i < content.childCount; i++ ) { siblings.push( content.child(i) ) }
@@ -138,6 +135,7 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
             before = siblings.slice(0,nodeIndex+1)
             after = siblings.slice(nodeIndex+1)
         }   
+        const testNode = createValidNode( elementID, Fragment.empty, schema, elements )
         siblings = before.concat([testNode]).concat(after)
         const testFragment = Fragment.from(siblings)  
         return parentNode.type.validContent(testFragment)

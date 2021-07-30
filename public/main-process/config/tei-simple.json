@@ -3,6 +3,7 @@
 		{
 			"name": "abstract",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike|model_listLike)+",
 			"group": "model_profileDescPart",
@@ -40,6 +41,7 @@
 		{
 			"name": "additional",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(adminInfo? surrogates? listBibl?)",
 			"group": "",
@@ -77,6 +79,7 @@
 		{
 			"name": "address",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (model_addrPart model_global*)+)",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_publicationStmtPart_detail",
@@ -114,6 +117,7 @@
 		{
 			"name": "adminInfo",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(recordHist? availability? custodialHist? model_noteLike?)",
 			"group": "",
@@ -151,6 +155,7 @@
 		{
 			"name": "altIdentifier",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(institution? repository? collection? idno note_g?)",
 			"group": "",
@@ -190,6 +195,7 @@
 		{
 			"name": "argument",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_global|model_headLike)* (model_common model_global*)+)",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
@@ -227,6 +233,7 @@
 		{
 			"name": "availability",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_availabilityPart|model_pLike)+",
 			"group": "model_publicationStmtPart_detail model_biblPart",
@@ -266,6 +273,7 @@
 		{
 			"name": "back",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_frontPart|model_pLike_front|model_pLike|model_listLike|model_global)* (((model_frontPart|model_global)*)|(model_divLike (model_frontPart|model_divLike|model_global)*))? (model_divBottomPart (model_divBottomPart|model_global)*)?)",
 			"group": "",
@@ -304,6 +312,7 @@
 		{
 			"name": "biblFull",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc*)|(fileDesc profileDesc))",
 			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
@@ -344,6 +353,7 @@
 		{
 			"name": "binding",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike|condition|decoNote)+",
 			"group": "",
@@ -401,6 +411,7 @@
 		{
 			"name": "bindingDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_pLike|decoNote|condition)+|binding+)",
 			"group": "model_physDescPart",
@@ -438,6 +449,7 @@
 		{
 			"name": "body",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (model_divTop (model_global|model_divTop)*)? ((model_global)*)? ((model_divLike (model_global)*)+|((model_global)*)+|((model_common model_global*)+ ((model_divLike (model_global)*)+|((model_global)*)+)?)) (model_divBottom model_global*)*)",
 			"group": "",
@@ -476,6 +488,7 @@
 		{
 			"name": "castGroup",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_global|model_headLike)* ((castItem|castGroup|roleDesc) model_global*)+ (trailer model_global*)?)",
 			"group": "",
@@ -513,6 +526,7 @@
 		{
 			"name": "castList",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_common model_global*)* ((castItem|castGroup) model_global*)+ (model_common model_global*)*)",
 			"group": "model_common model_inter model_frontPart model_frontPart_drama model_standOffPart",
@@ -550,6 +564,7 @@
 		{
 			"name": "category",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((catDesc+|(model_descLike)*) category*)",
 			"group": "",
@@ -587,6 +602,7 @@
 		{
 			"name": "cit",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_qLike|model_biblLike|model_ptrLike|model_global)+",
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike model_entryPart_top",
@@ -626,6 +642,7 @@
 		{
 			"name": "classDecl",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "taxonomy+",
 			"group": "model_encodingDescPart",
@@ -663,6 +680,7 @@
 		{
 			"name": "custodialHist",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|custEvent+)",
 			"group": "",
@@ -700,6 +718,7 @@
 		{
 			"name": "decoDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? decoNote+))",
 			"group": "model_physDescPart",
@@ -737,6 +756,7 @@
 		{
 			"name": "dimensions",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(dim|model_dimLike)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
@@ -787,6 +807,7 @@
 		{
 			"name": "div",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* ((((model_divLike) model_global*)+|((model_common model_global*)+ ((model_divLike) model_global*)*)) (model_divBottom model_global*)*)?)",
 			"group": "model_divLike",
@@ -834,6 +855,7 @@
 		{
 			"name": "docTitle",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (titlePart model_global*)+)",
 			"group": "model_titlepagePart model_pLike_front",
@@ -873,6 +895,7 @@
 		{
 			"name": "editionStmt",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(edition model_respLike*))",
 			"group": "",
@@ -910,6 +933,7 @@
 		{
 			"name": "editorialDecl",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike)+",
 			"group": "model_encodingDescPart",
@@ -948,6 +972,7 @@
 		{
 			"name": "encodingDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_encodingDescPart|model_pLike)+",
 			"group": "model_teiHeaderPart",
@@ -985,6 +1010,7 @@
 		{
 			"name": "epigraph",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_common|model_global)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
@@ -1022,6 +1048,7 @@
 		{
 			"name": "fileDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc+)",
 			"group": "",
@@ -1059,6 +1086,7 @@
 		{
 			"name": "floatingText",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (front model_global*)? (body) model_global* (back model_global*)?)",
 			"group": "model_common model_inter model_qLike",
@@ -1099,6 +1127,7 @@
 		{
 			"name": "front",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_frontPart|model_pLike|model_pLike_front|model_global)* ((((model_frontPart|model_global)*)|(model_divLike (model_divLike|model_frontPart|model_global)*)) (model_divBottom (model_divBottom|model_global)*)?)?)",
 			"group": "",
@@ -1137,6 +1166,7 @@
 		{
 			"name": "handDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary?))",
 			"group": "model_physDescPart",
@@ -1175,6 +1205,7 @@
 		{
 			"name": "history",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? origin? provenance* acquisition?))",
 			"group": "",
@@ -1212,6 +1243,7 @@
 		{
 			"name": "imprint",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((classCode|catRef_g)* ((model_imprintPart) respStmt* model_global*)+)",
 			"group": "",
@@ -1249,6 +1281,7 @@
 		{
 			"name": "keywords",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(list)",
 			"group": "",
@@ -1287,6 +1320,7 @@
 		{
 			"name": "langUsage",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|language+)",
 			"group": "model_profileDescPart",
@@ -1325,6 +1359,7 @@
 		{
 			"name": "layoutDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? layout+))",
 			"group": "",
@@ -1362,6 +1397,7 @@
 		{
 			"name": "lg",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_lLike|model_stageLike|model_labelLike|lg) (model_lLike|model_stageLike|model_labelLike|model_global|lg)* (model_divBottom model_global*)*)",
 			"group": "model_common model_divPart",
@@ -1408,6 +1444,7 @@
 		{
 			"name": "list",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_divTop|model_global|desc*)* ((item model_global*)+|((label model_global* item model_global*)+)) (model_divBottom model_global*)*)",
 			"group": "model_standOffPart model_common model_inter model_listLike",
@@ -1449,6 +1486,7 @@
 		{
 			"name": "listBibl",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_biblLike|model_milestoneLike)+)",
 			"group": "model_frontPart model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
@@ -1490,6 +1528,7 @@
 		{
 			"name": "listChange",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(desc* (listChange|change)+)",
 			"group": "model_standOffPart",
@@ -1531,6 +1570,7 @@
 		{
 			"name": "listPerson",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_personLike|listPerson)+)",
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
@@ -1572,6 +1612,7 @@
 		{
 			"name": "listPlace",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_placeLike|listPlace)+)",
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
@@ -1613,6 +1654,7 @@
 		{
 			"name": "listPrefixDef",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(desc* (prefixDef|listPrefixDef)+)",
 			"group": "model_encodingDescPart",
@@ -1650,6 +1692,7 @@
 		{
 			"name": "locusGrp",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "locus+",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
@@ -1686,6 +1729,7 @@
 		{
 			"name": "msContents",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? titlePage? (msItem|msItemStruct)*))",
 			"group": "",
@@ -1725,6 +1769,7 @@
 		{
 			"name": "msDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? (msPart*|msFrag*))))",
 			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
@@ -1767,6 +1812,7 @@
 		{
 			"name": "msFrag",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((altIdentifier|msIdentifier) model_headLike* (model_pLike+|(msContents? physDesc? history? additional?)))",
 			"group": "",
@@ -1806,6 +1852,7 @@
 		{
 			"name": "msIdentifier",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((institution? repository? collection* idno*) (msName|altIdentifier)*)",
 			"group": "model_biblPart",
@@ -1843,6 +1890,7 @@
 		{
 			"name": "msItem",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((locus|locusGrp)* (model_pLike+|(model_titlepagePart|model_msItemPart|model_global)+))",
 			"group": "model_msItemPart",
@@ -1882,6 +1930,7 @@
 		{
 			"name": "msItemStruct",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((locus|locusGrp)? (model_pLike+|(author* respStmt* title* rubric? incipit? msItemStruct* explicit? finalRubric? colophon* decoNote* listBibl* (bibl)* filiation? model_noteLike*)))",
 			"group": "model_msItemPart",
@@ -1921,6 +1970,7 @@
 		{
 			"name": "msPart",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? msPart*)))",
 			"group": "",
@@ -1960,6 +2010,7 @@
 		{
 			"name": "namespace",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "tagUsage+",
 			"group": "",
@@ -1998,6 +2049,7 @@
 		{
 			"name": "notesStmt",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_noteLike|relatedItem)+",
 			"group": "",
@@ -2035,6 +2087,7 @@
 		{
 			"name": "objectDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(supportDesc? layoutDesc?))",
 			"group": "model_physDescPart",
@@ -2073,6 +2126,7 @@
 		{
 			"name": "person",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(model_personPart|model_global)*)",
 			"group": "model_personLike",
@@ -2116,6 +2170,7 @@
 		{
 			"name": "place",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_noteLike|model_biblLike|idno)* (model_placeLike|listPlace)*)",
 			"group": "model_placeLike",
@@ -2158,6 +2213,7 @@
 		{
 			"name": "physDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike* model_physDescPart)",
 			"group": "",
@@ -2195,6 +2251,7 @@
 		{
 			"name": "particDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(model_personLike|listPerson)+)",
 			"group": "model_profileDescPart",
@@ -2233,6 +2290,7 @@
 		{
 			"name": "postscript",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_global|model_divTopPart)* model_common (model_global|model_common)* (model_divBottomPart model_global*)*)",
 			"group": "model_divBottom model_divBottomPart",
@@ -2271,6 +2329,7 @@
 		{
 			"name": "projectDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "model_pLike+",
 			"group": "model_encodingDescPart",
@@ -2309,6 +2368,7 @@
 		{
 			"name": "prefixDef",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "model_pLike*",
 			"group": "",
@@ -2349,6 +2409,7 @@
 		{
 			"name": "profileDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "model_profileDescPart*",
 			"group": "model_teiHeaderPart",
@@ -2386,6 +2447,7 @@
 		{
 			"name": "publicationStmt",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_publicationStmtPart_agency model_publicationStmtPart_detail*)+|model_pLike+)",
 			"group": "",
@@ -2423,6 +2485,7 @@
 		{
 			"name": "recordHist",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(source change*))",
 			"group": "",
@@ -2460,6 +2523,7 @@
 		{
 			"name": "relatedItem",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_biblLike|model_ptrLike)?",
 			"group": "model_biblPart",
@@ -2500,6 +2564,7 @@
 		{
 			"name": "respStmt",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(((resp+)|(resp+)) note_g*)",
 			"group": "model_biblPart model_msItemPart model_respLike model_recordingPart",
@@ -2539,6 +2604,7 @@
 		{
 			"name": "revisionDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(list|listChange|change+)",
 			"group": "",
@@ -2577,6 +2643,7 @@
 		{
 			"name": "scriptDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary?))",
 			"group": "model_physDescPart",
@@ -2614,6 +2681,7 @@
 		{
 			"name": "seriesStmt",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(title+ (editor|respStmt)* (idno|biblScope)*))",
 			"group": "",
@@ -2651,6 +2719,7 @@
 		{
 			"name": "seal",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike|decoNote)+",
 			"group": "",
@@ -2710,6 +2779,7 @@
 		{
 			"name": "sealDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? (decoNote|seal|condition)+))",
 			"group": "model_physDescPart",
@@ -2747,6 +2817,7 @@
 		{
 			"name": "set",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_headLike|model_global)* (model_common model_global*)*)",
 			"group": "model_frontPart model_frontPart_drama",
@@ -2784,6 +2855,7 @@
 		{
 			"name": "sourceDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(model_biblLike|model_listLike)+)",
 			"group": "",
@@ -2822,6 +2894,7 @@
 		{
 			"name": "supportDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(support? extent? foliation* collation? condition?))",
 			"group": "",
@@ -2860,6 +2933,7 @@
 		{
 			"name": "sp",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_qLike) model_global*)+)",
 			"group": "model_common model_divPart",
@@ -2899,6 +2973,7 @@
 		{
 			"name": "titlePage",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* model_titlepagePart (model_titlepagePart|model_global)*)",
 			"group": "model_frontPart",
@@ -2939,6 +3014,7 @@
 		{
 			"name": "titleStmt",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(title+ model_respLike*)",
 			"group": "",
@@ -2976,6 +3052,7 @@
 		{
 			"name": "typeDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(summary? typeNote+))",
 			"group": "model_physDescPart",
@@ -3013,6 +3090,7 @@
 		{
 			"name": "refsDecl",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+)",
 			"group": "model_encodingDescPart",
@@ -3051,6 +3129,7 @@
 		{
 			"name": "samplingDecl",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "model_pLike+",
 			"group": "model_encodingDescPart",
@@ -3089,6 +3168,7 @@
 		{
 			"name": "tagsDecl",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(rendition* namespace*)",
 			"group": "model_encodingDescPart",
@@ -3127,6 +3207,7 @@
 		{
 			"name": "taxonomy",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(((category|taxonomy)+|((model_descLike)+ (category|taxonomy)*))|(model_biblLike (category|taxonomy)*))",
 			"group": "",
@@ -3164,6 +3245,7 @@
 		{
 			"name": "settingDesc",
 			"pmType": "node",
+			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_pLike+|(model_placeLike|listPlace)+)",
 			"group": "model_profileDescPart",
@@ -3202,6 +3284,7 @@
 		{
 			"name": "anchor",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3236,6 +3319,7 @@
 		{
 			"name": "cb",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
 				"break",
@@ -3274,6 +3358,7 @@
 		{
 			"name": "catRef",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3310,6 +3395,7 @@
 		{
 			"name": "gap",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"agent",
 				"ana",
@@ -3360,6 +3446,7 @@
 		{
 			"name": "lb",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
 				"break",
@@ -3398,6 +3485,7 @@
 		{
 			"name": "milestone",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
 				"break",
@@ -3437,6 +3525,7 @@
 		{
 			"name": "pb",
 			"pmType": "inline-node",
+			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
 				"break",
@@ -3475,6 +3564,7 @@
 		{
 			"name": "note",
 			"pmType": "inline-node",
+			"fcType": "asides",
 			"validAttrs": [
 				"ana",
 				"anchored",
@@ -3517,6 +3607,7 @@
 		{
 			"name": "noteX",
 			"pmType": "node",
+			"fcType": "asides",
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
@@ -3525,6 +3616,7 @@
 		{
 			"name": "noteDoc",
 			"pmType": "node",
+			"fcType": "docNodes",
 			"isolating": true,
 			"content": "noteX",
 			"synth": true
@@ -3532,6 +3624,7 @@
 		{
 			"name": "choice",
 			"pmType": "inline-node",
+			"fcType": "asides",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3568,6 +3661,7 @@
 		{
 			"name": "choiceX",
 			"pmType": "node",
+			"fcType": "asides",
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(model_choicePart|choice_g){2,}",
@@ -3576,6 +3670,7 @@
 		{
 			"name": "choiceDoc",
 			"pmType": "node",
+			"fcType": "docNodes",
 			"isolating": true,
 			"content": "choiceX",
 			"synth": true
@@ -3583,6 +3678,7 @@
 		{
 			"name": "fw",
 			"pmType": "inline-node",
+			"fcType": "asides",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3621,6 +3717,7 @@
 		{
 			"name": "fwX",
 			"pmType": "node",
+			"fcType": "asides",
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(textNode1|model_qLike|model_phrase|model_global)*",
@@ -3629,6 +3726,7 @@
 		{
 			"name": "fwDoc",
 			"pmType": "node",
+			"fcType": "docNodes",
 			"isolating": true,
 			"content": "fwX",
 			"synth": true
@@ -3636,6 +3734,7 @@
 		{
 			"name": "subst",
 			"pmType": "inline-node",
+			"fcType": "asides",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -3688,6 +3787,7 @@
 		{
 			"name": "substX",
 			"pmType": "node",
+			"fcType": "asides",
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(add|del|model_milestoneLike)+",
@@ -3696,6 +3796,7 @@
 		{
 			"name": "substDoc",
 			"pmType": "node",
+			"fcType": "docNodes",
 			"isolating": true,
 			"content": "substX",
 			"synth": true
@@ -3703,6 +3804,7 @@
 		{
 			"name": "markadd",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -3753,6 +3855,7 @@
 		{
 			"name": "add",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
@@ -3807,6 +3910,7 @@
 		{
 			"name": "markcorr",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3842,6 +3946,7 @@
 		{
 			"name": "corr",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
@@ -3881,6 +3986,7 @@
 		{
 			"name": "markdel",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -3930,6 +4036,7 @@
 		{
 			"name": "del",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
@@ -3983,6 +4090,7 @@
 		{
 			"name": "markhi",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4015,6 +4123,7 @@
 		{
 			"name": "hi",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
@@ -4051,6 +4160,7 @@
 		{
 			"name": "markorig",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4082,6 +4192,7 @@
 		{
 			"name": "orig",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
@@ -4117,6 +4228,7 @@
 		{
 			"name": "markq",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4151,6 +4263,7 @@
 		{
 			"name": "q",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_qLike",
@@ -4189,6 +4302,7 @@
 		{
 			"name": "markquote",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4224,6 +4338,7 @@
 		{
 			"name": "quote",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
@@ -4263,6 +4378,7 @@
 		{
 			"name": "markref",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cRef",
@@ -4302,6 +4418,7 @@
 		{
 			"name": "ref",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
@@ -4345,6 +4462,7 @@
 		{
 			"name": "markreg",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4380,6 +4498,7 @@
 		{
 			"name": "reg",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
@@ -4419,6 +4538,7 @@
 		{
 			"name": "markrhyme",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4453,6 +4573,7 @@
 		{
 			"name": "rhyme",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_lPart",
@@ -4491,6 +4612,7 @@
 		{
 			"name": "markseg",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4533,6 +4655,7 @@
 		{
 			"name": "seg",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
@@ -4579,6 +4702,7 @@
 		{
 			"name": "marksic",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4610,6 +4734,7 @@
 		{
 			"name": "sic",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
@@ -4645,6 +4770,7 @@
 		{
 			"name": "marksignatures",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4676,6 +4802,7 @@
 		{
 			"name": "signatures",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
@@ -4711,6 +4838,7 @@
 		{
 			"name": "marksupplied",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -4755,6 +4883,7 @@
 		{
 			"name": "supplied",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
@@ -4803,6 +4932,7 @@
 		{
 			"name": "markunclear",
 			"pmType": "mark",
+			"fcType": "inters",
 			"validAttrs": [
 				"agent",
 				"ana",
@@ -4848,6 +4978,7 @@
 		{
 			"name": "unclear",
 			"pmType": "node",
+			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
@@ -4897,6 +5028,7 @@
 		{
 			"name": "abbr",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4931,6 +5063,7 @@
 		{
 			"name": "c",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4972,6 +5105,7 @@
 		{
 			"name": "g",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5006,6 +5140,7 @@
 		{
 			"name": "pc",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5054,6 +5189,7 @@
 		{
 			"name": "w",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5100,6 +5236,7 @@
 		{
 			"name": "catchwords",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5131,6 +5268,7 @@
 		{
 			"name": "date",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -5199,6 +5337,7 @@
 		{
 			"name": "email",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5230,6 +5369,7 @@
 		{
 			"name": "expan",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5263,6 +5403,7 @@
 		{
 			"name": "foreign",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5294,6 +5435,7 @@
 		{
 			"name": "heraldry",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5325,6 +5467,7 @@
 		{
 			"name": "material",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5358,6 +5501,7 @@
 		{
 			"name": "measure",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5396,6 +5540,7 @@
 		{
 			"name": "name",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -5456,6 +5601,7 @@
 		{
 			"name": "num",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -5496,6 +5642,7 @@
 		{
 			"name": "objectType",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5529,6 +5676,7 @@
 		{
 			"name": "origDate",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -5593,6 +5741,7 @@
 		{
 			"name": "origPlace",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -5651,6 +5800,7 @@
 		{
 			"name": "rs",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5688,6 +5838,7 @@
 		{
 			"name": "s",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5729,6 +5880,7 @@
 		{
 			"name": "secFol",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5760,6 +5912,7 @@
 		{
 			"name": "stamp",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -5812,6 +5965,7 @@
 		{
 			"name": "term",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cRef",
@@ -5853,6 +6007,7 @@
 		{
 			"name": "time",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -5921,6 +6076,7 @@
 		{
 			"name": "watermark",
 			"pmType": "mark",
+			"fcType": "marks",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5952,6 +6108,7 @@
 		{
 			"name": "ab",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
@@ -5992,6 +6149,7 @@
 		{
 			"name": "actor",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_castItemPart",
@@ -6029,6 +6187,7 @@
 		{
 			"name": "accMat",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
@@ -6066,6 +6225,7 @@
 		{
 			"name": "acquisition",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -6120,6 +6280,7 @@
 		{
 			"name": "additions",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
@@ -6155,6 +6316,7 @@
 		{
 			"name": "addrLine",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_addrPart",
@@ -6190,6 +6352,7 @@
 		{
 			"name": "author",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
@@ -6229,6 +6392,7 @@
 		{
 			"name": "bibl",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
 			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
@@ -6269,6 +6433,7 @@
 		{
 			"name": "biblScope",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart",
@@ -6307,6 +6472,7 @@
 		{
 			"name": "byline",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode5|model_phrase|docAuthor|model_global)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
@@ -6342,6 +6508,7 @@
 		{
 			"name": "castItem",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode5|model_castItemPart|model_phrase|model_global)*",
 			"group": "",
@@ -6380,6 +6547,7 @@
 		{
 			"name": "catDesc",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode6|model_limitedPhrase)*",
 			"group": "",
@@ -6417,6 +6585,7 @@
 		{
 			"name": "change",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -6476,6 +6645,7 @@
 		{
 			"name": "classCode",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
@@ -6512,6 +6682,7 @@
 		{
 			"name": "closer",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode5|signed|dateline|salute|model_phrase|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
@@ -6548,6 +6719,7 @@
 		{
 			"name": "collation",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -6583,6 +6755,7 @@
 		{
 			"name": "collection",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
@@ -6624,6 +6797,7 @@
 		{
 			"name": "colophon",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
@@ -6660,6 +6834,7 @@
 		{
 			"name": "condition",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -6695,6 +6870,7 @@
 		{
 			"name": "creation",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode6|model_limitedPhrase|listChange)*",
 			"group": "model_profileDescPart",
@@ -6749,6 +6925,7 @@
 		{
 			"name": "custEvent",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -6805,6 +6982,7 @@
 		{
 			"name": "dateline",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode5|model_phrase|model_global|docDate)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_pLike_front",
@@ -6840,6 +7018,7 @@
 		{
 			"name": "decoNote",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_msItemPart model_biblPart",
@@ -6877,6 +7056,7 @@
 		{
 			"name": "depth",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
@@ -6922,6 +7102,7 @@
 		{
 			"name": "desc",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "model_descLike model_common model_inter model_labelLike",
@@ -6961,6 +7142,7 @@
 		{
 			"name": "dim",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
@@ -7008,6 +7190,7 @@
 		{
 			"name": "distributor",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
@@ -7045,6 +7228,7 @@
 		{
 			"name": "docAuthor",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
@@ -7082,6 +7266,7 @@
 		{
 			"name": "docDate",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
@@ -7118,6 +7303,7 @@
 		{
 			"name": "docEdition",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
@@ -7153,6 +7339,7 @@
 		{
 			"name": "docImprint",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode5|model_phrase|pubPlace|docDate|publisher|model_global)*",
 			"group": "model_titlepagePart model_pLike_front",
@@ -7188,6 +7375,7 @@
 		{
 			"name": "edition",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart",
@@ -7223,6 +7411,7 @@
 		{
 			"name": "editor",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
@@ -7262,6 +7451,7 @@
 		{
 			"name": "explicit",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
@@ -7300,6 +7490,7 @@
 		{
 			"name": "extent",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart",
@@ -7335,6 +7526,7 @@
 		{
 			"name": "filiation",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_msItemPart",
@@ -7372,6 +7564,7 @@
 		{
 			"name": "finalRubric",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
@@ -7410,6 +7603,7 @@
 		{
 			"name": "foliation",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -7445,6 +7639,7 @@
 		{
 			"name": "head",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|lg|model_phrase|model_inter|model_lLike|model_global)*",
 			"group": "model_divTop model_divTopPart model_headLike model_pLike_front",
@@ -7484,6 +7679,7 @@
 		{
 			"name": "height",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
@@ -7529,6 +7725,7 @@
 		{
 			"name": "idno",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8|idno)*",
 			"group": "model_msItemPart model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_publicationStmtPart_detail model_personPart",
@@ -7587,6 +7784,7 @@
 		{
 			"name": "imprimatur",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart",
@@ -7622,6 +7820,7 @@
 		{
 			"name": "incipit",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
@@ -7660,6 +7859,7 @@
 		{
 			"name": "institution",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
@@ -7699,6 +7899,7 @@
 		{
 			"name": "item",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -7735,6 +7936,7 @@
 		{
 			"name": "l",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global)*",
 			"group": "model_common model_divPart model_lLike",
@@ -7775,6 +7977,7 @@
 		{
 			"name": "label",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_common model_inter model_labelLike",
@@ -7814,6 +8017,7 @@
 		{
 			"name": "language",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
@@ -7851,6 +8055,7 @@
 		{
 			"name": "layout",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -7890,6 +8095,7 @@
 		{
 			"name": "licence",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_availabilityPart",
@@ -7947,6 +8153,7 @@
 		{
 			"name": "locus",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8|hi|locus)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
@@ -7990,6 +8197,7 @@
 		{
 			"name": "musicNotation",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
@@ -8025,6 +8233,7 @@
 		{
 			"name": "msName",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "",
@@ -8062,6 +8271,7 @@
 		{
 			"name": "opener",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode5|model_phrase|argument|byline|dateline|epigraph|salute|signed|model_global)*",
 			"group": "model_divTop model_divTopPart",
@@ -8098,6 +8308,7 @@
 		{
 			"name": "origin",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -8154,6 +8365,7 @@
 		{
 			"name": "p",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
@@ -8192,6 +8404,7 @@
 		{
 			"name": "postCode",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "textNode10",
 			"group": "model_addrPart",
@@ -8227,6 +8440,7 @@
 		{
 			"name": "provenance",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -8283,6 +8497,7 @@
 		{
 			"name": "publisher",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
@@ -8320,6 +8535,7 @@
 		{
 			"name": "pubPlace",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_detail",
@@ -8359,6 +8575,7 @@
 		{
 			"name": "rendition",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "",
@@ -8398,6 +8615,7 @@
 		{
 			"name": "repository",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
@@ -8437,6 +8655,7 @@
 		{
 			"name": "resp",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
@@ -8493,6 +8712,7 @@
 		{
 			"name": "role",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_castItemPart",
@@ -8528,6 +8748,7 @@
 		{
 			"name": "roleDesc",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_castItemPart",
@@ -8563,6 +8784,7 @@
 		{
 			"name": "rubric",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
@@ -8601,6 +8823,7 @@
 		{
 			"name": "salute",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_divTop model_divBottom model_divWrapper",
@@ -8637,6 +8860,7 @@
 		{
 			"name": "signed",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_divBottom model_divBottomPart model_divTop model_divTopPart",
@@ -8673,6 +8897,7 @@
 		{
 			"name": "source",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -8708,6 +8933,7 @@
 		{
 			"name": "speaker",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "",
@@ -8743,6 +8969,7 @@
 		{
 			"name": "stage",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_stageLike",
@@ -8782,6 +9009,7 @@
 		{
 			"name": "street",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
 			"group": "model_addrPart",
@@ -8817,6 +9045,7 @@
 		{
 			"name": "summary",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -8852,6 +9081,7 @@
 		{
 			"name": "support",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -8887,6 +9117,7 @@
 		{
 			"name": "surrogates",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -8922,6 +9153,7 @@
 		{
 			"name": "tagUsage",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "",
@@ -8960,6 +9192,7 @@
 		{
 			"name": "title",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
@@ -9020,6 +9253,7 @@
 		{
 			"name": "titlePart",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
@@ -9058,6 +9292,7 @@
 		{
 			"name": "trailer",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|lg|model_phrase|model_inter|model_lLike|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
@@ -9097,6 +9332,7 @@
 		{
 			"name": "typeNote",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
@@ -9138,6 +9374,7 @@
 		{
 			"name": "width",
 			"pmType": "node",
+			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
@@ -9183,6 +9420,7 @@
 		{
 			"name": "textNode0",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
@@ -9197,6 +9435,7 @@
 		{
 			"name": "textNode1",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
@@ -9211,6 +9450,7 @@
 		{
 			"name": "textNode2",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
@@ -9225,6 +9465,7 @@
 		{
 			"name": "textNode3",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
@@ -9239,6 +9480,7 @@
 		{
 			"name": "textNode4",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_pPart_edit_i|model_global_i)*|text)*",
 			"selectable": false,
@@ -9253,6 +9495,7 @@
 		{
 			"name": "textNode5",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
@@ -9267,6 +9510,7 @@
 		{
 			"name": "textNode6",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_limitedPhrase_i)*|text)*",
 			"selectable": false,
@@ -9281,6 +9525,7 @@
 		{
 			"name": "textNode7",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_limitedPhrase_i|model_global_i)*|text)*",
 			"selectable": false,
@@ -9295,6 +9540,7 @@
 		{
 			"name": "textNode8",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
@@ -9309,6 +9555,7 @@
 		{
 			"name": "textNode9",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "((model_limitedPhrase_i)*|text)*",
 			"selectable": false,
@@ -9323,6 +9570,7 @@
 		{
 			"name": "textNode10",
 			"pmType": "node",
+			"fcType": "textNodes",
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
@@ -9337,6 +9585,7 @@
 		{
 			"name": "globalNode0",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_global_i*",
 			"group": "model_global",
 			"atom": true,
@@ -9351,6 +9600,7 @@
 		{
 			"name": "globalNode1",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_milestoneLike_i*",
 			"group": "model_milestoneLike",
 			"atom": true,
@@ -9365,6 +9615,7 @@
 		{
 			"name": "globalNode2",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_global_edit_i*",
 			"group": "model_global_edit",
 			"atom": true,
@@ -9379,6 +9630,7 @@
 		{
 			"name": "globalNode3",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_noteLike_i*",
 			"group": "model_noteLike",
 			"atom": true,
@@ -9393,6 +9645,7 @@
 		{
 			"name": "globalNode4",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_correspDescPart_i*",
 			"group": "model_correspDescPart",
 			"atom": true,
@@ -9407,6 +9660,7 @@
 		{
 			"name": "globalNode5",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_correspActionPart_i*",
 			"group": "model_correspActionPart",
 			"atom": true,
@@ -9421,6 +9675,7 @@
 		{
 			"name": "globalNode6",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_correspContextPart_i*",
 			"group": "model_correspContextPart",
 			"atom": true,
@@ -9435,6 +9690,7 @@
 		{
 			"name": "globalNode7",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_phrase_i*",
 			"group": "model_phrase",
 			"atom": true,
@@ -9449,6 +9705,7 @@
 		{
 			"name": "globalNode8",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_pPart_edit_i*",
 			"group": "model_pPart_edit",
 			"atom": true,
@@ -9463,6 +9720,7 @@
 		{
 			"name": "globalNode9",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_limitedPhrase_i*",
 			"group": "model_limitedPhrase",
 			"atom": true,
@@ -9477,6 +9735,7 @@
 		{
 			"name": "globalNode10",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_pPart_editorial_i*",
 			"group": "model_pPart_editorial",
 			"atom": true,
@@ -9491,6 +9750,7 @@
 		{
 			"name": "globalNode11",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "model_linePart_i*",
 			"group": "model_linePart",
 			"atom": true,
@@ -9505,6 +9765,7 @@
 		{
 			"name": "globalNode12",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "anchor*",
 			"group": "anchor_g",
 			"atom": true,
@@ -9519,6 +9780,7 @@
 		{
 			"name": "globalNode13",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "cb*",
 			"group": "cb_g",
 			"atom": true,
@@ -9533,6 +9795,7 @@
 		{
 			"name": "globalNode14",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "catRef*",
 			"group": "catRef_g",
 			"atom": true,
@@ -9547,6 +9810,7 @@
 		{
 			"name": "globalNode15",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "gap*",
 			"group": "gap_g",
 			"atom": true,
@@ -9561,6 +9825,7 @@
 		{
 			"name": "globalNode16",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "lb*",
 			"group": "lb_g",
 			"atom": true,
@@ -9575,6 +9840,7 @@
 		{
 			"name": "globalNode17",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "milestone*",
 			"group": "milestone_g",
 			"atom": true,
@@ -9589,6 +9855,7 @@
 		{
 			"name": "globalNode18",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "pb*",
 			"group": "pb_g",
 			"atom": true,
@@ -9603,6 +9870,7 @@
 		{
 			"name": "globalNode19",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "note*",
 			"group": "note_g",
 			"atom": true,
@@ -9617,6 +9885,7 @@
 		{
 			"name": "globalNode20",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "choice*",
 			"group": "choice_g",
 			"atom": true,
@@ -9631,6 +9900,7 @@
 		{
 			"name": "globalNode21",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "fw*",
 			"group": "fw_g",
 			"atom": true,
@@ -9645,6 +9915,7 @@
 		{
 			"name": "globalNode22",
 			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "subst*",
 			"group": "subst_g",
 			"atom": true,
@@ -9659,6 +9930,7 @@
 		{
 			"name": "doc",
 			"pmType": "node",
+			"fcType": "docNodes",
 			"isolating": true,
 			"gutterMark": true,
 			"content": "((front)? (body) (back)?)",
@@ -9667,6 +9939,7 @@
 		{
 			"name": "headerDoc",
 			"pmType": "node",
+			"fcType": "docNodes",
 			"isolating": true,
 			"gutterMark": true,
 			"content": "(fileDesc model_teiHeaderPart* revisionDesc?)",
