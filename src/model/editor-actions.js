@@ -1,6 +1,6 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies, replaceTextNodes } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies, replaceTextNodes, createValidNode } from "./commands"
 import { getTextNodeName } from './xml'
 
 // creates inlines, marks, and inter marks
@@ -155,22 +155,9 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
         testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
     } else {
         // addInside
-        const textNodeName = getTextNodeName(nodeType.spec.content)
-        // if the element can contain text nodes, 
-        // form the testFragment with the valid textNode type for this element
-        if( textNodeName ) {
-            const nextContent = replaceTextNodes(schema.nodes[textNodeName], node.content)
-            testFragment = Fragment.from(nodeType.create({},nextContent))
-            const e = nodeType.validContent(nextContent)
-            const f = node.type.validContent(testFragment) 
-            console.log(`e: ${e}, f: ${f}`)
-            return e && f
-        } else {
-            const a = node.type.validContent(Fragment.from(nodeType.create()))
-            const b = nodeType.validContent(node.content)
-            console.log(`a: ${a}, b: ${b}`)
-            return a && b
-        }
+        const { elements } = teiDocument.fairCopyProject.teiSchema
+        const testNode = createValidNode( elementID, node.content, schema, elements )
+        return testNode && node.type.validContent(Fragment.from(testNode))
     }
 
     switch(actionType) {
@@ -232,26 +219,16 @@ export function createInterNode( elementID, attrs, teiDocument ) {
 function addInside( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
+    const { elements } = teiDocument.fairCopyProject.teiSchema
     const parentNode = doc.nodeAt(pos)
 
     if( parentNode.childCount > 0 ) {
         // take the content of the parent and put it inside the new node
-        const nodeType = schema.nodes[elementID]
-        const textNodeName = getTextNodeName(nodeType.spec.content)
-        if( textNodeName ) {
-            const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], parentNode.content) )
-            tr.replaceWith(pos+1, pos+1+parentNode.content.size, fragment)    
-        } else {
-            const fragment = parentNode.content
-            const $start = doc.resolve(pos+1)
-            const $end = doc.resolve(pos+1+fragment.size)
-            const nodeRange = new NodeRange($start,$end,$start.depth)
-            tr.wrap(nodeRange,[{type: nodeType}])
-        }
+        const fragment = createValidNode( elementID, parentNode.content, schema, elements )
+        tr.replaceWith(pos+1, pos+1+parentNode.content.size, fragment)    
         return tr
     } else {
         // insert node inside parent
-        const { elements } = teiDocument.fairCopyProject.teiSchema
         return insertNodeAt( elementID, pos+1, schema, elements, tr )
     }
 }

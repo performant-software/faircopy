@@ -127,26 +127,28 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr )
     return tr
 }
 
-function createValidNode( elementID, schema, elements ) {
+export function createValidNode( elementID, content, schema, elements ) {
     const { defaultNodes } = elements[elementID]
     const nodeType = schema.nodes[elementID]
     let node
 
     if( defaultNodes ) {
         // if default nodes are provided, use them to wrap the text node
-        const nodes = defaultNodes.map( elementID => createValidNode( elementID, schema, elements ) )
+        const nodes = defaultNodes.map( elementID => createValidNode( elementID, content, schema, elements ) )
         node = nodeType.create({}, nodes)
     } else {
-        // otherwise, find wrapping 
+        // valid nodes must have a textNode as a descendant
         const textNodeName = getTextNodeName(nodeType.spec.content)
-        const textNodeType = schema.nodes[textNodeName]
-        const connective = nodeType.contentMatch.findWrapping(textNodeType)
-        if( connective ) {
-            let wrap = textNodeType.create()
-            for (let i = connective.length - 1; i >= 0; i--) {
-                wrap = Fragment.from(connective[i].create(null, wrap))
+        if( textNodeName ) {
+            if( content.childCount > 0 ) {
+                // make sure it is the right sort of text node
+                const fragment = replaceTextNodes(schema.nodes[textNodeName], content)
+                node = nodeType.create({},fragment)    
+            } else {
+                // if no text node exists, create one
+                const textNodeType = schema.nodes[textNodeName]
+                node = nodeType.create({}, textNodeType.create() )
             }
-            node = nodeType.create({},wrap)
         } else {
             throw new Error("No path to textnode")
         }
@@ -155,7 +157,7 @@ function createValidNode( elementID, schema, elements ) {
 }    
 
 export function insertNodeAt( elementID, insertPos, schema, elements, tr ) {
-    const validNode = createValidNode(elementID,schema,elements)
+    const validNode = createValidNode(elementID,Fragment.empty,schema,elements)
     tr.insert( insertPos, validNode )
     return tr             
 }
@@ -284,6 +286,6 @@ export function replaceTextNodes( textNodeType, fragment ) {
         }
     }
 
-    // return new content fragment or null if unsuccesful
+    // return new content fragment 
     return Fragment.from(siblings) 
 }
