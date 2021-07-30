@@ -116,6 +116,7 @@ function validRangeAction(elementID, teiDocument) {
 export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
+    const { elements } = teiDocument.fairCopyProject.teiSchema
     const nodeType = schema.nodes[elementID]
     const node = doc.nodeAt(pos)
     const $targetPos = doc.resolve(pos)
@@ -141,17 +142,16 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
         const testFragment = Fragment.from(siblings)  
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'replace' ) {
-        const { elements } = teiDocument.fairCopyProject.teiSchema
         const testNode = createValidNode( elementID, node.content, schema, elements )
         if( !testNode ) return false
         const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addOutside' ) {
-        // TODO this isn't right because it, missing validation check
+        const testNode = createValidNode( elementID, Fragment.from(node), schema, elements )
+        if( !testNode ) return false
         const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addInside') {
-        const { elements } = teiDocument.fairCopyProject.teiSchema
         const testNode = createValidNode( elementID, node.content, schema, elements )
         return testNode && node.type.validContent(Fragment.from(testNode))
     } else {
@@ -186,7 +186,6 @@ function replaceElement( elementID, teiDocument, pos, tr ) {
     if( node.childCount > 0 ) {
         const textNodeName = getTextNodeName(nodeType.spec.content)
         if( textNodeName ) {
-            debugger
             const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], node.content) )
             tr.replaceWith(pos, pos+2+node.content.size, fragment)    
             return tr
