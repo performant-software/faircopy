@@ -135,7 +135,9 @@ export function createValidNode( elementID, content, schema, elements ) {
     if( defaultNodes ) {
         // if default nodes are provided, use them to wrap the text node
         const nodes = defaultNodes.map( elementID => createValidNode( elementID, content, schema, elements ) )
-        node = nodeType.create({}, nodes)
+        const fragment = Fragment.from(nodes)
+        if( !nodeType.validContent(fragment) ) return null
+        node = nodeType.create({}, fragment)
     } else {
         // valid nodes must have a textNode as a descendant
         const textNodeName = getTextNodeName(nodeType.spec.content)
@@ -143,6 +145,7 @@ export function createValidNode( elementID, content, schema, elements ) {
             if( content.childCount > 0 ) {
                 // make sure it is the right sort of text node
                 const fragment = replaceTextNodes(schema.nodes[textNodeName], content)
+                if( !nodeType.validContent(fragment) ) return null
                 node = nodeType.create({},fragment)    
             } else {
                 // if no text node exists, create one
@@ -279,7 +282,13 @@ export function replaceTextNodes( textNodeType, fragment ) {
     for( let i=0; i < fragment.childCount; i++ ) { 
         const sibling = fragment.child(i)
         if( sibling.type.name.includes('textNode') && sibling.type.name !== textNodeType.name ) {
-            const nextSib = textNodeType.create(sibling.attr, sibling.content, sibling.marks )
+            // TODO implement checking of marks against new text node types
+            // const nextMarks = []
+            // sibling.nodesBetween($from.pos, $to.pos, node => {
+            //     if (can) return false
+            //     can = node.inlineContent && node.type.allowsMarkType(type)
+            // })
+            const nextSib = textNodeType.create(sibling.attr, sibling.content ) //, nextMarks )
             siblings.push( nextSib ) 
         } else {
             siblings.push( sibling ) 

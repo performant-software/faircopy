@@ -124,8 +124,8 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const testNode = nodeType.create()
 
     // create a fragment that places the created node in position with its future siblings
-    let testFragment
     if( actionType === 'addAbove' || actionType === 'addBelow' ) {
+        // TODO can this be made to work like the others?
         const { content } = parentNode
         let siblings = []
         for( let i=0; i < content.childCount; i++ ) { siblings.push( content.child(i) ) }
@@ -138,36 +138,24 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
             after = siblings.slice(nodeIndex+1)
         }   
         siblings = before.concat([testNode]).concat(after)
-        testFragment = Fragment.from(siblings)  
+        const testFragment = Fragment.from(siblings)  
+        return parentNode.type.validContent(testFragment)
     } else if( actionType === 'replace' ) {
-        const textNodeName = getTextNodeName(nodeType.spec.content)
-        if( textNodeName ) {
-            const testFragment = replaceTextNodes(schema.nodes[textNodeName], node.content)
-            const c = nodeType.validContent(testFragment) 
-            const d = parentNode.type.validContent(Fragment.from(nodeType.create()))  
-            console.log(`c: ${c}, d: ${d}`)
-            return c && d
-        } else {
-            testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
-            return nodeType.validContent(node.content) && parentNode.type.validContent(testFragment)
-        }
+        const { elements } = teiDocument.fairCopyProject.teiSchema
+        const testNode = createValidNode( elementID, node.content, schema, elements )
+        if( !testNode ) return false
+        const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
+        return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addOutside' ) {
-        testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
-    } else {
-        // addInside
+        // TODO this isn't right because it, missing validation check
+        const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
+        return parentNode.type.validContent(testFragment)
+    } else if( actionType === 'addInside') {
         const { elements } = teiDocument.fairCopyProject.teiSchema
         const testNode = createValidNode( elementID, node.content, schema, elements )
         return testNode && node.type.validContent(Fragment.from(testNode))
-    }
-
-    switch(actionType) {
-        case 'addOutside':
-            return nodeType.validContent(Fragment.from(node)) && parentNode.type.validContent(testFragment)
-        case 'addAbove':
-        case 'addBelow':
-            return parentNode.type.validContent(testFragment)
-        default:
-            throw new Error('Unrecognized action type.')
+    } else {
+        throw new Error('Unrecognized action type.')
     }
 }
 
@@ -198,6 +186,7 @@ function replaceElement( elementID, teiDocument, pos, tr ) {
     if( node.childCount > 0 ) {
         const textNodeName = getTextNodeName(nodeType.spec.content)
         if( textNodeName ) {
+            debugger
             const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], node.content) )
             tr.replaceWith(pos, pos+2+node.content.size, fragment)    
             return tr
