@@ -155,7 +155,7 @@ export function createValidNode( elementID, content, schema, elements ) {
             if( content.childCount > 0 ) {
                 // make sure it is the right sort of text node
                 const fragment = replaceTextNodes(schema.nodes[textNodeName], content)
-                if( !nodeType.validContent(fragment) ) return null
+                if( !fragment || !nodeType.validContent(fragment) ) return null
                 node = nodeType.create({},fragment)    
             } else {
                 // if no text node exists, create one
@@ -292,13 +292,17 @@ export function replaceTextNodes( textNodeType, fragment ) {
     for( let i=0; i < fragment.childCount; i++ ) { 
         const sibling = fragment.child(i)
         if( sibling.type.name.includes('textNode') && sibling.type.name !== textNodeType.name ) {
-            // TODO implement checking of marks against new text node types
-            // const nextMarks = []
-            // sibling.nodesBetween($from.pos, $to.pos, node => {
-            //     if (can) return false
-            //     can = node.inlineContent && node.type.allowsMarkType(type)
-            // })
-            const nextSib = textNodeType.create(sibling.attr, sibling.content ) //, nextMarks )
+            const textNodeContent = sibling.content
+            for( let i=0; i < textNodeContent.childCount; i++ ) {
+                const node = textNodeContent.child(i)
+                for( const mark of node.marks ) {
+                    if( !textNodeType.allowsMarkType(mark.type) ) {
+                        // if any marks are not allowed for this textNode
+                        return null
+                    }
+                }
+            }
+            const nextSib = textNodeType.create(sibling.attr, sibling.content )
             siblings.push( nextSib ) 
         } else {
             siblings.push( sibling ) 
