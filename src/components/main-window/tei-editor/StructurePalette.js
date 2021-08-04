@@ -1,6 +1,8 @@
 import { Select, MenuItem, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 import EmptyGroup from './EmptyGroup'
+import ElementInfoPopup from './ElementInfoPopup'
+import { determineRules } from '../../../model/editor-actions'
 
 const clientOffset = { x: 0, y: 0 }
 
@@ -17,7 +19,10 @@ export default class StructurePalette extends Component {
       startY: 130,
       offsetX: x,
       offsetY: 130,
+      elementInfoID: null
     }
+    this.itemEls = {}
+
     this.state = { ...this.initialPosition }
 }
 
@@ -109,6 +114,31 @@ getValidSubMenuID(menuGroups,subMenuID) {
   }
 }
 
+renderElementInfo() {
+  const { teiDocument } = this.props
+  const { elementInfoID } = this.state
+
+  const anchorEl = this.itemEls[elementInfoID]
+
+  if( !elementInfoID || !anchorEl ) return null
+
+  const { elements } = teiDocument.fairCopyProject.teiSchema
+  const elementSpec = elements[elementInfoID]
+
+  if(!elementSpec) return null
+  
+  const rules = determineRules( elementInfoID, teiDocument )
+  return (
+      <ElementInfoPopup
+          elementSpec={elementSpec}
+          containedBy={rules.containedBy}
+          mayContain={rules.mayContain}
+          notes={rules.notes}
+          anchorEl={()=>{ return this.itemEls[elementInfoID]}}        
+      ></ElementInfoPopup>
+  )
+}
+
 renderSelectStructureGroup(menuGroups, subMenuID) {
   const { onChangeMenu } = this.props
 
@@ -145,15 +175,27 @@ renderElement(elementID,groupID,paletteOrder) {
   const onStartDrag = (e) => {
     const { onDragElement } = this.props
     const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
+    this.setState({ ...this.state, elementInfoID: null })
     onDragElement(elementID,clientOffset,startingPoint,"document")
   }
 
+  const onMouseOver = () => { 
+    if( !this.state.dragging ) this.setState({ ...this.state, elementInfoID: elementID })
+  }
+  const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
+
+  const setItemElRef = (el) => {
+    this.itemEls[elementID] = el
+}
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
   const className = `element-type ${elType}`
   return (
     <div 
         key={`structs-${paletteOrder}`}
+        ref={setItemElRef}
         onMouseDown={onStartDrag} 
+        onMouseOver={onMouseOver}
+        onMouseLeave={onMouseLeave}
         datamenuid="structure"
         datamenugroupid={groupID}
         datapalettepos={paletteOrder}
@@ -216,6 +258,7 @@ render() {
           { this.renderSelectStructureGroup(menuGroups,validSubMenuID) }
           { this.renderStructures(currentMenu,validSubMenuID) }
         </div>
+        { this.renderElementInfo() }
       </div>
     )
   }
