@@ -5179,179 +5179,6 @@
 			"synth": false
 		},
 		{
-			"name": "c",
-			"pmType": "mark",
-			"fcType": "marks",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"datcat",
-				"exclude",
-				"facs",
-				"function",
-				"met",
-				"n",
-				"next",
-				"notation",
-				"part",
-				"prev",
-				"real",
-				"rend",
-				"rendition",
-				"resp",
-				"rhyme",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"valueDatcat",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"group": "model_phrase model_segLike model_linePart",
-			"desc": "represents a character.",
-			"synth": false
-		},
-		{
-			"name": "g",
-			"pmType": "mark",
-			"fcType": "marks",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"ref",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"group": "model_gLike",
-			"desc": "represents a glyph, or a non-standard character.",
-			"synth": false
-		},
-		{
-			"name": "pc",
-			"pmType": "mark",
-			"fcType": "marks",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"datcat",
-				"exclude",
-				"facs",
-				"force",
-				"function",
-				"join",
-				"lemma",
-				"lemmaRef",
-				"met",
-				"msd",
-				"n",
-				"next",
-				"part",
-				"pos",
-				"pre",
-				"prev",
-				"real",
-				"rend",
-				"rendition",
-				"resp",
-				"rhyme",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"unit",
-				"valueDatcat",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"group": "model_phrase model_segLike model_linePart",
-			"desc": "contains a character or string of characters regarded as constituting a single punctuation mark.",
-			"synth": false
-		},
-		{
-			"name": "w",
-			"pmType": "mark",
-			"fcType": "marks",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"datcat",
-				"exclude",
-				"facs",
-				"function",
-				"join",
-				"lemma",
-				"lemmaRef",
-				"met",
-				"msd",
-				"n",
-				"next",
-				"notation",
-				"part",
-				"pos",
-				"prev",
-				"real",
-				"rend",
-				"rendition",
-				"resp",
-				"rhyme",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"type",
-				"valueDatcat",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"group": "model_phrase model_segLike model_linePart",
-			"desc": "represents a grammatical (not necessarily orthographic) word.",
-			"synth": false
-		},
-		{
 			"name": "catchwords",
 			"pmType": "mark",
 			"fcType": "marks",
@@ -8524,7 +8351,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "textNode10",
+			"content": "textNode8",
 			"group": "model_addrPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -9481,7 +9308,7 @@
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
-			"marks": "model_gLike model_phrase model_inter",
+			"marks": "model_phrase model_inter",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9496,7 +9323,7 @@
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
-			"marks": "model_gLike model_qLike model_phrase",
+			"marks": "model_qLike model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9511,7 +9338,7 @@
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_gLike model_phrase model_inter",
+			"marks": "model_phrase model_inter",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9526,7 +9353,7 @@
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_gLike model_qLike model_phrase",
+			"marks": "model_qLike model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9541,7 +9368,7 @@
 			"synth": true,
 			"content": "((model_pPart_edit_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_gLike model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
+			"marks": "model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9556,7 +9383,7 @@
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_gLike model_phrase",
+			"marks": "model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9601,7 +9428,7 @@
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
-			"marks": "model_gLike",
+			"marks": "",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -9621,21 +9448,6 @@
 			"parseDOM": [
 				{
 					"tag": "textNode9"
-				}
-			]
-		},
-		{
-			"name": "textNode10",
-			"pmType": "node",
-			"fcType": "textNodes",
-			"synth": true,
-			"content": "text*",
-			"selectable": false,
-			"marks": "",
-			"draggable": false,
-			"parseDOM": [
-				{
-					"tag": "textNode10"
 				}
 			]
 		},
@@ -11274,98 +11086,6 @@
 			],
 			"valListType": "closed"
 		},
-		"force": {
-			"ident": "force",
-			"description": "indicates the extent to which this punctuation mark conventionally separates words or phrases",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "strong",
-					"desc": "the punctuation mark is a word separator"
-				},
-				{
-					"ident": "weak",
-					"desc": "the punctuation mark is not a word separator"
-				},
-				{
-					"ident": "inter",
-					"desc": "the punctuation mark may or may not be a word separator"
-				}
-			],
-			"valListType": "closed"
-		},
-		"pre": {
-			"ident": "pre",
-			"description": "indicates whether this punctuation mark precedes or follows the unit it delimits.",
-			"dataType": "teidata.truthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"lemma": {
-			"ident": "lemma",
-			"description": "provides a lemma (base form) for the word, typically uninflected and serving both as an identifier (e.g. in dictionary contexts, as a headword), and as a basis for potential inflections.",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"lemmaRef": {
-			"ident": "lemmaRef",
-			"description": "provides a pointer to a definition of the lemma for the word, for example in an online lexicon.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "1",
-			"valList": null,
-			"valListType": "open"
-		},
-		"pos": {
-			"ident": "pos",
-			"description": "(part of speech) indicates the part of speech assigned to a token (i.e. information on whether it is a noun, adjective, or verb), usually according to some official reference vocabulary (e.g. for German: STTS, for English: CLAWS, for Polish: NKJP, etc.).",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"msd": {
-			"ident": "msd",
-			"description": "(morphosyntactic description) supplies morphosyntactic information for a token, usually according to some official reference vocabulary (e.g. for German: STTS-large tagset; for a feature description system designed as (pragmatically) universal, see Universal Features). ",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"join": {
-			"ident": "join",
-			"description": "when present, it provides information on whether the token in question is adjacent to another, and if so, on which side. The definition of this attribute is adapted from ISO MAF (Morpho-syntactic Annotation Framework), ISO 24611:2012.",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "no"
-				},
-				{
-					"ident": "left"
-				},
-				{
-					"ident": "right"
-				},
-				{
-					"ident": "both"
-				},
-				{
-					"ident": "overlap"
-				}
-			],
-			"valListType": "closed"
-		},
 		"unitRef": {
 			"ident": "unitRef",
 			"description": "points to a unique identifier stored in the xml:id of a unitDef element that defines a unit of measure.",
@@ -11741,10 +11461,6 @@
 		],
 		"marks": [
 			"abbr",
-			"c",
-			"g",
-			"pc",
-			"w",
 			"catchwords",
 			"date",
 			"email",
@@ -11767,6 +11483,10 @@
 			"watermark"
 		],
 		"exclude": [
+			"c",
+			"g",
+			"pc",
+			"w",
 			"facsimile",
 			"group",
 			"surface",
@@ -12099,13 +11819,7 @@
 			"rhyme"
 		],
 		"analysis": [
-			"c",
-			"pc",
-			"s",
-			"w"
-		],
-		"gaiji": [
-			"g"
+			"s"
 		]
 	}
 }

@@ -135,10 +135,6 @@
     ],
     "marks": [
         "abbr",
-        "c",
-        "g",
-        "pc",
-        "w",
         "catchwords",
         "date",
         "email",
@@ -161,6 +157,10 @@
         "watermark"
     ],
     "exclude": [
+        "c",
+        "g",
+        "pc",
+        "w",
         "facsimile",
         "group",
         "surface",
