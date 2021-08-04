@@ -130,6 +130,7 @@
         "sic",
         "signatures",
         "supplied",
+        "title",
         "unclear"
     ],
     "marks": [
@@ -244,7 +245,6 @@
         "support",
         "surrogates",
         "tagUsage",
-        "title",
         "titlePart",
         "trailer",
         "typeNote",
