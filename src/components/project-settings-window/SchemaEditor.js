@@ -78,7 +78,7 @@ export default class SchemaEditor extends Component {
                 const groupIndex = idToIndex(groupID)
 
                 // dragged to library, ignore
-                if( !groupIndex ) return
+                if( groupIndex === null ) return
 
                 // update the effected group(s)
                 if( originGroupIndex !== null ) removeElementFromMenu( elementID, originGroupIndex, selectedMenu, fairCopyConfig)
