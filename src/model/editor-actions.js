@@ -54,30 +54,41 @@ export function determineRules( elementID, teiDocument ) {
     const { schema } = editorView.state
     const targetType = schema.nodes[elementID]
 
-    const mayContainIDs = []
+    const listToString = (list) => {
+        let strList
+        if( list.length > 30 ) {
+            strList = list.slice(0,30)
+            strList.push(`and ${list.length} more.`)
+        } else {
+            strList = list
+        }
+        return strList.length > 0 ? strList.join(', ') : null
+    }
+
+    let mayContainIDs = []
     for( const element of Object.values(elements) ) {
-        const { name, pmType } = element
-        if( pmType === 'node' ) {
+        const { name, fcType } = element
+        if( fcType === 'soft' || fcType === 'hard' ) {
             const testNode = schema.nodes[name].create() 
             if( targetType.validContent(Fragment.from(testNode)) ) {
                 mayContainIDs.push(name)
             }
         }
     }
-    const mayContain = mayContainIDs.length > 0 ? mayContainIDs.join(', ') : null
+    const mayContain = listToString(mayContainIDs)
 
     const containedByIDs = []
     const testFragment = Fragment.from(targetType.create())
     for( const element of Object.values(elements) ) {
-        const { name, pmType } = element
-        if( pmType === 'node' ) {
+        const { name, fcType } = element
+        if( fcType === 'soft' || fcType === 'hard' ) {
             const parentType = schema.nodes[name]
             if( parentType.validContent(testFragment) ) {
                 containedByIDs.push(name)
             }
         }
     }
-    const containedBy = containedByIDs.length > 0 ? containedByIDs.join(', ') : null
+    const containedBy = listToString(containedByIDs)
 
     return {
         containedBy,
