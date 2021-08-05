@@ -1046,6 +1046,48 @@
 			"synth": false
 		},
 		{
+			"name": "figure",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_headLike|model_common|figDesc|model_graphicLike|model_global|model_divBottom)*",
+			"group": "model_global",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"hand",
+				"n",
+				"next",
+				"place",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"graphic"
+			],
+			"desc": "groups elements representing or containing graphic information such as an illustration, formula, or figure.",
+			"synth": false
+		},
+		{
 			"name": "fileDesc",
 			"pmType": "node",
 			"fcType": "hard",
@@ -1161,6 +1203,50 @@
 				"p"
 			],
 			"desc": "contains any prefatory matter (headers, abstracts, title page, prefaces, dedications, etc.) found at the start of a document, before the main body.",
+			"synth": false
+		},
+		{
+			"name": "graphic",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "model_descLike*",
+			"group": "model_phrase model_graphicLike model_titlepagePart",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"decls",
+				"exclude",
+				"facs",
+				"height",
+				"mimeType",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"scale",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"url",
+				"width",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"desc"
+			],
+			"desc": "indicates the location of a graphic or illustration, either forming part of a text, or providing an image of it.",
 			"synth": false
 		},
 		{
@@ -2971,6 +3057,48 @@
 			"synth": false
 		},
 		{
+			"name": "table",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "((model_headLike|model_global)* ((row model_global*)+|(model_graphicLike model_global*)+) (model_divBottom model_global*)*)",
+			"group": "model_standOffPart model_common model_inter model_listLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"cols",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"rows",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"row"
+			],
+			"desc": "contains text displayed in tabular form, in rows and columns.",
+			"synth": false
+		},
+		{
 			"name": "titlePage",
 			"pmType": "node",
 			"fcType": "hard",
@@ -3279,6 +3407,47 @@
 				"p"
 			],
 			"desc": "describes the setting or settings within which a language interaction takes place, or other places otherwise referred to in a text, edition, or metadata.",
+			"synth": false
+		},
+		{
+			"name": "row",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "cell+",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"cols",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"role",
+				"rows",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"cell"
+			],
+			"desc": "contains one row of a table.",
 			"synth": false
 		},
 		{
@@ -6528,6 +6697,45 @@
 			"synth": false
 		},
 		{
+			"name": "cell",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"cols",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"role",
+				"rows",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains one cell of a table.",
+			"synth": false
+		},
+		{
 			"name": "change",
 			"pmType": "node",
 			"fcType": "soft",
@@ -6659,6 +6867,43 @@
 			],
 			"defaultNodes": null,
 			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at the end of a division, especially of a letter.",
+			"synth": false
+		},
+		{
+			"name": "code",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "textNode8",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"lang",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains literal code from some formal language such as a programming language.",
 			"synth": false
 		},
 		{
@@ -7469,6 +7714,42 @@
 			"synth": false
 		},
 		{
+			"name": "figDesc",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode9|model_limitedPhrase|model_inter)*",
+			"group": "",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains a brief prose description of the appearance or content of a graphic figure, for use when documenting an image without displaying it.",
+			"synth": false
+		},
+		{
 			"name": "filiation",
 			"pmType": "node",
 			"fcType": "soft",
@@ -7579,6 +7860,43 @@
 			],
 			"defaultNodes": null,
 			"desc": "describes the numbering system or systems used to count the leaves or pages in a codex or similar object.",
+			"synth": false
+		},
+		{
+			"name": "formula",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode10|model_graphicLike|model_hiLike)*",
+			"group": "model_phrase model_graphicLike",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"notation",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains a mathematical or other formula.",
 			"synth": false
 		},
 		{
@@ -9452,6 +9770,21 @@
 			]
 		},
 		{
+			"name": "textNode10",
+			"pmType": "node",
+			"fcType": "textNodes",
+			"synth": true,
+			"content": "text*",
+			"selectable": false,
+			"marks": "model_hiLike",
+			"draggable": false,
+			"parseDOM": [
+				{
+					"tag": "textNode10"
+				}
+			]
+		},
+		{
 			"name": "globalNode0",
 			"pmType": "node",
 			"fcType": "globalNodes",
@@ -10534,6 +10867,101 @@
 			"valList": null,
 			"valListType": "open"
 		},
+		"place": {
+			"ident": "place",
+			"description": "specifies where this item is placed.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": [
+				{
+					"ident": "below",
+					"desc": "below the line"
+				},
+				{
+					"ident": "bottom",
+					"desc": "at the foot of the page"
+				},
+				{
+					"ident": "margin",
+					"desc": "in the margin (left, right, or both)"
+				},
+				{
+					"ident": "top",
+					"desc": "at the top of the page"
+				},
+				{
+					"ident": "opposite",
+					"desc": "on the opposite, i.e. facing, page"
+				},
+				{
+					"ident": "overleaf",
+					"desc": "on the other side of the leaf"
+				},
+				{
+					"ident": "above",
+					"desc": "above the line"
+				},
+				{
+					"ident": "end",
+					"desc": "at the end of e.g. chapter or volume."
+				},
+				{
+					"ident": "inline",
+					"desc": "within the body of the text."
+				},
+				{
+					"ident": "inspace",
+					"desc": " in a predefined space, for example left by an earlier scribe."
+				}
+			],
+			"valListType": "semi"
+		},
+		"width": {
+			"ident": "width",
+			"description": "Where the media are displayed, indicates the display width",
+			"dataType": "teidata.outputMeasurement",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"height": {
+			"ident": "height",
+			"description": "Where the media are displayed, indicates the display height",
+			"dataType": "teidata.outputMeasurement",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"scale": {
+			"ident": "scale",
+			"description": "Where the media are displayed, indicates a scale factor to be applied when generating the desired display size",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"mimeType": {
+			"ident": "mimeType",
+			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"url": {
+			"ident": "url",
+			"description": "specifies the URL from which the media concerned may be obtained.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
 		"hands": {
 			"ident": "hands",
 			"description": "specifies the number of distinct hands identified within the manuscript",
@@ -10725,6 +11153,24 @@
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"rows": {
+			"ident": "rows",
+			"description": "indicates the number of rows in the table.",
+			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"cols": {
+			"ident": "cols",
+			"description": "indicates the number of columns in each row of the table.",
+			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": null,
 			"valList": null,
 			"valListType": "open"
 		},
@@ -10925,56 +11371,6 @@
 			"valList": null,
 			"valListType": "open"
 		},
-		"place": {
-			"ident": "place",
-			"description": "specifies where this item is placed.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": [
-				{
-					"ident": "below",
-					"desc": "below the line"
-				},
-				{
-					"ident": "bottom",
-					"desc": "at the foot of the page"
-				},
-				{
-					"ident": "margin",
-					"desc": "in the margin (left, right, or both)"
-				},
-				{
-					"ident": "top",
-					"desc": "at the top of the page"
-				},
-				{
-					"ident": "opposite",
-					"desc": "on the opposite, i.e. facing, page"
-				},
-				{
-					"ident": "overleaf",
-					"desc": "on the other side of the leaf"
-				},
-				{
-					"ident": "above",
-					"desc": "above the line"
-				},
-				{
-					"ident": "end",
-					"desc": "at the end of e.g. chapter or volume."
-				},
-				{
-					"ident": "inline",
-					"desc": "within the body of the text."
-				},
-				{
-					"ident": "inspace",
-					"desc": " in a predefined space, for example left by an earlier scribe."
-				}
-			],
-			"valListType": "semi"
-		},
 		"cause": {
 			"ident": "cause",
 			"description": "documents the presumed cause for the intervention.",
@@ -10999,15 +11395,6 @@
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"mimeType": {
-			"ident": "mimeType",
-			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
-			"dataType": "teidata.word",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
 		},
@@ -11148,6 +11535,15 @@
 			"ident": "value",
 			"description": "supplies the value of the number in standard form.",
 			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"lang": {
+			"ident": "lang",
+			"description": "a name identifying the formal language in which the code is expressed",
+			"dataType": "teidata.word",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -11339,15 +11735,6 @@
 			"headerDoc",
 			"substDoc"
 		],
-		"embed": [
-			"cell",
-			"code",
-			"figDesc",
-			"figure",
-			"formula",
-			"graphic",
-			"row"
-		],
 		"hard": [
 			"abstract",
 			"additional",
@@ -11375,9 +11762,11 @@
 			"editorialDecl",
 			"encodingDesc",
 			"epigraph",
+			"figure",
 			"fileDesc",
 			"floatingText",
 			"front",
+			"graphic",
 			"handDesc",
 			"history",
 			"imprint",
@@ -11423,6 +11812,7 @@
 			"sourceDesc",
 			"supportDesc",
 			"sp",
+			"table",
 			"titlePage",
 			"titleStmt",
 			"typeDesc",
@@ -11430,7 +11820,8 @@
 			"samplingDecl",
 			"tagsDecl",
 			"taxonomy",
-			"settingDesc"
+			"settingDesc",
+			"row"
 		],
 		"inlines": [
 			"anchor",
@@ -11507,9 +11898,11 @@
 			"byline",
 			"castItem",
 			"catDesc",
+			"cell",
 			"change",
 			"classCode",
 			"closer",
+			"code",
 			"collation",
 			"collection",
 			"colophon",
@@ -11530,9 +11923,11 @@
 			"editor",
 			"explicit",
 			"extent",
+			"figDesc",
 			"filiation",
 			"finalRubric",
 			"foliation",
+			"formula",
 			"head",
 			"height",
 			"idno",
@@ -11642,16 +12037,6 @@
 			"fw",
 			"subst",
 			"supplied"
-		],
-		"figures": [
-			"cell",
-			"figDesc",
-			"figure",
-			"formula",
-			"row"
-		],
-		"tagdocs": [
-			"code"
 		],
 		"header": [
 			"abstract",
@@ -11800,6 +12185,14 @@
 			"roleDesc",
 			"set"
 		],
+		"figures": [
+			"cell",
+			"figDesc",
+			"figure",
+			"formula",
+			"row",
+			"table"
+		],
 		"namesdates": [
 			"listPerson",
 			"listPlace",
@@ -11820,6 +12213,9 @@
 		],
 		"analysis": [
 			"s"
+		],
+		"tagdocs": [
+			"code"
 		]
 	}
 }
