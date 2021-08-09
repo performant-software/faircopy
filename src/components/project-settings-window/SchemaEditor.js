@@ -99,7 +99,7 @@ export default class SchemaEditor extends Component {
                             <ElementTree
                                 teiSchema={teiSchema}
                                 fairCopyConfig={fairCopyConfig}
-                                selectedElement={ selectedGroup ? selectedElement : null }
+                                selectedElement={ selectedGroup !== null ? selectedElement : null }
                                 selectedGroup={selectedGroup}
                                 selectedMenu={selectedMenu}
                                 onSelect={onSelect}
