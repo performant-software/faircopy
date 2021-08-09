@@ -12,7 +12,8 @@
 					"ref",
 					"s",
 					"seg",
-					"term"
+					"term",
+					"title"
 				]
 			},
 			{
@@ -105,6 +106,7 @@
 					"docEdition",
 					"docImprint",
 					"docTitle",
+					"title",
 					"titlePage",
 					"titlePart"
 				]
@@ -9418,7 +9420,7 @@
 			}
 		},
 		"title": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false

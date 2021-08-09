@@ -7,6 +7,7 @@ import ElementLibrary from './ElementLibrary'
 import AttributeDialog from '../main-window/dialogs/AttributeDialog'
 import EditGroupDialog from './EditGroupDialog'
 import { reorder } from '../common/dnd';
+import SnackAlert from '../common/SnackAlert'
 
 import { addElementToMenu, removeElementFromMenu  } from '../../model/faircopy-config'
 
@@ -16,6 +17,7 @@ export default class SchemaEditor extends Component {
         super(props)
 
         this.state = {
+            alertMessage: null,
             selectedElement: null,
             selectedGroup: null,
             selectedMenu: 'structure',
@@ -26,7 +28,7 @@ export default class SchemaEditor extends Component {
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
-        const { selectedElement, attributeDialogOpen, selectedGroup, selectedMenu, editGroupOpen, groupIndex } = this.state
+        const { selectedElement, attributeDialogOpen, selectedGroup, selectedMenu, editGroupOpen, groupIndex, alertMessage } = this.state
 
         const onSelect = (elementID,groupID) => {
             this.setState({...this.state, selectedElement: elementID, selectedGroup: groupID })
@@ -42,6 +44,10 @@ export default class SchemaEditor extends Component {
 
         const openAttributeDialog = () => {
             this.setState({...this.state, attributeDialogOpen: true })
+        }
+
+        const onAlertMessage = (message) => {
+            this.setState({...this.state, alertMessage: message })
         }
 
         const onEditGroup = ( groupIndex ) => {
@@ -84,7 +90,7 @@ export default class SchemaEditor extends Component {
                 if( originGroupIndex !== null ) removeElementFromMenu( elementID, originGroupIndex, selectedMenu, fairCopyConfig)
                 const addResult = addElementToMenu( elementID, palettePos, groupIndex, selectedMenu, fairCopyConfig)
                 if( addResult.error ) {
-                    console.log(addResult.message)
+                    onAlertMessage(addResult.message)
                 } else {
                     onUpdateConfig( fairCopyConfig )
                 }  
@@ -145,6 +151,11 @@ export default class SchemaEditor extends Component {
                         onUpdateConfig={onUpdateConfig}
                         onClose={() => { this.setState( { ...this.state, editGroupOpen: false }) }}
                     ></EditGroupDialog>}
+                    <SnackAlert
+                        open={alertMessage !== null}
+                        message={alertMessage}
+                        handleClose={()=>{ this.setState({...this.state, alertMessage: null})}}
+                    ></SnackAlert>
                 </div>
             </div>
         )

@@ -3,16 +3,20 @@ import { systemElements } from './TEISchema'
 const fairCopy = window.fairCopy
 
 const importGroupName = "Untitled Group"
+const maxGroupSize = 18
 
 // add the element to the menu and update the config
 export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyConfig) {
     const { elements, menus } = fairCopyConfig
     const groupMembers = menus[menuID][groupID].members
     if( groupMembers.includes(elementID) ) {
-        return { error: true, message: `${elementID} is already on this menu.`}        
+        return { error: true, message: `${elementID} is already part of this group.`}        
     }
     if( !elements[elementID] ) {
         return { error: true, message: `${elementID} is not in the config schema.`}   
+    }
+    if( groupMembers.length >= maxGroupSize ) {
+        return { error: true, message: `Groups may not contain more than ${maxGroupSize} elements.`}   
     }
     elements[elementID].active = true
     const start = groupMembers.slice(0,palettePos)

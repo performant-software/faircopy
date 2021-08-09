@@ -2,7 +2,7 @@
     "mark": [
         {
             "label": "General",
-            "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term" ]
+            "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term", "title" ]
         },
         {
             "label": "Transcription",
@@ -36,7 +36,7 @@
         },
         {
             "label": "Title Page",
-            "members": ["docAuthor","docDate","docEdition","docImprint","docTitle","titlePage","titlePart"]
+            "members": ["docAuthor","docDate","docEdition","docImprint","docTitle","title","titlePage","titlePart"]
         },
         {
             "label": "Bibliography",
