@@ -6,7 +6,6 @@ const createElements = function createElements(elGroups,specs,keepReportData) {
     const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons.json`).toString('utf-8'))
     const defaultNodes = JSON.parse(fs.readFileSync(`scripts/turtle/default-nodes.json`).toString('utf-8'))
 
-    // TODO embeds
     elements.push( ...createNodes(elGroups,true,defaultNodes,specs) )
     elements.push( ...createInlineNodes(elGroups,icons,specs) )
     elements.push( ...createAsides(elGroups,icons,defaultNodes,specs) )

@@ -3,6 +3,8 @@ import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies, replaceTextNodes, createValidNode } from "./commands"
 import { getTextNodeName } from './xml'
 
+const elementListLength = 30
+
 // creates inlines, marks, and inter marks
 export function createPhraseElement( elementID, attrs, teiDocument ) {
     const { fairCopyProject } = teiDocument
@@ -56,9 +58,11 @@ export function determineRules( elementID, teiDocument ) {
 
     const listToString = (list) => {
         let strList
-        if( list.length > 30 ) {
-            strList = list.slice(0,30)
-            strList.push(`and ${list.length} more.`)
+        if( list.length > elementListLength ) {
+            strList = list.slice(0,elementListLength)
+            const others = list.length - elementListLength
+            const s = others !== 1 ? 's' : ''
+            strList.push(`and ${others} other${s}.`)
         } else {
             strList = list
         }
@@ -75,7 +79,7 @@ export function determineRules( elementID, teiDocument ) {
             }
         }
     }
-    const mayContain = listToString(mayContainIDs)
+    const mayContain = listToString(mayContainIDs.sort())
 
     const containedByIDs = []
     const testFragment = Fragment.from(targetType.create())
@@ -88,7 +92,7 @@ export function determineRules( elementID, teiDocument ) {
             }
         }
     }
-    const containedBy = listToString(containedByIDs)
+    const containedBy = listToString(containedByIDs.sort())
 
     return {
         containedBy,
