@@ -1398,7 +1398,7 @@
 				"xml:space"
 			],
 			"defaultNodes": [
-				"term"
+				"list"
 			],
 			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text.",
 			"synth": false
@@ -3096,6 +3096,45 @@
 				"row"
 			],
 			"desc": "contains text displayed in tabular form, in rows and columns.",
+			"synth": false
+		},
+		{
+			"name": "textClass",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(classCode|catRef_g|keywords)*",
+			"group": "model_profileDescPart",
+			"gutterMark": true,
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"keywords"
+			],
+			"desc": "groups information which describes the nature or topic of a text in terms of a standard classification scheme, thesaurus, etc.",
 			"synth": false
 		},
 		{
@@ -11813,6 +11852,7 @@
 			"supportDesc",
 			"sp",
 			"table",
+			"textClass",
 			"titlePage",
 			"titleStmt",
 			"typeDesc",
@@ -12078,6 +12118,7 @@
 			"tagUsage",
 			"tagsDecl",
 			"taxonomy",
+			"textClass",
 			"titleStmt"
 		],
 		"msdescription": [
