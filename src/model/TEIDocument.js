@@ -119,6 +119,7 @@ export default class TEIDocument {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
         const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
         const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+        this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
 
         // update the ID Map
         const resourceMap = idMap.mapResource( 'text', transaction.doc )
@@ -136,7 +137,6 @@ export default class TEIDocument {
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
         this.editorView.updateState(nextEditorState)
-        this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
     }
 
     getRelativeParentID() {
