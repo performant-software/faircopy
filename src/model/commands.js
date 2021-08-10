@@ -6,14 +6,16 @@ import { getTextNodeName } from './xml'
 export function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {
         let {$from, $to} = ranges[i]
-        let can = $from.depth === 0 ? doc.type.allowsMarkType(type) : false
+        let can = true 
         doc.nodesBetween($from.pos, $to.pos, node => {
-            if (can) return false
-            can = node.inlineContent && node.type.allowsMarkType(type)
+            if( node.type.name.includes('textNode') && !node.type.allowsMarkType(type) ) {
+                can = false
+                return false
+            } 
         })
-        if (can) return true
+        if (!can) return false
     }
-    return false
+    return true
 }
 
 export function addMark(markType,attrs) {

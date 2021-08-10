@@ -124,14 +124,13 @@ export default class TEISchema {
 
     createElementSpec(elSpec) {
         const { name, markContent, content, group, phraseLvl, isolating } = elSpec
-        const marks = markContent ? markContent : null
         const attrs = this.getAttrSpec(elSpec.attrs)
         return {
             content,
             group,
             attrs,
             isolating,
-            marks,
+            marks: markContent,
             parseDOM: [
                 {
                     tag: name,
