@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { DragDropContext } from "react-beautiful-dnd";
 
 import ElementTree from './ElementTree'
-import ElementInspector from './ElementInspector'
 import ElementLibrary from './ElementLibrary'
 import AttributeDialog from '../main-window/dialogs/AttributeDialog'
 import EditGroupDialog from './EditGroupDialog'
@@ -40,10 +39,6 @@ export default class SchemaEditor extends Component {
 
         const closeAttributeDialog = () => {
             this.setState({...this.state, attributeDialogOpen: false })
-        }
-
-        const openAttributeDialog = () => {
-            this.setState({...this.state, attributeDialogOpen: true })
         }
 
         const onAlertMessage = (message) => {
@@ -123,17 +118,6 @@ export default class SchemaEditor extends Component {
                             ></ElementLibrary>
                         </div>
                     </DragDropContext>
-                </div>
-                <div className="bottom">
-                    <ElementInspector
-                        teiSchema={teiSchema}
-                        fairCopyConfig={fairCopyConfig}
-                        elementID={selectedElement}
-                        onMenu={selectedGroup !== null}
-                        onRemoveElement={onRemoveElement}
-                        openAttributeDialog={openAttributeDialog}
-                        onUpdateConfig={onUpdateConfig}
-                    ></ElementInspector>
                 </div>
                 <div>
                     { attributeDialogOpen && <AttributeDialog 

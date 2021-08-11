@@ -14,19 +14,12 @@
 #SchemaEditor .top-left {
     border-right: 1px solid gray;
     overflow-y: scroll;
-    min-height: 45vw;
-    max-height: 45vw;
+    max-height: calc(100vh - 120px);
 }
 
 #SchemaEditor .top-right {
     overflow-y: scroll;
-    min-height: 45vw;
-    max-height: 45vw;
-}
-
-#SchemaEditor .bottom {
-    padding: 5px;
-    overflow-y: scroll;
+    max-height: calc(100vh - 120px);
 }
 
 #SchemaEditor .element-item {
