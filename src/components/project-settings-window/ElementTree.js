@@ -4,7 +4,9 @@ import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
+import ElementInfoPopup from '../main-window/tei-editor/ElementInfoPopup';
 import { removeGroupFromMenu } from '../../model/faircopy-config'
+import { determineRules } from '../../model/editor-actions'
 
 export default class ElementTree extends Component {
 
@@ -12,8 +14,35 @@ export default class ElementTree extends Component {
         super(props)
 
         this.state = {
-            accordionStates: { 'structure': {}, 'mark': {}, 'inline': {}}
+            accordionStates: { 'structure': {}, 'mark': {}, 'inline': {}},
+            elementInfoID: null
         }
+        this.itemEls = {}
+    }
+
+    renderElementInfo() {
+        const { teiSchema } = this.props
+        const { elementInfoID } = this.state
+        const anchorEl = this.itemEls[elementInfoID]
+
+        if( !elementInfoID || !anchorEl ) return null
+
+        const { elements } = teiSchema
+        const elementSpec = elements[elementInfoID]
+
+        if(!elementSpec) return null
+        
+        const rules = determineRules( elementInfoID, teiSchema )
+
+        return (
+            <ElementInfoPopup
+                elementSpec={elementSpec}
+                containedBy={rules.containedBy}
+                mayContain={rules.mayContain}
+                notes={rules.notes}
+                anchorEl={()=>{ return this.itemEls[elementInfoID]}}    
+            ></ElementInfoPopup>
+        )
     }
 
     renderElement(groupID,elementID,index) {
@@ -24,7 +53,12 @@ export default class ElementTree extends Component {
         const elementKey = `group${groupID}_element-${elementID}`
         const selected = ( groupID === selectedGroup && elementID === selectedElement ) ? "selected-item" : ""
 
+        const setItemElRef = (el) => {
+            this.itemEls[elementID] = el
+        }
         const onClick = () => { onSelect(elementID,groupID) }
+        const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: elementID })}
+        const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
 
         return (
             <Draggable key={elementKey} draggableId={elementKey} index={index}>
@@ -34,7 +68,7 @@ export default class ElementTree extends Component {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                     >
-                        <div onClick={onClick} className={`element-item ${elementType} ${selected}`} >
+                        <div ref={setItemElRef} onClick={onClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} className={`element-item ${elementType} ${selected}`} >
                             <Typography>{elementIcon}{elementID}</Typography>
                         </div>                        
                     </div>
@@ -185,6 +219,7 @@ export default class ElementTree extends Component {
                     </Tabs>
                 </div>
                 { this.renderTree(selectedMenu) }
+                { this.renderElementInfo() } 
             </div>
         )
     }

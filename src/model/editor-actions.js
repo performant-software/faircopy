@@ -49,11 +49,8 @@ export function createStructureElement( elementID, nodePos, actionType, teiDocum
     } 
 }
 
-export function determineRules( elementID, teiDocument ) {
-    const teiSchema = teiDocument.fairCopyProject.teiSchema
-    const {elements} = teiSchema
-    const editorView = teiDocument.getActiveView()
-    const { schema } = editorView.state
+export function determineRules( elementID, teiSchema ) {
+    const {elements, schema} = teiSchema
     const targetType = schema.nodes[elementID]
 
     const listToString = (list) => {

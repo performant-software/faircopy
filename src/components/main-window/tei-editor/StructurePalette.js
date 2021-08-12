@@ -122,12 +122,13 @@ renderElementInfo() {
 
   if( !elementInfoID || !anchorEl ) return null
 
-  const { elements } = teiDocument.fairCopyProject.teiSchema
+  const { teiSchema } = teiDocument.fairCopyProject
+  const { elements } = teiSchema
   const elementSpec = elements[elementInfoID]
 
   if(!elementSpec) return null
   
-  const rules = determineRules( elementInfoID, teiDocument )
+  const rules = determineRules( elementInfoID, teiSchema )
   return (
       <ElementInfoPopup
           elementSpec={elementSpec}
