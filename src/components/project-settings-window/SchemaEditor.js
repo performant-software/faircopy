@@ -58,6 +58,8 @@ export default class SchemaEditor extends Component {
                 const { droppableId: originGroupID } = result.source
                 const elementID = draggableId.slice(draggableId.indexOf('-')+1)
                 const originGroupIndex = idToIndex(originGroupID)
+                // don't remove from library
+                if( originGroupIndex === null ) return
                 removeElementFromMenu( elementID, originGroupIndex, selectedMenu, fairCopyConfig)
                 this.setState({...this.state, selectedElement: null, selectedGroup: null })
                 onUpdateConfig(fairCopyConfig)   
