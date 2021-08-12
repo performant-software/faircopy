@@ -5,13 +5,11 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 export default class ElementLibrary extends Component {
 
     renderElement(elementID,index) {
-        const { teiSchema, onSelect, selectedElement } = this.props
+        const { teiSchema, selectedElement } = this.props
         const key = `element-${elementID}`
         const icon = teiSchema.getElementIcon(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         const selected = ( elementID === selectedElement ) ? "selected-item" : ""
-
-        const onClick = () => { onSelect(elementID,null) }
 
         return (
             <Draggable key={key} draggableId={key} index={index}>
@@ -21,7 +19,7 @@ export default class ElementLibrary extends Component {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                     >
-                        <div onClick={onClick} className={`element-item library-element ${selected}`} >
+                        <div className={`element-item library-element ${selected}`} >
                             <Typography>{elementIcon}{elementID}</Typography>
                         </div>                        
                     </div>

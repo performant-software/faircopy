@@ -30,7 +30,7 @@ export default class SchemaEditor extends Component {
         const { selectedElement, attributeDialogOpen, selectedGroup, selectedMenu, editGroupOpen, groupIndex, alertMessage } = this.state
 
         const onSelect = (elementID,groupID) => {
-            this.setState({...this.state, selectedElement: elementID, selectedGroup: groupID })
+            this.setState({...this.state, selectedElement: elementID, selectedGroup: groupID,  attributeDialogOpen: true })
         }
 
         const onChangeMenu = (e,nextMenu) => {
@@ -38,7 +38,7 @@ export default class SchemaEditor extends Component {
         }
 
         const closeAttributeDialog = () => {
-            this.setState({...this.state, attributeDialogOpen: false })
+            this.setState({...this.state, attributeDialogOpen: false, selectedElement: null, selectedGroup: null })
         }
 
         const onAlertMessage = (message) => {
@@ -114,7 +114,6 @@ export default class SchemaEditor extends Component {
                                 teiSchema={teiSchema}
                                 selectedElement={ selectedGroup === null ? selectedElement : null}
                                 selectedMenu={selectedMenu}
-                                onSelect={onSelect}
                             ></ElementLibrary>
                         </div>
                     </DragDropContext>
