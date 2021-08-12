@@ -21,7 +21,7 @@ export default class ElementTree extends Component {
     }
 
     renderElementInfo() {
-        const { teiSchema } = this.props
+        const { teiSchema, selectedMenu } = this.props
         const { elementInfoID } = this.state
         const anchorEl = this.itemEls[elementInfoID]
 
@@ -32,17 +32,26 @@ export default class ElementTree extends Component {
 
         if(!elementSpec) return null
         
-        const rules = determineRules( elementInfoID, teiSchema )
+        if( selectedMenu === 'structure' ) {
+            const rules = determineRules( elementInfoID, teiSchema )
 
-        return (
-            <ElementInfoPopup
-                elementSpec={elementSpec}
-                containedBy={rules.containedBy}
-                mayContain={rules.mayContain}
-                notes={rules.notes}
-                anchorEl={()=>{ return this.itemEls[elementInfoID]}}    
-            ></ElementInfoPopup>
-        )
+            return (
+                <ElementInfoPopup
+                    elementSpec={elementSpec}
+                    containedBy={rules.containedBy}
+                    mayContain={rules.mayContain}
+                    notes={rules.notes}
+                    anchorEl={()=>{ return this.itemEls[elementInfoID]}}    
+                ></ElementInfoPopup>
+            )    
+        } else {
+            return (
+                <ElementInfoPopup
+                    elementSpec={elementSpec}
+                    anchorEl={()=>{ return this.itemEls[elementInfoID]}}    
+                ></ElementInfoPopup>
+            )    
+        }
     }
 
     renderElement(groupID,elementID,index) {
