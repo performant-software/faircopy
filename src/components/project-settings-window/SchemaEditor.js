@@ -49,14 +49,20 @@ export default class SchemaEditor extends Component {
             this.setState({...this.state, groupIndex, editGroupOpen: true })
         }
 
-        const onRemoveElement = () => {
-            removeElementFromMenu(selectedElement,selectedGroup,selectedMenu,fairCopyConfig)
-            this.setState({...this.state, selectedElement: null, selectedGroup: null })
-            onUpdateConfig(fairCopyConfig)
-        }
-
         const onDragEnd = (result) => {
-            if (!result.destination) return
+            const idToIndex = (id) => id.startsWith('group-') ? parseInt(id.slice('group-'.length)) : null
+
+            if (!result.destination) {
+                // if dragged away, remove element from menu
+                const { draggableId } = result
+                const { droppableId: originGroupID } = result.source
+                const elementID = draggableId.slice(draggableId.indexOf('-')+1)
+                const originGroupIndex = idToIndex(originGroupID)
+                removeElementFromMenu( elementID, originGroupIndex, selectedMenu, fairCopyConfig)
+                this.setState({...this.state, selectedElement: null, selectedGroup: null })
+                onUpdateConfig(fairCopyConfig)   
+                return
+            }
 
             if( result.type === 'groups' ) {
                 const elementGroups = fairCopyConfig.menus[selectedMenu]
@@ -73,7 +79,6 @@ export default class SchemaEditor extends Component {
                 const { draggableId } = result
                 const { droppableId: originGroupID } = result.source
                 const { droppableId: groupID, index: palettePos } = result.destination
-                const idToIndex = (id) => id.startsWith('group-') ? parseInt(id.slice('group-'.length)) : null
                 const elementID = draggableId.slice(draggableId.indexOf('-')+1)
                 const originGroupIndex = idToIndex(originGroupID)
                 const groupIndex = idToIndex(groupID)
