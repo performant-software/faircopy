@@ -8,34 +8,12 @@ import {parseText, serializeText} from "./xml"
 
 const fairCopy = window.fairCopy
 
-// There are a wide number of valid configurations for TEI elements in the guidelines, but 
-// to keep things simple, we are going to support the most common document 
-// structure: a single tei element containing one header and one or more texts and/or facs.
-// We will also support import of TEI partials in the same format that we export them. (i.e. a single 
-// text or facs in a TEI element)
-
 export function importResource(importData,existingParentID,fairCopyProject) {
     const { path, data } = importData
     const { idMap } = fairCopyProject
 
-    // locate the XML els that contain resources
-    const extractedResources = extractResourceEls(data)
-
-    let {fairCopyConfig} = fairCopyProject
-    const resources = []
-
-    const addResource = (resourceEl, name, localID, parentID) => {
-        const resourceName = resourceEl.tagName.toLowerCase()
-        const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : 'facs'
-        if( type === 'facs' ) {
-            const facsResource = importFacsDocument(resourceEl,name,localID,parentID,fairCopyProject)
-            resources.push(facsResource)  
-        } else {
-            const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = importTEIDocument(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig)
-            fairCopyConfig = nextFairCopyConfig
-            resources.push({resourceEntry, content, resourceMap})    
-        }
-    }
+    // TODO don't assume .xml extension
+    // if it does have .xml ext and isn't XML, throw an error.
 
     // what do we call this resource?
     const name = fairCopy.services.getBasename(path,'.xml').trim()
@@ -43,6 +21,29 @@ export function importResource(importData,existingParentID,fairCopyProject) {
     const parentEntry = fairCopyProject.getResourceEntry(existingParentID)
     const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
     const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
+    
+    // if this is an XML file, parse the dom
+    const xmlDom = parseDOM(data)
+
+    if( xmlDom ) {
+        return importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject)
+    } else {
+        return importTxtResource(data, name, localID, existingParentID, fairCopyProject)
+    }
+}
+
+// There are a wide number of valid configurations for TEI elements in the guidelines, but 
+// to keep things simple, we are going to support the most common document 
+// structure: a single tei element containing one header and one or more texts and/or facs.
+// We will also support import of TEI partials in the same format that we export them. (i.e. a single 
+// text or facs in a TEI element)
+
+function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject) {
+    // locate the XML els that contain resources
+    const extractedResources = extractResourceEls(xmlDom)
+
+    let {fairCopyConfig} = fairCopyProject
+    const resources = []
 
     if( extractedResources.header ) {
         let parentEntryID, childLocalIDs
@@ -59,7 +60,8 @@ export function importResource(importData,existingParentID,fairCopyProject) {
             childLocalIDs = []
 
             // create the header
-            addResource(extractedResources.header, "TEI Header", "header", parentEntryID)            
+            const resource = createResource(extractedResources.header, "TEI Header", "header", parentEntryID, fairCopyProject, fairCopyConfig)      
+            resources.push(resource)
         } else {
             // add resources to existing parent
             parentEntryID = parentEntry.id
@@ -71,29 +73,64 @@ export function importResource(importData,existingParentID,fairCopyProject) {
             const xmlID = resourceEl.getAttribute('xml:id')
             const childSanitizedID = xmlID ? sanitizeID(xmlID) : idMap.getUniqueID('import')
             const childLocalID = childLocalIDs.includes(childSanitizedID) ? idMap.getUniqueID(childSanitizedID) : childSanitizedID 
-            addResource(resourceEl, childLocalID, childLocalID, parentEntryID)
+            const resource = createResource(resourceEl, childLocalID, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig)
+            resources.push(resource)
             childLocalIDs.push(childLocalID)
         }
     } else {
         // if there is no header only take the first resource, it gets the name and localID
-        addResource(extractedResources.resources[0], name, localID, existingParentID)
+        const resource = createResource(extractedResources.resources[0], name, localID, existingParentID, fairCopyProject, fairCopyConfig)
+        resources.push(resource)
     }
     
     // Things look OK, return these resources
     return { resources, fairCopyConfig }
 }
 
-function extractResourceEls(data) {
+function importTxtResource(data, name, localID, parentID, fairCopyProject) {
+    const {fairCopyConfig} = fairCopyProject
 
-    // parse the data into a ProseMirror doc
+    // wrap the plain text in XML
+    const lines = data.split('\n')
+    const paragraphs = lines.map( line => `<p>${escape(line)}</p>`)
+    const body = paragraphs.join('\n')
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    <TEI xmlns="http://www.tei-c.org/ns/1.0">    
+    <text>
+    <body>
+    ${body}
+    </body>
+    </text>
+    </TEI>
+    `
+
+    // now parse it as XML
+    const xmlDom = parseDOM(xml)
+
+    if( !xmlDom ) {
+        throw new Error('Error escaping XML, unable to parse.')
+    }
+
+    const teiEl = xmlDom.getElementsByTagName('TEI')[0]
+    let resourceEl = teiEl.getElementsByTagName('text')[0]
+
+    const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig)
+    return { resources: [ resource ], fairCopyConfig }
+}
+
+function parseDOM(data) {
     const parser = new DOMParser();
     const xmlDom = parser.parseFromString(data, "text/xml");
 
-    // Check for basic validity 
+    // detect malformedness errors, return null in that case
     if( xmlDom.getElementsByTagName('parsererror').length > 0 ) {
-        throw new Error('Document is not a well formed XML document.')
+        return null 
     } 
+    return xmlDom
+}
 
+function extractResourceEls(xmlDom) {
     const teiEl = xmlDom.getElementsByTagName('tei')[0] || xmlDom.getElementsByTagName('TEI')[0]
     if( !teiEl ) {
         throw new Error('Document must contain a <TEI> element.')
@@ -133,7 +170,20 @@ function createTEIDoc(name,localID,idMap) {
     return {resourceEntry, content: "", resourceMap}
 }
 
-function importTEIDocument(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig) {
+function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig) {
+    const resourceName = resourceEl.tagName.toLowerCase()
+    const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : 'facs'
+    if( type === 'facs' ) {
+        const facsResource = createFacs(resourceEl,name,localID,parentID,fairCopyProject)
+        return facsResource  
+    } else {
+        const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig)
+        fairCopyConfig = nextFairCopyConfig
+        return {resourceEntry, content, resourceMap}
+    }
+}
+
+function createText(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig) {
     const { idMap, teiSchema } = fairCopyProject
 
     const resourceEntry = {
@@ -156,7 +206,7 @@ function importTEIDocument(textEl, name, type, localID, parentResourceID, fairCo
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
 
-function importFacsDocument(facsEl, name, localID, parentResourceID, fairCopyProject) {
+function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
     const resourceEntry = {
         id: uuidv4(),
         localID,
