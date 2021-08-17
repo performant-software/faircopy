@@ -103,7 +103,7 @@ function importTxtResource(data, name, localID, parentID, fairCopyProject) {
     const xmlDom = parseDOM(teiTextTemplate)
     const bodyEl = xmlDom.getElementsByTagName('body')[0]
 
-    const lines = data.split('\r\n\r\n')
+    const lines = data.split(/\r*\n\r*\n/)
     if( lines.length > 0 ) {
         // remove blank p if there is content
         const pEl = xmlDom.getElementsByTagName('p')[0]
