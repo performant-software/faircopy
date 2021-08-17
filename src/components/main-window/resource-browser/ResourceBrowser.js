@@ -76,7 +76,7 @@ export default class ResourceBrowser extends Component {
     return (
       <div className="toolbar">
         <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-        <Button onClick={onImportXML} {...buttonProps}>Import XML</Button>    
+        <Button onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
         <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>    
         <Button 
           disabled={!actionsEnabled}

@@ -27,11 +27,8 @@ class MainMenu {
 
     openImport = () => {
       return dialog.showOpenDialogSync( {
-        title: "Select an XML file to import.",
-        filters: [ 
-            { name: 'TEI XML', extensions: ['xml'] }
-          ],
-          properties: [ 'openFile' ]
+        title: "Select a Text or XML file to import.",
+        properties: [ 'openFile' ]
       })
     }
 

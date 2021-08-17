@@ -5,6 +5,7 @@ import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
+import {teiTextTemplate} from './tei-template'
 
 const fairCopy = window.fairCopy
 
@@ -12,11 +13,17 @@ export function importResource(importData,existingParentID,fairCopyProject) {
     const { path, data } = importData
     const { idMap } = fairCopyProject
 
-    // TODO don't assume .xml extension
-    // if it does have .xml ext and isn't XML, throw an error.
-
     // what do we call this resource?
-    const name = fairCopy.services.getBasename(path,'.xml').trim()
+    let name, xmlExt = false
+    if( path.toLowerCase().endsWith('.xml') ) {
+        name = fairCopy.services.getBasename(path,'.xml').trim()
+        xmlExt = true
+    } else if( path.toLowerCase().endsWith('.txt') ){
+        // trim off .txt if it is found 
+        name = fairCopy.services.getBasename(path,'txt').trim()
+    } else {
+        name = fairCopy.services.getBasename(path).trim()
+    }
     const sanitizedID = sanitizeID(name)
     const parentEntry = fairCopyProject.getResourceEntry(existingParentID)
     const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
@@ -27,6 +34,9 @@ export function importResource(importData,existingParentID,fairCopyProject) {
 
     if( xmlDom ) {
         return importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject)
+    } else if( xmlExt ) {
+        // if the file had a .xml extension but is invalid XML
+        throw new Error('File contains invalid XML.')
     } else {
         return importTxtResource(data, name, localID, existingParentID, fairCopyProject)
     }
@@ -90,30 +100,24 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
 function importTxtResource(data, name, localID, parentID, fairCopyProject) {
     const {fairCopyConfig} = fairCopyProject
 
-    // wrap the plain text in XML
-    const lines = data.split('\n')
-    const paragraphs = lines.map( line => `<p>${escape(line)}</p>`)
-    const body = paragraphs.join('\n')
+    const xmlDom = parseDOM(teiTextTemplate)
+    const bodyEl = xmlDom.getElementsByTagName('body')[0]
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-    <TEI xmlns="http://www.tei-c.org/ns/1.0">    
-    <text>
-    <body>
-    ${body}
-    </body>
-    </text>
-    </TEI>
-    `
+    const lines = data.split('\r\n\r\n')
+    if( lines.length > 0 ) {
+        // remove blank p if there is content
+        const pEl = xmlDom.getElementsByTagName('p')[0]
+        pEl.parentNode.removeChild(pEl)
+    }
 
-    // now parse it as XML
-    const xmlDom = parseDOM(xml)
-
-    if( !xmlDom ) {
-        throw new Error('Error escaping XML, unable to parse.')
+    for( const line of lines ) {
+        const p = xmlDom.createElement('p')
+        p.appendChild(document.createTextNode(line));
+        bodyEl.appendChild(p)
     }
 
     const teiEl = xmlDom.getElementsByTagName('TEI')[0]
-    let resourceEl = teiEl.getElementsByTagName('text')[0]
+    const resourceEl = teiEl.getElementsByTagName('text')[0]
 
     const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig)
     return { resources: [ resource ], fairCopyConfig }
