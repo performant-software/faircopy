@@ -24,7 +24,7 @@ export default class ProjectSidebar extends Component {
     }
 
     render() {
-        const { fairCopyProject, selectedResource, openResources, onSelectResource, onEditProjectInfo, onCloseResource, panelWidth } = this.props
+        const { fairCopyProject, selectedResource, openResources, onSelectResource, onEditProjectInfo, onCloseResource, onSelectNode, panelWidth } = this.props
         return (
             <div id="ProjectSidebar">
                 <div className="title-bar">
@@ -39,11 +39,12 @@ export default class ProjectSidebar extends Component {
                     onSelectResource={onSelectResource}
                     onCloseResource={onCloseResource}
                 ></ProjectNavigator>
-                { false && 
-                    <TableOfContents
-                        teiDocument={openResources[selectedResource]}        
-                    ></TableOfContents>
-                }       
+                <TableOfContents
+                    teiDocument={openResources[selectedResource]}      
+                    fairCopyProject={fairCopyProject}
+                    onSelectNode={onSelectNode}
+                    panelWidth={panelWidth}  
+                ></TableOfContents>
             </div>
         )
     }

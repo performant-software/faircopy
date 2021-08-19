@@ -7,51 +7,76 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 export default class TableOfContents extends Component {
 
-    renderTree() {
-      const { teiDocument } = this.props
-      const { editorView } = teiDocument
+  constructor() {
+    super()
+    this.state = {
+    }
+    this.nodeIDCount = 0
+  }
 
-      if( !editorView ) return null
+  isTreeNode(node) {
+    const { teiSchema } = this.props.fairCopyProject
+    const { hard } = teiSchema.elementGroups
+    const name = node.type.name
+    return hard.includes(name)
+  }
 
-      const { doc } = editorView.state
-
-      let nodeIDCount = 0
-      const findTreeNodes = (node) => {
-        const childCount = node.childCount
-        const treeNodes = []
-        for( let i=0; i < childCount; i++ ) {
-          const childNode = node.child(i) 
-          if( childNode.type.groups.includes('block') ) {
-            const treeID = `div-${nodeIDCount++}`
-            treeNodes.push(
-              <TreeItem key={treeID} nodeId={treeID} label="div" >
-                { findTreeNodes(childNode) }
-              </TreeItem>
-            )
-          }   
-        }
-        return treeNodes
+  getNodeLabel(node) {
+    const nodeType = node.type.name
+    if( nodeType === 'div' &&  node.childCount > 0 ) {
+      const firstChild = node.child(0)
+      if( firstChild.type.name === 'head' ) {
+        return firstChild.textContent.slice(0,100)
       }
+    } 
 
-      const tree = (
-        <TreeItem nodeId="root" label="Table of Contents" >
-          { findTreeNodes(doc) }
+    return nodeType
+  }
+
+  renderNode(node) {
+    const { onSelectNode } = this.props
+    const treeID = `toc-${this.nodeIDCount++}`
+    const label = this.getNodeLabel(node)
+    const onClick = () => { onSelectNode(node) }
+    return (
+        <TreeItem onClick={onClick} key={treeID} nodeId={treeID} label={label} >
+            { this.renderChildNodes(node) }
         </TreeItem>
-      )
-      return tree
-    }
+    )
+  }
 
-    render() {
-        return (
-          <div id="TableOfContents">
-            <TreeView
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpandIcon={<ChevronRightIcon />}
-            >
-              { this.renderTree() }
-            </TreeView>
-          </div>
-        )
+  renderChildNodes(node) {
+    const childCount = node.childCount
+    const treeNodes = []
+    for( let i=0; i < childCount; i++ ) {
+      const childNode = node.child(i) 
+      if( this.isTreeNode(childNode) ) {
+        treeNodes.push(this.renderNode(childNode)) 
+      }   
     }
+    return treeNodes
+  }
+
+  render() {
+    const { teiDocument } = this.props
+    if( !teiDocument ) return null
+
+    const { editorView } = teiDocument
+    if( !editorView ) return null
+    const { doc } = editorView.state
+
+    return (
+      <div id="TableOfContents">
+        <TreeView
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+        >
+          <TreeItem nodeId="root" label="Table of Contents" >
+            { this.renderChildNodes(doc,0) }
+          </TreeItem>
+        </TreeView>
+      </div>
+    )
+  }
 
 }
