@@ -368,7 +368,7 @@ export default class TEIEditor extends Component {
                         elementMenuAnchors={elementMenuAnchors}
                         onEditResource={onEditResource}
                     ></EditorToolbar> }
-                    <div onClick={onClickBody} ref={onRef} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
+                    <div id={teiDocument.resourceID} onClick={onClickBody} ref={onRef} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
                         { !hidden && <EditorGutter 
                             expanded={expandedGutter}
                             scrollTop={scrollTop} 

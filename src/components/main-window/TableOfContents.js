@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
+import { animateScroll as scroll } from 'react-scroll'
 
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 
-export default class TableOfContents extends Component {
+// offset to account for height of the toolbar above the TEI editor
+const scrollTopOffset = 137
 
-  constructor() {
-    super()
-    this.state = {
-    }
-    this.nodeIDCount = 0
-  }
+export default class TableOfContents extends Component {
 
   isTreeNode(node) {
     const { teiSchema } = this.props.fairCopyProject
@@ -29,30 +26,50 @@ export default class TableOfContents extends Component {
         return firstChild.textContent.slice(0,100)
       }
     } 
+    if( nodeType === 'sp' &&  node.childCount > 0 ) {
+      const firstChild = node.child(0)
+      if( firstChild.type.name === 'speaker' ) {
+        return firstChild.textContent.slice(0,100)
+      }
+    } 
 
     return nodeType
   }
 
-  renderNode(node) {
-    const { onSelectNode } = this.props
-    const treeID = `toc-${this.nodeIDCount++}`
+  renderNode(node,pos) {
+    const { teiDocument } = this.props
+    const { editorView } = teiDocument
+    const treeID = `toc-${pos}`
     const label = this.getNodeLabel(node)
-    const onClick = () => { onSelectNode(node) }
+    
+    // scroll to this position in the document
+    const onClick = () => {
+      const nodeEl = editorView.nodeDOM(pos) 
+      if( nodeEl ) {
+        const { top } = nodeEl.getBoundingClientRect()
+        const containerEl = editorView.dom.parentNode.parentNode
+        const scrollTargetPx = top + containerEl.scrollTop - scrollTopOffset
+        scroll.scrollTo( scrollTargetPx, { containerId: teiDocument.resourceID } )  
+      }
+    }
+
     return (
         <TreeItem onClick={onClick} key={treeID} nodeId={treeID} label={label} >
-            { this.renderChildNodes(node) }
+            { this.renderChildNodes(node,pos) }
         </TreeItem>
     )
   }
 
-  renderChildNodes(node) {
-    const childCount = node.childCount
+  renderChildNodes(node,pos) {
     const treeNodes = []
+    const childCount = node.childCount
+    let offset = 1
     for( let i=0; i < childCount; i++ ) {
-      const childNode = node.child(i) 
+      const childNode = node.child(i)
       if( this.isTreeNode(childNode) ) {
-        treeNodes.push(this.renderNode(childNode)) 
+        treeNodes.push(this.renderNode(childNode,pos+offset)) 
       }   
+      offset += childNode.nodeSize
     }
     return treeNodes
   }
@@ -71,7 +88,7 @@ export default class TableOfContents extends Component {
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
-          <TreeItem nodeId="root" label="Table of Contents" >
+          <TreeItem nodeId="root" label="Resource Contents" >
             { this.renderChildNodes(doc,0) }
           </TreeItem>
         </TreeView>

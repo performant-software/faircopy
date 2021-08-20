@@ -602,10 +602,6 @@ export default class MainWindow extends Component {
             this.onResourceAction( 'close', [resourceID] )
         }
 
-        const onSelectNode = ( node ) => {
-            // TODO scroll to the selected node in the editor
-        }
-
         return (
             <ProjectSidebar
                 fairCopyProject={fairCopyProject}    
@@ -613,7 +609,6 @@ export default class MainWindow extends Component {
                 openResources={openResources}
                 selectedResource={selectedResource}
                 onSelectResource={onSelectResource}   
-                onSelectNode={onSelectNode}
                 onCloseResource={onCloseResource}
                 onEditProjectInfo={onProjectSettings}
             ></ProjectSidebar>    

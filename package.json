@@ -63,6 +63,7 @@
     "react-force-graph-2d": "^1.13.6",
     "react-markdown": "^6.0.0",
     "react-scripts": "3.4.1",
+    "react-scroll": "1.8.3",
     "react-split-pane": "^0.1.92",
     "semver": "^7.3.5",
     "uuid": "^8.1.0",
