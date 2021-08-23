@@ -345,7 +345,8 @@
 				"xml:space"
 			],
 			"defaultNodes": [
-				"titleStmt"
+				"titleStmt",
+				"publicationStmt"
 			],
 			"desc": "contains a fully-structured bibliographic citation, in which all components of the TEI file description are present.",
 			"synth": false
@@ -634,7 +635,7 @@
 				"xml:space"
 			],
 			"defaultNodes": [
-				"quote"
+				"bibl"
 			],
 			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example.",
 			"synth": false
@@ -1398,6 +1399,7 @@
 				"xml:space"
 			],
 			"defaultNodes": [
+				"term",
 				"list"
 			],
 			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text.",
