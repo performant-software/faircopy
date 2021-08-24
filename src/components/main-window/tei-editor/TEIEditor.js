@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
-// import applyDevTools from "prosemirror-dev-tools";
+import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
-import EditorGutter from "./EditorGutter"
+import EditorGutter2 from "./EditorGutter2"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
@@ -93,7 +93,7 @@ export default class TEIEditor extends Component {
             }
         )
         // uncomment to use ProseMirror dev tools
-        // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
+        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.finalizeEditorView(editorView)
     }
@@ -369,7 +369,7 @@ export default class TEIEditor extends Component {
                         onEditResource={onEditResource}
                     ></EditorToolbar> }
                     <div id={teiDocument.resourceID} onClick={onClickBody} ref={onRef} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
-                        { !hidden && <EditorGutter 
+                        { !hidden && <EditorGutter2
                             expanded={expandedGutter}
                             scrollTop={scrollTop} 
                             onDragElement={onDragElement}
