@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { NodeSelection } from "prosemirror-state"
+import { Fragment } from "prosemirror-model"
 
-const viewportSize = 5000
+const viewportSize = 10000
 
 export default class EditorGutter2 extends Component {
 
@@ -82,6 +83,27 @@ export default class EditorGutter2 extends Component {
         const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
         const canvas = document.createElement("canvas")
 
+        // TODO find a starting text node
+        let centerPos = Math.min( Math.floor(scrollTop/editorView.dom.clientHeight * doc.content.size), doc.content.size-1)      
+
+        // const viewportSample = editorView.posAtCoords({ left: editorView.dom.innerWidth, top: window.innerHeight/2 })
+        // const centerPos = viewportSample.pos
+        const startPos = centerPos-(viewportSize/2) > 0 ? centerPos-(viewportSize/2) : 0
+        const endPos = centerPos+(viewportSize/2) <= doc.content.size-1 ? centerPos+(viewportSize/2) : doc.content.size-1
+
+        const viewSlice = doc.slice(startPos,endPos)
+        let viewFrag = viewSlice.content
+
+        // wrap with the open nodes, if any
+        if( viewSlice.openStart > 0 ) {
+            const $startPos = doc.resolve(startPos)
+            let i = viewSlice.openStart
+            while(i > 0) {
+                const node = $startPos.node(i--)
+                viewFrag = Fragment.from( node.copy(viewFrag) )
+            }
+        }
+        
         // build subtree of visible structure nodes
         const processNode = (pmNode,pos=0) => {
             const children = []
@@ -97,8 +119,8 @@ export default class EditorGutter2 extends Component {
                     offset += pmChildNode.nodeSize
                 }    
             } else {
-                top = editorView.coordsAtPos(pos).top - gutterTop + scrollTop - 5
-                bottom = editorView.coordsAtPos(pos+pmNode.nodeSize-1).bottom - gutterTop + scrollTop - 5
+                top = editorView.coordsAtPos(pos+startPos).top - gutterTop + scrollTop - 5
+                bottom = editorView.coordsAtPos(pos+startPos+pmNode.nodeSize-1).bottom - gutterTop + scrollTop - 5
             }
 
             return {
@@ -109,17 +131,7 @@ export default class EditorGutter2 extends Component {
                 children
             }
         }
-
-        // TODO find a starting text node
-        const viewportSample = editorView.posAtCoords({ left: window.innerWidth*0.66, top: window.innerHeight/2 })
-        const centerPos = viewportSample.pos
-        const startPos = centerPos-(viewportSize/2) > 0 ? centerPos-(viewportSize/2) : 0
-        const endPos = centerPos+(viewportSize/2) <= doc.content.size ? centerPos+(viewportSize/2) : doc.content.size
-
-        // TODO account for open ends
-        const viewSlice = doc.slice(startPos,endPos)
-        const viewFrag = viewSlice.content
-
+        
         // turn PM nodes into gutter mark properties
         const subTree = processNode(viewFrag)
 
@@ -190,9 +202,10 @@ export default class EditorGutter2 extends Component {
         // render the components 
         const gutterMarkEls = flattened.map( (node,index) => {
             const { pmNode, pos, top, bottom, column, style } = node
+            // console.log(`${pmNode.type.name}: ${top} ${bottom}`)
             return this.renderGutterMark(pmNode, pos, top, bottom, index, column, style, columnPositions) 
         })
- 
+
         return { gutterMarkEls, totalWidth }
     }
 
