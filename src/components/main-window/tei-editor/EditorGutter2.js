@@ -36,7 +36,6 @@ export default class EditorGutter2 extends Component {
             const { editorView } = this.props
             const editorState = editorView.state
             const {tr,doc} = editorState
-            console.log(`clicked on position: ${targetPos}`)
             tr.setSelection( NodeSelection.create(doc,targetPos) )
             editorView.dispatch(tr)
         }

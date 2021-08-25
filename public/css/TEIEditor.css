@@ -2,6 +2,7 @@
 
 .TEIEditor .body {
     display: flex;
+    width: calc( 100% - 400px );
     height: calc( 100% - 60px );
     overflow-y: scroll;
     position: fixed;
