@@ -30,27 +30,21 @@ export default class EditorGutter2 extends Component {
         }
     }
 
-    renderGutterMark(node,targetPos,top,bottom,index,column,style,columnPositions) {
-        const { editorView } = this.props
-        const editorState = editorView.state
-
-        const height = bottom - top 
-        const borderStyles = this.getBorderStyles(node)
-        const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }
-        const markKey = `gutter-mark-${index}`
-        const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
-        const className = `marker ${highlighted} ${style}`
-        const elementID = node.type.name
-
+    renderGutterMark(elementID,targetPos,top,bottom,index,column,markerClass,borderStyles,columnPositions) {
+     
         const onClick = () => {
+            const { editorView } = this.props
+            const editorState = editorView.state
             const {tr,doc} = editorState
-            tr.setSelection( new NodeSelection(doc.resolve(targetPos-1)) )
+            console.log(`clicked on position: ${targetPos}`)
+            tr.setSelection( NodeSelection.create(doc,targetPos) )
             editorView.dispatch(tr)
         }
 
         const onStartDrag = (e) => {
             const ctrlDown = (e.ctrlKey || e.metaKey)
             const { onDragElement } = this.props
+            console.log('entered drag')
 
             // don't drag aside root elements
             if( ctrlDown && !elementID.endsWith('X') ) {
@@ -63,12 +57,19 @@ export default class EditorGutter2 extends Component {
             }
         }
 
+        const { editorView } = this.props
+        const highlighted = editorView.state.selection.from === targetPos ? 'highlighted' : ''
+        const className = `marker ${highlighted} ${markerClass}`
+        const height = bottom - top 
+        const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }
+        const markKey = `gutter-mark-${index}`
+
         return (
             <div 
                 key={markKey} 
                 onClick={onClick} 
                 onMouseDown={onStartDrag} 
-                datanodepos={targetPos-1}
+                datanodepos={targetPos}
                 style={markStyle} 
                 className={className}
                 >
@@ -93,6 +94,7 @@ export default class EditorGutter2 extends Component {
 
         const viewSlice = doc.slice(startPos,endPos)
         let viewFrag = viewSlice.content
+        let viewFragOffset = startPos
 
         // wrap with the open nodes, if any
         if( viewSlice.openStart > 0 ) {
@@ -101,27 +103,29 @@ export default class EditorGutter2 extends Component {
             while(i > 0) {
                 const node = $startPos.node(i--)
                 viewFrag = Fragment.from( node.copy(viewFrag) )
+                viewFragOffset--
             }
         }
-        
         // build subtree of visible structure nodes
         const processNode = (pmNode,pos=0) => {
             const children = []
             const nodeType = pmNode.type ? pmNode.type.name : 'root'
             let top = null, bottom = null
 
-            if( !nodeType.includes('textNode') && !nodeType.includes('globalNode') ) {
-                let offset = 1
-                for( let i=0; i < pmNode.childCount; i++ ) {
-                    const pmChildNode = pmNode.child(i)
-                    const childPos = pos+offset
-                    children.push( processNode(pmChildNode,childPos) )
-                    offset += pmChildNode.nodeSize
-                }    
-            } else {
-                top = editorView.coordsAtPos(pos+startPos).top - gutterTop + scrollTop - 5
-                bottom = editorView.coordsAtPos(pos+startPos+pmNode.nodeSize-1).bottom - gutterTop + scrollTop - 5
+            if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
+                top = editorView.coordsAtPos(pos+viewFragOffset).top - gutterTop + scrollTop - 5
+                bottom = editorView.coordsAtPos(pos+viewFragOffset+pmNode.nodeSize-1).bottom - gutterTop + scrollTop - 5            
             }
+
+            let offset = 1
+            for( let i=0; i < pmNode.childCount; i++ ) {
+                const pmChildNode = pmNode.child(i)
+                const childPos = pos+offset
+                if( pmChildNode.type.isBlock ) {
+                    children.push( processNode(pmChildNode,childPos) )
+                } 
+                offset += pmChildNode.nodeSize
+            }    
 
             return {
                 pmNode,
@@ -164,8 +168,9 @@ export default class EditorGutter2 extends Component {
         }
         
         const processGutterMarks = (node,column=-1) => {
-            const { top, bottom, children } = node
-
+            const { pmNode, top, bottom, children } = node
+            const nodeType = pmNode.type ? pmNode.type.name : 'root'
+            
             if( top !== null ) {
                 return {top, bottom}
             } else {
@@ -177,15 +182,16 @@ export default class EditorGutter2 extends Component {
                     if( i > 0 ) children[i-1].bottom = childTop - 10
                 }
 
-                if( node.pmNode.type ) {
-                    const {name} = node.pmNode.type
-                    gatherColumnThickness(name,column)
-                    node.style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
-                    node.column = column                    
+                // filter out elements that don't appear in gutter, add remaining details and place in render list
+                if( nodeType !== 'root' && pmNode.type.isBlock && !nodeType.startsWith('textNode') && !nodeType.startsWith('globalNode') ) {
+                    gatherColumnThickness(nodeType,column)
+                    node.style = hard.includes(nodeType) || docNodes.includes(nodeType) ? 'hard' : 'soft'
+                    node.column = column        
                     flattened.push(node)
                 }
                 const first = children[0]
                 const last = children[children.length-1]
+                if( !first ) debugger
                 return { top: first.top, bottom: last.bottom }
             }    
         }
@@ -202,8 +208,10 @@ export default class EditorGutter2 extends Component {
         // render the components 
         const gutterMarkEls = flattened.map( (node,index) => {
             const { pmNode, pos, top, bottom, column, style } = node
-            // console.log(`${pmNode.type.name}: ${top} ${bottom}`)
-            return this.renderGutterMark(pmNode, pos, top, bottom, index, column, style, columnPositions) 
+            const borderStyles = this.getBorderStyles(pmNode)
+            const elementID = pmNode.type.name
+            const targetPos = pos + viewFragOffset - 1
+            return this.renderGutterMark(elementID, targetPos, top, bottom, index, column, style, borderStyles, columnPositions) 
         })
 
         return { gutterMarkEls, totalWidth }
