@@ -94,19 +94,22 @@ export default class EditorGutter2 extends Component {
         const viewSlice = doc.slice(startPos,endPos)
         let viewFrag = viewSlice.content
         let viewFragOffset = startPos
-        if(startPos > 1000) debugger
 
         // wrap slice with the open nodes, if any
         if( viewSlice.openStart > 0 ) {
             console.log(`openStart: ${viewSlice.openStart}`)
             const $startPos = doc.resolve(startPos)
-            let i = viewSlice.openStart
-            while(i > 0) {
-                const node = $startPos.node(i--)
-                // if this node starts before startPos and ends after endPos, wrap the fragment in a copy
+            
+            for( let i = viewSlice.openStart; i > 0; i--) {
+                const start = $startPos.start(i)
+                const end = $startPos.end(i)
 
-                viewFrag = Fragment.from( node.copy(viewFrag) )
-                viewFragOffset--
+                // if this node starts before startPos and ends after endPos, wrap the fragment in a copy
+                if( start < startPos && end >= endPos ) {
+                    const node = $startPos.node(i)
+                    viewFrag = Fragment.from( node.copy(viewFrag) )
+                    viewFragOffset--    
+                }
             }
         }
 
@@ -117,9 +120,8 @@ export default class EditorGutter2 extends Component {
             let top = null, bottom = null
 
             if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
-                const scrollOffset = gutterTop+scrollTop-5
-                top = editorView.coordsAtPos(pos+viewFragOffset).top - scrollOffset
-                bottom = editorView.coordsAtPos(pos+viewFragOffset+pmNode.nodeSize-1).bottom - scrollOffset        
+                top = editorView.coordsAtPos(pos+viewFragOffset).top - gutterTop+scrollTop-5
+                bottom = editorView.coordsAtPos(pos+viewFragOffset+pmNode.nodeSize-1).bottom - gutterTop+scrollTop-5   
             }
 
             let offset = 1
