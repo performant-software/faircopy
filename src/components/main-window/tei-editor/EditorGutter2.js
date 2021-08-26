@@ -43,7 +43,6 @@ export default class EditorGutter2 extends Component {
         const onStartDrag = (e) => {
             const ctrlDown = (e.ctrlKey || e.metaKey)
             const { onDragElement } = this.props
-            console.log('entered drag')
 
             // don't drag aside root elements
             if( ctrlDown && !elementID.endsWith('X') ) {
@@ -83,37 +82,44 @@ export default class EditorGutter2 extends Component {
         const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
         const canvas = document.createElement("canvas")
 
-        // TODO find a starting text node
-        let centerPos = Math.min( Math.floor(scrollTop/editorView.dom.clientHeight * doc.content.size), doc.content.size-1)      
-
-        // const viewportSample = editorView.posAtCoords({ left: editorView.dom.innerWidth, top: window.innerHeight/2 })
-        // const centerPos = viewportSample.pos
+        // calculate approximate view window start and end
+        const docEnd = doc.content.size-1
+        const scrollPos = Math.floor( (scrollTop/editorView.dom.clientHeight) * docEnd )
+        const centerPos = Math.min( scrollPos, docEnd )      
         const startPos = centerPos-(viewportSize/2) > 0 ? centerPos-(viewportSize/2) : 0
-        const endPos = centerPos+(viewportSize/2) <= doc.content.size-1 ? centerPos+(viewportSize/2) : doc.content.size-1
+        const endPos = centerPos+(viewportSize/2) <= docEnd ? centerPos+(viewportSize/2) : docEnd
+        console.log(`start ${startPos} end ${endPos} doc size ${docEnd}`)
 
+        // take a slice of the doc 
         const viewSlice = doc.slice(startPos,endPos)
         let viewFrag = viewSlice.content
         let viewFragOffset = startPos
+        if(startPos > 1000) debugger
 
-        // wrap with the open nodes, if any
+        // wrap slice with the open nodes, if any
         if( viewSlice.openStart > 0 ) {
+            console.log(`openStart: ${viewSlice.openStart}`)
             const $startPos = doc.resolve(startPos)
             let i = viewSlice.openStart
             while(i > 0) {
                 const node = $startPos.node(i--)
+                // if this node starts before startPos and ends after endPos, wrap the fragment in a copy
+
                 viewFrag = Fragment.from( node.copy(viewFrag) )
                 viewFragOffset--
             }
         }
-        // build subtree of visible structure nodes
+
+        // recursively build subtree of visible structure nodes from slice
         const processNode = (pmNode,pos=0) => {
             const children = []
             const nodeType = pmNode.type ? pmNode.type.name : 'root'
             let top = null, bottom = null
 
             if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
-                top = editorView.coordsAtPos(pos+viewFragOffset).top - gutterTop + scrollTop - 5
-                bottom = editorView.coordsAtPos(pos+viewFragOffset+pmNode.nodeSize-1).bottom - gutterTop + scrollTop - 5            
+                const scrollOffset = gutterTop+scrollTop-5
+                top = editorView.coordsAtPos(pos+viewFragOffset).top - scrollOffset
+                bottom = editorView.coordsAtPos(pos+viewFragOffset+pmNode.nodeSize-1).bottom - scrollOffset        
             }
 
             let offset = 1
@@ -135,10 +141,10 @@ export default class EditorGutter2 extends Component {
             }
         }
         
-        // turn PM nodes into gutter mark properties
+        // turn the PM slice into a tree with screen positions
         const subTree = processNode(viewFrag)
 
-        const flattened = []
+        const gutterMarks = []
         const columnPositions = []
 
         function getTextWidth(text) {
@@ -184,9 +190,8 @@ export default class EditorGutter2 extends Component {
                 // filter out elements that don't appear in gutter, add remaining details and place in render list
                 if( nodeType !== 'root' && pmNode.type.isBlock && !nodeType.startsWith('textNode') && !nodeType.startsWith('globalNode') ) {
                     gatherColumnThickness(nodeType,column)
-                    node.style = hard.includes(nodeType) || docNodes.includes(nodeType) ? 'hard' : 'soft'
                     node.column = column        
-                    flattened.push(node)
+                    gutterMarks.push(node)
                 }
                 const first = children[0]
                 const last = children[children.length-1]
@@ -195,6 +200,7 @@ export default class EditorGutter2 extends Component {
             }    
         }
 
+        // turn the tree into a flat list of gutter marks to render
         processGutterMarks(subTree)
 
         // once the max column width is known, calculate column positions
@@ -204,11 +210,12 @@ export default class EditorGutter2 extends Component {
             totalWidth += columnThickness[i]
         }
 
-        // render the components 
-        const gutterMarkEls = flattened.map( (node,index) => {
-            const { pmNode, pos, top, bottom, column, style } = node
+        // turn the list of gutter mark params into rendered gutter marks
+        const gutterMarkEls = gutterMarks.map( (gutterMark,index) => {
+            const { pmNode, pos, top, bottom, column } = gutterMark
             const borderStyles = this.getBorderStyles(pmNode)
             const elementID = pmNode.type.name
+            const style = hard.includes(elementID) || docNodes.includes(elementID) ? 'hard' : 'soft'
             const targetPos = pos + viewFragOffset - 1
             return this.renderGutterMark(elementID, targetPos, top, bottom, index, column, style, borderStyles, columnPositions) 
         })
