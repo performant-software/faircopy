@@ -84,11 +84,13 @@ export default class EditorGutter2 extends Component {
 
         // calculate approximate view window start and end
         const docEnd = doc.content.size-1
+        const viewportSpan = viewportSize/2
         const scrollPos = Math.floor( (scrollTop/editorView.dom.clientHeight) * docEnd )
-        const centerPos = Math.min( scrollPos, docEnd )      
-        const startPos = centerPos-(viewportSize/2) > 0 ? centerPos-(viewportSize/2) : 0
-        const endPos = centerPos+(viewportSize/2) <= docEnd ? centerPos+(viewportSize/2) : docEnd
+        const centerPos = Math.min( scrollPos, docEnd-viewportSpan )      
+        const startPos = centerPos-viewportSpan > 0 ? centerPos-viewportSpan : 0
+        const endPos = centerPos+viewportSpan <= docEnd ? centerPos+viewportSpan : docEnd
         console.log(`start ${startPos} end ${endPos} doc size ${docEnd}`)
+        // if( startPos > 5000 ) debugger
 
         // take a slice of the doc 
         const viewSlice = doc.slice(startPos,endPos)
