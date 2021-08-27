@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { NodeSelection } from "prosemirror-state"
 import { Fragment } from "prosemirror-model"
+import { NodeSelection } from "prosemirror-state"
 
 const viewportSize = 10000
+const fragmentStartKey = '__fragmentStart__'
 
 export default class EditorGutter2 extends Component {
 
@@ -76,6 +77,22 @@ export default class EditorGutter2 extends Component {
         )
     }
 
+    obtainSamplePos() {
+        const { editorView } = this.props
+        let samplePos = null
+        // TODO calculate the start point
+        let left = 500, top = 300
+        // if we don't find a sample at first, scan diagonally down the page till we find one
+        // TODO needs to halt if it gets off screen
+        while( samplePos === null ) {
+            const sample = editorView.posAtCoords({ left, top })
+            samplePos = sample ? sample.pos : null  
+            left++
+            top++
+        }
+        return samplePos
+    }
+
     renderGutterMarkers() {
         const { editorView, gutterTop, scrollTop, teiDocument, expanded } = this.props
         const { doc } = editorView.state
@@ -85,12 +102,10 @@ export default class EditorGutter2 extends Component {
         // calculate approximate view window start and end
         const docEnd = doc.content.size-1
         const viewportSpan = viewportSize/2
-        const scrollPos = Math.floor( (scrollTop/editorView.dom.clientHeight) * docEnd )
-        const centerPos = Math.min( scrollPos, docEnd-viewportSpan )      
+        const centerPos = this.obtainSamplePos()
         const startPos = centerPos-viewportSpan > 0 ? centerPos-viewportSpan : 0
         const endPos = centerPos+viewportSpan <= docEnd ? centerPos+viewportSpan : docEnd
-        console.log(`start ${startPos} end ${endPos} doc size ${docEnd}`)
-        // if( startPos > 5000 ) debugger
+        // console.log(`start ${startPos} end ${endPos} doc size ${docEnd} scrollTop ${scrollTop} clientHeight ${editorView.dom.clientHeight}`)
 
         // take a slice of the doc 
         const viewSlice = doc.slice(startPos,endPos)
@@ -101,7 +116,8 @@ export default class EditorGutter2 extends Component {
         if( viewSlice.openStart > 0 ) {
             console.log(`openStart: ${viewSlice.openStart}`)
             const $startPos = doc.resolve(startPos)
-            
+            viewFragOffset-=2
+
             for( let i = viewSlice.openStart; i > 0; i--) {
                 const start = $startPos.start(i)
                 const end = $startPos.end(i)
@@ -109,8 +125,9 @@ export default class EditorGutter2 extends Component {
                 // if this node starts before startPos and ends after endPos, wrap the fragment in a copy
                 if( start < startPos && end >= endPos ) {
                     const node = $startPos.node(i)
+                    node.attrs[fragmentStartKey] = start
                     viewFrag = Fragment.from( node.copy(viewFrag) )
-                    viewFragOffset--    
+                    viewFragOffset--
                 }
             }
         }
@@ -122,8 +139,9 @@ export default class EditorGutter2 extends Component {
             let top = null, bottom = null
 
             if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
-                top = editorView.coordsAtPos(pos+viewFragOffset).top - gutterTop+scrollTop-5
-                bottom = editorView.coordsAtPos(pos+viewFragOffset+pmNode.nodeSize-1).bottom - gutterTop+scrollTop-5   
+                const targetPos = pmNode.attrs[fragmentStartKey] ? pmNode.attrs[fragmentStartKey] : pos + viewFragOffset
+                top = editorView.coordsAtPos(targetPos).top - gutterTop+scrollTop-5
+                bottom = editorView.coordsAtPos(targetPos+pmNode.nodeSize-1).bottom - gutterTop+scrollTop-5   
             }
 
             let offset = 1
@@ -162,6 +180,7 @@ export default class EditorGutter2 extends Component {
         const columnThickness = []
 
         // find the max width for each column
+        // TODO optimize w/cache
         function gatherColumnThickness(name, column) {
             if( expanded ) {
                 const displayName = (name === 'noteX') ? 'note' : name
@@ -191,16 +210,20 @@ export default class EditorGutter2 extends Component {
                     if( i > 0 ) children[i-1].bottom = childTop - 10
                 }
 
-                // filter out elements that don't appear in gutter, add remaining details and place in render list
-                if( nodeType !== 'root' && pmNode.type.isBlock && !nodeType.startsWith('textNode') && !nodeType.startsWith('globalNode') ) {
-                    gatherColumnThickness(nodeType,column)
-                    node.column = column        
-                    gutterMarks.push(node)
+                const first = children[0]               
+                if( first ) {
+                    // filter out elements that don't appear in gutter, add remaining details and place in render list
+                    if( nodeType !== 'root' && pmNode.type.isBlock && !nodeType.startsWith('textNode') && !nodeType.startsWith('globalNode') ) {
+                        gatherColumnThickness(nodeType,column)
+                        node.column = column        
+                        gutterMarks.push(node)
+                    }
+                    const last = children[children.length-1]
+                    return { top: first.top, bottom: last.bottom }
+                } else {
+                    // element has no children and therefore no height, don't add it to gutterMarks
+                    return { top, bottom }
                 }
-                const first = children[0]
-                const last = children[children.length-1]
-                if( !first ) debugger
-                return { top: first.top, bottom: last.bottom }
             }    
         }
 
@@ -220,7 +243,8 @@ export default class EditorGutter2 extends Component {
             const borderStyles = this.getBorderStyles(pmNode)
             const elementID = pmNode.type.name
             const style = hard.includes(elementID) || docNodes.includes(elementID) ? 'hard' : 'soft'
-            const targetPos = pos + viewFragOffset - 1
+            // for split nodes, retrieve their start position, otherwise compute from offsets
+            const targetPos = pmNode.attrs[fragmentStartKey] ? pmNode.attrs[fragmentStartKey] : pos + viewFragOffset - 1
             return this.renderGutterMark(elementID, targetPos, top, bottom, index, column, style, borderStyles, columnPositions) 
         })
 
