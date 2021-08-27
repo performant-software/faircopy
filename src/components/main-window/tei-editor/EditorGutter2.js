@@ -89,6 +89,7 @@ export default class EditorGutter2 extends Component {
             samplePos = sample ? sample.pos : null  
             left++
             top++
+            if( top > 10000 ) return null
         }
         return samplePos
     }
@@ -168,13 +169,21 @@ export default class EditorGutter2 extends Component {
 
         const gutterMarks = []
         const columnPositions = []
+        const computedWidths = {}
 
         function getTextWidth(text) {
-            const context = canvas.getContext("2d")
-            // must match CSS for: .EditorGutter .markers
-            context.font = "12pt sans-serif"
-            const metrics = context.measureText(text)
-            return Math.floor(metrics.width)
+            if( !computedWidths[text] ) {
+                const context = canvas.getContext("2d")
+                // must match CSS for: .EditorGutter .markers
+                context.font = "12pt sans-serif"
+                const metrics = context.measureText(text)
+                const width = Math.floor(metrics.width)    
+                computedWidths[text] = width
+                return width
+            } else {
+                // return cached value
+                return computedWidths[text]
+            }
         }
 
         const columnThickness = []
