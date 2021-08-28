@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Fragment } from "prosemirror-model"
 import { NodeSelection } from "prosemirror-state"
 
-const viewportSize = 10000
+const viewportSize = 5000
 const fragmentStartKey = '__fragmentStart__'
 
 export default class EditorGutter2 extends Component {
@@ -81,14 +81,15 @@ export default class EditorGutter2 extends Component {
         const { editorView } = this.props
         let samplePos = null
         // TODO calculate the start point
-        let left = 500, top = 300
+        let left = 600, top = 300
         // if we don't find a sample at first, scan diagonally down the page till we find one
         // TODO needs to halt if it gets off screen
         while( samplePos === null ) {
             const sample = editorView.posAtCoords({ left, top })
-            samplePos = sample ? sample.pos : null  
-            left++
-            top++
+            if( sample ) console.log(`sample ${sample.pos} ${sample.inside} ${left} ${top}`)
+            samplePos = (sample && sample.inside !== -1) ? sample.pos : null  
+            left+=10
+            top+=10
             if( top > 10000 ) return null
         }
         return samplePos
@@ -97,16 +98,14 @@ export default class EditorGutter2 extends Component {
     renderGutterMarkers() {
         const { editorView, gutterTop, scrollTop, teiDocument, expanded } = this.props
         const { doc } = editorView.state
-        const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
-        const canvas = document.createElement("canvas")
 
         // calculate approximate view window start and end
         const docEnd = doc.content.size-1
-        const viewportSpan = viewportSize/2
-        const centerPos = this.obtainSamplePos()
+        const viewportSpan = docEnd //viewportSize/2
+        const centerPos = 0 // this.obtainSamplePos()
         const startPos = centerPos-viewportSpan > 0 ? centerPos-viewportSpan : 0
         const endPos = centerPos+viewportSpan <= docEnd ? centerPos+viewportSpan : docEnd
-        // console.log(`start ${startPos} end ${endPos} doc size ${docEnd} scrollTop ${scrollTop} clientHeight ${editorView.dom.clientHeight}`)
+        console.log(`centerPos ${centerPos}`)
 
         // take a slice of the doc 
         const viewSlice = doc.slice(startPos,endPos)
@@ -120,14 +119,16 @@ export default class EditorGutter2 extends Component {
             viewFragOffset-=2
 
             for( let i = viewSlice.openStart; i > 0; i--) {
+                const node = $startPos.node(i)
                 const start = $startPos.start(i)
                 const end = $startPos.end(i)
 
                 // if this node starts before startPos and ends after endPos, wrap the fragment in a copy
+                console.log(`testing ${node.type.name} ${start} ${end} ${startPos} ${endPos}`)
                 if( start < startPos && end >= endPos ) {
-                    const node = $startPos.node(i)
                     node.attrs[fragmentStartKey] = start
                     viewFrag = Fragment.from( node.copy(viewFrag) )
+                    console.log(`wrapping with ${node.type.name}`)
                     viewFragOffset--
                 }
             }
@@ -170,6 +171,7 @@ export default class EditorGutter2 extends Component {
         const gutterMarks = []
         const columnPositions = []
         const computedWidths = {}
+        const canvas = document.createElement("canvas")
 
         function getTextWidth(text) {
             if( !computedWidths[text] ) {
@@ -245,6 +247,8 @@ export default class EditorGutter2 extends Component {
             columnPositions[i] = totalWidth  
             totalWidth += columnThickness[i]
         }
+
+        const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
 
         // turn the list of gutter mark params into rendered gutter marks
         const gutterMarkEls = gutterMarks.map( (gutterMark,index) => {
