@@ -7,10 +7,11 @@ const marginTop = 125
 export default class ThumbnailMargin extends Component {
     
     renderThumbnails() {
-        const { teiDocument, scrollTop } = this.props
+        const { teiDocument } = this.props
         const { editorView } = teiDocument
 
         const editorState = editorView.state
+        const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
 
         const thumbnails = []
         editorState.doc.descendants( (node,pos) => {

@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { NodeSelection } from "prosemirror-state"
-
-const clipHeight = 1000
 
 export default class EditorGutter extends Component {
 
@@ -29,21 +27,13 @@ export default class EditorGutter extends Component {
         }
     }
 
-    renderGutterMark(node,targetPos,top,bottom,index,column,style,columnPositions) {
-        const { editorView } = this.props
-        const editorState = editorView.state
-
-        const height = bottom - top 
-        const borderStyles = this.getBorderStyles(node)
-        const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }
-        const markKey = `gutter-mark-${index}`
-        const highlighted = editorView.state.selection.node === node ? 'highlighted' : ''
-        const className = `marker ${highlighted} ${style}`
-        const elementID = node.type.name
-
+    renderGutterMark(elementID,targetPos,top,bottom,index,column,markerClass,borderStyles,columnPositions) {
+     
         const onClick = () => {
+            const { editorView } = this.props
+            const editorState = editorView.state
             const {tr,doc} = editorState
-            tr.setSelection( new NodeSelection(doc.resolve(targetPos-1)) )
+            tr.setSelection( NodeSelection.create(doc,targetPos) )
             editorView.dispatch(tr)
         }
 
@@ -62,12 +52,19 @@ export default class EditorGutter extends Component {
             }
         }
 
+        const { editorView } = this.props
+        const highlighted = editorView.state.selection.from === targetPos ? 'highlighted' : ''
+        const className = `marker ${highlighted} ${markerClass}`
+        const height = bottom - top 
+        const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }
+        const markKey = `gutter-mark-${index}`
+
         return (
             <div 
                 key={markKey} 
                 onClick={onClick} 
                 onMouseDown={onStartDrag} 
-                datanodepos={targetPos-1}
+                datanodepos={targetPos}
                 style={markStyle} 
                 className={className}
                 >
@@ -76,25 +73,88 @@ export default class EditorGutter extends Component {
         )
     }
 
-    renderGutterMarkers() {
-        const { teiDocument, editorView, expanded, scrollTop, gutterTop } = this.props
-        const editorState = editorView.state
-        const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
-        const canvas = document.createElement("canvas")
+    obtainSamplePos() {
+        const { editorView } = this.props
+        let samplePos = null
+        // TODO calculate the start point
+        let left = 600, top = 300
+        // if we don't find a sample at first, scan diagonally down the page till we find one
+        // TODO needs to halt if it gets off screen
+        while( samplePos === null ) {
+            const sample = editorView.posAtCoords({ left, top })
+            if( sample ) console.log(`sample ${sample.pos} ${sample.inside} ${left} ${top}`)
+            samplePos = (sample && sample.inside !== -1) ? sample.pos : null  
+            left+=10
+            top+=10
+            if( top > 10000 ) return null
+        }
+        return samplePos
+    }
 
-        const columnThickness = []
+    renderGutterMarkers() {
+        const { editorView, gutterTop, teiDocument, expanded } = this.props
+        const { doc } = editorView.state
+        const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
+
+        const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
+
+        // recursively build subtree of visible structure nodes from slice
+        const processNode = (pmNode,pos=0) => {
+            const children = []
+            const nodeType = pmNode.type ? pmNode.type.name : 'root'
+            let top = null, bottom = null
+
+            if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
+                top = editorView.coordsAtPos(pos).top - gutterTop+scrollTop-5
+                bottom = editorView.coordsAtPos(pos+pmNode.nodeSize-1).bottom - gutterTop+scrollTop-5   
+            }
+
+            let offset = 1
+            for( let i=0; i < pmNode.childCount; i++ ) {
+                const pmChildNode = pmNode.child(i)
+                const childPos = pos+offset
+                if( pmChildNode.type.isBlock ) {
+                    children.push( processNode(pmChildNode,childPos) )
+                } 
+                offset += pmChildNode.nodeSize
+            }    
+
+            return {
+                pmNode,
+                pos,
+                top,
+                bottom,
+                children
+            }
+        }
+        
+        // turn the PM slice into a tree with screen positions
+        const subTree = processNode(doc)
+
         const gutterMarks = []
         const columnPositions = []
+        const computedWidths = {}
+        const canvas = document.createElement("canvas")
 
         function getTextWidth(text) {
-            const context = canvas.getContext("2d")
-            // must match CSS for: .EditorGutter .markers
-            context.font = "12pt sans-serif"
-            const metrics = context.measureText(text)
-            return Math.floor(metrics.width)
+            if( !computedWidths[text] ) {
+                const context = canvas.getContext("2d")
+                // must match CSS for: .EditorGutter .markers
+                context.font = "12pt sans-serif"
+                const metrics = context.measureText(text)
+                const width = Math.floor(metrics.width)    
+                computedWidths[text] = width
+                return width
+            } else {
+                // return cached value
+                return computedWidths[text]
+            }
         }
 
+        const columnThickness = []
+
         // find the max width for each column
+        // TODO optimize w/cache
         function gatherColumnThickness(name, column) {
             if( expanded ) {
                 const displayName = (name === 'noteX') ? 'note' : name
@@ -108,36 +168,41 @@ export default class EditorGutter extends Component {
                 columnThickness[column] = 15
             }
         }
-
-        const processNode = (parentNode,basePos=0,column=0) => {
-            let relativePos=0
-            for( let i=0; i < parentNode.childCount; i++ ) {
-                const node = parentNode.child(i)
-                const startPos = basePos+relativePos+1
-                const name = node.type.name
-                const element = teiDocument.fairCopyProject.teiSchema.elements[name]
-                if( element && element.gutterMark ) {
-                    gatherColumnThickness(name,column)
-                    const endPos = startPos + processNode(node,startPos,column+1) + 1
-                    let top = editorView.coordsAtPos(startPos).top - gutterTop + scrollTop - 5
-                    const endPosSamplePoint = (endPos >= 3) ? endPos-3 : endPos // trying the inside of text, if it exists
-                    let bottom = editorView.coordsAtPos(endPosSamplePoint).bottom - gutterTop + scrollTop
-                    if( bottom - top < 25 ) bottom = top + 25
-                    let style = hard.includes(name) || docNodes.includes(name) ? 'hard' : 'soft'
-                    if( node.attrs['__error__'] ) style = style.concat(' error')
-
-                    // console.log(`${name}: ${startPos} -> ${endPos}, lines: ${lines}`)
-                    gutterMarks.push( [ node,startPos,top,bottom,gutterMarks.length,column,style] )
-                } else {
-                    processNode(node,startPos+1,column)                
+        
+        const processGutterMarks = (node,column=-1) => {
+            const { pmNode, top, bottom, children } = node
+            const nodeType = pmNode.type ? pmNode.type.name : 'root'
+            
+            if( top !== null ) {
+                return {top, bottom}
+            } else {
+                for( let i=0; i < children.length; i++ ) {
+                    const child = children[i]
+                    const { top: childTop, bottom: childBottom } = processGutterMarks(child,column+1)
+                    child.top = childTop
+                    child.bottom = childBottom
+                    if( i > 0 ) children[i-1].bottom = childTop - 10
                 }
-                relativePos = relativePos + node.nodeSize
-            }
-            return relativePos
+
+                const first = children[0]               
+                if( first ) {
+                    // filter out elements that don't appear in gutter, add remaining details and place in render list
+                    if( pmNode.type.isBlock && !docNodes.includes(nodeType) && !nodeType.startsWith('textNode') && !nodeType.startsWith('globalNode') ) {
+                        gatherColumnThickness(nodeType,column)
+                        node.column = column        
+                        gutterMarks.push(node)
+                    }
+                    const last = children[children.length-1]
+                    return { top: first.top, bottom: last.bottom }
+                } else {
+                    // element has no children and therefore no height, don't add it to gutterMarks
+                    return { top, bottom }
+                }
+            }    
         }
 
-        // turn PM nodes into gutter mark properties
-        processNode(editorState.doc)
+        // turn the tree into a flat list of gutter marks to render
+        processGutterMarks(subTree)
 
         // once the max column width is known, calculate column positions
         let totalWidth = 0
@@ -146,17 +211,18 @@ export default class EditorGutter extends Component {
             totalWidth += columnThickness[i]
         }
 
-         // render the components 
-         const gutterMarkEls = []
-         for( const gutterMark of gutterMarks ) {
-             const top = gutterMark[2]
-             const bottom = gutterMark[3]
-             if( bottom > scrollTop && top < scrollTop+clipHeight ) {
-                 gutterMarkEls.push( this.renderGutterMark(...gutterMark, columnPositions) )
-             }
-         }
- 
-         return { gutterMarkEls, totalWidth }
+        // turn the list of gutter mark params into rendered gutter marks
+        const gutterMarkEls = gutterMarks.map( (gutterMark,index) => {
+            const { pmNode, pos, top, bottom, column } = gutterMark
+            const borderStyles = this.getBorderStyles(pmNode)
+            const elementID = pmNode.type.name
+            const style = hard.includes(elementID) || docNodes.includes(elementID) ? 'hard' : 'soft'
+            // for split nodes, retrieve their start position, otherwise compute from offsets
+            const targetPos = pos - 1
+            return this.renderGutterMark(elementID, targetPos, top, bottom, index, column, style, borderStyles, columnPositions) 
+        })
+
+        return { gutterMarkEls, totalWidth }
     }
 
     render() {   

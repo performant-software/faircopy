@@ -6,7 +6,7 @@ import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
-import EditorGutter2 from "./EditorGutter2"
+import EditorGutter from "./EditorGutter"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
@@ -27,18 +27,10 @@ export default class TEIEditor extends Component {
         this.state = {
             noteID: null,
             notePopupAnchorEl: null,
-            scrollTop: 0,
             ctrlDown: false,
             altDown: false,
             selectedElements: []
         }
-
-        this.onScrollEditor = debounce( (e) => {
-            if( this.el ) {
-                const scrollTop = this.el.scrollTop
-                this.setState({ ...this.state, scrollTop})    
-            }
-        }, 100 )
     }
 
     componentDidMount() {
@@ -124,8 +116,7 @@ export default class TEIEditor extends Component {
                     editorView.dispatch(tr)
                 }, 100 )        
             }
-            const scrollTop = (this.el) ? this.el.scrollTop : 0
-            this.setState({...this.state, selectedElements, scrollTop, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
+            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
         }
     }
 
@@ -319,12 +310,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onOpenElementMenu, onDragElement, onEditResource, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
-        const { scrollTop, noteID, notePopupAnchorEl, selectedElements } = this.state
-
-        // used to update scroll position when document changes
-        const onRef = (el) => {
-            this.el = el
-        }
+        const { noteID, notePopupAnchorEl, selectedElements } = this.state
 
         const onClickBody = () => {
             const { editorView } = teiDocument
@@ -368,10 +354,9 @@ export default class TEIEditor extends Component {
                         elementMenuAnchors={elementMenuAnchors}
                         onEditResource={onEditResource}
                     ></EditorToolbar> }
-                    <div id={teiDocument.resourceID} onClick={onClickBody} ref={onRef} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
-                        { !hidden && <EditorGutter2
+                    <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
+                        { !hidden && <EditorGutter
                             expanded={expandedGutter}
-                            scrollTop={scrollTop} 
                             onDragElement={onDragElement}
                             teiDocument={teiDocument}
                             editorView={teiDocument.editorView}
@@ -383,7 +368,6 @@ export default class TEIEditor extends Component {
                             thumbMargin={true}
                         />
                         { !hidden && <ThumbnailMargin
-                            scrollTop={scrollTop} 
                             teiDocument={teiDocument}
                         /> }      
                     </div>
@@ -397,7 +381,6 @@ export default class TEIEditor extends Component {
                 { !hidden && <NotePopup
                     noteID={noteID}
                     expanded={expandedGutter}
-                    scrollTop={scrollTop} 
                     teiDocument={teiDocument}
                     anchorEl={notePopupAnchorEl}
                     onStateChange={this.onNoteStateChange}

@@ -124,7 +124,6 @@ export default class NotePopup extends Component {
         return (
             <div className='note-body' ref={onRef} onKeyDown={this.onKeyDown} >
                 <EditorGutter 
-                    scrollTop={0} 
                     gutterTop={gutterTop}
                     expanded={expanded}
                     teiDocument={teiDocument}
