@@ -73,24 +73,6 @@ export default class EditorGutter extends Component {
         )
     }
 
-    obtainSamplePos() {
-        const { editorView } = this.props
-        let samplePos = null
-        // TODO calculate the start point
-        let left = 600, top = 300
-        // if we don't find a sample at first, scan diagonally down the page till we find one
-        // TODO needs to halt if it gets off screen
-        while( samplePos === null ) {
-            const sample = editorView.posAtCoords({ left, top })
-            if( sample ) console.log(`sample ${sample.pos} ${sample.inside} ${left} ${top}`)
-            samplePos = (sample && sample.inside !== -1) ? sample.pos : null  
-            left+=10
-            top+=10
-            if( top > 10000 ) return null
-        }
-        return samplePos
-    }
-
     renderGutterMarkers() {
         const { editorView, gutterTop, teiDocument, expanded } = this.props
         const { doc } = editorView.state

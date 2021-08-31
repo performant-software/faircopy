@@ -128,12 +128,12 @@ export default class TEIDocument {
         
         // scan for errors 
         // TODO put this on a timer, not every update
-        // const relativeParentID = this.getRelativeParentID()
-        // const nextErrorCount = scanForErrors(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
-        // if( this.errorCount !== nextErrorCount ) {
-        //     this.errorCount = nextErrorCount
-        //     onErrorCountChange()
-        // }
+        const relativeParentID = this.getRelativeParentID()
+        const nextErrorCount = scanForErrors(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
+        if( this.errorCount !== nextErrorCount ) {
+            this.errorCount = nextErrorCount
+            onErrorCountChange()
+        }
 
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
