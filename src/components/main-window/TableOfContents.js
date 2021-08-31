@@ -88,7 +88,7 @@ export default class TableOfContents extends Component {
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
-          <TreeItem nodeId="root" label="Resource Contents" >
+          <TreeItem nodeId="root" label="Table of Contents" >
             { this.renderChildNodes(doc,0) }
           </TreeItem>
         </TreeView>

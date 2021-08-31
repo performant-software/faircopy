@@ -1,6 +1,7 @@
 #ProjectSidebar {
     background: #F3F6F8;
-    height: 100%;
+    overflow-y: auto;
+    height: calc( 100% - 50px);
 }
 
 #ProjectSidebar .title-bar {
