@@ -132,6 +132,7 @@ class FairCopyApplication {
         const importData = { path, data }
         this.sendToMainWindow('importOpened', importData )  
       }
+      this.sendToMainWindow('importOpened', 'done' )  
     })
 
     ipcMain.on('requestExport', (event, exportOptions) => { 
