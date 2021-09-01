@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 
 const fairCopy = window.fairCopy
 
@@ -15,6 +15,7 @@ export default class ImportConsoleDialog extends Component {
             totalCount: 0,
             consoleLines: []
         }
+        this.el = null
         this.state = this.initialState
     }
 
@@ -43,6 +44,10 @@ export default class ImportConsoleDialog extends Component {
             }
         }
 
+        if( this.el ) {
+            this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
+        }
+
         const nextSuccessCount = success ? successCount+1 : successCount
         this.setState({...this.state, consoleLines: nextConsole, successCount: nextSuccessCount, totalCount: totalCount+1, done, open: true })
     }
@@ -54,7 +59,7 @@ export default class ImportConsoleDialog extends Component {
         let lineNumber=1
         for( const consoleLine of consoleLines ) {
             consoleLineEls.push(
-                <Typography key={`console-line-${lineNumber++}`} variant='body2'>{consoleLine}</Typography>
+                <p key={`console-line-${lineNumber++}`} variant='body2'>{consoleLine}</p>
             )
         }
 
@@ -67,8 +72,13 @@ export default class ImportConsoleDialog extends Component {
             this.setState(this.initialState)
         }
 
-        // single panel of white text on black background
-        // overflow and fixed height
+        const onRef = (el) => {
+            this.el = el
+        }
+
+        // file names instead of full paths
+        // color coding for errors and done message
+        // make use of import options
 
         const { open, done } = this.state
         
@@ -80,12 +90,17 @@ export default class ImportConsoleDialog extends Component {
                 aria-labelledby="import-console-title"
                 aria-describedby="import-console-description"
             >
-                <DialogTitle>Import Console</DialogTitle>
+                <DialogTitle>
+                    Import Console 
+                    { !done && <img className='spinner' alt='loading images' src='img/spinner.gif'></img> }
+                </DialogTitle>
                 <DialogContent>
-                    { this.renderConsoleLines() }
+                    <div ref={onRef} className='import-console'>
+                        { this.renderConsoleLines() }
+                    </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={!done} variant="outlined" onClick={onClose}>Close</Button>
+                    <Button disabled={!done} color='primary' variant="contained" onClick={onClose}>Close</Button>
                 </DialogActions>
             </Dialog>
         )

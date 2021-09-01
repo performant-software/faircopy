@@ -1,0 +1,15 @@
+#ImportConsoleDialog .import-console {
+    background: black;
+    color: white;
+    overflow-y: auto;
+    height: 400px;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+}
+
+#ImportConsoleDialog .spinner {
+    display: inline;
+    margin-left: 12px;
+    width: 24px;
+    height: 24px;
+}
