@@ -27,8 +27,8 @@ class MainMenu {
 
     openImport = () => {
       return dialog.showOpenDialogSync( {
-        title: "Select a Text or XML file to import.",
-        properties: [ 'openFile' ]
+        title: "Select text or xml files to import.",
+        properties: [ 'openFile', 'multiSelections' ]
       })
     }
 

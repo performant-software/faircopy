@@ -22,7 +22,9 @@ import MainWindowStatusBar from './MainWindowStatusBar'
 import ReleaseNotesDialog from './dialogs/ReleaseNotesDialog'
 import FeedbackDialog from './dialogs/FeedbackDialog'
 import StructurePalette from './tei-editor/StructurePalette'
-import EditorDraggingElement from './tei-editor/EditorDraggingElement';
+import EditorDraggingElement from './tei-editor/EditorDraggingElement'
+import ImportTextsDialog from './dialogs/ImportTextsDialog'
+import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 
 const fairCopy = window.fairCopy
 
@@ -61,6 +63,7 @@ export default class MainWindow extends Component {
             alertMessage: null,
             expandedGutter: true,
             iiifDialogMode: false,
+            textImportDialogMode: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
         this.elementMenuAnchors = {}
@@ -70,7 +73,6 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
-        services.ipcRegisterCallback('importOpened', (event, importData) => this.receiveImportData(importData))
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
         fairCopyProject.addUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
@@ -151,18 +153,6 @@ export default class MainWindow extends Component {
             openResource.load(resource)
             this.setState({...this.state})
         }     
-    }
-
-    receiveImportData( importData ) {
-        const { fairCopyProject } = this.props
-        const { parentResourceID } = this.state
-        const { error, errorMessage } = fairCopyProject.importResource(importData,parentResourceID)
-        if( error ) {
-            const alertOptions = { errorMessage }
-            this.setState({...this.state, alertDialogMode: 'importError', alertOptions })
-        } else {
-            this.setState({...this.state})
-        }
     }
 
     selectResources(resourceIDs) {
@@ -302,7 +292,7 @@ export default class MainWindow extends Component {
 
     onImportResource = (importType) => {
         if( importType === 'xml' ) {
-            fairCopy.services.ipcSend('requestImport')
+            this.setState({...this.state, textImportDialogMode: true })
         } else {
             this.setState({...this.state, iiifDialogMode: true })
         }
@@ -479,7 +469,7 @@ export default class MainWindow extends Component {
         const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
         const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : fairCopyProject.getResourceEntry(parentResourceID)
 
-        const { alertMessage, editSurfaceInfoMode, iiifDialogMode, surfaceInfo } = this.state
+        const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl } = this.state
 
         const onSaveResource = (name,localID,type) => {
@@ -505,6 +495,10 @@ export default class MainWindow extends Component {
         return (
             <div className="dialog-container">
                 { this.renderAlertDialog() }
+                <ImportConsoleDialog
+                    fairCopyProject={fairCopyProject}
+                    parentEntry={parentResourceID}
+                ></ImportConsoleDialog>
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
                     resourceEntry={resourceEntry}
@@ -524,6 +518,11 @@ export default class MainWindow extends Component {
                     parentResourceID={parentResourceID}
                     onClose={()=>{ this.setState( {...this.state, iiifDialogMode: false} )}}
                 ></IIIFImportDialog> }
+                { textImportDialogMode && < ImportTextsDialog
+                    fairCopyProject={fairCopyProject}
+                    parentResourceID={parentResourceID}
+                    onClose={()=>{ this.setState( {...this.state, textImportDialogMode: false} )}}
+                ></ImportTextsDialog> }
                 { addImagesMode && <AddImageDialog
                     idMap={idMap}
                     facsDocument={selectedDoc}
