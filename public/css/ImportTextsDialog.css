@@ -1,12 +1,9 @@
-#ImportTextsDialog h1 {
-    margin-top: 5px;
-}
-
 #ImportTextsDialog h2 {
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 #ImportTextsDialog .import-option {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 

@@ -10,7 +10,7 @@ export default class ImportTextsDialog extends Component {
         super()
         this.initialState = {
             lineBreakParsing: 'all',
-            learnStructure: false,
+            learnStructure: true,
         }
         this.state = this.initialState
     }
@@ -58,7 +58,8 @@ export default class ImportTextsDialog extends Component {
         const { onClose } = this.props
     
         const onClickSelect = () => {
-            fairCopy.services.ipcSend('requestImport')
+            const { lineBreakParsing, learnStructure } = this.state
+            fairCopy.services.ipcSend('requestImport', {lineBreakParsing,learnStructure})
             this.setState(this.initialState)
             onClose()
         }
@@ -78,12 +79,11 @@ export default class ImportTextsDialog extends Component {
             >
                 <DialogTitle>Import Texts</DialogTitle>
                 <DialogContent>
-                    <Typography component="h1" variant="h6">Please select files to import.</Typography>
-                    <Typography>You can select plain text files (utf8) or XML files to import.</Typography>
+                    <Typography>You can select plain text files (UTF-8 encoded) or XML files to import.</Typography>
                     <Typography>XML files must contain one or more text or facsimile elements. XML elements that are not supported by FairCopy will be ignored, but their contents will be included.</Typography>
                     <Typography component='h2' variant='h6'>Import Options</Typography>
-                    { this.renderLearnStructure() }<br/>
-                    { this.renderLineBreakOptions() }
+                    { this.renderLineBreakOptions() }<br/>
+                    { this.renderLearnStructure() }
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onClickSelect}>Select Files</Button>   

@@ -10,7 +10,7 @@ import {teiTextTemplate} from './tei-template'
 const fairCopy = window.fairCopy
 
 export function importResource(importData,existingParentID,fairCopyProject) {
-    const { path, data } = importData
+    const { path, data, options } = importData
     const { idMap } = fairCopyProject
 
     // what do we call this resource?
@@ -33,12 +33,12 @@ export function importResource(importData,existingParentID,fairCopyProject) {
     const xmlDom = parseDOM(data)
 
     if( xmlDom ) {
-        return importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject)
+        return importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
     } else if( xmlExt ) {
         // if the file had a .xml extension but is invalid XML
         throw new Error('File contains invalid XML.')
     } else {
-        return importTxtResource(data, name, localID, existingParentID, fairCopyProject)
+        return importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
     }
 }
 
@@ -48,7 +48,9 @@ export function importResource(importData,existingParentID,fairCopyProject) {
 // We will also support import of TEI partials in the same format that we export them. (i.e. a single 
 // text or facs in a TEI element)
 
-function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject) {
+function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options) {
+    const { learnStructure } = options
+
     // locate the XML els that contain resources
     const extractedResources = extractResourceEls(xmlDom)
 
@@ -70,7 +72,7 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
             childLocalIDs = []
 
             // create the header
-            const resource = createResource(extractedResources.header, "TEI Header", "header", parentEntryID, fairCopyProject, fairCopyConfig)      
+            const resource = createResource(extractedResources.header, "TEI Header", "header", parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)      
             resources.push(resource)
         } else {
             // add resources to existing parent
@@ -83,13 +85,13 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
             const xmlID = resourceEl.getAttribute('xml:id')
             const childSanitizedID = xmlID ? sanitizeID(xmlID) : idMap.getUniqueID('import')
             const childLocalID = childLocalIDs.includes(childSanitizedID) ? idMap.getUniqueID(childSanitizedID) : childSanitizedID 
-            const resource = createResource(resourceEl, childLocalID, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig)
+            const resource = createResource(resourceEl, childLocalID, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)
             resources.push(resource)
             childLocalIDs.push(childLocalID)
         }
     } else {
         // if there is no header only take the first resource, it gets the name and localID
-        const resource = createResource(extractedResources.resources[0], name, localID, existingParentID, fairCopyProject, fairCopyConfig)
+        const resource = createResource(extractedResources.resources[0], name, localID, existingParentID, fairCopyProject, fairCopyConfig, learnStructure)
         resources.push(resource)
     }
     
@@ -97,13 +99,17 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
     return { resources, fairCopyConfig }
 }
 
-function importTxtResource(data, name, localID, parentID, fairCopyProject) {
+function importTxtResource(data, name, localID, parentID, fairCopyProject, options) {
     const {fairCopyConfig} = fairCopyProject
+    const { lineBreakParsing, learnStructure } = options
 
     const xmlDom = parseDOM(teiTextTemplate)
     const bodyEl = xmlDom.getElementsByTagName('body')[0]
 
-    const lines = data.split(/\r*\n\r*\n/)
+    // lineBreakParsing all or multi
+    const splitMethod = lineBreakParsing === 'multi' ? /\r*\n\r*\n/ : '\n'
+    const lines = data.split(splitMethod)
+    
     if( lines.length > 0 ) {
         // remove blank p if there is content
         const pEl = xmlDom.getElementsByTagName('p')[0]
@@ -119,7 +125,7 @@ function importTxtResource(data, name, localID, parentID, fairCopyProject) {
     const teiEl = xmlDom.getElementsByTagName('TEI')[0]
     const resourceEl = teiEl.getElementsByTagName('text')[0]
 
-    const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig)
+    const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure)
     return { resources: [ resource ], fairCopyConfig }
 }
 
@@ -174,20 +180,20 @@ function createTEIDoc(name,localID,idMap) {
     return {resourceEntry, content: "", resourceMap}
 }
 
-function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig) {
+function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
     const resourceName = resourceEl.tagName.toLowerCase()
     const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : 'facs'
     if( type === 'facs' ) {
         const facsResource = createFacs(resourceEl,name,localID,parentID,fairCopyProject)
         return facsResource  
     } else {
-        const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig)
+        const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig, learnStructure)
         fairCopyConfig = nextFairCopyConfig
         return {resourceEntry, content, resourceMap}
     }
 }
 
-function createText(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig) {
+function createText(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig, learnStructure) {
     const { idMap, teiSchema } = fairCopyProject
 
     const resourceEntry = {
@@ -205,7 +211,7 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const content = serializeText(doc, tempDoc, teiSchema)
 
     // learn the attributes and vocabs
-    const nextFairCopyConfig = learnDoc(fairCopyConfig, doc, teiSchema, tempDoc)
+    const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
 
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
