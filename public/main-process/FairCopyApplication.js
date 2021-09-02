@@ -127,12 +127,13 @@ class FairCopyApplication {
     ipcMain.on('requestImport', (event,options) => { 
       const paths = this.mainMenu.openImport()
       if( !paths ) return
+      this.sendToMainWindow('importData', 'import-start' )  
       for( const path of paths ) {
         const data = fs.readFileSync(path).toString('utf-8')
         const importData = { path, data, options }
-        this.sendToMainWindow('importOpened', importData )  
+        this.sendToMainWindow('importData', importData )  
       }
-      this.sendToMainWindow('importOpened', 'done' )  
+      this.sendToMainWindow('importData', 'import-end' )  
     })
 
     ipcMain.on('requestExport', (event, exportOptions) => { 

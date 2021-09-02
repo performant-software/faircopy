@@ -21,7 +21,7 @@ export default class ImportConsoleDialog extends Component {
 
     componentDidMount() {
         const {services} = fairCopy
-        services.ipcRegisterCallback('importOpened', (event, importData) => this.receiveImportData(importData))
+        services.ipcRegisterCallback('importData', (event, importData) => this.receiveImportData(importData))
     }
 
     receiveImportData( importData ) {
@@ -30,12 +30,17 @@ export default class ImportConsoleDialog extends Component {
         const nextConsole = [ ...consoleLines ]
         let success = false, done = false
 
-        if( importData === 'done' ) {
+        if( importData === 'import-start' ) {
+            nextConsole.push(`Starting import...`)
+            this.setState({...this.state, open: true, consoleLines: nextConsole })
+            return
+        } else if( importData === 'import-end' ) {
             done = true
             const s = successCount !== 1 ? 's' : ''
             nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)
         } else {
-            nextConsole.push(`Importing file ${importData.path}...`)
+            const filename = fairCopy.services.getBasename(importData.path).trim()
+            nextConsole.push(`Importing file ${filename}...`)
             const { error, errorMessage } = fairCopyProject.importResource(importData,parentResourceID)
             if( error ) {
                 nextConsole.push(errorMessage)

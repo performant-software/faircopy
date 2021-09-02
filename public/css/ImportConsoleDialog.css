@@ -1,7 +1,9 @@
 #ImportConsoleDialog .import-console {
-    background: black;
-    color: white;
+    background: #ccc;
+    border: 1px solid gray;
+    color: black;
     overflow-y: auto;
+    width: 500px;
     height: 400px;
     padding: 15px;
     font-family: 'Courier New', monospace;
