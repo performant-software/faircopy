@@ -1399,7 +1399,6 @@
 				"xml:space"
 			],
 			"defaultNodes": [
-				"term",
 				"list"
 			],
 			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text.",

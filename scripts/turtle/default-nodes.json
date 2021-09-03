@@ -34,7 +34,7 @@
     "handDesc": ["p"],
     "history": ["p"],
     "imprint": ["pubPlace"],
-    "keywords": ["term","list"],
+    "keywords": ["list"],
     "langUsage": ["language"],
     "layoutDesc": ["p"],
     "lg": ["l"],
