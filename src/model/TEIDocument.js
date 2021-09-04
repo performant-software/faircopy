@@ -231,7 +231,7 @@ export default class TEIDocument {
      
         } else {
             const textEl = this.xmlDom.getElementsByTagName('text')[0] 
-            doc = parseText(textEl,this,teiSchema)    
+            doc = parseText(textEl,this,teiSchema,'text')    
         }
  
         const selection = TextSelection.create(doc, 0)

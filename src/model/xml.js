@@ -8,7 +8,7 @@ export function parseText(textEl, teiDocument, teiSchema, subDocName) {
     teiSchema.teiDocuments.push(teiDocument)
     parseInterNodes(textEl,teiSchema)
     stripSpaces(textEl)
-    const domParser = subDocName ? teiSchema.docNodeParsers[subDocName] : teiSchema.domParser
+    const domParser = subDocName !== 'text' ? teiSchema.docNodeParsers[subDocName] : teiSchema.domParser
     const doc = domParser.parse(textEl)
     teiSchema.teiDocuments.pop()
     return doc
