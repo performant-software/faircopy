@@ -1,11 +1,11 @@
 const { encodeContent, encodeMarkContent } = require('./parse-content');
 const fs = require('fs');
 
-const createElements = function createElements(elGroups,specs,keepReportData,exp=false) {
+const createElements = function createElements(elGroups,specs,keepReportData,exp) {
     const elements = []
     const expSuffix = exp ? '-exp' : ''
-    const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons.json${expSuffix}`).toString('utf-8'))
-    const defaultNodes = JSON.parse(fs.readFileSync(`scripts/turtle/default-nodes.json${expSuffix}`).toString('utf-8'))
+    const icons = JSON.parse(fs.readFileSync(`scripts/turtle/inline-icons${expSuffix}.json`).toString('utf-8'))
+    const defaultNodes = JSON.parse(fs.readFileSync(`scripts/turtle/default-nodes${expSuffix}.json`).toString('utf-8'))
 
     elements.push( ...createNodes(elGroups,true,defaultNodes,specs) )
     elements.push( ...createInlineNodes(elGroups,icons,specs) )
