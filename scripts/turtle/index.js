@@ -13,11 +13,13 @@ const {getAllElements} = require('./parse-util')
 const teiSpecsDir = '../TEI/P5/Source/Specs'
 
 async function run() {
-    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/element-groups.json`).toString('utf-8'))
+    const exp = false
+    const expPrefix = exp ? 'exp-' : ''
+    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/${expPrefix}element-groups.json`).toString('utf-8'))
     const allElements = getAllElements(elementGroups)
     const specs = load( teiSpecsDir, allElements )
 
-    const elements = createElements(elementGroups,specs)
+    const elements = createElements(elementGroups,specs,exp)
     const attrs = createAttributes(elements,elementGroups,specs)
     const modules = createModules(allElements,specs)
 

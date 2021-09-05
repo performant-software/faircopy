@@ -1,0 +1,22 @@
+{
+    "addSpan": "fa-plus-circle",
+    "anchor": "fa-anchor",
+    "catRef": "fa-book",
+    "cb": "fa-line-columns",
+    "choice": "fa-question-circle",
+    "damageSpan": "fa-times-circle",
+    "delSpan": "fa-minus-circle",
+    "fw": "fa-heading",
+    "gap": "fa-dot-circle",
+    "handShift": "fa-hand-point-right",
+    "lb": "fa-angle-double-right",
+    "metamark": "fa-map-marker-question",
+    "milestone": "fa-map-marker",
+    "note": "fa-comment-alt",
+    "pb": "fa-file-alt",
+    "redo": "fa-redo",
+    "space": "fa-horizontal-rule",
+    "subst": "fa-random",
+    "substJoin": "fa-code-merge",
+    "undo": "fa-undo"
+}
