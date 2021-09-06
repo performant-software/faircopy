@@ -194,7 +194,7 @@ export default class ResourceBrowser extends Component {
               count={resourceRows.length}
               rowsPerPage={rowsPerPage}
               page={currentPage}
-              onChangePage={onChangePage}
+              onPageChange={onChangePage}
           />
       </Paper>
   )
