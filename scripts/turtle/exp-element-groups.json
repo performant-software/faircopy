@@ -14,7 +14,11 @@
         "choiceDoc",
         "fwDoc",
         "headerDoc",
-        "substDoc"
+        "substDoc",
+        "metamarkDoc",
+        "spaceDoc",
+        "substDoc",
+        "substJoinDoc"
     ],
     "hard": [
         "abstract",
