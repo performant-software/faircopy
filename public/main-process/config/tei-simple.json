@@ -162,14 +162,27 @@
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
+				"calendar",
 				"cert",
 				"change",
 				"copyOf",
 				"corresp",
+				"datingMethod",
+				"datingPoint",
 				"exclude",
 				"facs",
+				"from",
+				"from-custom",
+				"from-iso",
 				"n",
 				"next",
+				"notAfter",
+				"notAfter-custom",
+				"notAfter-iso",
+				"notBefore",
+				"notBefore-custom",
+				"notBefore-iso",
+				"period",
 				"prev",
 				"rend",
 				"rendition",
@@ -180,7 +193,13 @@
 				"style",
 				"subtype",
 				"synch",
+				"to",
+				"to-custom",
+				"to-iso",
 				"type",
+				"when",
+				"when-custom",
+				"when-iso",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -314,8 +333,8 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc*)|(fileDesc profileDesc))",
-			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt* notesStmt?) sourceDesc*)|(fileDesc profileDesc))",
+			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -605,8 +624,8 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_qLike|model_biblLike|model_ptrLike|model_global)+",
-			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike model_entryPart_top",
+			"content": "(model_biblLike|model_global|model_graphicLike|model_ptrLike|model_attributable|q)+",
+			"group": "model_common model_inter model_attributable model_msItemPart model_quoteLike model_entryPart_top",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -1093,7 +1112,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "((titleStmt editionStmt? extent? publicationStmt seriesStmt? notesStmt?) sourceDesc+)",
+			"content": "((titleStmt editionStmt? extent? publicationStmt seriesStmt* notesStmt?) sourceDesc+)",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1132,7 +1151,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (front model_global*)? (body) model_global* (back model_global*)?)",
-			"group": "model_common model_inter model_qLike",
+			"group": "model_common model_inter model_attributable",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -1613,8 +1632,8 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_headLike* desc* (model_biblLike|model_milestoneLike)+)",
-			"group": "model_frontPart model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"content": "(model_headLike* desc* (model_milestoneLike)* (model_biblLike+ (model_milestoneLike)*)+)",
+			"group": "model_frontPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -1697,7 +1716,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_headLike* desc* (model_personLike|listPerson)+)",
+			"content": "(model_headLike* desc* ((model_personLike|listPerson)+)+)",
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1739,7 +1758,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_headLike* desc* (model_placeLike|listPlace)+)",
+			"content": "(model_headLike* desc* ((model_placeLike|listPlace)+)+)",
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -1811,7 +1830,7 @@
 			"defaultNodes": [
 				"desc"
 			],
-			"desc": "contains a list of definitions of prefixing schemes used in data.pointer values, showing how abbreviated URIs using each scheme may be expanded into full URIs.",
+			"desc": "contains a list of definitions of prefixing schemes used in teidata.pointer values, showing how abbreviated URIs using each scheme may be expanded into full URIs.",
 			"synth": false
 		},
 		{
@@ -1897,7 +1916,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? (msPart*|msFrag*))))",
-			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -2528,7 +2547,7 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "defines a prefixing scheme used in data.pointer values, showing how abbreviated URIs using the scheme may be expanded into full URIs.",
+			"desc": "defines a prefixing scheme used in teidata.pointer values, showing how abbreviated URIs using the scheme may be expanded into full URIs.",
 			"synth": false
 		},
 		{
@@ -2817,6 +2836,7 @@
 				"change",
 				"copyOf",
 				"corresp",
+				"default",
 				"exclude",
 				"facs",
 				"n",
@@ -3060,7 +3080,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_qLike) model_global*)+)",
+			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_attributable) (model_global*|q))+)",
 			"group": "model_common model_divPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -4143,7 +4163,7 @@
 				"xml:space"
 			],
 			"icon": "fa-comment-alt",
-			"group": "model_global_i model_noteLike_i model_correspDescPart_i model_correspActionPart_i model_correspContextPart_i",
+			"group": "model_global_i model_noteLike_i model_standOffPart_i model_annotationLike_i model_correspDescPart_i model_correspActionPart_i model_correspContextPart_i model_annotationPart_body_i",
 			"defaultNodes": null,
 			"desc": "contains a note or annotation.",
 			"synth": false
@@ -4264,7 +4284,7 @@
 			"fcType": "asides",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(textNode1|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode1|model_attributable|model_phrase|model_global)*",
 			"synth": true
 		},
 		{
@@ -4447,7 +4467,7 @@
 				"add",
 				"del"
 			],
-			"desc": "groups one or more deletions with one or more additions when the combination is to be regarded as a single intervention in the text.",
+			"desc": "groups one or more deletions (or surplus text) with one or more additions when the combination is to be regarded as a single intervention in the text.",
 			"synth": false
 		},
 		{
@@ -4456,7 +4476,7 @@
 			"fcType": "asides",
 			"isolating": true,
 			"gutterMark": true,
-			"content": "(add|del|model_milestoneLike)+",
+			"content": "(add|surplus|del|model_milestoneLike)+",
 			"synth": true
 		},
 		{
@@ -4519,7 +4539,7 @@
 			"defaultNodes": [
 				"desc"
 			],
-			"desc": "identifies a series of possibly fragmented additions, deletions or other revisions on a manuscript that combine to make up a single intervention in the text",
+			"desc": "identifies a series of possibly fragmented additions, deletions, or other revisions on a manuscript that combine to make up a single intervention in the text",
 			"synth": false
 		},
 		{
@@ -5100,7 +5120,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_common model_inter model_qLike",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
 			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
 			"synth": true
 		},
@@ -5110,7 +5130,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_common model_inter model_qLike",
+			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
 			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
@@ -5175,7 +5195,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
+			"group": "model_common model_inter model_attributable model_msItemPart model_quoteLike",
 			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text.",
 			"synth": true
 		},
@@ -5185,7 +5205,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_common model_inter model_qLike model_msItemPart model_quoteLike",
+			"group": "model_common model_inter model_attributable model_msItemPart model_quoteLike",
 			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
@@ -5255,7 +5275,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
+			"group": "model_annotationPart_body model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
 			"synth": true
 		},
@@ -5265,7 +5285,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
-			"group": "model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
+			"group": "model_annotationPart_body model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
@@ -6787,6 +6807,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"function",
 				"key",
 				"n",
 				"next",
@@ -6799,7 +6820,10 @@
 				"select",
 				"source",
 				"style",
+				"subtype",
 				"synch",
+				"target",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -7462,7 +7486,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7629,7 +7653,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -7665,21 +7689,34 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
+				"calendar",
 				"cert",
 				"change",
 				"copyOf",
 				"corresp",
+				"datingMethod",
+				"datingPoint",
 				"exclude",
 				"facs",
+				"from",
+				"from-custom",
+				"from-iso",
 				"key",
 				"n",
 				"next",
+				"notAfter",
+				"notAfter-custom",
+				"notAfter-iso",
+				"notBefore",
+				"notBefore-custom",
+				"notBefore-iso",
 				"nymRef",
+				"period",
 				"prev",
 				"ref",
 				"rend",
@@ -7691,6 +7728,12 @@
 				"source",
 				"style",
 				"synch",
+				"to",
+				"to-custom",
+				"to-iso",
+				"when",
+				"when-custom",
+				"when-iso",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -7706,7 +7749,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
-			"group": "model_common model_inter model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
+			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
@@ -7746,7 +7789,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8186,7 +8229,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8523,7 +8566,7 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains a brief description of the object documented by its parent element, typically a documentation element or an entity.",
+			"desc": "contains a short description of the purpose, function, or use of its parent element, or when the parent is a documentation element, describes or defines the object being documented. ",
 			"synth": false
 		},
 		{
@@ -8579,7 +8622,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8617,7 +8660,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8655,7 +8698,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8764,7 +8807,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8800,21 +8843,34 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"gutterMark": true,
 			"validAttrs": [
 				"ana",
+				"calendar",
 				"cert",
 				"change",
 				"copyOf",
 				"corresp",
+				"datingMethod",
+				"datingPoint",
 				"exclude",
 				"facs",
+				"from",
+				"from-custom",
+				"from-iso",
 				"key",
 				"n",
 				"next",
+				"notAfter",
+				"notAfter-custom",
+				"notAfter-iso",
+				"notBefore",
+				"notBefore-custom",
+				"notBefore-iso",
 				"nymRef",
+				"period",
 				"prev",
 				"ref",
 				"rend",
@@ -8826,6 +8882,12 @@
 				"source",
 				"style",
 				"synch",
+				"to",
+				"to-custom",
+				"to-iso",
+				"when",
+				"when-custom",
+				"when-iso",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -8840,7 +8902,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8879,7 +8941,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -8989,7 +9051,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -9324,7 +9386,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -9481,7 +9543,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_common model_inter model_labelLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10001,7 +10063,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10039,7 +10101,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_detail",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10216,7 +10278,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10252,7 +10314,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10288,7 +10350,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10437,7 +10499,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10513,7 +10575,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_qLike|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart",
 			"gutterMark": true,
 			"validAttrs": [
@@ -10880,7 +10942,7 @@
 			"synth": true,
 			"content": "text*",
 			"selectable": false,
-			"marks": "model_qLike model_phrase",
+			"marks": "model_attributable model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -10910,7 +10972,7 @@
 			"synth": true,
 			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_qLike model_phrase",
+			"marks": "model_attributable model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -11147,8 +11209,8 @@
 			"name": "globalNode8",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_correspDescPart_i*",
-			"group": "model_correspDescPart",
+			"content": "model_standOffPart_i*",
+			"group": "model_standOffPart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11162,8 +11224,8 @@
 			"name": "globalNode9",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_correspActionPart_i*",
-			"group": "model_correspActionPart",
+			"content": "model_annotationLike_i*",
+			"group": "model_annotationLike",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11177,8 +11239,8 @@
 			"name": "globalNode10",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_correspContextPart_i*",
-			"group": "model_correspContextPart",
+			"content": "model_correspDescPart_i*",
+			"group": "model_correspDescPart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11192,8 +11254,8 @@
 			"name": "globalNode11",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_limitedPhrase_i*",
-			"group": "model_limitedPhrase",
+			"content": "model_correspActionPart_i*",
+			"group": "model_correspActionPart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11207,8 +11269,8 @@
 			"name": "globalNode12",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_pPart_editorial_i*",
-			"group": "model_pPart_editorial",
+			"content": "model_correspContextPart_i*",
+			"group": "model_correspContextPart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11222,8 +11284,8 @@
 			"name": "globalNode13",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_standOffPart_i*",
-			"group": "model_standOffPart",
+			"content": "model_annotationPart_body_i*",
+			"group": "model_annotationPart_body",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11237,8 +11299,8 @@
 			"name": "globalNode14",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_global_meta_i*",
-			"group": "model_global_meta",
+			"content": "model_limitedPhrase_i*",
+			"group": "model_limitedPhrase",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11252,8 +11314,8 @@
 			"name": "globalNode15",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "addSpan*",
-			"group": "addSpan_g",
+			"content": "model_pPart_editorial_i*",
+			"group": "model_pPart_editorial",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11267,8 +11329,8 @@
 			"name": "globalNode16",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "anchor*",
-			"group": "anchor_g",
+			"content": "model_global_meta_i*",
+			"group": "model_global_meta",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11282,8 +11344,8 @@
 			"name": "globalNode17",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "cb*",
-			"group": "cb_g",
+			"content": "addSpan*",
+			"group": "addSpan_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11297,8 +11359,8 @@
 			"name": "globalNode18",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "catRef*",
-			"group": "catRef_g",
+			"content": "anchor*",
+			"group": "anchor_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11312,8 +11374,8 @@
 			"name": "globalNode19",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "damageSpan*",
-			"group": "damageSpan_g",
+			"content": "cb*",
+			"group": "cb_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11327,8 +11389,8 @@
 			"name": "globalNode20",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "delSpan*",
-			"group": "delSpan_g",
+			"content": "catRef*",
+			"group": "catRef_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11342,8 +11404,8 @@
 			"name": "globalNode21",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "gap*",
-			"group": "gap_g",
+			"content": "damageSpan*",
+			"group": "damageSpan_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11357,8 +11419,8 @@
 			"name": "globalNode22",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "handShift*",
-			"group": "handShift_g",
+			"content": "delSpan*",
+			"group": "delSpan_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11372,8 +11434,8 @@
 			"name": "globalNode23",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "lb*",
-			"group": "lb_g",
+			"content": "gap*",
+			"group": "gap_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11387,8 +11449,8 @@
 			"name": "globalNode24",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "milestone*",
-			"group": "milestone_g",
+			"content": "handShift*",
+			"group": "handShift_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11402,8 +11464,8 @@
 			"name": "globalNode25",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "pb*",
-			"group": "pb_g",
+			"content": "lb*",
+			"group": "lb_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11417,8 +11479,8 @@
 			"name": "globalNode26",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "redo*",
-			"group": "redo_g",
+			"content": "milestone*",
+			"group": "milestone_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11432,8 +11494,8 @@
 			"name": "globalNode27",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "undo*",
-			"group": "undo_g",
+			"content": "pb*",
+			"group": "pb_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11447,8 +11509,8 @@
 			"name": "globalNode28",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "note*",
-			"group": "note_g",
+			"content": "redo*",
+			"group": "redo_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11462,8 +11524,8 @@
 			"name": "globalNode29",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "choice*",
-			"group": "choice_g",
+			"content": "undo*",
+			"group": "undo_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11477,8 +11539,8 @@
 			"name": "globalNode30",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "fw*",
-			"group": "fw_g",
+			"content": "note*",
+			"group": "note_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11492,8 +11554,8 @@
 			"name": "globalNode31",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "metamark*",
-			"group": "metamark_g",
+			"content": "choice*",
+			"group": "choice_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11507,8 +11569,8 @@
 			"name": "globalNode32",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "space*",
-			"group": "space_g",
+			"content": "fw*",
+			"group": "fw_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11522,8 +11584,8 @@
 			"name": "globalNode33",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "subst*",
-			"group": "subst_g",
+			"content": "metamark*",
+			"group": "metamark_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -11537,6 +11599,36 @@
 			"name": "globalNode34",
 			"pmType": "node",
 			"fcType": "globalNodes",
+			"content": "space*",
+			"group": "space_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode34"
+				}
+			]
+		},
+		{
+			"name": "globalNode35",
+			"pmType": "node",
+			"fcType": "globalNodes",
+			"content": "subst*",
+			"group": "subst_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode35"
+				}
+			]
+		},
+		{
+			"name": "globalNode36",
+			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "substJoin*",
 			"group": "substJoin_g",
 			"atom": true,
@@ -11544,7 +11636,7 @@
 			"synth": true,
 			"parseDOM": [
 				{
-					"tag": "globalNode34"
+					"tag": "globalNode36"
 				}
 			]
 		},
@@ -11734,9 +11826,9 @@
 		},
 		"facs": {
 			"ident": "facs",
-			"description": "points to all or part of an image which corresponds with the content of the element.",
+			"description": "points to one or more images, portions of an image, or surfaces which correspond to the current element.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
+			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
@@ -11795,88 +11887,21 @@
 			"valList": null,
 			"valListType": "open"
 		},
-		"status": {
-			"ident": "status",
-			"description": "supplies a code identifying the current availability of the text.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "free",
-					"desc": "the text is freely available."
-				},
-				{
-					"ident": "unknown",
-					"desc": "the status of the text is unknown."
-				},
-				{
-					"ident": "restricted",
-					"desc": "the text is not freely available."
-				}
-			],
-			"valListType": "closed"
-		},
-		"default": {
-			"ident": "default",
-			"description": "indicates whether or not this element is selected by default when its parent is selected.",
-			"dataType": "teidata.truthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "true",
-					"desc": "This element is selected if its parent is selected"
-				},
-				{
-					"ident": "false",
-					"desc": "This element can only be selected explicitly, unless it is the only one of its kind, in which case it is selected if its parent is selected."
-				}
-			],
-			"valListType": "closed"
-		},
-		"decls": {
-			"ident": "decls",
-			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open"
-		},
-		"sortKey": {
-			"ident": "sortKey",
-			"description": "supplies the sort key for this element in an index, list or group which contains it.",
-			"dataType": "teidata.word",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
-		"contemporary": {
-			"ident": "contemporary",
-			"description": "specifies whether or not the binding is contemporary with the majority of its contents",
-			"dataType": "teidata.xTruthValue",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open"
-		},
 		"calendar": {
 			"ident": "calendar",
-			"description": "indicates the system or calendar to which the date represented by the content of this element belongs.",
+			"description": "indicates one or more systems or calendars to which the date represented by the content of this element belongs.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
 		},
 		"period": {
 			"ident": "period",
-			"description": "supplies a pointer to some location defining a named period of time within which the datable item is understood to have occurred.",
+			"description": "supplies pointers to one or more definitions of named periods of time (typically categorys or calendars) within which the datable item is understood to have occurred.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open"
 		},
@@ -12028,6 +12053,73 @@
 			"ident": "datingMethod",
 			"description": "supplies a pointer to a calendar element or other means of interpreting the values of the custom dating attributes.",
 			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"status": {
+			"ident": "status",
+			"description": "supplies a code identifying the current availability of the text.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "free",
+					"desc": "the text is freely available."
+				},
+				{
+					"ident": "unknown",
+					"desc": "the status of the text is unknown."
+				},
+				{
+					"ident": "restricted",
+					"desc": "the text is not freely available."
+				}
+			],
+			"valListType": "closed"
+		},
+		"default": {
+			"ident": "default",
+			"description": "indicates whether or not this element is selected by default when its parent is selected.",
+			"dataType": "teidata.truthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "true",
+					"desc": "This element is selected if its parent is selected"
+				},
+				{
+					"ident": "false",
+					"desc": "This element can only be selected explicitly, unless it is the only one of its kind, in which case it is selected if its parent is selected."
+				}
+			],
+			"valListType": "closed"
+		},
+		"decls": {
+			"ident": "decls",
+			"description": "identifies one or more declarable elements within the header, which are understood to apply to the element bearing this attribute and its content.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open"
+		},
+		"sortKey": {
+			"ident": "sortKey",
+			"description": "supplies the sort key for this element in an index, list or group which contains it.",
+			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open"
+		},
+		"contemporary": {
+			"ident": "contemporary",
+			"description": "specifies whether or not the binding is contemporary with the majority of its contents",
+			"dataType": "teidata.xTruthValue",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -12294,8 +12386,8 @@
 			"maxOccurs": "unbounded",
 			"valList": [
 				{
-					"ident": "below",
-					"desc": "below the line"
+					"ident": "top",
+					"desc": "at the top of the page"
 				},
 				{
 					"ident": "bottom",
@@ -12304,10 +12396,6 @@
 				{
 					"ident": "margin",
 					"desc": "in the margin (left, right, or both)"
-				},
-				{
-					"ident": "top",
-					"desc": "at the top of the page"
 				},
 				{
 					"ident": "opposite",
@@ -12320,6 +12408,18 @@
 				{
 					"ident": "above",
 					"desc": "above the line"
+				},
+				{
+					"ident": "right",
+					"desc": "to the right, e.g. to the right of a vertical line of text, or to the right of a figure"
+				},
+				{
+					"ident": "below",
+					"desc": "below the line"
+				},
+				{
+					"ident": "left",
+					"desc": "to the left, e.g. to the left of a vertical line of text, or to the left of a figure"
 				},
 				{
 					"ident": "end",
@@ -13061,7 +13161,7 @@
 		"versionDate": {
 			"ident": "versionDate",
 			"description": "specifies the date on which the source text was extracted and sent to the translator",
-			"dataType": "teidata.temporal.w3c",
+			"dataType": "teidata.temporal.working",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,

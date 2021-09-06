@@ -548,6 +548,9 @@
 				"ana": {
 					"active": false
 				},
+				"calendar": {
+					"active": false
+				},
 				"cert": {
 					"active": false
 				},
@@ -560,16 +563,52 @@
 				"corresp": {
 					"active": false
 				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
 				"facs": {
 					"active": false
 				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
+					"active": false
+				},
 				"n": {
 					"active": false
 				},
 				"next": {
+					"active": false
+				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
+				"period": {
 					"active": false
 				},
 				"prev": {
@@ -603,9 +642,27 @@
 				"synch": {
 					"active": false
 				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
 				"type": {
 					"active": false,
 					"vocabID": "altIdentifier[type]"
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
+					"active": false
 				},
 				"xml:base": {
 					"active": false
@@ -5788,6 +5845,9 @@
 					"active": false
 				},
 				"corresp": {
+					"active": false
+				},
+				"default": {
 					"active": false
 				},
 				"exclude": {
@@ -12537,6 +12597,9 @@
 				"facs": {
 					"active": false
 				},
+				"function": {
+					"active": false
+				},
 				"key": {
 					"active": false
 				},
@@ -12573,8 +12636,19 @@
 				"style": {
 					"active": false
 				},
+				"subtype": {
+					"active": false,
+					"vocabID": "material[subtype]"
+				},
 				"synch": {
 					"active": false
+				},
+				"target": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "material[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -14657,6 +14731,9 @@
 				"ana": {
 					"active": false
 				},
+				"calendar": {
+					"active": false
+				},
 				"cert": {
 					"active": false
 				},
@@ -14669,10 +14746,25 @@
 				"corresp": {
 					"active": false
 				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
 				"facs": {
+					"active": false
+				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
 					"active": false
 				},
 				"key": {
@@ -14684,7 +14776,28 @@
 				"next": {
 					"active": false
 				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
 				"nymRef": {
+					"active": false
+				},
+				"period": {
 					"active": false
 				},
 				"prev": {
@@ -14719,6 +14832,24 @@
 					"active": false
 				},
 				"synch": {
+					"active": false
+				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
 					"active": false
 				},
 				"xml:base": {
@@ -17074,6 +17205,9 @@
 				"ana": {
 					"active": false
 				},
+				"calendar": {
+					"active": false
+				},
 				"cert": {
 					"active": false
 				},
@@ -17086,10 +17220,25 @@
 				"corresp": {
 					"active": false
 				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
 				"facs": {
+					"active": false
+				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
 					"active": false
 				},
 				"key": {
@@ -17101,7 +17250,28 @@
 				"next": {
 					"active": false
 				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
 				"nymRef": {
+					"active": false
+				},
+				"period": {
 					"active": false
 				},
 				"prev": {
@@ -17136,6 +17306,24 @@
 					"active": false
 				},
 				"synch": {
+					"active": false
+				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
+				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
 					"active": false
 				},
 				"xml:base": {
@@ -21580,7 +21768,7 @@
 		],
 		"*[place]": [
 			[
-				"below",
+				"top",
 				false
 			],
 			[
@@ -21589,10 +21777,6 @@
 			],
 			[
 				"margin",
-				false
-			],
-			[
-				"top",
 				false
 			],
 			[
@@ -21605,6 +21789,18 @@
 			],
 			[
 				"above",
+				false
+			],
+			[
+				"right",
+				false
+			],
+			[
+				"below",
+				false
+			],
+			[
+				"left",
 				false
 			],
 			[
