@@ -335,7 +335,7 @@ export function splitBlock(state, dispatch, editorView, splitParent ) {
       }
       dispatch(tr.scrollIntoView())  
     } catch (e) {
-      console.log('unable to split block')
+      console.log(e)
       return false
     }
   }
