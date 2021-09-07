@@ -58,7 +58,8 @@ export default class ParameterDrawer extends Component {
         return (value,error) => {
             const { teiDocument } = this.props
             const elementName = element.type.name
-            const editorView = (elementName === 'note') ? teiDocument.editorView : teiDocument.getActiveView()
+            const {asides} = teiDocument.fairCopyProject.teiSchema.elementGroups
+            const editorView = asides.includes(elementName) ? teiDocument.editorView : teiDocument.getActiveView()
             const { state } = editorView 
             const { $anchor } = state.selection
             let {tr} = state

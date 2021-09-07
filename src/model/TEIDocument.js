@@ -47,9 +47,8 @@ export default class TEIDocument {
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
                
-        const selection = TextSelection.create(doc, 0)
         return EditorState.create({ 
-            doc, plugins: this.plugins, selection 
+            doc, plugins: this.plugins
         })
     }
 
@@ -234,10 +233,9 @@ export default class TEIDocument {
             doc = parseText(textEl,this,teiSchema,'text')    
         }
  
-        const selection = TextSelection.create(doc, 0)
         this.changedSinceLastSave = false
         this.initialState = EditorState.create({ 
-            doc, plugins: this.plugins, selection 
+            doc, plugins: this.plugins 
         })
         this.loading = false
     }
