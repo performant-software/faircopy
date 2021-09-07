@@ -90,7 +90,6 @@ function createInters(elGroups,defaultNodes,specs) {
             markContent,
             inlineContent,
             group: spec.group,
-            gutterMark: true,
             defaultNodes: defaultNodes[inter] ? defaultNodes[inter] : null,
             validAttrs: [],
             desc: spec.description,
@@ -165,7 +164,6 @@ function createAsides(elGroups,icons,defaultNodes,specs) {
             pmType: "node",
             fcType: "asides",
             isolating: true,
-            gutterMark: true,
             content,
             markContent,
             synth: true
@@ -193,7 +191,6 @@ const createDocNode = function createDocNode() {
             pmType: "node",
             fcType: "docNodes",
             isolating: true,
-            gutterMark: true,
             content: '((front)? (body) (back)?)',
             synth: true
         },
@@ -202,7 +199,6 @@ const createDocNode = function createDocNode() {
             pmType: "node",
             fcType: "docNodes",
             isolating: true,
-            gutterMark: true,
             content: '(fileDesc model_teiHeaderPart* revisionDesc?)',
             synth: true
         }
@@ -310,7 +306,6 @@ const createNodes = function createNodes(elGroups,hard,defaultNodes,specs) {
             markContent,
             inlineContent,
             group: spec.group,
-            gutterMark: true,
             validAttrs: [],
             defaultNodes: defaultNodes[node] ? defaultNodes[node] : null,
             desc: spec.description,

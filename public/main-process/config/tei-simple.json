@@ -7,7 +7,6 @@
 			"isolating": true,
 			"content": "(model_pLike|model_listLike)+",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -45,7 +44,6 @@
 			"isolating": true,
 			"content": "(adminInfo? surrogates? listBibl?)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -83,7 +81,6 @@
 			"isolating": true,
 			"content": "(model_global* (model_addrPart model_global*)+)",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_publicationStmtPart_detail",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -121,7 +118,6 @@
 			"isolating": true,
 			"content": "(recordHist? availability? custodialHist? model_noteLike?)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -159,7 +155,6 @@
 			"isolating": true,
 			"content": "(institution? repository? collection? idno note_g?)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -218,7 +213,6 @@
 			"isolating": true,
 			"content": "((model_global|model_headLike)* (model_common model_global*)+)",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -256,7 +250,6 @@
 			"isolating": true,
 			"content": "(model_availabilityPart|model_pLike)+",
 			"group": "model_publicationStmtPart_detail model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -296,7 +289,6 @@
 			"isolating": true,
 			"content": "((model_frontPart|model_pLike_front|model_pLike|model_listLike|model_global)* (((model_frontPart|model_global)*)|(model_divLike (model_frontPart|model_divLike|model_global)*))? (model_divBottomPart (model_divBottomPart|model_global)*)?)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -335,7 +327,6 @@
 			"isolating": true,
 			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt* notesStmt?) sourceDesc*)|(fileDesc profileDesc))",
 			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -377,7 +368,6 @@
 			"isolating": true,
 			"content": "(model_pLike|condition|decoNote)+",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -435,7 +425,6 @@
 			"isolating": true,
 			"content": "((model_pLike|decoNote|condition)+|binding+)",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -473,7 +462,6 @@
 			"isolating": true,
 			"content": "(model_global* (model_divTop (model_global|model_divTop)*)? ((model_global)*)? ((model_divLike (model_global)*)+|((model_global)*)+|((model_common model_global*)+ ((model_divLike (model_global)*)+|((model_global)*)+)?)) (model_divBottom model_global*)*)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -512,7 +500,6 @@
 			"isolating": true,
 			"content": "((model_global|model_headLike)* ((castItem|castGroup|roleDesc) model_global*)+ (trailer model_global*)?)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -550,7 +537,6 @@
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_common model_global*)* ((castItem|castGroup) model_global*)+ (model_common model_global*)*)",
 			"group": "model_common model_inter model_frontPart model_frontPart_drama model_standOffPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -588,7 +574,6 @@
 			"isolating": true,
 			"content": "((catDesc+|(model_descLike)*) category*)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -626,7 +611,6 @@
 			"isolating": true,
 			"content": "(model_biblLike|model_global|model_graphicLike|model_ptrLike|model_attributable|q)+",
 			"group": "model_common model_inter model_attributable model_msItemPart model_quoteLike model_entryPart_top",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -666,7 +650,6 @@
 			"isolating": true,
 			"content": "taxonomy+",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -704,7 +687,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|custEvent+)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -742,7 +724,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? decoNote+))",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -780,7 +761,6 @@
 			"isolating": true,
 			"content": "(dim|model_dimLike)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -831,7 +811,6 @@
 			"isolating": true,
 			"content": "((model_divTop|model_global)* ((((model_divLike) model_global*)+|((model_common model_global*)+ ((model_divLike) model_global*)*)) (model_divBottom model_global*)*)?)",
 			"group": "model_divLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -879,7 +858,6 @@
 			"isolating": true,
 			"content": "(model_global* (titlePart model_global*)+)",
 			"group": "model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -919,7 +897,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(edition model_respLike*))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -957,7 +934,6 @@
 			"isolating": true,
 			"content": "(model_pLike)+",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -996,7 +972,6 @@
 			"isolating": true,
 			"content": "(model_encodingDescPart|model_pLike)+",
 			"group": "model_teiHeaderPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1034,7 +1009,6 @@
 			"isolating": true,
 			"content": "(model_common|model_global)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1072,7 +1046,6 @@
 			"isolating": true,
 			"content": "(model_headLike|model_common|figDesc|model_graphicLike|model_global|model_divBottom)*",
 			"group": "model_global",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1114,7 +1087,6 @@
 			"isolating": true,
 			"content": "((titleStmt editionStmt? extent? publicationStmt seriesStmt* notesStmt?) sourceDesc+)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1152,7 +1124,6 @@
 			"isolating": true,
 			"content": "(model_global* (front model_global*)? (body) model_global* (back model_global*)?)",
 			"group": "model_common model_inter model_attributable",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1193,7 +1164,6 @@
 			"isolating": true,
 			"content": "((model_frontPart|model_pLike|model_pLike_front|model_global)* ((((model_frontPart|model_global)*)|(model_divLike (model_divLike|model_frontPart|model_global)*)) (model_divBottom (model_divBottom|model_global)*)?)?)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1232,7 +1202,6 @@
 			"isolating": true,
 			"content": "model_descLike*",
 			"group": "model_phrase model_graphicLike model_titlepagePart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1276,7 +1245,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? handNote+))",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1315,7 +1283,6 @@
 			"isolating": true,
 			"content": "handNote+",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1353,7 +1320,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? origin? provenance* acquisition?))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1391,7 +1357,6 @@
 			"isolating": true,
 			"content": "((classCode|catRef_g)* ((model_imprintPart) respStmt* model_global*)+)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1429,7 +1394,6 @@
 			"isolating": true,
 			"content": "(list)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1468,7 +1432,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|language+)",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1507,7 +1470,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? layout+))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1545,7 +1507,6 @@
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_lLike|model_stageLike|model_labelLike|lg) (model_lLike|model_stageLike|model_labelLike|model_global|lg)* (model_divBottom model_global*)*)",
 			"group": "model_common model_divPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1592,7 +1553,6 @@
 			"isolating": true,
 			"content": "((model_divTop|model_global|desc*)* ((item model_global*)+|((label model_global* item model_global*)+)) (model_divBottom model_global*)*)",
 			"group": "model_standOffPart model_common model_inter model_listLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1634,7 +1594,6 @@
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_milestoneLike)* (model_biblLike+ (model_milestoneLike)*)+)",
 			"group": "model_frontPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1676,7 +1635,6 @@
 			"isolating": true,
 			"content": "(desc* (listChange|change)+)",
 			"group": "model_standOffPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1718,7 +1676,6 @@
 			"isolating": true,
 			"content": "(model_headLike* desc* ((model_personLike|listPerson)+)+)",
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1760,7 +1717,6 @@
 			"isolating": true,
 			"content": "(model_headLike* desc* ((model_placeLike|listPlace)+)+)",
 			"group": "model_standOffPart model_common model_inter model_listLike model_orgPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1802,7 +1758,6 @@
 			"isolating": true,
 			"content": "(desc* (prefixDef|listPrefixDef)+)",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1840,7 +1795,6 @@
 			"isolating": true,
 			"content": "locus+",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1877,7 +1831,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? titlePage? (msItem|msItemStruct)*))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1917,7 +1870,6 @@
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? (msPart*|msFrag*))))",
 			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1960,7 +1912,6 @@
 			"isolating": true,
 			"content": "((altIdentifier|msIdentifier) model_headLike* (model_pLike+|(msContents? physDesc? history? additional?)))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2000,7 +1951,6 @@
 			"isolating": true,
 			"content": "((institution? repository? collection* idno*) (msName|altIdentifier)*)",
 			"group": "model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2038,7 +1988,6 @@
 			"isolating": true,
 			"content": "((locus|locusGrp)* (model_pLike+|(model_titlepagePart|model_msItemPart|model_global)+))",
 			"group": "model_msItemPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2078,7 +2027,6 @@
 			"isolating": true,
 			"content": "((locus|locusGrp)? (model_pLike+|(author* respStmt* title* rubric? incipit? msItemStruct* explicit? finalRubric? colophon* decoNote* listBibl* (bibl)* filiation? model_noteLike*)))",
 			"group": "model_msItemPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2118,7 +2066,6 @@
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents? physDesc? history? additional? msPart*)))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2158,7 +2105,6 @@
 			"isolating": true,
 			"content": "tagUsage+",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2197,7 +2143,6 @@
 			"isolating": true,
 			"content": "(model_noteLike|relatedItem)+",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2235,7 +2180,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(supportDesc? layoutDesc?))",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2274,7 +2218,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(model_personPart|model_global)*)",
 			"group": "model_personLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"age",
 				"ana",
@@ -2318,7 +2261,6 @@
 			"isolating": true,
 			"content": "(model_headLike* (model_pLike*|(model_labelLike)*) (model_noteLike|model_biblLike|idno)* (model_placeLike|listPlace)*)",
 			"group": "model_placeLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2361,7 +2303,6 @@
 			"isolating": true,
 			"content": "(model_pLike* model_physDescPart)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2399,7 +2340,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(model_personLike|listPerson)+)",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2438,7 +2378,6 @@
 			"isolating": true,
 			"content": "((model_global|model_divTopPart)* model_common (model_global|model_common)* (model_divBottomPart model_global*)*)",
 			"group": "model_divBottom model_divBottomPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2477,7 +2416,6 @@
 			"isolating": true,
 			"content": "model_pLike+",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2516,7 +2454,6 @@
 			"isolating": true,
 			"content": "model_pLike*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2557,7 +2494,6 @@
 			"isolating": true,
 			"content": "model_profileDescPart*",
 			"group": "model_teiHeaderPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2595,7 +2531,6 @@
 			"isolating": true,
 			"content": "((model_publicationStmtPart_agency model_publicationStmtPart_detail*)+|model_pLike+)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2633,7 +2568,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(source change*))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2671,7 +2605,6 @@
 			"isolating": true,
 			"content": "(model_biblLike|model_ptrLike)?",
 			"group": "model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2712,7 +2645,6 @@
 			"isolating": true,
 			"content": "(((resp+)|(resp+)) note_g*)",
 			"group": "model_biblPart model_msItemPart model_respLike model_recordingPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2752,7 +2684,6 @@
 			"isolating": true,
 			"content": "(list|listChange|change+)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2791,7 +2722,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary?))",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2829,7 +2759,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(title+ (editor|respStmt)* (idno|biblScope)*))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2868,7 +2797,6 @@
 			"isolating": true,
 			"content": "(model_pLike|decoNote)+",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -2928,7 +2856,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? (decoNote|seal|condition)+))",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2966,7 +2893,6 @@
 			"isolating": true,
 			"content": "((model_headLike|model_global)* (model_common model_global*)*)",
 			"group": "model_frontPart model_frontPart_drama",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3004,7 +2930,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(model_biblLike|model_listLike)+)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3043,7 +2968,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(support? extent? foliation* collation? condition?))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3082,7 +3006,6 @@
 			"isolating": true,
 			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_attributable) (model_global*|q))+)",
 			"group": "model_common model_divPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3122,7 +3045,6 @@
 			"isolating": true,
 			"content": "((model_headLike|model_global)* ((row model_global*)+|(model_graphicLike model_global*)+) (model_divBottom model_global*)*)",
 			"group": "model_standOffPart model_common model_inter model_listLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3164,7 +3086,6 @@
 			"isolating": true,
 			"content": "(classCode|catRef_g|keywords)*",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3203,7 +3124,6 @@
 			"isolating": true,
 			"content": "(model_global* model_titlepagePart (model_titlepagePart|model_global)*)",
 			"group": "model_frontPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3244,7 +3164,6 @@
 			"isolating": true,
 			"content": "(title+ model_respLike*)",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3282,7 +3201,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(summary? typeNote+))",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3320,7 +3238,6 @@
 			"isolating": true,
 			"content": "(model_pLike+)",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3359,7 +3276,6 @@
 			"isolating": true,
 			"content": "model_pLike+",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3398,7 +3314,6 @@
 			"isolating": true,
 			"content": "(rendition* namespace*)",
 			"group": "model_encodingDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3437,7 +3352,6 @@
 			"isolating": true,
 			"content": "(((category|taxonomy)+|((model_descLike)+ (category|taxonomy)*))|(model_biblLike (category|taxonomy)*))",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3475,7 +3389,6 @@
 			"isolating": true,
 			"content": "(model_pLike+|(model_placeLike|listPlace)+)",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3514,7 +3427,6 @@
 			"isolating": true,
 			"content": "cell+",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4173,7 +4085,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
 			"synth": true
 		},
@@ -4227,7 +4138,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(model_choicePart|choice_g){2,}",
 			"synth": true
 		},
@@ -4283,7 +4193,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(textNode1|model_attributable|model_phrase|model_global)*",
 			"synth": true
 		},
@@ -4338,7 +4247,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(textNode0|model_phrase|model_inter|model_divPart|model_global)*",
 			"synth": true
 		},
@@ -4405,7 +4313,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(model_descLike)*",
 			"synth": true
 		},
@@ -4475,7 +4382,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(add|surplus|del|model_milestoneLike)+",
 			"synth": true
 		},
@@ -4547,7 +4453,6 @@
 			"pmType": "node",
 			"fcType": "asides",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(model_descLike)*",
 			"synth": true
 		},
@@ -4617,7 +4522,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -4708,7 +4612,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -4798,7 +4701,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -4885,7 +4787,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -4973,7 +4874,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5060,7 +4960,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5131,7 +5030,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5206,7 +5104,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_attributable model_msItemPart model_quoteLike",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5286,7 +5183,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_annotationPart_body model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5366,7 +5262,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5456,7 +5351,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5559,7 +5453,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5647,7 +5540,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_lPart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5731,7 +5623,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5823,7 +5714,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5902,7 +5792,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -5970,7 +5859,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -6051,7 +5939,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -6145,7 +6032,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -6251,7 +6137,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -6358,7 +6243,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
-			"gutterMark": true,
 			"defaultNodes": null,
 			"validAttrs": [
 				"agent",
@@ -7447,7 +7331,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7488,7 +7371,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7526,7 +7408,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7564,7 +7445,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -7619,7 +7499,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7655,7 +7534,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7691,7 +7569,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -7750,7 +7627,6 @@
 			"isolating": false,
 			"content": "(textNode4|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
 			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7791,7 +7667,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7830,7 +7705,6 @@
 			"isolating": false,
 			"content": "(textNode5|model_phrase|docAuthor|model_global)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7866,7 +7740,6 @@
 			"isolating": false,
 			"content": "(textNode5|model_castItemPart|model_phrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7905,7 +7778,6 @@
 			"isolating": false,
 			"content": "(textNode6|model_limitedPhrase)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7943,7 +7815,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -7982,7 +7853,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -8042,7 +7912,6 @@
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8079,7 +7948,6 @@
 			"isolating": false,
 			"content": "(textNode5|signed|dateline|salute|model_phrase|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8116,7 +7984,6 @@
 			"isolating": false,
 			"content": "textNode8",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8153,7 +8020,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8189,7 +8055,6 @@
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8231,7 +8096,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8268,7 +8132,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8304,7 +8167,6 @@
 			"isolating": false,
 			"content": "(textNode6|model_limitedPhrase|listChange)*",
 			"group": "model_profileDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -8359,7 +8221,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -8416,7 +8277,6 @@
 			"isolating": false,
 			"content": "(textNode5|model_phrase|model_global|docDate)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8452,7 +8312,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_msItemPart model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8490,7 +8349,6 @@
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -8536,7 +8394,6 @@
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "model_descLike model_common model_inter model_labelLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8576,7 +8433,6 @@
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -8624,7 +8480,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8662,7 +8517,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8700,7 +8554,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8737,7 +8590,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8773,7 +8625,6 @@
 			"isolating": false,
 			"content": "(textNode5|model_phrase|pubPlace|docDate|publisher|model_global)*",
 			"group": "model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8809,7 +8660,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8845,7 +8695,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -8904,7 +8753,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8943,7 +8791,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -8979,7 +8826,6 @@
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9015,7 +8861,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_msItemPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9053,7 +8898,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9092,7 +8936,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9128,7 +8971,6 @@
 			"isolating": false,
 			"content": "(textNode10|model_graphicLike|model_hiLike)*",
 			"group": "model_phrase model_graphicLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9165,7 +9007,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9207,7 +9048,6 @@
 			"isolating": false,
 			"content": "(textNode2|lg|model_phrase|model_inter|model_lLike|model_global)*",
 			"group": "model_divTop model_divTopPart model_headLike model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9247,7 +9087,6 @@
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -9293,7 +9132,6 @@
 			"isolating": false,
 			"content": "(textNode8|idno)*",
 			"group": "model_msItemPart model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_publicationStmtPart_detail model_personPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -9352,7 +9190,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9388,7 +9225,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9427,7 +9263,6 @@
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9467,7 +9302,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9504,7 +9338,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global)*",
 			"group": "model_common model_divPart model_lLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9545,7 +9378,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_common model_inter model_labelLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9585,7 +9417,6 @@
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9623,7 +9454,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9663,7 +9493,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_availabilityPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -9721,7 +9550,6 @@
 			"isolating": false,
 			"content": "(textNode8|hi|locus)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9765,7 +9593,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9801,7 +9628,6 @@
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9839,7 +9665,6 @@
 			"isolating": false,
 			"content": "(textNode5|model_phrase|argument|byline|dateline|epigraph|salute|signed|model_global)*",
 			"group": "model_divTop model_divTopPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9876,7 +9701,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -9933,7 +9757,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -9972,7 +9795,6 @@
 			"isolating": false,
 			"content": "textNode8",
 			"group": "model_addrPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10008,7 +9830,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -10065,7 +9886,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10103,7 +9923,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_detail",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10143,7 +9962,6 @@
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10183,7 +10001,6 @@
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10223,7 +10040,6 @@
 			"isolating": false,
 			"content": "(textNode7|model_limitedPhrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -10280,7 +10096,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10316,7 +10131,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10352,7 +10166,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10391,7 +10204,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_divTop model_divBottom model_divWrapper",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10428,7 +10240,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_divBottom model_divBottomPart model_divTop model_divTopPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10465,7 +10276,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10501,7 +10311,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10537,7 +10346,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_stageLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10577,7 +10385,6 @@
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10613,7 +10420,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10649,7 +10455,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10685,7 +10490,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10721,7 +10525,6 @@
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10760,7 +10563,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10799,7 +10601,6 @@
 			"isolating": false,
 			"content": "(textNode2|lg|model_phrase|model_inter|model_lLike|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10839,7 +10640,6 @@
 			"isolating": false,
 			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -10881,7 +10681,6 @@
 			"isolating": false,
 			"content": "(textNode8)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
-			"gutterMark": true,
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -11645,7 +11444,6 @@
 			"pmType": "node",
 			"fcType": "docNodes",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "((front)? (body) (back)?)",
 			"synth": true
 		},
@@ -11654,7 +11452,6 @@
 			"pmType": "node",
 			"fcType": "docNodes",
 			"isolating": true,
-			"gutterMark": true,
 			"content": "(fileDesc model_teiHeaderPart* revisionDesc?)",
 			"synth": true
 		}
