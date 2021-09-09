@@ -15,14 +15,18 @@ export function parseText(textEl, teiDocument, teiSchema, subDocName) {
 }
 
 export function serializeText(doc, teiDocument, teiSchema) {
+    const { resourceType, xmlDom } = teiDocument
     teiSchema.teiMode = true
     let textEl, domFragment
-    if( teiDocument.resourceType === 'header' ) {
+    if( resourceType === 'header' ) {
         domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema, 'header')
-        textEl = teiDocument.xmlDom.getElementsByTagName('teiHeader')[0]    
-    } else {
+        textEl = xmlDom.getElementsByTagName('teiHeader')[0]    
+    } else if( resourceType === 'text' ) {
         domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
-        textEl = teiDocument.xmlDom.getElementsByTagName('text')[0]    
+        textEl = xmlDom.getElementsByTagName('text')[0]    
+    } else if( resourceType === 'standoff' ) {
+        domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
+        textEl = xmlDom.getElementsByTagName('standOff')[0]    
     }
 
     // take the body of the document from prosemirror and reunite it with 
