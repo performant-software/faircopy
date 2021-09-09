@@ -59,6 +59,11 @@ export default class EditResourceDialog extends Component {
                             <span>A facsimile is a collection of <br/>images of a physical text. The <br/>images are sequenced in reading <br/>order or the order in which <br/>they are archived.</span>
                         )}
                     </MenuItem>
+                    <MenuItem value={'standoff'}>
+                        { this.renderTypeCard("Stand Off","fa fa-bullseye-pointer",
+                            <span>A container for linked data, <br/>contextual information, and <br/>stand-off annotations.</span>
+                        )}
+                    </MenuItem>
                     { !parentEntry && <MenuItem value={'teidoc'}>
                         { this.renderTypeCard("TEI Document","fa fa-books",
                             <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed <br/>metadata.</span>

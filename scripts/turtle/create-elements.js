@@ -201,6 +201,14 @@ const createDocNode = function createDocNode() {
             isolating: true,
             content: '(fileDesc model_teiHeaderPart* revisionDesc?)',
             synth: true
+        },
+        {
+            name: "standOffDoc",
+            pmType: "node",
+            fcType: "docNodes",
+            isolating: true,
+            content: '',  // TODO
+            synth: true
         }
     ]
 }

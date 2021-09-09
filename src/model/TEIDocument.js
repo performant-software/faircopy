@@ -228,9 +228,14 @@ export default class TEIDocument {
             const textEl = this.xmlDom.getElementsByTagName('teiHeader')[0] 
             doc = parseText(textEl,this,teiSchema,'header')
      
-        } else {
+        } else if( this.resourceType === 'text' ) {
             const textEl = this.xmlDom.getElementsByTagName('text')[0] 
             doc = parseText(textEl,this,teiSchema,'text')    
+        } else if( this.resourceType === 'standoff') {
+            const textEl = this.xmlDom.getElementsByTagName('standOff')[0] 
+            doc = parseText(textEl,this,teiSchema,'standoff')    
+        } else {
+            throw new Error("Attempted to load unknown document type.")
         }
  
         this.changedSinceLastSave = false

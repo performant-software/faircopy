@@ -26,6 +26,15 @@ export const teiTextTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 </TEI>
 `
 
+export const teiStandOffTemplate = `<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">    
+<standOff>
+    <bibl></bibl>
+</standOff>
+</TEI>
+`
+
+
 export const facsTemplate = (facsData) => { 
     const { manifestID, surfaces } = facsData
 

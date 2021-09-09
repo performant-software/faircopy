@@ -5,7 +5,7 @@ import FacsDocument from "./FacsDocument"
 import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
-import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
+import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-template"
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
@@ -138,12 +138,16 @@ export default class FairCopyProject {
             this.addResource(headerEntry, teiHeaderTemplate(name), this.idMap.getBlankResourceMap(false))
         } else if( type === 'text' ) {
             this.addResource(resourceEntry, teiTextTemplate, this.idMap.getBlankResourceMap(false))
-        } else {
+        } else if( type === 'facs' ) {
             // add a blank facs 
             const facs = { surfaces: [] }
             const xml = facsTemplate(facs)
             this.addResource(resourceEntry,xml,this.idMap.getBlankResourceMap(false))
-        }    
+        } else if( type === 'standoff') {
+            this.addResource(resourceEntry, teiStandOffTemplate, this.idMap.getBlankResourceMap(false))
+        } else {
+            throw new Error("Attempted to create unknown document type.")
+        }
     }
 
     removeResources( resourceIDs ) {
