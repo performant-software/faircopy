@@ -207,7 +207,7 @@ const createDocNode = function createDocNode() {
             pmType: "node",
             fcType: "docNodes",
             isolating: true,
-            content: '',  // TODO
+            content: 'model_standOffPart+',
             synth: true
         }
     ]

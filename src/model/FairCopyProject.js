@@ -171,7 +171,7 @@ export default class FairCopyProject {
         const resourceEntry = this.resources[resourceID]
         if( !resourceEntry ) return null
 
-        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' ) {
+        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standoff' ) {
             return new TEIDocument( resourceID, resourceEntry.type, this )
         } else if( resourceEntry.type === 'facs' ) {
             return new FacsDocument( resourceID, this )

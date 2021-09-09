@@ -1,5 +1,6 @@
 {
     "addSpan": "fa-plus-circle",
+    "alt": "fa-cut",
     "anchor": "fa-anchor",
     "catRef": "fa-book",
     "cb": "fa-line-columns",
@@ -13,6 +14,7 @@
     "gb": "fa-copy",
     "handShift": "fa-hand-point-right",
     "lb": "fa-angle-double-right",
+    "link": "fa-link",
     "metamark": "fa-map-marker-question",
     "milestone": "fa-map-marker",
     "note": "fa-comment-alt",
@@ -23,5 +25,6 @@
     "space": "fa-horizontal-rule",
     "subst": "fa-random",
     "substJoin": "fa-code-merge",
-    "undo": "fa-undo"
+    "undo": "fa-undo",
+    "when": "fa-calendar"
 }

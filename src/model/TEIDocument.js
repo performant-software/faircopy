@@ -7,7 +7,7 @@ import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 import { v4 as uuidv4 } from 'uuid'
 
-import {teiHeaderTemplate, teiTextTemplate } from "./tei-template"
+import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {scanForErrors} from "./error-scan"
 
@@ -43,7 +43,7 @@ export default class TEIDocument {
     editorInitialState() {
         // load blank XML template 
         const parser = new DOMParser();
-        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : teiHeaderTemplate('')
+        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : this.resourceType === 'standoff' ? teiStandOffTemplate : teiHeaderTemplate('')
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
                
@@ -233,7 +233,7 @@ export default class TEIDocument {
             doc = parseText(textEl,this,teiSchema,'text')    
         } else if( this.resourceType === 'standoff') {
             const textEl = this.xmlDom.getElementsByTagName('standOff')[0] 
-            doc = parseText(textEl,this,teiSchema,'standoff')    
+            doc = parseText(textEl,this,teiSchema,'standOff')    
         } else {
             throw new Error("Attempted to load unknown document type.")
         }

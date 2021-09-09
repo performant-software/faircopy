@@ -64,6 +64,23 @@ export default class ProjectNavigator extends Component {
       )
     }
 
+    getResourceIcon(resourceType) {
+      switch( resourceType ) {
+        case 'text':
+          return 'fa fa-book-open'
+        case 'facs':
+          return 'fa fa-images'
+        case 'header':
+          return 'fa fa-file-alt'
+        case 'teidoc':
+          return 'fa fa-books'
+        case 'standoff':
+          return 'fa fa-bullseye-pointer'
+        default:
+          throw new Error('Unrecognized resource type.')
+      }
+    }
+
     renderTree() {
       const { openResources, fairCopyProject, panelWidth } = this.props
 
@@ -72,8 +89,8 @@ export default class ProjectNavigator extends Component {
         const {resourceID} = resource
         const {name, type} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
-        const resourceIcon = type === 'text' ? 'far fa-book-open' : type === 'facs' ? 'far fa-images' : type === 'header' ? 'far fa-file-alt' : 'far fa-books'
-        const errorCount = type === 'text' ? resource.errorCount : 0
+        const resourceIcon = this.getResourceIcon(type)
+        const errorCount = type !== 'facs' ? resource.errorCount : 0
         const icon = <i className={`${resourceIcon} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID, errorCount)
         const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth }

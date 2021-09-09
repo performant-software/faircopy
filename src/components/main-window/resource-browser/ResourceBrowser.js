@@ -101,6 +101,23 @@ export default class ResourceBrowser extends Component {
     )
   }
 
+  getResourceIcon(resourceType) {
+    switch( resourceType ) {
+      case 'text':
+        return 'fa fa-book'
+      case 'facs':
+        return 'fa fa-images'
+      case 'header':
+        return 'fa fa-file-alt'
+      case 'teidoc':
+        return 'fa fa-books'
+      case 'standoff':
+        return 'fa fa-bullseye-pointer'
+      default:
+        throw new Error('Unrecognized resource type.')
+    }
+  }
+
   renderResourceTable() {
 
     const onClick = (e) => {
@@ -148,7 +165,7 @@ export default class ResourceBrowser extends Component {
     for( const resource of Object.values(resources) ) {
       if( !resource ) continue
       const check = checked[resource.id] === true
-      const resourceIcon = resource.type === 'text' ? 'fa fa-book' : resource.type === 'facs' ? 'fa fa-images' : resource.type === 'header' ? 'fa fa-file-alt' : 'fa fa-books'
+      const resourceIcon = this.getResourceIcon(resource.type)
       resourceRows.push(
         <TableRow hover onClick={onClick} dataresourceid={resource.id} key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
