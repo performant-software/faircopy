@@ -114,7 +114,7 @@
     "refsDecl": ["p"],
     "relatedItem": ["bibl"],
     "relation": ["desc"],
-    "respStmt": ["resp"],
+    "respStmt": ["resp", "name"],
     "revisionDesc": ["change"],
     "row": ["cell"],
     "samplingDecl": ["p"],
