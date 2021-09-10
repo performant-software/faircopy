@@ -24,7 +24,7 @@ export function serializeText(doc, teiDocument, teiSchema) {
     } else if( resourceType === 'text' ) {
         domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
         textEl = xmlDom.getElementsByTagName('text')[0]    
-    } else if( resourceType === 'standoff' ) {
+    } else if( resourceType === 'standOff' ) {
         domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
         textEl = xmlDom.getElementsByTagName('standOff')[0]    
     }

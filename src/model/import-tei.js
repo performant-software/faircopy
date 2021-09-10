@@ -150,16 +150,22 @@ function extractResourceEls(xmlDom) {
     let textEls = teiEl.getElementsByTagName('text') 
     if( textEls.length === 0 ) textEls = teiEl.getElementsByTagName('TEXT')
 
+    let standOffEls = teiEl.getElementsByTagName('standOff') 
+    if( standOffEls.length === 0 ) standOffEls = teiEl.getElementsByTagName('STANDOFF')
+    
     let facsEls = teiEl.getElementsByTagName('facsimile') 
     if( facsEls.length === 0 ) facsEls = teiEl.getElementsByTagName('FACSIMILE')
 
-    if( textEls.length === 0 && facsEls.length === 0 ) {
-        throw new Error('<TEI> element must contain one more more <text> and/or <facsimile> elements.')
+    if( textEls.length === 0 && facsEls.length === 0 && standOffEls.length === 0 ) {
+        throw new Error('<TEI> element must contain one more more <text>, <standOff> and/or <facsimile> elements.')
     } 
 
     const resources = []
     for( let i=0; i < textEls.length; i++ ) {
         resources.push(textEls[i])
+    }
+    for( let i=0; i < standOffEls.length; i++ ) {
+        resources.push(standOffEls[i])
     }
     for( let i=0; i < facsEls.length; i++ ) {
         resources.push(facsEls[i])
@@ -182,7 +188,7 @@ function createTEIDoc(name,localID,idMap) {
 
 function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
     const resourceName = resourceEl.tagName.toLowerCase()
-    const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : 'facs'
+    const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : (resourceName === 'standoff' ) ? 'standOff' : 'facs'
     if( type === 'facs' ) {
         const facsResource = createFacs(resourceEl,name,localID,parentID,fairCopyProject)
         return facsResource  

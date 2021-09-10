@@ -43,7 +43,7 @@ export default class TEIDocument {
     editorInitialState() {
         // load blank XML template 
         const parser = new DOMParser();
-        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : this.resourceType === 'standoff' ? teiStandOffTemplate : teiHeaderTemplate('')
+        const teiTemplate = this.resourceType === 'text' ? teiTextTemplate : this.resourceType === 'standOff' ? teiStandOffTemplate : teiHeaderTemplate('')
         this.xmlDom = parser.parseFromString(teiTemplate, "text/xml");        
         const doc = this.createEmptyDocument(document)
                
@@ -231,7 +231,7 @@ export default class TEIDocument {
         } else if( this.resourceType === 'text' ) {
             const textEl = this.xmlDom.getElementsByTagName('text')[0] 
             doc = parseText(textEl,this,teiSchema,'text')    
-        } else if( this.resourceType === 'standoff') {
+        } else if( this.resourceType === 'standOff') {
             const textEl = this.xmlDom.getElementsByTagName('standOff')[0] 
             doc = parseText(textEl,this,teiSchema,'standOff')    
         } else {

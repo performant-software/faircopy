@@ -74,7 +74,7 @@ export default class ProjectNavigator extends Component {
           return 'fa fa-file-alt'
         case 'teidoc':
           return 'fa fa-books'
-        case 'standoff':
+        case 'standOff':
           return 'fa fa-bullseye-pointer'
         default:
           throw new Error('Unrecognized resource type.')

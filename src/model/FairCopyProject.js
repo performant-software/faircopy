@@ -143,7 +143,7 @@ export default class FairCopyProject {
             const facs = { surfaces: [] }
             const xml = facsTemplate(facs)
             this.addResource(resourceEntry,xml,this.idMap.getBlankResourceMap(false))
-        } else if( type === 'standoff') {
+        } else if( type === 'standOff') {
             this.addResource(resourceEntry, teiStandOffTemplate, this.idMap.getBlankResourceMap(false))
         } else {
             throw new Error("Attempted to create unknown document type.")
@@ -171,7 +171,7 @@ export default class FairCopyProject {
         const resourceEntry = this.resources[resourceID]
         if( !resourceEntry ) return null
 
-        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standoff' ) {
+        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' ) {
             return new TEIDocument( resourceID, resourceEntry.type, this )
         } else if( resourceEntry.type === 'facs' ) {
             return new FacsDocument( resourceID, this )
@@ -179,7 +179,7 @@ export default class FairCopyProject {
     }
 
     importResource(importData,parentResourceID) {
-        try {
+        // try {
             const { resources, fairCopyConfig } = importResource(importData,parentResourceID,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
@@ -188,9 +188,9 @@ export default class FairCopyProject {
             this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
             return { error: false, errorMessage: null }
-        } catch(e) {
-            return { error: true, errorMessage: e.message }
-        }        
+        // } catch(e) {
+        //     return { error: true, errorMessage: e.message }
+        // }        
     }
 
     // take the resources and move them into the parent ID

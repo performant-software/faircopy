@@ -59,7 +59,7 @@ export default class EditResourceDialog extends Component {
                             <span>A facsimile is a collection of <br/>images of a physical text. The <br/>images are sequenced in reading <br/>order or the order in which <br/>they are archived.</span>
                         )}
                     </MenuItem>
-                    <MenuItem value={'standoff'}>
+                    <MenuItem value={'standOff'}>
                         { this.renderTypeCard("Stand Off","fa fa-bullseye-pointer",
                             <span>A container for linked data, <br/>contextual information, and <br/>stand-off annotations.</span>
                         )}

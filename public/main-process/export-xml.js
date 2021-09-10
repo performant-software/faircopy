@@ -23,7 +23,7 @@ async function exportTEIDoc(resourceEntry,path,projectStore) {
     for( const resourceID of resourceEntry.resources ) {
         const resourceEntry = projectStore.manifestData.resources[resourceID]
         const resourceXML = await projectStore.readUTF8File(resourceID)
-        const elName = resourceEntry.type === 'header' ? 'teiHeader' : resourceEntry.type === 'text' ? 'text' : 'facsimile'
+        const elName = resourceEntry.type === 'header' ? 'teiHeader' : resourceEntry.type === 'text' ? 'text' : resourceEntry.type === 'standOff' ? 'standOff' : 'facsimile'
         const resourceEl = getResourceEl( resourceXML, elName, resourceEntry.localID )
         if( resourceEntry.type === 'header' ) {
             header = resourceEl
