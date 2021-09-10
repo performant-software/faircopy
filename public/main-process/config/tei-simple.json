@@ -3775,6 +3775,46 @@
 			"synth": false
 		},
 		{
+			"name": "notatedMusic",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_labelLike|model_ptrLike|graphic|seg)*",
+			"group": "model_global",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"place",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"graphic"
+			],
+			"desc": "encodes the presence of music notation in a text",
+			"synth": false
+		},
+		{
 			"name": "notesStmt",
 			"pmType": "node",
 			"fcType": "hard",
@@ -21140,6 +21180,7 @@
 			"msItemStruct",
 			"msPart",
 			"namespace",
+			"notatedMusic",
 			"notesStmt",
 			"normalization",
 			"nym",
@@ -21807,6 +21848,7 @@
 			"figDesc",
 			"figure",
 			"formula",
+			"notatedMusic",
 			"row",
 			"table"
 		],
