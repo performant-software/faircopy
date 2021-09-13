@@ -234,12 +234,11 @@ export default class TEIEditor extends Component {
         const {teiSchema, idMap} = teiDocument.fairCopyProject
         const parentEntry = teiDocument.getParent()
 
-        const attrSpecs = teiSchema.attrs
-
         const selectedZones = []
         for( const element of selectedElements ) {
             for( const attr of Object.keys(element.attrs) ) {
-                const dataType = attrSpecs[attr]?.dataType
+                const attrSpec = teiSchema.getAttrSpec( attr, element.type.name )
+                const dataType = attrSpec?.dataType
 
                 // is the attribute a tei data pointer?
                 if( dataType === 'teidata.pointer' ) {

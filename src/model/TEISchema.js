@@ -124,7 +124,7 @@ export default class TEISchema {
 
     createElementSpec(elSpec) {
         const { name, markContent, content, group, phraseLvl, isolating } = elSpec
-        const attrs = this.getAttrSpec(elSpec.attrs)
+        const attrs = this.getPMAttrSpec(elSpec.attrs)
         return {
             content,
             group,
@@ -152,7 +152,7 @@ export default class TEISchema {
 
     createAsideSpec(name, icon, validAttrs, content, group) {
 
-        let attrs = this.getAttrSpec(validAttrs)
+        let attrs = this.getPMAttrSpec(validAttrs)
         attrs['__id__'] = {}
 
         return {
@@ -189,7 +189,7 @@ export default class TEISchema {
     }
 
     createAtomSpec(name, icon, validAttrs, group) {
-        const attrs = this.getAttrSpec(validAttrs)
+        const attrs = this.getPMAttrSpec(validAttrs)
 
         return {
             inline: true,
@@ -214,7 +214,7 @@ export default class TEISchema {
         }
     }
 
-    getAttrSpec( validAttrs ) {
+    getPMAttrSpec( validAttrs ) {
         let attrs = {}
         for( const attr of validAttrs ) {
             attrs[attr] = { default: '' }
@@ -222,6 +222,14 @@ export default class TEISchema {
         attrs['__error__'] = { default: false }
         attrs['__border__'] = { default: false }
         return attrs
+    }
+
+    // if there is a definition of this attr specific to this element, use that, otherwise use the global def.
+    getAttrSpec( attrID, elementID ) {
+        const elementSpec = this.elements[elementID]
+        if(!elementSpec) debugger
+        if( elementSpec.fcType === 'textNodes' || elementSpec.fcType === 'globalNodes' ) return this.attrs[attrID]
+        return elementSpec.derivedAttrs.includes(attrID) ? this.attrs[`${attrID}-${elementID}`] : this.attrs[attrID]
     }
 
     getAttrParser( validAttrs ) {

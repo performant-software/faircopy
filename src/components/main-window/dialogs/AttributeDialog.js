@@ -7,13 +7,12 @@ export default class AttributeDialog extends Component {
 
     renderTable() {
         const {elementName, teiSchema, fairCopyConfig, onUpdateConfig} = this.props
-        const {attrs} = teiSchema
         const {elements} = fairCopyConfig
         const {attrState} = elements[elementName]
 
         const tableRows = []
         for( const attrName of Object.keys(attrState) ) {
-            const attr = attrs[attrName]
+            const attr = teiSchema.getAttrSpec( attrName, elementName )
     
             if( !attr.hidden ) {
                 const onChange = () => {

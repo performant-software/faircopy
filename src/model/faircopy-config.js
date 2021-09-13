@@ -126,7 +126,7 @@ export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
             if( val && val !== "" ) {
                 if( elements[name].attrState[attrName] ) {
                     elements[name].attrState[attrName].active = true
-                    const attrSpec = teiSchema.attrs[attrName]
+                    const attrSpec = teiSchema.getAttrSpec( attrName, name ) 
                     // populate the vocabulary with any existing values
                     if( attrSpec.dataType === "teidata.enumerated" ) {
                         let vocabID

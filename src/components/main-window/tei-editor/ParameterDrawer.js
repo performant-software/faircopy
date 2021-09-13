@@ -31,6 +31,7 @@ export default class ParameterDrawer extends Component {
             openAttrName: null,
             anchorEl: null,
             selectedAttr: null,
+            selectedElement: null,
             errorStates: {}
         }	
     }
@@ -76,11 +77,10 @@ export default class ParameterDrawer extends Component {
 
     renderAttributeInfoPopper() {
         const {teiSchema} = this.props.teiDocument.fairCopyProject
-        const attrSpecs = teiSchema.attrs
-        const {selectedAttr, anchorEl} = this.state
+        const {selectedAttr, selectedElement, anchorEl} = this.state
 
         if( !anchorEl ) return null
-        const attrSpec = attrSpecs[selectedAttr]
+        const attrSpec = teiSchema.getAttrSpec( selectedAttr, selectedElement )
         const onClickAway = () => { this.setState({...this.state, anchorEl: null})}
 
         let { minOccurs, maxOccurs } = attrSpec
@@ -228,12 +228,11 @@ export default class ParameterDrawer extends Component {
 
     renderAttributes(element,elementID,attrState) {
         const {teiSchema} = this.props.teiDocument.fairCopyProject
-        const attrSpecs = teiSchema.attrs
         
         let attrFields = [], inactiveErrors = []
 
         for( const key of Object.keys(attrState) ) {
-            const attrSpec = attrSpecs[key]
+            const attrSpec = teiSchema.getAttrSpec( key, elementID )
             const {attrs} = element
             const value = attrs[key] ? attrs[key] : ""
             const active = attrState[key].active
@@ -243,7 +242,7 @@ export default class ParameterDrawer extends Component {
                 const onChange = this.changeAttributeHandler(element,key)
 
                 const handleClick = (e) => {
-                    this.setState({ ...this.state, selectedAttr: key, anchorEl: e.currentTarget })
+                    this.setState({ ...this.state, selectedAttr: key, selectedElement: elementID, anchorEl: e.currentTarget })
                 }
                 attrFields.push(
                     <div className="attrField" key={fieldKey} >

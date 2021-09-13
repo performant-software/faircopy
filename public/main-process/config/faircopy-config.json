@@ -816,7 +816,7 @@
 				"synch": {
 					"active": false
 				},
-				"target-annotation": {
+				"target": {
 					"active": false
 				},
 				"targetLang": {
@@ -825,7 +825,7 @@
 				"xml:base": {
 					"active": false
 				},
-				"xml:id-annotation": {
+				"xml:id": {
 					"active": false
 				},
 				"xml:lang": {
@@ -2717,9 +2717,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-correspAction": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-correspAction]"
+					"vocabID": "correspAction[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -3208,9 +3208,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-dimensions": {
+				"type": {
 					"active": false,
-					"vocabID": "dimensions[type-dimensions]"
+					"vocabID": "dimensions[type]"
 				},
 				"unit": {
 					"active": false,
@@ -4127,9 +4127,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-divGen": {
+				"type": {
 					"active": false,
-					"vocabID": "divGen[type-divGen]"
+					"vocabID": "divGen[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -6263,9 +6263,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-langKnowledge": {
+				"type": {
 					"active": false,
-					"vocabID": "langKnowledge[type-langKnowledge]"
+					"vocabID": "langKnowledge[type]"
 				},
 				"when": {
 					"active": false
@@ -6702,9 +6702,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-list": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-list]"
+					"vocabID": "list[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -10756,9 +10756,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-recording": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-recording]"
+					"vocabID": "recording[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -13108,9 +13108,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-titlePage": {
+				"type": {
 					"active": false,
-					"vocabID": "titlePage[type-titlePage]"
+					"vocabID": "titlePage[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -14509,7 +14509,7 @@
 				"synch": {
 					"active": false
 				},
-				"target-alt": {
+				"target": {
 					"active": false
 				},
 				"targetLang": {
@@ -15944,9 +15944,9 @@
 				"toWhom": {
 					"active": false
 				},
-				"type-move": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-move]"
+					"vocabID": "move[type]"
 				},
 				"where": {
 					"active": false
@@ -17019,9 +17019,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-fw": {
+				"type": {
 					"active": false,
-					"vocabID": "fw[type-fw]"
+					"vocabID": "fw[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -17190,7 +17190,7 @@
 				"rendition": {
 					"active": false
 				},
-				"resp-space": {
+				"resp": {
 					"active": false
 				},
 				"sameAs": {
@@ -17865,9 +17865,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-affiliation": {
+				"type": {
 					"active": false,
-					"vocabID": "affiliation[type-affiliation]"
+					"vocabID": "affiliation[type]"
 				},
 				"when": {
 					"active": false
@@ -22352,9 +22352,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-title": {
+				"type": {
 					"active": false,
-					"vocabID": "title[type-title]"
+					"vocabID": "title[type]"
 				},
 				"when": {
 					"active": false
@@ -22653,9 +22653,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-abbr": {
+				"type": {
 					"active": false,
-					"vocabID": "abbr[type-abbr]"
+					"vocabID": "abbr[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -23002,9 +23002,9 @@
 				"time": {
 					"active": false
 				},
-				"type-distinct": {
+				"type": {
 					"active": false,
-					"vocabID": "distinct[type-distinct]"
+					"vocabID": "distinct[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -23774,9 +23774,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-measure": {
+				"type": {
 					"active": false,
-					"vocabID": "measure[type-measure]"
+					"vocabID": "measure[type]"
 				},
 				"unit": {
 					"active": false,
@@ -23948,9 +23948,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-num": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-num]"
+					"vocabID": "num[type]"
 				},
 				"value": {
 					"active": false,
@@ -25992,9 +25992,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-age": {
+				"type": {
 					"active": false,
-					"vocabID": "age[type-age]"
+					"vocabID": "age[type]"
 				},
 				"unit": {
 					"active": false,
@@ -26577,9 +26577,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-birth": {
+				"type": {
 					"active": false,
-					"vocabID": "birth[type-birth]"
+					"vocabID": "birth[type]"
 				},
 				"unit": {
 					"active": false,
@@ -26894,9 +26894,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-castItem": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-castItem]"
+					"vocabID": "castItem[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -28528,9 +28528,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-death": {
+				"type": {
 					"active": false,
-					"vocabID": "death[type-death]"
+					"vocabID": "death[type]"
 				},
 				"unit": {
 					"active": false,
@@ -28621,9 +28621,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-desc": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-desc]"
+					"vocabID": "desc[type]"
 				},
 				"versionDate": {
 					"active": false
@@ -29473,9 +29473,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-education": {
+				"type": {
 					"active": false,
-					"vocabID": "education[type-education]"
+					"vocabID": "education[type]"
 				},
 				"when": {
 					"active": false
@@ -29778,9 +29778,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-faith": {
+				"type": {
 					"active": false,
-					"vocabID": "faith[type-faith]"
+					"vocabID": "faith[type]"
 				},
 				"when": {
 					"active": false
@@ -31185,9 +31185,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-idno": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-idno]"
+					"vocabID": "idno[type]"
 				},
 				"when": {
 					"active": false
@@ -32379,7 +32379,7 @@
 				"height": {
 					"active": false
 				},
-				"mimeType-media": {
+				"mimeType": {
 					"active": false
 				},
 				"n": {
@@ -32866,9 +32866,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-nationality": {
+				"type": {
 					"active": false,
-					"vocabID": "nationality[type-nationality]"
+					"vocabID": "nationality[type]"
 				},
 				"when": {
 					"active": false
@@ -33029,9 +33029,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-occupation": {
+				"type": {
 					"active": false,
-					"vocabID": "occupation[type-occupation]"
+					"vocabID": "occupation[type]"
 				},
 				"when": {
 					"active": false
@@ -34315,9 +34315,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-residence": {
+				"type": {
 					"active": false,
-					"vocabID": "residence[type-residence]"
+					"vocabID": "residence[type]"
 				},
 				"when": {
 					"active": false
@@ -35144,9 +35144,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-sex": {
+				"type": {
 					"active": false,
-					"vocabID": "sex[type-sex]"
+					"vocabID": "sex[type]"
 				},
 				"value": {
 					"active": false,
@@ -35386,9 +35386,9 @@
 				"to-iso": {
 					"active": false
 				},
-				"type-socecStatus": {
+				"type": {
 					"active": false,
-					"vocabID": "socecStatus[type-socecStatus]"
+					"vocabID": "socecStatus[type]"
 				},
 				"when": {
 					"active": false
@@ -35478,9 +35478,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-sound": {
+				"type": {
 					"active": false,
-					"vocabID": "sound[type-sound]"
+					"vocabID": "sound[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -36295,9 +36295,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-tech": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-tech]"
+					"vocabID": "tech[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -36453,9 +36453,9 @@
 				"synch": {
 					"active": false
 				},
-				"type-titlePart": {
+				"type": {
 					"active": false,
-					"vocabID": "*[type-titlePart]"
+					"vocabID": "titlePart[type]"
 				},
 				"xml:base": {
 					"active": false

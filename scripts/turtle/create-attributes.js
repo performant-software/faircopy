@@ -10,16 +10,6 @@ const createAttributes = function createAttributes( elements, elementGroups, spe
         return mergedAttrs
     }
 
-    function replaceEntry( originalIdent, newIdent, indentList ) {
-        const origIndex = indentList.findIndex( ident => ident === originalIdent )
-        if( origIndex === -1 ) return
-        if( newIdent ) { 
-            indentList.splice(origIndex,1,newIdent)
-        } else {
-            indentList.splice(origIndex,1)
-        }
-    }
-
     function getValidElementName(element) {
         // for synthetic elements, only add attributes to inter marks
         if( element.synth ) {
@@ -55,37 +45,28 @@ const createAttributes = function createAttributes( elements, elementGroups, spe
         if( !elementName ) continue
 
         const attrs = findAttrs(elementName)
-        const validAttrs = [], requiredAttrs = []
+        const validAttrs = [], derivedAttrs = []
         for( const attr of attrs ) {
             // interpret mode attribute based on https://tei-c.org/release/doc/tei-p5-doc/en/html/ref-att.combinable.html
             if( !attrDefs[attr.ident] ) {
                 if( attr.mode === 'change' ) throw new Error(`Attribute definition changed before it was defined for ${attr.ident} in ${elementName}.`)
                 attrDefs[attr.ident] = attr
                 validAttrs.push( attr.ident )
-                if( attr.usage === 'req' ) requiredAttrs.push( attr.ident )    
             } else if( attr.mode === 'change' ) {
                 // this is a definition of this attribute specific to this element
                 const mergedAttrDef = mergeAttrs( attrDefs[attr.ident], attr )
                 const mergeIdent = `${attr.ident}-${elementName}`
-                replaceEntry( attr.ident, mergeIdent, validAttrs )
-                if( mergedAttrDef.usage === 'req' ) {
-                    if( attrDefs[attr.ident].usage === 'req' ) {
-                        replaceEntry( attr.ident, mergeIdent, requiredAttrs )                    
-                    } else {
-                        requiredAttrs.push(mergeIdent)                  
-                    }
-                } 
+                derivedAttrs.push( attr.ident )
                 attrDefs[mergeIdent] = mergedAttrDef
             } else if( attr.mode === 'delete') {
-                replaceEntry( attr.ident, null, validAttrs )
-                replaceEntry( attr.ident, null, requiredAttrs )
+                const origIndex = validAttrs.findIndex( ident => ident === attr.ident )
+                if( origIndex !== -1 ) validAttrs.splice(origIndex,1)
             } else {
                 validAttrs.push( attr.ident )
-                if( attr.usage === 'req' ) requiredAttrs.push( attr.ident )    
             }
         }
         element.validAttrs = validAttrs.sort()
-        element.requiredAttrs = requiredAttrs.sort()
+        element.derivedAttrs = derivedAttrs.sort()
     }
 
     // These attributes are treated specially

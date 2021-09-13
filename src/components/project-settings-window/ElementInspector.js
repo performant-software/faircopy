@@ -14,14 +14,13 @@ export default class ElementInspector extends Component {
 
     renderAttributes() {
         const { elementID, fairCopyConfig, teiSchema } = this.props
-        const attrSpecs = teiSchema.attrs
         const { attrState } = fairCopyConfig.elements[elementID]
 
         const attrFields = []
 
         for( const attr of Object.keys(attrState) ) {
             if( attrState[attr].active ) {
-                const attrSpec = attrSpecs[attr]
+                const attrSpec = teiSchema.getAttrSpec( attr, elementID )
                 if( !attrSpec.hidden ) {
                     attrFields.push( this.renderAttribute(attr))    
                 }    

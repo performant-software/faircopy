@@ -36,7 +36,7 @@
 			],
 			"desc": "contains a summary or formal abstract prefixed to an existing source document by the encoder.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "additional",
@@ -74,7 +74,7 @@
 			],
 			"desc": "groups additional information, combining bibliographic information about a manuscript or other object, or surrogate copies of it, with curatorial or administrative information.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "address",
@@ -112,7 +112,7 @@
 			],
 			"desc": "contains a postal address, for example of a publisher, an organization, or an individual.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "adminInfo",
@@ -150,7 +150,7 @@
 			],
 			"desc": "contains information about the present custody and availability of the manuscript or other object, and also about the record description itself.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "altIdentifier",
@@ -209,7 +209,7 @@
 			],
 			"desc": "contains an alternative or former structured identifier used for a manuscript or other object, such as a former catalogue number.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "analytic",
@@ -247,7 +247,7 @@
 			],
 			"desc": "contains bibliographic elements describing an item (e.g. an article or poem) published within a monograph or journal and not as an independent publication.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "annotation",
@@ -277,10 +277,10 @@
 				"source",
 				"style",
 				"synch",
-				"target-annotation",
+				"target",
 				"targetLang",
 				"xml:base",
-				"xml:id-annotation",
+				"xml:id",
 				"xml:lang",
 				"xml:space"
 			],
@@ -289,9 +289,9 @@
 			],
 			"desc": "represents an annotation following the Web Annotation Data Model.",
 			"synth": false,
-			"requiredAttrs": [
-				"target-annotation",
-				"xml:id-annotation"
+			"derivedAttrs": [
+				"target",
+				"xml:id"
 			]
 		},
 		{
@@ -335,7 +335,7 @@
 			],
 			"desc": "groups together various annotations, e.g. for parallel interpretations of a spoken segment.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "appInfo",
@@ -373,7 +373,7 @@
 			],
 			"desc": "records information about an application which has edited the TEI file.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "application",
@@ -434,10 +434,7 @@
 			],
 			"desc": "provides information about an application which has acted upon the document.",
 			"synth": false,
-			"requiredAttrs": [
-				"ident",
-				"version"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "argument",
@@ -475,7 +472,7 @@
 			],
 			"desc": "contains a formal list or prose description of the topics addressed by a subdivision of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "availability",
@@ -515,7 +512,7 @@
 			],
 			"desc": "supplies information about the availability of a text, for example any restrictions on its use or distribution, its copyright status, any licence applying to it, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "back",
@@ -554,7 +551,7 @@
 			],
 			"desc": "contains any appendixes, etc. following the main part of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "biblFull",
@@ -596,7 +593,7 @@
 			],
 			"desc": "contains a fully-structured bibliographic citation, in which all components of the TEI file description are present.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "biblStruct",
@@ -639,7 +636,7 @@
 			],
 			"desc": "contains a structured bibliographic citation, in which only bibliographic sub-elements appear and in a specified order.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "binding",
@@ -697,7 +694,7 @@
 			],
 			"desc": "contains a description of one binding, i.e. type of covering, boards, etc. applied to a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "bindingDesc",
@@ -735,7 +732,7 @@
 			],
 			"desc": "describes the present and former bindings of a manuscript or other object, either as a series of paragraphs or as a series of distinct binding elements, one for each binding of the manuscript.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "body",
@@ -774,7 +771,7 @@
 			],
 			"desc": "contains the whole body of a single unitary text, excluding any front or back matter.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "broadcast",
@@ -813,7 +810,7 @@
 			],
 			"desc": "describes a broadcast used as the source of a spoken text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "calendar",
@@ -854,7 +851,7 @@
 			],
 			"desc": "describes a calendar or dating system used in a dating formula in the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "calendarDesc",
@@ -892,7 +889,7 @@
 			],
 			"desc": "contains a description of the calendar system used in any dating expression found in the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "castGroup",
@@ -930,7 +927,7 @@
 			],
 			"desc": "groups one or more individual castItem elements within a cast list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "castList",
@@ -968,7 +965,7 @@
 			],
 			"desc": "contains a single cast list or dramatis personae.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "category",
@@ -1006,7 +1003,7 @@
 			],
 			"desc": "contains an individual descriptive category, possibly nested within a superordinate category, within a user-defined taxonomy.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "cit",
@@ -1046,7 +1043,7 @@
 			],
 			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "classDecl",
@@ -1084,7 +1081,7 @@
 			],
 			"desc": "contains one or more taxonomies defining any classificatory codes used elsewhere in the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "climate",
@@ -1149,7 +1146,7 @@
 			],
 			"desc": "contains information about the physical climate of a place.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "correction",
@@ -1190,7 +1187,7 @@
 			],
 			"desc": "states how and under what circumstances corrections have been made in the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "correspAction",
@@ -1220,7 +1217,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-correspAction",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -1231,7 +1228,9 @@
 			],
 			"desc": "contains a structured description of the place, the name of a person/organization and the date related to the sending/receiving of a message or any other action related to the correspondence.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "correspContext",
@@ -1269,7 +1268,7 @@
 			],
 			"desc": "provides references to preceding or following correspondence related to this piece of correspondence.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "correspDesc",
@@ -1312,7 +1311,7 @@
 			],
 			"desc": "contains a description of the actions related to one act of correspondence.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "custodialHist",
@@ -1350,7 +1349,7 @@
 			],
 			"desc": "contains a description of a manuscript or other object's custodial history, either as running prose or as a series of dated custodial events.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "cRefPattern",
@@ -1390,10 +1389,7 @@
 			],
 			"desc": "specifies an expression and replacement pattern for transforming a canonical reference into a URI.",
 			"synth": false,
-			"requiredAttrs": [
-				"matchPattern",
-				"replacementPattern"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "decoDesc",
@@ -1431,7 +1427,7 @@
 			],
 			"desc": "contains a description of the decoration of a manuscript or other object, either as in paragraphs, or as one or more decoNote elements.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "dimensions",
@@ -1469,7 +1465,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-dimensions",
+				"type",
 				"unit",
 				"xml:base",
 				"xml:id",
@@ -1481,7 +1477,9 @@
 			],
 			"desc": "contains a dimensional specification.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "div",
@@ -1529,7 +1527,7 @@
 			],
 			"desc": "contains a subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div1",
@@ -1576,7 +1574,7 @@
 			],
 			"desc": "contains a first-level subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div2",
@@ -1623,7 +1621,7 @@
 			],
 			"desc": "contains a second-level subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div3",
@@ -1670,7 +1668,7 @@
 			],
 			"desc": "contains a third-level subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div4",
@@ -1717,7 +1715,7 @@
 			],
 			"desc": "contains a fourth-level subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div5",
@@ -1764,7 +1762,7 @@
 			],
 			"desc": "contains a fifth-level subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div6",
@@ -1811,7 +1809,7 @@
 			],
 			"desc": "contains a sixth-level subdivision of the front, body, or back of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "div7",
@@ -1858,7 +1856,7 @@
 			],
 			"desc": "contains the smallest possible subdivision of the front, body or back of a text, larger than a paragraph.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "divGen",
@@ -1887,7 +1885,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-divGen",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -1898,7 +1896,9 @@
 			],
 			"desc": "indicates the location at which a textual division generated automatically by a text-processing application is to appear.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "docTitle",
@@ -1938,7 +1938,7 @@
 			],
 			"desc": "contains the title of a document, including all its constituents, as given on a title page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "editionStmt",
@@ -1976,7 +1976,7 @@
 			],
 			"desc": "groups information relating to one edition of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "editorialDecl",
@@ -2015,7 +2015,7 @@
 			],
 			"desc": "provides details of editorial principles and practices applied during the encoding of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "encodingDesc",
@@ -2053,7 +2053,7 @@
 			],
 			"desc": "documents the relationship between an electronic text and the source or sources from which it was derived.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "epigraph",
@@ -2091,7 +2091,7 @@
 			],
 			"desc": "contains a quotation, anonymous or attributed, appearing at the start or end of a section or on a title page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "epilogue",
@@ -2129,7 +2129,7 @@
 			],
 			"desc": "contains the epilogue to a drama, typically spoken by an actor out of character, possibly in association with a particular performance or venue.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "equipment",
@@ -2168,7 +2168,7 @@
 			],
 			"desc": "provides technical details of the equipment and media used for an audio or video recording used as the source for a spoken text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "event",
@@ -2235,7 +2235,7 @@
 			],
 			"desc": "contains data relating to any kind of significant event associated with a person, place, or organization.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "figure",
@@ -2277,7 +2277,7 @@
 			],
 			"desc": "groups elements representing or containing graphic information such as an illustration, formula, or figure.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "fileDesc",
@@ -2315,7 +2315,7 @@
 			],
 			"desc": "contains a full bibliographic description of an electronic file.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "floatingText",
@@ -2356,7 +2356,7 @@
 			],
 			"desc": "contains a single text of any kind, whether unitary or composite, which interrupts the text containing it at any point and after which the surrounding text resumes.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "front",
@@ -2395,7 +2395,7 @@
 			],
 			"desc": "contains any prefatory matter (headers, abstracts, title page, prefaces, dedications, etc.) found at the start of a document, before the main body.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "graphic",
@@ -2439,9 +2439,7 @@
 			],
 			"desc": "indicates the location of a graphic or illustration, either forming part of a text, or providing an image of it.",
 			"synth": false,
-			"requiredAttrs": [
-				"url"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "handDesc",
@@ -2480,7 +2478,7 @@
 			],
 			"desc": "contains a description of all the different hands used in a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "handNotes",
@@ -2518,7 +2516,7 @@
 			],
 			"desc": "contains one or more handNote elements documenting the different hands identified within the source texts.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "history",
@@ -2556,7 +2554,7 @@
 			],
 			"desc": " groups elements describing the full history of a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "hyphenation",
@@ -2596,7 +2594,7 @@
 			],
 			"desc": "summarizes the way in which hyphenation in a source text has been treated in an encoded version of it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "incident",
@@ -2641,7 +2639,7 @@
 			],
 			"desc": "marks any phenomenon or occurrence, not necessarily vocalized or communicative, for example incidental noises or other events affecting communication.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "interpretation",
@@ -2680,7 +2678,7 @@
 			],
 			"desc": "describes the scope of any analytic or interpretive information added to the text in addition to the transcription.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "imprint",
@@ -2718,7 +2716,7 @@
 			],
 			"desc": "groups information relating to the publication or distribution of a bibliographic item.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "join",
@@ -2763,7 +2761,7 @@
 			],
 			"desc": "identifies a possibly fragmented segment of text, by pointing at the possibly discontiguous elements which compose it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "joinGrp",
@@ -2809,7 +2807,7 @@
 			],
 			"desc": "groups a collection of join elements and possibly pointers.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "keywords",
@@ -2848,7 +2846,7 @@
 			],
 			"desc": "contains a list of keywords or phrases identifying the topic or nature of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "kinesic",
@@ -2895,7 +2893,7 @@
 			],
 			"desc": "marks any communicative phenomenon, not necessarily vocalized, for example a gesture, frown, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "langKnowledge",
@@ -2943,7 +2941,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-langKnowledge",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -2957,7 +2955,9 @@
 			],
 			"desc": "summarizes the state of a person's linguistic knowledge, either as prose or by a list of langKnown elements.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "langUsage",
@@ -2996,7 +2996,7 @@
 			],
 			"desc": "describes the languages, sublanguages, registers, dialects, etc. represented within a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "layoutDesc",
@@ -3034,7 +3034,7 @@
 			],
 			"desc": "collects the set of layout descriptions applicable to a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "lg",
@@ -3081,7 +3081,7 @@
 			],
 			"desc": "contains one or more verse lines functioning as a formal unit, e.g. a stanza, refrain, verse paragraph, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "linkGrp",
@@ -3126,7 +3126,7 @@
 			],
 			"desc": "defines a collection of associations or hypertextual links.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "list",
@@ -3156,7 +3156,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-list",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -3167,7 +3167,9 @@
 			],
 			"desc": "contains any sequence of items organized as a list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "listAnnotation",
@@ -3209,7 +3211,7 @@
 			],
 			"desc": "contains a list of annotations, typically encoded as annotation, annotationBlock, or note, possibly organized with nested listAnnotation elements.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listBibl",
@@ -3251,7 +3253,7 @@
 			],
 			"desc": "contains a list of bibliographic citations of any kind.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listChange",
@@ -3293,7 +3295,7 @@
 			],
 			"desc": "groups a number of change descriptions associated with either the creation of a source text or the revision of an encoded text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listEvent",
@@ -3335,7 +3337,7 @@
 			],
 			"desc": "contains a list of descriptions, each of which provides information about an identifiable event.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listNym",
@@ -3377,7 +3379,7 @@
 			],
 			"desc": "contains a list of nyms, that is, standardized names for any thing.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listObject",
@@ -3419,7 +3421,7 @@
 			],
 			"desc": "contains a list of descriptions, each of which provides information about an identifiable physical object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listOrg",
@@ -3461,7 +3463,7 @@
 			],
 			"desc": "contains a list of elements, each of which provides information about an identifiable organization.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listPerson",
@@ -3503,7 +3505,7 @@
 			],
 			"desc": "contains a list of descriptions, each of which provides information about an identifiable person or a group of people, for example the participants in a language interaction, or the people referred to in a historical source.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listPlace",
@@ -3545,7 +3547,7 @@
 			],
 			"desc": "contains a list of places, optionally followed by a list of relationships (other than containment) defined amongst them.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listPrefixDef",
@@ -3583,7 +3585,7 @@
 			],
 			"desc": "contains a list of definitions of prefixing schemes used in teidata.pointer values, showing how abbreviated URIs using each scheme may be expanded into full URIs.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "listRelation",
@@ -3624,7 +3626,7 @@
 			],
 			"desc": "provides information about relationships identified amongst people, places, and organizations, either informally as prose or as formally expressed relation links.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "location",
@@ -3685,7 +3687,7 @@
 			],
 			"desc": "defines the location of a place as a set of geographical coordinates, in terms of other named geo-political entities, or as an address.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "locusGrp",
@@ -3722,7 +3724,7 @@
 			"defaultNodes": null,
 			"desc": "groups a number of locations which together form a distinct but discontinuous item within a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "monogr",
@@ -3760,7 +3762,7 @@
 			],
 			"desc": "contains bibliographic elements describing an item (e.g. a book or journal) published as an independent item (i.e. as a separate physical object).",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msContents",
@@ -3800,7 +3802,7 @@
 			],
 			"desc": "describes the intellectual content of a manuscript, manuscript part, or other object either as a series of paragraphs or as a series of structured manuscript items.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msDesc",
@@ -3843,7 +3845,7 @@
 			],
 			"desc": "contains a description of a single identifiable manuscript or other text-bearing object such as early printed books.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msFrag",
@@ -3883,7 +3885,7 @@
 			],
 			"desc": "contains information about a fragment described in relation to a prior context, typically as a description of a virtual reconstruction of a manuscript or other object whose fragments were catalogued separately",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msIdentifier",
@@ -3921,7 +3923,7 @@
 			],
 			"desc": "contains the information required to identify the manuscript or similar object being described.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msItem",
@@ -3961,7 +3963,7 @@
 			],
 			"desc": "describes an individual work or item within the intellectual content of a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msItemStruct",
@@ -4001,7 +4003,7 @@
 			],
 			"desc": "contains a structured description for an individual work or item within the intellectual content of a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msPart",
@@ -4041,7 +4043,7 @@
 			],
 			"desc": "contains information about an originally distinct manuscript or part of a manuscript, which is now part of a composite manuscript.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "namespace",
@@ -4080,9 +4082,7 @@
 			],
 			"desc": "supplies the formal name of the namespace to which the elements documented by its children belong.",
 			"synth": false,
-			"requiredAttrs": [
-				"name"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "notatedMusic",
@@ -4123,7 +4123,7 @@
 			],
 			"desc": "encodes the presence of music notation in a text",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "notesStmt",
@@ -4161,7 +4161,7 @@
 			],
 			"desc": "collects together any notes providing information about a text additional to that recorded in other parts of the bibliographic description.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "normalization",
@@ -4201,7 +4201,7 @@
 			],
 			"desc": "indicates the extent of normalization or regularization of the original source carried out in converting it to electronic form.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "nym",
@@ -4243,7 +4243,7 @@
 			],
 			"desc": "contains the definition for a canonical name or name component of any kind.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "object",
@@ -4288,7 +4288,7 @@
 			],
 			"desc": "contains a description of a single identifiable physical object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "objectDesc",
@@ -4327,7 +4327,7 @@
 			],
 			"desc": "contains a description of the physical components making up the object which is being described.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "objectIdentifier",
@@ -4365,7 +4365,7 @@
 			],
 			"desc": "groups one or more identifiers or pieces of locating information concerning a single object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "org",
@@ -4409,7 +4409,7 @@
 			],
 			"desc": "provides information about an identifiable organization such as a business, a tribe, or any other grouping of people.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "performance",
@@ -4447,7 +4447,7 @@
 			],
 			"desc": "contains a section of front or back matter describing how a dramatic piece is to be performed in general or how it was performed on some specific occasion.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "person",
@@ -4491,7 +4491,7 @@
 			],
 			"desc": "provides information about an identifiable individual, for example a participant in a language interaction, or a person referred to in a historical source.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "persona",
@@ -4535,7 +4535,7 @@
 			],
 			"desc": "provides information about one of the personalities identified for a given individual, where an individual has multiple personalities.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "personGrp",
@@ -4578,7 +4578,7 @@
 			],
 			"desc": "describes a group of individuals treated as a single person for analytic purposes.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "place",
@@ -4621,7 +4621,7 @@
 			],
 			"desc": "contains data about a geographic location",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "physDesc",
@@ -4659,7 +4659,7 @@
 			],
 			"desc": "contains a full physical description of a manuscript, manuscript part, or other object optionally subdivided using more specialized elements from the model.physDescPart class.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "particDesc",
@@ -4698,7 +4698,7 @@
 			],
 			"desc": "describes the identifiable speakers, voices, or other participants in any kind of text or other persons named or otherwise referred to in a text, edition, or metadata.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "population",
@@ -4773,7 +4773,7 @@
 			],
 			"desc": "contains information about the population of a place.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "postscript",
@@ -4812,7 +4812,7 @@
 			],
 			"desc": "contains a postscript, e.g. to a letter.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "projectDesc",
@@ -4851,7 +4851,7 @@
 			],
 			"desc": "describes in detail the aim or purpose for which an electronic file was encoded, together with any other relevant information concerning the process by which it was assembled or collected.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "prologue",
@@ -4889,7 +4889,7 @@
 			],
 			"desc": "contains the prologue to a drama, typically spoken by an actor out of character, possibly in association with a particular performance or venue.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "prefixDef",
@@ -4930,11 +4930,7 @@
 			],
 			"desc": "defines a prefixing scheme used in teidata.pointer values, showing how abbreviated URIs using the scheme may be expanded into full URIs.",
 			"synth": false,
-			"requiredAttrs": [
-				"ident",
-				"matchPattern",
-				"replacementPattern"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "profileDesc",
@@ -4972,7 +4968,7 @@
 			],
 			"desc": "provides a detailed description of non-bibliographic aspects of a text, specifically the languages and sublanguages used, the situation in which it was produced, the participants and their setting.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "publicationStmt",
@@ -5010,7 +5006,7 @@
 			],
 			"desc": "groups information concerning the publication or distribution of an electronic or other text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "punctuation",
@@ -5051,7 +5047,7 @@
 			],
 			"desc": "specifies editorial practice adopted with respect to punctuation marks in the original.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "quotation",
@@ -5091,7 +5087,7 @@
 			],
 			"desc": "specifies editorial practice adopted with respect to quotation marks in the original.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "recordHist",
@@ -5129,7 +5125,7 @@
 			],
 			"desc": "provides information about the source and revision status of the parent manuscript or object description itself.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "recording",
@@ -5161,7 +5157,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-recording",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -5172,7 +5168,9 @@
 			],
 			"desc": "provides details of an audio or video recording event used as the source of a spoken text, either directly or from a public broadcast.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "recordingStmt",
@@ -5210,7 +5208,7 @@
 			],
 			"desc": "describes a set of recordings used as the basis for transcription of a spoken text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "relatedItem",
@@ -5251,7 +5249,7 @@
 			],
 			"desc": "contains or references some other bibliographic item which is related to the present one in some specified manner, for example as a constituent or alternative version of it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "relation",
@@ -5319,7 +5317,7 @@
 			],
 			"desc": "describes any kind of relationship or linkage amongst a specified group of places, events, persons, objects or other items.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "respStmt",
@@ -5360,7 +5358,7 @@
 			],
 			"desc": "supplies a statement of responsibility for the intellectual content of a text, edition, recording, or series, where the specialized elements for authors, editors, etc. do not suffice or do not apply. May also be used to encode information about individuals or organizations which have played a role in the production or distribution of a bibliographic work.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "revisionDesc",
@@ -5399,7 +5397,7 @@
 			],
 			"desc": "summarizes the revision history for a file.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "row",
@@ -5440,7 +5438,7 @@
 			],
 			"desc": "contains one row of a table.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "schemaRef",
@@ -5482,9 +5480,7 @@
 			],
 			"desc": "describes or points to a related customization or schema file",
 			"synth": false,
-			"requiredAttrs": [
-				"url"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "scriptDesc",
@@ -5522,7 +5518,7 @@
 			],
 			"desc": "contains a description of the scripts used in a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "scriptStmt",
@@ -5561,7 +5557,7 @@
 			],
 			"desc": "contains a citation giving details of the script used for a spoken text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "seriesStmt",
@@ -5600,7 +5596,7 @@
 			],
 			"desc": "groups information about the series, if any, to which a publication belongs.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "seal",
@@ -5660,7 +5656,7 @@
 			],
 			"desc": "contains a description of one seal or similar applied to the object described",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "sealDesc",
@@ -5698,7 +5694,7 @@
 			],
 			"desc": "describes the seals or similar items related to the object described, either as a series of paragraphs or as a series of seal elements.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "segmentation",
@@ -5737,7 +5733,7 @@
 			],
 			"desc": "describes the principles according to which the text has been segmented, for example into sentences, tone-units, graphemic strata, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "set",
@@ -5775,7 +5771,7 @@
 			],
 			"desc": "contains a description of the setting, time, locale, appearance, etc., of the action of a play, typically found in the front matter of a printed performance text (not a stage direction).",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "settingDesc",
@@ -5814,7 +5810,7 @@
 			],
 			"desc": "describes the setting or settings within which a language interaction takes place, or other places otherwise referred to in a text, edition, or metadata.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "sourceDesc",
@@ -5853,7 +5849,7 @@
 			],
 			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as \"born digital\" for a text which has no previous existence.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "supportDesc",
@@ -5892,7 +5888,7 @@
 			],
 			"desc": "groups elements describing the physical support for the written part of a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "sp",
@@ -5932,7 +5928,7 @@
 			],
 			"desc": "contains an individual speech in a performance text, or a passage presented as such in a prose or verse text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "state",
@@ -6007,7 +6003,7 @@
 			],
 			"desc": "contains a description of some status or quality attributed to a person, place, or organization often at some specific time or for a specific date range.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "stdVals",
@@ -6046,7 +6042,7 @@
 			],
 			"desc": "specifies the format used when standardized date or number values are supplied.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "styleDefDecl",
@@ -6087,7 +6083,7 @@
 			],
 			"desc": "specifies the name of the formal language in which style or renditional information is supplied elsewhere in the document. The specific version of the scheme may also be supplied.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "table",
@@ -6129,7 +6125,7 @@
 			],
 			"desc": "contains text displayed in tabular form, in rows and columns.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "terrain",
@@ -6194,7 +6190,7 @@
 			],
 			"desc": "contains information about the physical terrain of a place.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "textClass",
@@ -6233,7 +6229,7 @@
 			],
 			"desc": "groups information which describes the nature or topic of a text in terms of a standard classification scheme, thesaurus, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "timeline",
@@ -6274,7 +6270,7 @@
 			],
 			"desc": "provides a set of ordered points in time which can be linked to elements of a spoken text to create a temporal alignment of that text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "titlePage",
@@ -6303,7 +6299,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-titlePage",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -6314,7 +6310,9 @@
 			],
 			"desc": "contains the title page of a text, appearing within the front or back matter.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "titleStmt",
@@ -6352,7 +6350,7 @@
 			],
 			"desc": "groups information about the title of a work and those responsible for its content.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "trait",
@@ -6427,7 +6425,7 @@
 			],
 			"desc": "contains a description of some status or quality attributed to a person, place, or organization typically, but not necessarily, independent of the volition or action of the holder and usually not at some specific time or for a specific date range.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "transcriptionDesc",
@@ -6467,9 +6465,7 @@
 			],
 			"desc": "describes the set of transcription conventions used, particularly for spoken material.",
 			"synth": false,
-			"requiredAttrs": [
-				"ident"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "typeDesc",
@@ -6507,7 +6503,7 @@
 			],
 			"desc": "contains a description of the typefaces or other aspects of the printing of an incunable or other printed source.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "refsDecl",
@@ -6546,7 +6542,7 @@
 			],
 			"desc": "specifies how canonical references are constructed for this text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "samplingDecl",
@@ -6585,7 +6581,7 @@
 			],
 			"desc": "contains a prose description of the rationale and methods used in sampling texts in the creation of a corpus or collection.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "spGrp",
@@ -6627,7 +6623,7 @@
 			],
 			"desc": "contains a group of speeches or songs in a performance text presented in a source as constituting a single unit or number.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "tagsDecl",
@@ -6666,7 +6662,7 @@
 			],
 			"desc": "provides detailed information about the tagging applied to a document.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "taxonomy",
@@ -6704,7 +6700,7 @@
 			],
 			"desc": "defines a typology either implicitly, by means of a bibliographic citation, or explicitly by a structured taxonomy.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "unitDecl",
@@ -6763,7 +6759,7 @@
 			],
 			"desc": "provides information about units of measurement that are not members of the International System of Units.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "unitDef",
@@ -6824,7 +6820,7 @@
 			],
 			"desc": "contains descriptive information related to a specific unit of measurement.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "vocal",
@@ -6871,7 +6867,7 @@
 			],
 			"desc": "marks any vocalized but not necessarily lexical phenomenon, for example voiced pauses, non-lexical backchannels, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "addSpan",
@@ -6925,7 +6921,7 @@
 			"group": "model_global_i model_global_edit_i",
 			"desc": "marks the beginning of a longer sequence of text added by an author, scribe, annotator or corrector (see also add).",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "alt",
@@ -6953,7 +6949,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"target-alt",
+				"target",
 				"targetLang",
 				"type",
 				"weights",
@@ -6966,7 +6962,9 @@
 			"group": "model_global_i model_standOffPart_i model_global_meta_i",
 			"desc": "identifies an alternation or a set of choices among elements or passages.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"target"
+			]
 		},
 		{
 			"name": "anchor",
@@ -7002,7 +7000,7 @@
 			"group": "model_global_i model_milestoneLike_i",
 			"desc": "attaches an identifier to a point within a text, whether or not it corresponds with a textual element.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "cb",
@@ -7042,7 +7040,7 @@
 			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new column of a text on a multi-column page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "catRef",
@@ -7080,7 +7078,7 @@
 			"group": "",
 			"desc": "specifies one or more defined categories within some taxonomy or text typology.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "citeData",
@@ -7116,10 +7114,7 @@
 			"group": "",
 			"desc": "specifies how information may be extracted from citation structures.",
 			"synth": false,
-			"requiredAttrs": [
-				"property",
-				"use"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "conversion",
@@ -7176,10 +7171,7 @@
 			"group": "",
 			"desc": "defines how to calculate one unit of measure in terms of another.",
 			"synth": false,
-			"requiredAttrs": [
-				"fromUnit",
-				"toUnit"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "damageSpan",
@@ -7230,7 +7222,7 @@
 			"group": "model_global_i model_global_edit_i",
 			"desc": "marks the beginning of a longer sequence of text which is damaged in some way but still legible.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "delSpan",
@@ -7283,7 +7275,7 @@
 			"group": "model_global_i model_global_edit_i",
 			"desc": "marks the beginning of a longer sequence of text deleted, marked as deleted, or otherwise signaled as superfluous or spurious by an author, scribe, annotator, or corrector.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "gap",
@@ -7335,7 +7327,7 @@
 			"group": "model_global_i model_global_edit_i",
 			"desc": "indicates a point where material has been omitted in a transcription, whether for editorial reasons described in the TEI header, as part of sampling practice, or because the material is illegible, invisible, or inaudible.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "gb",
@@ -7375,7 +7367,7 @@
 			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new gathering or quire in a transcribed codex.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "handShift",
@@ -7416,7 +7408,7 @@
 			"group": "model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i model_linePart_i",
 			"desc": "marks the beginning of a sequence of text written in a new hand, or the beginning of a scribal stint.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "lb",
@@ -7456,7 +7448,7 @@
 			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new (typographic) line in some edition or version of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "link",
@@ -7495,7 +7487,7 @@
 			"group": "model_global_i model_standOffPart_i model_global_meta_i",
 			"desc": "defines an association or hypertextual link among elements or passages, of some type not more precisely specifiable by other elements.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "milestone",
@@ -7536,9 +7528,7 @@
 			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks a boundary point separating any kind of section of a text, typically but not necessarily indicating a point at which some part of a standard reference system changes, where the change is not represented by a structural element.",
 			"synth": false,
-			"requiredAttrs": [
-				"unit"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "move",
@@ -7566,7 +7556,7 @@
 				"subtype",
 				"synch",
 				"toWhom",
-				"type-move",
+				"type",
 				"where",
 				"who",
 				"xml:base",
@@ -7578,7 +7568,9 @@
 			"group": "model_common_i model_inter_i model_stageLike_i",
 			"desc": "marks the actual movement of one or more characters.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "pause",
@@ -7620,7 +7612,7 @@
 			"group": "model_global_i model_global_spoken_i",
 			"desc": "marks a pause either between or within utterances.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "pb",
@@ -7660,7 +7652,7 @@
 			"group": "model_global_i model_milestoneLike_i",
 			"desc": "marks the beginning of a new page in a paginated document.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "ptr",
@@ -7702,7 +7694,7 @@
 			"group": "model_annotationPart_body_i model_phrase_i model_limitedPhrase_i model_correspContextPart_i model_publicationStmtPart_detail_i model_ptrLike_i",
 			"desc": "defines a pointer to another location.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "redo",
@@ -7754,7 +7746,7 @@
 			"group": "model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i model_linePart_i",
 			"desc": "indicates one or more cancelled interventions in a document which have subsequently been marked as reaffirmed or repeated.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "refState",
@@ -7793,9 +7785,7 @@
 			"group": "",
 			"desc": "specifies one component of a canonical reference defined by the milestone method.",
 			"synth": false,
-			"requiredAttrs": [
-				"unit"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "shift",
@@ -7832,7 +7822,7 @@
 			"group": "model_global_i model_global_spoken_i",
 			"desc": "marks the point at which some paralinguistic feature of a series of utterances by any one speaker changes.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "undo",
@@ -7884,7 +7874,7 @@
 			"group": "model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i model_linePart_i",
 			"desc": "indicates one or more marked-up interventions in a document which have subsequently been marked for cancellation.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "when",
@@ -7922,7 +7912,7 @@
 			"group": "",
 			"desc": "indicates a point in time either relative to other elements in the same timeline tag, or absolutely.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "note",
@@ -7966,7 +7956,7 @@
 			"defaultNodes": null,
 			"desc": "contains a note or annotation.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "noteX",
@@ -8020,7 +8010,7 @@
 			],
 			"desc": "groups a number of alternative encodings for the same point in a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "choiceX",
@@ -8064,7 +8054,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-fw",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -8075,7 +8065,9 @@
 			"defaultNodes": null,
 			"desc": "contains a running head (e.g. a header, footer), catchword, or similar material appearing on the current page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "fwX",
@@ -8130,7 +8122,7 @@
 			"defaultNodes": null,
 			"desc": "contains or describes any kind of graphic or written signal within a document the function of which is to determine how it should be read rather than forming part of the actual content of the document.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "metamarkX",
@@ -8174,7 +8166,7 @@
 				"quantity",
 				"rend",
 				"rendition",
-				"resp-space",
+				"resp",
 				"sameAs",
 				"scope",
 				"select",
@@ -8196,7 +8188,9 @@
 			],
 			"desc": "indicates the location of a significant space in the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"resp"
+			]
 		},
 		{
 			"name": "spaceX",
@@ -8266,7 +8260,7 @@
 			],
 			"desc": "groups one or more deletions (or surplus text) with one or more additions when the combination is to be regarded as a single intervention in the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "substX",
@@ -8338,7 +8332,7 @@
 			],
 			"desc": "identifies a series of possibly fragmented additions, deletions, or other revisions on a manuscript that combine to make up a single intervention in the text",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "substJoinX",
@@ -8406,7 +8400,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "add",
@@ -8461,7 +8455,7 @@
 			],
 			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markaddName",
@@ -8502,7 +8496,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "contains an additional name component, such as a nickname, epithet, or alias, or any other descriptive phrase used within a personal name.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "addName",
@@ -8546,7 +8540,7 @@
 			],
 			"desc": "contains an additional name component, such as a nickname, epithet, or alias, or any other descriptive phrase used within a personal name.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markaffiliation",
@@ -8594,7 +8588,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-affiliation",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -8606,7 +8600,9 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_personPart model_persStateLike",
 			"desc": "contains an informal description of a person's present or past affiliation with some organization, for example an employer or sponsor.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "affiliation",
@@ -8658,7 +8654,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-affiliation",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -8669,7 +8665,9 @@
 			],
 			"desc": "contains an informal description of a person's present or past affiliation with some organization, for example an employer or sponsor.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "markbloc",
@@ -8727,7 +8725,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of a geo-political unit consisting of two or more nation states or countries.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "bloc",
@@ -8788,7 +8786,7 @@
 			],
 			"desc": "contains the name of a geo-political unit consisting of two or more nation states or countries.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markcorr",
@@ -8825,7 +8823,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains the correct form of a passage apparently erroneous in the copy text.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "corr",
@@ -8865,7 +8863,7 @@
 			],
 			"desc": "contains the correct form of a passage apparently erroneous in the copy text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markcountry",
@@ -8923,7 +8921,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of a geo-political unit, such as a nation, country, colony, or commonwealth, larger than or administratively superior to a region and smaller than a bloc.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "country",
@@ -8984,7 +8982,7 @@
 			],
 			"desc": "contains the name of a geo-political unit, such as a nation, country, colony, or commonwealth, larger than or administratively superior to a region and smaller than a bloc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markdamage",
@@ -9033,7 +9031,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "contains an area of damage to the text witness.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "damage",
@@ -9085,7 +9083,7 @@
 			],
 			"desc": "contains an area of damage to the text witness.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markdel",
@@ -9136,7 +9134,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "del",
@@ -9190,7 +9188,7 @@
 			],
 			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markdistrict",
@@ -9248,7 +9246,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of any kind of subdivision of a settlement, such as a parish, ward, or other administrative or geographic unit.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "district",
@@ -9309,7 +9307,7 @@
 			],
 			"desc": "contains the name of any kind of subdivision of a settlement, such as a parish, ward, or other administrative or geographic unit.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markemph",
@@ -9342,7 +9340,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "marks words or phrases which are stressed or emphasized for linguistic or rhetorical effect.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "emph",
@@ -9378,7 +9376,7 @@
 			],
 			"desc": "marks words or phrases which are stressed or emphasized for linguistic or rhetorical effect.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markgeogFeat",
@@ -9448,7 +9446,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
 			"desc": "contains a common noun identifying some geographical feature contained within a geographic name, such as valley, mount, etc.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "geogFeat",
@@ -9521,7 +9519,7 @@
 			],
 			"desc": "contains a common noun identifying some geographical feature contained within a geographic name, such as valley, mount, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markgeogName",
@@ -9581,7 +9579,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "identifies a name associated with some geographical feature such as Windrush Valley or Mount Sinai.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "geogName",
@@ -9644,7 +9642,7 @@
 			],
 			"desc": "identifies a name associated with some geographical feature such as Windrush Valley or Mount Sinai.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markhi",
@@ -9678,7 +9676,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "hi",
@@ -9715,7 +9713,7 @@
 			],
 			"desc": "marks a word or phrase as graphically distinct from the surrounding text, for reasons concerning which no claim is made.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markmod",
@@ -9767,7 +9765,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "represents any kind of modification identified within a single document.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "mod",
@@ -9822,7 +9820,7 @@
 			],
 			"desc": "represents any kind of modification identified within a single document.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markname",
@@ -9884,7 +9882,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
 			"desc": "contains a proper noun or noun phrase.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "name",
@@ -9949,7 +9947,7 @@
 			],
 			"desc": "contains a proper noun or noun phrase.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marknameLink",
@@ -9984,7 +9982,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "contains a connecting phrase or link used within a name but not regarded as part of it, such as van der or of.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "nameLink",
@@ -10022,7 +10020,7 @@
 			],
 			"desc": "contains a connecting phrase or link used within a name but not regarded as part of it, such as van der or of.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markobjectName",
@@ -10084,7 +10082,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
 			"desc": "contains a proper noun or noun phrase used to refer to an object.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "objectName",
@@ -10149,7 +10147,7 @@
 			],
 			"desc": "contains a proper noun or noun phrase used to refer to an object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markoffset",
@@ -10219,7 +10217,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
 			"desc": "marks that part of a relative temporal or spatial expression which indicates the direction of the offset between the two place names, dates, or times involved in the expression.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "offset",
@@ -10292,7 +10290,7 @@
 			],
 			"desc": "marks that part of a relative temporal or spatial expression which indicates the direction of the offset between the two place names, dates, or times involved in the expression.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markorgName",
@@ -10354,7 +10352,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
 			"desc": "contains an organizational name.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "orgName",
@@ -10419,7 +10417,7 @@
 			],
 			"desc": "contains an organizational name.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markorig",
@@ -10452,7 +10450,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "orig",
@@ -10488,7 +10486,7 @@
 			],
 			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markpersName",
@@ -10550,7 +10548,7 @@
 			"group": "model_personPart model_persStateLike model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
 			"desc": "contains a proper noun or proper-noun phrase referring to a person, possibly including one or more of the person's forenames, surnames, honorifics, added names, etc.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "persName",
@@ -10615,7 +10613,7 @@
 			],
 			"desc": "contains a proper noun or proper-noun phrase referring to a person, possibly including one or more of the person's forenames, surnames, honorifics, added names, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markpersPronouns",
@@ -10672,7 +10670,7 @@
 			"group": "model_personPart model_persStateLike model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "indicates the personal pronouns used, or assumed to be used, by the individual being described.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "persPronouns",
@@ -10732,7 +10730,7 @@
 			],
 			"desc": "indicates the personal pronouns used, or assumed to be used, by the individual being described.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markplaceName",
@@ -10794,7 +10792,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart model_settingPart",
 			"desc": "contains an absolute or relative place name.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "placeName",
@@ -10859,7 +10857,7 @@
 			],
 			"desc": "contains an absolute or relative place name.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markq",
@@ -10895,7 +10893,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
 			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "q",
@@ -10934,7 +10932,7 @@
 			],
 			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markref",
@@ -10975,7 +10973,7 @@
 			"group": "model_annotationPart_body model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "ref",
@@ -11019,7 +11017,7 @@
 			],
 			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markreg",
@@ -11056,7 +11054,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains a reading which has been regularized or normalized in some sense.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "reg",
@@ -11096,7 +11094,7 @@
 			],
 			"desc": "contains a reading which has been regularized or normalized in some sense.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markregion",
@@ -11154,7 +11152,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of an administrative unit such as a state, province, or county, larger than a settlement, but smaller than a country.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "region",
@@ -11215,7 +11213,7 @@
 			],
 			"desc": "contains the name of an administrative unit such as a state, province, or county, larger than a settlement, but smaller than a country.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markrestore",
@@ -11266,7 +11264,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "indicates restoration of text to an earlier state by cancellation of an editorial or authorial marking or instruction.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "restore",
@@ -11320,7 +11318,7 @@
 			],
 			"desc": "indicates restoration of text to an earlier state by cancellation of an editorial or authorial marking or instruction.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markretrace",
@@ -11370,7 +11368,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"desc": "contains a sequence of writing which has been retraced, for example by over-inking, to clarify or fix it.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "retrace",
@@ -11423,7 +11421,7 @@
 			],
 			"desc": "contains a sequence of writing which has been retraced, for example by over-inking, to clarify or fix it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markrhyme",
@@ -11459,7 +11457,7 @@
 			"group": "model_phrase model_lPart",
 			"desc": "marks the rhyming part of a metrical line.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "rhyme",
@@ -11498,7 +11496,7 @@
 			],
 			"desc": "marks the rhyming part of a metrical line.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markroleName",
@@ -11539,7 +11537,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "contains a name component which indicates that the referent has a particular role or position in society, such as an official title or rank.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "roleName",
@@ -11583,7 +11581,7 @@
 			],
 			"desc": "contains a name component which indicates that the referent has a particular role or position in society, such as an official title or rank.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marksecl",
@@ -11629,7 +11627,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "Secluded. Marks text present in the source which the editor believes to be genuine but out of its original place (which is unknown).",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "secl",
@@ -11678,7 +11676,7 @@
 			],
 			"desc": "Secluded. Marks text present in the source which the editor believes to be genuine but out of its original place (which is unknown).",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markseg",
@@ -11722,7 +11720,7 @@
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
 			"desc": "represents any segmentation of text below the chunk level.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "seg",
@@ -11769,7 +11767,7 @@
 			],
 			"desc": "represents any segmentation of text below the chunk level.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marksettlement",
@@ -11827,7 +11825,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of a settlement such as a city, town, or village identified as a single geo-political or administrative unit.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "settlement",
@@ -11888,7 +11886,7 @@
 			],
 			"desc": "contains the name of a settlement such as a city, town, or village identified as a single geo-political or administrative unit.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marksic",
@@ -11921,7 +11919,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "contains text reproduced although apparently incorrect or inaccurate.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "sic",
@@ -11957,7 +11955,7 @@
 			],
 			"desc": "contains text reproduced although apparently incorrect or inaccurate.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marksignatures",
@@ -11990,7 +11988,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains discussion of the leaf or quire signatures found within a codex or similar object.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "signatures",
@@ -12026,7 +12024,7 @@
 			],
 			"desc": "contains discussion of the leaf or quire signatures found within a codex or similar object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marksupplied",
@@ -12072,7 +12070,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "supplied",
@@ -12121,7 +12119,7 @@
 			],
 			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marksurplus",
@@ -12167,7 +12165,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "marks text present in the source which the editor believes to be superfluous or redundant.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "surplus",
@@ -12216,7 +12214,7 @@
 			],
 			"desc": "marks text present in the source which the editor believes to be superfluous or redundant.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "marktitle",
@@ -12261,7 +12259,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-title",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -12273,7 +12271,9 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
 			"desc": "contains a title for any kind of work.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "title",
@@ -12322,7 +12322,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-title",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -12333,7 +12333,9 @@
 			],
 			"desc": "contains a title for any kind of work.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "markunclear",
@@ -12380,7 +12382,7 @@
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
 			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "unclear",
@@ -12430,7 +12432,7 @@
 			],
 			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "markunit",
@@ -12469,7 +12471,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"desc": "contains a symbol, a word or a phrase referring to a unit of measurement in any kind of formal or informal system.",
 			"synth": true,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "unit",
@@ -12511,7 +12513,7 @@
 			],
 			"desc": "contains a symbol, a word or a phrase referring to a unit of measurement in any kind of formal or informal system.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "abbr",
@@ -12537,7 +12539,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-abbr",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -12546,7 +12548,9 @@
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
 			"desc": "contains an abbreviation of any sort.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "catchwords",
@@ -12579,7 +12583,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "describes the system used to ensure correct ordering of the quires or similar making up a codex, incunable, or other object typically by means of annotations at the foot of the page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "date",
@@ -12649,7 +12653,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike model_publicationStmtPart_detail",
 			"desc": "contains a date in any format.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "distinct",
@@ -12678,7 +12682,7 @@
 				"subtype",
 				"synch",
 				"time",
-				"type-distinct",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -12687,7 +12691,9 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "identifies any word or phrase which is regarded as linguistically distinct, for example as archaic, technical, dialectal, non-preferred, etc., or as forming part of a sublanguage.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "email",
@@ -12720,7 +12726,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike",
 			"desc": "contains an email address identifying a location to which email messages can be delivered.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "expan",
@@ -12755,7 +12761,7 @@
 			"group": "model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
 			"desc": "contains the expansion of an abbreviation.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "foreign",
@@ -12788,7 +12794,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "identifies a word or phrase as belonging to some language other than that of the surrounding text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "forename",
@@ -12829,7 +12835,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "contains a forename, given or baptismal name.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "genName",
@@ -12870,7 +12876,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "contains a name component used to distinguish otherwise similar names on the basis of the relative ages or generations of the persons named.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "gloss",
@@ -12911,7 +12917,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_glossLike",
 			"desc": "identifies a phrase or word used to provide a gloss or definition for some other word or phrase.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "heraldry",
@@ -12944,7 +12950,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains a heraldic formula or phrase, typically found as part of a blazon, coat of arms, etc. ",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "material",
@@ -12983,7 +12989,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing the material of which the object being described is composed.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "measure",
@@ -13011,7 +13017,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-measure",
+				"type",
 				"unit",
 				"unitRef",
 				"xml:base",
@@ -13022,7 +13028,9 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"desc": "contains a word or phrase referring to some quantity of an object or commodity, usually comprising a number, a unit, and a commodity name.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "mentioned",
@@ -13055,7 +13063,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "marks words or phrases mentioned, not used.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "num",
@@ -13086,7 +13094,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-num",
+				"type",
 				"value",
 				"xml:base",
 				"xml:id",
@@ -13096,7 +13104,9 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"desc": "contains a number, written in any form.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "objectType",
@@ -13131,7 +13141,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing the type of object being referred to.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "origDate",
@@ -13197,7 +13207,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains any form of date, used to identify the date of origin for a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "origPlace",
@@ -13257,7 +13267,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains any form of place name, used to identify the place of origin for a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "rs",
@@ -13296,7 +13306,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
 			"desc": "contains a general purpose name or referring string.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "s",
@@ -13339,7 +13349,7 @@
 			"group": "model_phrase model_segLike",
 			"desc": "contains a sentence-like division of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "secFol",
@@ -13372,7 +13382,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "marks the word or words taken from a fixed point in a codex (typically the beginning of the second leaf) in order to provide a unique identifier for it. ",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "soCalled",
@@ -13405,7 +13415,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "contains a word or phrase for which the author or narrator indicates a disclaiming of responsibility, for example by the use of scare quotes or italics.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "stamp",
@@ -13459,7 +13469,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing a stamp or similar device.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "surname",
@@ -13500,7 +13510,7 @@
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"desc": "contains a family (inherited) name, as opposed to a given, baptismal, or nick name.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "term",
@@ -13543,7 +13553,7 @@
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"desc": "contains a single-word, multi-word, or symbolic designation which is regarded as a technical term.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "time",
@@ -13613,7 +13623,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike",
 			"desc": "contains a phrase defining a time of day in any format.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "watermark",
@@ -13646,7 +13656,7 @@
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing a watermark or similar device.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "ab",
@@ -13687,7 +13697,7 @@
 			"defaultNodes": null,
 			"desc": "contains any arbitrary component-level unit of text, acting as an anonymous container for phrase or inter level elements analogous to, but without the semantic baggage of, a paragraph.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "actor",
@@ -13725,7 +13735,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of an actor appearing within a cast list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "accMat",
@@ -13763,7 +13773,7 @@
 			"defaultNodes": null,
 			"desc": "contains details of any significant additional material which may be closely associated with the manuscript or object being described, such as non-contemporaneous documents or fragments bound in with it at some earlier historical period.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "acquisition",
@@ -13818,7 +13828,7 @@
 			"defaultNodes": null,
 			"desc": "contains any descriptive or other information concerning the process by which a manuscript or manuscript part or other object entered the holding institution.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "additions",
@@ -13854,7 +13864,7 @@
 			"defaultNodes": null,
 			"desc": "contains a description of any significant additions found within a manuscript or other object, such as marginalia or other annotations.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "addrLine",
@@ -13890,7 +13900,7 @@
 			"defaultNodes": null,
 			"desc": "contains one line of a postal address.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "age",
@@ -13946,7 +13956,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-age",
+				"type",
 				"unit",
 				"value",
 				"when",
@@ -13960,7 +13970,9 @@
 			"defaultNodes": null,
 			"desc": "specifies the age of a person.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "author",
@@ -14019,7 +14031,7 @@
 			"defaultNodes": null,
 			"desc": "in a bibliographic reference, contains the name(s) of an author, personal or corporate, of a work; for example in the same form as that provided by a recognized bibliographic name authority.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "authority",
@@ -14057,7 +14069,7 @@
 			"defaultNodes": null,
 			"desc": "supplies the name of a person or other agency responsible for making a work available, other than a publisher or distributor.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "bibl",
@@ -14098,7 +14110,7 @@
 			"defaultNodes": null,
 			"desc": "contains a loosely-structured bibliographic citation of which the sub-components may or may not be explicitly tagged.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "biblScope",
@@ -14137,7 +14149,7 @@
 			"defaultNodes": null,
 			"desc": "defines the scope of a bibliographic reference, for example as a list of page numbers, or a named subdivision of a larger work.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "birth",
@@ -14197,7 +14209,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-birth",
+				"type",
 				"unit",
 				"when",
 				"when-custom",
@@ -14210,7 +14222,9 @@
 			"defaultNodes": null,
 			"desc": "contains information about a person's birth, such as its date and place.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "byline",
@@ -14246,7 +14260,7 @@
 			"defaultNodes": null,
 			"desc": "contains the primary statement of responsibility given for a work on its title page or at the head or end of the work.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "camera",
@@ -14284,7 +14298,7 @@
 			"defaultNodes": null,
 			"desc": "describes a particular camera angle or viewpoint in a screen play.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "caption",
@@ -14320,7 +14334,7 @@
 			"defaultNodes": null,
 			"desc": "contains the text of a caption or other text displayed as part of a film script or screenplay.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "castItem",
@@ -14349,7 +14363,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-castItem",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -14358,7 +14372,9 @@
 			"defaultNodes": null,
 			"desc": "contains a single entry within a cast list, describing either a single role or a list of non-speaking roles.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "catDesc",
@@ -14396,7 +14412,7 @@
 			"defaultNodes": null,
 			"desc": "describes some category within a taxonomy or text typology, either in the form of a brief prose description or in terms of the situational parameters used by the TEI formal textDesc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "cell",
@@ -14435,7 +14451,7 @@
 			"defaultNodes": null,
 			"desc": "contains one cell of a table.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "change",
@@ -14495,7 +14511,7 @@
 			"defaultNodes": null,
 			"desc": "documents a change or set of changes made during the production of a source document, or during the revision of an electronic file.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "citedRange",
@@ -14537,7 +14553,7 @@
 			"defaultNodes": null,
 			"desc": "defines the range of cited content, often represented by pages or other units",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "classCode",
@@ -14574,9 +14590,7 @@
 			"defaultNodes": null,
 			"desc": "contains the classification code used for this text in some standard classification system.",
 			"synth": false,
-			"requiredAttrs": [
-				"scheme"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "closer",
@@ -14613,7 +14627,7 @@
 			"defaultNodes": null,
 			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at the end of a division, especially of a letter.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "code",
@@ -14650,7 +14664,7 @@
 			"defaultNodes": null,
 			"desc": "contains literal code from some formal language such as a programming language.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "collation",
@@ -14686,7 +14700,7 @@
 			"defaultNodes": null,
 			"desc": "contains a description of how the leaves, bifolia, or similar objects are physically arranged.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "collection",
@@ -14728,7 +14742,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of a collection of manuscripts or other objects, not necessarily located within a single repository.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "colophon",
@@ -14765,7 +14779,7 @@
 			"defaultNodes": null,
 			"desc": "contains the colophon of an item: that is, a statement providing information regarding the date, place, agency, or reason for production of the manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "condition",
@@ -14801,7 +14815,7 @@
 			"defaultNodes": null,
 			"desc": "contains a description of the physical condition of the manuscript or object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "creation",
@@ -14856,7 +14870,7 @@
 			"defaultNodes": null,
 			"desc": "contains information about the creation of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "custEvent",
@@ -14913,7 +14927,7 @@
 			"defaultNodes": null,
 			"desc": "describes a single event during the custodial history of a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "dateline",
@@ -14949,7 +14963,7 @@
 			"defaultNodes": null,
 			"desc": "contains a brief description of the place, date, time, etc. of production of a letter, newspaper story, or other work, prefixed or suffixed to it as a kind of heading or trailer.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "decoNote",
@@ -14987,7 +15001,7 @@
 			"defaultNodes": null,
 			"desc": "contains a note describing either a decorative component of a manuscript or other object, or a fairly homogenous class of such components.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "depth",
@@ -15033,7 +15047,7 @@
 			"defaultNodes": null,
 			"desc": "contains a measurement from the front to the back of an object, perpendicular to the measurement given by the width element.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "death",
@@ -15093,7 +15107,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-death",
+				"type",
 				"unit",
 				"when",
 				"when-custom",
@@ -15106,7 +15120,9 @@
 			"defaultNodes": null,
 			"desc": "contains information about a person's death, such as its date and place.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "desc",
@@ -15135,7 +15151,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-desc",
+				"type",
 				"versionDate",
 				"xml:base",
 				"xml:id",
@@ -15145,7 +15161,9 @@
 			"defaultNodes": null,
 			"desc": "contains a short description of the purpose, function, or use of its parent element, or when the parent is a documentation element, describes or defines the object being documented. ",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "dim",
@@ -15193,7 +15211,7 @@
 			"defaultNodes": null,
 			"desc": "contains any single measurement forming part of a dimensional specification of some sort.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "distributor",
@@ -15231,7 +15249,7 @@
 			"defaultNodes": null,
 			"desc": "supplies the name of a person or other agency responsible for the distribution of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "docAuthor",
@@ -15269,7 +15287,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of the author of the document, as given on the title page (often but not always contained in a byline).",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "docDate",
@@ -15306,7 +15324,7 @@
 			"defaultNodes": null,
 			"desc": "contains the date of a document, as given on a title page or in a dateline.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "docEdition",
@@ -15342,7 +15360,7 @@
 			"defaultNodes": null,
 			"desc": "contains an edition statement as presented on a title page of a document.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "docImprint",
@@ -15378,7 +15396,7 @@
 			"defaultNodes": null,
 			"desc": "contains the imprint statement (place and date of publication, publisher name), as given (usually) at the foot of a title page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "edition",
@@ -15414,7 +15432,7 @@
 			"defaultNodes": null,
 			"desc": "describes the particularities of one edition of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "editor",
@@ -15473,7 +15491,7 @@
 			"defaultNodes": null,
 			"desc": "contains a secondary statement of responsibility for a bibliographic item, for example the name of an individual, institution or organization, (or of several such) acting as editor, compiler, translator, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "education",
@@ -15524,7 +15542,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-education",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -15536,7 +15554,9 @@
 			"defaultNodes": null,
 			"desc": "contains a description of the educational experience of a person.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "explicit",
@@ -15575,7 +15595,7 @@
 			"defaultNodes": null,
 			"desc": "contains the explicit of a item, that is, the closing words of the text proper, exclusive of any rubric or colophon which might follow it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "extent",
@@ -15611,7 +15631,7 @@
 			"defaultNodes": null,
 			"desc": "describes the approximate size of a text stored on some carrier medium or of some other object, digital or non-digital, specified in any convenient units.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "faith",
@@ -15660,7 +15680,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-faith",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -15672,7 +15692,9 @@
 			"defaultNodes": null,
 			"desc": "specifies the faith, religion, or belief set of a person.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "figDesc",
@@ -15708,7 +15730,7 @@
 			"defaultNodes": null,
 			"desc": "contains a brief prose description of the appearance or content of a graphic figure, for use when documenting an image without displaying it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "filiation",
@@ -15746,7 +15768,7 @@
 			"defaultNodes": null,
 			"desc": "contains information concerning the manuscript or other object's filiation, i.e. its relationship to other surviving manuscripts or other objects of the same text or contents, its protographs, antigraphs and apographs.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "finalRubric",
@@ -15785,7 +15807,7 @@
 			"defaultNodes": null,
 			"desc": "contains the string of words that denotes the end of a text division, often with an assertion as to its author and title, usually set off from the text itself by red ink, by a different size or type of script, or by some other such visual device.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "floruit",
@@ -15852,7 +15874,7 @@
 			"defaultNodes": null,
 			"desc": "contains information about a person's period of activity.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "foliation",
@@ -15888,7 +15910,7 @@
 			"defaultNodes": null,
 			"desc": "describes the numbering system or systems used to count the leaves or pages in a codex or similar object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "formula",
@@ -15925,7 +15947,7 @@
 			"defaultNodes": null,
 			"desc": "contains a mathematical or other formula.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "funder",
@@ -15982,7 +16004,7 @@
 			"defaultNodes": null,
 			"desc": "specifies the name of an individual, institution, or organization responsible for the funding of a project or text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "geo",
@@ -16019,7 +16041,7 @@
 			"defaultNodes": null,
 			"desc": "contains any expression of a set of geographic coordinates, representing a point, line, or area on the surface of the earth in some notation.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "geoDecl",
@@ -16057,7 +16079,7 @@
 			"defaultNodes": null,
 			"desc": "documents the notation and the datum used for geographic coordinates expressed as content of the geo element elsewhere within the document.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "handNote",
@@ -16099,7 +16121,7 @@
 			"defaultNodes": null,
 			"desc": "describes a particular style or hand distinguished within a manuscript.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "head",
@@ -16139,7 +16161,7 @@
 			"defaultNodes": null,
 			"desc": "contains any type of heading, for example the title of a section, or the heading of a list, glossary, manuscript description, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "headItem",
@@ -16175,7 +16197,7 @@
 			"defaultNodes": null,
 			"desc": "contains the heading for the item or gloss column in a glossary list or similar structured list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "headLabel",
@@ -16211,7 +16233,7 @@
 			"defaultNodes": null,
 			"desc": "contains the heading for the label or term column in a glossary list or similar structured list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "height",
@@ -16257,7 +16279,7 @@
 			"defaultNodes": null,
 			"desc": "contains a measurement measured along the axis at a right angle to the bottom of the object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "idno",
@@ -16303,7 +16325,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-idno",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -16315,7 +16337,9 @@
 			"defaultNodes": null,
 			"desc": "supplies any form of identifier used to identify some object, such as a bibliographic item, a person, a title, an organization, etc. in a standardized way.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "imprimatur",
@@ -16351,7 +16375,7 @@
 			"defaultNodes": null,
 			"desc": "contains a formal statement authorizing the publication of a work, sometimes required to appear on a title page or its verso.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "incipit",
@@ -16390,7 +16414,7 @@
 			"defaultNodes": null,
 			"desc": "contains the incipit of a manuscript or similar object item, that is the opening words of the text proper, exclusive of any rubric which might precede it, of sufficient length to identify the work uniquely; such incipits were, in former times, frequently used a means of reference to a work, in place of a title.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "institution",
@@ -16430,7 +16454,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of an organization such as a university or library, with which a manuscript or other object is identified, generally its holding institution.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "item",
@@ -16467,7 +16491,7 @@
 			"defaultNodes": null,
 			"desc": "contains one component of a list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "l",
@@ -16508,7 +16532,7 @@
 			"defaultNodes": null,
 			"desc": "contains a single, possibly incomplete, line of verse.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "label",
@@ -16548,7 +16572,7 @@
 			"defaultNodes": null,
 			"desc": "contains any label or heading used to identify part of a text, typically but not exclusively in a list or glossary.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "langKnown",
@@ -16607,9 +16631,7 @@
 			"defaultNodes": null,
 			"desc": "summarizes the state of a person's linguistic competence, i.e., knowledge of a single language.",
 			"synth": false,
-			"requiredAttrs": [
-				"tag"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "language",
@@ -16647,9 +16669,7 @@
 			"defaultNodes": null,
 			"desc": "characterizes a single language or sublanguage used within a text.",
 			"synth": false,
-			"requiredAttrs": [
-				"ident"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "layout",
@@ -16689,7 +16709,7 @@
 			"defaultNodes": null,
 			"desc": "describes how text is laid out on the page or surface of the object, including information about any ruling, pricking, or other evidence of page-preparation techniques.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "licence",
@@ -16747,7 +16767,7 @@
 			"defaultNodes": null,
 			"desc": "contains information about a licence or other legal agreement applicable to the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "locus",
@@ -16791,7 +16811,7 @@
 			"defaultNodes": null,
 			"desc": "defines a location within a manuscript, manuscript part, or other object typically as a (possibly discontinuous) sequence of folio references.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "measureGrp",
@@ -16833,7 +16853,7 @@
 			"defaultNodes": null,
 			"desc": "contains a group of dimensional specifications which relate to the same object, for example the height and width of a manuscript page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "media",
@@ -16855,7 +16875,7 @@
 				"exclude",
 				"facs",
 				"height",
-				"mimeType-media",
+				"mimeType",
 				"n",
 				"next",
 				"prev",
@@ -16881,9 +16901,8 @@
 			"defaultNodes": null,
 			"desc": "indicates the location of any form of external media such as an audio or video clip etc.",
 			"synth": false,
-			"requiredAttrs": [
-				"mimeType-media",
-				"url"
+			"derivedAttrs": [
+				"mimeType"
 			]
 		},
 		{
@@ -16941,7 +16960,7 @@
 			"defaultNodes": null,
 			"desc": "contains the formalized descriptive title for a meeting or conference, for use in a bibliographic description for an item derived from such a meeting, or as a heading or preamble to publications emanating from it.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "musicNotation",
@@ -16977,7 +16996,7 @@
 			"defaultNodes": null,
 			"desc": "contains description of type of musical notation.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "msName",
@@ -17015,7 +17034,7 @@
 			"defaultNodes": null,
 			"desc": "contains any form of unstructured alternative name used for a manuscript or other object, such as an ocellus nominum, or nickname.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "nationality",
@@ -17066,7 +17085,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-nationality",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -17078,7 +17097,9 @@
 			"defaultNodes": null,
 			"desc": "contains an informal description of a person's present or past nationality or citizenship.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "occupation",
@@ -17131,7 +17152,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-occupation",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -17143,7 +17164,9 @@
 			"defaultNodes": null,
 			"desc": "contains an informal description of a person's trade, profession or occupation.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "opener",
@@ -17180,7 +17203,7 @@
 			"defaultNodes": null,
 			"desc": "groups together dateline, byline, salutation, and similar phrases appearing as a preliminary group at the start of a division, especially of a letter.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "origin",
@@ -17237,7 +17260,7 @@
 			"defaultNodes": null,
 			"desc": "contains any descriptive or other information concerning the origin of a manuscript, manuscript part, or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "p",
@@ -17276,7 +17299,7 @@
 			"defaultNodes": null,
 			"desc": "marks paragraphs in prose.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "postBox",
@@ -17312,7 +17335,7 @@
 			"defaultNodes": null,
 			"desc": "contains a number or other identifier for some postal delivery point other than a street address.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "postCode",
@@ -17348,7 +17371,7 @@
 			"defaultNodes": null,
 			"desc": "contains a numerical or alphanumeric code used as part of a postal address to simplify sorting or delivery of mail.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "principal",
@@ -17405,7 +17428,7 @@
 			"defaultNodes": null,
 			"desc": "supplies the name of the principal researcher responsible for the creation of an electronic text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "provenance",
@@ -17462,7 +17485,7 @@
 			"defaultNodes": null,
 			"desc": "contains any descriptive or other information concerning a single identifiable episode during the history of a manuscript, manuscript part, or other object after its creation but before its acquisition.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "publisher",
@@ -17500,7 +17523,7 @@
 			"defaultNodes": null,
 			"desc": "provides the name of the organization responsible for the publication or distribution of a bibliographic item.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "pubPlace",
@@ -17540,7 +17563,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of the place where a bibliographic item was published.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "quote",
@@ -17580,7 +17603,7 @@
 			"defaultNodes": null,
 			"desc": "contains a phrase or passage attributed by the narrator or author to some agency external to the text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "rendition",
@@ -17620,7 +17643,7 @@
 			"defaultNodes": null,
 			"desc": "supplies information about the rendition or appearance of one or more elements in the source text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "repository",
@@ -17660,7 +17683,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of a repository within which manuscripts or other objects are stored, possibly forming part of an institution.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "residence",
@@ -17711,7 +17734,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-residence",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -17723,7 +17746,9 @@
 			"defaultNodes": null,
 			"desc": "describes a person's present or past places of residence.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "resp",
@@ -17780,7 +17805,7 @@
 			"defaultNodes": null,
 			"desc": "contains a phrase describing the nature of a person's intellectual responsibility, or an organization's role in the production or distribution of a work.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "role",
@@ -17816,7 +17841,7 @@
 			"defaultNodes": null,
 			"desc": "contains the name of a dramatic role, as given in a cast list.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "roleDesc",
@@ -17852,7 +17877,7 @@
 			"defaultNodes": null,
 			"desc": "describes a character's role in a drama.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "rubric",
@@ -17891,7 +17916,7 @@
 			"defaultNodes": null,
 			"desc": "contains the text of any rubric or heading attached to a particular manuscript item, that is, a string of words through which a manuscript or other object signals the beginning of a text division, often with an assertion as to its author and title, which is in some way set off from the text itself, typically in red ink, or by use of different size or type of script, or some other such visual device.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "said",
@@ -17931,7 +17956,7 @@
 			"defaultNodes": null,
 			"desc": "indicates passages thought or spoken aloud, whether explicitly indicated in the source or not, whether directly or indirectly reported, whether by real people or fictional characters.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "salute",
@@ -17968,7 +17993,7 @@
 			"defaultNodes": null,
 			"desc": "contains a salutation or greeting prefixed to a foreword, dedicatory epistle, or other division of a text, or the salutation in the closing of a letter, preface, etc.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "scriptNote",
@@ -18010,7 +18035,7 @@
 			"defaultNodes": null,
 			"desc": "describes a particular script distinguished within the description of a manuscript or similar resource.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "series",
@@ -18046,7 +18071,7 @@
 			"defaultNodes": null,
 			"desc": "contains information about the series in which a book or other bibliographic item has appeared.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "sex",
@@ -18093,7 +18118,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-sex",
+				"type",
 				"value",
 				"when",
 				"when-custom",
@@ -18106,7 +18131,9 @@
 			"defaultNodes": null,
 			"desc": "specifies the sex of a person.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "signed",
@@ -18143,7 +18170,7 @@
 			"defaultNodes": null,
 			"desc": "contains the closing salutation, etc., appended to a foreword, dedicatory epistle, or other division of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "socecStatus",
@@ -18196,7 +18223,7 @@
 				"to",
 				"to-custom",
 				"to-iso",
-				"type-socecStatus",
+				"type",
 				"when",
 				"when-custom",
 				"when-iso",
@@ -18208,7 +18235,9 @@
 			"defaultNodes": null,
 			"desc": "contains an informal description of a person's perceived social or economic status.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "sound",
@@ -18238,7 +18267,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-sound",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -18247,7 +18276,9 @@
 			"defaultNodes": null,
 			"desc": "describes a sound effect or musical sequence specified within a screen play or radio script.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "source",
@@ -18283,7 +18314,7 @@
 			"defaultNodes": null,
 			"desc": "describes the original source for the information contained with a manuscript or object description.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "speaker",
@@ -18319,7 +18350,7 @@
 			"defaultNodes": null,
 			"desc": "contains a specialized form of heading or label, giving the name of one or more speakers in a dramatic text or fragment.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "sponsor",
@@ -18376,7 +18407,7 @@
 			"defaultNodes": null,
 			"desc": "specifies the name of a sponsoring organization or institution.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "stage",
@@ -18416,7 +18447,7 @@
 			"defaultNodes": null,
 			"desc": "contains any kind of stage direction within a dramatic text or fragment.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "street",
@@ -18452,7 +18483,7 @@
 			"defaultNodes": null,
 			"desc": "contains a full street address including any name or number identifying a building as well as the name of the street or route on which it is located.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "summary",
@@ -18488,7 +18519,7 @@
 			"defaultNodes": null,
 			"desc": "contains an overview of the available information concerning some aspect of an item or object (for example, its intellectual content, history, layout, typography etc.) as a complement or alternative to the more detailed information carried by more specific elements.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "support",
@@ -18524,7 +18555,7 @@
 			"defaultNodes": null,
 			"desc": "contains a description of the materials etc. which make up the physical support for the written part of a manuscript or other object.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "surrogates",
@@ -18560,7 +18591,7 @@
 			"defaultNodes": null,
 			"desc": "contains information about any representations of the manuscript or other object being described which may exist in the holding institution or elsewhere.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "tagUsage",
@@ -18599,9 +18630,7 @@
 			"defaultNodes": null,
 			"desc": "documents the usage of a specific element within a specified document.",
 			"synth": false,
-			"requiredAttrs": [
-				"gi"
-			]
+			"derivedAttrs": []
 		},
 		{
 			"name": "tech",
@@ -18631,7 +18660,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-tech",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -18640,7 +18669,9 @@
 			"defaultNodes": null,
 			"desc": "describes a special-purpose stage direction that is not meant for the actors.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "textLang",
@@ -18678,7 +18709,7 @@
 			"defaultNodes": null,
 			"desc": "describes the languages and writing systems identified within the bibliographic work being described, rather than its description.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "titlePart",
@@ -18707,7 +18738,7 @@
 				"style",
 				"subtype",
 				"synch",
-				"type-titlePart",
+				"type",
 				"xml:base",
 				"xml:id",
 				"xml:lang",
@@ -18716,7 +18747,9 @@
 			"defaultNodes": null,
 			"desc": "contains a subsection or division of the title of a work, as indicated on a title page.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "trailer",
@@ -18756,7 +18789,7 @@
 			"defaultNodes": null,
 			"desc": "contains a closing title or footer appearing at the end of a division of a text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "typeNote",
@@ -18798,7 +18831,7 @@
 			"defaultNodes": null,
 			"desc": "describes a particular font or other significant typographic feature distinguished within the description of a printed resource.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "u",
@@ -18843,7 +18876,7 @@
 			"defaultNodes": null,
 			"desc": "contains a stretch of speech usually preceded and followed by silence or by a change of speaker.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "view",
@@ -18879,7 +18912,7 @@
 			"defaultNodes": null,
 			"desc": "describes the visual context of some part of a screen play in terms of what the spectator sees, generally independent of any dialogue.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "width",
@@ -18925,7 +18958,7 @@
 			"defaultNodes": null,
 			"desc": "contains a measurement of an object along the axis parallel to its bottom, e.g. perpendicular to the spine of a book or codex.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "writing",
@@ -18970,7 +19003,7 @@
 			"defaultNodes": null,
 			"desc": "contains a passage of written text revealed to participants in the course of a spoken text.",
 			"synth": false,
-			"requiredAttrs": []
+			"derivedAttrs": []
 		},
 		{
 			"name": "textNode0",
