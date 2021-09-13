@@ -1,5 +1,12 @@
 const fs = require('fs');
 
+function getAttrSpec( attrID, elementID, teiSchema ) {
+    const elementSpec = teiSchema.elements[elementID]
+    if(!elementSpec) debugger
+    if( elementSpec.fcType === 'textNodes' || elementSpec.fcType === 'globalNodes' ) return teiSchema.attrs[attrID]
+    return elementSpec.derivedAttrs.includes(attrID) ? teiSchema.attrs[`${attrID}-${elementID}`] : teiSchema.attrs[attrID]
+}
+
 const createConfig = function createConfig(teiSchema) {
     const { attrs } = teiSchema
 
@@ -19,7 +26,7 @@ const createConfig = function createConfig(teiSchema) {
         if( validAttrs ) {
             for( const attr of validAttrs ) {
                 configElement.attrState[attr] = { active: false }        
-                const { valListType, dataType } = teiSchema.attrs[attr]
+                const { valListType, dataType } = getAttrSpec(attr,element.name,teiSchema)
                 if( dataType === 'teidata.enumerated' ) {
                     configElement.attrState[attr].vocabID = (valListType !== 'open') ?
                         getDefaultVocabKey('*',attr) :
@@ -36,7 +43,7 @@ const createConfig = function createConfig(teiSchema) {
 
     // initialize vocabs
     for( const attr of Object.values(attrs) ) {
-        const { valList, valListType } = attr
+        const { valList, valListType } = attrs
         if( valList && valListType !== 'open' ) {
             const vocabKey = getDefaultVocabKey('*',attr.ident)
             const vocab = []
