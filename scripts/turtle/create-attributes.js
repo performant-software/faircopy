@@ -2,6 +2,24 @@ const {getAllElements} = require('./parse-util')
 
 const createAttributes = function createAttributes( elements, elementGroups, specs ) {
 
+    function mergeAttrs( baseAttrs, changedAttrs ) {
+        const mergedAttrs = { ...baseAttrs }
+        for( const key of Object.keys(changedAttrs) ) {
+            if( changedAttrs[key] !== null ) mergedAttrs[key] = changedAttrs[key]
+        }
+        return mergedAttrs
+    }
+
+    function replaceEntry( originalIdent, newIdent, indentList ) {
+        const origIndex = indentList.findIndex( ident => ident === originalIdent )
+        if( origIndex === -1 ) return
+        if( newIdent ) { 
+            indentList.splice(origIndex,1,newIdent)
+        } else {
+            indentList.splice(origIndex,1)
+        }
+    }
+
     function getValidElementName(element) {
         // for synthetic elements, only add attributes to inter marks
         if( element.synth ) {
@@ -15,14 +33,16 @@ const createAttributes = function createAttributes( elements, elementGroups, spe
     // for each element, add the attrs to its list of possible attrs
     const findAttrs = (specIdent) => {
         const elSpec = specs[specIdent]
-        let elementAttrs = elSpec.attrs ? [ ...elSpec.attrs ] : []
+        let classAttrs = []
 
         if( elSpec.memberships ) {
             for( const membership of elSpec.memberships ) {                
-                elementAttrs = elementAttrs.concat( findAttrs( membership ) )
+                classAttrs = classAttrs.concat( findAttrs( membership ) )
             }    
         }
-        return elementAttrs
+
+        const elementAttrs = elSpec.attrs ? [ ...elSpec.attrs ] : []
+        return classAttrs.concat( elementAttrs )
     }
 
     const attrDefs = {}
@@ -35,29 +55,44 @@ const createAttributes = function createAttributes( elements, elementGroups, spe
         if( !elementName ) continue
 
         const attrs = findAttrs(elementName)
-        const validAttrs = []
+        const validAttrs = [], requiredAttrs = []
         for( const attr of attrs ) {
+            // interpret mode attribute based on https://tei-c.org/release/doc/tei-p5-doc/en/html/ref-att.combinable.html
             if( !attrDefs[attr.ident] ) {
+                if( attr.mode === 'change' ) throw new Error(`Attribute definition changed before it was defined for ${attr.ident} in ${elementName}.`)
                 attrDefs[attr.ident] = attr
+                validAttrs.push( attr.ident )
+                if( attr.usage === 'req' ) requiredAttrs.push( attr.ident )    
+            } else if( attr.mode === 'change' ) {
+                // this is a definition of this attribute specific to this element
+                const mergedAttrDef = mergeAttrs( attrDefs[attr.ident], attr )
+                const mergeIdent = `${attr.ident}-${elementName}`
+                replaceEntry( attr.ident, mergeIdent, validAttrs )
+                if( mergedAttrDef.usage === 'req' ) {
+                    if( attrDefs[attr.ident].usage === 'req' ) {
+                        replaceEntry( attr.ident, mergeIdent, requiredAttrs )                    
+                    } else {
+                        requiredAttrs.push(mergeIdent)                  
+                    }
+                } 
+                attrDefs[mergeIdent] = mergedAttrDef
+            } else if( attr.mode === 'delete') {
+                replaceEntry( attr.ident, null, validAttrs )
+                replaceEntry( attr.ident, null, requiredAttrs )
+            } else {
+                validAttrs.push( attr.ident )
+                if( attr.usage === 'req' ) requiredAttrs.push( attr.ident )    
             }
-            validAttrs.push( attr.ident )
         }
         element.validAttrs = validAttrs.sort()
-    }
-
-    // convert attr definitions into FairCopy data format
-    const attrs = {}
-    for( const attr of Object.values(attrDefs) ) {
-        attrs[attr.ident] = {
-            ...attr,
-        }
+        element.requiredAttrs = requiredAttrs.sort()
     }
 
     // These attributes are treated specially
-    attrs['xml:id'].hidden = true
-    attrs['xml:base'].hidden = true
+    attrDefs['xml:id'].hidden = true
+    attrDefs['xml:base'].hidden = true
 
-    return attrs
+    return attrDefs
 }
 
 // EXPORTS /////////////

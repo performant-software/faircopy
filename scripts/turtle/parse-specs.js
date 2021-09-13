@@ -29,7 +29,7 @@ const load = function load(teiSpecsDir, elementIdents) {
                     loadSpec(macroIdent)
                     moduleSpec.content = specs[macroIdent].content
                 }
-                // TODO resolve attrRefs
+                // presently, we don't do anything with attRef, which isn't used as of TEI 4.3.0
             }
         }
     }
@@ -56,6 +56,8 @@ function parseClassSpec( el ) {
 
 function parseAttDef( el ) {
     const ident = el.getAttribute('ident')
+    const usage = el.getAttribute('usage')
+    const mode = el.getAttribute('mode')
     const description = loadLocalizedString(el, "desc")
     const datatypeEl = el.getElementsByTagName('datatype')[0]
     let dataType = null, minOccurs = null, maxOccurs = null
@@ -82,7 +84,7 @@ function parseAttDef( el ) {
         }
     }
    
-    return { ident, description, dataType, minOccurs, maxOccurs, valList, valListType } //, usage, defaultVal }
+    return { ident, description, dataType, minOccurs, maxOccurs, valList, valListType, usage, mode } // defaultVal }
 }
 
 function parseAttList( el ) {    
