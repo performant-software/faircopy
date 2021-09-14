@@ -61,6 +61,11 @@ function scanAttrs(attrs, elementID, teiSchema, attrState, parentLocalID, idMap)
         if( attrState && attrState[key] && attrSpec.hidden !== true && attrState[key].active === false && value && value !== "" ) {
             return true
         }
+        // flag required attrs that aren't active
+        if( attrSpec && attrSpec.usage === 'req' && attrState[key].active === false ) {
+            return true
+        }
+
         // flag activate attrs that don't validate
         if( value && attrSpec ) {
             const validState = validateAttribute(value,parentLocalID,idMap,attrSpec)
