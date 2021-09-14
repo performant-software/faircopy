@@ -24,8 +24,8 @@ const createConfig = function createConfig(teiSchema) {
         }
         if( validAttrs ) {
             for( const attr of validAttrs ) {
-                configElement.attrState[attr] = { active: false }        
-                const { valList, valListType, dataType, mode } = getAttrSpec(attr,element.name,teiSchema)
+                const { valList, valListType, dataType, mode, usage } = getAttrSpec(attr,element.name,teiSchema)
+                configElement.attrState[attr] = { active: (usage === 'req') }        
                 if( dataType === 'teidata.enumerated' ) {
                     if( valListType !== 'open' ) {
                         if( mode !== 'change' ) {

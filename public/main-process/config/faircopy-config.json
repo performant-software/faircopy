@@ -906,7 +906,7 @@
 					"active": false
 				},
 				"target": {
-					"active": false
+					"active": true
 				},
 				"targetLang": {
 					"active": false
@@ -915,7 +915,7 @@
 					"active": false
 				},
 				"xml:id": {
-					"active": false
+					"active": true
 				},
 				"xml:lang": {
 					"active": false
@@ -1128,7 +1128,7 @@
 					"active": false
 				},
 				"ident": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -1202,7 +1202,7 @@
 					"vocabID": "application[type]"
 				},
 				"version": {
-					"active": false
+					"active": true
 				},
 				"when": {
 					"active": false
@@ -3083,7 +3083,7 @@
 					"active": false
 				},
 				"matchPattern": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -3101,7 +3101,7 @@
 					"active": false
 				},
 				"replacementPattern": {
-					"active": false
+					"active": true
 				},
 				"resp": {
 					"active": false
@@ -5301,7 +5301,7 @@
 					"active": false
 				},
 				"url": {
-					"active": false
+					"active": true
 				},
 				"width": {
 					"active": false
@@ -8776,7 +8776,7 @@
 					"active": false
 				},
 				"name": {
-					"active": false
+					"active": true
 				},
 				"next": {
 					"active": false
@@ -10502,10 +10502,10 @@
 					"active": false
 				},
 				"ident": {
-					"active": false
+					"active": true
 				},
 				"matchPattern": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -10523,7 +10523,7 @@
 					"active": false
 				},
 				"replacementPattern": {
-					"active": false
+					"active": true
 				},
 				"resp": {
 					"active": false
@@ -11335,7 +11335,7 @@
 					"active": false
 				},
 				"name": {
-					"active": false
+					"active": true
 				},
 				"next": {
 					"active": false
@@ -11743,7 +11743,7 @@
 					"vocabID": "schemaRef[type]"
 				},
 				"url": {
-					"active": false
+					"active": true
 				},
 				"xml:base": {
 					"active": false
@@ -13756,7 +13756,7 @@
 					"active": false
 				},
 				"ident": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -13792,7 +13792,7 @@
 					"active": false
 				},
 				"version": {
-					"active": false
+					"active": true
 				},
 				"xml:base": {
 					"active": false
@@ -15172,7 +15172,7 @@
 					"active": false
 				},
 				"property": {
-					"active": false
+					"active": true
 				},
 				"rend": {
 					"active": false
@@ -15199,7 +15199,7 @@
 					"active": false
 				},
 				"use": {
-					"active": false
+					"active": true
 				},
 				"xml:base": {
 					"active": false
@@ -15262,7 +15262,7 @@
 					"active": false
 				},
 				"fromUnit": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -15328,7 +15328,7 @@
 					"active": false
 				},
 				"toUnit": {
-					"active": false
+					"active": true
 				},
 				"when": {
 					"active": false
@@ -17444,7 +17444,7 @@
 					"active": false
 				},
 				"location": {
-					"active": false,
+					"active": true,
 					"vocabID": "*[location]"
 				},
 				"method": {
@@ -32535,7 +32535,7 @@
 					"active": false
 				},
 				"tag": {
-					"active": false
+					"active": true
 				},
 				"to": {
 					"active": false
@@ -32595,7 +32595,7 @@
 					"active": false
 				},
 				"ident": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -33199,7 +33199,7 @@
 					"active": false
 				},
 				"mimeType": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
@@ -33249,7 +33249,7 @@
 					"vocabID": "media[type]"
 				},
 				"url": {
-					"active": false
+					"active": true
 				},
 				"width": {
 					"active": false
@@ -37090,7 +37090,7 @@
 					"active": false
 				},
 				"gi": {
-					"active": false
+					"active": true
 				},
 				"n": {
 					"active": false
