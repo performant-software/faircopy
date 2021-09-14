@@ -2808,7 +2808,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "correspAction[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -6793,7 +6793,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "list[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -11101,7 +11101,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "recording[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -16439,7 +16439,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "move[type]"
 				},
 				"where": {
 					"active": false
@@ -24673,7 +24673,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "num[type]"
 				},
 				"value": {
 					"active": false,
@@ -27619,7 +27619,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "castItem[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -29346,7 +29346,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "desc[type]"
 				},
 				"versionDate": {
 					"active": false
@@ -31910,7 +31910,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "idno[type]"
 				},
 				"when": {
 					"active": false
@@ -37212,7 +37212,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "tech[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -37370,7 +37370,7 @@
 				},
 				"type": {
 					"active": false,
-					"vocabID": "*[type]"
+					"vocabID": "titlePart[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -38192,5 +38192,178 @@
 			}
 		}
 	},
-	"vocabs": {}
+	"vocabs": {
+		"correspAction[type]": [
+			[
+				"sent",
+				false
+			],
+			[
+				"received",
+				false
+			],
+			[
+				"transmitted",
+				false
+			],
+			[
+				"redirected",
+				false
+			],
+			[
+				"forwarded",
+				false
+			]
+		],
+		"list[type]": [
+			[
+				"gloss",
+				false
+			],
+			[
+				"index",
+				false
+			],
+			[
+				"instructions",
+				false
+			],
+			[
+				"litany",
+				false
+			],
+			[
+				"syllogism",
+				false
+			]
+		],
+		"recording[type]": [
+			[
+				"audio",
+				false
+			],
+			[
+				"video",
+				false
+			]
+		],
+		"move[type]": [
+			[
+				"entrance",
+				false
+			],
+			[
+				"exit",
+				false
+			],
+			[
+				"onStage",
+				false
+			]
+		],
+		"num[type]": [
+			[
+				"cardinal",
+				false
+			],
+			[
+				"ordinal",
+				false
+			],
+			[
+				"fraction",
+				false
+			],
+			[
+				"percentage",
+				false
+			]
+		],
+		"castItem[type]": [
+			[
+				"role",
+				false
+			],
+			[
+				"list",
+				false
+			]
+		],
+		"desc[type]": [
+			[
+				"deprecationInfo",
+				false
+			]
+		],
+		"idno[type]": [
+			[
+				"ISBN",
+				false
+			],
+			[
+				"ISSN",
+				false
+			],
+			[
+				"DOI",
+				false
+			],
+			[
+				"URI",
+				false
+			],
+			[
+				"VIAF",
+				false
+			],
+			[
+				"ESTC",
+				false
+			],
+			[
+				"OCLC",
+				false
+			]
+		],
+		"tech[type]": [
+			[
+				"light",
+				false
+			],
+			[
+				"sound",
+				false
+			],
+			[
+				"prop",
+				false
+			],
+			[
+				"block",
+				false
+			]
+		],
+		"titlePart[type]": [
+			[
+				"main",
+				false
+			],
+			[
+				"sub",
+				false
+			],
+			[
+				"alt",
+				false
+			],
+			[
+				"short",
+				false
+			],
+			[
+				"desc",
+				false
+			]
+		]
+	}
 }

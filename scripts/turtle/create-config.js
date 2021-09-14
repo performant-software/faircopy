@@ -25,11 +25,26 @@ const createConfig = function createConfig(teiSchema) {
         if( validAttrs ) {
             for( const attr of validAttrs ) {
                 configElement.attrState[attr] = { active: false }        
-                const { valListType, dataType } = getAttrSpec(attr,element.name,teiSchema)
+                const { valList, valListType, dataType, mode } = getAttrSpec(attr,element.name,teiSchema)
                 if( dataType === 'teidata.enumerated' ) {
-                    configElement.attrState[attr].vocabID = (valListType !== 'open') ?
-                        getDefaultVocabKey('*',attr) :
-                        getDefaultVocabKey(element.name,attr)
+                    if( valListType !== 'open' ) {
+                        if( mode !== 'change' ) {
+                            // use globally defined vocab
+                            configElement.attrState[attr].vocabID = getDefaultVocabKey('*',attr)
+                        } else {
+                            // use element specific vocab
+                            const vocabKey = getDefaultVocabKey(element.name,attr)
+                            configElement.attrState[attr].vocabID = vocabKey
+                            const vocab = []
+                            for( const val of valList ) {
+                                vocab.push([val.ident, false])
+                            }
+                            vocabs[vocabKey] = vocab 
+                        }
+                    } else {
+                        // vocab not predefinied, user creates element specific 
+                        configElement.attrState[attr].vocabID = getDefaultVocabKey(element.name,attr)
+                    }
                 }
             }
         }
@@ -40,7 +55,7 @@ const createConfig = function createConfig(teiSchema) {
     elements.hi.attrState.rend.active = true
     elements.ref.attrState.target.active = true
 
-    // initialize vocabs
+    // initialize global vocabs
     for( const attr of Object.values(attrs) ) {
         const { valList, valListType } = attrs
         if( valList && valListType !== 'open' ) {
