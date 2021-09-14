@@ -1,8 +1,7 @@
 const fs = require('fs');
 
 function getAttrSpec( attrID, elementID, teiSchema ) {
-    const elementSpec = teiSchema.elements[elementID]
-    if(!elementSpec) debugger
+    const elementSpec = teiSchema.elements.find( element => element.name === elementID )
     if( elementSpec.fcType === 'textNodes' || elementSpec.fcType === 'globalNodes' ) return teiSchema.attrs[attrID]
     return elementSpec.derivedAttrs.includes(attrID) ? teiSchema.attrs[`${attrID}-${elementID}`] : teiSchema.attrs[attrID]
 }

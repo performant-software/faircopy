@@ -47,22 +47,32 @@ const createAttributes = function createAttributes( elements, elementGroups, spe
         const attrs = findAttrs(elementName)
         const validAttrs = [], derivedAttrs = []
         for( const attr of attrs ) {
-            // interpret mode attribute based on https://tei-c.org/release/doc/tei-p5-doc/en/html/ref-att.combinable.html
-            if( !attrDefs[attr.ident] ) {
-                if( attr.mode === 'change' ) throw new Error(`Attribute definition changed before it was defined for ${attr.ident} in ${elementName}.`)
-                attrDefs[attr.ident] = attr
-                validAttrs.push( attr.ident )
-            } else if( attr.mode === 'change' ) {
-                // this is a definition of this attribute specific to this element
-                const mergedAttrDef = mergeAttrs( attrDefs[attr.ident], attr )
-                const mergeIdent = `${attr.ident}-${elementName}`
-                derivedAttrs.push( attr.ident )
-                attrDefs[mergeIdent] = mergedAttrDef
-            } else if( attr.mode === 'delete') {
-                const origIndex = validAttrs.findIndex( ident => ident === attr.ident )
-                if( origIndex !== -1 ) validAttrs.splice(origIndex,1)
+            // if this is an attrRef, find the referenced attribute and include that
+            if( attr.ref ) {
+                if( !attrDefs[attr.name] ) {
+                    const elSpec = specs[attr.attClass]
+                    const attrRef = elSpec.attrs.find( attr => attr.ident === attr.name )
+                    attrDefs[attrRef.ident] = attrRef
+                }
+                validAttrs.push(attr.name)
             } else {
-                validAttrs.push( attr.ident )
+                // interpret mode attribute based on https://tei-c.org/release/doc/tei-p5-doc/en/html/ref-att.combinable.html
+                if( !attrDefs[attr.ident] ) {
+                    if( attr.mode === 'change' ) throw new Error(`Attribute definition changed before it was defined for ${attr.ident} in ${elementName}.`)
+                    attrDefs[attr.ident] = attr
+                    validAttrs.push( attr.ident )
+                } else if( attr.mode === 'change' ) {
+                    // this is a definition of this attribute specific to this element
+                    const mergedAttrDef = mergeAttrs( attrDefs[attr.ident], attr )
+                    const mergeIdent = `${attr.ident}-${elementName}`
+                    derivedAttrs.push( attr.ident )
+                    attrDefs[mergeIdent] = mergedAttrDef
+                } else if( attr.mode === 'delete') {
+                    const origIndex = validAttrs.findIndex( ident => ident === attr.ident )
+                    if( origIndex !== -1 ) validAttrs.splice(origIndex,1)
+                } else {
+                    validAttrs.push( attr.ident )
+                }
             }
         }
         element.validAttrs = validAttrs.sort()

@@ -87,6 +87,12 @@ function parseAttDef( el ) {
     return { ident, description, dataType, minOccurs, maxOccurs, valList, valListType, usage, mode } // defaultVal }
 }
 
+function parseAttRef( el ) {
+    const attClass = el.getAttribute('class')
+    const name = el.getAttribute('name')
+    return { ref: true, attClass, name }
+}
+
 function parseAttList( el ) {    
     const attList = []
     const attDefEls = el.getElementsByTagName('attDef')
@@ -94,11 +100,10 @@ function parseAttList( el ) {
         const attDefEl = attDefEls[i]
         attList.push( parseAttDef(attDefEl) )
     }
-    // for refs, just return a string
     const attRefEls = el.getElementsByTagName('attRef')
     for( let i=0; i < attRefEls.length; i++ ) {
         const attRefEl = attRefEls[i]
-        attList.push( attRefEl )
+        attList.push( parseAttRef(attRefEl) )
     }
     
     // TODO attList - collapse nested attLists.. do these exist? 

@@ -13,6 +13,8 @@
     "gap": "fa-dot-circle",
     "gb": "fa-copy",
     "handShift": "fa-hand-point-right",
+    "lacunaEnd": "fa-chevron-square-left",
+    "lacunaStart": "fa-chevron-square-right",
     "lb": "fa-angle-double-right",
     "link": "fa-link",
     "metamark": "fa-map-marker-question",
@@ -29,5 +31,8 @@
     "subst": "fa-random",
     "substJoin": "fa-code-merge",
     "undo": "fa-undo",
-    "when": "fa-calendar"
+    "when": "fa-calendar",
+    "witEnd": "fa-chevron-left",
+    "witStart": "fa-chevron-right",
+    "variantEncoding": "fa-book"
 }
