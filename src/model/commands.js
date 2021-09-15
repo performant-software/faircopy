@@ -146,7 +146,29 @@ export function createValidNode( elementID, content, schema, elements ) {
             }    
             fragment = Fragment.from(nodes)
         } else {
-            fragment = content
+            let hasTextNode = false
+            for( let i=0; i < content.childCount; i++ ) {
+                const contentChild = content.child(i)
+                if( contentChild.type.name.startsWith('textNode') ) {
+                    hasTextNode = true
+                    break
+                }
+            }
+            if( hasTextNode ) {
+                // if any of the nodes in the fragment are text nodes, 
+                // the content must be wrapped in the first default node
+                let nodes = [], first = true
+                for( const defaultNode of defaultNodes ) {
+                    const childContent = first ? content : Fragment.empty
+                    first = false
+                    const node = createValidNode( defaultNode, childContent, schema, elements )
+                    if( !node ) return null
+                    nodes.push(node)
+                }    
+                fragment = Fragment.from(nodes)
+            } else {
+                fragment = content
+            }
         }
         if( !nodeType.validContent(fragment) ) return null
         node = nodeType.create({}, fragment)
