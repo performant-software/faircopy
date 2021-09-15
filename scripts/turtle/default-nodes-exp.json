@@ -89,7 +89,7 @@
     "listRelation": ["relation"],
     "listWit": ["witness"],
     "location": ["geo"],
-    "monogr": ["title"],
+    "monogr": ["title","imprint"],
     "msContents": [ "p" ],
     "msDesc": ["msIdentifier"],
     "msFrag": ["msIdentifier"],

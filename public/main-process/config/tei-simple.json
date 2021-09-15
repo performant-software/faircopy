@@ -3884,7 +3884,8 @@
 				"xml:space"
 			],
 			"defaultNodes": [
-				"title"
+				"title",
+				"imprint"
 			],
 			"desc": "contains bibliographic elements describing an item (e.g. a book or journal) published as an independent item (i.e. as a separate physical object).",
 			"synth": false,
