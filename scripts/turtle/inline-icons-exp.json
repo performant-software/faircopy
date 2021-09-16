@@ -28,6 +28,7 @@
     "refState": "fa-book",
     "shift": "fa-tilde",
     "space": "fa-horizontal-rule",
+    "span": "fa-comment-lines",
     "subst": "fa-random",
     "substJoin": "fa-code-merge",
     "undo": "fa-undo",

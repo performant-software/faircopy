@@ -64,6 +64,7 @@
     "hyphenation": ["p"],
     "imprint": ["pubPlace"],
     "incident": ["desc"],
+    "interpGrp": ["interp"],
     "interpretation": ["p"],
     "join": ["desc"],
     "joinGrp": ["join"],

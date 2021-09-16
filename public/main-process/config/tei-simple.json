@@ -2687,6 +2687,48 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "interpGrp",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_descLike* interp+)",
+			"group": "model_global model_standOffPart model_global_meta",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"inst",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"interp"
+			],
+			"desc": "collects together a set of related interpretations which share responsibility or type.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "interpretation",
 			"pmType": "node",
 			"fcType": "hard",
@@ -8558,6 +8600,66 @@
 			"synth": true
 		},
 		{
+			"name": "span",
+			"pmType": "inline-node",
+			"fcType": "asides",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"evaluate",
+				"exclude",
+				"facs",
+				"from",
+				"inst",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"target",
+				"targetLang",
+				"to",
+				"type",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"icon": "fa-comment-lines",
+			"group": "model_global_i model_standOffPart_i model_global_meta_i",
+			"defaultNodes": null,
+			"desc": "associates an interpretative annotation directly with a span of text.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "spanX",
+			"pmType": "node",
+			"fcType": "asides",
+			"isolating": true,
+			"content": "(textNode1|model_limitedPhrase|model_global)*",
+			"synth": true
+		},
+		{
+			"name": "spanDoc",
+			"pmType": "node",
+			"fcType": "docNodes",
+			"isolating": true,
+			"content": "spanX",
+			"synth": true
+		},
+		{
 			"name": "subst",
 			"pmType": "inline-node",
 			"fcType": "asides",
@@ -8756,7 +8858,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -8852,7 +8954,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -8958,7 +9060,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_personPart model_persStateLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9081,7 +9183,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9179,7 +9281,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9277,7 +9379,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9387,7 +9489,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9490,7 +9592,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9602,7 +9704,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9696,7 +9798,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9802,7 +9904,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -9935,7 +10037,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10032,7 +10134,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10121,7 +10223,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10238,7 +10340,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10338,7 +10440,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10438,7 +10540,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10573,7 +10675,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10708,7 +10810,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10806,7 +10908,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -10904,7 +11006,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11026,7 +11128,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11148,7 +11250,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart model_settingPart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11249,7 +11351,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11329,7 +11431,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_annotationPart_body model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11410,7 +11512,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11508,7 +11610,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11620,7 +11722,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11724,7 +11826,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11813,7 +11915,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_lPart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11893,7 +11995,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -11983,7 +12085,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12076,7 +12178,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12181,7 +12283,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12275,7 +12377,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12344,7 +12446,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12426,7 +12528,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12521,7 +12623,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12629,7 +12731,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike model_msItemPart model_msQuoteLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12738,7 +12840,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12827,7 +12929,7 @@
 			"pmType": "node",
 			"fcType": "inters",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"defaultNodes": null,
 			"validAttrs": [
@@ -12931,6 +13033,49 @@
 			],
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"desc": "describes the system used to ensure correct ordering of the quires or similar making up a codex, incunable, or other object typically by means of annotations at the foot of the page.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "cl",
+			"pmType": "mark",
+			"fcType": "marks",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"datcat",
+				"exclude",
+				"facs",
+				"function",
+				"met",
+				"n",
+				"next",
+				"notation",
+				"part",
+				"prev",
+				"real",
+				"rend",
+				"rendition",
+				"resp",
+				"rhyme",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"valueDatcat",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_segLike",
+			"desc": "represents a grammatical clause.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -13619,6 +13764,49 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "phr",
+			"pmType": "mark",
+			"fcType": "marks",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"datcat",
+				"exclude",
+				"facs",
+				"function",
+				"met",
+				"n",
+				"next",
+				"notation",
+				"part",
+				"prev",
+				"real",
+				"rend",
+				"rendition",
+				"resp",
+				"rhyme",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"valueDatcat",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"group": "model_phrase model_segLike",
+			"desc": "represents a grammatical phrase.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "rs",
 			"pmType": "mark",
 			"fcType": "marks",
@@ -14012,7 +14200,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"validAttrs": [
 				"ana",
@@ -14053,7 +14241,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
 			"validAttrs": [
 				"ana",
@@ -14091,7 +14279,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
 			"validAttrs": [
 				"ana",
@@ -14129,7 +14317,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -14184,7 +14372,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
 			"validAttrs": [
 				"ana",
@@ -14220,7 +14408,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart",
 			"validAttrs": [
 				"ana",
@@ -14256,7 +14444,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -14328,7 +14516,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
@@ -14387,7 +14575,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "model_publicationStmtPart_agency",
 			"validAttrs": [
 				"ana",
@@ -14425,7 +14613,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode4|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
+			"content": "(textNode5|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
 			"group": "model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -14466,7 +14654,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart",
 			"validAttrs": [
 				"ana",
@@ -14505,7 +14693,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart",
 			"validAttrs": [
 				"ana",
@@ -14580,7 +14768,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_phrase|docAuthor|model_global)*",
+			"content": "(textNode3|model_phrase|docAuthor|model_global)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -14616,7 +14804,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
@@ -14654,7 +14842,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
@@ -14690,7 +14878,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_castItemPart|model_phrase|model_global)*",
+			"content": "(textNode3|model_castItemPart|model_phrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -14730,7 +14918,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode5|model_limitedPhrase)*",
+			"content": "(textNode6|model_limitedPhrase)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -14768,7 +14956,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -14807,7 +14995,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -14867,7 +15055,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -14909,7 +15097,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -14946,7 +15134,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|signed|dateline|salute|model_phrase|model_global)*",
+			"content": "(textNode3|signed|dateline|salute|model_phrase|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
 			"validAttrs": [
 				"ana",
@@ -14983,7 +15171,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "textNode6",
+			"content": "textNode7",
 			"group": "model_phrase model_highlighted model_limitedPhrase model_emphLike",
 			"validAttrs": [
 				"ana",
@@ -15020,7 +15208,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -15056,7 +15244,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -15098,7 +15286,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"validAttrs": [
 				"ana",
@@ -15135,7 +15323,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -15171,7 +15359,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode5|model_limitedPhrase|listChange)*",
+			"content": "(textNode6|model_limitedPhrase|listChange)*",
 			"group": "model_profileDescPart",
 			"validAttrs": [
 				"ana",
@@ -15226,7 +15414,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -15283,7 +15471,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_phrase|model_global|docDate)*",
+			"content": "(textNode3|model_phrase|model_global|docDate)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -15319,7 +15507,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_msItemPart model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -15357,7 +15545,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6)*",
+			"content": "(textNode7)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
 			"validAttrs": [
 				"ana",
@@ -15403,7 +15591,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart",
 			"validAttrs": [
 				"ana",
@@ -15478,7 +15666,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode7|model_limitedPhrase|model_inter)*",
+			"content": "(textNode8|model_limitedPhrase|model_inter)*",
 			"group": "model_descLike model_common model_inter model_labelLike",
 			"validAttrs": [
 				"ana",
@@ -15519,7 +15707,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6)*",
+			"content": "(textNode7)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
@@ -15567,7 +15755,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"validAttrs": [
 				"ana",
@@ -15605,7 +15793,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -15643,7 +15831,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -15680,7 +15868,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -15716,7 +15904,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_phrase|pubPlace|docDate|publisher|model_global)*",
+			"content": "(textNode3|model_phrase|pubPlace|docDate|publisher|model_global)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -15752,7 +15940,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -15788,7 +15976,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
@@ -15847,7 +16035,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -15912,7 +16100,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -15951,7 +16139,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -15987,7 +16175,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -16050,7 +16238,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode7|model_limitedPhrase|model_inter)*",
+			"content": "(textNode8|model_limitedPhrase|model_inter)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16086,7 +16274,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_msItemPart",
 			"validAttrs": [
 				"ana",
@@ -16124,7 +16312,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"validAttrs": [
 				"ana",
@@ -16163,7 +16351,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -16230,7 +16418,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16266,7 +16454,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode8|model_graphicLike|model_hiLike)*",
+			"content": "(textNode9|model_graphicLike|model_hiLike)*",
 			"group": "model_phrase model_graphicLike",
 			"validAttrs": [
 				"ana",
@@ -16303,7 +16491,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
@@ -16360,7 +16548,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "textNode6",
+			"content": "textNode7",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
@@ -16397,7 +16585,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_encodingDescPart",
 			"validAttrs": [
 				"ana",
@@ -16435,7 +16623,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16477,7 +16665,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|lg|model_phrase|model_inter|model_lLike|model_global)*",
+			"content": "(textNode2|lg|model_phrase|model_inter|model_lLike|model_global)*",
 			"group": "model_divTop model_divTopPart model_headLike model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -16517,7 +16705,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16553,7 +16741,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16589,7 +16777,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6)*",
+			"content": "(textNode7)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
 			"validAttrs": [
 				"ana",
@@ -16635,7 +16823,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6|idno)*",
+			"content": "(textNode7|idno)*",
 			"group": "model_msItemPart model_addrPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_publicationStmtPart_detail model_personPart",
 			"validAttrs": [
 				"ana",
@@ -16695,7 +16883,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart",
 			"validAttrs": [
 				"ana",
@@ -16731,7 +16919,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -16770,7 +16958,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16806,11 +16994,51 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "interp",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode7|model_descLike)*",
+			"group": "model_global model_standOffPart model_global_meta",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"inst",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "summarizes a specific interpretative annotation which can be linked to a span of text.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "item",
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16847,7 +17075,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global)*",
 			"group": "model_common model_divPart model_lLike",
 			"validAttrs": [
 				"ana",
@@ -16888,7 +17116,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_common model_inter model_labelLike",
 			"validAttrs": [
 				"ana",
@@ -16928,7 +17156,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -16987,7 +17215,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -17025,7 +17253,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -17065,7 +17293,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode9|model_divLike|model_divPart|titlePage|argument|byline|docAuthor|docDate|docEdition|docImprint|docTitle|epigraph|imprimatur|titlePart|epilogue|performance|prologue|set|model_phrase|model_inter|model_global|model_rdgPart)*",
+			"content": "(textNode10|model_divLike|model_divPart|titlePage|argument|byline|docAuthor|docDate|docEdition|docImprint|docTitle|epigraph|imprimatur|titlePart|epilogue|performance|prologue|set|model_phrase|model_inter|model_global|model_rdgPart)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -17108,7 +17336,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_availabilityPart",
 			"validAttrs": [
 				"ana",
@@ -17166,7 +17394,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6|hi|locus)*",
+			"content": "(textNode7|hi|locus)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_msdesc",
 			"validAttrs": [
 				"ana",
@@ -17210,7 +17438,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode10|model_measureLike)*",
+			"content": "(textNode11|model_measureLike)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
@@ -17302,7 +17530,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode7|model_limitedPhrase|model_inter)*",
+			"content": "(textNode8|model_limitedPhrase|model_inter)*",
 			"group": "model_divTop model_divBottom model_divWrapper model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
@@ -17359,7 +17587,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_physDescPart",
 			"validAttrs": [
 				"ana",
@@ -17395,7 +17623,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6|name)*",
+			"content": "(textNode7|name)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -17433,7 +17661,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -17498,7 +17726,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -17565,7 +17793,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_phrase|argument|byline|dateline|epigraph|salute|signed|model_global)*",
+			"content": "(textNode3|model_phrase|argument|byline|dateline|epigraph|salute|signed|model_global)*",
 			"group": "model_divTop model_divTopPart",
 			"validAttrs": [
 				"ana",
@@ -17602,7 +17830,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -17659,7 +17887,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_divPart model_correspContextPart model_pLike",
 			"validAttrs": [
 				"ana",
@@ -17698,7 +17926,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "textNode6",
+			"content": "textNode7",
 			"group": "model_addrPart",
 			"validAttrs": [
 				"ana",
@@ -17734,7 +17962,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "textNode6",
+			"content": "textNode7",
 			"group": "model_addrPart",
 			"validAttrs": [
 				"ana",
@@ -17770,7 +17998,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
@@ -17827,7 +18055,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -17884,7 +18112,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_agency",
 			"validAttrs": [
 				"ana",
@@ -17922,7 +18150,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_biblPart model_imprintPart model_publicationStmtPart_detail",
 			"validAttrs": [
 				"ana",
@@ -17962,7 +18190,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_attributable model_msItemPart model_quoteLike",
 			"validAttrs": [
 				"ana",
@@ -18002,7 +18230,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode7|model_limitedPhrase|model_inter)*",
+			"content": "(textNode8|model_limitedPhrase|model_inter)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18042,7 +18270,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18082,7 +18310,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -18147,7 +18375,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18204,7 +18432,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode9|model_divLike|model_divPart|titlePage|argument|byline|docAuthor|docDate|docEdition|docImprint|docTitle|epigraph|imprimatur|titlePart|epilogue|performance|prologue|set|model_phrase|model_inter|model_global|model_rdgPart)*",
+			"content": "(textNode10|model_divLike|model_divPart|titlePage|argument|byline|docAuthor|docDate|docEdition|docImprint|docTitle|epigraph|imprimatur|titlePart|epilogue|performance|prologue|set|model_phrase|model_inter|model_global|model_rdgPart)*",
 			"group": "model_rdgLike",
 			"validAttrs": [
 				"ana",
@@ -18247,7 +18475,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
 			"validAttrs": [
 				"ana",
@@ -18283,7 +18511,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_castItemPart",
 			"validAttrs": [
 				"ana",
@@ -18319,7 +18547,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_msQuoteLike",
 			"validAttrs": [
 				"ana",
@@ -18358,7 +18586,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_attributable",
 			"validAttrs": [
 				"aloud",
@@ -18398,7 +18626,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_divTop model_divBottom model_divWrapper",
 			"validAttrs": [
 				"ana",
@@ -18435,7 +18663,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18477,7 +18705,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode11|title|model_ptrLike|editor|respStmt|biblScope|idno|textLang|model_global|availability)*",
+			"content": "(textNode12|title|model_ptrLike|editor|respStmt|biblScope|idno|textLang|model_global|availability)*",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -18513,7 +18741,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -18575,7 +18803,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_divBottom model_divBottomPart model_divTop model_divTopPart",
 			"validAttrs": [
 				"ana",
@@ -18612,7 +18840,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
@@ -18679,7 +18907,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
@@ -18720,7 +18948,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18756,7 +18984,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18792,7 +19020,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|model_limitedPhrase|model_global)*",
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
@@ -18849,7 +19077,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
@@ -18889,7 +19117,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_addrPart",
 			"validAttrs": [
 				"ana",
@@ -18925,7 +19153,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18961,7 +19189,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -18997,7 +19225,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -19033,7 +19261,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode7|model_limitedPhrase|model_inter)*",
+			"content": "(textNode8|model_limitedPhrase|model_inter)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -19072,7 +19300,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_common model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
@@ -19113,7 +19341,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_msItemPart model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -19151,7 +19379,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_titlepagePart model_pLike_front",
 			"validAttrs": [
 				"ana",
@@ -19191,7 +19419,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|lg|model_phrase|model_inter|model_lLike|model_global)*",
+			"content": "(textNode2|lg|model_phrase|model_inter|model_lLike|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
 			"validAttrs": [
 				"ana",
@@ -19231,7 +19459,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -19273,7 +19501,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_standOffPart model_common model_divPart model_divPart_spoken",
 			"validAttrs": [
 				"ana",
@@ -19318,7 +19546,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_divPart|model_global)*",
+			"content": "(textNode2|model_phrase|model_inter|model_divPart|model_global)*",
 			"group": "model_common model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
@@ -19354,7 +19582,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6)*",
+			"content": "(textNode7)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
 			"validAttrs": [
 				"ana",
@@ -19400,7 +19628,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_attributable|model_phrase|model_global)*",
+			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
 			"group": "model_rdgPart",
 			"validAttrs": [
 				"ana",
@@ -19437,7 +19665,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode2|model_phrase|model_global|bibl)*",
+			"content": "(textNode3|model_phrase|model_global|bibl)*",
 			"group": "model_global model_global_edit",
 			"validAttrs": [
 				"ana",
@@ -19482,7 +19710,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode7|model_limitedPhrase|model_inter|note_g|object)*",
+			"content": "(textNode8|model_limitedPhrase|model_inter|note_g|object)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -19519,7 +19747,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode1|model_phrase|model_inter|model_global|lg|model_lLike)*",
+			"content": "(textNode2|model_phrase|model_inter|model_global|lg|model_lLike)*",
 			"group": "model_global model_global_spoken",
 			"validAttrs": [
 				"ana",
@@ -19579,9 +19807,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_phrase_i|model_inter_i|model_global_i)*|text)*",
+			"content": "text*",
 			"selectable": false,
-			"marks": "model_phrase",
+			"marks": "model_limitedPhrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19594,7 +19822,7 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_phrase_i|model_global_i)*|text)*",
+			"content": "((model_phrase_i|model_inter_i|model_global_i)*|text)*",
 			"selectable": false,
 			"marks": "model_phrase",
 			"draggable": false,
@@ -19609,9 +19837,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_limitedPhrase_i|model_global_i)*|text)*",
+			"content": "((model_phrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_limitedPhrase",
+			"marks": "model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19624,9 +19852,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_pPart_edit_i|model_ptrLike_i|model_global_i)*|text)*",
+			"content": "((model_limitedPhrase_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
+			"marks": "model_limitedPhrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19639,9 +19867,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_limitedPhrase_i)*|text)*",
+			"content": "((model_pPart_edit_i|model_ptrLike_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_limitedPhrase",
+			"marks": "model_highlighted model_pPart_data model_pPart_edit model_segLike model_ptrLike",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19654,9 +19882,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "text*",
+			"content": "((model_limitedPhrase_i)*|text)*",
 			"selectable": false,
-			"marks": "",
+			"marks": "model_limitedPhrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19669,9 +19897,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_limitedPhrase_i|model_inter_i)*|text)*",
+			"content": "text*",
 			"selectable": false,
-			"marks": "model_limitedPhrase",
+			"marks": "",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19684,9 +19912,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "text*",
+			"content": "((model_limitedPhrase_i|model_inter_i)*|text)*",
 			"selectable": false,
-			"marks": "model_hiLike",
+			"marks": "model_limitedPhrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19699,9 +19927,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_phrase_i|model_inter_i|model_global_i|model_rdgPart_i)*|text)*",
+			"content": "text*",
 			"selectable": false,
-			"marks": "model_phrase",
+			"marks": "model_hiLike",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19714,9 +19942,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "text*",
+			"content": "((model_phrase_i|model_inter_i|model_global_i|model_rdgPart_i)*|text)*",
 			"selectable": false,
-			"marks": "model_measureLike",
+			"marks": "model_phrase",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -19729,13 +19957,28 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
+			"content": "text*",
+			"selectable": false,
+			"marks": "model_measureLike",
+			"draggable": false,
+			"parseDOM": [
+				{
+					"tag": "textNode11"
+				}
+			]
+		},
+		{
+			"name": "textNode12",
+			"pmType": "node",
+			"fcType": "textNodes",
+			"synth": true,
 			"content": "((model_ptrLike_i|model_global_i)*|text)*",
 			"selectable": false,
 			"marks": "model_ptrLike",
 			"draggable": false,
 			"parseDOM": [
 				{
-					"tag": "textNode11"
+					"tag": "textNode12"
 				}
 			]
 		},
@@ -20628,8 +20871,8 @@
 			"name": "globalNode59",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "subst*",
-			"group": "subst_g",
+			"content": "span*",
+			"group": "span_g",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -20643,6 +20886,21 @@
 			"name": "globalNode60",
 			"pmType": "node",
 			"fcType": "globalNodes",
+			"content": "subst*",
+			"group": "subst_g",
+			"atom": true,
+			"selectable": false,
+			"synth": true,
+			"parseDOM": [
+				{
+					"tag": "globalNode60"
+				}
+			]
+		},
+		{
+			"name": "globalNode61",
+			"pmType": "node",
+			"fcType": "globalNodes",
 			"content": "substJoin*",
 			"group": "substJoin_g",
 			"atom": true,
@@ -20650,7 +20908,7 @@
 			"synth": true,
 			"parseDOM": [
 				{
-					"tag": "globalNode60"
+					"tag": "globalNode61"
 				}
 			]
 		},
@@ -22121,6 +22379,17 @@
 				}
 			],
 			"valListType": "closed",
+			"usage": "opt",
+			"mode": null
+		},
+		"inst": {
+			"ident": "inst",
+			"description": "points to instances of the analysis or interpretation represented by the current element.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
 			"usage": "opt",
 			"mode": null
 		},
@@ -24250,6 +24519,7 @@
 			"fw",
 			"metamark",
 			"space",
+			"span",
 			"subst",
 			"substJoin"
 		],
@@ -24262,6 +24532,7 @@
 			"substDoc",
 			"metamarkDoc",
 			"spaceDoc",
+			"spanDoc",
 			"standOffDoc",
 			"substDoc",
 			"substJoinDoc"
@@ -24330,6 +24601,7 @@
 			"history",
 			"hyphenation",
 			"incident",
+			"interpGrp",
 			"interpretation",
 			"imprint",
 			"join",
@@ -24509,6 +24781,7 @@
 		"marks": [
 			"abbr",
 			"catchwords",
+			"cl",
 			"date",
 			"distinct",
 			"email",
@@ -24525,6 +24798,7 @@
 			"objectType",
 			"origDate",
 			"origPlace",
+			"phr",
 			"rs",
 			"s",
 			"secFol",
@@ -24612,6 +24886,7 @@
 			"imprimatur",
 			"incipit",
 			"institution",
+			"interp",
 			"item",
 			"l",
 			"label",
@@ -24780,6 +25055,14 @@
 			"supplied",
 			"surplus",
 			"undo"
+		],
+		"analysis": [
+			"cl",
+			"interp",
+			"interpGrp",
+			"phr",
+			"s",
+			"span"
 		],
 		"textcrit": [
 			"app",
@@ -25096,9 +25379,6 @@
 		],
 		"verse": [
 			"rhyme"
-		],
-		"analysis": [
-			"s"
 		],
 		"tagdocs": [
 			"code"

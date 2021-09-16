@@ -5,6 +5,7 @@
         "fw",
         "metamark",
         "space",
+        "span",
         "subst",
         "substJoin"
     ],
@@ -17,6 +18,7 @@
         "substDoc",
         "metamarkDoc",
         "spaceDoc",
+        "spanDoc",
         "standOffDoc",
         "substDoc",
         "substJoinDoc"
@@ -85,6 +87,7 @@
         "history",
         "hyphenation",
         "incident",
+        "interpGrp",
         "interpretation",
         "imprint",
         "join",
@@ -264,6 +267,7 @@
     "marks": [
         "abbr",
         "catchwords",
+        "cl",
         "date",
         "distinct",
         "email",
@@ -280,6 +284,7 @@
         "objectType",
         "origDate",
         "origPlace",
+        "phr",
         "rs",
         "s",
         "secFol",
@@ -367,6 +372,7 @@
         "imprimatur",
         "incipit",
         "institution",
+        "interp",
         "item",
         "l",
         "label",
