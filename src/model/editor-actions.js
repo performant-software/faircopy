@@ -1,7 +1,6 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies, replaceTextNodes, createValidNode } from "./commands"
-import { getTextNodeName } from './xml'
 
 const elementListLength = 30
 
