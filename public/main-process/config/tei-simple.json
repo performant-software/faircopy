@@ -202,7 +202,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_placeNamePart institution? repository? collection? idno note_g?)",
+			"content": "((placeName? bloc? country? region? settlement? district? geogName?)? institution? repository? collection? idno note_g?)",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -4021,7 +4021,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "((model_placeNamePart institution? repository? collection* idno*) (msName|objectName|altIdentifier)*)",
+			"content": "(((placeName? bloc? country? region? settlement? district? geogName?)? institution? repository? collection* idno*) (msName|objectName|altIdentifier)*)",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -4757,7 +4757,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_pLike* model_physDescPart)",
+			"content": "(model_pLike* (objectDesc? handDesc? typeDesc? scriptDesc? musicNotation? decoDesc? additions? bindingDesc? sealDesc? accMat?)?)",
 			"group": "",
 			"validAttrs": [
 				"ana",

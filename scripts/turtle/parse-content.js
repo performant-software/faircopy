@@ -2,7 +2,8 @@
 function parseGroup(groupEl) {
     const {nodeName} = groupEl
     if( nodeName === 'classRef' || nodeName === 'elementRef' ) {
-        return groupEl.getAttribute('key').replace(/\./g,'_')
+        const key = groupEl.getAttribute('key')
+        return key.replace(/\./g,'_')
     }
     if( nodeName === 'textNode' ) {
         return 'textNode'
@@ -11,25 +12,51 @@ function parseGroup(groupEl) {
     return null
 }
 
-function decodeContent( contentEl ) {
-    const contentType = ( contentEl.nodeName === 'sequence' || contentEl.nodeName === 'alternate' ) ? contentEl.nodeName : 'group'
+// @expand in classRef (https://tei-c.org/release/doc/tei-p5-doc/en/html/ref-classRef.html)
+// is only used twice in the whole TEI specification, and only in one of its five modes. Hacked in support for now.
+function hackExpandedClassRef(key) {
+    const g = (key) => { return { 
+        type: 'group',
+        content: [key],
+        minOccurs: 0,
+        maxOccurs: 1
+    }}
 
-    const minOccursVal  = contentEl.getAttribute('minOccurs')
-    const maxOccursVal = contentEl.getAttribute('maxOccurs')
+    if( key === 'model.placeNamePart' ) {
+        return [ g("placeName"), g("bloc"), g("country"), g("region"), g("settlement"), g("district"), g("geogName") ]
+    } else if( key === 'model.physDescPart') {
+        return [ g("objectDesc"), g("handDesc"), g("typeDesc"), g("scriptDesc"), g("musicNotation"), g("decoDesc"), g("additions"), g("bindingDesc"), g("sealDesc"), g("accMat") ]
+    } else {
+        throw new Error(`New case discovered that isn't covered by hackExpandedClassRef(): ${key}`)
+    }
+}
+
+function decodeContent( contentEl ) {
+    const { nodeName } = contentEl
+    const expand = contentEl.getAttribute('expand')
+    if( expand && expand !== 'sequenceOptional' ) throw new Error(`Only sequenceOptional is supported for classRef@expand: ${nodeName}`)
+    const contentType = ( nodeName === 'sequence' || nodeName === 'alternate' ) ? nodeName : ( nodeName === 'classRef' && expand ) ? 'sequence' : 'group'
+
+    const minOccursVal  = expand ? 0 : contentEl.getAttribute('minOccurs')
+    const maxOccursVal = expand ? 1 : contentEl.getAttribute('maxOccurs')
     const minOccurs = ( minOccursVal === null ) ? 1 : Number(minOccursVal)
     const maxOccurs = ( maxOccursVal === null ) ? 1 : (maxOccursVal === "unbounded" ) ? '∞' : Number(maxOccursVal)
 
-    const contentArray = []
+    let contentArray = []
     if( contentType === 'group' ) {
         const group = parseGroup(contentEl)
         if( !group ) return null
         contentArray.push( group )
     } else {
-        const children = contentEl.children
-        for( let i=0; i < children.length; i++ ) {
-            const childEl = children.item(i)
-            contentArray.push( decodeContent(childEl) )
-        }        
+        if( !expand ) {
+            const children = contentEl.children
+            for( let i=0; i < children.length; i++ ) {
+                const childEl = children.item(i)
+                contentArray.push( decodeContent(childEl) )
+            }  
+        } else {
+            contentArray = hackExpandedClassRef(contentEl.getAttribute('key'))
+        }              
     }
     return {
         type: contentType,
