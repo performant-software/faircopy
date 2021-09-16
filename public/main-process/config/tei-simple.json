@@ -5989,11 +5989,50 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "setting",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_pLike+|(model_nameLike_agent|model_settingPart)*)",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"who",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"placeName"
+			],
+			"desc": "describes one particular setting in which a language interaction takes place.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "settingDesc",
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_pLike+|(model_placeLike|listPlace)+)",
+			"content": "(model_pLike+|(setting|model_placeLike|listPlace)+)",
 			"group": "model_profileDescPart",
 			"validAttrs": [
 				"ana",
@@ -6443,6 +6482,52 @@
 				"keywords"
 			],
 			"desc": "groups information which describes the nature or topic of a text in terms of a standard classification scheme, thesaurus, etc.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "textDesc",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "((channel constitution derivation domain factuality interaction preparedness) purpose+)",
+			"group": "model_catDescPart model_profileDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"channel",
+				"constitution",
+				"derivation",
+				"domain",
+				"factuality",
+				"interaction",
+				"preparedness",
+				"purpose"
+			],
+			"desc": "provides a description of a text in terms of its situational parameters.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -14476,6 +14561,42 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "activity",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_settingPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains a brief informal description of what a participant in a language interaction is doing other than speaking, if anything.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "accMat",
 			"pmType": "node",
 			"fcType": "soft",
@@ -15119,7 +15240,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode6|model_limitedPhrase)*",
+			"content": "(textNode6|model_limitedPhrase|model_catDescPart)*",
 			"group": "",
 			"validAttrs": [
 				"ana",
@@ -15248,6 +15369,43 @@
 			],
 			"defaultNodes": null,
 			"desc": "documents a change or set of changes made during the production of a source document, or during the revision of an electronic file.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "channel",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"mode",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the medium or channel by which a text is delivered or experienced. For a written text, this might be print, manuscript, email, etc.; for a spoken one, radio, telephone, face-to-face, etc.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -15554,6 +15712,46 @@
 			"desc": "contains a description of the physical condition of the manuscript or object.",
 			"synth": false,
 			"derivedAttrs": []
+		},
+		{
+			"name": "constitution",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the internal composition of a text or text sample, for example as fragmentary, complete, etc.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "creation",
@@ -15863,6 +16061,46 @@
 			]
 		},
 		{
+			"name": "derivation",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the nature and extent of originality of this text.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
+		},
+		{
 			"name": "desc",
 			"pmType": "node",
 			"fcType": "soft",
@@ -16137,6 +16375,46 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "domain",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the most important social context in which the text was realized or for which it is intended, for example private vs. public, education, religion, etc.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
+		},
+		{
 			"name": "edition",
 			"pmType": "node",
 			"fcType": "soft",
@@ -16370,6 +16648,46 @@
 			"desc": "describes the approximate size of a text stored on some carrier medium or of some other object, digital or non-digital, specified in any convenient units.",
 			"synth": false,
 			"derivedAttrs": []
+		},
+		{
+			"name": "factuality",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the extent to which the text may be regarded as imaginative or non-imaginative, that is, as describing a fictional or a non-fictional world.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "faith",
@@ -17195,6 +17513,48 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "interaction",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"active",
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"passive",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the extent, cardinality and nature of any interaction among those producing and experiencing the text, for example in the form of response or interjection, commentary, etc.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
+		},
+		{
 			"name": "interp",
 			"pmType": "node",
 			"fcType": "soft",
@@ -17587,6 +17947,42 @@
 			],
 			"defaultNodes": null,
 			"desc": "contains information about a licence or other legal agreement applicable to the text.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "locale",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_settingPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains a brief informal description of the kind of place concerned, for example: a room, a restaurant, a park bench, etc.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -18195,6 +18591,46 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "preparedness",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "model_textDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "describes the extent to which a text may be regarded as prepared or spontaneous.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
+		},
+		{
 			"name": "principal",
 			"pmType": "node",
 			"fcType": "soft",
@@ -18385,6 +18821,47 @@
 			"desc": "contains the name of the place where a bibliographic item was published.",
 			"synth": false,
 			"derivedAttrs": []
+		},
+		{
+			"name": "purpose",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode4|model_limitedPhrase|model_global)*",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"degree",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "characterizes a single purpose or communicative function of the text.",
+			"synth": false,
+			"derivedAttrs": [
+				"type"
+			]
 		},
 		{
 			"name": "quote",
@@ -24278,6 +24755,34 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"type-constitution": {
+			"ident": "type",
+			"description": "specifies how the text was constituted.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "single",
+					"desc": "a single complete text"
+				},
+				{
+					"ident": "composite",
+					"desc": "a text made by combining several smaller items, each individually complete"
+				},
+				{
+					"ident": "frags",
+					"desc": "a text made by combining several smaller, not necessarily complete, items"
+				},
+				{
+					"ident": "unknown",
+					"desc": "composition unknown or unspecified"
+				}
+			],
+			"valListType": "closed",
+			"usage": "opt",
+			"mode": "change"
+		},
 		"type-death": {
 			"ident": "type",
 			"dataType": "teidata.enumerated",
@@ -24316,6 +24821,42 @@
 			"usage": "opt",
 			"mode": "change"
 		},
+		"type-derivation": {
+			"ident": "type",
+			"description": "categorizes the derivation of the text.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "original",
+					"desc": "text is original"
+				},
+				{
+					"ident": "revision",
+					"desc": "text is a revision of some other text"
+				},
+				{
+					"ident": "translation",
+					"desc": "text is a translation of some other text"
+				},
+				{
+					"ident": "abridgment",
+					"desc": "text is an abridged version of some other text"
+				},
+				{
+					"ident": "plagiarism",
+					"desc": "text is plagiarized from some other text"
+				},
+				{
+					"ident": "traditional",
+					"desc": "text has no obvious source but is one of a number derived from some common ancestor"
+				}
+			],
+			"valListType": "open",
+			"usage": "opt",
+			"mode": "change"
+		},
 		"type-desc": {
 			"ident": "type",
 			"dataType": "teidata.enumerated",
@@ -24328,6 +24869,46 @@
 				}
 			],
 			"valListType": "semi",
+			"usage": "opt",
+			"mode": "change"
+		},
+		"type-domain": {
+			"ident": "type",
+			"description": "categorizes the domain of use.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "art",
+					"desc": "art and entertainment"
+				},
+				{
+					"ident": "domestic",
+					"desc": "domestic and private"
+				},
+				{
+					"ident": "religious",
+					"desc": "religious and ceremonial"
+				},
+				{
+					"ident": "business",
+					"desc": "business and work place"
+				},
+				{
+					"ident": "education",
+					"desc": "education"
+				},
+				{
+					"ident": "govt",
+					"desc": "government and law"
+				},
+				{
+					"ident": "public",
+					"desc": "other forms of public context"
+				}
+			],
+			"valListType": "open",
 			"usage": "opt",
 			"mode": "change"
 		},
@@ -24357,6 +24938,34 @@
 				}
 			],
 			"valListType": "open",
+			"usage": "opt",
+			"mode": "change"
+		},
+		"type-factuality": {
+			"ident": "type",
+			"description": "categorizes the factuality of the text.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "fiction",
+					"desc": "the text is to be regarded as entirely imaginative"
+				},
+				{
+					"ident": "fact",
+					"desc": "the text is to be regarded as entirely informative or factual"
+				},
+				{
+					"ident": "mixed",
+					"desc": "the text contains a mixture of fact and fiction"
+				},
+				{
+					"ident": "inapplicable",
+					"desc": "the fiction/fact distinction is not regarded as helpful or appropriate to this text"
+				}
+			],
+			"valListType": "closed",
 			"usage": "opt",
 			"mode": "change"
 		},
@@ -24451,6 +25060,34 @@
 				}
 			],
 			"valListType": "semi",
+			"usage": "opt",
+			"mode": "change"
+		},
+		"type-interaction": {
+			"ident": "type",
+			"description": "specifies the degree of interaction between active and passive participants in the text.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "none",
+					"desc": "no interaction of any kind, e.g. a monologue"
+				},
+				{
+					"ident": "partial",
+					"desc": "some degree of interaction, e.g. a monologue with set responses"
+				},
+				{
+					"ident": "complete",
+					"desc": "complete interaction, e.g. a face to face conversation"
+				},
+				{
+					"ident": "inapplicable",
+					"desc": "this parameter is inappropriate or inapplicable in this case"
+				}
+			],
+			"valListType": "closed",
 			"usage": "opt",
 			"mode": "change"
 		},
@@ -24611,6 +25248,62 @@
 			"valListType": "open",
 			"usage": "opt",
 			"mode": null
+		},
+		"type-preparedness": {
+			"ident": "type",
+			"description": "a keyword characterizing the type of preparedness.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "none",
+					"desc": "spontaneous or unprepared"
+				},
+				{
+					"ident": "scripted",
+					"desc": "follows a script"
+				},
+				{
+					"ident": "formulaic",
+					"desc": "follows a predefined set of conventions"
+				},
+				{
+					"ident": "revised",
+					"desc": "polished or revised before presentation"
+				}
+			],
+			"valListType": "open",
+			"usage": "opt",
+			"mode": "change"
+		},
+		"type-purpose": {
+			"ident": "type",
+			"description": "specifies a particular kind of purpose.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "persuade",
+					"desc": "didactic, advertising, propaganda, etc."
+				},
+				{
+					"ident": "express",
+					"desc": "self expression, confessional, etc."
+				},
+				{
+					"ident": "inform",
+					"desc": "convey information, educate, etc."
+				},
+				{
+					"ident": "entertain",
+					"desc": "amuse, entertain, etc."
+				}
+			],
+			"valListType": "semi",
+			"usage": "opt",
+			"mode": "change"
 		},
 		"selector": {
 			"ident": "selector",
@@ -25071,6 +25764,7 @@
 			"sealDesc",
 			"segmentation",
 			"set",
+			"setting",
 			"settingDesc",
 			"sourceDesc",
 			"supportDesc",
@@ -25081,6 +25775,7 @@
 			"table",
 			"terrain",
 			"textClass",
+			"textDesc",
 			"timeline",
 			"titlePage",
 			"titleStmt",
@@ -25216,6 +25911,7 @@
 		"soft": [
 			"ab",
 			"actor",
+			"activity",
 			"accMat",
 			"acquisition",
 			"additions",
@@ -25233,6 +25929,7 @@
 			"catDesc",
 			"cell",
 			"change",
+			"channel",
 			"citedRange",
 			"classCode",
 			"closer",
@@ -25241,12 +25938,14 @@
 			"collection",
 			"colophon",
 			"condition",
+			"constitution",
 			"creation",
 			"custEvent",
 			"dateline",
 			"decoNote",
 			"depth",
 			"death",
+			"derivation",
 			"desc",
 			"dim",
 			"distributor",
@@ -25254,11 +25953,13 @@
 			"docDate",
 			"docEdition",
 			"docImprint",
+			"domain",
 			"edition",
 			"editor",
 			"education",
 			"explicit",
 			"extent",
+			"factuality",
 			"faith",
 			"figDesc",
 			"filiation",
@@ -25278,6 +25979,7 @@
 			"imprimatur",
 			"incipit",
 			"institution",
+			"interaction",
 			"interp",
 			"item",
 			"l",
@@ -25287,6 +25989,7 @@
 			"layout",
 			"lem",
 			"licence",
+			"locale",
 			"locus",
 			"measureGrp",
 			"media",
@@ -25300,10 +26003,12 @@
 			"p",
 			"postBox",
 			"postCode",
+			"preparedness",
 			"principal",
 			"provenance",
 			"publisher",
 			"pubPlace",
+			"purpose",
 			"quote",
 			"rendition",
 			"repository",
@@ -25771,8 +26476,20 @@
 			"table"
 		],
 		"corpus": [
+			"activity",
+			"channel",
+			"constitution",
+			"derivation",
+			"domain",
+			"factuality",
+			"interaction",
+			"locale",
 			"particDesc",
-			"settingDesc"
+			"preparedness",
+			"purpose",
+			"setting",
+			"settingDesc",
+			"textDesc"
 		],
 		"verse": [
 			"rhyme"
