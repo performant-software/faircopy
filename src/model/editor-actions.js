@@ -187,23 +187,14 @@ function validInlineAction(elementID, teiDocument ) {
     }
 }
 
-// changes the NodeType for a node element at a given pos
 function replaceElement( elementID, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state
-    const nodeType = schema.nodes[elementID]
+    const { elements } = teiDocument.fairCopyProject.teiSchema
     const node = tr.doc.nodeAt(pos)
 
-    if( node.childCount > 0 ) {
-        const textNodeName = getTextNodeName(nodeType.spec.content)
-        if( textNodeName ) {
-            const fragment = nodeType.create( {}, replaceTextNodes(schema.nodes[textNodeName], node.content) )
-            tr.replaceWith(pos, pos+2+node.content.size, fragment)    
-            return tr
-        } 
-    }
-
-    tr.setNodeMarkup(pos, nodeType, node.attrs)
+    const fragment = createValidNode( elementID, node.content, schema, elements )
+    tr.replaceWith(pos, pos+2+node.content.size, fragment)    
     return tr
 }
 
