@@ -1,9 +1,12 @@
 {
     "asides": [
         "note",
+        "certainty",
         "choice",
         "fw",
         "metamark",
+        "precision",
+        "respons",
         "space",
         "span",
         "subst",
@@ -12,11 +15,13 @@
     "docNodes": [
         "doc",
         "noteDoc",
+        "certaintyDoc",
         "choiceDoc",
         "fwDoc",
         "headerDoc",
-        "substDoc",
         "metamarkDoc",
+        "precisionDoc",
+        "responsDoc",
         "spaceDoc",
         "spanDoc",
         "standOffDoc",
