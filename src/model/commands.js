@@ -156,13 +156,24 @@ export function createValidNode( elementID, content, schema, elements ) {
             }
             if( hasTextNode ) {
                 // if any of the nodes in the fragment are text nodes, 
-                // the content must be wrapped in the first default node
-                let nodes = [], first = true
+                // the content must be wrapped in the first valid default node
+                let nodes = [], seekingFirstValid = true
                 for( const defaultNode of defaultNodes ) {
-                    const childContent = first ? content : Fragment.empty
-                    first = false
-                    const node = createValidNode( defaultNode, childContent, schema, elements )
-                    if( !node ) return null
+                    const childContent = seekingFirstValid ? content : Fragment.empty
+                    let node = createValidNode( defaultNode, childContent, schema, elements )
+                    if( node ) {
+                        // found a place for the content
+                        seekingFirstValid = false
+                    } else {
+                        // if this is the last node and we haven't found a home
+                        // for content, this is not a valid node
+                        if( seekingFirstValid && defaultNode === defaultNodes[defaultNodes.length-1] ) {
+                            return null
+                        } else {
+                            node = createValidNode( defaultNode, Fragment.empty, schema, elements )
+                            if( !node ) return null    
+                        }
+                    }                    
                     nodes.push(node)
                 }    
                 fragment = Fragment.from(nodes)
