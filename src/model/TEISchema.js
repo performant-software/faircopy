@@ -3,9 +3,9 @@ import { DOMParser as PMDOMParser } from "prosemirror-model"
 import { createValidationSet } from "./editor-actions"
 
 const pmTypeToMenu = {
-    "node": 'structure',
-    "mark": 'mark',
-    "inline-node": 'inline'
+    "node": ['structure'],
+    "mark": ['mark'],
+    "inline-node": [ 'structure', 'inline' ]
 }
 
 const elementTypeToPmTypes = {
@@ -266,7 +266,7 @@ export default class TEISchema {
     validElementMenu(elementMenu,elementID) {
         const elementType = this.getElementType(elementID)
         const pmTypes = elementTypeToPmTypes[elementType]
-        const menus = pmTypes.map( pmType => pmTypeToMenu[pmType] )
+        const menus = pmTypes.map( pmType => pmTypeToMenu[pmType] ).flat()
         return menus.includes(elementMenu)
     }
 

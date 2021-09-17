@@ -117,7 +117,7 @@ export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
         // if this element is not active, activate it
         if( !elements[name].active ) {
             const {pmType} = teiSchema.elements[name]
-            const elementMenu = teiSchema.getElementMenu(pmType)
+            const elementMenu = teiSchema.getElementMenu(pmType)[0]
             addElementToSchema( name, elementMenu, fairCopyConfig )
         }
 

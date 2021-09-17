@@ -1,6 +1,6 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
-import { addMark, insertNodeAt, insertAtomNodeAt, createAsideNode, deleteParentNode, markApplies, createValidNode } from "./commands"
+import { addMark, insertNodeAt, insertAtomNodeAt, deleteParentNode, markApplies, createValidNode } from "./commands"
 
 const elementListLength = 30
 
@@ -33,15 +33,15 @@ export function createStructureElement( elementID, nodePos, actionType, teiDocum
     // perform appropriate editor action on node
     switch( actionType ) {
       case 'addAbove':
-        return addAbove(elementID,teiDocument,nodePos,tr)
+        return addAbove(elementID,{},teiDocument,nodePos,tr)
       case 'addBelow':
-        return addBelow(elementID,teiDocument,nodePos,tr)
+        return addBelow(elementID,{},teiDocument,nodePos,tr)
       case 'addOutside':
-        return addOutside(elementID,teiDocument,nodePos,tr)
+        return addOutside(elementID,{},teiDocument,nodePos,tr)
       case 'addInside':
-        return addInside(elementID,teiDocument,nodePos,tr)
+        return addInside(elementID,{},teiDocument,nodePos,tr)
       case 'replace':
-        return replaceElement(elementID,teiDocument,nodePos,tr)
+        return replaceElement(elementID,{},teiDocument,nodePos,tr)
       default:
         console.error(`Unknown action type: ${actionType}`)
         return tr
@@ -92,12 +92,8 @@ export function determineRules( elementID, teiSchema ) {
 }
 
 export function inValidationSet(element) {
-    const { name, fcType, pmType } = element
-    return (
-        (fcType === 'soft' || fcType === 'hard' || (fcType === 'inters' && pmType !== 'mark')) && 
-        name !== 'linkGrp' && 
-        name !== 'timeline' 
-    )
+    const { fcType, pmType, synth } = element
+    return !synth && fcType !== 'docNodes' && pmType !== 'mark'
 }
 
 export function createValidationSet(elements, schema) {
@@ -106,7 +102,7 @@ export function createValidationSet(elements, schema) {
     for( const element of Object.values(elements) ) {
         if( inValidationSet(element) ) {
             const { name } = element
-            validationSet[name] = Fragment.from( createValidNode( name, Fragment.empty, schema, elements ) )
+            validationSet[name] = Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements ) )
         }
     }
 
@@ -149,6 +145,9 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const $targetPos = doc.resolve(pos)
     const parentNode = $targetPos.parent
     const nodeIndex = $targetPos.index()
+    const isAtom = elements[elementID].pmType === 'inline-node'
+
+    // TODO do we need to wrap in global node first?
 
     // create a fragment that places the created node in position with its future siblings
     if( actionType === 'addAbove' || actionType === 'addBelow' ) {
@@ -163,22 +162,25 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
             before = siblings.slice(0,nodeIndex+1)
             after = siblings.slice(nodeIndex+1)
         }   
-        const testNode = createValidNode( elementID, Fragment.empty, schema, elements )
+        const testNode = createValidNode( elementID, {}, Fragment.empty, schema, elements )
         siblings = before.concat([testNode]).concat(after)
         const testFragment = Fragment.from(siblings)  
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'replace' ) {
-        const testNode = createValidNode( elementID, node.content, schema, elements )
+        if( isAtom ) return false
+        const testNode = createValidNode( elementID, {}, node.content, schema, elements )
         if( !testNode ) return false
         const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addOutside' ) {
-        const testNode = createValidNode( elementID, Fragment.from(node), schema, elements )
+        if( isAtom ) return false
+        const testNode = createValidNode( elementID, {}, Fragment.from(node), schema, elements )
         if( !testNode ) return false
         const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addInside') {
-        const testNode = createValidNode( elementID, node.content, schema, elements )
+        if( isAtom && node.childCount > 0 ) return false
+        const testNode = createValidNode( elementID, {}, node.content, schema, elements )
         return testNode && node.type.validContent(Fragment.from(testNode))
     } else {
         throw new Error('Unrecognized action type.')
@@ -202,43 +204,37 @@ function validInlineAction(elementID, teiDocument ) {
     }
 }
 
-function replaceElement( elementID, teiDocument, pos, tr ) {
+function replaceElement( elementID, attrs, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { schema } = editorView.state
     const { elements } = teiDocument.fairCopyProject.teiSchema
+    const { createSubDocument } = teiDocument
     const node = tr.doc.nodeAt(pos)
 
-    const fragment = createValidNode( elementID, node.content, schema, elements )
+    const fragment = createValidNode( elementID, attrs, node.content, schema, elements, createSubDocument )
     tr.replaceWith(pos, pos+2+node.content.size, fragment)    
     return tr
 }
 
-export function createInterNode( elementID, attrs, teiDocument ) {
-    const editorView = teiDocument.getActiveView()
-    const { schema } = editorView.state
-
-    const markType = schema.marks[`mark${elementID}`]
-    return createMark( markType, attrs, editorView )
-}
-
-function addInside( elementID, teiDocument, pos, tr ) {
+function addInside( elementID, attrs, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
     const { elements } = teiDocument.fairCopyProject.teiSchema
+    const { createSubDocument } = teiDocument
     const parentNode = doc.nodeAt(pos)
 
     if( parentNode.childCount > 0 ) {
         // take the content of the parent and put it inside the new node
-        const fragment = createValidNode( elementID, parentNode.content, schema, elements )
+        const fragment = createValidNode( elementID, attrs, parentNode.content, schema, elements, createSubDocument )
         tr.replaceWith(pos+1, pos+1+parentNode.content.size, fragment)    
         return tr
     } else {
         // insert node inside parent
-        return insertNodeAt( elementID, pos+1, schema, elements, tr )
+        return insertNodeAt( elementID, attrs, pos+1, schema, elements, tr, createSubDocument )
     }
 }
     
-function addOutside( elementID, teiDocument, pos, tr ) {
+function addOutside( elementID, attrs, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc, schema } = editorView.state
 
@@ -248,53 +244,44 @@ function addOutside( elementID, teiDocument, pos, tr ) {
     const $start = doc.resolve($pos.start($pos.depth+1))
     const $end = doc.resolve($start.end($start.depth)+1)
     const nodeRange = new NodeRange($start,$end,$pos.depth)
-    tr.wrap(nodeRange,[{type: nodeType}])
+    tr.wrap(nodeRange,[{type: nodeType, attrs}])
     return tr
 }
 
-function addAbove( elementID, teiDocument, pos, tr ) {
+function addAbove( elementID, attrs, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { teiSchema } = teiDocument.fairCopyProject
+    const { createSubDocument } = teiDocument
     const { schema } = editorView.state
-    const { elementGroups } = teiSchema
+    const { elementGroups, elements } = teiSchema
     const { asides } = elementGroups
     const nodeType = schema.nodes[elementID]
 
     if( nodeType.isAtom ) {
-        if( asides.includes(elementID) ) {
-            const asideNode = createAsideNode( elementID, {}, teiDocument, editorView )
-            return insertAtomNodeAt(asideNode, pos, editorView, true, tr )    
-        } else {
-            const node = nodeType.create()
-            return insertAtomNodeAt(node, pos, editorView, false, tr )    
-        }
+        const node = createValidNode( elementID, attrs, Fragment.empty, schema, elements, createSubDocument )
+        return insertAtomNodeAt(node, pos, editorView, asides.includes(elementID), tr )    
     } else {
-        return insertNodeAt(elementID, pos, schema, teiSchema.elements, tr )    
+        return insertNodeAt(elementID, attrs, pos, schema, teiSchema.elements, tr, createSubDocument )    
     }
 }
 
-function addBelow( elementID, teiDocument, pos, tr ) {
+function addBelow( elementID, attrs, teiDocument, pos, tr ) {
     const editorView = teiDocument.getActiveView()
     const { doc } = editorView.state
     const { teiSchema } = teiDocument.fairCopyProject
-    const { elementGroups } = teiSchema
+    const { elements } = teiSchema
+    const { createSubDocument } = teiDocument
     const { schema } = editorView.state
-    const { asides } = elementGroups
 
     const nodeType = schema.nodes[elementID]
     const targetNode = doc.nodeAt(pos)
     const insertPos = pos + targetNode.nodeSize
 
     if( nodeType.isAtom ) {
-        if( asides.includes(elementID) ) {
-            const asideNode = createAsideNode( elementID, {}, teiDocument, editorView )
-            return insertAtomNodeAt(asideNode, insertPos, editorView, true, tr )                
-        } else {
-            const node = nodeType.create()
-            return insertAtomNodeAt(node, insertPos, editorView, true, tr )    
-        }
+        const node = createValidNode( elementID, attrs, Fragment.empty, schema, elements, createSubDocument )
+        return insertAtomNodeAt(node, insertPos, editorView, true, tr )    
     } else {
-        return insertNodeAt(elementID, insertPos, schema, teiSchema.elements, tr )    
+        return insertNodeAt(elementID, attrs, insertPos, schema, teiSchema.elements, tr, createSubDocument )    
     }
 }
 
@@ -512,8 +499,11 @@ function createAside( asideName, attrs, teiDocument, editorView ) {
     const { state } = editorView
     const { tr, selection } = state
     const { $head } = selection
+    const { teiSchema } = teiDocument.fairCopyProject
+    const { schema, elements } = teiSchema
+    const { createSubDocument } = teiDocument
 
-    const asideNode = createAsideNode( asideName, attrs, teiDocument, editorView )
+    const asideNode = createValidNode( asideName, attrs, Fragment.empty, schema, elements, createSubDocument ) 
     tr.insert($head.pos, asideNode) 
     editorView.dispatch(tr)
 }

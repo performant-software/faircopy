@@ -129,8 +129,8 @@ export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr )
     return tr
 }
 
-export function createValidNode( elementID, content, schema, elements ) {
-    const { defaultNodes, fcType } = elements[elementID]
+export function createValidNode( elementID, attrs, content, schema, elements, createSubDocument = () => { return '___TEMPID___' } ) {
+    const { fcType, pmType, defaultNodes } = elements[elementID]
     const nodeType = schema.nodes[elementID]
     let node
 
@@ -140,7 +140,7 @@ export function createValidNode( elementID, content, schema, elements ) {
         if( content.childCount === 0 ) {
             const nodes = []
             for( const defaultNode of defaultNodes ) {
-                const node = createValidNode( defaultNode, content, schema, elements )
+                const node = createValidNode( defaultNode, {}, content, schema, elements, createSubDocument )
                 if( !node ) return null
                 nodes.push(node)
             }    
@@ -160,7 +160,7 @@ export function createValidNode( elementID, content, schema, elements ) {
                 let nodes = [], seekingFirstValid = true
                 for( const defaultNode of defaultNodes ) {
                     const childContent = seekingFirstValid ? content : Fragment.empty
-                    let node = createValidNode( defaultNode, childContent, schema, elements )
+                    let node = createValidNode( defaultNode, {}, childContent, schema, elements, createSubDocument )
                     if( node ) {
                         // found a place for the content
                         seekingFirstValid = false
@@ -170,7 +170,7 @@ export function createValidNode( elementID, content, schema, elements ) {
                         if( seekingFirstValid && defaultNode === defaultNodes[defaultNodes.length-1] ) {
                             return null
                         } else {
-                            node = createValidNode( defaultNode, Fragment.empty, schema, elements )
+                            node = createValidNode( defaultNode, {}, Fragment.empty, schema, elements, createSubDocument )
                             if( !node ) return null    
                         }
                     }                    
@@ -182,30 +182,39 @@ export function createValidNode( elementID, content, schema, elements ) {
             }
         }
         if( !nodeType.validContent(fragment) ) return null
-        node = nodeType.create({}, fragment)
+        node = nodeType.create(attrs, fragment)
     } else {
-        // valid nodes must have a textNode as a descendant
-        const textNodeName = getTextNodeName(nodeType.spec.content)
-        if( textNodeName ) {
-            if( content.childCount > 0 ) {
-                // make sure it is the right sort of text node
-                const fragment = replaceTextNodes(schema.nodes[textNodeName], content)
-                if( !fragment || !nodeType.validContent(fragment) ) return null
-                node = nodeType.create({},fragment)    
+        if( pmType === 'inline-node' ) {
+            if( fcType === 'asides' ) {
+                const subDocID = createSubDocument(document,elementID,attrs)
+                node = nodeType.create({ id: '', __id__: subDocID, ...attrs })
             } else {
-                // if no text node exists, create one
-                const textNodeType = schema.nodes[textNodeName]
-                node = nodeType.create({}, textNodeType.create() )
+                node = nodeType.create(attrs)
             }
         } else {
-            throw new Error(`${elementID} is required to have a textNode as a descendant.`)
+            // valid nodes must have a textNode as a descendant
+            const textNodeName = getTextNodeName(nodeType.spec.content)
+            if( textNodeName ) {
+                if( content.childCount > 0 ) {
+                    // make sure it is the right sort of text node
+                    const fragment = replaceTextNodes(schema.nodes[textNodeName], content)
+                    if( !fragment || !nodeType.validContent(fragment) ) return null
+                    node = nodeType.create(attrs, fragment)    
+                } else {
+                    // if no text node exists, create one
+                    const textNodeType = schema.nodes[textNodeName]
+                    node = nodeType.create(attrs, textNodeType.create() )
+                }
+            } else {
+                throw new Error(`${elementID} is required to have a textNode as a descendant.`)
+            }
         }
     }
     return node
 }    
 
-export function insertNodeAt( elementID, insertPos, schema, elements, tr ) {
-    const validNode = createValidNode(elementID,Fragment.empty,schema,elements)
+export function insertNodeAt( elementID, attrs, insertPos, schema, elements, tr, createSubDocument ) {
+    const validNode = createValidNode(elementID,attrs,Fragment.empty,schema,elements, createSubDocument )
     tr.insert( insertPos, validNode )
     return tr             
 }
@@ -313,12 +322,6 @@ export function markExtent($anchor, mark, doc) {
     const to = (forwards !== -1 ) ? forwards : pos
 
     return { from, to }
-}
-
-export function createAsideNode( asideName, attrs, teiDocument, editorView ) {
-    const { state } = editorView
-    const subDocID = teiDocument.createSubDocument(document,asideName,attrs)
-    return state.schema.node(asideName, { id: '', __id__: subDocID, ...attrs })
 }
 
 // take content fragment and replace any text nodes in there with text node type

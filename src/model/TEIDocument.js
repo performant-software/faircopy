@@ -177,7 +177,7 @@ export default class TEIDocument {
         })
     }
 
-    createSubDocument(documentDOM,docType) {
+    createSubDocument = (documentDOM,docType) => {
         const { teiSchema } = this.fairCopyProject
         let noteDoc = documentDOM.createElement(`${docType}Doc`)
         const docX = documentDOM.createElement(`${docType}X`)
