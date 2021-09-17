@@ -57,7 +57,7 @@ const createConfig = function createConfig(teiSchema) {
 
     // initialize global vocabs
     for( const attr of Object.values(attrs) ) {
-        const { valList, valListType } = attrs
+        const { valList, valListType } = attr
         if( valList && valListType !== 'open' ) {
             const vocabKey = getDefaultVocabKey('*',attr.ident)
             const vocab = []
