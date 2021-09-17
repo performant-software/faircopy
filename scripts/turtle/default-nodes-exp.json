@@ -91,6 +91,8 @@
     "listRelation": ["relation"],
     "listWit": ["witness"],
     "location": ["geo"],
+    "locusGrp": ["locus"],
+    "media": ["desc"],
     "metDecl": ["metSym"],
     "monogr": ["title","imprint"],
     "msContents": [ "p" ],

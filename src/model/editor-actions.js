@@ -49,7 +49,7 @@ export function createStructureElement( elementID, nodePos, actionType, teiDocum
 }
 
 export function determineRules( elementID, teiSchema ) {
-    const {elements, schema} = teiSchema
+    const {schema, validationSet} = teiSchema
     const targetType = schema.nodes[elementID]
 
     const listToString = (list) => {
@@ -66,28 +66,22 @@ export function determineRules( elementID, teiSchema ) {
     }
 
     let mayContainIDs = []
-    for( const element of Object.values(elements) ) {
-        const { name, fcType } = element
-        if( fcType === 'soft' || fcType === 'hard' ) {
-            const testNode = schema.nodes[name].create() 
-            if( targetType.validContent(Fragment.from(testNode)) ) {
-                mayContainIDs.push(name)
-            }
+    for( const elementName of Object.keys(validationSet) ) {
+        const testFragment = validationSet[elementName]
+        if( targetType.validContent(testFragment) ) {
+            mayContainIDs.push(elementName)
         }
     }
     const mayContain = listToString(mayContainIDs.sort())
 
     const containedByIDs = []
-    const testFragment = Fragment.from(targetType.create())
-    for( const element of Object.values(elements) ) {
-        const { name, fcType } = element
-        if( fcType === 'soft' || fcType === 'hard' ) {
-            const parentType = schema.nodes[name]
-            if( parentType.validContent(testFragment) ) {
-                containedByIDs.push(name)
-            }
+    const testFragment = validationSet[elementID]
+    for( const elementName of Object.keys(validationSet) ) {
+        const parentType = schema.nodes[elementName]
+        if( parentType.validContent(testFragment) ) {
+            containedByIDs.push(elementName)
         }
-    }
+    }    
     const containedBy = listToString(containedByIDs.sort())
 
     return {
@@ -95,6 +89,28 @@ export function determineRules( elementID, teiSchema ) {
         mayContain,
         notes: null    
     }
+}
+
+export function inValidationSet(element) {
+    const { name, fcType, pmType } = element
+    return (
+        (fcType === 'soft' || fcType === 'hard' || (fcType === 'inters' && pmType !== 'mark')) && 
+        name !== 'linkGrp' && 
+        name !== 'timeline' 
+    )
+}
+
+export function createValidationSet(elements, schema) {
+    const validationSet = {}
+
+    for( const element of Object.values(elements) ) {
+        if( inValidationSet(element) ) {
+            const { name } = element
+            validationSet[name] = Fragment.from( createValidNode( name, Fragment.empty, schema, elements ) )
+        }
+    }
+
+    return validationSet
 }
 
 export function validAction( elementID, teiDocument ) {

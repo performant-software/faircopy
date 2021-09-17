@@ -8203,6 +8203,198 @@
 				}
 			}
 		},
+		"media": {
+			"active": false,
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"decls": {
+					"active": false
+				},
+				"dur": {
+					"active": false
+				},
+				"dur-iso": {
+					"active": false
+				},
+				"end": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"height": {
+					"active": false
+				},
+				"mimeType": {
+					"active": true
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"scale": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"start": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"subtype": {
+					"active": false,
+					"vocabID": "media[subtype]"
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "media[type]"
+				},
+				"url": {
+					"active": true
+				},
+				"width": {
+					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"metDecl": {
+			"active": false,
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"default": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"pattern": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "metDecl[type]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
 		"monogr": {
 			"active": false,
 			"attrState": {
@@ -15270,6 +15462,78 @@
 				"type": {
 					"active": false,
 					"vocabID": "cb[type]"
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"caesura": {
+			"active": false,
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
 				},
 				"xml:base": {
 					"active": false
@@ -34749,116 +35013,6 @@
 				}
 			}
 		},
-		"media": {
-			"active": false,
-			"attrState": {
-				"ana": {
-					"active": false
-				},
-				"cert": {
-					"active": false
-				},
-				"change": {
-					"active": false
-				},
-				"copyOf": {
-					"active": false
-				},
-				"corresp": {
-					"active": false
-				},
-				"decls": {
-					"active": false
-				},
-				"dur": {
-					"active": false
-				},
-				"dur-iso": {
-					"active": false
-				},
-				"end": {
-					"active": false
-				},
-				"exclude": {
-					"active": false
-				},
-				"facs": {
-					"active": false
-				},
-				"height": {
-					"active": false
-				},
-				"mimeType": {
-					"active": true
-				},
-				"n": {
-					"active": false
-				},
-				"next": {
-					"active": false
-				},
-				"prev": {
-					"active": false
-				},
-				"rend": {
-					"active": false
-				},
-				"rendition": {
-					"active": false
-				},
-				"resp": {
-					"active": false
-				},
-				"sameAs": {
-					"active": false
-				},
-				"scale": {
-					"active": false
-				},
-				"select": {
-					"active": false
-				},
-				"source": {
-					"active": false
-				},
-				"start": {
-					"active": false
-				},
-				"style": {
-					"active": false
-				},
-				"subtype": {
-					"active": false,
-					"vocabID": "media[subtype]"
-				},
-				"synch": {
-					"active": false
-				},
-				"type": {
-					"active": false,
-					"vocabID": "media[type]"
-				},
-				"url": {
-					"active": true
-				},
-				"width": {
-					"active": false
-				},
-				"xml:base": {
-					"active": false
-				},
-				"xml:id": {
-					"active": false
-				},
-				"xml:lang": {
-					"active": false
-				},
-				"xml:space": {
-					"active": false,
-					"vocabID": "*[xml:space]"
-				}
-			}
-		},
 		"meeting": {
 			"active": false,
 			"attrState": {
@@ -34978,6 +35132,85 @@
 				},
 				"when-iso": {
 					"active": false
+				},
+				"xml:base": {
+					"active": false
+				},
+				"xml:id": {
+					"active": false
+				},
+				"xml:lang": {
+					"active": false
+				},
+				"xml:space": {
+					"active": false,
+					"vocabID": "*[xml:space]"
+				}
+			}
+		},
+		"metSym": {
+			"active": false,
+			"attrState": {
+				"ana": {
+					"active": false
+				},
+				"cert": {
+					"active": false
+				},
+				"change": {
+					"active": false
+				},
+				"copyOf": {
+					"active": false
+				},
+				"corresp": {
+					"active": false
+				},
+				"exclude": {
+					"active": false
+				},
+				"facs": {
+					"active": false
+				},
+				"n": {
+					"active": false
+				},
+				"next": {
+					"active": false
+				},
+				"prev": {
+					"active": false
+				},
+				"rend": {
+					"active": false
+				},
+				"rendition": {
+					"active": false
+				},
+				"resp": {
+					"active": false
+				},
+				"sameAs": {
+					"active": false
+				},
+				"select": {
+					"active": false
+				},
+				"source": {
+					"active": false
+				},
+				"style": {
+					"active": false
+				},
+				"synch": {
+					"active": false
+				},
+				"terminal": {
+					"active": false
+				},
+				"value": {
+					"active": false,
+					"vocabID": "metSym[value]"
 				},
 				"xml:base": {
 					"active": false

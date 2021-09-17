@@ -1,5 +1,6 @@
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
+import { createValidationSet } from "./editor-actions"
 
 const pmTypeToMenu = {
     "node": 'structure',
@@ -37,6 +38,7 @@ export default class TEISchema {
         this.schema = new Schema(schemaSpec)
         this.domParser = PMDOMParser.fromSchema(this.schema)
         this.createSubDocSchemas(schemaSpec)
+        this.validationSet = createValidationSet(this.elements,this.schema)
     }
 
     // Each subdoc type needs its own schema that has the docNode as its top level node and a parser that uses that schema
