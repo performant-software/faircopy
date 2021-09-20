@@ -113,18 +113,17 @@ export function removeMark(markType) {
 }
 
 
-export function insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument ) {
+export function insertAtomNodeAt(elementID, attrs, pos, schema, elements, below, tr, createSubDocument ) {
     const { doc } = tr
     const { fcType } = elements[elementID]
     const nodeType = schema.nodes[elementID]
-    let node, offset
+    const offset = below ? 1 : fcType === 'asides' ? 1 : -1
+    let node
 
     if( fcType === 'asides' ) {
-        offset = 1
         const subDocID = createSubDocument(document,elementID,attrs)
         node = nodeType.create({ id: '', __id__: subDocID, ...attrs })
     } else {
-        offset = -1
         node = nodeType.create(attrs)
     }
 

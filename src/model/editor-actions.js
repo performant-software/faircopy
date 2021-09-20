@@ -121,7 +121,7 @@ function addInside( elementID, attrs, teiDocument, pos, tr ) {
 
         // insert node inside parent
         if( nodeType.isAtom ) {
-            return insertAtomNodeAt(elementID, attrs, pos+1, schema, elements, tr, createSubDocument )
+            return insertAtomNodeAt(elementID, attrs, pos+1, schema, elements, false, tr, createSubDocument )
         } else {
             return insertNodeAt(elementID, attrs, pos+1, schema, elements, tr, createSubDocument )    
         }
@@ -151,7 +151,7 @@ function addAbove( elementID, attrs, teiDocument, pos, tr ) {
     const nodeType = schema.nodes[elementID]
 
     if( nodeType.isAtom ) {
-        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )
+        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, false, tr, createSubDocument )
     } else {
         return insertNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )    
     }
@@ -170,7 +170,7 @@ function addBelow( elementID, attrs, teiDocument, pos, tr ) {
     const insertPos = pos + targetNode.nodeSize
 
     if( nodeType.isAtom ) {
-        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )
+        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, true, tr, createSubDocument )
     } else {
         return insertNodeAt(elementID, attrs, insertPos, schema, teiSchema.elements, tr, createSubDocument )    
     }

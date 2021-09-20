@@ -71,12 +71,15 @@ export default class App extends Component {
   }
 
   openProject( projectData ) {
-    setTimeout( () => {
+    // This timeout is here because pre-first render code paths in app initialization can 
+    // get out ahead of the browser's debugger, causing
+    // breakpoints not to be honored. Only needed for debugging these paths.
+    // setTimeout( () => {
       const fairCopyProject = new FairCopyProject(projectData)
       this.setTitle(fairCopyProject.projectName)   
       this.setState({...this.state, fairCopyProject})
       this.addToRecentProjects(fairCopyProject)  
-    },2000)
+    // },2000)
   }
 
   openImageView( imageViewData ) {
