@@ -74,6 +74,10 @@
     background:#D4C3FC;
 }
 
+#StructurePalette .element-icon {
+    margin-right: 5px;
+}
+
 #StructurePalette .el-name {
     display: inline-block;
     user-select: none;

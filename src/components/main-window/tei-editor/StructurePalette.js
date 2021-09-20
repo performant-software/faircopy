@@ -171,7 +171,8 @@ renderSelectStructureGroup(menuGroups, subMenuID) {
 
 renderElement(elementID,groupID,paletteOrder) {
   const { teiDocument } = this.props
-  const { elementGroups } = teiDocument.fairCopyProject.teiSchema
+  const { teiSchema } = teiDocument.fairCopyProject
+  const { elementGroups } = teiSchema
 
   const onStartDrag = (e) => {
     const { onDragElement } = this.props
@@ -187,9 +188,13 @@ renderElement(elementID,groupID,paletteOrder) {
 
   const setItemElRef = (el) => {
     this.itemEls[elementID] = el
-}
+  }
+
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
   const className = `element-type ${elType}`
+  const icon = teiSchema.getElementIcon(elementID)
+  const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
+
   return (
     <div 
         key={`structs-${paletteOrder}`}
@@ -202,7 +207,7 @@ renderElement(elementID,groupID,paletteOrder) {
         datapalettepos={paletteOrder}
         className={className}
     >
-      <div className="el-name">{elementID}</div>
+      <div className="el-name">{elementIcon}{elementID}</div>
     </div>
   )
 }
