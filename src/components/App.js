@@ -71,12 +71,12 @@ export default class App extends Component {
   }
 
   openProject( projectData ) {
-    // setTimeout( () => {
+    setTimeout( () => {
       const fairCopyProject = new FairCopyProject(projectData)
       this.setTitle(fairCopyProject.projectName)   
       this.setState({...this.state, fairCopyProject})
       this.addToRecentProjects(fairCopyProject)  
-    // },2000)
+    },2000)
   }
 
   openImageView( imageViewData ) {

@@ -114,17 +114,28 @@ export function removeMark(markType) {
 }
 
 
-export function insertAtomNodeAt( node, insertPos, editorView, below=false, tr ) {
-    const { doc } = editorView.state
-    
-    const offset = below ? 1 : -1
-    const $prev = doc.resolve(insertPos+offset)
+export function insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument ) {
+    const { doc } = tr
+    const { fcType } = elements[elementID]
+    const nodeType = schema.nodes[elementID]
+    let node, offset
+
+    if( fcType === 'asides' ) {
+        offset = 1
+        const subDocID = createSubDocument(document,elementID,attrs)
+        node = nodeType.create({ id: '', __id__: subDocID, ...attrs })
+    } else {
+        offset = -1
+        node = nodeType.create(attrs)
+    }
+
+    const $prev = doc.resolve(pos+offset)
 
     // if there's already a globalNode, insert within it.
     if( $prev && $prev.parent && $prev.parent.type.name.includes('globalNode') ) {            
-        tr.insert(insertPos+offset,node)
+        tr.insert(pos+offset,node)
     } else {
-        tr.insert(insertPos,node)
+        tr.insert(pos,node)
     }
     return tr
 }
@@ -185,12 +196,28 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
         node = nodeType.create(attrs, fragment)
     } else {
         if( pmType === 'inline-node' ) {
+            let inlineNode
             if( fcType === 'asides' ) {
                 const subDocID = createSubDocument(document,elementID,attrs)
-                node = nodeType.create({ id: '', __id__: subDocID, ...attrs })
+                inlineNode = nodeType.create({ id: '', __id__: subDocID, ...attrs })
             } else {
-                node = nodeType.create(attrs)
+                inlineNode = nodeType.create(attrs)
             }
+            // search the global nodes for one that can contain this group
+            const groups = nodeType.spec.group.split(' ')
+            groups.push(elementID)
+            const globalNodeElement = Object.values(elements).find( element => {
+                const { name, content } = element
+                if( name.startsWith('globalNode') ) {
+                    const matchingGroup = groups.find(group => group !== '' && content.includes(group))
+                    if( matchingGroup ) return true
+                }
+                return false
+            })
+            // wrap the inline node in the appropriate globalNode
+            if( !globalNodeElement ) debugger
+            const globalNodeType = schema.nodes[globalNodeElement.name]
+            node = globalNodeType.create({},inlineNode)
         } else {
             // valid nodes must have a textNode as a descendant
             const textNodeName = getTextNodeName(nodeType.spec.content)

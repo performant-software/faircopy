@@ -147,8 +147,6 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
     const nodeIndex = $targetPos.index()
     const isAtom = elements[elementID].pmType === 'inline-node'
 
-    // TODO do we need to wrap in global node first?
-
     // create a fragment that places the created node in position with its future siblings
     if( actionType === 'addAbove' || actionType === 'addBelow' ) {
         const { content } = parentNode
@@ -229,8 +227,14 @@ function addInside( elementID, attrs, teiDocument, pos, tr ) {
         tr.replaceWith(pos+1, pos+1+parentNode.content.size, fragment)    
         return tr
     } else {
+        const nodeType = schema.nodes[elementID]
+
         // insert node inside parent
-        return insertNodeAt( elementID, attrs, pos+1, schema, elements, tr, createSubDocument )
+        if( nodeType.isAtom ) {
+            return insertAtomNodeAt(elementID, attrs, pos+1, schema, elements, tr, createSubDocument )
+        } else {
+            return insertNodeAt(elementID, attrs, pos+1, schema, elements, tr, createSubDocument )    
+        }
     }
 }
     
@@ -253,15 +257,13 @@ function addAbove( elementID, attrs, teiDocument, pos, tr ) {
     const { teiSchema } = teiDocument.fairCopyProject
     const { createSubDocument } = teiDocument
     const { schema } = editorView.state
-    const { elementGroups, elements } = teiSchema
-    const { asides } = elementGroups
+    const { elements } = teiSchema
     const nodeType = schema.nodes[elementID]
 
     if( nodeType.isAtom ) {
-        const node = createValidNode( elementID, attrs, Fragment.empty, schema, elements, createSubDocument )
-        return insertAtomNodeAt(node, pos, editorView, asides.includes(elementID), tr )    
+        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )
     } else {
-        return insertNodeAt(elementID, attrs, pos, schema, teiSchema.elements, tr, createSubDocument )    
+        return insertNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )    
     }
 }
 
@@ -278,8 +280,7 @@ function addBelow( elementID, attrs, teiDocument, pos, tr ) {
     const insertPos = pos + targetNode.nodeSize
 
     if( nodeType.isAtom ) {
-        const node = createValidNode( elementID, attrs, Fragment.empty, schema, elements, createSubDocument )
-        return insertAtomNodeAt(node, insertPos, editorView, true, tr )    
+        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )
     } else {
         return insertNodeAt(elementID, attrs, insertPos, schema, teiSchema.elements, tr, createSubDocument )    
     }
