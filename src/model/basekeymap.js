@@ -41,6 +41,14 @@ export function joinBackward(state, dispatch, view) {
     return true
   }
   let before = $cut.nodeBefore
+  let after = $cut.nodeAfter
+
+  // delete empty global nodes
+  if( after.type.name.startsWith('globalNode') && after.childCount === 0 ) {
+    dispatch(state.tr.delete($cut.pos,$cut.pos+1).scrollIntoView())
+    return true
+  }
+  
   // Apply the joining algorithm
   if (!before.type.spec.isolating && deleteBarrier(state, $cut, dispatch))
     return true
