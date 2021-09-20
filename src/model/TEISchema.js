@@ -1,6 +1,6 @@
 import {Schema} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
-import { createValidationSet } from "./editor-actions"
+import { createValidationSet } from "./element-validators"
 
 const pmTypeToMenu = {
     "node": ['structure'],

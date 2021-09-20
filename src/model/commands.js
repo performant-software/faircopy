@@ -1,7 +1,6 @@
 import { NodeSelection } from "prosemirror-state"
 import { Node, Fragment } from "prosemirror-model"
-
-import { getTextNodeName } from './xml'
+import { createValidNode } from "./element-validators"
 
 export function markApplies(doc, ranges, type) {
     for (let i = 0; i < ranges.length; i++) {
@@ -140,106 +139,6 @@ export function insertAtomNodeAt(elementID, attrs, pos, schema, elements, tr, cr
     return tr
 }
 
-export function createValidNode( elementID, attrs, content, schema, elements, createSubDocument = () => { return '___TEMPID___' } ) {
-    const { fcType, pmType, defaultNodes } = elements[elementID]
-    const nodeType = schema.nodes[elementID]
-    let node
-
-    if( fcType === 'hard' ) {
-        // if default nodes are provided, use them to wrap the text node
-        let fragment
-        if( content.childCount === 0 ) {
-            const nodes = []
-            for( const defaultNode of defaultNodes ) {
-                const node = createValidNode( defaultNode, {}, content, schema, elements, createSubDocument )
-                if( !node ) return null
-                nodes.push(node)
-            }    
-            fragment = Fragment.from(nodes)
-        } else {
-            let hasTextNode = false
-            for( let i=0; i < content.childCount; i++ ) {
-                const contentChild = content.child(i)
-                if( contentChild.type.name.startsWith('textNode') ) {
-                    hasTextNode = true
-                    break
-                }
-            }
-            if( hasTextNode ) {
-                // if any of the nodes in the fragment are text nodes, 
-                // the content must be wrapped in the first valid default node
-                let nodes = [], seekingFirstValid = true
-                for( const defaultNode of defaultNodes ) {
-                    const childContent = seekingFirstValid ? content : Fragment.empty
-                    let node = createValidNode( defaultNode, {}, childContent, schema, elements, createSubDocument )
-                    if( node ) {
-                        // found a place for the content
-                        seekingFirstValid = false
-                    } else {
-                        // if this is the last node and we haven't found a home
-                        // for content, this is not a valid node
-                        if( seekingFirstValid && defaultNode === defaultNodes[defaultNodes.length-1] ) {
-                            return null
-                        } else {
-                            node = createValidNode( defaultNode, {}, Fragment.empty, schema, elements, createSubDocument )
-                            if( !node ) return null    
-                        }
-                    }                    
-                    nodes.push(node)
-                }    
-                fragment = Fragment.from(nodes)
-            } else {
-                fragment = content
-            }
-        }
-        if( !nodeType.validContent(fragment) ) return null
-        node = nodeType.create(attrs, fragment)
-    } else {
-        if( pmType === 'inline-node' ) {
-            let inlineNode
-            if( fcType === 'asides' ) {
-                const subDocID = createSubDocument(document,elementID,attrs)
-                inlineNode = nodeType.create({ id: '', __id__: subDocID, ...attrs })
-            } else {
-                inlineNode = nodeType.create(attrs)
-            }
-            // search the global nodes for one that can contain this group
-            const groups = nodeType.spec.group.split(' ')
-            groups.push(elementID)
-            const globalNodeElement = Object.values(elements).find( element => {
-                const { name, content } = element
-                if( name.startsWith('globalNode') ) {
-                    const matchingGroup = groups.find(group => group !== '' && content.includes(group))
-                    if( matchingGroup ) return true
-                }
-                return false
-            })
-            // wrap the inline node in the appropriate globalNode
-            if( !globalNodeElement ) debugger
-            const globalNodeType = schema.nodes[globalNodeElement.name]
-            node = globalNodeType.create({},inlineNode)
-        } else {
-            // valid nodes must have a textNode as a descendant
-            const textNodeName = getTextNodeName(nodeType.spec.content)
-            if( textNodeName ) {
-                if( content.childCount > 0 ) {
-                    // make sure it is the right sort of text node
-                    const fragment = replaceTextNodes(schema.nodes[textNodeName], content)
-                    if( !fragment || !nodeType.validContent(fragment) ) return null
-                    node = nodeType.create(attrs, fragment)    
-                } else {
-                    // if no text node exists, create one
-                    const textNodeType = schema.nodes[textNodeName]
-                    node = nodeType.create(attrs, textNodeType.create() )
-                }
-            } else {
-                throw new Error(`${elementID} is required to have a textNode as a descendant.`)
-            }
-        }
-    }
-    return node
-}    
-
 export function insertNodeAt( elementID, attrs, insertPos, schema, elements, tr, createSubDocument ) {
     const validNode = createValidNode(elementID,attrs,Fragment.empty,schema,elements, createSubDocument )
     tr.insert( insertPos, validNode )
@@ -349,31 +248,4 @@ export function markExtent($anchor, mark, doc) {
     const to = (forwards !== -1 ) ? forwards : pos
 
     return { from, to }
-}
-
-// take content fragment and replace any text nodes in there with text node type
-export function replaceTextNodes( textNodeType, fragment ) {
-    let siblings = []
-    for( let i=0; i < fragment.childCount; i++ ) { 
-        const sibling = fragment.child(i)
-        if( sibling.type.name.includes('textNode') && sibling.type.name !== textNodeType.name ) {
-            const textNodeContent = sibling.content
-            for( let i=0; i < textNodeContent.childCount; i++ ) {
-                const node = textNodeContent.child(i)
-                for( const mark of node.marks ) {
-                    if( !textNodeType.allowsMarkType(mark.type) ) {
-                        // if any marks are not allowed for this textNode
-                        return null
-                    }
-                }
-            }
-            const nextSib = textNodeType.create(sibling.attr, sibling.content )
-            siblings.push( nextSib ) 
-        } else {
-            siblings.push( sibling ) 
-        }
-    }
-
-    // return new content fragment 
-    return Fragment.from(siblings) 
 }

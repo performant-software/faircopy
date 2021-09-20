@@ -1,6 +1,7 @@
 import DraggingElement from '../../common/DraggingElement'
 import { changeAttributes } from '../../../model/commands'
-import { validNodeAction, createStructureElement } from '../../../model/editor-actions'
+import { createStructureElement } from '../../../model/editor-actions'
+import { validNodeAction } from '../../../model/element-validators'
 import { addElementToMenu, saveConfig } from '../../../model/faircopy-config'
 
 const hitMargin = {

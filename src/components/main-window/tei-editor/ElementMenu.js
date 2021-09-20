@@ -4,7 +4,8 @@ import { Menu, MenuItem } from '@material-ui/core'
 import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
 import EmptyGroup from './EmptyGroup';
-import { createPhraseElement, validAction } from "../../../model/editor-actions"
+import { createPhraseElement } from "../../../model/editor-actions"
+import { validAction } from '../../../model/element-validators'
 
 export default class ElementMenu extends Component {
 
