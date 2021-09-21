@@ -208,7 +208,11 @@ export function deleteParentNode(state) {
         if( children.length === 1 && isBlank(children[0])) {
             tr.replaceWith(pos,pos+node.nodeSize,Fragment.empty) 
         } else {
-            tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
+            if(isBlank(node)) {
+                tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
+            } else {
+                tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
+            }
         }
     }
     return tr
