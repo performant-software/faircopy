@@ -188,11 +188,11 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
                 return false
             })
             // wrap the inline node in the appropriate globalNode
-            if( !globalNodeElement ) debugger
+            if( !globalNodeElement ) return null
             const globalNodeType = schema.nodes[globalNodeElement.name]
             node = globalNodeType.create({},inlineNode)
         } else {
-            // valid nodes must have a textNode as a descendant
+            // soft nodes must have a textNode as a descendant
             const textNodeName = getTextNodeName(nodeType.spec.content)
             if( textNodeName ) {
                 if( content.childCount > 0 ) {
