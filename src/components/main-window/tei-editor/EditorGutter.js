@@ -198,7 +198,9 @@ export default class EditorGutter extends Component {
             const { pmNode, pos, top, bottom, column } = gutterMark
             const borderStyles = this.getBorderStyles(pmNode)
             const elementID = pmNode.type.name
-            const style = hard.includes(elementID) || docNodes.includes(elementID) ? 'hard' : 'soft'
+            let style = hard.includes(elementID) || docNodes.includes(elementID) ? 'hard' : 'soft'
+            if( pmNode.attrs['__error__'] ) style = style.concat(' error')
+
             // for split nodes, retrieve their start position, otherwise compute from offsets
             const targetPos = pos - 1
             return this.renderGutterMark(elementID, targetPos, top, bottom, index, column, style, borderStyles, columnPositions) 
