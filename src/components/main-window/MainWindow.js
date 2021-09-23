@@ -643,7 +643,8 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { appConfig, hidden } = this.props
+        const { appConfig, hidden, fairCopyProject } = this.props
+        const { searchIndex } = fairCopyProject
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -661,6 +662,7 @@ export default class MainWindow extends Component {
                     </SplitPane>
                     <MainWindowStatusBar
                         appConfig={appConfig}
+                        searchIndex={searchIndex}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}

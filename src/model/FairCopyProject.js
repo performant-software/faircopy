@@ -9,6 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-te
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
+import { createIndex } from './search'
 
 const fairCopy = window.fairCopy
 
@@ -23,6 +24,7 @@ export default class FairCopyProject {
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 
+        this.searchIndex = createIndex()
         
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {

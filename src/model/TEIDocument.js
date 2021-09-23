@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {scanForErrors} from "./error-scan"
+import { indexDocument } from "./search"
 
 const fairCopy = window.fairCopy
 
@@ -264,6 +265,9 @@ export default class TEIDocument {
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.lastMessageID = messageID
+
+        // index document for search
+        indexDocument( this )
 
         this.changedSinceLastSave = false
     }
