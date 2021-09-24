@@ -78,6 +78,9 @@ export function indexDocument( teiDocument ) {
 
 export function searchProject( query, searchIndex ) {
     const results = {}
+
+    if( query.length === 0 ) return {}
+
     for( const resourceID of Object.keys(searchIndex) ) {
         results[resourceID] = searchResource( query, resourceID, searchIndex )
     }
@@ -87,6 +90,8 @@ export function searchProject( query, searchIndex ) {
 
 export function searchResource( query, resourceID, searchIndex ) {
     const resourceIndex = searchIndex[resourceID]
+
+    if( query.length === 0 ) return null
 
     // create a list of terms from the query
     const terms = query.split(' ')

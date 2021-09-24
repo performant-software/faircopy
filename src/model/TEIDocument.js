@@ -3,6 +3,7 @@ import {keymap} from "prosemirror-keymap"
 import {history} from "prosemirror-history"
 import {baseKeymap} from "./basekeymap"
 import {highlighter} from "./highlighter"
+import {searchHighlighter} from "./search-highlighter"
 import {dropCursor} from "prosemirror-dropcursor"
 import {gapCursor} from "prosemirror-gapcursor"
 import { v4 as uuidv4 } from 'uuid'
@@ -31,7 +32,8 @@ export default class TEIDocument {
             dropCursor(),
             gapCursor(),
             history(),
-            highlighter()
+            highlighter(),
+            searchHighlighter()
         ]
         if( resourceID ) {
             this.requestResource( resourceID )

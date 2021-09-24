@@ -14,11 +14,24 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
-        const { searchIndex } = this.props
+        const { fairCopyProject, currentResource } = this.props
+        const { searchIndex } = fairCopyProject
         const { searchQuery } = this.state
 
-        const results = searchProject(searchQuery, searchIndex)
-        console.log(results)
+        const projectSearchResults = searchProject(searchQuery, searchIndex)
+
+        // highlight search results in the currently open resource
+        if( currentResource ) {
+            const { resourceID, resourceType } = currentResource
+
+            if( resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff' ) {
+                const editorView = currentResource.getActiveView()
+                const { tr } = editorView.state
+                const resourceResults = projectSearchResults[resourceID] ?  projectSearchResults[resourceID] : -1
+                tr.setMeta('searchResults', resourceResults)
+                editorView.dispatch(tr)       
+            }    
+        }
     }
 
     onChange = (e) => {

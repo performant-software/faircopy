@@ -643,8 +643,9 @@ export default class MainWindow extends Component {
     }
 
     render() {
+        const { openResources,selectedResource } = this.state
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchIndex } = fairCopyProject
+        const currentResource = openResources[selectedResource]
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -662,7 +663,8 @@ export default class MainWindow extends Component {
                     </SplitPane>
                     <MainWindowStatusBar
                         appConfig={appConfig}
-                        searchIndex={searchIndex}
+                        fairCopyProject={fairCopyProject}
+                        currentResource={currentResource}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
