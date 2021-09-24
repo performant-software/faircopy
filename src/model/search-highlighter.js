@@ -16,7 +16,7 @@ export function searchHighlighter() {
         }
     })
 
-    // look at the selections in this state and highlight mark extents
+    // highlight the search results
     function drawHighlight(state) { 
         const { doc } = state
         const results = plugin.getState(state)
@@ -25,9 +25,11 @@ export function searchHighlighter() {
             const decorations = []
             for( const result of results ) {
                 const from = result
-                const to = result + 5
+                const $from = doc.resolve(from+1)
+                const len = $from.parent.nodeSize
+                const to = from + len
                 decorations.push(
-                    Decoration.inline(from, to, {style: `background: green`})
+                    Decoration.inline(from, to, {style: `background: #8dff50`})
                 )
             }
 
