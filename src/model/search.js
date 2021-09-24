@@ -28,7 +28,7 @@ function defineLunrSchema( lunrIndex, attrs ) {
     lunrIndex.searchPipeline.remove(lunr.stopWordFilter)
 
     // add fields to schema
-    lunrIndex.ref('locator')
+    lunrIndex.ref('pos')
     lunrIndex.field('elementName')
     lunrIndex.field('softNode')
     lunrIndex.field('contents')
@@ -45,7 +45,6 @@ export function indexDocument( teiDocument ) {
         defineLunrSchema(this,attrs)
 
         doc.descendants((node,pos) => {
-            const locator = `${resourceID}/${pos}`
             const elementName = node.type.name
             const contents = node.textContent
             const element = elements[elementName]
@@ -65,7 +64,7 @@ export function indexDocument( teiDocument ) {
             // TODO sub docs
 
             this.add({
-                locator,
+                pos,
                 elementName,
                 softNode,
                 contents,
@@ -83,7 +82,7 @@ export function searchProject( query, searchIndex ) {
         results[resourceID] = searchResource( query, resourceID, searchIndex )
     }
 
-    debugger
+    return results
 }
 
 export function searchResource( query, resourceID, searchIndex ) {
@@ -93,13 +92,16 @@ export function searchResource( query, resourceID, searchIndex ) {
     const terms = query.split(' ')
     const termQs = []
     for( const term of terms ) {
+        // TODO filter out disallowed characters
         termQs.push(`+contents:${term}`)
     }
     const termQ = termQs.join(' ')
 
     // full text search 
     // return resourceIndex.search(termQ)
-    return resourceIndex.search(`+softNode:true ${termQ}`)
+    const lunrResults = resourceIndex.search(`+softNode:true ${termQ}`)
+    const results = lunrResults.map( (result) => parseInt(result.ref) )
+    return results
 
     // TODO find a element containing a phrase w/certain attrs
     // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
