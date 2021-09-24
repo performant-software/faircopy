@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { searchProject } from '../../model/search'
+import SearchBar from './SearchBar'
 
 import { Button, Tooltip } from '@material-ui/core';
 
@@ -46,13 +46,8 @@ export default class MainWindowStatusBar extends Component {
         this.setState({ ...this.state, softwareUpdateStatus: 'downloading', progress: 0 })
     }
 
-    onSearch = () => {
-        const { searchIndex } = this.props
-        searchProject('New Bedford',searchIndex)
-    }
-
     render() {
-        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes } = this.props
+        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes, searchIndex } = this.props
         const { softwareUpdateStatus, progress } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
@@ -60,9 +55,9 @@ export default class MainWindowStatusBar extends Component {
 
         return (
             <div id="MainWindowStatusBar" className="bar">
-                    <Button onClick={this.onSearch} className="search-button" size="small" color="inherit">
-                        <i className="fas fa-search fa-lg"></i>               
-                    </Button> 
+                    <SearchBar
+                        searchIndex={searchIndex}
+                    ></SearchBar>
                     { softwareUpdateStatus === 'OK' && 
                         <Button onClick={onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">
                                 { appVersion } {devModeTag }                       

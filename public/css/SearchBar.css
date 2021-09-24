@@ -1,21 +1,18 @@
 #SearchBar {
-    width: 250px;
-    height: 30px;
-    margin-top: 5px;
-    float: right;
-    background: white;
-    border: 2px solid #EAEAEA;
-    border-radius: 10px;
+    display: inline-block;
 }
 
 #SearchBar .search-input {
-    margin-left: 10px;
-    margin-bottom: 10px;
+    width: 250px;
+    height: 30px;
+    background: white;
+    border: 2px solid #EAEAEA;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
     display: inline-block;
 }
 
 #SearchBar .search-button {
-    max-width: 40px;
-    margin-top: 4px;
-    float: right;
+    display: inline-block;
 }
