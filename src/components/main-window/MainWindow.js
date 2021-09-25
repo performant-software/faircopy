@@ -60,6 +60,7 @@ export default class MainWindow extends Component {
             elementMenuOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
+            popupMenuPlacement: null,
             alertMessage: null,
             expandedGutter: true,
             iiifDialogMode: false,
@@ -186,7 +187,8 @@ export default class MainWindow extends Component {
                 resourceBrowserOpen: false, 
                 currentSubmenuID: 0,
                 popupMenuOptions: null, 
-                popupMenuAnchorEl: null
+                popupMenuAnchorEl: null,
+                popupMenuPlacement: null
             })    
             // a bit of a hack - need to refresh after it renders
             if( nextResources[nextSelection] instanceof TEIDocument ) {
@@ -197,7 +199,8 @@ export default class MainWindow extends Component {
                 ...this.state, 
                 resourceBrowserOpen: false, 
                 popupMenuOptions: null, 
-                popupMenuAnchorEl: null
+                popupMenuAnchorEl: null,
+                popupMenuPlacement: null
             })    
         }
     }
@@ -247,6 +250,7 @@ export default class MainWindow extends Component {
             alertOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
+            popupMenuPlacement: null
         })
 
         if( exitOnClose ) {
@@ -278,12 +282,12 @@ export default class MainWindow extends Component {
         this.setState({...this.state, elementMenuOptions: null })
     }
 
-    onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl) => {
-        this.setState({...this.state, popupMenuOptions, popupMenuAnchorEl })
+    onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
+        this.setState({...this.state, popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement })
     }
 
     onClosePopupMenu = () => {
-        this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null })
+        this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })
     }
 
     onEditResource = () => {
@@ -470,7 +474,7 @@ export default class MainWindow extends Component {
         const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : fairCopyProject.getResourceEntry(parentResourceID)
 
         const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
-        const { popupMenuOptions, popupMenuAnchorEl } = this.state
+        const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } = this.state
 
         const onSaveResource = (name,localID,type) => {
             if( resourceEntry ) {
@@ -565,6 +569,7 @@ export default class MainWindow extends Component {
                 { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}
                     anchorEl={popupMenuAnchorEl}
+                    placement={popupMenuPlacement}
                     onClose={this.onClosePopupMenu}                
                 ></PopupMenu> }
                 { releaseNotesMode && <ReleaseNotesDialog
@@ -664,6 +669,7 @@ export default class MainWindow extends Component {
                     <MainWindowStatusBar
                         appConfig={appConfig}
                         fairCopyProject={fairCopyProject}
+                        onOpenPopupMenu={this.onOpenPopupMenu}
                         currentResource={currentResource}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}

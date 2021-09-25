@@ -3,7 +3,7 @@ import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-
 
 export default class PopupMenu extends Component {
     render() {
-        const { menuOptions, anchorEl, onClose } = this.props
+        const { menuOptions, anchorEl, onClose, placement } = this.props
 
         if( !anchorEl ) return null
 
@@ -27,12 +27,12 @@ export default class PopupMenu extends Component {
             )
         }
         
-        const placement = 'bottom-start'
+        const finalPlacement = placement ? placement : 'bottom-start'
         const elevation = 6
 
         return (
             <div id="PopupMenu">
-                 <Popper className="popup" placement={placement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
+                 <Popper className="popup" placement={finalPlacement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
                     <Paper elevation={elevation}>
                         <ClickAwayListener onClickAway={onClose}>
                             <MenuList>

@@ -11,14 +11,41 @@ export default class SearchBar extends Component {
             searchQuery: ""
         }
         this.state = this.initialState
+        this.searchBarEl = null
+    }
+
+    renderSearchResults( projectSearchResults ) {
+        const { fairCopyProject } = this.props
+        const menuOptions = []
+
+        for( const resourceID of Object.keys(projectSearchResults) ) {
+            const searchResults = projectSearchResults[resourceID]
+            const hitCount = searchResults.length
+            if( hitCount > 0 ) {
+                const resourceEntry = fairCopyProject.resources[resourceID]
+                const { name } = resourceEntry
+                const resultLabel = `${name}: ${hitCount}`
+                const resultAction = () => { console.log(`Selected ${name}`)}
+                menuOptions.push({
+                    id: `result-${resourceID}`,
+                    label: resultLabel,
+                    action: resultAction,
+                    disabled: false
+                })    
+            }
+        }
+
+        return menuOptions
     }
 
     onSearch = () => {
-        const { fairCopyProject, currentResource } = this.props
+        const { fairCopyProject, currentResource, onOpenPopupMenu } = this.props
         const { searchIndex } = fairCopyProject
         const { searchQuery } = this.state
 
         const projectSearchResults = searchProject(searchQuery, searchIndex)
+        const popupMenuOptions = this.renderSearchResults( projectSearchResults )
+        onOpenPopupMenu(popupMenuOptions, this.searchBarEl, 'top-start' )
 
         // highlight search results in the currently open resource
         if( currentResource ) {
@@ -43,14 +70,21 @@ export default class SearchBar extends Component {
 
     render() {
         return (
-            <div id="SearchBar">
+            <div
+                ref={(el)=> { this.searchBarEl = el }}
+                id="SearchBar"
+            >
                 <InputBase
                     name="searchQuery"
                     className="search-input"
                     placeholder="Search project..."
                     onChange={this.onChange}
                 />
-                <Button onClick={this.onSearch} className="search-button" size="small" color="inherit">
+                <Button 
+                    onClick={this.onSearch} 
+                    className="search-button" 
+                    size="small" 
+                    color="inherit">
                     <i className="fas fa-search-plus fa-lg"></i>               
                 </Button> 
             </div>
