@@ -212,7 +212,7 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     }
 
     // map existing IDs
-    const tempDoc = new TEIDocument(null,type,fairCopyProject)
+    const tempDoc = new TEIDocument(resourceEntry.id,type,fairCopyProject)
     const doc = parseText(textEl,tempDoc,teiSchema,type)
     const resourceMap = idMap.mapResource( type, doc )
 
