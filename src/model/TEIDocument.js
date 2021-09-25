@@ -17,7 +17,7 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, resourceType, fairCopyProject ) {
+    constructor( resourceID, resourceType, fairCopyProject, load=true ) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errorCount = 0
@@ -35,7 +35,7 @@ export default class TEIDocument {
             highlighter(),
             searchHighlighter()
         ]
-        if( resourceID ) {
+        if( load ) {
             this.requestResource( resourceID )
         } else {
             this.initialState = this.editorInitialState()
