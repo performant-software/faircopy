@@ -1,11 +1,17 @@
 import lunr from 'lunr';
 
-export function createIndex() {
-    return {}
-}
+const fairCopy = window.fairCopy
 
 export function loadIndex( indexJSON ) {
-    // TODO
+    const rawIndices = JSON.parse(indexJSON)
+    const searchIndex = {}
+    for( const resourceID of Object.keys(rawIndices) ) {
+        const resourceIndexRaw = rawIndices[resourceID]
+        const resourceIndex = lunr.Index.load(resourceIndexRaw)
+        searchIndex[resourceID] = resourceIndex
+    }
+
+    return searchIndex
 }
 
 function getSafeAttrKey( attrName ) {
@@ -41,7 +47,7 @@ export function indexDocument( teiDocument ) {
     const { elements, attrs } = teiSchema
     const { doc } = editorView.state
     
-    searchIndex[resourceID] = lunr( function () {
+    const resourceIndex = lunr( function () {
         defineLunrSchema(this,attrs)
 
         doc.descendants((node,pos) => {
@@ -74,6 +80,10 @@ export function indexDocument( teiDocument ) {
         })
 
     })
+
+    // Update resource index
+    fairCopy.services.ipcSend('requestSaveIndex', resourceID, JSON.stringify(resourceIndex))
+    searchIndex[resourceID] = resourceIndex
 }
 
 export function searchProject( query, searchIndex ) {

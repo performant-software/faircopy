@@ -94,10 +94,12 @@ class ProjectStore {
         // id map authority tracks ids across processes
         this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
 
+        const searchIndex = await this.loadSearchIndex(Object.keys(this.manifestData.resources))
+
         // temp folder for streaming zip data
         this.setupTempFolder()
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap, searchIndex}
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
@@ -129,6 +131,19 @@ class ProjectStore {
         }
     }
 
+    async loadSearchIndex( resourceIDs ) {
+        const searchIndex = {}
+        for( const resourceID of resourceIDs ) {
+            // look for a corresponding index
+            const indexID = `${resourceID}.index`
+            const index = await this.readUTF8File(indexID)
+            if( index ) {
+                searchIndex[resourceID] = JSON.parse(index)
+            }
+        }
+        return JSON.stringify(searchIndex)
+    }
+
     onIDMapUpdated(msgID, idMapData) {
         this.idMapAuthority.update(idMapData)
         this.sendIDMapUpdate(msgID)
@@ -156,6 +171,11 @@ class ProjectStore {
             return true
         }
         return false
+    }
+
+    saveIndex( resourceID, indexData ) {
+        const indexID = `${resourceID}.index`
+        this.writeUTF8File(indexID,indexData)
     }
 
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
@@ -188,6 +208,10 @@ class ProjectStore {
                     log.info(`Removed image resource from project: ${id}`)
                 }
             }
+        } else if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' ) {
+            // remove associated search index
+            const resourceIndexID = `${resourceID}.index`
+            this.projectArchive.remove(resourceIndexID)
         }
 
         const idMap = this.idMapAuthority.removeResource(resourceID)
@@ -196,6 +220,7 @@ class ProjectStore {
 
         delete this.manifestData.resources[resourceID] 
         this.projectArchive.remove(resourceID)
+
         log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
     }
@@ -284,9 +309,8 @@ class ProjectStore {
     }
 
     readUTF8File(targetFilePath) {
-        return this.projectArchive
-            .file(targetFilePath)
-            .async("string")
+       const file = this.projectArchive.file(targetFilePath)
+       return file ? file.async("string") : null
     }
 }
 

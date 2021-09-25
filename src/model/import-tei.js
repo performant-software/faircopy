@@ -5,6 +5,7 @@ import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
+import { indexDocument } from "./search"
 import {teiTextTemplate} from './tei-template'
 
 const fairCopy = window.fairCopy
@@ -214,6 +215,11 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const tempDoc = new TEIDocument(null,type,fairCopyProject)
     const doc = parseText(textEl,tempDoc,teiSchema,type)
     const resourceMap = idMap.mapResource( type, doc )
+
+    // index for search
+    indexDocument( tempDoc )
+
+    // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)
 
     // learn the attributes and vocabs
