@@ -118,7 +118,7 @@ export function searchResource( query, resourceID, searchIndex ) {
     // return resourceIndex.search(termQ)
     const lunrResults = resourceIndex.search(`+softNode:true ${termQ}`)
     const results = lunrResults.map( (result) => parseInt(result.ref) )
-    return results
+    return results.sort((a, b) => a - b )
 
     // TODO find a element containing a phrase w/certain attrs
     // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
