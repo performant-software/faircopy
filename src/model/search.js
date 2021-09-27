@@ -110,7 +110,7 @@ export function searchResource( query, resourceID, searchIndex ) {
     const termQs = []
     for( const term of terms ) {
         // filter out non-word characters
-        const filteredTerm = term.replaceAll(/\W/,'')
+        const filteredTerm = term.replaceAll(/\W/g,'')
         termQs.push(`+contents:${filteredTerm}`)
     }
     const termQ = termQs.join(' ')

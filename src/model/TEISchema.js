@@ -24,6 +24,12 @@ export const systemElements = [
     'text'
 ]
 
+export const systemAttributes = [
+    '__id__',
+    '__error__',
+    '__border__' 
+]
+
 export default class TEISchema {
 
     constructor(json) {
@@ -117,7 +123,7 @@ export default class TEISchema {
         const attrs = {}
         for( const key of Object.keys(attrObj) ) {
             const value = attrObj[key]
-            if( key !== '__error__' && key !== '__border__' ) {
+            if( !systemAttributes.includes(key)) {
                 attrs[key] = value
             }
         }

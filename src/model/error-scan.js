@@ -1,5 +1,6 @@
 import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './attribute-validators'
 import { changeAttributes } from "./commands"
+import { systemAttributes } from './TEISchema'
 
 // Ammends the document with run time only error flags
 export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
@@ -57,6 +58,13 @@ function scanAttrs(attrs, elementID, teiSchema, attrState, parentLocalID, idMap)
     for( const key of Object.keys(attrs) ) {        
         const attrSpec = teiSchema.getAttrSpec(key,elementID)
         const value = attrs[key]
+
+        // flag attrs that don't have an attrSpec and aren't system attrs
+        if( !attrSpec ) {
+            if( systemAttributes.includes(key) ) continue
+            else return true
+        }
+
         // flag deactivate attrs that have values
         if( attrState && attrState[key] && attrSpec.hidden !== true && attrState[key].active === false && value && value !== "" ) {
             return true
