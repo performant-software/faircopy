@@ -3,5 +3,18 @@
 }
 
 #PopupMenu .menu-item {
-    width: 140px;
+    min-width: 140px;
+}
+
+#PopupMenu .search-result-label {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#PopupMenu .hit-chip {
+    margin-left: 5px;
+}
+
+#PopupMenu .popup {
+    margin-bottom: 20px;
 }

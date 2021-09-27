@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 import TitleBar from '../TitleBar'
+import { getResourceIcon } from '../../../model/resource-icon';
 
 const rowsPerPage = 100
 
@@ -101,23 +102,6 @@ export default class ResourceBrowser extends Component {
     )
   }
 
-  getResourceIcon(resourceType) {
-    switch( resourceType ) {
-      case 'text':
-        return 'fa fa-book'
-      case 'facs':
-        return 'fa fa-images'
-      case 'header':
-        return 'fa fa-file-alt'
-      case 'teidoc':
-        return 'fa fa-books'
-      case 'standOff':
-        return 'fa fa-bullseye-pointer'
-      default:
-        throw new Error('Unrecognized resource type.')
-    }
-  }
-
   renderResourceTable() {
 
     const onClick = (e) => {
@@ -165,7 +149,7 @@ export default class ResourceBrowser extends Component {
     for( const resource of Object.values(resources) ) {
       if( !resource ) continue
       const check = checked[resource.id] === true
-      const resourceIcon = this.getResourceIcon(resource.type)
+      const resourceIcon = getResourceIcon(resource.type)
       resourceRows.push(
         <TableRow hover onClick={onClick} dataresourceid={resource.id} key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >

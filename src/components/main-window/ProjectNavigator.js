@@ -5,6 +5,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Button, Icon, Typography, Chip } from '@material-ui/core';
+import { getResourceIcon } from '../../model/resource-icon';
 
 
 export default class ProjectNavigator extends Component {
@@ -64,23 +65,6 @@ export default class ProjectNavigator extends Component {
       )
     }
 
-    getResourceIcon(resourceType) {
-      switch( resourceType ) {
-        case 'text':
-          return 'fa fa-book-open'
-        case 'facs':
-          return 'fa fa-images'
-        case 'header':
-          return 'fa fa-file-alt'
-        case 'teidoc':
-          return 'fa fa-books'
-        case 'standOff':
-          return 'fa fa-bullseye-pointer'
-        default:
-          throw new Error('Unrecognized resource type.')
-      }
-    }
-
     renderTree() {
       const { openResources, fairCopyProject, panelWidth } = this.props
 
@@ -89,7 +73,7 @@ export default class ProjectNavigator extends Component {
         const {resourceID} = resource
         const {name, type} = fairCopyProject.resources[resourceID]
         const treeID = `nav-node-${resourceID}`
-        const resourceIcon = this.getResourceIcon(type)
+        const resourceIcon = getResourceIcon(type,true)
         const errorCount = type !== 'facs' ? resource.errorCount : 0
         const icon = <i className={`${resourceIcon} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID, errorCount)
