@@ -15,7 +15,7 @@ export default class SearchBar extends Component {
     }
 
     renderSearchResults( projectSearchResults ) {
-        const { fairCopyProject } = this.props
+        const { fairCopyProject, onResourceAction } = this.props
         const menuOptions = []
 
         for( const resourceID of Object.keys(projectSearchResults) ) {
@@ -25,7 +25,7 @@ export default class SearchBar extends Component {
                 const resourceEntry = fairCopyProject.resources[resourceID]
                 const { name } = resourceEntry
                 const resultLabel = `${name}: ${hitCount}`
-                const resultAction = () => { console.log(`Selected ${name}`)}
+                const resultAction = () => { onResourceAction('open', [resourceID]) }
                 menuOptions.push({
                     id: `result-${resourceID}`,
                     label: resultLabel,
@@ -39,26 +39,13 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
-        const { fairCopyProject, currentResource, onOpenPopupMenu } = this.props
+        const { fairCopyProject, onSearchResults } = this.props
         const { searchIndex } = fairCopyProject
         const { searchQuery } = this.state
 
         const projectSearchResults = searchProject(searchQuery, searchIndex)
         const popupMenuOptions = this.renderSearchResults( projectSearchResults )
-        onOpenPopupMenu(popupMenuOptions, this.searchBarEl, 'top-start' )
-
-        // highlight search results in the currently open resource
-        if( currentResource ) {
-            const { resourceID, resourceType } = currentResource
-
-            if( resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff' ) {
-                const editorView = currentResource.getActiveView()
-                const { tr } = editorView.state
-                const resourceResults = projectSearchResults[resourceID] ?  projectSearchResults[resourceID] : -1
-                tr.setMeta('searchResults', resourceResults)
-                editorView.dispatch(tr)       
-            }    
-        }
+        onSearchResults( projectSearchResults, popupMenuOptions, this.searchBarEl )
     }
 
     onChange = (e) => {

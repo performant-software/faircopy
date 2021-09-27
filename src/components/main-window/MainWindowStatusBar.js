@@ -47,7 +47,7 @@ export default class MainWindowStatusBar extends Component {
     }
 
     render() {
-        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes, fairCopyProject, currentResource, onOpenPopupMenu } = this.props
+        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes, fairCopyProject, currentResource, onSearchResults, onResourceAction } = this.props
         const { softwareUpdateStatus, progress } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
@@ -58,7 +58,8 @@ export default class MainWindowStatusBar extends Component {
                     <SearchBar
                         fairCopyProject={fairCopyProject}
                         currentResource={currentResource}
-                        onOpenPopupMenu={onOpenPopupMenu}
+                        onResourceAction={onResourceAction}
+                        onSearchResults={onSearchResults}
                     ></SearchBar>
                     { softwareUpdateStatus === 'OK' && 
                         <Button onClick={onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">

@@ -25,6 +25,7 @@ import StructurePalette from './tei-editor/StructurePalette'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
+import { highlightSearchResults } from '../../model/search'
 
 const fairCopy = window.fairCopy
 
@@ -65,6 +66,7 @@ export default class MainWindow extends Component {
             expandedGutter: true,
             iiifDialogMode: false,
             textImportDialogMode: false,
+            searchResults: {},
             leftPaneWidth: initialLeftPaneWidth
         }	
         this.elementMenuAnchors = {}
@@ -158,7 +160,7 @@ export default class MainWindow extends Component {
 
     selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        const { openResources, selectedResource } = this.state
+        const { openResources, selectedResource, searchResults } = this.state
 
         let nextSelection = resourceIDs.find( r => fairCopyProject.getResourceEntry(r).type !== 'teidoc' )
         let change = (selectedResource !== nextSelection)
@@ -191,8 +193,12 @@ export default class MainWindow extends Component {
                 popupMenuPlacement: null
             })    
             // a bit of a hack - need to refresh after it renders
-            if( nextResources[nextSelection] instanceof TEIDocument ) {
-                setTimeout( () => { nextResources[nextSelection].refreshView() }, 60 )
+            const nextResource = nextResources[nextSelection]
+            if( nextResource instanceof TEIDocument ) {
+                setTimeout( () => { 
+                    this.updateSearchResults(nextResource, searchResults)
+                    nextResource.refreshView() 
+                }, 60 )
             }
         } else {
             this.setState( {
@@ -352,8 +358,23 @@ export default class MainWindow extends Component {
         }
     }
 
+    onSearchResults = (searchResults, popupMenuOptions, searchBarEl) => {
+        const { selectedResource, openResources } = this.state
+        if( selectedResource ) {
+            const resource = openResources[selectedResource]
+            this.updateSearchResults(resource, searchResults)
+        }
+        this.setState({...this.state, searchResults, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
+    }
+
+    updateSearchResults(resource, searchResults) {
+        const { resourceID } = resource
+        const resourceSearchResults = searchResults[resourceID] ?  searchResults[resourceID] : -1
+        highlightSearchResults(resource, resourceSearchResults)
+    }
+
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen, parentResourceID} = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen, parentResourceID } = this.state
         const { fairCopyProject } = this.props
 
         const editors = []
@@ -648,9 +669,7 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { openResources,selectedResource } = this.state
         const { appConfig, hidden, fairCopyProject } = this.props
-        const currentResource = openResources[selectedResource]
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -669,8 +688,8 @@ export default class MainWindow extends Component {
                     <MainWindowStatusBar
                         appConfig={appConfig}
                         fairCopyProject={fairCopyProject}
-                        onOpenPopupMenu={this.onOpenPopupMenu}
-                        currentResource={currentResource}
+                        onSearchResults={this.onSearchResults}
+                        onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
