@@ -182,7 +182,7 @@ export default class FairCopyProject {
     }
 
     importResource(importData,parentResourceID) {
-        // try {
+        try {
             const { resources, fairCopyConfig } = importResource(importData,parentResourceID,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
@@ -191,9 +191,9 @@ export default class FairCopyProject {
             this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
             return { error: false, errorMessage: null }
-        // } catch(e) {
-        //     return { error: true, errorMessage: e.message }
-        // }        
+        } catch(e) {
+            return { error: true, errorMessage: e.message }
+        }        
     }
 
     // take the resources and move them into the parent ID
