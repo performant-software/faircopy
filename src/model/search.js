@@ -109,13 +109,13 @@ export function searchResource( query, resourceID, searchIndex ) {
     const terms = query.split(' ')
     const termQs = []
     for( const term of terms ) {
-        // TODO filter out disallowed characters
-        termQs.push(`+contents:${term}`)
+        // filter out non-word characters
+        const filteredTerm = term.replaceAll(/\W/,'')
+        termQs.push(`+contents:${filteredTerm}`)
     }
     const termQ = termQs.join(' ')
 
     // full text search 
-    // return resourceIndex.search(termQ)
     const lunrResults = resourceIndex.search(`+softNode:true ${termQ}`)
     const results = lunrResults.map( (result) => parseInt(result.ref) )
     return results.sort((a, b) => a - b )
