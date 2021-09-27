@@ -24,6 +24,7 @@ export function searchHighlighter() {
         const { doc } = state
         const pluginState = plugin.getState(state)
         const { searchQuery, searchResults } = pluginState
+        const terms = searchQuery.toLowerCase().split(' ')
 
         if( searchResults.length > 0 ) {
             const decorations = []
@@ -34,11 +35,20 @@ export function searchHighlighter() {
                 // find an exact match to the search query and highlight it
                 parentNode.descendants( (node,pos) => {
                     if( node.text ) {
-                        const offset = node.textContent.toLowerCase().indexOf(searchQuery.toLowerCase())
-                        if( offset !== -1 ) {
-                            const phraseFrom = nodePos+pos+offset+1
-                            const phraseTo = phraseFrom + searchQuery.length
-                            decorations.push(Decoration.inline(phraseFrom, phraseTo, {style: `background: ${searchHighlightColor}`}))
+                        // find whole word matches, ignoring spaces and punctuation
+                        for( const term of terms ) {
+                            const nodeTerms = node.textContent.toLowerCase().split(' ')
+                            let offset = 0
+                            for( const nodeTerm of nodeTerms ) {
+                                const regex = new RegExp(`^\\W*${term}\\W*$`)
+                                if( nodeTerm.match(regex) ) {
+                                    // highlight the matching term
+                                    const termFrom = nodePos+pos+offset+1
+                                    const termTo = termFrom + term.length
+                                    decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
+                                }
+                                offset = offset + nodeTerm.length+1
+                            }
                         }
                         return false
                     }
