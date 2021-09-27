@@ -45,11 +45,9 @@ function defineLunrSchema( lunrIndex, attrs ) {
     defineAttrFields( lunrIndex, attrs )
 }
 
-export function indexDocument( teiDocument ) {
-    const { fairCopyProject, resourceID, editorView } = teiDocument
+export function indexDocument( fairCopyProject, resourceID, doc ) {
     const { searchIndex, teiSchema } = fairCopyProject
     const { elements, attrs } = teiSchema
-    const { doc } = editorView.state
     
     const resourceIndex = lunr( function () {
         defineLunrSchema(this,attrs)
