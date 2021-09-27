@@ -125,7 +125,7 @@ export function searchResource( query, resourceID, searchIndex ) {
 }
 
 
-export function highlightSearchResults(currentResource, searchResults) {
+export function highlightSearchResults(currentResource, searchQuery, searchResults) {
     const { resourceType, resourceID } = currentResource
 
     if( resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff' ) {
@@ -134,6 +134,7 @@ export function highlightSearchResults(currentResource, searchResults) {
 
         // highlight the results
         tr.setMeta('searchResults', searchResults)
+        tr.setMeta('searchQuery', searchQuery)
         editorView.dispatch(tr)       
 
         // scroll to the first result        

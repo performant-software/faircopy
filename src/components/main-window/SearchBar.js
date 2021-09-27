@@ -45,7 +45,7 @@ export default class SearchBar extends Component {
 
         const projectSearchResults = searchProject(searchQuery, searchIndex)
         const popupMenuOptions = this.renderSearchResults( projectSearchResults )
-        onSearchResults( projectSearchResults, popupMenuOptions, this.searchBarEl )
+        onSearchResults( searchQuery, projectSearchResults, popupMenuOptions, this.searchBarEl )
     }
 
     onChange = (e) => {

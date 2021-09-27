@@ -66,6 +66,7 @@ export default class MainWindow extends Component {
             expandedGutter: true,
             iiifDialogMode: false,
             textImportDialogMode: false,
+            searchQuery: '',
             searchResults: {},
             leftPaneWidth: initialLeftPaneWidth
         }	
@@ -160,7 +161,7 @@ export default class MainWindow extends Component {
 
     selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        const { openResources, selectedResource, searchResults } = this.state
+        const { openResources, selectedResource, searchQuery, searchResults } = this.state
 
         let nextSelection = resourceIDs.find( r => fairCopyProject.getResourceEntry(r).type !== 'teidoc' )
         let change = (selectedResource !== nextSelection)
@@ -196,7 +197,7 @@ export default class MainWindow extends Component {
             const nextResource = nextResources[nextSelection]
             if( nextResource instanceof TEIDocument ) {
                 setTimeout( () => { 
-                    this.updateSearchResults(nextResource, searchResults)
+                    this.updateSearchResults(nextResource, searchQuery, searchResults)
                     nextResource.refreshView() 
                 }, 60 )
             }
@@ -358,19 +359,19 @@ export default class MainWindow extends Component {
         }
     }
 
-    onSearchResults = (searchResults, popupMenuOptions, searchBarEl) => {
+    onSearchResults = ( searchQuery, searchResults, popupMenuOptions, searchBarEl) => {
         const { selectedResource, openResources } = this.state
         if( selectedResource ) {
             const resource = openResources[selectedResource]
-            this.updateSearchResults(resource, searchResults)
+            this.updateSearchResults(resource, searchQuery, searchResults)
         }
-        this.setState({...this.state, searchResults, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
+        this.setState({...this.state, searchQuery, searchResults, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
     }
 
-    updateSearchResults(resource, searchResults) {
+    updateSearchResults(resource, searchQuery, searchResults) {
         const { resourceID } = resource
         const resourceSearchResults = searchResults[resourceID] ?  searchResults[resourceID] : -1
-        highlightSearchResults(resource, resourceSearchResults)
+        highlightSearchResults(resource, searchQuery, resourceSearchResults)
     }
 
     renderEditors() {
