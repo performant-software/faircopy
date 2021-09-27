@@ -132,16 +132,17 @@ class ProjectStore {
     }
 
     async loadSearchIndex( resourceIDs ) {
-        const searchIndex = {}
+        let indexJSONs = []
         for( const resourceID of resourceIDs ) {
             // look for a corresponding index
             const indexID = `${resourceID}.index`
             const index = await this.readUTF8File(indexID)
             if( index ) {
-                searchIndex[resourceID] = JSON.parse(index)
+                indexJSONs.push(`"${resourceID}" : ${index}`)
             }
         }
-        return JSON.stringify(searchIndex)
+        const searchIndexJSON = `{ ${indexJSONs.join(',')} }`
+        return searchIndexJSON
     }
 
     onIDMapUpdated(msgID, idMapData) {

@@ -9,6 +9,7 @@ const scrollTopOffset = 137
 export function loadIndex( indexJSON ) {
     const rawIndices = JSON.parse(indexJSON)
     const searchIndex = {}
+
     for( const resourceID of Object.keys(rawIndices) ) {
         const resourceIndexRaw = rawIndices[resourceID]
         const resourceIndex = lunr.Index.load(resourceIndexRaw)
