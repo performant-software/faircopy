@@ -83,6 +83,9 @@ class FairCopyApplication {
     ipcMain.on('requestSaveIndex', (event, resourceID, indexData) => { 
       this.projectStore.saveIndex(resourceID, indexData)       
     })
+    ipcMain.on('requestIndex', (event, resourceID ) => { 
+      this.projectStore.loadSearchIndex(resourceID)       
+    })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
       const ok = this.projectStore.saveResource(resourceID, resourceData) 
       if( ok ) {

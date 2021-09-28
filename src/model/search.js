@@ -7,16 +7,8 @@ const fairCopy = window.fairCopy
 const scrollTopOffset = 137
 
 export function loadIndex( indexJSON ) {
-    const rawIndices = JSON.parse(indexJSON)
-    const searchIndex = {}
-
-    for( const resourceID of Object.keys(rawIndices) ) {
-        const resourceIndexRaw = rawIndices[resourceID]
-        const resourceIndex = lunr.Index.load(resourceIndexRaw)
-        searchIndex[resourceID] = resourceIndex
-    }
-
-    return searchIndex
+    const rawIndex = JSON.parse(indexJSON)
+    return lunr.Index.load(rawIndex)
 }
 
 function getSafeAttrKey( attrName ) {
@@ -125,11 +117,14 @@ export function searchResource( query, resourceID, searchIndex ) {
     // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
 }
 
+export function isIndexable(resourceType) {
+    return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
+}
 
 export function highlightSearchResults(currentResource, searchQuery, searchResults) {
     const { resourceType, resourceID } = currentResource
 
-    if( resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff' ) {
+    if( isIndexable(resourceType) ) {
         const editorView = currentResource.getActiveView()
         const { tr } = editorView.state
 

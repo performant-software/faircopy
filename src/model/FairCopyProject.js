@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-te
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { loadIndex } from './search'
+import { loadIndex, isIndexable } from './search'
 
 const fairCopy = window.fairCopy
 
@@ -24,7 +24,8 @@ export default class FairCopyProject {
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 
-        this.searchIndex = loadIndex(projectData.searchIndex)
+        this.searchIndex = {} 
+        this.searchIndexStatus = {} 
         
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
@@ -38,6 +39,20 @@ export default class FairCopyProject {
                 listener()
             }
         })
+
+        // Listen for loaded search indices
+        fairCopy.services.ipcRegisterCallback('searchIndexLoaded', (e, response) => {
+            const { resourceID, indexJSON } = response
+            if( indexJSON ) {
+                const resourceIndex = loadIndex(indexJSON)
+                this.searchIndex[resourceID] = resourceIndex    
+                this.searchIndexStatus[resourceID] = 'ready'
+            } else {
+                this.searchIndexStatus[resourceID] = 'not-indexed'
+            }
+        })
+
+        this.requestSearchIndices()
     }
 
     addUpdateListener(listener) {
@@ -57,6 +72,23 @@ export default class FairCopyProject {
         Object.values(fairCopyManifest.resources).forEach( entry => {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
+    }
+
+    requestSearchIndices() {
+        for( const resourceID of Object.keys(this.resources) ) {
+            const resourceEntry = this.resources[resourceID]
+            if( isIndexable(resourceEntry.type) ) {
+                this.searchIndexStatus[resourceID] = 'loading'
+                fairCopy.services.ipcSend('requestIndex', resourceID )
+            }
+        }
+    }
+
+    isSearchReady() {
+        for( const status of Object.values(this.searchIndexStatus) ) {
+            if( status === 'loading' ) return false
+        }
+        return true
     }
 
     getResources(parentResource) {

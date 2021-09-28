@@ -94,12 +94,10 @@ class ProjectStore {
         // id map authority tracks ids across processes
         this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
 
-        const searchIndex = await this.loadSearchIndex(Object.keys(this.manifestData.resources))
-
         // temp folder for streaming zip data
         this.setupTempFolder()
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap, searchIndex}
+        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
@@ -131,18 +129,11 @@ class ProjectStore {
         }
     }
 
-    async loadSearchIndex( resourceIDs ) {
-        let indexJSONs = []
-        for( const resourceID of resourceIDs ) {
-            // look for a corresponding index
-            const indexID = `${resourceID}.index`
-            const index = await this.readUTF8File(indexID)
-            if( index ) {
-                indexJSONs.push(`"${resourceID}" : ${index}`)
-            }
-        }
-        const searchIndexJSON = `{ ${indexJSONs.join(',')} }`
-        return searchIndexJSON
+    async loadSearchIndex( resourceID ) {
+        // look for a corresponding index
+        const indexID = `${resourceID}.index`
+        const indexJSON = await this.readUTF8File(indexID)
+        this.fairCopyApplication.sendToMainWindow('searchIndexLoaded', { resourceID, indexJSON } )        
     }
 
     onIDMapUpdated(msgID, idMapData) {

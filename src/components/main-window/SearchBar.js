@@ -86,6 +86,10 @@ export default class SearchBar extends Component {
     }
 
     render() {
+        const { fairCopyProject } = this.props
+        const searchEnabled = fairCopyProject.isSearchReady()
+        const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
+
         return (
             <div
                 ref={(el)=> { this.searchBarEl = el }}
@@ -94,12 +98,14 @@ export default class SearchBar extends Component {
                 <InputBase
                     name="searchQuery"
                     className="search-input"
-                    placeholder="Search project..."
+                    placeholder={placeholder}
+                    disabled={!searchEnabled}
                     onChange={this.onChange}
                     onKeyUp={this.onKeyUp}
                 />
                 <Button 
                     onClick={this.onSearch} 
+                    disabled={!searchEnabled}
                     className="search-button" 
                     size="small" 
                     color="inherit">
