@@ -6,7 +6,30 @@ const fairCopy = window.fairCopy
 // offset to account for height of the toolbar above the TEI editor
 const scrollTopOffset = 137
 
-export function loadIndex( indexJSON ) {
+export function loadSearchIndex( fairCopyProject ) {
+
+    // Listen for loaded search indices
+    fairCopy.services.ipcRegisterCallback('searchIndexLoaded', (e, response) => {
+        const { resourceID, searchIndexJSON } = response
+        if( searchIndexJSON ) {
+            fairCopyProject.searchIndex[resourceID] = loadIndex(searchIndexJSON)
+            fairCopyProject.searchIndexStatus[resourceID] = 'ready'
+        } else {
+            fairCopyProject.searchIndexStatus[resourceID] = 'not-indexed'
+        }
+    })
+
+    // Request search indices for text resources
+    for( const resourceID of Object.keys(fairCopyProject.resources) ) {
+        const resourceEntry = fairCopyProject.resources[resourceID]
+        if( isIndexable(resourceEntry.type) ) {
+            fairCopyProject.searchIndexStatus[resourceID] = 'loading'
+            fairCopy.services.ipcSend('requestIndex', resourceID )
+        }
+    }    
+}
+
+function loadIndex( indexJSON ) {
     const rawIndex = JSON.parse(indexJSON)
     return lunr.Index.load(rawIndex)
 }

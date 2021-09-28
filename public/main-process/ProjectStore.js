@@ -132,8 +132,8 @@ class ProjectStore {
     async loadSearchIndex( resourceID ) {
         // look for a corresponding index
         const indexID = `${resourceID}.index`
-        const indexJSON = await this.readUTF8File(indexID)
-        this.fairCopyApplication.sendToMainWindow('searchIndexLoaded', { resourceID, indexJSON } )        
+        const searchIndexJSON = await this.readUTF8File(indexID)
+        this.fairCopyApplication.sendToMainWindow('searchIndexLoaded', { resourceID, searchIndexJSON } )        
     }
 
     onIDMapUpdated(msgID, idMapData) {

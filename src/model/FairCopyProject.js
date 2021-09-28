@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-te
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { loadIndex, isIndexable } from './search'
+import { loadSearchIndex } from './search'
 
 const fairCopy = window.fairCopy
 
@@ -40,19 +40,7 @@ export default class FairCopyProject {
             }
         })
 
-        // Listen for loaded search indices
-        fairCopy.services.ipcRegisterCallback('searchIndexLoaded', (e, response) => {
-            const { resourceID, indexJSON } = response
-            if( indexJSON ) {
-                const resourceIndex = loadIndex(indexJSON)
-                this.searchIndex[resourceID] = resourceIndex    
-                this.searchIndexStatus[resourceID] = 'ready'
-            } else {
-                this.searchIndexStatus[resourceID] = 'not-indexed'
-            }
-        })
-
-        this.requestSearchIndices()
+        loadSearchIndex(this)
     }
 
     addUpdateListener(listener) {
@@ -72,16 +60,6 @@ export default class FairCopyProject {
         Object.values(fairCopyManifest.resources).forEach( entry => {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
-    }
-
-    requestSearchIndices() {
-        for( const resourceID of Object.keys(this.resources) ) {
-            const resourceEntry = this.resources[resourceID]
-            if( isIndexable(resourceEntry.type) ) {
-                this.searchIndexStatus[resourceID] = 'loading'
-                fairCopy.services.ipcSend('requestIndex', resourceID )
-            }
-        }
     }
 
     isSearchReady() {
