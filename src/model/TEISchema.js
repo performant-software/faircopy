@@ -235,7 +235,6 @@ export default class TEISchema {
     // if there is a definition of this attr specific to this element, use that, otherwise use the global def.
     getAttrSpec( attrID, elementID ) {
         const elementSpec = this.elements[elementID]
-        if(!elementSpec) debugger
         if( elementSpec.fcType === 'textNodes' || elementSpec.fcType === 'globalNodes' ) return this.attrs[attrID]
         return elementSpec.derivedAttrs.includes(attrID) ? this.attrs[`${attrID}-${elementID}`] : this.attrs[attrID]
     }
