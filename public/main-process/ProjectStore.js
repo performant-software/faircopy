@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid')
 
 const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
+const { SearchIndex } = require('./SearchIndex')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -97,6 +98,12 @@ class ProjectStore {
         // temp folder for streaming zip data
         this.setupTempFolder()
 
+        // setup search index
+        this.searchIndex = new SearchIndex( teiSchema, this, () => {
+            this.fairCopyApplication.sendToMainWindow('searchReady' )
+        })
+        this.searchIndex.initSearchIndex( this.manifestData )
+
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
@@ -132,8 +139,7 @@ class ProjectStore {
     async loadSearchIndex( resourceID ) {
         // look for a corresponding index
         const indexID = `${resourceID}.index`
-        const searchIndexJSON = await this.readUTF8File(indexID)
-        this.fairCopyApplication.sendToMainWindow('searchIndexLoaded', { resourceID, searchIndexJSON } )        
+        return await this.readUTF8File(indexID)
     }
 
     onIDMapUpdated(msgID, idMapData) {
@@ -204,6 +210,7 @@ class ProjectStore {
             // remove associated search index
             const resourceIndexID = `${resourceID}.index`
             this.projectArchive.remove(resourceIndexID)
+            this.searchIndex.removeIndex(resourceID)
         }
 
         const idMap = this.idMapAuthority.removeResource(resourceID)

@@ -217,7 +217,7 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const resourceMap = idMap.mapResource( type, doc )
 
     // index for search
-    indexDocument( fairCopyProject, resourceEntry.id, doc )
+    indexDocument( resourceEntry.id, doc )
 
     // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)

@@ -9,7 +9,6 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-te
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { loadSearchIndex } from './search'
 
 const fairCopy = window.fairCopy
 
@@ -24,8 +23,6 @@ export default class FairCopyProject {
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 
-        this.searchIndex = {} 
-        this.searchIndexStatus = {} 
         
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
@@ -39,8 +36,6 @@ export default class FairCopyProject {
                 listener()
             }
         })
-
-        loadSearchIndex(this)
     }
 
     addUpdateListener(listener) {
@@ -60,13 +55,6 @@ export default class FairCopyProject {
         Object.values(fairCopyManifest.resources).forEach( entry => {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
-    }
-
-    isSearchReady() {
-        for( const status of Object.values(this.searchIndexStatus) ) {
-            if( status === 'loading' ) return false
-        }
-        return true
     }
 
     getResources(parentResource) {
@@ -175,7 +163,6 @@ export default class FairCopyProject {
                 parent.resources = parent.resources.filter(r => r !== resourceID)
                 this.updateResource( parent )        
             } 
-            delete this.searchIndex[resourceID]
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
     }

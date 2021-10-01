@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { InputBase, Button, Typography, Chip } from '@material-ui/core'
-import { searchProject } from '../../model/search'
-import { getResourceIcon } from '../../model/resource-icon';
+import { getResourceIcon } from '../../model/resource-icon'
+
+const fairCopy = window.fairCopy
 
 export default class SearchBar extends Component {
 
@@ -13,6 +14,10 @@ export default class SearchBar extends Component {
         }
         this.state = this.initialState
         this.searchBarEl = null
+    }
+
+    componentDidMount() {
+        fairCopy.services.ipcRegisterCallback('searchResults', this.onResults ) 
     }
 
     renderStatusChip(hitCount) {        
@@ -65,13 +70,15 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
-        const { fairCopyProject, onSearchResults } = this.props
-        const { searchIndex } = fairCopyProject
         const { searchQuery } = this.state
+        fairCopy.services.ipcSend('searchProject', searchQuery)
+    }
 
-        const projectSearchResults = searchProject(searchQuery, searchIndex)
-        const popupMenuOptions = this.renderSearchResults( projectSearchResults )
-        onSearchResults( searchQuery, projectSearchResults, popupMenuOptions, this.searchBarEl )
+    onResults = (event, searchResultsJSON) => {
+        const { onSearchResults } = this.props
+        const { query, results } = JSON.parse(searchResultsJSON)
+        const popupMenuOptions = this.renderSearchResults( results )
+        onSearchResults( query, results, popupMenuOptions, this.searchBarEl )    
     }
 
     onChange = (e) => {
@@ -86,8 +93,7 @@ export default class SearchBar extends Component {
     }
 
     render() {
-        const { fairCopyProject } = this.props
-        const searchEnabled = fairCopyProject.isSearchReady()
+        const { searchEnabled } = this.props
         const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
 
         return (

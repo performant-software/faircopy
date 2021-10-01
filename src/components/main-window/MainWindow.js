@@ -68,6 +68,7 @@ export default class MainWindow extends Component {
             textImportDialogMode: false,
             searchQuery: '',
             searchResults: {},
+            searchEnabled: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
         this.elementMenuAnchors = {}
@@ -78,6 +79,10 @@ export default class MainWindow extends Component {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
+        services.ipcRegisterCallback('searchReady', (e) => { 
+            this.setState({...this.state, searchEnabled: true })
+        })
+
         fairCopyProject.addUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
         this.checkReleaseNotes()
@@ -671,6 +676,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
+        const { searchEnabled } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -690,6 +696,7 @@ export default class MainWindow extends Component {
                         appConfig={appConfig}
                         fairCopyProject={fairCopyProject}
                         onSearchResults={this.onSearchResults}
+                        searchEnabled={searchEnabled}
                         onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}

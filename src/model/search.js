@@ -1,4 +1,4 @@
-import lunr from 'lunr';
+
 import { animateScroll as scroll } from 'react-scroll'
 
 const fairCopy = window.fairCopy
@@ -6,142 +6,13 @@ const fairCopy = window.fairCopy
 // offset to account for height of the toolbar above the TEI editor
 const scrollTopOffset = 137
 
-export function loadSearchIndex( fairCopyProject ) {
-
-    // Listen for loaded search indices
-    fairCopy.services.ipcRegisterCallback('searchIndexLoaded', (e, response) => {
-        const { resourceID, searchIndexJSON } = response
-        if( searchIndexJSON ) {
-            fairCopyProject.searchIndex[resourceID] = loadIndex(searchIndexJSON)
-            fairCopyProject.searchIndexStatus[resourceID] = 'ready'
-        } else {
-            fairCopyProject.searchIndexStatus[resourceID] = 'not-indexed'
-        }
-    })
-
-    // Request search indices for text resources
-    for( const resourceID of Object.keys(fairCopyProject.resources) ) {
-        const resourceEntry = fairCopyProject.resources[resourceID]
-        if( isIndexable(resourceEntry.type) ) {
-            fairCopyProject.searchIndexStatus[resourceID] = 'loading'
-            fairCopy.services.ipcSend('requestIndex', resourceID )
-        }
-    }    
+export function indexDocument( resourceID, doc ) {
+    const contentJSON = doc.toJSON()
+    fairCopy.services.ipcSend('indexResource', resourceID, contentJSON)
 }
 
-function loadIndex( indexJSON ) {
-    const rawIndex = JSON.parse(indexJSON)
-    return lunr.Index.load(rawIndex)
-}
-
-function getSafeAttrKey( attrName ) {
-    return attrName.replace(':','')
-}
-
-function defineAttrFields( lunrIndex, attrs ) {
-    for( const attr of Object.keys(attrs) ) {
-        const attrSafeKey = getSafeAttrKey(attr)
-        const fieldName = `attr_${attrSafeKey}`
-        lunrIndex.field(fieldName)
-    }
-}
-
-function defineLunrSchema( lunrIndex, attrs ) {
-    // configure pipeline for exact matching search, language independent
-    lunrIndex.pipeline.remove(lunr.stemmer)
-    lunrIndex.pipeline.remove(lunr.stopWordFilter)
-    lunrIndex.searchPipeline.remove(lunr.stemmer)
-    lunrIndex.searchPipeline.remove(lunr.stopWordFilter)
-
-    // add fields to schema
-    lunrIndex.ref('pos')
-    lunrIndex.field('elementName')
-    lunrIndex.field('softNode')
-    lunrIndex.field('contents')
-    defineAttrFields( lunrIndex, attrs )
-}
-
-export function indexDocument( fairCopyProject, resourceID, doc ) {
-    const { searchIndex, teiSchema } = fairCopyProject
-    const { elements, attrs } = teiSchema
-    
-    const resourceIndex = lunr( function () {
-        defineLunrSchema(this,attrs)
-
-        doc.descendants((node,pos) => {
-            const elementName = node.type.name
-            const contents = node.textContent
-            const element = elements[elementName]
-            if( !element ) return true
-
-            const { fcType } = element
-            const softNode = fcType === 'soft' ? 'true' : 'false'
-            const attrFields = {}
-            
-            for( const attrKey of Object.keys(node.attrs) ) {
-                const attrVal = node.attrs[attrKey]
-                const attrSafeKey = getSafeAttrKey(attrKey)
-                attrFields[`attr_${attrSafeKey}`] = attrVal
-            }
-
-            // TODO index marks
-            // TODO sub docs
-
-            this.add({
-                pos,
-                elementName,
-                softNode,
-                contents,
-                ...attrFields
-            })
-            return true
-        })
-
-    })
-
-    // Update resource index
-    fairCopy.services.ipcSend('requestSaveIndex', resourceID, JSON.stringify(resourceIndex))
-    searchIndex[resourceID] = resourceIndex
-}
-
-export function searchProject( query, searchIndex ) {
-    const results = {}
-
-    if( query.length === 0 ) return {}
-
-    for( const resourceID of Object.keys(searchIndex) ) {
-        results[resourceID] = searchResource( query, resourceID, searchIndex )
-    }
-
-    return results
-}
-
-export function searchResource( query, resourceID, searchIndex ) {
-    const resourceIndex = searchIndex[resourceID]
-
-    if( query.length === 0 ) return null
-
-    // create a list of terms from the query
-    const terms = query.split(' ')
-    const termQs = []
-    for( const term of terms ) {
-        // filter out non-word characters
-        const filteredTerm = term.replaceAll(/\W/g,'')
-        termQs.push(`+contents:${filteredTerm}`)
-    }
-    const termQ = termQs.join(' ')
-
-    // full text search 
-    const lunrResults = resourceIndex.search(`+softNode:true ${termQ}`)
-    const results = lunrResults.map( (result) => parseInt(result.ref) )
-    return results.sort((a, b) => a - b )
-
-    // TODO find a element containing a phrase w/certain attrs
-    // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
-}
-
-export function isIndexable(resourceType) {
-    return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
+export function searchProject( searchQuery ) {
+    fairCopy.services.ipcSend('searchProject', searchQuery)
 }
 
 export function highlightSearchResults(currentResource, searchQuery, searchResults) {
@@ -170,6 +41,9 @@ export function highlightSearchResults(currentResource, searchQuery, searchResul
     }    
 }
 
+function isIndexable(resourceType) {
+    return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
+}
 
 // const sampleDocs = [
 //     {

@@ -269,8 +269,7 @@ export default class TEIDocument {
         this.lastMessageID = messageID
 
         // index document for search
-        const { doc } = this.editorView.state
-        indexDocument( this.fairCopyProject, this.resourceID, doc )
+        indexDocument( this.resourceID, editorState.doc )
 
         this.changedSinceLastSave = false
     }

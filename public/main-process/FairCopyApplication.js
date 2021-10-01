@@ -80,11 +80,12 @@ class FairCopyApplication {
       })
     })
 
-    ipcMain.on('requestSaveIndex', (event, resourceID, indexData) => { 
-      this.projectStore.saveIndex(resourceID, indexData)       
+    ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
+      this.projectStore.searchIndex.indexResource( resourceID, contentJSON ) 
     })
-    ipcMain.on('requestIndex', (event, resourceID ) => { 
-      this.projectStore.loadSearchIndex(resourceID)       
+    ipcMain.on('searchProject', (event, searchQuery) => { 
+      const searchResults = this.projectStore.searchIndex.searchProject(searchQuery)  
+      this.sendToMainWindow('searchResults', JSON.stringify(searchResults))    
     })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
       const ok = this.projectStore.saveResource(resourceID, resourceData) 
