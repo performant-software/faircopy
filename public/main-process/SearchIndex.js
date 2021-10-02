@@ -1,5 +1,6 @@
 const lunr = require('lunr')
 const { TEISchema } = require('./TEISchema')
+const { Node } = require('prosemirror-model')
 
 class SearchIndex {
 
@@ -66,15 +67,18 @@ class SearchIndex {
     }
     
     indexResource( resourceID, contentJSON ) {
-        const doc = Node.fromJSON(this.teiSchema.schema, JSON.parse(contentJSON))
+        const doc = Node.fromJSON(this.teiSchema.schema, contentJSON)
+
+        const searchIndex = this
 
         const resourceIndex = lunr( function () {
-            this.defineLunrSchema(this,this.attrs)
+            const { teiSchema } = searchIndex
+            searchIndex.defineLunrSchema(this,teiSchema.attrs)
     
             doc.descendants((node,pos) => {
                 const elementName = node.type.name
                 const contents = node.textContent
-                const element = this.elements[elementName]
+                const element = teiSchema.elements[elementName]
                 if( !element ) return true
     
                 const { fcType } = element
@@ -83,7 +87,7 @@ class SearchIndex {
                 
                 for( const attrKey of Object.keys(node.attrs) ) {
                     const attrVal = node.attrs[attrKey]
-                    const attrSafeKey = this.getSafeAttrKey(attrKey)
+                    const attrSafeKey = searchIndex.getSafeAttrKey(attrKey)
                     attrFields[`attr_${attrSafeKey}`] = attrVal
                 }
     
