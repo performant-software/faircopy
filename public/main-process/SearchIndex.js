@@ -1,12 +1,11 @@
+const { Worker } = require('worker_threads')
 const lunr = require('lunr')
-const { TEISchema } = require('./TEISchema')
-const { Node } = require('prosemirror-model')
 
 class SearchIndex {
 
     constructor( schemaJSON, projectStore, onReady ) {
         this.projectStore = projectStore
-        this.teiSchema = new TEISchema(schemaJSON)
+        this.schemaJSON = schemaJSON
         this.onReady = onReady
         this.searchIndex = {}
         this.searchIndexStatus = {} 
@@ -39,82 +38,25 @@ class SearchIndex {
         return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
     }
 
-    getSafeAttrKey( attrName ) {
-        return attrName.replace(':','')
-    }
-    
-    defineAttrFields( lunrIndex, attrs ) {
-        for( const attr of Object.keys(attrs) ) {
-            const attrSafeKey = this.getSafeAttrKey(attr)
-            const fieldName = `attr_${attrSafeKey}`
-            lunrIndex.field(fieldName)
-        }
-    }
-    
-    defineLunrSchema( lunrIndex, attrs ) {
-        // configure pipeline for exact matching search, language independent
-        lunrIndex.pipeline.remove(lunr.stemmer)
-        lunrIndex.pipeline.remove(lunr.stopWordFilter)
-        lunrIndex.searchPipeline.remove(lunr.stemmer)
-        lunrIndex.searchPipeline.remove(lunr.stopWordFilter)
-    
-        // add fields to schema
-        lunrIndex.ref('pos')
-        lunrIndex.field('elementName')
-        lunrIndex.field('softNode')
-        lunrIndex.field('contents')
-        this.defineAttrFields( lunrIndex, attrs )
-    }
-    
     indexResource( resourceID, contentJSON ) {
-        const doc = Node.fromJSON(this.teiSchema.schema, contentJSON)
+        const workerData = { resourceID, schemaJSON: this.schemaJSON, contentJSON }
+        const worker = new Worker('./public/main-process/search-index-worker.js', { workerData })
+        worker.on('message', (response) => {
+            // get finished index back from worker thread
+            const { resourceID, rawIndex } = response
 
-        const searchIndex = this
-
-        const resourceIndex = lunr( function () {
-            const { teiSchema } = searchIndex
-            searchIndex.defineLunrSchema(this,teiSchema.attrs)
+            // Update resource index
+            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)    
+            this.projectStore.saveIndex( resourceID, JSON.stringify(rawIndex) )
+            this.searchIndexStatus[resourceID] = 'ready'
     
-            doc.descendants((node,pos) => {
-                const elementName = node.type.name
-                const contents = node.textContent
-                const element = teiSchema.elements[elementName]
-                if( !element ) return true
-    
-                const { fcType } = element
-                const softNode = fcType === 'soft' ? 'true' : 'false'
-                const attrFields = {}
-                
-                for( const attrKey of Object.keys(node.attrs) ) {
-                    const attrVal = node.attrs[attrKey]
-                    const attrSafeKey = searchIndex.getSafeAttrKey(attrKey)
-                    attrFields[`attr_${attrSafeKey}`] = attrVal
-                }
-    
-                // TODO index marks
-                // TODO sub docs
-    
-                this.add({
-                    pos,
-                    elementName,
-                    softNode,
-                    contents,
-                    ...attrFields
-                })
-                return true
-            })
-    
+            // Fire callback when all documents are is ready
+            if( this.isSearchReady() ) this.onReady()
         })
-    
-        // Update resource index
-        this.searchIndex[resourceID] = resourceIndex
-
-        // Store it in the project store
-        this.projectStore.saveIndex( resourceID, JSON.stringify(resourceIndex) )
-        this.searchIndexStatus[resourceID] = 'ready'
-
-        // Fire callback when all documents are is ready
-        if( this.isSearchReady() ) this.onReady()
+        worker.on('error', function(e) { 
+            // TODO
+            console.log('error')
+        })
     }
 
     isSearchReady() {
