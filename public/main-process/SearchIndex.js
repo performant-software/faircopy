@@ -124,7 +124,7 @@ class SearchIndex {
         return true
     }
 
-    removeResource(resourceID) {
+    removeIndex(resourceID) {
         delete this.searchIndex[resourceID]
         delete this.searchIndexStatus[resourceID]
     }
