@@ -198,13 +198,9 @@ export default class MainWindow extends Component {
                 popupMenuAnchorEl: null,
                 popupMenuPlacement: null
             })    
-            // a bit of a hack - need to refresh after it renders
             const nextResource = nextResources[nextSelection]
             if( nextResource instanceof TEIDocument ) {
-                setTimeout( () => { 
-                    this.updateSearchResults(nextResource, searchQuery, searchResults)
-                    nextResource.refreshView() 
-                }, 60 )
+                this.refreshWhenReady(nextResource, searchQuery, searchResults)
             }
         } else {
             this.setState( {
@@ -268,6 +264,18 @@ export default class MainWindow extends Component {
         if( exitOnClose ) {
             fairCopy.services.ipcSend('exitApp')
         }    
+    }
+
+    // a bit of a hack - need to refresh after it renders
+    refreshWhenReady( nextResource, searchQuery, searchResults ) {
+        setTimeout( () => { 
+            if( nextResource.getActiveView() ) {
+                this.updateSearchResults(nextResource, searchQuery, searchResults)
+                nextResource.refreshView()     
+            } else {
+                this.refreshWhenReady(nextResource,searchQuery,searchResults)
+            }
+        }, 60 )
     }
 
     saveResources(resourceIDs) {
