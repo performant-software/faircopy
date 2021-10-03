@@ -79,7 +79,8 @@ export default class MainWindow extends Component {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
-        services.ipcRegisterCallback('searchReady', (e) => { 
+        services.ipcRegisterCallback('searchReady', (event, status ) => { 
+            // TODO do something with notFound resources
             this.setState({...this.state, searchEnabled: true })
         })
 

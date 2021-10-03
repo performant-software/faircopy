@@ -31,7 +31,8 @@ class SearchIndex {
         } else {
             this.searchIndexStatus[resourceID] = 'not-found'  
         }
-        if( this.isSearchReady() ) this.onReady()
+        const status = this.checkStatus() 
+        if( status.ready ) this.onReady(status) 
     }
 
     // handle large json transforms on a worker thread
@@ -63,19 +64,26 @@ class SearchIndex {
             })
             this.searchIndexStatus[resourceID] = 'ready'
         
-            // Fire callback when all documents are is ready
-            if( this.isSearchReady() ) this.onReady()    
+            // Fire callback when all documents are loaded
+            const status = this.checkStatus() 
+            if( status.ready ) this.onReady(status) 
         })
         worker.on('error', function(e) { 
             throw new Error(e)
         })
     }
 
-    isSearchReady() {
-        for( const status of Object.values(this.searchIndexStatus) ) {
-            if( status !== 'ready' ) return false
+    checkStatus() {
+        let notFound = []
+        for( const resourceID of Object.keys(this.searchIndexStatus) ) {
+            const status = this.searchIndexStatus[resourceID]
+            if( status === 'loading' ) return { ready: false }
+            if( status === 'not-found' ) notFound.push(resourceID)
         }
-        return true
+        return {
+            ready: true,
+            notFound
+        }
     }
 
     removeIndex(resourceID) {
@@ -85,7 +93,7 @@ class SearchIndex {
 
     searchProject( query ) {
         const results = {}
-        if( !this.isSearchReady() ) return {}
+        if( !this.checkStatus().ready ) return {}
     
         if( query.length === 0 ) return {}
     
