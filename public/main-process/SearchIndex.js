@@ -60,11 +60,11 @@ class SearchIndex {
             this.transformJSON('stringify', rawIndex ).then( (resp) => {
                 const { respData } = resp
                 this.projectStore.saveIndex( resourceID, respData )
-                this.searchIndexStatus[resourceID] = 'ready'
-        
-                // Fire callback when all documents are is ready
-                if( this.isSearchReady() ) this.onReady()    
             })
+            this.searchIndexStatus[resourceID] = 'ready'
+        
+            // Fire callback when all documents are is ready
+            if( this.isSearchReady() ) this.onReady()    
         })
         worker.on('error', function(e) { 
             throw new Error(e)
