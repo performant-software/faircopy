@@ -25,13 +25,23 @@ class SearchIndex {
     async loadIndex(resourceID) {
         const indexJSON = await this.projectStore.loadSearchIndex( resourceID )
         if( indexJSON ) {
-            const rawIndex = JSON.parse(indexJSON)
+            const { rawIndex } = await this.parseIndex(indexJSON)
             this.searchIndex[resourceID] = lunr.Index.load(rawIndex)
             this.searchIndexStatus[resourceID] = 'ready'    
         } else {
             this.searchIndexStatus[resourceID] = 'not-found'  
         }
         if( this.isSearchReady() ) this.onReady()
+    }
+
+    // parse index json on a worker thread
+    async parseIndex(indexJSON) {
+        return new Promise((resolve, reject) => {
+            const workerData = { indexJSON }
+            const worker = new Worker('./public/main-process/search-index-loader.js', { workerData })
+            worker.on('message', resolve)
+            worker.on('error', reject)    
+        })
     }
 
     isIndexable(resourceType) {
