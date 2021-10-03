@@ -174,6 +174,7 @@ class ProjectStore {
     saveIndex( resourceID, indexData ) {
         const indexID = `${resourceID}.index`
         this.writeUTF8File(indexID,indexData)
+        this.writeProjectArchive()
     }
 
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {

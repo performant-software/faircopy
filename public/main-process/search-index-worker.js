@@ -73,6 +73,11 @@ function indexResource(schemaJSON, contentJSON) {
     return JSON.parse(indexJSON)
 }
 
-const { resourceID, schemaJSON, contentJSON } = workerData
-const rawIndex = indexResource( schemaJSON, contentJSON )
-parentPort.postMessage({ resourceID, rawIndex })
+function run() {
+    const { resourceID, schemaJSON, contentJSON } = workerData
+    const rawIndex = indexResource( schemaJSON, contentJSON )
+    parentPort.postMessage({ resourceID, rawIndex })
+}
+
+// RUN THREAD /////////////////
+run()
