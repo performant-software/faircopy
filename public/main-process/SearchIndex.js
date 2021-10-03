@@ -25,8 +25,8 @@ class SearchIndex {
     async loadIndex(resourceID) {
         const indexJSON = await this.projectStore.loadSearchIndex( resourceID )
         if( indexJSON ) {
-            const { rawIndex } = await this.parseIndex(indexJSON)
-            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)
+            const { respData } = await this.transformJSON('parse',indexJSON)
+            this.searchIndex[resourceID] = lunr.Index.load(respData)
             this.searchIndexStatus[resourceID] = 'ready'    
         } else {
             this.searchIndexStatus[resourceID] = 'not-found'  
@@ -34,11 +34,11 @@ class SearchIndex {
         if( this.isSearchReady() ) this.onReady()
     }
 
-    // parse index json on a worker thread
-    async parseIndex(indexJSON) {
+    // handle large json transforms on a worker thread
+    async transformJSON( mode, data) {
         return new Promise((resolve, reject) => {
-            const workerData = { indexJSON }
-            const worker = new Worker('./public/main-process/search-index-loader.js', { workerData })
+            const workerData = { mode, data }
+            const worker = new Worker('./public/main-process/big-json-worker.js', { workerData })
             worker.on('message', resolve)
             worker.on('error', reject)    
         })
@@ -57,15 +57,17 @@ class SearchIndex {
 
             // Update resource index
             this.searchIndex[resourceID] = lunr.Index.load(rawIndex)    
-            this.projectStore.saveIndex( resourceID, JSON.stringify(rawIndex) )
-            this.searchIndexStatus[resourceID] = 'ready'
-    
-            // Fire callback when all documents are is ready
-            if( this.isSearchReady() ) this.onReady()
+            this.transformJSON('stringify', rawIndex ).then( (resp) => {
+                const { respData } = resp
+                this.projectStore.saveIndex( resourceID, respData )
+                this.searchIndexStatus[resourceID] = 'ready'
+        
+                // Fire callback when all documents are is ready
+                if( this.isSearchReady() ) this.onReady()    
+            })
         })
         worker.on('error', function(e) { 
-            // TODO
-            console.log('error')
+            throw new Error(e)
         })
     }
 
