@@ -81,7 +81,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
-      this.projectStore.searchIndex.indexResource( resourceID, contentJSON ) 
+      this.projectStore.searchIndex.indexResource( resourceID, contentJSON ).then() 
     })
     ipcMain.on('searchProject', (event, searchQuery) => { 
       const searchResults = this.projectStore.searchIndex.searchProject(searchQuery)  

@@ -1,5 +1,6 @@
 const { Worker } = require('worker_threads')
 const lunr = require('lunr')
+const log = require('electron-log')
 
 // throttle max number of workers and polling frequency
 const maxIndexWorkers = 1
@@ -13,7 +14,8 @@ class SearchIndex {
         this.onReady = onReady
         this.searchIndex = {}
         this.searchIndexStatus = {} 
-        this.workersRunning = 0
+        this.indexWorkersRunning = 0
+        this.jsonWorkersRunning = 0
     }
 
     initSearchIndex(manifestData) {
@@ -26,7 +28,7 @@ class SearchIndex {
             }
         }    
     }
-
+    
     async loadIndex(resourceID) {
         const indexJSON = await this.projectStore.loadSearchIndex( resourceID )
         if( indexJSON ) {
@@ -41,9 +43,32 @@ class SearchIndex {
     }
 
     // handle large json transforms on a worker thread
+    // async transformJSON( mode, data) {
+    //     return new Promise((resolve, reject) => {
+    //         const workerData = { mode, data }
+    //         const worker = new Worker('./public/main-process/big-json-worker.js', { workerData })
+    //         worker.on('message', resolve)
+    //         worker.on('error', reject)    
+    //     })
+    // }
+
     async transformJSON( mode, data) {
+        const workerData = { mode, data }
+
+        while( true ) {
+            if( this.jsonWorkersRunning < maxIndexWorkers ) {
+                this.jsonWorkersRunning++
+                const resp = await this.runJSONWorker(workerData)
+                this.jsonWorkersRunning--
+                return resp
+            } else {
+                await wait( workerCompletePoll )
+            }
+        }
+    }
+
+    async runJSONWorker(workerData) {
         return new Promise((resolve, reject) => {
-            const workerData = { mode, data }
             const worker = new Worker('./public/main-process/big-json-worker.js', { workerData })
             worker.on('message', resolve)
             worker.on('error', reject)    
@@ -54,13 +79,17 @@ class SearchIndex {
         return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
     }
 
-    indexResource( resourceID, contentJSON ) {
+    async indexResource( resourceID, contentJSON ) {
         const workerData = { resourceID, schemaJSON: this.schemaJSON, contentJSON }
-        if( this.workersRunning < maxIndexWorkers ) {
-            this.workersRunning++
-            this.runIndexWorker(workerData)
-        } else {
-            setTimeout( () => this.indexResource( resourceID, contentJSON ), workerCompletePoll )
+
+        while( true ) {
+            if( this.indexWorkersRunning < maxIndexWorkers ) {
+                this.indexWorkersRunning++
+                this.runIndexWorker(workerData)
+                return 
+            } else {
+                await wait( workerCompletePoll )
+            }
         }
     }
 
@@ -77,13 +106,14 @@ class SearchIndex {
                 this.projectStore.saveIndex( resourceID, respData )
             })
             this.searchIndexStatus[resourceID] = 'ready'
-            this.workersRunning--
+            this.indexWorkersRunning--
 
             // Fire callback when all documents are loaded
             const status = this.checkStatus() 
             if( status.ready ) this.onReady(status) 
         })
         worker.on('error', function(e) { 
+            log.error(e)
             throw new Error(e)
         })
     }
@@ -143,6 +173,10 @@ class SearchIndex {
         // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
     }
 
+}
+
+function wait(time) { 
+    return new Promise(resolve => setTimeout(resolve, time))
 }
 
 exports.SearchIndex = SearchIndex
