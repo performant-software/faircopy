@@ -1,6 +1,10 @@
 const { Worker } = require('worker_threads')
 const lunr = require('lunr')
 
+// throttle max number of workers and polling frequency
+const maxIndexWorkers = 1
+const workerCompletePoll = 400
+
 class SearchIndex {
 
     constructor( schemaJSON, projectStore, onReady ) {
@@ -9,6 +13,7 @@ class SearchIndex {
         this.onReady = onReady
         this.searchIndex = {}
         this.searchIndexStatus = {} 
+        this.workersRunning = 0
     }
 
     initSearchIndex(manifestData) {
@@ -51,6 +56,15 @@ class SearchIndex {
 
     indexResource( resourceID, contentJSON ) {
         const workerData = { resourceID, schemaJSON: this.schemaJSON, contentJSON }
+        if( this.workersRunning < maxIndexWorkers ) {
+            this.workersRunning++
+            this.runIndexWorker(workerData)
+        } else {
+            setTimeout( () => this.indexResource( resourceID, contentJSON ), workerCompletePoll )
+        }
+    }
+
+    runIndexWorker( workerData ) {
         const worker = new Worker('./public/main-process/search-index-worker.js', { workerData })
         worker.on('message', (response) => {
             // get finished index back from worker thread
@@ -63,7 +77,8 @@ class SearchIndex {
                 this.projectStore.saveIndex( resourceID, respData )
             })
             this.searchIndexStatus[resourceID] = 'ready'
-        
+            this.workersRunning--
+
             // Fire callback when all documents are loaded
             const status = this.checkStatus() 
             if( status.ready ) this.onReady(status) 
