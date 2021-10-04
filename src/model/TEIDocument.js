@@ -70,10 +70,9 @@ export default class TEIDocument {
         this.subDocs[noteID] = JSON.stringify(subDoc.toJSON());
     }
 
-    serializeSubDocument(name, attrs) {
+    serializeSubDocument( subDocID, name, attrs) {
         const {teiSchema} = this.fairCopyProject
-        let {__id__} = attrs; 
-        const noteJSON = JSON.parse( this.subDocs[__id__] )
+        const noteJSON = JSON.parse( this.subDocs[subDocID] )
         const subDoc = teiSchema.docNodeSchemas[name].nodeFromJSON(noteJSON);
         // get the content of noteDoc, which is the only child of doc
         const noteDocFragment = subDoc.firstChild.content
@@ -81,10 +80,8 @@ export default class TEIDocument {
         let note = document.createElement(name)
         note.appendChild( domFragment.cloneNode(true) )
         for( const attrKey of Object.keys(attrs)) {
-            if( attrKey !== '__id__') {
-                const attrVal = attrs[attrKey]
-                note.setAttribute(attrKey,attrVal)
-            }
+            const attrVal = attrs[attrKey]
+            note.setAttribute(attrKey,attrVal)
         }
         return note
     }

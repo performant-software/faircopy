@@ -185,9 +185,10 @@ export default class TEISchema {
             toDOM: (node) => { 
                 if( this.teiMode ) {
                     let attrs = this.filterOutBlanks(node.attrs)
+                    const subDocID = attrs['__id__']
                     attrs = this.filterInternal(attrs)
                     const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
-                    return teiDocument.serializeSubDocument(name, attrs)
+                    return teiDocument.serializeSubDocument( subDocID, name, attrs)
                 } else {
                     const noteAttrs = { ...node.attrs, class: `far fa-xs ${icon} inline-node` }
                     return [`tei-${name}`,noteAttrs]
