@@ -138,6 +138,7 @@ class ProjectStore {
 
     async loadSearchIndex( resourceID ) {
         // look for a corresponding index
+        log.info(`loading index from project archive: ${resourceID}`)
         const indexID = `${resourceID}.index`
         return await this.readUTF8File(indexID)
     }
@@ -172,6 +173,7 @@ class ProjectStore {
     }
 
     saveIndex( resourceID, indexData ) {
+        log.info(`saving index to project archive: ${resourceID}`)
         const indexID = `${resourceID}.index`
         this.writeUTF8File(indexID,indexData)
         this.writeProjectArchive()

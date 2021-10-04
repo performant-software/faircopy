@@ -2,6 +2,7 @@ const { workerData, parentPort } = require('worker_threads')
 const lunr = require('lunr')
 const { Node } = require('prosemirror-model')
 const { TEISchema } = require('./TEISchema')
+const log = require('electron-log')
 
 function getSafeAttrKey( attrName ) {
     return attrName.replace(':','')
@@ -75,6 +76,7 @@ function indexResource(schemaJSON, contentJSON) {
 
 function run() {
     const { resourceID, schemaJSON, contentJSON } = workerData
+    log.info(`starting index of: ${resourceID}`)
     const rawIndex = indexResource( schemaJSON, contentJSON )
     parentPort.postMessage({ resourceID, rawIndex })
 }
