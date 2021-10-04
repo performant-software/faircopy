@@ -41,17 +41,7 @@ class SearchIndex {
         const status = this.checkStatus() 
         if( status.ready ) this.onReady(status) 
     }
-
-    // handle large json transforms on a worker thread
-    // async transformJSON( mode, data) {
-    //     return new Promise((resolve, reject) => {
-    //         const workerData = { mode, data }
-    //         const worker = new Worker('./public/main-process/big-json-worker.js', { workerData })
-    //         worker.on('message', resolve)
-    //         worker.on('error', reject)    
-    //     })
-    // }
-
+    
     async transformJSON( mode, data) {
         const workerData = { mode, data }
 
