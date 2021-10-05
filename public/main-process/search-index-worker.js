@@ -42,10 +42,10 @@ function indexResource(schemaJSON, contentJSON) {
             const elementName = node.type.name
             const contents = node.textContent
             const element = teiSchema.elements[elementName]
-            if( !element ) return true
+            if( !element ) return false
     
             const { fcType } = element
-            const softNode = fcType === 'soft' ? 'true' : 'false'
+            const softNode = fcType === 'soft' 
             const attrFields = {}
             
             for( const attrKey of Object.keys(node.attrs) ) {
@@ -60,11 +60,11 @@ function indexResource(schemaJSON, contentJSON) {
             this.add({
                 pos,
                 elementName,
-                softNode,
+                softNode: softNode ? 'true' : 'false',
                 contents,
                 ...attrFields
             })
-            return true
+            return !softNode
         })
     
     })
