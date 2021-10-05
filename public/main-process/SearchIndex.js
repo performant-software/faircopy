@@ -41,7 +41,7 @@ class SearchIndex {
         const status = this.checkStatus() 
         if( status.ready ) this.onReady(status) 
     }
-    
+
     async transformJSON( mode, data) {
         const workerData = { mode, data }
 
@@ -128,14 +128,11 @@ class SearchIndex {
 
     searchProject( query ) {
         const results = {}
-        if( !this.checkStatus().ready ) return {}
-    
-        if( query.length === 0 ) return {}
-    
-        for( const resourceID of Object.keys(this.searchIndex) ) {
-            results[resourceID] = this.searchResource( query, resourceID )
+        if( this.checkStatus().ready && query.length > 0 ) {
+            for( const resourceID of Object.keys(this.searchIndex) ) {
+                results[resourceID] = this.searchResource( query, resourceID )
+            }    
         }
-    
         return { query, results }
     }
     
