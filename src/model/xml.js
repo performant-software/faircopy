@@ -177,10 +177,10 @@ export function htmlToXML(html,elements,attrs) {
 }
 
 export function addTextNodes(state, dispatch=null) {
-    const { tr, schema } = state
+    const { tr, schema, doc } = state
 
     // if an element could have a textnode, but is instead empty, add a textnode to it
-    tr.doc.descendants((node,pos) => {
+    doc.descendants((node,pos) => {
         const contentExp = node.type.spec.content
         if( node.childCount === 0 && contentExp && contentExp.includes('textNode') ) {
             const textNodeName = getTextNodeName(contentExp)
@@ -191,8 +191,12 @@ export function addTextNodes(state, dispatch=null) {
         return true
     })
 
-    if( dispatch ) dispatch(tr)
-    return tr.doc
+    if( dispatch ) { 
+        dispatch(tr)
+    } else {
+        const {state: nextState} = state.applyTransaction(tr)
+        return nextState.doc
+    }
 }
 
 // Repair camel cased attrs that React munged

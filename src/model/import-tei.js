@@ -6,7 +6,6 @@ import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText, addTextNodes} from "./xml"
 import {teiTextTemplate} from './tei-template'
-import { EditorState } from "prosemirror-state"
 
 const fairCopy = window.fairCopy
 
@@ -219,14 +218,15 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)
 
-    // learn the attributes and vocabs
-    const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
-
-    // index the document (finalizes state doc w/textnodes)
-    const docState = EditorState.create({doc})
-    const finalDoc = addTextNodes( docState )
+    // index the document (re-creating EXACT state of an initially loaded doc so positions align for all terms)
+    const indexDoc = new TEIDocument(resourceEntry.id,type,fairCopyProject,false)
+    indexDoc.load(content)
+    const finalDoc = addTextNodes( indexDoc.initialState )
     const contentJSON = finalDoc.toJSON()
     fairCopy.services.ipcSend('indexResource', resourceEntry.id, contentJSON)
+
+    // learn the attributes and vocabs
+    const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
 
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
