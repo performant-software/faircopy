@@ -6,11 +6,6 @@ const fairCopy = window.fairCopy
 // offset to account for height of the toolbar above the TEI editor
 const scrollTopOffset = 137
 
-export function indexDocument( resourceID, doc ) {
-    const contentJSON = doc.toJSON()
-    fairCopy.services.ipcSend('indexResource', resourceID, contentJSON)
-}
-
 export function searchProject( searchQuery ) {
     fairCopy.services.ipcSend('searchProject', searchQuery)
 }
@@ -19,6 +14,7 @@ export function highlightSearchResults(currentResource, searchQuery, searchResul
     const { resourceType, resourceID } = currentResource
 
     if( isIndexable(resourceType) ) {
+        console.log(searchResults)
         const editorView = currentResource.getActiveView()
         const { tr } = editorView.state
 

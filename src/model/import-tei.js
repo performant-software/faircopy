@@ -4,9 +4,9 @@ import { v4 as uuidv4 } from 'uuid'
 import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
-import {parseText, serializeText} from "./xml"
-import { indexDocument } from "./search"
+import {parseText, serializeText, addTextNodes} from "./xml"
 import {teiTextTemplate} from './tei-template'
+import { EditorState } from "prosemirror-state"
 
 const fairCopy = window.fairCopy
 
@@ -216,14 +216,17 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const doc = parseText(textEl,tempDoc,teiSchema,type)
     const resourceMap = idMap.mapResource( type, doc )
 
-    // index for search
-    indexDocument( resourceEntry.id, doc )
-
     // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)
 
     // learn the attributes and vocabs
     const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
+
+    // index the document (finalizes state doc w/textnodes)
+    const docState = EditorState.create({doc})
+    const finalDoc = addTextNodes( docState )
+    const contentJSON = finalDoc.toJSON()
+    fairCopy.services.ipcSend('indexResource', resourceEntry.id, contentJSON)
 
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }

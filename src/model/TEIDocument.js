@@ -11,7 +11,6 @@ import { v4 as uuidv4 } from 'uuid'
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {scanForErrors} from "./error-scan"
-import { indexDocument } from "./search"
 
 const fairCopy = window.fairCopy
 
@@ -147,7 +146,7 @@ export default class TEIDocument {
 
     finalizeEditorView(editorView) {
         this.editorView = editorView
-        addTextNodes(editorView)
+        addTextNodes(editorView.state, editorView.dispatch)
         this.changedSinceLastSave = false
     }
 
@@ -266,8 +265,9 @@ export default class TEIDocument {
         this.lastMessageID = messageID
 
         // index document for search
-        indexDocument( this.resourceID, editorState.doc )
-
+        const contentJSON = editorState.doc.toJSON()
+        fairCopy.services.ipcSend('indexResource', this.resourceID, contentJSON)
+    
         this.changedSinceLastSave = false
     }
 }

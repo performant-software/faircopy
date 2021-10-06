@@ -176,8 +176,8 @@ export function htmlToXML(html,elements,attrs) {
     return renameCamelCase(nextHTML,elements,attrs)
 }
 
-export function addTextNodes(editorView) {
-    const { tr, schema } = editorView.state
+export function addTextNodes(state, dispatch=null) {
+    const { tr, schema } = state
 
     // if an element could have a textnode, but is instead empty, add a textnode to it
     tr.doc.descendants((node,pos) => {
@@ -191,7 +191,8 @@ export function addTextNodes(editorView) {
         return true
     })
 
-    editorView.dispatch(tr)
+    if( dispatch ) dispatch(tr)
+    return tr.doc
 }
 
 // Repair camel cased attrs that React munged
