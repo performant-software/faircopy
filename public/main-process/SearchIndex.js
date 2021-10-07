@@ -10,12 +10,11 @@ class SearchIndex {
 
     constructor( schemaJSON, projectStore, onReady ) {
         this.projectStore = projectStore
-        this.schemaJSON = schemaJSON
         this.onReady = onReady
         this.searchIndex = {}
         this.searchIndexStatus = {} 
-        this.indexWorkersRunning = 0
         this.jsonWorkersRunning = 0
+        this.indexWorker = this.initIndexWorker(schemaJSON)
     }
 
     initSearchIndex(manifestData) {
@@ -27,6 +26,34 @@ class SearchIndex {
                 this.loadIndex(resourceID)
             }
         }    
+    }
+
+    initIndexWorker(schemaJSON) {
+        const indexWorker = new Worker('./public/main-process/search-index-worker.js', { workerData: { schemaJSON } })
+
+        indexWorker.on('message', (response) => {
+            // get finished index back from worker thread
+            const { resourceID, rawIndex } = response
+
+            // Update resource index
+            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)    
+            this.transformJSON('stringify', rawIndex ).then( (resp) => {
+                const { respData } = resp
+                this.projectStore.saveIndex( resourceID, respData )
+            })
+            this.searchIndexStatus[resourceID] = 'ready'
+
+            // Fire callback when all documents are loaded
+            const status = this.checkStatus() 
+            if( status.ready ) this.onReady(status) 
+        })
+
+        indexWorker.on('error', function(e) { 
+            log.error(e)
+            throw new Error(e)
+        })
+
+        return indexWorker
     }
     
     async loadIndex(resourceID) {
@@ -69,43 +96,8 @@ class SearchIndex {
         return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
     }
 
-    async indexResource( resourceID, contentJSON ) {
-        const workerData = { resourceID, schemaJSON: this.schemaJSON, contentJSON }
-
-        while( true ) {
-            if( this.indexWorkersRunning < maxIndexWorkers ) {
-                this.indexWorkersRunning++
-                this.runIndexWorker(workerData)
-                return 
-            } else {
-                await wait( workerCompletePoll )
-            }
-        }
-    }
-
-    runIndexWorker( workerData ) {
-        const worker = new Worker('./public/main-process/search-index-worker.js', { workerData })
-        worker.on('message', (response) => {
-            // get finished index back from worker thread
-            const { resourceID, rawIndex } = response
-
-            // Update resource index
-            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)    
-            this.transformJSON('stringify', rawIndex ).then( (resp) => {
-                const { respData } = resp
-                this.projectStore.saveIndex( resourceID, respData )
-            })
-            this.searchIndexStatus[resourceID] = 'ready'
-            this.indexWorkersRunning--
-
-            // Fire callback when all documents are loaded
-            const status = this.checkStatus() 
-            if( status.ready ) this.onReady(status) 
-        })
-        worker.on('error', function(e) { 
-            log.error(e)
-            throw new Error(e)
-        })
+    indexResource( resourceID, contentJSON ) {
+        this.indexWorker.postMessage({ resourceID, contentJSON })
     }
 
     checkStatus() {

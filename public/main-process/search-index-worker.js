@@ -75,10 +75,14 @@ function indexResource(schemaJSON, contentJSON) {
 }
 
 function run() {
-    const { resourceID, schemaJSON, contentJSON } = workerData
-    log.info(`starting index of: ${resourceID}`)
-    const rawIndex = indexResource( schemaJSON, contentJSON )
-    parentPort.postMessage({ resourceID, rawIndex })
+    const { schemaJSON } = workerData
+
+    parentPort.on('message', (msg) => {
+        const { resourceID, contentJSON } = msg
+        log.info(`starting index of: ${resourceID}`)
+        const rawIndex = indexResource( schemaJSON, contentJSON )
+        parentPort.postMessage({ resourceID, rawIndex })
+    })
 }
 
 // RUN THREAD /////////////////
