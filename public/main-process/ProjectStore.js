@@ -317,6 +317,7 @@ class ProjectStore {
 }
 
 function writeArchive(zipPath, zipData, whenFinished=null) {
+    const startTime = Date.now()
     zipData
         .generateNodeStream({
             type:'nodebuffer',
@@ -329,7 +330,8 @@ function writeArchive(zipPath, zipData, whenFinished=null) {
         .pipe(fs.createWriteStream(zipPath))
         .on('finish', () => {
             if( whenFinished ) {
-                log.info(`${zipPath} written.`);
+                const finishTime = Date.now()
+                log.info(`${zipPath} written in ${finishTime-startTime}ms`);
                 whenFinished()
             }
         });
