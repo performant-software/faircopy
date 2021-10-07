@@ -56,7 +56,6 @@ function indexResource(schemaJSON, contentJSON) {
     
             // TODO index marks
             // TODO sub docs
-            if( elementName === 'p' ) console.log(`p: ${pos}`)
     
             this.add({
                 pos,
