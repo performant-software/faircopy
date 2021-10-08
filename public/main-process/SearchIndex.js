@@ -23,7 +23,7 @@ class SearchIndex {
             const resourceEntry = resources[resourceID]
             if( this.isIndexable(resourceEntry.type) ) {
                 this.searchIndexStatus[resourceID] = 'loading'
-                this.loadIndex(resourceID)
+                this.projectStore.loadSearchIndex(resourceID)
             }
         }    
     }
@@ -56,8 +56,7 @@ class SearchIndex {
         return indexWorker
     }
     
-    async loadIndex(resourceID) {
-        const indexJSON = await this.projectStore.loadSearchIndex( resourceID )
+    async loadIndex(resourceID,indexJSON) {
         if( indexJSON ) {
             const { respData } = await this.transformJSON('parse',indexJSON)
             this.searchIndex[resourceID] = lunr.Index.load(respData)

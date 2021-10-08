@@ -3,6 +3,11 @@ const JSZip = require('jszip')
 const fs = require('fs')
 const os = require('os')
 const log = require('electron-log')
+// const debounce = require('debounce')
+
+const manifestEntryName = 'faircopy-manifest.json'
+const configSettingsEntryName = 'config-settings.json'
+const idMapEntryName = 'id-map.json'
 
 function setupTempFolder() {
     const cacheFolder = `${os.tmpdir()}/faircopy/`
@@ -33,6 +38,28 @@ async function cacheResource(resourceID, fileName, cacheFolder, zip) {
 }
 
 function saveArchive(zipPath, zip) {
+
+    // const zipWriteDelay = 200
+
+     // create a debounced function for writing the ZIP
+    //  this.writeProjectArchive = debounce(() => {
+    //     const jobNumber = Date.now()
+    //     this.jobsInProgress.push(jobNumber)
+
+    //     // if there was a migration that hasn't been saved yet, save it now
+    //     if( this.migratedConfig ) {
+    //         this.saveFairCopyConfig( this.migratedConfig ) 
+    //     }
+
+    //     // write to a temp file first, to avoid corrupting the ZIP if we can't finish for some reason.
+    //     const tempPath = `${this.tempDir}/${jobNumber}.zip`
+    //     writeArchive( tempPath, this.projectArchive, () => { 
+    //         fs.copyFileSync( tempPath, this.projectFilePath )
+    //         fs.unlinkSync( tempPath )
+    //         this.jobsInProgress.pop() 
+    //     })
+    // },zipWriteDelay)
+
     const { projectFilePath } = workerData
 
     const startTime = Date.now()
@@ -61,6 +88,15 @@ async function openArchive() {
     const data = fs.readFileSync(projectFilePath)
     const zip = await JSZip.loadAsync(data)
     const { cacheFolder, zipPath } = setupTempFolder()
+
+    const fairCopyManifest = await readUTF8(manifestEntryName,zip)
+    let fairCopyConfig = await readUTF8(configSettingsEntryName,zip)
+    const idMap = await readUTF8(idMapEntryName,zip)
+
+    // send initial project data back to project store
+    const projectData = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
+    parentPort.postMessage({ messageType: 'project-data', projectData })
+
     return { zip, cacheFolder, zipPath }
 }
 
@@ -88,20 +124,36 @@ async function run() {
         }
 
         switch( messageType ) {
-            case 'read-utf8':
+            case 'read-resource':
                 {
-                    const { targetFilePath } = msg
-                    readUTF8(targetFilePath, zip).then( (data) => {
-                        parentPort.postMessage({ messageType: 'utf8-data', targetFilePath, data })
+                    const { resourceID } = msg
+                    readUTF8(resourceID, zip).then( (resource) => {
+                        parentPort.postMessage({ messageType: 'resource-data', resourceID, resource })
                     })
                 }
                 break
-            case 'write-utf8':
+            case 'read-index':
                 {
-                    const { targetFilePath, data } = msg
-                    writeUTF8( targetFilePath, data, zip )    
+                    const { resourceID } = msg
+                    const indexID = `${resourceID}.index`
+                    readUTF8(indexID, zip).then( (index) => {
+                        parentPort.postMessage({ messageType: 'index-data', resourceID, index })
+                    })
                 }
                 break
+            case 'write-resource':
+                {
+                    const { resourceID, data } = msg
+                    writeUTF8( resourceID, data, zip )    
+                }
+            break
+            case 'write-index':
+                {
+                    const { resourceID, data } = msg
+                    const indexID = `${resourceID}.index`
+                    writeUTF8( indexID, data, zip )    
+                }
+            break
             case 'cache-resource':
                 {
                     const { resourceID, filename } = msg
@@ -110,16 +162,16 @@ async function run() {
                     })
                 }
                 break
-            case 'add-file':
+            case 'add-local-file':
                 {
                     const { localFilePath, resourceID } = msg
                     addFile( localFilePath, resourceID, zip )    
                 }
                 break            
-            case 'save-archive':
+            case 'save':
                 saveArchive(zipPath, zip)
                 break
-            case 'close-archive':
+            case 'close':
                 open = false
                 closeArchive(zip,cacheFolder)
                 break    

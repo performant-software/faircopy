@@ -1,7 +1,5 @@
 const JSZip = require('jszip')
 const fs = require('fs')
-const os = require('os')
-const debounce = require('debounce')
 const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
 
@@ -12,54 +10,73 @@ const { SearchIndex } = require('./SearchIndex')
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
 const idMapEntryName = 'id-map.json'
-const zipWriteDelay = 200
 
 class ProjectStore {
 
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
-        this.jobsInProgress = []
+    }
 
-        // create a debounced function for writing the ZIP
-        this.writeProjectArchive = debounce(() => {
-            const jobNumber = Date.now()
-            this.jobsInProgress.push(jobNumber)
+    initProjectArchiveWorker( projectFilePath ) {
+        const projectArchiveWorker = new Worker('./public/main-process/project-archive-worker.js', { workerData: { projectFilePath } })
 
-            // if there was a migration that hasn't been saved yet, save it now
-            if( this.migratedConfig ) {
-                this.saveFairCopyConfig( this.migratedConfig ) 
+        projectArchiveWorker.on('message', (msg) => {
+            const { messageType } = msg
+            switch( messageType ) {
+                case 'project-data': 
+                    {
+                        const { project } = msg
+                        this.loadProject(project)   
+                    }
+                    break
+                case 'resource-data':
+                    {
+                        const { resourceID, resource } = msg
+                        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceID, resource } )        
+                        log.info(`opened resourceID: ${resourceID}`)    
+                    }
+                    break
+                case 'index-data':
+                    {
+                        const { resourceID, index } = msg
+                        this.searchIndex.loadIndex(resourceID,index)        
+                    }
+                    break
+                case 'cache-file-data':
+                    // TODO
+                    break
+                default:
+                    // TODO
             }
+        })
 
-            // write to a temp file first, to avoid corrupting the ZIP if we can't finish for some reason.
-            const tempPath = `${this.tempDir}/${jobNumber}.zip`
-            writeArchive( tempPath, this.projectArchive, () => { 
-                fs.copyFileSync( tempPath, this.projectFilePath )
-                fs.unlinkSync( tempPath )
-                this.jobsInProgress.pop() 
-            })
-        },zipWriteDelay)
+        projectArchiveWorker.on('error', function(e) { 
+            log.error(e)
+            throw new Error(e)
+        })
+
+        projectArchiveWorker.on('exit', function(e) { 
+            // TODO
+        })
+
+        return projectArchiveWorker
     }
 
-    setupTempFolder() {
-        const tempFolderBase = `${os.tmpdir()}/faircopy/`
-        if( !fs.existsSync(tempFolderBase) ) fs.mkdirSync(tempFolderBase)
-        this.tempDir = fs.mkdtempSync(tempFolderBase)
+    openProject(projectFilePath) {
+        if( !this.projectArchiveWorker ) {
+            this.projectArchiveWorker = this.initProjectArchiveWorker(projectFilePath)
+        } else {
+            throw new Error("A project archive has already been opened.")
+        }
     }
 
-    async openProject(projectFilePath) {
+    loadProject(project) {
         const { baseDir } = this.fairCopyApplication
         
-        const data = fs.readFileSync(projectFilePath)
-        this.projectArchive = await JSZip.loadAsync(data)
-        this.projectFilePath = projectFilePath
-
-        if( !this.projectArchive ) {
-            log.info('Attempted to open invalid project file.')
+        if( !project ) {
+            log.error('Attempted to open invalid project file.')
             return
         }
-        const fairCopyManifest = await this.readUTF8File(manifestEntryName)
-        let fairCopyConfig = await this.readUTF8File(configSettingsEntryName)
-        const idMap = await this.readUTF8File(idMapEntryName)
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
         const baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
@@ -67,6 +84,8 @@ class ProjectStore {
             log.info('Application data is missing or corrupted.')
             return
         }
+
+        let { fairCopyManifest, fairCopyConfig, idMap, projectFilePath } = project
 
         if( !fairCopyManifest || !fairCopyConfig || !idMap ) {
             log.info('Project file is missing required entries.')
@@ -108,6 +127,7 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
+    // TODO REFACTOR
     async openImageView(imageView,imageViewInfo) {
         const { resourceID, xmlID, parentID } = imageViewInfo
         const { baseDir } = this.fairCopyApplication
@@ -123,6 +143,7 @@ class ProjectStore {
         }
     }
 
+    // TODO REFACTOR
     quitSafely = (quitCallback) => {
         // execute any pending write jobs
         this.writeProjectArchive.flush()
@@ -136,13 +157,13 @@ class ProjectStore {
         }
     }
 
-    async loadSearchIndex( resourceID ) {
+    loadSearchIndex( resourceID ) {
         // look for a corresponding index
         log.info(`loading index from project archive: ${resourceID}`)
-        const indexID = `${resourceID}.index`
-        return await this.readUTF8File(indexID)
+        this.projectArchiveWorker.postMessage({ messageType: 'read-index', resourceID })
     }
 
+    // TODO REFACTOR
     onIDMapUpdated(msgID, idMapData) {
         this.idMapAuthority.update(idMapData)
         this.sendIDMapUpdate(msgID)
@@ -154,6 +175,7 @@ class ProjectStore {
         this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
     }
 
+    // TODO REFACTOR
     abandonResourceMap(resourceID) {
         this.idMapAuthority.abandonResourceMap(resourceID)
         this.sendIDMapUpdate()
@@ -164,9 +186,9 @@ class ProjectStore {
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             const idMap = this.idMapAuthority.commitResource(resourceID)
-            this.writeUTF8File(idMapEntryName, idMap)
-            this.writeUTF8File(resourceID,resourceData)
-            this.writeProjectArchive()
+            this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: idMapEntryName, data: idMap })
+            this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID, data: resourceData })
+            this.projectArchiveWorker.postMessage({ messageType: 'save' })
             return true
         }
         return false
@@ -174,11 +196,11 @@ class ProjectStore {
 
     saveIndex( resourceID, indexData ) {
         log.info(`saving index to project archive: ${resourceID}`)
-        const indexID = `${resourceID}.index`
-        this.writeUTF8File(indexID,indexData)
-        this.writeProjectArchive()
+        this.projectArchiveWorker.postMessage({ messageType: 'write-index', resourceID, data: indexData })
+        this.projectArchiveWorker.postMessage({ messageType: 'save' })
     }
 
+    // TODO REFACTOR
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
@@ -196,6 +218,7 @@ class ProjectStore {
         this.saveManifest()
     }
     
+    // TODO REFACTOR
     removeResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID] 
 
@@ -227,6 +250,7 @@ class ProjectStore {
         this.saveManifest()
     }
 
+    // TODO REFACTOR
     updateResource(resourceEntryJSON) {
         const { resources } = this.manifestData
         const resourceEntry = JSON.parse(resourceEntryJSON)
@@ -244,6 +268,7 @@ class ProjectStore {
         return false
     }
 
+    // TODO REFACTOR
     saveManifest() {
         const currentVersion = this.fairCopyApplication.config.version
         this.manifestData.generatedWith = currentVersion
@@ -251,6 +276,7 @@ class ProjectStore {
         this.writeProjectArchive()
     }
 
+    // TODO REFACTOR
     saveFairCopyConfig( fairCopyConfig ) {
         this.migratedConfig = null
         this.writeUTF8File( configSettingsEntryName, fairCopyConfig)
@@ -276,6 +302,7 @@ class ProjectStore {
         this.saveManifest()
     }
 
+    // TODO REFACTOR
     async openImageResource(requestURL) {
         const resourceID = requestURL.replace(`local://`, '').replace('..','')
         const resourceEntry = this.manifestData.resources[resourceID]
@@ -297,44 +324,12 @@ class ProjectStore {
         return null
     }
 
-    async openResource(resourceID) {
+    openResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            const resource = await this.readUTF8File(resourceID)
-            const resourceData = { resourceID, resource }
-            this.fairCopyApplication.sendToMainWindow('resourceOpened', resourceData )
+            this.projectArchiveWorker.postMessage({ messageType: 'read-resource', resourceID })
         }
     }
-
-    writeUTF8File( targetFilePath, data ) {
-        this.projectArchive.file(targetFilePath, data)
-    }
-
-    readUTF8File(targetFilePath) {
-       const file = this.projectArchive.file(targetFilePath)
-       return file ? file.async("string") : null
-    }
-}
-
-function writeArchive(zipPath, zipData, whenFinished=null) {
-    const startTime = Date.now()
-    zipData
-        .generateNodeStream({
-            type:'nodebuffer',
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 1
-            },
-            streamFiles:true
-        })
-        .pipe(fs.createWriteStream(zipPath))
-        .on('finish', () => {
-            if( whenFinished ) {
-                const finishTime = Date.now()
-                log.info(`${zipPath} written in ${finishTime-startTime}ms`);
-                whenFinished()
-            }
-        });
 }
 
 function getExtensionForMIMEType( mimeType ) {
@@ -350,6 +345,7 @@ function getExtensionForMIMEType( mimeType ) {
     }        
 }
 
+// TODO REFACTOR
 const createProjectArchive = function createProjectArchive(projectInfo,baseDir) {
     const { name, description, filePath, appVersion } = projectInfo
     const projectArchive = new JSZip()      

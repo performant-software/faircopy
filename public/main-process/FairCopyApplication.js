@@ -116,9 +116,7 @@ class FairCopyApplication {
     // Main window events //////
 
     ipcMain.on('requestResource', (event,resourceID) => { 
-      this.projectStore.openResource(resourceID).then(()=>{
-        log.info(`opened resourceID: ${resourceID}`)
-      }) 
+      this.projectStore.openResource(resourceID)
     })
 
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })    
