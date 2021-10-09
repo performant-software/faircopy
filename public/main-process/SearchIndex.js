@@ -28,6 +28,10 @@ class SearchIndex {
         }    
     }
 
+    close() {
+        if( this.indexWorker ) this.indexWorker.terminate()
+    }
+
     initIndexWorker(schemaJSON) {
         const indexWorker = new Worker('./public/main-process/search-index-worker.js', { workerData: { schemaJSON } })
 
@@ -51,6 +55,10 @@ class SearchIndex {
         indexWorker.on('error', function(e) { 
             log.error(e)
             throw new Error(e)
+        })
+
+        indexWorker.on('exit', function(e) { 
+            log.info('Exited search index worker.')
         })
 
         return indexWorker

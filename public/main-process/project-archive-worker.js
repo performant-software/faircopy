@@ -113,6 +113,7 @@ async function run() {
         } else {
             // when we are done with jobs, clear cache and exit
             fs.rmSync(cacheFolder, { recursive: true, force: true })
+            log.info('Exiting project archive worker thread.')
             process.exit()
         }
     }

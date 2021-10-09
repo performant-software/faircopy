@@ -146,6 +146,7 @@ class ProjectStore {
 
     close() {
         this.projectArchiveWorker.postMessage({ messageType: 'close' })
+        this.searchIndex.close()
     }
 
     loadSearchIndex( resourceID ) {
