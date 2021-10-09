@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, protocol } = require('electron')
-const { ProjectStore, createProjectArchive } = require('./ProjectStore')
+const { ProjectStore } = require('./ProjectStore')
+const { createProjectArchive } = require('./create-project-archive')
 const { exportResources } = require('./export-xml')
 const { MainMenu } = require('./MainMenu')
 const { checkForUpdates, downloadUpdate } = require('./app-updater')
@@ -166,8 +167,9 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive({ ...projectInfo, appVersion: this.config.version}, this.baseDir)
-      this.openProject(projectInfo.filePath)
+      createProjectArchive({ ...projectInfo, appVersion: this.config.version}, this.baseDir, () => {
+        this.openProject(projectInfo.filePath)
+      })
     })
 
     ipcMain.on('requestFileOpen', (event) => { 
@@ -226,25 +228,25 @@ class FairCopyApplication {
   exitApp() {
     if( !this.exiting ) {
       this.exiting = true
-      this.projectStore.quitSafely(() => {
-        for( const imageView of Object.values(this.imageViews) ) {
-          if( !imageView.isDestroyed() ) {
-            imageView.close()
-          }
-        }
-        this.imageViews = {}
+      this.projectStore.close()
 
-        if( this.returnToProjectWindow ) {
-          this.createProjectWindow().then(() => {
-            this.returnToProjectWindow = false
-            this.exiting = false
-          })
-        } 
-
-        if( this.mainWindow ) {
-          this.mainWindow.close()
+      for( const imageView of Object.values(this.imageViews) ) {
+        if( !imageView.isDestroyed() ) {
+          imageView.close()
         }
-      })  
+      }
+      this.imageViews = {}
+
+      if( this.returnToProjectWindow ) {
+        this.createProjectWindow().then(() => {
+          this.returnToProjectWindow = false
+          this.exiting = false
+        })
+      } 
+
+      if( this.mainWindow ) {
+        this.mainWindow.close()
+      }
     }
   }
 

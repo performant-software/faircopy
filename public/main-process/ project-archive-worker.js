@@ -3,11 +3,11 @@ const JSZip = require('jszip')
 const fs = require('fs')
 const os = require('os')
 const log = require('electron-log')
-// const debounce = require('debounce')
+const debounce = require('debounce')
+const { manifestEntryName, configSettingsEntryName, idMapEntryName } = require('./ProjectStore')
 
-const manifestEntryName = 'faircopy-manifest.json'
-const configSettingsEntryName = 'config-settings.json'
-const idMapEntryName = 'id-map.json'
+const zipWriteDelay = 200
+
 
 function setupTempFolder() {
     const cacheFolder = `${os.tmpdir()}/faircopy/`
@@ -43,32 +43,14 @@ async function cacheResource(resourceID, fileName, cacheFolder, zip) {
     return cacheFile
 }
 
-function saveArchive(zipPath, zip) {
-
-    // const zipWriteDelay = 200
-
-     // create a debounced function for writing the ZIP
-    //  this.writeProjectArchive = debounce(() => {
-    //     const jobNumber = Date.now()
-    //     this.jobsInProgress.push(jobNumber)
-
-    //     // if there was a migration that hasn't been saved yet, save it now
-    //     if( this.migratedConfig ) {
-    //         this.saveFairCopyConfig( this.migratedConfig ) 
-    //     }
-
-    //     // write to a temp file first, to avoid corrupting the ZIP if we can't finish for some reason.
-    //     const tempPath = `${this.tempDir}/${jobNumber}.zip`
-    //     writeArchive( tempPath, this.projectArchive, () => { 
-    //         fs.copyFileSync( tempPath, this.projectFilePath )
-    //         fs.unlinkSync( tempPath )
-    //         this.jobsInProgress.pop() 
-    //     })
-    // },zipWriteDelay)
-
+function saveArchive(jobNumber, zipPath, zip, callback) {
     const { projectFilePath } = workerData
+    const zipFile = `${zipPath}/${jobNumber}.zip`
 
     const startTime = Date.now()
+
+    // write to a temp file first so that zip won't get 
+    // corrupted if we terminate unexpectedly
     zip
         .generateNodeStream({
             type:'nodebuffer',
@@ -78,12 +60,13 @@ function saveArchive(zipPath, zip) {
             },
             streamFiles:true
         })
-        .pipe(fs.createWriteStream(zipPath))
+        .pipe(fs.createWriteStream(zipFile))
         .on('finish', () => {
-            fs.copyFileSync( zipPath, projectFilePath )
-            fs.unlinkSync( zipPath )
+            fs.copyFileSync( zipFile, projectFilePath )
+            fs.unlinkSync( zipFile )
             const finishTime = Date.now()
-            log.info(`${zipPath} written in ${finishTime-startTime}ms`);
+            log.info(`${zipFile} written in ${finishTime-startTime}ms`);
+            callback()
         });
 }
 
@@ -106,13 +89,6 @@ async function openArchive() {
     return { zip, cacheFolder, zipPath }
 }
 
-function closeArchive(zip,cacheFolder) {
-    // execute any pending write jobs
-    zip.flush()
-    // TODO - wipe the temp dir
-    process.exit()
-}
-
 function postError(errorMessage) {
     parentPort.postMessage({ messageType: 'error', errorMessage })
 }
@@ -120,7 +96,27 @@ function postError(errorMessage) {
 async function run() {
     const { zip, cacheFolder, zipPath } = await openArchive()
     let open = true
+    let jobsInProgress = 0
 
+    // create a debounced function for writing the ZIP
+    const save = debounce(() => {
+        const jobNumber = Date.now()
+        jobsInProgress++
+        saveArchive(jobNumber, zipPath, zip, () => { jobsInProgress-- })
+    },zipWriteDelay)
+
+    // terminate worker after all jobs are done
+    const closeSafely = () => {        
+        if( jobsInProgress > 0 ) {
+            // write jobs still active, wait a moment and then try again 
+            setTimeout( () => { closeSafely() }, zipWriteDelay*2 )
+        } else {
+            // when we are done with jobs, clear cache and exit
+            fs.rmSync(cacheFolder, { recursive: true, force: true })
+            process.exit()
+        }
+    }
+    
     parentPort.on('message', (msg) => {
         const { messageType } = msg
 
@@ -196,15 +192,15 @@ async function run() {
                 }
                 break                         
             case 'save':
-                saveArchive(zipPath, zip)
+                save()
                 break
             case 'close':
                 open = false
-                closeArchive(zip,cacheFolder)
+                zip.flush()
+                closeSafely()
                 break    
             default:
-                postError(`Unrecognized message type: ${messageType}`)
-                break
+                throw new Error(`Unrecognized message type: ${messageType}`)
         }
     })
 }

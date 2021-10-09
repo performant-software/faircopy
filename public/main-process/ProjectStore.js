@@ -1,4 +1,3 @@
-const JSZip = require('jszip')
 const fs = require('fs')
 const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
@@ -56,17 +55,13 @@ class ProjectStore {
                     }
                     break
                 default:
-                    // TODO
+                    throw new Error('Unrecognized message type received from project archive.')
             }
         })
 
         projectArchiveWorker.on('error', function(e) { 
             log.error(e)
             throw new Error(e)
-        })
-
-        projectArchiveWorker.on('exit', function(e) { 
-            // TODO
         })
 
         return projectArchiveWorker
@@ -151,18 +146,8 @@ class ProjectStore {
         }
     }
 
-    // TODO REFACTOR
-    quitSafely = (quitCallback) => {
-        // execute any pending write jobs
-        this.writeProjectArchive.flush()
-
-        if( this.jobsInProgress.length > 0 ) {
-            // write jobs still active, wait a moment and then try again 
-            setTimeout( () => { this.quitSafely(quitCallback) }, zipWriteDelay*2 )
-        } else {
-            // when we are done with jobs, quit 
-            quitCallback()
-        }
+    close() {
+        this.projectArchiveWorker.postMessage({ messageType: 'close' })
     }
 
     loadSearchIndex( resourceID ) {
@@ -194,7 +179,7 @@ class ProjectStore {
             const idMap = this.idMapAuthority.commitResource(resourceID)
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID, data: resourceData })
-            this.projectArchiveWorker.postMessage({ messageType: 'save' })
+            this.save()
             return true
         }
         return false
@@ -203,7 +188,7 @@ class ProjectStore {
     saveIndex( resourceID, indexData ) {
         log.info(`saving index to project archive: ${resourceID}`)
         this.projectArchiveWorker.postMessage({ messageType: 'write-index', resourceID, data: indexData })
-        this.projectArchiveWorker.postMessage({ messageType: 'save' })
+        this.save()
     }
 
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
@@ -273,13 +258,22 @@ class ProjectStore {
         const currentVersion = this.fairCopyApplication.config.version
         this.manifestData.generatedWith = currentVersion
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: JSON.stringify(this.manifestData) })
-        this.projectArchiveWorker.postMessage({ messageType: 'save' })
+        this.save()
     }
 
     saveFairCopyConfig( fairCopyConfig ) {
         this.migratedConfig = null
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: fairCopyConfig })
         this.saveManifest()
+    }
+
+    save() {
+        // if there was a migration that hasn't been saved yet, save it now
+        if( this.migratedConfig ) {
+            this.saveFairCopyConfig( this.migratedConfig ) 
+        } else {
+            this.projectArchiveWorker.postMessage({ messageType: 'save' })
+        }
     }
 
     exportFairCopyConfig( exportPath, fairCopyConfigJSONCompact ) {
@@ -334,26 +328,7 @@ function getExtensionForMIMEType( mimeType ) {
     }        
 }
 
-// TODO REFACTOR
-const createProjectArchive = function createProjectArchive(projectInfo,baseDir) {
-    const { name, description, filePath, appVersion } = projectInfo
-    const projectArchive = new JSZip()      
-   
-    const fairCopyManifest = {
-        projectName: name,
-        description: description,
-        appVersion,
-        resources: {}
-    }
-
-    // Load the initial config for the project
-    const fairCopyConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
-
-    projectArchive.file(manifestEntryName, JSON.stringify(fairCopyManifest))
-    projectArchive.file(configSettingsEntryName, fairCopyConfig)
-    projectArchive.file(idMapEntryName, "{}")
-    writeArchive(filePath,projectArchive)
-}
-
 exports.ProjectStore = ProjectStore
-exports.createProjectArchive = createProjectArchive
+exports.manifestEntryName = manifestEntryName
+exports.configSettingsEntryName = configSettingsEntryName
+exports.idMapEntryName = idMapEntryName
