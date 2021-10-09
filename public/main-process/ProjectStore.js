@@ -1,6 +1,7 @@
 const fs = require('fs')
 const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
+const { Worker } = require('worker_threads')
 
 const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
@@ -118,9 +119,6 @@ class ProjectStore {
 
         // id map authority tracks ids across processes
         this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
-
-        // temp folder for streaming zip data
-        this.setupTempFolder()
 
         // setup search index
         this.searchIndex = new SearchIndex( teiSchema, this, (status) => {

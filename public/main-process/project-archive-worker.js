@@ -18,7 +18,7 @@ function setupTempFolder() {
 
 function readUTF8(targetFilePath, zip) {
     const file = zip.file(targetFilePath)
-    return file ? file.async("string") : null
+    return file ? file.async("string") : new Promise((resolve) => resolve(null))
 }
  
 function writeUTF8( targetFilePath, data, zip ) {
@@ -83,8 +83,8 @@ async function openArchive() {
     const idMap = await readUTF8(idMapEntryName,zip)
 
     // send initial project data back to project store
-    const projectData = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
-    parentPort.postMessage({ messageType: 'project-data', projectData })
+    const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
+    parentPort.postMessage({ messageType: 'project-data', project })
 
     return { zip, cacheFolder, zipPath }
 }
@@ -129,7 +129,7 @@ async function run() {
             case 'read-resource':
                 {
                     const { resourceID } = msg
-                    readUTF8(resourceID, zip).then( (resource) => {
+                    readUTF8(resourceID, zip).then(resource => {
                         parentPort.postMessage({ messageType: 'resource-data', resourceID, resource })
                     })
                 }
@@ -138,7 +138,7 @@ async function run() {
                 {
                     const { resourceID } = msg
                     const indexID = `${resourceID}.index`
-                    readUTF8(indexID, zip).then( (index) => {
+                    readUTF8(indexID, zip).then( index => {
                         parentPort.postMessage({ messageType: 'index-data', resourceID, index })
                     })
                 }

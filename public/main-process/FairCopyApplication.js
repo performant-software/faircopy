@@ -256,9 +256,8 @@ class FairCopyApplication {
         this.projectWindow.close()
         this.projectWindow = null  
       }
-      this.projectStore.openProject(targetFile).then( () => { 
-        log.info(`Opened project: ${targetFile}`)
-      })
+      this.projectStore.openProject(targetFile)
+      log.info(`Opened project: ${targetFile}`)
     })
   }
 
