@@ -196,7 +196,6 @@ async function run() {
                 break
             case 'close':
                 open = false
-                zip.flush()
                 closeSafely()
                 break    
             default:

@@ -255,7 +255,7 @@ class ProjectStore {
     saveManifest() {
         const currentVersion = this.fairCopyApplication.config.version
         this.manifestData.generatedWith = currentVersion
-        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: JSON.stringify(this.manifestData) })
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: manifestEntryName, data: JSON.stringify(this.manifestData) })
         this.save()
     }
 
