@@ -31,9 +31,15 @@ function addFile( localFilePath, resourceID, zip ) {
 }
 
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {
-    const imageBuffer = await zip.file(resourceID).async('nodebuffer')
     const cacheFile = `${cacheFolder}/${fileName}`
-    fs.writeFileSync(cacheFile,imageBuffer)
+    if( !fs.existsSync(cacheFile) ) {
+        const imageBuffer = await zip.file(resourceID).async('nodebuffer')
+        if( !imageBuffer ) {
+            log.error(`Unable to retrieve ${resourceID} from project archive.`)
+            return null
+        }
+        fs.writeFileSync(cacheFile,imageBuffer)
+    }
     return cacheFile
 }
 
@@ -141,10 +147,25 @@ async function run() {
                     })
                 }
                 break
+            case 'open-image-view':
+                {
+                    const { imageViewData, resourceID } = msg
+                    readUTF8(resourceID, zip).then( (resource) => {
+                        imageViewData.resource = resource
+                        parentPort.postMessage({ messageType: 'image-view-ready', resourceID, imageViewData })
+                    })
+                } 
+                break
             case 'write-resource':
                 {
                     const { resourceID, data } = msg
                     writeUTF8( resourceID, data, zip )    
+                }
+            break
+            case 'write-file':
+                {
+                    const { fileID, data } = msg
+                    writeUTF8( fileID, data, zip )    
                 }
             break
             case 'write-index':
@@ -156,8 +177,8 @@ async function run() {
             break
             case 'cache-resource':
                 {
-                    const { resourceID, filename } = msg
-                    cacheResource(resourceID, filename, cacheFolder, zip).then( (cacheFile) => {
+                    const { resourceID, fileName } = msg
+                    cacheResource(resourceID, fileName, cacheFolder, zip).then( (cacheFile) => {
                         parentPort.postMessage({ messageType: 'cache-file-name', cacheFile })
                     })
                 }
@@ -167,7 +188,13 @@ async function run() {
                     const { localFilePath, resourceID } = msg
                     addFile( localFilePath, resourceID, zip )    
                 }
-                break            
+                break   
+            case 'remove-file':
+                {
+                    const { fileID } = msg
+                    zip.remove(fileID)
+                }
+                break                         
             case 'save':
                 saveArchive(zipPath, zip)
                 break

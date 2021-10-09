@@ -42,8 +42,18 @@ class ProjectStore {
                         this.searchIndex.loadIndex(resourceID,index)        
                     }
                     break
-                case 'cache-file-data':
-                    // TODO
+                case 'cache-file-name':
+                    {
+                        const { cacheFile } = msg
+                        if( cacheFile ) this.fairCopyApplication.localFileProtocolCallback(decodeURIComponent(cacheFile))
+                    }
+                    break
+                case 'image-view-ready':
+                    {
+                        const { resourceID, imageViewData } = msg
+                        const imageView = this.fairCopyApplication.imageViews[resourceID]
+                        imageView.webContents.send('imageViewOpened', imageViewData )    
+                    }
                     break
                 default:
                     // TODO
@@ -127,8 +137,7 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
-    // TODO REFACTOR
-    async openImageView(imageView,imageViewInfo) {
+    openImageView(imageViewInfo) {
         const { resourceID, xmlID, parentID } = imageViewInfo
         const { baseDir } = this.fairCopyApplication
         const { idMapNext } = this.idMapAuthority
@@ -137,9 +146,8 @@ class ProjectStore {
         const resourceEntry = this.manifestData.resources[resourceID]
         const parentEntry = this.manifestData.resources[parentID]
         if( resourceEntry ) {
-            const resource = await this.readUTF8File(resourceID)
-            const imageViewData = { resourceEntry, parentEntry, xmlID, resource, teiSchema, idMap: JSON.stringify(idMapNext) }
-            imageView.webContents.send('imageViewOpened', imageViewData )    
+            const imageViewData = { resourceEntry, parentEntry, xmlID, teiSchema, idMap: JSON.stringify(idMapNext) }
+            this.projectArchiveWorker.postMessage({ messageType: 'open-image-view', resourceID, imageViewData })
         }
     }
 
@@ -163,7 +171,6 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'read-index', resourceID })
     }
 
-    // TODO REFACTOR
     onIDMapUpdated(msgID, idMapData) {
         this.idMapAuthority.update(idMapData)
         this.sendIDMapUpdate(msgID)
@@ -175,7 +182,6 @@ class ProjectStore {
         this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
     }
 
-    // TODO REFACTOR
     abandonResourceMap(resourceID) {
         this.idMapAuthority.abandonResourceMap(resourceID)
         this.sendIDMapUpdate()
@@ -186,7 +192,7 @@ class ProjectStore {
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             const idMap = this.idMapAuthority.commitResource(resourceID)
-            this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: idMapEntryName, data: idMap })
+            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID, data: resourceData })
             this.projectArchiveWorker.postMessage({ messageType: 'save' })
             return true
@@ -200,25 +206,22 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'save' })
     }
 
-    // TODO REFACTOR
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         this.manifestData.resources[resourceEntry.id] = resourceEntry
         if( resourceEntry.type === 'image' )  {
-            const imageBuffer = fs.readFileSync(resourceData)
-            this.projectArchive.file(resourceEntry.id, imageBuffer)
+            this.projectArchiveWorker.postMessage({ messageType: 'add-local-file', resourceID: resourceEntry.id, localFilePath: resourceData })
         } else {
             const resourceMap = JSON.parse(resourceMapJSON)
             const idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
-            this.writeUTF8File(idMapEntryName, idMap)
+            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             this.sendIDMapUpdate()
-            this.projectArchive.file(resourceEntry.id, resourceData)
+            this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: resourceEntry.id, data: resourceData })
         }
 
         this.saveManifest()
     }
     
-    // TODO REFACTOR
     removeResource(resourceID) {
         const resourceEntry = this.manifestData.resources[resourceID] 
 
@@ -228,29 +231,27 @@ class ProjectStore {
                 const {id, type, localID} = entry
                 if( type === 'image' && localID.startsWith(resourceID) ) {
                     delete this.manifestData.resources[id] 
-                    this.projectArchive.remove(id)            
+                    this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: id })    
                     log.info(`Removed image resource from project: ${id}`)
                 }
             }
         } else if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' ) {
             // remove associated search index
             const resourceIndexID = `${resourceID}.index`
-            this.projectArchive.remove(resourceIndexID)
-            this.searchIndex.removeIndex(resourceID)
+            this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceIndexID })    
         }
 
         const idMap = this.idMapAuthority.removeResource(resourceID)
-        this.writeUTF8File(idMapEntryName, idMap)
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
         this.sendIDMapUpdate()
 
         delete this.manifestData.resources[resourceID] 
-        this.projectArchive.remove(resourceID)
+        this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })    
 
         log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
     }
 
-    // TODO REFACTOR
     updateResource(resourceEntryJSON) {
         const { resources } = this.manifestData
         const resourceEntry = JSON.parse(resourceEntryJSON)
@@ -268,18 +269,16 @@ class ProjectStore {
         return false
     }
 
-    // TODO REFACTOR
     saveManifest() {
         const currentVersion = this.fairCopyApplication.config.version
         this.manifestData.generatedWith = currentVersion
-        this.writeUTF8File( manifestEntryName, JSON.stringify(this.manifestData))
-        this.writeProjectArchive()
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: JSON.stringify(this.manifestData) })
+        this.projectArchiveWorker.postMessage({ messageType: 'save' })
     }
 
-    // TODO REFACTOR
     saveFairCopyConfig( fairCopyConfig ) {
         this.migratedConfig = null
-        this.writeUTF8File( configSettingsEntryName, fairCopyConfig)
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: fairCopyConfig })
         this.saveManifest()
     }
 
@@ -302,8 +301,7 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    // TODO REFACTOR
-    async openImageResource(requestURL) {
+    openImageResource(requestURL) {
         const resourceID = requestURL.replace(`local://`, '').replace('..','')
         const resourceEntry = this.manifestData.resources[resourceID]
 
@@ -311,17 +309,8 @@ class ProjectStore {
             // create a file path to the temp dir
             const ext = getExtensionForMIMEType(resourceEntry.mimeType)
             const fileName = `${resourceID}.${ext}`
-            const cacheFile = `${this.tempDir}/${fileName}`
-
-            if( !fs.existsSync(cacheFile) ) {
-                // write the image to the temp dir
-                const imageBuffer = await this.projectArchive.file(resourceID).async('nodebuffer')
-                fs.writeFileSync(cacheFile,imageBuffer)
-            }
-
-            return cacheFile
+            this.projectArchiveWorker.postMessage({ messageType: 'cache-resource', resourceID, fileName })
         }    
-        return null
     }
 
     openResource(resourceID) {

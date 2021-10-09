@@ -15,7 +15,7 @@ class FairCopyApplication {
 
   constructor() {
     this.mainWindow = null
-    this.imageViews = []
+    this.imageViews = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
     this.mainMenu = new MainMenu(this)
@@ -42,9 +42,8 @@ class FairCopyApplication {
   // local file protocol for accessing image resources
   initLocalFileProtocol() {
     protocol.registerFileProtocol('local', (request, callback) => {
-      this.projectStore.openImageResource(request.url).then( (safePath) => {
-        if( safePath ) callback(decodeURIComponent(safePath))
-      })
+      this.projectStore.openImageResource(request.url)
+      this.localFileProtocolCallback = callback
     })
   }
 
@@ -71,13 +70,11 @@ class FairCopyApplication {
       this.sendToMainWindow('resourceEntryUpdated', { deleted: true, resourceID } )
       
       // close any open image windows
-      this.imageViews = this.imageViews.filter((imageView) => {
-        if( imageView.resourceID === resourceID ) {
-          imageView.imageWindow.close()
-          return false
-        }
-        return true
-      })
+      const imageView = this.imageViews[resourceID]
+      if( imageView ) {
+        imageView.close()
+      }
+      delete this.imageViews[resourceID]
     })
 
     ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
@@ -214,32 +211,28 @@ class FairCopyApplication {
   }  
 
   async createImageWindow(imageViewInfo) {
-    const imageWindow = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
-    const imageView = {
-      imageWindow,
-      resourceID: imageViewInfo.resourceID
-    }
-    this.imageViews.push(imageView)
+    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
+    const {resourceID} = imageViewInfo
+  
+    this.imageViews[resourceID] = imageView
 
-    imageWindow.on('close', (event) => {
-      // remove image from list
-      this.imageViews = this.imageViews.filter( v => v.imageWindow !== imageWindow )
+    imageView.on('close', (event) => {
+      delete this.imageViews[resourceID]
     })
 
-    await this.projectStore.openImageView(imageWindow,imageViewInfo)
+    this.projectStore.openImageView(imageViewInfo)
   }
 
   exitApp() {
     if( !this.exiting ) {
       this.exiting = true
       this.projectStore.quitSafely(() => {
-        for( const imageView of this.imageViews ) {
-          const { imageWindow } = imageView
-          if( !imageWindow.isDestroyed() ) {
-            imageWindow.close()
+        for( const imageView of Object.values(this.imageViews) ) {
+          if( !imageView.isDestroyed() ) {
+            imageView.close()
           }
         }
-        this.imageViews = []
+        this.imageViews = {}
 
         if( this.returnToProjectWindow ) {
           this.createProjectWindow().then(() => {
@@ -283,9 +276,8 @@ class FairCopyApplication {
 
   sendToAllWindows(message, params) {
     this.sendToMainWindow(message, params)
-    for( const imageView of this.imageViews ) {
-      const { imageWindow } = imageView 
-      imageWindow.webContents.send(message, params)
+    for( const imageView of Object.values(this.imageViews) ) {
+      imageView.webContents.send(message, params)
     }
   }
 
