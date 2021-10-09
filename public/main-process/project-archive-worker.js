@@ -6,7 +6,7 @@ const log = require('electron-log')
 const debounce = require('debounce')
 const { manifestEntryName, configSettingsEntryName, idMapEntryName } = require('./ProjectStore')
 
-const zipWriteDelay = 200
+const zipWriteDelay = 6000
 
 
 function setupTempFolder() {
