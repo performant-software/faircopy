@@ -2,7 +2,6 @@ const { workerData, parentPort } = require('worker_threads')
 const lunr = require('lunr')
 const { Node } = require('prosemirror-model')
 const { TEISchema } = require('./TEISchema')
-const log = require('electron-log')
 
 function getSafeAttrKey( attrName ) {
     return attrName.replace(':','')
@@ -40,13 +39,13 @@ function indexResource(schemaJSON, contentJSON) {
     
         doc.descendants((node,pos) => {
             const elementName = node.type.name
-            const contents = node.textContent
             const element = teiSchema.elements[elementName]
             if( !element ) return false
     
             const { fcType } = element
             const softNode = fcType === 'soft' 
             const attrFields = {}
+            const contents = softNode ? node.textContent : null
             
             for( const attrKey of Object.keys(node.attrs) ) {
                 const attrVal = node.attrs[attrKey]
@@ -79,7 +78,6 @@ function run() {
 
     parentPort.on('message', (msg) => {
         const { resourceID, contentJSON } = msg
-        log.info(`starting index of: ${resourceID}`)
         const rawIndex = indexResource( schemaJSON, contentJSON )
         parentPort.postMessage({ resourceID, rawIndex })
     })

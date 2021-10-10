@@ -11,6 +11,9 @@ class SearchIndex {
         this.searchIndexStatus = {} 
         this.indexWorker = this.initIndexWorker(schemaJSON)
         this.bigJSONWorker = this.initBigJSONWorker()
+        this.indexingQueue = []
+        this.indexing = false
+        this.paused = true
     }
 
     initSearchIndex(manifestData) {
@@ -73,6 +76,11 @@ class SearchIndex {
                     break
                 case 'save-index':
                     this.projectStore.saveIndex( resourceID, respData )
+                    this.indexing = false
+                    if( this.indexingQueue.length > 0 ) {
+                        const { resourceID, contentJSON } = this.indexingQueue.pop()
+                        this.indexResource( resourceID, contentJSON )
+                    }
                     break
                 default:
                     throw new Error(`Unrecognized message type: ${messageType}`)
@@ -99,7 +107,26 @@ class SearchIndex {
     }
 
     indexResource( resourceID, contentJSON ) {
-        this.indexWorker.postMessage({ resourceID, contentJSON })
+        if( this.paused ) {
+            this.indexingQueue.push({resourceID, contentJSON})
+        } else {
+            if( !this.indexing ) {
+                this.indexing = true
+                log.info(`indexing: ${resourceID}`)
+                this.indexWorker.postMessage({ resourceID, contentJSON })    
+            } else {
+                log.info(`queued for indexing: ${resourceID}`)
+                this.indexingQueue.push({resourceID, contentJSON})
+            }    
+        }
+    }
+
+    resumeIndexing() {
+        this.paused = false
+        if( this.indexingQueue.length > 0 ) {
+            const { resourceID, contentJSON } = this.indexingQueue.pop()
+            this.indexResource( resourceID, contentJSON )
+        }
     }
 
     checkStatus() {
