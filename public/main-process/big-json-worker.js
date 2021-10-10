@@ -1,10 +1,20 @@
-const { workerData, parentPort } = require('worker_threads')
+const { parentPort } = require('worker_threads')
 
-// Can parse or stringify JSON on a worker thread. mode parameter is 'parse' or 'stringify'
 function run() {
-    const { mode, data } = workerData
-    const respData = mode === 'parse' ? JSON.parse(data) : JSON.stringify(data)
-    parentPort.postMessage({ respData })
+    parentPort.on('message', (msg) => {
+        const { command, resourceID, data } = msg
+        
+        switch( command ) {
+            case 'parse':
+                parentPort.postMessage({ messageType: 'load-index', resourceID, respData: JSON.parse(data) })    
+                break
+            case 'stringify':
+                parentPort.postMessage({ messageType: 'save-index', resourceID, respData: JSON.stringify(data) })    
+                break
+            default:
+                throw new Error(`Unrecognized command to big json worker ${command}.`)
+        }
+    })
 }
 
 // RUN THREAD /////////////////

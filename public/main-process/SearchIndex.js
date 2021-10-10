@@ -2,10 +2,6 @@ const { Worker } = require('worker_threads')
 const lunr = require('lunr')
 const log = require('electron-log')
 
-// throttle max number of workers and polling frequency
-const maxIndexWorkers = 1
-const workerCompletePoll = 400
-
 class SearchIndex {
 
     constructor( schemaJSON, projectStore, onReady ) {
@@ -13,8 +9,8 @@ class SearchIndex {
         this.onReady = onReady
         this.searchIndex = {}
         this.searchIndexStatus = {} 
-        this.jsonWorkersRunning = 0
         this.indexWorker = this.initIndexWorker(schemaJSON)
+        this.bigJSONWorker = this.initBigJSONWorker()
     }
 
     initSearchIndex(manifestData) {
@@ -30,6 +26,7 @@ class SearchIndex {
 
     close() {
         if( this.indexWorker ) this.indexWorker.terminate()
+        this.bigJSONWorker.terminate()
     }
 
     initIndexWorker(schemaJSON) {
@@ -40,11 +37,8 @@ class SearchIndex {
             const { resourceID, rawIndex } = response
 
             // Update resource index
-            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)    
-            this.transformJSON('stringify', rawIndex ).then( (resp) => {
-                const { respData } = resp
-                this.projectStore.saveIndex( resourceID, respData )
-            })
+            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)   
+            this.bigJSONWorker.postMessage({ command: 'stringify', resourceID, data: rawIndex }) 
             this.searchIndexStatus[resourceID] = 'ready'
 
             // Fire callback when all documents are loaded
@@ -63,40 +57,41 @@ class SearchIndex {
 
         return indexWorker
     }
+
+    initBigJSONWorker() {
+        const bigJSONWorker = new Worker('./public/main-process/big-json-worker.js')
+
+        bigJSONWorker.on('message', (msg) => {
+            const {messageType, resourceID, respData } = msg
+
+            switch(messageType) {
+                case 'load-index':
+                    this.searchIndex[resourceID] = lunr.Index.load(respData)
+                    this.searchIndexStatus[resourceID] = 'ready'    
+                    const status = this.checkStatus() 
+                    if( status.ready ) this.onReady(status)                                         
+                    break
+                case 'save-index':
+                    this.projectStore.saveIndex( resourceID, respData )
+                    break
+                default:
+                    throw new Error(`Unrecognized message type: ${messageType}`)
+            }
+        })
+
+        bigJSONWorker.on('exit', () => log.info('Big JSON worker thread terminated.'))
+
+        return bigJSONWorker
+    }
     
     async loadIndex(resourceID,indexJSON) {
         if( indexJSON ) {
-            const { respData } = await this.transformJSON('parse',indexJSON)
-            this.searchIndex[resourceID] = lunr.Index.load(respData)
-            this.searchIndexStatus[resourceID] = 'ready'    
+            this.bigJSONWorker.postMessage({ command: 'parse', resourceID, data: indexJSON })
         } else {
             this.searchIndexStatus[resourceID] = 'not-found'  
+            const status = this.checkStatus() 
+            if( status.ready ) this.onReady(status)     
         }
-        const status = this.checkStatus() 
-        if( status.ready ) this.onReady(status) 
-    }
-
-    async transformJSON( mode, data) {
-        const workerData = { mode, data }
-
-        while( true ) {
-            if( this.jsonWorkersRunning < maxIndexWorkers ) {
-                this.jsonWorkersRunning++
-                const resp = await this.runJSONWorker(workerData)
-                this.jsonWorkersRunning--
-                return resp
-            } else {
-                await wait( workerCompletePoll )
-            }
-        }
-    }
-
-    async runJSONWorker(workerData) {
-        return new Promise((resolve, reject) => {
-            const worker = new Worker('./public/main-process/big-json-worker.js', { workerData })
-            worker.on('message', resolve)
-            worker.on('error', reject)    
-        })
     }
 
     isIndexable(resourceType) {
@@ -159,10 +154,6 @@ class SearchIndex {
         // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
     }
 
-}
-
-function wait(time) { 
-    return new Promise(resolve => setTimeout(resolve, time))
 }
 
 exports.SearchIndex = SearchIndex
