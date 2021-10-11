@@ -220,6 +220,7 @@ class ProjectStore {
             }
         } else if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' ) {
             // remove associated search index
+            this.searchIndex.removeIndex(resourceID)
             const resourceIndexID = `${resourceID}.index`
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceIndexID })    
         }
