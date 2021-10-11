@@ -48,7 +48,7 @@ class SearchIndex {
 
             const itemsRemaining = this.indexingQueue.length
             if( itemsRemaining > 0 ) {
-                if( itemsRemaining % 5 === 0 ) this.projectStore.save()
+                if( itemsRemaining % 10 === 0 ) this.projectStore.save()
                 setTimeout(()=> {
                     const { resourceID, contentJSON } = this.indexingQueue.pop()
                     this.indexResource( resourceID, contentJSON )
