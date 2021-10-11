@@ -3,7 +3,7 @@ const lunr = require('lunr')
 const log = require('electron-log')
 
 // keep CPU down during indexing
-const delayBetweenIndexing = 2000
+const delayBetweenIndexing = 1000
 
 class SearchIndex {
 
@@ -41,7 +41,6 @@ class SearchIndex {
         indexWorker.on('message', (response) => {
             // get finished index back from worker thread
             const { resourceID, resourceIndex } = response
-            this.indexing = false
 
             this.loadIndex(resourceID,resourceIndex)
             this.projectStore.saveIndex( resourceID, resourceIndex )
@@ -51,6 +50,7 @@ class SearchIndex {
                 if( itemsRemaining % 10 === 0 ) this.projectStore.save()
                 setTimeout(()=> {
                     const { resourceID, contentJSON } = this.indexingQueue.pop()
+                    this.indexing = false
                     this.indexResource( resourceID, contentJSON )
                 }, delayBetweenIndexing)
             } else {
@@ -109,6 +109,7 @@ class SearchIndex {
 
     indexResource( resourceID, contentJSON ) {
         if( this.paused ) {
+            log.info(`paused, queue for indexing: ${resourceID}`)
             this.indexingQueue.push({resourceID, contentJSON})
         } else {
             if( !this.indexing ) {
@@ -116,7 +117,7 @@ class SearchIndex {
                 log.info(`indexing: ${resourceID}`)
                 this.indexWorker.postMessage({ resourceID, contentJSON })    
             } else {
-                log.info(`queued for indexing: ${resourceID}`)
+                log.info(`busy, queue for indexing: ${resourceID}`)
                 this.indexingQueue.push({resourceID, contentJSON})
             }    
         }
@@ -125,9 +126,11 @@ class SearchIndex {
     pauseIndexing( pause ) {
         this.paused = pause
         if( !pause && this.indexingQueue.length > 0 ) {
+            log.info('Resuming indexing...')
             const { resourceID, contentJSON } = this.indexingQueue.pop()
             this.indexResource( resourceID, contentJSON )
         } 
+        if( pause ) log.info('Pausing indexing...')
         this.checkStatus()
     }
 
