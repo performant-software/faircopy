@@ -32,13 +32,14 @@ export default class ImportConsoleDialog extends Component {
 
         if( importData === 'import-start' ) {
             nextConsole.push(`Starting import...`)
+            fairCopy.services.ipcSend('pauseIndexing',true)
             this.setState({...this.state, open: true, consoleLines: nextConsole })
             return
         } else if( importData === 'import-end' ) {
             done = true
             const s = successCount !== 1 ? 's' : ''
             nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)
-            fairCopy.services.ipcSend('resumeIndexing')
+            fairCopy.services.ipcSend('pauseIndexing',false)
         } else {
             const filename = fairCopy.services.getBasename(importData.path).trim()
             nextConsole.push(`Importing file ${filename}...`)

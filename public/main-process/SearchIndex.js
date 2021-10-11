@@ -7,16 +7,16 @@ const delayBetweenIndexing = 2000
 
 class SearchIndex {
 
-    constructor( schemaJSON, projectStore, onReady ) {
+    constructor( schemaJSON, projectStore, onStatusUpdate ) {
         this.projectStore = projectStore
-        this.onReady = onReady
+        this.onStatusUpdate = onStatusUpdate
         this.searchIndex = {}
         this.searchIndexStatus = {} 
         this.indexWorker = this.initIndexWorker(schemaJSON)
         this.bigJSONWorker = this.initBigJSONWorker()
         this.indexingQueue = []
         this.indexing = false
-        this.paused = true
+        this.paused = false
     }
 
     initSearchIndex(manifestData) {
@@ -82,8 +82,7 @@ class SearchIndex {
                     const resourceIndex = respData.map( indexChunk => lunr.Index.load(indexChunk) )
                     this.searchIndex[resourceID] = resourceIndex
                     this.searchIndexStatus[resourceID] = 'ready'    
-                    const status = this.checkStatus() 
-                    if( status.ready ) this.onReady(status)                                         
+                    this.checkStatus() 
                     break
                 default:
                     throw new Error(`Unrecognized message type: ${messageType}`)
@@ -100,8 +99,7 @@ class SearchIndex {
             this.bigJSONWorker.postMessage({ command: 'parse', resourceID, data: indexJSON })
         } else {
             this.searchIndexStatus[resourceID] = 'not-found'  
-            const status = this.checkStatus() 
-            if( status.ready ) this.onReady(status)     
+            this.checkStatus() 
         }
     }
 
@@ -124,29 +122,34 @@ class SearchIndex {
         }
     }
 
-    resumeIndexing() {
-        this.paused = false
-        if( this.indexingQueue.length > 0 ) {
+    pauseIndexing( pause ) {
+        this.paused = pause
+        if( !pause && this.indexingQueue.length > 0 ) {
             const { resourceID, contentJSON } = this.indexingQueue.pop()
             this.indexResource( resourceID, contentJSON )
-        }
+        } 
+        this.checkStatus()
     }
 
     checkStatus() {
         const notReady = { ready: false }
 
-        if( this.indexingQueue.length > 0 ) return notReady 
-        
+        if( this.indexingQueue.length > 0 ) {
+            this.onStatusUpdate(notReady)     
+            return false
+        }
+
         let notFound = []
         for( const resourceID of Object.keys(this.searchIndexStatus) ) {
             const status = this.searchIndexStatus[resourceID]
-            if( status === 'loading' ) return notReady
+            if( status === 'loading' ) {
+                this.onStatusUpdate(notReady)     
+                return false
+            }
             if( status === 'not-found' ) notFound.push(resourceID)
         }
-        return {
-            ready: true,
-            notFound
-        }
+        this.onStatusUpdate({ ready: (notFound.length === 0), notFound })
+        return true
     }
 
     removeIndex(resourceID) {
@@ -156,7 +159,7 @@ class SearchIndex {
 
     searchProject( query ) {
         const results = {}
-        if( this.checkStatus().ready && query.length > 0 ) {
+        if( this.checkStatus() && query.length > 0 ) {
             for( const resourceID of Object.keys(this.searchIndex) ) {
                 results[resourceID] = this.searchResource( query, resourceID )
             }    

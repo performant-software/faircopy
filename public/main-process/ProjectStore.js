@@ -122,7 +122,7 @@ class ProjectStore {
 
         // setup search index
         this.searchIndex = new SearchIndex( teiSchema, this, (status) => {
-            this.fairCopyApplication.sendToMainWindow('searchReady', JSON.stringify(status) )
+            this.fairCopyApplication.sendToMainWindow('searchSystemStatus', JSON.stringify(status) )
         })
         this.searchIndex.initSearchIndex( this.manifestData )
 
