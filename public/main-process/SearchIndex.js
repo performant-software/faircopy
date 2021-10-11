@@ -2,6 +2,9 @@ const { Worker } = require('worker_threads')
 const lunr = require('lunr')
 const log = require('electron-log')
 
+// keep CPU down during indexing
+const delayBetweenIndexing = 2000
+
 class SearchIndex {
 
     constructor( schemaJSON, projectStore, onReady ) {
@@ -43,9 +46,13 @@ class SearchIndex {
             this.loadIndex(resourceID,resourceIndex)
             this.projectStore.saveIndex( resourceID, resourceIndex )
 
-            if( this.indexingQueue.length > 0 ) {
-                const { resourceID, contentJSON } = this.indexingQueue.pop()
-                this.indexResource( resourceID, contentJSON )
+            const itemsRemaining = this.indexingQueue.length
+            if( itemsRemaining > 0 ) {
+                if( itemsRemaining % 5 === 0 ) this.projectStore.save()
+                setTimeout(()=> {
+                    const { resourceID, contentJSON } = this.indexingQueue.pop()
+                    this.indexResource( resourceID, contentJSON )
+                }, delayBetweenIndexing)
             } else {
                 // nothing in queue, land it
                 this.projectStore.save()
@@ -126,10 +133,14 @@ class SearchIndex {
     }
 
     checkStatus() {
+        const notReady = { ready: false }
+
+        if( this.indexingQueue.length > 0 ) return notReady 
+        
         let notFound = []
         for( const resourceID of Object.keys(this.searchIndexStatus) ) {
             const status = this.searchIndexStatus[resourceID]
-            if( status === 'loading' ) return { ready: false }
+            if( status === 'loading' ) return notReady
             if( status === 'not-found' ) notFound.push(resourceID)
         }
         return {
