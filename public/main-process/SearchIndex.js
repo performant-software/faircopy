@@ -37,16 +37,19 @@ class SearchIndex {
 
         indexWorker.on('message', (response) => {
             // get finished index back from worker thread
-            const { resourceID, rawIndex } = response
+            const { resourceID, resourceIndex } = response
+            this.indexing = false
 
-            // Update resource index
-            this.searchIndex[resourceID] = lunr.Index.load(rawIndex)   
-            this.bigJSONWorker.postMessage({ command: 'stringify', resourceID, data: rawIndex }) 
-            this.searchIndexStatus[resourceID] = 'ready'
+            this.loadIndex(resourceID,resourceIndex)
+            this.projectStore.saveIndex( resourceID, resourceIndex )
 
-            // Fire callback when all documents are loaded
-            const status = this.checkStatus() 
-            if( status.ready ) this.onReady(status) 
+            if( this.indexingQueue.length > 0 ) {
+                const { resourceID, contentJSON } = this.indexingQueue.pop()
+                this.indexResource( resourceID, contentJSON )
+            } else {
+                // nothing in queue, land it
+                this.projectStore.save()
+            }
         })
 
         indexWorker.on('error', function(e) { 
@@ -68,19 +71,12 @@ class SearchIndex {
             const {messageType, resourceID, respData } = msg
 
             switch(messageType) {
-                case 'load-index':
-                    this.searchIndex[resourceID] = lunr.Index.load(respData)
+                case 'json':
+                    const resourceIndex = respData.map( indexChunk => lunr.Index.load(indexChunk) )
+                    this.searchIndex[resourceID] = resourceIndex
                     this.searchIndexStatus[resourceID] = 'ready'    
                     const status = this.checkStatus() 
                     if( status.ready ) this.onReady(status)                                         
-                    break
-                case 'save-index':
-                    this.projectStore.saveIndex( resourceID, respData )
-                    this.indexing = false
-                    if( this.indexingQueue.length > 0 ) {
-                        const { resourceID, contentJSON } = this.indexingQueue.pop()
-                        this.indexResource( resourceID, contentJSON )
-                    }
                     break
                 default:
                     throw new Error(`Unrecognized message type: ${messageType}`)
@@ -171,10 +167,15 @@ class SearchIndex {
             termQs.push(`+contents:${filteredTerm}`)
         }
         const termQ = termQs.join(' ')
-    
-        // full text search 
-        const lunrResults = resourceIndex.search(`+softNode:true ${termQ}`)
-        const results = lunrResults.map( (result) => parseInt(result.ref) )
+
+        // The index is divided into chunks for performance reasons. 
+        // Large docs or too many docs in an index cause performance issues.
+        let results = []
+        for( const indexChunk of resourceIndex ) {
+            // full text search 
+            const lunrResults = indexChunk.search(`+softNode:true ${termQ}`)
+            results = results.concat( lunrResults.map( (result) => parseInt(result.ref) ) )
+        }
         return results.sort((a, b) => a - b )
     
         // TODO find a element containing a phrase w/certain attrs

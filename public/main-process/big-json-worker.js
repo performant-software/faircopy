@@ -6,10 +6,10 @@ function run() {
         
         switch( command ) {
             case 'parse':
-                parentPort.postMessage({ messageType: 'load-index', resourceID, respData: JSON.parse(data) })    
+                parentPort.postMessage({ messageType: 'json', resourceID, respData: JSON.parse(data) })    
                 break
             case 'stringify':
-                parentPort.postMessage({ messageType: 'save-index', resourceID, respData: JSON.stringify(data) })    
+                parentPort.postMessage({ messageType: 'string', resourceID, respData: JSON.stringify(data) })    
                 break
             default:
                 throw new Error(`Unrecognized command to big json worker ${command}.`)

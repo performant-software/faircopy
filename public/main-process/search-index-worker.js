@@ -3,6 +3,8 @@ const lunr = require('lunr')
 const { Node } = require('prosemirror-model')
 const { TEISchema } = require('./TEISchema')
 
+const maxIndexChunkSize = 2000
+
 function getSafeAttrKey( attrName ) {
     return attrName.replace(':','')
 }
@@ -30,47 +32,73 @@ function defineLunrSchema( lunrIndex, attrs ) {
     defineAttrFields( lunrIndex, attrs )
 }
 
-function indexResource(schemaJSON, contentJSON) {
-    const teiSchema = new TEISchema(schemaJSON)
+function createIndexChunks(teiSchema, contentJSON) {
+
     const doc = Node.fromJSON(teiSchema.schema, contentJSON)
-    
-    const resourceIndex = lunr( function () {
-        defineLunrSchema(this,teiSchema.attrs)
-    
-        doc.descendants((node,pos) => {
-            const elementName = node.type.name
-            const element = teiSchema.elements[elementName]
-            if( !element ) return false
-    
-            const { fcType } = element
-            const softNode = fcType === 'soft' 
-            const attrFields = {}
-            const contents = softNode ? node.textContent : null
-            
-            for( const attrKey of Object.keys(node.attrs) ) {
-                const attrVal = node.attrs[attrKey]
-                const attrSafeKey = getSafeAttrKey(attrKey)
-                attrFields[`attr_${attrSafeKey}`] = attrVal
-            }
-    
-            // TODO index marks
-            // TODO sub docs
-    
-            this.add({
-                pos,
-                elementName,
-                softNode: softNode ? 'true' : 'false',
-                contents,
-                ...attrFields
-            })
-            return !softNode
+
+    let indexChunk = []
+    const indexChunks = [ indexChunk ]
+
+    doc.descendants((node,pos) => {
+
+        // if this chunk is full, create a new chunk
+        if( indexChunk.length > maxIndexChunkSize ) {
+            indexChunk = []
+            indexChunks.push(indexChunk)
+        }
+        
+        const elementName = node.type.name
+        const {nodeSize} = node
+        const element = teiSchema.elements[elementName]
+        if( !element ) return false
+
+        const { fcType } = element
+        const softNode = fcType === 'soft' 
+        const attrFields = {}
+        const contents = softNode ? node.textContent : null
+        
+        for( const attrKey of Object.keys(node.attrs) ) {
+            const attrVal = node.attrs[attrKey]
+            const attrSafeKey = getSafeAttrKey(attrKey)
+            attrFields[`attr_${attrSafeKey}`] = attrVal
+        }
+
+        // TODO index marks
+        // TODO sub docs
+
+        indexChunk.push({
+            pos,
+            elementName,
+            softNode: softNode ? 'true' : 'false',
+            contents,
+            nodeSize,
+            ...attrFields
         })
-    
+        return !softNode
     })
 
-    // get a data only representation of the index
-    const indexJSON = JSON.stringify(resourceIndex)
-    return JSON.parse(indexJSON)
+    return indexChunks
+}
+
+function indexResource(schemaJSON, contentJSON) {
+    const teiSchema = new TEISchema(schemaJSON)
+    const indexChunks = createIndexChunks(teiSchema,contentJSON)
+    const indexJSONs = []
+    
+    for( const indexChunk of indexChunks ) {
+        const index = lunr( function () {
+            defineLunrSchema(this,teiSchema.attrs)    
+            for( const indexDoc of indexChunk ) {
+                this.add(indexDoc)    
+            }
+        })
+
+        // get a data only representation of the index
+        const indexJSON = JSON.stringify(index)         
+        indexJSONs.push(indexJSON)
+    }
+
+    return `[${indexJSONs.join(',')}]`
 }
 
 function run() {
@@ -78,8 +106,8 @@ function run() {
 
     parentPort.on('message', (msg) => {
         const { resourceID, contentJSON } = msg
-        const rawIndex = indexResource( schemaJSON, contentJSON )
-        parentPort.postMessage({ resourceID, rawIndex })
+        const resourceIndex = indexResource( schemaJSON, contentJSON )
+        parentPort.postMessage({ resourceID, resourceIndex })
     })
 }
 

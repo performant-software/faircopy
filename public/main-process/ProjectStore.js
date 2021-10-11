@@ -187,7 +187,6 @@ class ProjectStore {
     saveIndex( resourceID, indexData ) {
         log.info(`saving index to project archive: ${resourceID}`)
         this.projectArchiveWorker.postMessage({ messageType: 'write-index', resourceID, data: indexData })
-        this.save()
     }
 
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
