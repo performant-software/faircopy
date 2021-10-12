@@ -46,6 +46,12 @@ class ProjectStore {
                         this.searchIndex.loadIndex(resourceID,index)        
                     }
                     break
+                case 'index-resource':
+                    {
+                        const { resourceID, resource } = msg
+                        this.fairCopyApplication.sendToMainWindow('requestIndex', { resourceID, resource } )        
+                    }
+                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -126,7 +132,7 @@ class ProjectStore {
 
         // setup search index
         this.searchIndex = new SearchIndex( teiSchema, this, (status) => {
-            this.fairCopyApplication.sendToMainWindow('searchSystemStatus', JSON.stringify(status) )
+            this.fairCopyApplication.sendToMainWindow('searchSystemStatus', status )
         })
         this.searchIndex.initSearchIndex( this.manifestData )
 
@@ -218,6 +224,10 @@ class ProjectStore {
             return true
         }
         return false
+    }
+
+    requestIndex( resourceID ) {
+        this.projectArchiveWorker.postMessage({ messageType: 'request-index', resourceID })
     }
 
     saveIndex( resourceID, indexData ) {

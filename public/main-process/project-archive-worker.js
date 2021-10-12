@@ -135,6 +135,14 @@ async function run() {
                     })
                 }
                 break
+            case 'request-index':
+                {
+                    const { resourceID } = msg
+                    readUTF8(resourceID, zip).then(resource => {
+                        parentPort.postMessage({ messageType: 'index-resource', resourceID, resource })
+                    })
+                }
+                break
             case 'read-index':
                 {
                     const { resourceID } = msg

@@ -25,6 +25,8 @@ const systemAttributes = [
     '__border__' 
 ]
 
+// TODO: This module is the same as src/model/TEISchema.js, except it uses require. It should be refactored to use a single file.
+
 class TEISchema {
 
     constructor(json) {

@@ -215,21 +215,26 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const doc = parseText(textEl,tempDoc,teiSchema,type)
     const resourceMap = idMap.mapResource( type, doc )
 
-    // extract normalize content
+    // extract normalize content and index it
     const content = serializeText(doc, tempDoc, teiSchema)
-
-    // index the document (re-creating EXACT state of an initially loaded doc so positions align for all terms)
-    const indexDoc = new TEIDocument(resourceEntry.id,type,fairCopyProject,false)
-    indexDoc.load(content)
-    const finalDoc = addTextNodes( indexDoc.initialState )
-    const contentJSON = finalDoc.toJSON()
-    fairCopy.services.ipcSend('indexResource', resourceEntry.id, contentJSON)
+    indexResource( resourceEntry, content, fairCopyProject )
 
     // learn the attributes and vocabs
     const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
 
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
+
+// index the document (re-creating EXACT state of an initially loaded doc so positions align for all terms)
+export function indexResource( resourceEntry, content, fairCopyProject ) {
+    const { id, type } = resourceEntry
+
+    const indexDoc = new TEIDocument(id,type,fairCopyProject,false)
+    indexDoc.load(content)
+    const finalDoc = addTextNodes( indexDoc.initialState )
+    const contentJSON = finalDoc.toJSON()
+    fairCopy.services.ipcSend('indexResource', id, contentJSON)
+}   
 
 function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
     const resourceEntry = {

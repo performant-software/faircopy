@@ -104,7 +104,8 @@ class SearchIndex {
         if( indexJSON ) {
             this.bigJSONWorker.postMessage({ command: 'parse', resourceID, data: indexJSON })
         } else {
-            this.searchIndexStatus[resourceID] = 'not-found'  
+            this.searchIndexStatus[resourceID] = 'not-found'
+            this.projectStore.requestIndex(resourceID)
             this.checkStatus() 
         }
     }
@@ -141,23 +142,14 @@ class SearchIndex {
     }
 
     checkStatus() {
-        const notReady = { ready: false }
-
-        if( this.indexingQueue.length > 0 ) {
-            this.onStatusUpdate(notReady)     
-            return false
-        }
-
-        let notFound = []
         for( const resourceID of Object.keys(this.searchIndexStatus) ) {
             const status = this.searchIndexStatus[resourceID]
-            if( status === 'loading' ) {
-                this.onStatusUpdate(notReady)     
+            if( status !== 'ready' ) {
+                this.onStatusUpdate(false)     
                 return false
             }
-            if( status === 'not-found' ) notFound.push(resourceID)
         }
-        this.onStatusUpdate({ ready: (notFound.length === 0), notFound })
+        this.onStatusUpdate(true)
         return true
     }
 

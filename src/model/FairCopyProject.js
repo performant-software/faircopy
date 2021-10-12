@@ -9,6 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-te
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
+import {addTextNodes} from "./xml"
 
 const fairCopy = window.fairCopy
 
