@@ -78,15 +78,6 @@ class FairCopyApplication {
       delete this.imageViews[resourceID]
     })
 
-    ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
-      this.projectStore.searchIndex.indexResource( resourceID, contentJSON ) 
-    })
-    ipcMain.on('importContinue', (event) => { 
-      this.projectStore.importContinue()
-    })
-    ipcMain.on('importEnd', (event) => { 
-      this.projectStore.importEnd()
-    })
     ipcMain.on('searchProject', (event, searchQuery) => { 
       const searchResults = this.projectStore.searchIndex.searchProject(searchQuery)  
       this.sendToMainWindow('searchResults', JSON.stringify(searchResults))    
@@ -121,6 +112,16 @@ class FairCopyApplication {
 
     ipcMain.on('requestResource', (event,resourceID) => { 
       this.projectStore.openResource(resourceID)
+    })
+
+    ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
+      this.projectStore.searchIndex.indexResource( resourceID, contentJSON ) 
+    })
+    ipcMain.on('importContinue', (event) => { 
+      this.projectStore.importContinue()
+    })
+    ipcMain.on('importEnd', (event) => { 
+      this.projectStore.importEnd()
     })
 
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })    
