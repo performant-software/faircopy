@@ -52,13 +52,22 @@ export default class ImportConsoleDialog extends Component {
             const importItem = importList.pop()
             if( importItem ) {
                 const filename = fairCopy.services.getBasename(importItem.path).trim()
-                nextConsole.push(`Importing file ${filename}...`)
-                const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentResourceID)
-                nextSubResourceCount = resourceCount
-                if( error ) {
-                    nextConsole.push(errorMessage)
+                if( importItem.error ) {
+                    if( importItem.error === 'too-big' ) {
+                        nextConsole.push(`File is too large, 500k max size: ${filename}`)
+                    } else {
+                        nextConsole.push(`Unable to read file: ${filename}`)
+                    }
+                    fairCopy.services.ipcSend('importContinue')
                 } else {
-                    success = true
+                    nextConsole.push(`Importing file ${filename}...`)
+                    const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentResourceID)
+                    nextSubResourceCount = resourceCount
+                    if( error ) {
+                        nextConsole.push(errorMessage)
+                    } else {
+                        success = true
+                    }    
                 }
             } else {
                 done = true

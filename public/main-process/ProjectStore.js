@@ -2,7 +2,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
 const { Worker } = require('worker_threads')
-const { readFile } = require('fs/promises')
+const { readFile, stat } = require('fs/promises')
 
 const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
@@ -11,6 +11,8 @@ const { SearchIndex } = require('./SearchIndex')
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
 const idMapEntryName = 'id-map.json'
+
+const maxImportFileSize = 500000
 
 class ProjectStore {
 
@@ -150,11 +152,20 @@ class ProjectStore {
         this.importRunning(true)
         const importList = []
         for( const path of paths ) {
-          const data = await readFile(path, { encoding: 'utf-8'} )
-          importList.push({ path, data, options })
+            const stats = await stat(path)
+            if( stats.size <= maxImportFileSize ) {
+                const data = await readFile(path, { encoding: 'utf-8'} )
+                importList.push({ path, data, options })    
+            } else {
+                importList.push({ path, error: 'too-big'})
+            }
         }
         const importData = { command: 'start', importList }
         this.fairCopyApplication.sendToMainWindow('importData', importData )  
+        this.importContinue()
+    }
+
+    importContinue() {
         this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
     }
 
@@ -228,7 +239,7 @@ class ProjectStore {
         }
 
         if(this.importInProgress) {
-            this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
+            this.importContinue()
         } else {
             this.saveManifest()
         }

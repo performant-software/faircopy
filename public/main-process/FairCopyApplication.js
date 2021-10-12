@@ -81,6 +81,9 @@ class FairCopyApplication {
     ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
       this.projectStore.searchIndex.indexResource( resourceID, contentJSON ) 
     })
+    ipcMain.on('importContinue', (event) => { 
+      this.projectStore.importContinue()
+    })
     ipcMain.on('importEnd', (event) => { 
       this.projectStore.importEnd()
     })
