@@ -187,9 +187,9 @@ export default class FairCopyProject {
             }
             this.fairCopyConfig = fairCopyConfig
             saveConfig(fairCopyConfig)
-            return { error: false, errorMessage: null }
+            return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
-            return { error: true, errorMessage: e.message }
+            return { error: true, errorMessage: e.message, resourceCount: 0 }
         }        
     }
 

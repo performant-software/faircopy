@@ -2,6 +2,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
 const { Worker } = require('worker_threads')
+const { readFile } = require('fs/promises')
 
 const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
@@ -15,6 +16,7 @@ class ProjectStore {
 
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
+        this.importInProgress = false
     }
 
     initProjectArchiveWorker( projectFilePath ) {
@@ -144,6 +146,29 @@ class ProjectStore {
         }
     }
 
+    async importStart(paths,options) {
+        this.importRunning(true)
+        const importList = []
+        for( const path of paths ) {
+          const data = await readFile(path, { encoding: 'utf-8'} )
+          importList.push({ path, data, options })
+        }
+        const importData = { command: 'start', importList }
+        this.fairCopyApplication.sendToMainWindow('importData', importData )  
+        this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
+    }
+
+    importEnd() {
+        this.importRunning(false)
+        this.sendIDMapUpdate()
+        this.saveManifest()
+    }
+
+    importRunning(running) {
+        this.importInProgress = running
+        this.searchIndex.pauseIndexing(running)
+    }
+
     close() {
         this.projectArchiveWorker.postMessage({ messageType: 'close' })
         this.searchIndex.close()
@@ -198,11 +223,15 @@ class ProjectStore {
             const resourceMap = JSON.parse(resourceMapJSON)
             const idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
-            this.sendIDMapUpdate()
+            if(!this.importInProgress) this.sendIDMapUpdate()
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: resourceEntry.id, data: resourceData })
         }
 
-        this.saveManifest()
+        if(this.importInProgress) {
+            this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
+        } else {
+            this.saveManifest()
+        }
     }
     
     removeResource(resourceID) {

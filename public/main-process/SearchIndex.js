@@ -3,7 +3,7 @@ const lunr = require('lunr')
 const log = require('electron-log')
 
 // keep CPU down during indexing
-const delayBetweenIndexing = 1000
+const delayBetweenIndexing = 250
 
 class SearchIndex {
 
@@ -21,11 +21,16 @@ class SearchIndex {
 
     initSearchIndex(manifestData) {
         const { resources } = manifestData
+        let delay = delayBetweenIndexing
         for( const resourceID of Object.keys(resources) ) {
             const resourceEntry = resources[resourceID]
             if( this.isIndexable(resourceEntry.type) ) {
                 this.searchIndexStatus[resourceID] = 'loading'
-                this.projectStore.loadSearchIndex(resourceID)
+                // space out the loading of data for CPU
+                setTimeout( () => {
+                    this.projectStore.loadSearchIndex(resourceID)
+                }, delay)
+                delay += delayBetweenIndexing
             }
         }    
     }
@@ -79,6 +84,7 @@ class SearchIndex {
 
             switch(messageType) {
                 case 'json':
+                    log.info(`loaded index ${resourceID}.`)
                     const resourceIndex = respData.map( indexChunk => lunr.Index.load(indexChunk) )
                     this.searchIndex[resourceID] = resourceIndex
                     this.searchIndexStatus[resourceID] = 'ready'    
@@ -94,7 +100,7 @@ class SearchIndex {
         return bigJSONWorker
     }
     
-    async loadIndex(resourceID,indexJSON) {
+    loadIndex(resourceID,indexJSON) {
         if( indexJSON ) {
             this.bigJSONWorker.postMessage({ command: 'parse', resourceID, data: indexJSON })
         } else {
@@ -158,6 +164,10 @@ class SearchIndex {
     removeIndex(resourceID) {
         delete this.searchIndex[resourceID]
         delete this.searchIndexStatus[resourceID]
+        const doomedIndex = this.indexingQueue.findIndex( job => job.resourceID === resourceID )
+        if( doomedIndex !== -1 ) {
+            this.indexingQueue.splice(doomedIndex,1)
+        }
     }
 
     searchProject( query ) {

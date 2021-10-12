@@ -12,6 +12,8 @@ export default class ImportConsoleDialog extends Component {
             open: false,
             done: false,
             successCount: 0,
+            subResourceCount: 0,
+            importList: [],
             totalCount: 0,
             consoleLines: []
         }
@@ -24,39 +26,54 @@ export default class ImportConsoleDialog extends Component {
         services.ipcRegisterCallback('importData', (event, importData) => this.receiveImportData(importData))
     }
 
-    receiveImportData( importData ) {
-        const { consoleLines, successCount, totalCount } = this.state
-        const { fairCopyProject, parentResourceID } = this.props
+    receiveImportData( importData ) {        
+        const { command } = importData
+        const { consoleLines } = this.state
         const nextConsole = [ ...consoleLines ]
-        let success = false, done = false
-
-        if( importData === 'import-start' ) {
+        
+        if( command === 'start' ) {
+            // store them all in a queue, open the dialog
             nextConsole.push(`Starting import...`)
-            fairCopy.services.ipcSend('pauseIndexing',true)
-            this.setState({...this.state, open: true, consoleLines: nextConsole })
-            return
-        } else if( importData === 'import-end' ) {
-            done = true
-            const s = successCount !== 1 ? 's' : ''
-            nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)
-            fairCopy.services.ipcSend('pauseIndexing',false)
-        } else {
-            const filename = fairCopy.services.getBasename(importData.path).trim()
-            nextConsole.push(`Importing file ${filename}...`)
-            const { error, errorMessage } = fairCopyProject.importResource(importData,parentResourceID)
-            if( error ) {
-                nextConsole.push(errorMessage)
-            } else {
-                success = true
+            const {importList} = importData
+            this.setState({...this.state, consoleLines: nextConsole, importList, open: true })            
+        } 
+        else if( command === 'next' ) {
+            const { fairCopyProject, parentResourceID } = this.props
+            const { successCount, subResourceCount, totalCount, importList } = this.state
+
+            // One import resource can generate many resources, count through them before continuing with next import.
+            if( subResourceCount > 1 ) {
+                this.setState({ ...this.state, subResourceCount: subResourceCount-1 })
+                return
             }
-        }
 
-        if( this.el ) {
-            this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
+            let success = false, done = false, nextSubResourceCount = 0
+        
+            const importItem = importList.pop()
+            if( importItem ) {
+                const filename = fairCopy.services.getBasename(importItem.path).trim()
+                nextConsole.push(`Importing file ${filename}...`)
+                const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentResourceID)
+                nextSubResourceCount = resourceCount
+                if( error ) {
+                    nextConsole.push(errorMessage)
+                } else {
+                    success = true
+                }
+            } else {
+                done = true
+                const s = successCount !== 1 ? 's' : ''
+                nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)
+                fairCopy.services.ipcSend('importEnd')
+            }
+    
+            if( this.el ) {
+                this.el.scrollTop = this.el.scrollHeight - this.el.clientHeight;
+            }
+    
+            const nextSuccessCount = success ? successCount+1 : successCount
+            this.setState({...this.state, consoleLines: nextConsole, successCount: nextSuccessCount, importList, subResourceCount: nextSubResourceCount, totalCount: totalCount+1, done, open: true })            
         }
-
-        const nextSuccessCount = success ? successCount+1 : successCount
-        this.setState({...this.state, consoleLines: nextConsole, successCount: nextSuccessCount, totalCount: totalCount+1, done, open: true })
     }
 
     renderConsoleLines() {

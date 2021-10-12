@@ -81,8 +81,8 @@ class FairCopyApplication {
     ipcMain.on('indexResource', (event, resourceID, contentJSON) => { 
       this.projectStore.searchIndex.indexResource( resourceID, contentJSON ) 
     })
-    ipcMain.on('pauseIndexing', (event, pause) => { 
-      this.projectStore.searchIndex.pauseIndexing(pause)
+    ipcMain.on('importEnd', (event) => { 
+      this.projectStore.importEnd()
     })
     ipcMain.on('searchProject', (event, searchQuery) => { 
       const searchResults = this.projectStore.searchIndex.searchProject(searchQuery)  
@@ -132,14 +132,9 @@ class FairCopyApplication {
 
     ipcMain.on('requestImport', (event,options) => { 
       const paths = this.mainMenu.openImport()
-      if( !paths ) return
-      this.sendToMainWindow('importData', 'import-start' )  
-      for( const path of paths ) {
-        const data = fs.readFileSync(path).toString('utf-8')
-        const importData = { path, data, options }
-        this.sendToMainWindow('importData', importData )  
+      if( paths ) {
+        this.projectStore.importStart(paths,options)
       }
-      this.sendToMainWindow('importData', 'import-end' )  
     })
 
     ipcMain.on('requestExport', (event, exportOptions) => { 
