@@ -3,6 +3,7 @@ import MainWindow from './main-window/MainWindow'
 import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
 import LicenseWindow from './license-window/LicenseWindow'
+import WorkerWindow from './worker-window/WorkerWindow'
 import IncompatDialog from './IncompatDialog'
 import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
 
@@ -124,6 +125,7 @@ export default class App extends Component {
 
   render() {
     const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo, projectSettingsActive } = this.state
+    debugger
     const {rootComponent} = window.fairCopy
     if( !licenseData.activated ) {
       return (
@@ -187,7 +189,12 @@ export default class App extends Component {
             appConfig={appConfig}
           ></ProjectWindow>
       )
-    } else return null
+    } else if( rootComponent === "WorkerWindow" ) {
+      return (
+        <WorkerWindow></WorkerWindow>
+      )
+    }
+    else return null
 
   }
 }
