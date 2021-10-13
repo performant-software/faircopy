@@ -1,7 +1,6 @@
-const { workerData, parentPort } = require('worker_threads')
-const lunr = require('lunr')
-const { Node } = require('prosemirror-model')
-const { TEISchema } = require('../TEISchema')
+import lunr from 'lunr'
+import { Node } from 'prosemirror-model'
+import TEISchema from  '../model/TEISchema'
 
 const maxIndexChunkSize = 2000
 
@@ -101,15 +100,9 @@ function indexResource(schemaJSON, contentJSON) {
     return `[${indexJSONs.join(',')}]`
 }
 
-function run() {
+export function searchIndex( msg, postMessage, workerData) {
     const { schemaJSON } = workerData
-
-    parentPort.on('message', (msg) => {
-        const { resourceID, contentJSON } = msg
-        const resourceIndex = indexResource( schemaJSON, contentJSON )
-        parentPort.postMessage({ resourceID, resourceIndex })
-    })
+    const { resourceID, contentJSON } = msg
+    const resourceIndex = indexResource( schemaJSON, contentJSON )
+    postMessage({ resourceID, resourceIndex })
 }
-
-// RUN THREAD /////////////////
-run()

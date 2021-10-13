@@ -1,5 +1,6 @@
 import { Component } from 'react'
-import { runBigJSON } from '../../workers/big-json-worker'
+import { bigJSON } from '../../workers/big-json-worker'
+import { searchIndex } from '../../workers/search-index-worker'
 
 const fairCopy = window.fairCopy
 
@@ -9,7 +10,8 @@ export default class WorkerWindow extends Component {
         super()
         this.state = {
             workers: { 
-                'big-json': runBigJSON 
+                'big-json': bigJSON,
+                'search-index': searchIndex
             }
         }
     }
@@ -31,7 +33,7 @@ export default class WorkerWindow extends Component {
         electron.ipcRenderer.on('message',(e,msg) => {
             const { workers, workerID, workerData } = this.state
             const worker = workers[workerID]
-            worker( msg, workerData, postMessage )
+            worker( msg, postMessage, workerData )
         })
     }
 

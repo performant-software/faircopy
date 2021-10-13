@@ -1,5 +1,5 @@
 
-export function runBigJSON( msg, workerData, postMessage ) {
+export function bigJSON( msg, postMessage ) {
     const { command, resourceID, data } = msg
     
     switch( command ) {

@@ -1,4 +1,3 @@
-const { Worker } = require('worker_threads')
 const { WorkerWindow } = require('./WorkerWindow')
 const lunr = require('lunr')
 const log = require('electron-log')
@@ -17,11 +16,11 @@ class SearchIndex {
         this.indexing = false
         this.paused = false
 
-        // init worker scripts
         const {baseDir} = this.projectStore.fairCopyApplication
-        const searchWorkerScript = `${baseDir}/workers/search-index-worker.js`
         this.initBigJSONWorker(baseDir).then(() => {
-            this.indexWorker = this.initIndexWorker(searchWorkerScript,schemaJSON)
+            this.initIndexWorker(baseDir,schemaJSON).then(() => {
+                this.initSearchIndex( this.projectStore.manifestData )                
+            })
         })
     }
 
@@ -46,10 +45,8 @@ class SearchIndex {
         this.bigJSONWorker.terminate()
     }
 
-    initIndexWorker(searchWorkerScript,schemaJSON) {        
-        const indexWorker = new Worker(searchWorkerScript, { workerData: { schemaJSON } })
-
-        indexWorker.on('message', (response) => {
+    initIndexWorker(baseDir,schemaJSON) {        
+        this.indexWorker = new WorkerWindow( baseDir, true, 'search-index', (response) => {
             // get finished index back from worker thread
             const { resourceID, resourceIndex } = response
 
@@ -70,16 +67,7 @@ class SearchIndex {
             }
         })
 
-        indexWorker.on('error', function(e) { 
-            log.error(e)
-            throw new Error(e)
-        })
-
-        indexWorker.on('exit', function(e) { 
-            log.info('Exited search index worker.')
-        })
-
-        return indexWorker
+        return this.indexWorker.start({schemaJSON})
     }
 
     initBigJSONWorker(baseDir) {

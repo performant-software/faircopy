@@ -136,7 +136,6 @@ class ProjectStore {
         this.searchIndex = new SearchIndex( teiSchema, this, (status) => {
             this.fairCopyApplication.sendToMainWindow('searchSystemStatus', status )
         })
-        this.searchIndex.initSearchIndex( this.manifestData )
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
