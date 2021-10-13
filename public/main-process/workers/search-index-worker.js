@@ -1,7 +1,7 @@
 const { workerData, parentPort } = require('worker_threads')
 const lunr = require('lunr')
 const { Node } = require('prosemirror-model')
-const { TEISchema } = require('./TEISchema')
+const { TEISchema } = require('../TEISchema')
 
 const maxIndexChunkSize = 2000
 

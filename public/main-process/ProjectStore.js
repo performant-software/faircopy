@@ -19,10 +19,12 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
+        const {baseDir} = fairCopyApplication
+        this.archiveWorkerPath = `${baseDir}/workers/project-archive-worker.js`
     }
 
     initProjectArchiveWorker( projectFilePath ) {
-        const projectArchiveWorker = new Worker('./public/main-process/project-archive-worker.js', { workerData: { projectFilePath } })
+        const projectArchiveWorker = new Worker(this.archiveWorkerPath, { workerData: { projectFilePath } })
 
         projectArchiveWorker.on('message', (msg) => {
             const { messageType } = msg

@@ -4,10 +4,10 @@ const fs = require('fs')
 const os = require('os')
 const log = require('electron-log')
 const debounce = require('debounce')
-const { manifestEntryName, configSettingsEntryName, idMapEntryName } = require('./ProjectStore')
+
+const { manifestEntryName, configSettingsEntryName, idMapEntryName } = require('../ProjectStore')
 
 const zipWriteDelay = 6000
-
 
 function setupTempFolder() {
     const cacheFolder = `${os.tmpdir()}/faircopy/`

@@ -12,11 +12,16 @@ class SearchIndex {
         this.onStatusUpdate = onStatusUpdate
         this.searchIndex = {}
         this.searchIndexStatus = {} 
-        this.indexWorker = this.initIndexWorker(schemaJSON)
-        this.bigJSONWorker = this.initBigJSONWorker()
         this.indexingQueue = []
         this.indexing = false
         this.paused = false
+
+        // init worker scripts
+        const {baseDir} = this.projectStore.fairCopyApplication
+        const searchWorkerScript = `${baseDir}/workers/search-index-worker.js`
+        const bigJSONWorkerScript = `${baseDir}/workers/big-json-worker.js`        
+        this.indexWorker = this.initIndexWorker(searchWorkerScript,schemaJSON)
+        this.bigJSONWorker = this.initBigJSONWorker(bigJSONWorkerScript)
     }
 
     initSearchIndex(manifestData) {
@@ -40,8 +45,8 @@ class SearchIndex {
         this.bigJSONWorker.terminate()
     }
 
-    initIndexWorker(schemaJSON) {
-        const indexWorker = new Worker('./public/main-process/search-index-worker.js', { workerData: { schemaJSON } })
+    initIndexWorker(searchWorkerScript,schemaJSON) {        
+        const indexWorker = new Worker(searchWorkerScript, { workerData: { schemaJSON } })
 
         indexWorker.on('message', (response) => {
             // get finished index back from worker thread
@@ -76,8 +81,8 @@ class SearchIndex {
         return indexWorker
     }
 
-    initBigJSONWorker() {
-        const bigJSONWorker = new Worker('./public/main-process/big-json-worker.js')
+    initBigJSONWorker(bigJSONWorkerScript) {
+        const bigJSONWorker = new Worker(bigJSONWorkerScript)
 
         bigJSONWorker.on('message', (msg) => {
             const {messageType, resourceID, respData } = msg
