@@ -26,7 +26,6 @@ import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults } from '../../model/search'
-import { indexResource } from '../../model/import-tei'
 
 const fairCopy = window.fairCopy
 
@@ -82,11 +81,6 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
         services.ipcRegisterCallback('searchSystemStatus', (event, status ) => { 
             this.setState({...this.state, searchEnabled: status })
-        })
-        services.ipcRegisterCallback('requestIndex', (event, resourceData ) => { 
-            const { resourceID, resource } = resourceData
-            const resourceEntry = fairCopyProject.getResourceEntry(resourceID)
-            indexResource( resourceEntry, resource, fairCopyProject )                
         })
 
         fairCopyProject.addUpdateListener(this.receivedUpdate)

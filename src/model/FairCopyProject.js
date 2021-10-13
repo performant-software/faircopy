@@ -8,7 +8,7 @@ import IDMap from "./IDMap"
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate } from "./tei-template"
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
-import {importResource} from "./import-tei"
+import {importResource, indexResource} from "./import-tei"
 
 const fairCopy = window.fairCopy
 
@@ -35,6 +35,13 @@ export default class FairCopyProject {
             for( const listener of this.updateListeners ) {
                 listener()
             }
+        })
+
+        // Service request from main thread to prepare a doc for indexing.
+        fairCopy.services.ipcRegisterCallback('requestIndex', (event, resourceData ) => { 
+            const { resourceID, resource } = resourceData
+            const resourceEntry = this.getResourceEntry(resourceID)
+            indexResource( resourceEntry, resource, this )                
         })
     }
 
