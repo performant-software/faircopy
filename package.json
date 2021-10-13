@@ -77,7 +77,7 @@
   "build": {
     "appId": "com.performantsoftware.faircopy",
     "productName": "FairCopy",
-    "copyright": "Copyright © 2020 ${author}",
+    "copyright": "Copyright © 2021 ${author}",
     "files": [
       "build/**/*",
       "node_modules/**/*"
