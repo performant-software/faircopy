@@ -42,8 +42,8 @@ class SearchIndex {
     }
 
     close() {
-        if( this.indexWorker ) this.indexWorker.terminate()
-        this.bigJSONWorker.terminate()
+        this.indexWorker.close()
+        this.bigJSONWorker.close()
     }
 
     initIndexWorker(baseDir,debug,schemaJSON) {        

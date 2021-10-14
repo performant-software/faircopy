@@ -267,6 +267,7 @@ class FairCopyApplication {
     if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
+      this.projectStore.close()
     }
     if( this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()

@@ -65,7 +65,7 @@ class ProjectStore {
                     }
                     break
                 default:
-                    throw new Error('Unrecognized message type received from project archive.')
+                    throw new Error(`Unrecognized message type ${messageType} received from project archive: ${JSON.stringify(msg)}`)
             }
         })
         

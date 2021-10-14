@@ -8,12 +8,19 @@ class WorkerWindow {
         this.messageHandler = messageHandler
     }
 
+    messageForwarder = (e,wid,msg) => {
+        // if this message is for this worker, send to callback
+        if( wid === this.workerID ) this.messageHandler(msg)
+    }
+
+    closeMessageHandler = (e,wid) => {
+        if( wid === this.workerID ) this.close()
+    }
+
     async start( workerData ) {
     
-        // if this message is for this worker, send to callback
-        ipcMain.on('worker-window-message', (e,wid,msg) => {
-            if( wid === this.workerID ) this.messageHandler(msg)
-        })
+        ipcMain.on('worker-window-message', this.messageForwarder)
+        ipcMain.on('close-worker-window', this.closeMessageHandler)
 
         this.workerWindow = new BrowserWindow({
             show: this.debug,
@@ -25,6 +32,12 @@ class WorkerWindow {
             }
         })
         if( this.debug ) this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
+
+        this.workerWindow.on('closed', () => {
+            this.workerWindow = null
+            ipcMain.removeListener('worker-window-message', this.messageForwarder)
+            ipcMain.removeListener('close-worker-window', this.closeMessageHandler)
+        })
         
         // and load the index.html of the app.
         if( this.debug ) {
@@ -40,8 +53,10 @@ class WorkerWindow {
         this.workerWindow.webContents.send('message', messageData)
     }
 
-    terminate() {
-        // TODO
+    close() {
+        if( this.workerWindow && !this.workerWindow.isDestroyed()  ) {
+            this.workerWindow.destroy()
+        }
     }
 }
 

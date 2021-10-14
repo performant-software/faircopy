@@ -29,15 +29,23 @@ export default class WorkerWindow extends Component {
             electron.ipcRenderer.send('worker-window-message',workerID,msg)
         }   
 
+        const close = () => {
+            const { workerID } = this.state
+            electron.ipcRenderer.send('close-worker-window',workerID)
+        }
+
+        const workerMethods = { postMessage, close }
+
         electron.ipcRenderer.on('init',(e,msg) => {
             const { workerID, workerData } = msg
+            console.log(`Starting worker window ${workerID}.`)
             this.setState({ ...this.state, workerID, workerData })
         })
 
         electron.ipcRenderer.on('message',(e,msg) => {
             const { workers, workerID, workerData } = this.state
             const worker = workers[workerID]
-            worker( msg, postMessage, workerData )
+            worker( msg, workerMethods, workerData )
         })
     }
 

@@ -112,7 +112,7 @@ const save = debounce(() => {
 },zipWriteDelay)
 
 // terminate worker after all jobs are done
-const closeSafely = () => {      
+const closeSafely = (close) => {      
     const fs = fairCopy.services.getFs()
     const { jobsInProgress, cacheFolder } = projectArchiveState
 
@@ -123,13 +123,14 @@ const closeSafely = () => {
         // when we are done with jobs, clear cache and exit
         fs.rmSync(cacheFolder, { recursive: true, force: true })
         console.info('Exiting project archive worker thread.')
-        process.exit()
+        close()
     }
 }
 
-export function projectArchive( msg, postMessage, workerData ) {
+export function projectArchive( msg, workerMethods, workerData ) {
     const { open } = projectArchiveState
     const { messageType } = msg
+    const { postMessage, close } = workerMethods
 
     if( !open ) {
         if( messageType === 'open' ) {
@@ -224,7 +225,7 @@ export function projectArchive( msg, postMessage, workerData ) {
             break
         case 'close':
             projectArchiveState.open = false
-            closeSafely()
+            closeSafely(close)
             break    
         default:
             throw new Error(`Unrecognized message type: ${messageType}`)

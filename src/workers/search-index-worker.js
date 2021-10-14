@@ -100,9 +100,10 @@ function indexResource(schemaJSON, contentJSON) {
     return `[${indexJSONs.join(',')}]`
 }
 
-export function searchIndex( msg, postMessage, workerData) {
+export function searchIndex( msg, workerMethods, workerData) {
     const { schemaJSON } = workerData
     const { resourceID, contentJSON } = msg
+    const { postMessage } = workerMethods
     const resourceIndex = indexResource( schemaJSON, contentJSON )
-    postMessage({ resourceID, resourceIndex })
+    postMessage({ resourceID, resourceIndex })    
 }
