@@ -1,12 +1,12 @@
 const fs = require('fs')
 const log = require('electron-log')
 const { v4: uuidv4 } = require('uuid')
-const { Worker } = require('worker_threads')
 const { readFile, stat } = require('fs/promises')
 
 const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
+const { WorkerWindow } = require('./WorkerWindow')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -19,15 +19,12 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
-        const {baseDir} = fairCopyApplication
-        this.archiveWorkerPath = `${baseDir}/workers/project-archive-worker.js`
     }
 
-    initProjectArchiveWorker( projectFilePath ) {
-        const projectArchiveWorker = new Worker(this.archiveWorkerPath, { workerData: { projectFilePath } })
-
-        projectArchiveWorker.on('message', (msg) => {
+    initProjectArchiveWorker( baseDir, projectFilePath ) {
+        this.projectArchiveWorker = new WorkerWindow( baseDir, true, 'project-archive', (msg) => {
             const { messageType } = msg
+
             switch( messageType ) {
                 case 'project-data': 
                     {
@@ -71,21 +68,15 @@ class ProjectStore {
                     throw new Error('Unrecognized message type received from project archive.')
             }
         })
-
-        projectArchiveWorker.on('error', function(e) { 
-            log.error(e)
-            throw new Error(e)
-        })
-
-        return projectArchiveWorker
+        
+        return this.projectArchiveWorker.start({ projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName })
     }
 
     openProject(projectFilePath) {
-        if( !this.projectArchiveWorker ) {
-            this.projectArchiveWorker = this.initProjectArchiveWorker(projectFilePath)
-        } else {
-            throw new Error("A project archive has already been opened.")
-        }
+        const {baseDir} = this.fairCopyApplication
+        this.initProjectArchiveWorker( baseDir, projectFilePath ).then(() => {
+            this.projectArchiveWorker.postMessage({ messageType: 'open' })
+        })
     }
 
     loadProject(project) {

@@ -1,9 +1,12 @@
 import { Component } from 'react'
+
 import { bigJSON } from '../../workers/big-json-worker'
 import { searchIndex } from '../../workers/search-index-worker'
+import { projectArchive } from '../../workers/project-archive-worker'
 
 const fairCopy = window.fairCopy
 
+// This is a hidden window that runs workers. 
 export default class WorkerWindow extends Component {
 
     constructor() {
@@ -11,7 +14,8 @@ export default class WorkerWindow extends Component {
         this.state = {
             workers: { 
                 'big-json': bigJSON,
-                'search-index': searchIndex
+                'search-index': searchIndex,
+                'project-archive': projectArchive
             }
         }
     }

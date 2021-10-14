@@ -35,19 +35,21 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    const { licenseData } = this.state
+    if( fairCopy.rootComponent !== 'WorkerWindow' ) {
+      const { licenseData } = this.state
 
-    fairCopy.services.ipcRegisterCallback('appConfig', (event, appConfig) => {
-      this.setState({ ...this.state, appConfig })
-    })
-
-    // tell main process to check for updates 
-    if( !licenseData.activated ) {
-      this.setTitle('Activate License')
-      return
+      fairCopy.services.ipcRegisterCallback('appConfig', (event, appConfig) => {
+        this.setState({ ...this.state, appConfig })
+      })
+  
+      // tell main process to check for updates 
+      if( !licenseData.activated ) {
+        this.setTitle('Activate License')
+        return
+      }
+  
+      this.initRootComponent()        
     }
-
-    this.initRootComponent()
   }
 
   initRootComponent() {
@@ -125,7 +127,6 @@ export default class App extends Component {
 
   render() {
     const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo, projectSettingsActive } = this.state
-    debugger
     const {rootComponent} = window.fairCopy
     if( !licenseData.activated ) {
       return (

@@ -1,14 +1,21 @@
 const electron = require("electron")
+const fs = require("fs")
+const os = require("os")
 
 const getElectron = function getElectron() {
     return electron
 }
 
-const ipcRegisterCallback = function ipcRegisterCallback( eventID, callback ) {
-    electron.ipcRenderer.on(eventID,callback)
+const getFs = function getFs() {
+    return fs
+}
+
+const getOs = function getOs() {
+    return os
 }
 
 exports.services = { 
     getElectron,
-    ipcRegisterCallback
+    getFs,
+    getOs
 }

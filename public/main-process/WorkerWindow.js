@@ -21,8 +21,7 @@ class WorkerWindow {
                 webSecurity: !this.debug,
                 enableRemoteModule: false,
                 contextIsolation: false,
-                preload: `${this.baseDir}/worker-window-preload.js`,
-                spellcheck: false
+                preload: `${this.baseDir}/worker-window-preload.js`
             }
         })
         if( this.debug ) this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
