@@ -42,7 +42,7 @@
     "electron-log": "^4.2.3",
     "electron-updater": "^4.3.8",
     "jimp": "^0.16.1",
-    "jszip": "^3.4.0",
+    "jszip": "3.2.0",
     "lunr": "^2.3.9",
     "openseadragon": "^2.4.2",
     "prop-types": "^15.7.2",
