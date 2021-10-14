@@ -21,8 +21,8 @@ class ProjectStore {
         this.importInProgress = false
     }
 
-    initProjectArchiveWorker( baseDir, projectFilePath ) {
-        this.projectArchiveWorker = new WorkerWindow( baseDir, true, 'project-archive', (msg) => {
+    initProjectArchiveWorker( baseDir, debug, projectFilePath ) {
+        this.projectArchiveWorker = new WorkerWindow( baseDir, debug, 'project-archive', (msg) => {
             const { messageType } = msg
 
             switch( messageType ) {
@@ -74,7 +74,8 @@ class ProjectStore {
 
     openProject(projectFilePath) {
         const {baseDir} = this.fairCopyApplication
-        this.initProjectArchiveWorker( baseDir, projectFilePath ).then(() => {
+        const debug = this.fairCopyApplication.isDebugMode()
+        this.initProjectArchiveWorker( baseDir, debug, projectFilePath ).then(() => {
             this.projectArchiveWorker.postMessage({ messageType: 'open' })
         })
     }

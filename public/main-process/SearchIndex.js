@@ -17,8 +17,9 @@ class SearchIndex {
         this.paused = false
 
         const {baseDir} = this.projectStore.fairCopyApplication
-        this.initBigJSONWorker(baseDir).then(() => {
-            this.initIndexWorker(baseDir,schemaJSON).then(() => {
+        const debug = this.projectStore.fairCopyApplication.isDebugMode()
+        this.initBigJSONWorker(baseDir,debug).then(() => {
+            this.initIndexWorker(baseDir,debug,schemaJSON).then(() => {
                 this.initSearchIndex( this.projectStore.manifestData )                
             })
         })
@@ -45,8 +46,8 @@ class SearchIndex {
         this.bigJSONWorker.terminate()
     }
 
-    initIndexWorker(baseDir,schemaJSON) {        
-        this.indexWorker = new WorkerWindow( baseDir, true, 'search-index', (response) => {
+    initIndexWorker(baseDir,debug,schemaJSON) {        
+        this.indexWorker = new WorkerWindow( baseDir, debug, 'search-index', (response) => {
             // get finished index back from worker thread
             const { resourceID, resourceIndex } = response
 
@@ -70,8 +71,8 @@ class SearchIndex {
         return this.indexWorker.start({schemaJSON})
     }
 
-    initBigJSONWorker(baseDir) {
-        this.bigJSONWorker = new WorkerWindow( baseDir, true, 'big-json', (msg) => {
+    initBigJSONWorker(baseDir,debug) {
+        this.bigJSONWorker = new WorkerWindow( baseDir, debug, 'big-json', (msg) => {
             const {messageType, resourceID, respData } = msg
 
             switch(messageType) {
