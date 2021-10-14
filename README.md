@@ -19,3 +19,9 @@ To create a distributable version of the application, add a text file `public/ve
 `yarn dist`
 
 The installers will be created in the `dist` folder.
+
+
+Notes
+-----
+
+Presently stuck at JSZip 3.2.0 because the latest version doesn't work on Electron Renderer.
