@@ -58,9 +58,12 @@ class SearchIndex {
             if( itemsRemaining > 0 ) {
                 if( itemsRemaining % 10 === 0 ) this.projectStore.save()
                 setTimeout(()=> {
-                    const { resourceID, contentJSON } = this.indexingQueue.pop()
-                    this.indexing = false
-                    this.indexResource( resourceID, contentJSON )
+                    // make sure the list is still there
+                    if( this.indexingQueue.length > 0 ) {
+                        const { resourceID, contentJSON } = this.indexingQueue.pop()
+                        this.indexing = false
+                        this.indexResource( resourceID, contentJSON )    
+                    }
                 }, delayBetweenIndexing)
             } else {
                 // nothing in queue, land it
@@ -125,11 +128,14 @@ class SearchIndex {
         this.paused = pause
         if( !pause && this.indexingQueue.length > 0 ) {
             log.info('Resuming indexing...')
+            this.indexing = false
             const { resourceID, contentJSON } = this.indexingQueue.pop()
             this.indexResource( resourceID, contentJSON )
         } 
-        if( pause ) log.info('Pausing indexing...')
-        this.checkStatus()
+        if( pause ) {            
+            log.info('Pausing indexing...')
+            this.onStatusUpdate(false)     
+        }
     }
 
     checkStatus() {

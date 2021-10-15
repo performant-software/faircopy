@@ -68,7 +68,7 @@ export default class MainWindow extends Component {
             textImportDialogMode: false,
             searchQuery: '',
             searchResults: {},
-            searchEnabled: true,
+            searchEnabled: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
         this.elementMenuAnchors = {}
