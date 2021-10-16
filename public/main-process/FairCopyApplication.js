@@ -79,8 +79,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('searchProject', (event, searchQuery) => { 
-      const searchResults = this.projectStore.searchIndex.searchProject(searchQuery)  
-      this.sendToMainWindow('searchResults', JSON.stringify(searchResults))    
+      this.projectStore.searchIndex.searchProject(searchQuery)  
     })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
       const ok = this.projectStore.saveResource(resourceID, resourceData) 

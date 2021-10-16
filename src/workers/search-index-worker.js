@@ -158,8 +158,8 @@ export function searchIndex( msg, workerMethods, workerData ) {
     switch( messageType ) {
         case 'add-resource':
             {
-                const { resourceID, resourceType, resource } = msg
-                const index = indexResource(resourceID,resourceType,resource)
+                const { resourceID, resourceType, content } = msg
+                const index = indexResource(resourceID,resourceType,content)
                 searchIndexState.searchIndex[resourceID] = index
                 postMessage({ messageType: 'resource-added', resourceID })
             }
