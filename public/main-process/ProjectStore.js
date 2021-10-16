@@ -12,7 +12,7 @@ const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
 const idMapEntryName = 'id-map.json'
 
-const maxImportFileSize = 500000
+const maxImportFileSize = 2000000  // 2MB
 
 class ProjectStore {
 
@@ -39,16 +39,11 @@ class ProjectStore {
                         log.info(`opened resourceID: ${resourceID}`)    
                     }
                     break
-                case 'index-data':
-                    {
-                        const { resourceID, index } = msg
-                        this.searchIndex.loadIndex(resourceID,index)        
-                    }
-                    break
                 case 'index-resource':
                     {
                         const { resourceID, resource } = msg
-                        this.fairCopyApplication.sendToMainWindow('requestIndex', { resourceID, resource } )        
+                        const resourceEntry = this.manifestData.resources[resourceID]
+                        this.searchIndex.indexResource( resourceID, resourceEntry.type, resource )  
                     }
                     break
                 case 'cache-file-name':
@@ -176,18 +171,11 @@ class ProjectStore {
 
     importRunning(running) {
         this.importInProgress = running
-        this.searchIndex.pauseIndexing(running)
     }
 
     close() {
         this.projectArchiveWorker.postMessage({ messageType: 'close' })
         this.searchIndex.close()
-    }
-
-    loadSearchIndex( resourceID ) {
-        // look for a corresponding index
-        log.info(`loading index from project archive: ${resourceID}`)
-        this.projectArchiveWorker.postMessage({ messageType: 'read-index', resourceID })
     }
 
     onIDMapUpdated(msgID, idMapData) {
@@ -213,6 +201,7 @@ class ProjectStore {
             const idMap = this.idMapAuthority.commitResource(resourceID)
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID, data: resourceData })
+            this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
             this.save()
             return true
         }
@@ -221,11 +210,6 @@ class ProjectStore {
 
     requestIndex( resourceID ) {
         this.projectArchiveWorker.postMessage({ messageType: 'request-index', resourceID })
-    }
-
-    saveIndex( resourceID, indexData ) {
-        log.info(`saving index to project archive: ${resourceID}`)
-        this.projectArchiveWorker.postMessage({ messageType: 'write-index', resourceID, data: indexData })
     }
 
     addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
@@ -239,6 +223,7 @@ class ProjectStore {
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             if(!this.importInProgress) this.sendIDMapUpdate()
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: resourceEntry.id, data: resourceData })
+            this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
         }
 
         if(this.importInProgress) {
@@ -261,11 +246,9 @@ class ProjectStore {
                     log.info(`Removed image resource from project: ${id}`)
                 }
             }
-        } else if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' ) {
+        } else {
             // remove associated search index
             this.searchIndex.removeIndex(resourceID)
-            const resourceIndexID = `${resourceID}.index`
-            this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceIndexID })    
         }
 
         const idMap = this.idMapAuthority.removeResource(resourceID)

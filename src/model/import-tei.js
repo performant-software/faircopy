@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
-import {parseText, serializeText, addTextNodes} from "./xml"
+import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
 
 const fairCopy = window.fairCopy
@@ -215,26 +215,14 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const doc = parseText(textEl,tempDoc,teiSchema,type)
     const resourceMap = idMap.mapResource( type, doc )
 
-    // extract normalize content and index it
+    // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)
-    indexResource( resourceEntry, content, fairCopyProject )
 
     // learn the attributes and vocabs
     const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
 
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
-
-// index the document (re-creating EXACT state of an initially loaded doc so positions align for all terms)
-export function indexResource( resourceEntry, content, fairCopyProject ) {
-    const { id, type } = resourceEntry
-
-    const indexDoc = new TEIDocument(id,type,fairCopyProject,false)
-    indexDoc.load(content)
-    const finalDoc = addTextNodes( indexDoc.initialState )
-    const contentJSON = finalDoc.toJSON()
-    fairCopy.services.ipcSend('indexResource', id, contentJSON)
-}   
 
 function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
     const resourceEntry = {

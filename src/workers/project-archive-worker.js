@@ -1,7 +1,7 @@
 import JSZip from 'jszip'
 import debounce from 'debounce'
 
-const zipWriteDelay = 6000
+const zipWriteDelay = 200
 
 const fairCopy = window.fairCopy
 
@@ -162,15 +162,6 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 })
             }
             break
-        case 'read-index':
-            {
-                const { resourceID } = msg
-                const indexID = `${resourceID}.index`
-                readUTF8(indexID, zip).then( index => {
-                    postMessage({ messageType: 'index-data', resourceID, index })
-                })
-            }
-            break
         case 'open-image-view':
             {
                 const { imageViewData, resourceID } = msg
@@ -190,13 +181,6 @@ export function projectArchive( msg, workerMethods, workerData ) {
             {
                 const { fileID, data } = msg
                 writeUTF8( fileID, data, zip )    
-            }
-        break
-        case 'write-index':
-            {
-                const { resourceID, data } = msg
-                const indexID = `${resourceID}.index`
-                writeUTF8( indexID, data, zip )    
             }
         break
         case 'cache-resource':

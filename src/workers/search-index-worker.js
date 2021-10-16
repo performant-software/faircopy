@@ -1,8 +1,11 @@
 import lunr from 'lunr'
-import { Node } from 'prosemirror-model'
 import TEISchema from  '../model/TEISchema'
+import TEIDocument from '../model/TEIDocument'
+import { addTextNodes } from '../model/xml'
 
 const maxIndexChunkSize = 2000
+
+const searchIndexState = { teiSchema: null, searchIndex: {} }
 
 function getSafeAttrKey( attrName ) {
     return attrName.replace(':','')
@@ -31,9 +34,7 @@ function defineLunrSchema( lunrIndex, attrs ) {
     defineAttrFields( lunrIndex, attrs )
 }
 
-function createIndexChunks(teiSchema, contentJSON) {
-
-    const doc = Node.fromJSON(teiSchema.schema, contentJSON)
+function createIndexChunks(teiSchema, doc) {
 
     let indexChunk = []
     const indexChunks = [ indexChunk ]
@@ -79,10 +80,15 @@ function createIndexChunks(teiSchema, contentJSON) {
     return indexChunks
 }
 
-function indexResource(schemaJSON, contentJSON) {
-    const teiSchema = new TEISchema(schemaJSON)
-    const indexChunks = createIndexChunks(teiSchema,contentJSON)
-    const indexJSONs = []
+function indexResource( resourceID, resourceType, content ) {
+    const { teiSchema } = searchIndexState
+
+    const indexDoc = new TEIDocument(resourceID, resourceType, null, teiSchema, false)
+    indexDoc.load(content)
+    const indexPMDoc = addTextNodes( indexDoc.initialState )
+
+    const indexChunks = createIndexChunks(teiSchema,indexPMDoc)
+    const searchIndex = []
     
     for( const indexChunk of indexChunks ) {
         const index = lunr( function () {
@@ -93,17 +99,86 @@ function indexResource(schemaJSON, contentJSON) {
         })
 
         // get a data only representation of the index
-        const indexJSON = JSON.stringify(index)         
-        indexJSONs.push(indexJSON)
+        searchIndex.push(index)
     }
 
-    return `[${indexJSONs.join(',')}]`
+    return searchIndex
 }
 
-export function searchIndex( msg, workerMethods, workerData) {
-    const { schemaJSON } = workerData
-    const { resourceID, contentJSON } = msg
+function searchProject( query ) {
+    const { searchIndex } = searchIndexState
+    const results = {}
+    if( query.length > 0 ) {
+        for( const resourceID of Object.keys(searchIndex) ) {
+            results[resourceID] = searchResource( query, resourceID )
+        }    
+    }
+    return { query, results }
+}
+
+function searchResource( query, resourceID ) {
+    const { searchIndex } = searchIndexState
+    const resourceIndex = searchIndex[resourceID]
+
+    if( query.length === 0 ) return null
+
+    // create a list of terms from the query
+    const terms = query.split(' ')
+    const termQs = []
+    for( const term of terms ) {
+        // filter out non-word characters
+        const filteredTerm = term.replaceAll(/\W/g,'')
+        termQs.push(`+contents:${filteredTerm}`)
+    }
+    const termQ = termQs.join(' ')
+
+    // The index is divided into chunks for performance reasons. 
+    // Large docs or too many docs in an index cause performance issues.
+    let results = []
+    for( const indexChunk of resourceIndex ) {
+        // full text search 
+        const lunrResults = indexChunk.search(`+softNode:true ${termQ}`)
+        results = results.concat( lunrResults.map( (result) => parseInt(result.ref) ) )
+    }
+    return results.sort((a, b) => a - b )
+
+    // TODO find a element containing a phrase w/certain attrs
+    // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
+}
+
+export function searchIndex( msg, workerMethods, workerData ) {
+    const { messageType } = msg
     const { postMessage } = workerMethods
-    const resourceIndex = indexResource( schemaJSON, contentJSON )
-    postMessage({ resourceID, resourceIndex })    
+
+    if( !searchIndexState.teiSchema ) {
+        const { schemaJSON } = workerData
+        searchIndexState.teiSchema = new TEISchema(schemaJSON)
+    }
+
+    switch( messageType ) {
+        case 'add-resource':
+            {
+                const { resourceID, resourceType, resource } = msg
+                const index = indexResource(resourceID,resourceType,resource)
+                searchIndexState.searchIndex[resourceID] = index
+                postMessage({ messageType: 'resource-added', resourceID })
+            }
+            break
+        case 'remove-resource':
+            {
+                const { resourceID } = msg
+                delete searchIndexState.searchIndex[resourceID]
+                postMessage({ messageType: 'resource-removed', resourceID })
+            }
+            break
+        case 'search':
+            {
+                const { searchQuery } = msg
+                const searchResults = searchProject(searchQuery)
+                postMessage({ messageType: 'search-results', searchResults })
+            }
+            break
+        default:
+            throw new Error(`Unrecognized message type: ${messageType}`)
+    }
 }

@@ -16,7 +16,7 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, resourceType, fairCopyProject, load=true ) {
+    constructor( resourceID, resourceType, fairCopyProject, teiSchema=null, load=true ) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errorCount = 0
@@ -26,6 +26,7 @@ export default class TEIDocument {
         this.resourceID = resourceID
         this.resourceType = resourceType
         this.fairCopyProject = fairCopyProject
+        this.teiSchema = teiSchema
         this.plugins = [
             keymap(baseKeymap),
             dropCursor(),
@@ -40,6 +41,10 @@ export default class TEIDocument {
             this.initialState = this.editorInitialState()
         }
         this.changedSinceLastSave = false
+    }
+
+    getTEISchema() {
+        return this.fairCopyProject ? this.fairCopyProject.teiSchema : this.teiSchema
     }
 
     editorInitialState() {
@@ -59,7 +64,7 @@ export default class TEIDocument {
     }
 
     parseSubDocument(node, name, noteID) {
-        const {teiSchema} = this.fairCopyProject
+        const teiSchema = this.getTEISchema()
         // turn note into noteDoc
         let noteX = document.createElement(`${name}X`)
         noteX.innerHTML = node.innerHTML
@@ -70,7 +75,7 @@ export default class TEIDocument {
     }
 
     serializeSubDocument( subDocID, name, attrs) {
-        const {teiSchema} = this.fairCopyProject
+        const teiSchema = this.getTEISchema()
         const noteJSON = JSON.parse( this.subDocs[subDocID] )
         const subDoc = teiSchema.docNodeSchemas[name].nodeFromJSON(noteJSON);
         // get the content of noteDoc, which is the only child of doc
@@ -161,13 +166,14 @@ export default class TEIDocument {
     createEmptyDocument(documentDOM) {
         const div = documentDOM.createElement('DIV')
         div.innerHTML = ""
-        const doc = this.fairCopyProject.teiSchema.domParser.parse(div)
+        const teiSchema = this.getTEISchema()
+        const doc = teiSchema.domParser.parse(div)
         return doc
     }
 
     openSubDocument( subDocID ) {
         const subDocJSON = JSON.parse( this.subDocs[subDocID] )
-        const { teiSchema } = this.fairCopyProject
+        const teiSchema = this.getTEISchema()
         const doc = teiSchema.schema.nodeFromJSON(subDocJSON);
         return EditorState.create({
             doc,
@@ -177,7 +183,7 @@ export default class TEIDocument {
     }
 
     createSubDocument = (documentDOM,docType) => {
-        const { teiSchema } = this.fairCopyProject
+        const teiSchema = this.getTEISchema()
         let noteDoc = documentDOM.createElement(`${docType}Doc`)
         const docX = documentDOM.createElement(`${docType}X`)
         const {defaultNodes} = teiSchema.elements[docType]
@@ -219,7 +225,7 @@ export default class TEIDocument {
 
     load( text ) {
         const parser = new DOMParser();
-        const { teiSchema } = this.fairCopyProject
+        const teiSchema = this.getTEISchema()
         this.xmlDom = parser.parseFromString(text, "text/xml");
  
         let doc
@@ -256,17 +262,13 @@ export default class TEIDocument {
 
     save() {
         const editorState = this.editorView.state
-        const { teiSchema } = this.fairCopyProject
+        const teiSchema = this.getTEISchema()
         
         const fileContents = serializeText(editorState.doc, this, teiSchema)
 
         const messageID = uuidv4()
         fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.lastMessageID = messageID
-
-        // index document for search
-        const contentJSON = editorState.doc.toJSON()
-        fairCopy.services.ipcSend('indexResource', this.resourceID, contentJSON)
     
         this.changedSinceLastSave = false
     }

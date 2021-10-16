@@ -74,9 +74,9 @@ export default class SearchBar extends Component {
         fairCopy.services.ipcSend('searchProject', searchQuery)
     }
 
-    onResults = (event, searchResultsJSON) => {
+    onResults = (event, searchResults) => {
         const { onSearchResults } = this.props
-        const { query, results } = JSON.parse(searchResultsJSON)
+        const { query, results } = searchResults
         const popupMenuOptions = this.renderSearchResults( results )
         onSearchResults( query, results, popupMenuOptions, this.searchBarEl )    
     }
