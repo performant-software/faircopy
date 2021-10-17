@@ -1,12 +1,15 @@
 const { WorkerWindow } = require('./WorkerWindow')
 const log = require('electron-log')
 
+const checkStatusInterval = 300
+
 class SearchIndex {
 
     constructor( schemaJSON, projectStore, onStatusUpdate ) {
         this.projectStore = projectStore
         this.onStatusUpdate = onStatusUpdate
         this.searchIndexStatus = {} 
+        this.indexing = false
 
         const {baseDir} = this.projectStore.fairCopyApplication
         const debug = this.projectStore.fairCopyApplication.isDebugMode()
@@ -20,13 +23,16 @@ class SearchIndex {
         for( const resourceID of Object.keys(resources) ) {
             const resourceEntry = resources[resourceID]
             if( this.isIndexable(resourceEntry.type) ) {
-                this.searchIndexStatus[resourceID] = 'loading'
-                this.projectStore.requestIndex( resourceID )
+                this.searchIndexStatus[resourceID] = 'request'
             }
-        }    
+        }
+
+        // check for indexing jobs on idle
+        this.checkStatusTimer = setInterval( this.indexNext, checkStatusInterval )
     }
 
     close() {
+        clearInterval(this.checkStatusTimer)
         this.indexWorker.close()
     }
 
@@ -39,16 +45,16 @@ class SearchIndex {
                     {
                         const { resourceID } = response
                         this.searchIndexStatus[resourceID] = 'ready'
+                        this.indexing = false
                         log.info(`Indexed ${resourceID}`)
-                        this.checkStatus()
                     }
                     break
                 case 'resource-removed':
                     {
                         const { resourceID } = response
                         delete this.searchIndexStatus[resourceID]
-                        log.info(`Removed ${resourceID}`)
                         this.checkStatus()
+                        log.info(`Removed ${resourceID}`)
                     }
                     break
                 case 'search-results':
@@ -71,23 +77,41 @@ class SearchIndex {
 
     indexResource( resourceID, resourceType, content ) {
         if( this.isIndexable(resourceType ) ) {
-            this.searchIndexStatus[resourceID] = 'loading'
+            if( this.indexing ) {
+                this.searchIndexStatus[resourceID] = 'request'
+            } else {
+                this.searchIndexStatus[resourceID] = 'indexing'
+                this.indexing = true
+                log.info(`Starting to index ${resourceType} ${resourceID}`)
+                this.indexWorker.postMessage({ messageType: 'add-resource', resourceID, resourceType, content })     
+            }
             this.checkStatus()
-            this.indexWorker.postMessage({ messageType: 'add-resource', resourceID, resourceType, content })     
-            log.info(`Starting to index ${resourceType} ${resourceID}`)
+        }
+    }
+
+    indexNext = () => {
+        if( !this.indexing ) {
+            const nextID = this.checkStatus()
+            if( nextID ) {
+                this.searchIndexStatus[nextID] = 'loading'
+                this.projectStore.requestIndex(nextID)
+            }    
         }
     }
 
     checkStatus() {
+        let systemStatus = true, nextID = null
         for( const resourceID of Object.keys(this.searchIndexStatus) ) {
             const status = this.searchIndexStatus[resourceID]
             if( status !== 'ready' ) {
-                this.onStatusUpdate(false)     
-                return false
+                systemStatus = false
+            }
+            if( status === 'request' ) {
+                nextID = resourceID
             }
         }
-        this.onStatusUpdate(true)
-        return true
+        this.onStatusUpdate(systemStatus)
+        return nextID
     }
 
     removeIndex(resourceID) {
