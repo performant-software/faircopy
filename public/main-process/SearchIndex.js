@@ -1,4 +1,5 @@
 const { WorkerWindow } = require('./WorkerWindow')
+const log = require('electron-log')
 
 class SearchIndex {
 
@@ -38,6 +39,7 @@ class SearchIndex {
                     {
                         const { resourceID } = response
                         this.searchIndexStatus[resourceID] = 'ready'
+                        log.info(`Indexed ${resourceID}`)
                         this.checkStatus()
                     }
                     break
@@ -45,6 +47,7 @@ class SearchIndex {
                     {
                         const { resourceID } = response
                         delete this.searchIndexStatus[resourceID]
+                        log.info(`Removed ${resourceID}`)
                         this.checkStatus()
                     }
                     break
@@ -71,6 +74,7 @@ class SearchIndex {
             this.searchIndexStatus[resourceID] = 'loading'
             this.checkStatus()
             this.indexWorker.postMessage({ messageType: 'add-resource', resourceID, resourceType, content })     
+            log.info(`Starting to index ${resourceType} ${resourceID}`)
         }
     }
 
