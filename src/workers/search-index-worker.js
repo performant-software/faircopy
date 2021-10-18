@@ -101,12 +101,13 @@ function searchResource( searchQuery, resourceID ) {
     const { searchIndex, resourceMap } = searchIndexState
     const resourceIndex = searchIndex[resourceID]
     const elementMap = resourceMap[resourceID]
-    const { query, elementName } = searchQuery // TODO attrQs
+    const { query, elementName, attrQs } = searchQuery 
 
     let searchResults = []
-    const flexResponse = resourceIndex.search(query,["contents"])
-    if( flexResponse.length > 0 ) {
-        const { result: mapIDs } = flexResponse[0]
+    const bodyTextResults = resourceIndex.search(query,["contents"])
+
+    if( bodyTextResults.length > 0 ) {
+        const { result: mapIDs } = bodyTextResults[0]
         
         if( elementName ) {
             const elementMatchIDs = mapIDs.filter( i => elementMap[i].elementName === elementName )
@@ -132,6 +133,27 @@ function searchResource( searchQuery, resourceID ) {
         }
     }
 
+    // next, search for the attributes
+    let attrResults = []
+    for( const attrQ of attrQs ) {
+        const { name, value } = attrQ
+        const attrSafeKey = getSafeAttrKey(name)
+        const attrResponse = resourceIndex.search(value,[`attr_${attrSafeKey}`])
+
+        if( attrResponse.length > 0 ) {
+            const { result: mapIDs } = attrResponse[0]
+            for( const mapID of mapIDs ) {
+                const {pos} = elementMap[mapID]
+                attrResults.push(pos)
+            }
+        }
+    }
+
+    // filter search results by matching attrQ results
+    if( attrQs.length > 0 ) {
+        searchResults = searchResults.filter( searchResult => attrResults.includes(searchResult) )
+    }
+        
     return searchResults
 }
 
