@@ -91,27 +91,45 @@ function indexResource( resourceID, resourceType, content ) {
 function searchProject( query ) {
     const { searchIndex } = searchIndexState
     const results = {}
-    if( query.length > 0 ) {
-        for( const resourceID of Object.keys(searchIndex) ) {
-            results[resourceID] = searchResource( query, resourceID )
-        }    
-    }
-    return { query, results }
+    for( const resourceID of Object.keys(searchIndex) ) {
+        results[resourceID] = searchResource( query, resourceID )
+    }    
+    return { query: query.query, results }
 }
 
-function searchResource( query, resourceID ) {
+function searchResource( searchQuery, resourceID ) {
     const { searchIndex, resourceMap } = searchIndexState
     const resourceIndex = searchIndex[resourceID]
-    const map = resourceMap[resourceID]
+    const elementMap = resourceMap[resourceID]
+    const { query, elementName } = searchQuery // TODO attrQs
 
-    const searchResults = []
+    let searchResults = []
     const flexResponse = resourceIndex.search(query,["contents"])
     if( flexResponse.length > 0 ) {
-        const { result } = flexResponse[0]
-        for( const id of result ) {
-            const mapEntry = map[id]
-            searchResults.push(mapEntry.pos)
-        }    
+        const { result: mapIDs } = flexResponse[0]
+        
+        if( elementName ) {
+            const elementMatchIDs = mapIDs.filter( i => elementMap[i].elementName === elementName )
+            for( const elementID of elementMatchIDs ) {
+                const { pos:start, nodeSize } = elementMap[elementID]
+                const end = start + nodeSize
+                for( const id of mapIDs ) {
+                    const mapEntry = elementMap[id]
+                    const { pos, softNode } = mapEntry
+                    if( softNode && pos >= start && pos < end ) {
+                        searchResults.push(pos)
+                    }
+                }
+            }    
+        } else {
+            for( const id of mapIDs ) {
+                const mapEntry = elementMap[id]
+                const { pos, softNode } = mapEntry
+                if( softNode ) {
+                    searchResults.push(pos)
+                }
+            }
+        }
     }
 
     return searchResults
