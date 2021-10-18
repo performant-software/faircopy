@@ -1,52 +1,30 @@
-import lunr from 'lunr'
+import { Document } from "flexsearch";
 import TEISchema from  '../model/TEISchema'
 import TEIDocument from '../model/TEIDocument'
 import { addTextNodes } from '../model/xml'
 
-const maxIndexChunkSize = 2000
-
-const searchIndexState = { teiSchema: null, searchIndex: {} }
+const searchIndexState = { teiSchema: null, searchIndex: {}, resourceMap: {} }
 
 function getSafeAttrKey( attrName ) {
     return attrName.replace(':','')
 }
 
-function defineAttrFields( lunrIndex, attrs ) {
+function defineAttrFields( attrs ) {
+    const attrFields = []
     for( const attr of Object.keys(attrs) ) {
         const attrSafeKey = getSafeAttrKey(attr)
         const fieldName = `attr_${attrSafeKey}`
-        lunrIndex.field(fieldName)
+        attrFields.push(fieldName)
     }
+    return attrFields
 }
 
-function defineLunrSchema( lunrIndex, attrs ) {
-    // configure pipeline for exact matching search, language independent
-    lunrIndex.pipeline.remove(lunr.stemmer)
-    lunrIndex.pipeline.remove(lunr.stopWordFilter)
-    lunrIndex.searchPipeline.remove(lunr.stemmer)
-    lunrIndex.searchPipeline.remove(lunr.stopWordFilter)
+function createIndexDocs(teiSchema, doc) {
 
-    // add fields to schema
-    lunrIndex.ref('pos')
-    lunrIndex.field('elementName')
-    lunrIndex.field('softNode')
-    lunrIndex.field('contents')
-    defineAttrFields( lunrIndex, attrs )
-}
+    const resourceMap = [], indexDocs = []
+    let i=0
 
-function createIndexChunks(teiSchema, doc) {
-
-    let indexChunk = []
-    const indexChunks = [ indexChunk ]
-
-    doc.descendants((node,pos) => {
-
-        // if this chunk is full, create a new chunk
-        if( indexChunk.length > maxIndexChunkSize ) {
-            indexChunk = []
-            indexChunks.push(indexChunk)
-        }
-        
+    doc.descendants((node,pos) => {        
         const elementName = node.type.name
         const {nodeSize} = node
         const element = teiSchema.elements[elementName]
@@ -55,7 +33,7 @@ function createIndexChunks(teiSchema, doc) {
         const { fcType } = element
         const softNode = fcType === 'soft' 
         const attrFields = {}
-        const contents = softNode ? node.textContent : null
+        const contents = node.textContent
         
         for( const attrKey of Object.keys(node.attrs) ) {
             const attrVal = node.attrs[attrKey]
@@ -65,19 +43,24 @@ function createIndexChunks(teiSchema, doc) {
 
         // TODO index marks
         // TODO sub docs
+        const id = i++
 
-        indexChunk.push({
-            pos,
+        resourceMap.push({
             elementName,
-            softNode: softNode ? 'true' : 'false',
+            pos,
+            softNode,
+            nodeSize
+        })
+
+        indexDocs.push({
+            id,
             contents,
-            nodeSize,
             ...attrFields
         })
         return !softNode
     })
 
-    return indexChunks
+    return { resourceMap, indexDocs }
 }
 
 function indexResource( resourceID, resourceType, content ) {
@@ -87,22 +70,22 @@ function indexResource( resourceID, resourceType, content ) {
     indexDoc.load(content)
     const indexPMDoc = addTextNodes( indexDoc.initialState )
 
-    const indexChunks = createIndexChunks(teiSchema,indexPMDoc)
-    const searchIndex = []
-    
-    for( const indexChunk of indexChunks ) {
-        const index = lunr( function () {
-            defineLunrSchema(this,teiSchema.attrs)    
-            for( const indexDoc of indexChunk ) {
-                this.add(indexDoc)    
-            }
-        })
+    const { resourceMap, indexDocs } = createIndexDocs(teiSchema,indexPMDoc)
 
-        // get a data only representation of the index
-        searchIndex.push(index)
+    const attrFields = defineAttrFields( teiSchema.attrs )
+
+    const flexSearchIndex = new Document({
+        document: { 
+            id: "id",
+            index: ["contents", ...attrFields]
+        } 
+    })
+
+    for( const indexDoc of indexDocs ) {
+        flexSearchIndex.add(indexDoc)        
     }
 
-    return searchIndex
+    return { resourceMap, flexSearchIndex }
 }
 
 function searchProject( query ) {
@@ -117,33 +100,21 @@ function searchProject( query ) {
 }
 
 function searchResource( query, resourceID ) {
-    const { searchIndex } = searchIndexState
+    const { searchIndex, resourceMap } = searchIndexState
     const resourceIndex = searchIndex[resourceID]
+    const map = resourceMap[resourceID]
 
-    if( query.length === 0 ) return null
-
-    // create a list of terms from the query
-    const terms = query.split(' ')
-    const termQs = []
-    for( const term of terms ) {
-        // filter out non-word characters
-        const filteredTerm = term.replaceAll(/\W/g,'')
-        termQs.push(`+contents:${filteredTerm}`)
+    const searchResults = []
+    const flexResponse = resourceIndex.search(query,["contents"])
+    if( flexResponse.length > 0 ) {
+        const { result } = flexResponse[0]
+        for( const id of result ) {
+            const mapEntry = map[id]
+            searchResults.push(mapEntry.pos)
+        }    
     }
-    const termQ = termQs.join(' ')
 
-    // The index is divided into chunks for performance reasons. 
-    // Large docs or too many docs in an index cause performance issues.
-    let results = []
-    for( const indexChunk of resourceIndex ) {
-        // full text search 
-        const lunrResults = indexChunk.search(`+softNode:true ${termQ}`)
-        results = results.concat( lunrResults.map( (result) => parseInt(result.ref) ) )
-    }
-    return results.sort((a, b) => a - b )
-
-    // TODO find a element containing a phrase w/certain attrs
-    // const results = searchIndex.search('+contents:this +contents:is +elementName:p +attr_rend:bold')
+    return searchResults
 }
 
 export function searchIndex( msg, workerMethods, workerData ) {
@@ -159,14 +130,16 @@ export function searchIndex( msg, workerMethods, workerData ) {
         case 'add-resource':
             {
                 const { resourceID, resourceType, content } = msg
-                const index = indexResource(resourceID,resourceType,content)
-                searchIndexState.searchIndex[resourceID] = index
+                const { resourceMap, flexSearchIndex } = indexResource(resourceID,resourceType,content)
+                searchIndexState.resourceMap[resourceID] = resourceMap
+                searchIndexState.searchIndex[resourceID] = flexSearchIndex
                 postMessage({ messageType: 'resource-added', resourceID })
             }
             break
         case 'remove-resource':
             {
                 const { resourceID } = msg
+                delete searchIndexState.resourceMap[resourceID]
                 delete searchIndexState.searchIndex[resourceID]
                 postMessage({ messageType: 'resource-removed', resourceID })
             }
