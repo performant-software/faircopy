@@ -46,7 +46,7 @@ export default class NotePopup extends Component {
         // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.noteEditorView = editorView
-        addTextNodes(editorView)
+        addTextNodes(editorView.state,editorView.dispatch)
 
         this.setState( { ...this.state, currentNoteID: noteID } )
     }
