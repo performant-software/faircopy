@@ -80,7 +80,9 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
         services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
         services.ipcRegisterCallback('searchSystemStatus', (event, status ) => { 
-            this.setState({...this.state, searchEnabled: status })
+            if( status !== this.state.searchEnabled ) {
+                this.setState({...this.state, searchEnabled: status })
+            }
         })
 
         fairCopyProject.addUpdateListener(this.receivedUpdate)
