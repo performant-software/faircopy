@@ -297,10 +297,13 @@ function createAside( asideName, attrs, teiDocument, editorView ) {
     const { tr, selection } = state
     const { $head } = selection
     const { teiSchema } = teiDocument.fairCopyProject
-    const { schema, elements } = teiSchema
+    const { schema } = teiSchema
     const { createSubDocument } = teiDocument
 
-    const asideNode = createValidNode( asideName, attrs, Fragment.empty, schema, elements, createSubDocument ) 
+    const subDocID = createSubDocument(document,asideName,attrs)
+    const nodeType = schema.nodes[asideName]
+    const asideNode = nodeType.create({ id: '', __id__: subDocID, ...attrs })
+
     tr.insert($head.pos, asideNode) 
     editorView.dispatch(tr)
 }
