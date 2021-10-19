@@ -201,7 +201,7 @@ export default class MainWindow extends Component {
             })    
             const nextResource = nextResources[nextSelection]
             if( nextResource instanceof TEIDocument ) {
-                this.refreshWhenReady(nextResource, searchQuery, searchResults)
+                this.refreshWhenReady(searchQuery, searchResults)
             }
         } else {
             this.setState( {
@@ -268,13 +268,15 @@ export default class MainWindow extends Component {
     }
 
     // a bit of a hack - need to refresh after it renders
-    refreshWhenReady( nextResource, searchQuery, searchResults ) {
+    refreshWhenReady( searchQuery, searchResults ) {
         setTimeout( () => { 
-            if( nextResource.getActiveView() ) {
-                this.updateSearchResults(nextResource, searchQuery, searchResults)
-                nextResource.refreshView()     
+            const { selectedResource, openResources } = this.state
+            const resource = openResources[selectedResource]
+            if( resource && resource.getActiveView() ) {
+                this.updateSearchResults(resource, searchQuery, searchResults)
+                resource.refreshView()     
             } else {
-                this.refreshWhenReady(nextResource,searchQuery,searchResults)
+                this.refreshWhenReady(searchQuery,searchResults)
             }
         }, 60 )
     }
