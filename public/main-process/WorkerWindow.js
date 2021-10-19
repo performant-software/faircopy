@@ -23,7 +23,7 @@ class WorkerWindow {
         ipcMain.on('close-worker-window', this.closeMessageHandler)
 
         this.workerWindow = new BrowserWindow({
-            show: this.debug,
+            show: false,
             webPreferences: {
                 webSecurity: !this.debug,
                 enableRemoteModule: false,
@@ -50,7 +50,9 @@ class WorkerWindow {
     }
 
     postMessage(messageData) {
-        this.workerWindow.webContents.send('message', messageData)
+        if( this.workerWindow && !this.workerWindow.isDestroyed()  ) {
+            this.workerWindow.webContents.send('message', messageData)
+        }
     }
 
     close() {
