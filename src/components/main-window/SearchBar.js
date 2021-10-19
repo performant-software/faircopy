@@ -71,7 +71,7 @@ export default class SearchBar extends Component {
 
     onSearch = () => {
         const { searchQuery } = this.state
-        const searchQ = { query: searchQuery, elementName: "ab", attrQs: [ { name: "rend", value: "purple" } ]}
+        const searchQ = { query: searchQuery, elementName: "", attrQs: []}
         fairCopy.services.ipcSend('searchProject', searchQ)
     }
 
