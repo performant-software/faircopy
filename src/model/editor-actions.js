@@ -1,4 +1,4 @@
-import { NodeRange, Fragment } from 'prosemirror-model'
+import { NodeRange } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, deleteParentNode } from "./commands"
 import { validMove, createValidNode } from './element-validators'
