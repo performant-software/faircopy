@@ -9,11 +9,12 @@ export default class ResourceBrowser extends Component {
 
   constructor() {
     super()
-    this.state = {
+    this.initialState = {
       allChecked: false,
       currentPage: 0,
       checked: {}
     }
+    this.state = this.initialState
   }
 
   onOpenActionMenu = (anchorEl) => {
@@ -111,6 +112,7 @@ export default class ResourceBrowser extends Component {
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
       const resource = resources[resourceID]
       if( resource.type === 'teidoc' ) {
+        this.setState(this.initialState)
         onResourceAction( 'open-teidoc', resourceID )         
       } else {
         onResourceAction( 'open', [resourceID] )         
