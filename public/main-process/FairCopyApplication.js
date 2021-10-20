@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain, protocol } = require('electron')
 const { ProjectStore } = require('./ProjectStore')
 const { createProjectArchive } = require('./create-project-archive')
-const { exportResources } = require('./export-xml')
 const { MainMenu } = require('./MainMenu')
 const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
@@ -137,13 +136,11 @@ class FairCopyApplication {
       }
     })
 
-    ipcMain.on('requestExport', (event, exportOptions) => { 
+    ipcMain.on('requestExport', (event, resourceIDs) => { 
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null
       if( path ) {
-        exportResources(exportOptions,path,this.projectStore).then( () => { 
-          log.info(`Resources exported.`)
-        })
+        this.projectStore.requestExport(resourceIDs,path)
       }
     })
 

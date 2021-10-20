@@ -7,6 +7,7 @@ const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
+const { exportResource } = require('./export-xml')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -44,6 +45,17 @@ class ProjectStore {
                         const { resourceID, resource } = msg
                         const resourceEntry = this.manifestData.resources[resourceID]
                         this.searchIndex.indexResource( resourceID, resourceEntry.type, resource )  
+                    }
+                    break
+                case 'export-resource':
+                    {
+                        const { resourceID, resourceData, path } = msg
+                        const resourceEntries = {}
+                        resourceEntries[resourceID] = this.manifestData.resources[resourceID]
+                        for( const childID of Object.keys(resourceData)) {
+                            resourceEntries[childID] = this.manifestData.resources[childID]
+                        }
+                        exportResource( resourceID, resourceEntries, resourceData, path)
                     }
                     break
                 case 'cache-file-name':
@@ -171,6 +183,13 @@ class ProjectStore {
 
     importRunning(running) {
         this.importInProgress = running
+    }
+
+    requestExport(resourceIDs,path) {
+        for( const resourceID of resourceIDs ) {
+            const resourceEntry = this.manifestData.resources[resourceID]
+            this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, path })
+        }        
     }
 
     close() {

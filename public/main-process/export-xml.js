@@ -5,24 +5,22 @@ const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const serialize = require("w3c-xmlserializer");
 
-const exportResources =  async function exportResources(resourceIDs,path,projectStore) {
-    for( const resourceID of resourceIDs ) {
-        const resourceEntry = projectStore.manifestData.resources[resourceID]
-        if( resourceEntry.type === 'teidoc') {
-            await exportTEIDoc(resourceEntry,path,projectStore)
-        } else {
-            const resource = await projectStore.readUTF8File(resourceID)
-            await exportXMLFile(path, resourceEntry.localID, resource)    
-        }
+const exportResource =  async function exportResource(resourceID, resourceEntries, resourceData, path) {
+    const resourceEntry = resourceEntries[resourceID]
+    if( resourceEntry.type === 'teidoc') {
+        exportTEIDoc(resourceEntry,resourceEntries,resourceData,path)
+    } else {
+        const resource = resourceData[resourceEntry.id]
+        exportXMLFile(path, resourceEntry.localID, resource)    
     }
     log.info(`Export resources to: ${path}`)
 }
 
-async function exportTEIDoc(resourceEntry,path,projectStore) {
+async function exportTEIDoc(resourceEntry,resourceEntries,resourceData,path) {
     let header, resources = []
     for( const resourceID of resourceEntry.resources ) {
-        const resourceEntry = projectStore.manifestData.resources[resourceID]
-        const resourceXML = await projectStore.readUTF8File(resourceID)
+        const resourceEntry = resourceEntries[resourceID]
+        const resourceXML = resourceData[resourceID]
         const elName = resourceEntry.type === 'header' ? 'teiHeader' : resourceEntry.type === 'text' ? 'text' : resourceEntry.type === 'standOff' ? 'standOff' : 'facsimile'
         const resourceEl = getResourceEl( resourceXML, elName, resourceEntry.localID )
         if( resourceEntry.type === 'header' ) {
@@ -50,7 +48,7 @@ function getResourceEl( resourceXML, elName, localID ) {
     return el
 }
 
-async function exportXMLFile(path, localID, content) {
+function exportXMLFile(path, localID, content) {
     const filePath = `${path}/${localID}.xml`
     try {
         const xml = format(content, {
@@ -66,4 +64,4 @@ async function exportXMLFile(path, localID, content) {
     }
 }
 
-exports.exportResources = exportResources
+exports.exportResource = exportResource

@@ -33,6 +33,20 @@ function addFile( localFilePath, resourceID, zip ) {
     zip.file(resourceID, buffer)
 }
 
+async function prepareResourceExport( resourceEntry, zip ) {
+    const resourceData = {}
+
+    if( resourceEntry.type === 'teidoc' ) {
+        for( const resourceID of resourceEntry.resources ) {
+            resourceData[resourceID] = await readUTF8( resourceID, zip )
+        }    
+    } else {
+        resourceData[resourceEntry.id] = await readUTF8( resourceEntry.id, zip )
+    }
+
+    return resourceData
+}
+
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {
     const fs = fairCopy.services.getFs()
 
@@ -159,6 +173,14 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 const { resourceID } = msg
                 readUTF8(resourceID, zip).then(resource => {
                     postMessage({ messageType: 'index-resource', resourceID, resource })
+                })
+            }
+            break
+        case 'request-export':
+            {
+                const { resourceEntry, path } = msg
+                prepareResourceExport(resourceEntry,zip).then( resourceData => {
+                    postMessage({ messageType: 'export-resource', resourceID: resourceEntry.id, resourceData, path })
                 })
             }
             break
