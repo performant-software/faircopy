@@ -128,8 +128,10 @@ function stripSpaces(textEl) {
                 const nextChild = child.cloneNode(true)
                 if( child.nodeName === '#text' ) {
                     const nextChildContent = child.textContent.replace(/\s+/g, '')
-                    nextChild.innerHTML = nextChildContent
-                    if( nextChildContent.length > 0 ) nextEl.appendChild(nextChild)
+                    if( nextChildContent.length > 0 ) { 
+                        nextChild.innerHTML = nextChildContent
+                        nextEl.appendChild(nextChild)
+                    }
                 } else {
                     nextEl.appendChild(nextChild)
                 }
