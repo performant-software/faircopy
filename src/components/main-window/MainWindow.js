@@ -171,7 +171,7 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource, searchQuery, searchResults } = this.state
 
-        let nextSelection = resourceIDs.find( r => fairCopyProject.getResourceEntry(r).type !== 'teidoc' )
+        let nextSelection = resourceIDs[0]
         let change = (selectedResource !== nextSelection)
         let nextResources = { ...openResources }
         let parentResourceID
@@ -185,7 +185,29 @@ export default class MainWindow extends Component {
                 }
             }    
             if( nextSelection === resourceID ) {
-                parentResourceID = resource.parentResource
+                if( resource.type !== 'teidoc' ) {
+                    parentResourceID = resource.parentResource
+                } else {
+                    // handle case where a TEI doc was selected as the first resource
+                    // look inside and select first non-header resource. if it has none, open the header
+                    const { resources } = resource
+                    let header, first
+                    for( const childID of resources ) {
+                        const childResource = fairCopyProject.getResourceEntry(childID)
+                        if( childResource.type === 'header') {
+                            header = childID
+                        } else {
+                            first = childID
+                            break
+                        }
+                    }
+                    parentResourceID = nextSelection
+                    nextSelection = first ? first : header
+                    if( !openResources[nextSelection] ) {
+                        nextResources[nextSelection] = fairCopyProject.openResource(nextSelection)
+                        change = true      
+                    }
+                }
             }
         }
 
