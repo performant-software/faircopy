@@ -3,6 +3,9 @@ import TEISchema from  '../model/TEISchema'
 import TEIDocument from '../model/TEIDocument'
 import { addTextNodes } from '../model/xml'
 
+// this is per index
+const maxSearchResults = 1000
+
 const searchIndexState = { teiSchema: null, searchIndex: {}, resourceMap: {} }
 
 function getSafeAttrKey( attrName ) {
@@ -104,7 +107,10 @@ function searchResource( searchQuery, resourceID ) {
     const { query, elementName, attrQs } = searchQuery 
 
     let searchResults = []
-    const bodyTextResults = resourceIndex.search(query,["contents"])
+    const bodyTextResults = resourceIndex.search(query,{
+        index: ["contents"],
+        limit: maxSearchResults
+    })
 
     if( bodyTextResults.length > 0 ) {
         const { result: mapIDs } = bodyTextResults[0]
@@ -138,7 +144,10 @@ function searchResource( searchQuery, resourceID ) {
     for( const attrQ of attrQs ) {
         const { name, value } = attrQ
         const attrSafeKey = getSafeAttrKey(name)
-        const attrResponse = resourceIndex.search(value,[`attr_${attrSafeKey}`])
+        const attrResponse = resourceIndex.search(value,{
+            index: [`attr_${attrSafeKey}`],
+            limit: maxSearchResults
+        })
 
         if( attrResponse.length > 0 ) {
             const { result: mapIDs } = attrResponse[0]
