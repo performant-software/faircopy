@@ -13,7 +13,7 @@ const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
 const idMapEntryName = 'id-map.json'
 
-const maxImportFileSize = 2000000  // 2MB
+const maxImportFileSize = 3000000  // 3MB
 
 class ProjectStore {
 

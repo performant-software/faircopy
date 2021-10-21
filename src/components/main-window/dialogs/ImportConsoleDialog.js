@@ -54,7 +54,7 @@ export default class ImportConsoleDialog extends Component {
                 const filename = fairCopy.services.getBasename(importItem.path).trim()
                 if( importItem.error ) {
                     if( importItem.error === 'too-big' ) {
-                        nextConsole.push(`File is too large, 500k max size: ${filename}`)
+                        nextConsole.push(`File is too large, 3MB max size: ${filename}`)
                     } else {
                         nextConsole.push(`Unable to read file: ${filename}`)
                     }
