@@ -31,7 +31,7 @@ function createIndexDocs(teiSchema, doc) {
         if( !element ) return false
 
         const { fcType } = element
-        const softNode = fcType === 'soft' 
+        const softNode = fcType === 'soft' || fcType === 'inters'
         const attrFields = {}
         const contents = node.textContent
         
