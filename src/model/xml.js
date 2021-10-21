@@ -6,8 +6,8 @@ const xmlStripSpaceNames = "TEI abstract additional address adminInfo altGrp alt
 export function parseText(textEl, teiDocument, teiSchema, subDocName) {
     // make the TEIDocument visible to the node spec parser for access to sub docs
     teiSchema.teiDocuments.push(teiDocument)
-    parseInterNodes(textEl,teiSchema)
     stripSpaces(textEl)
+    parseInterNodes(textEl,teiSchema)
     const domParser = subDocName !== 'text' ? teiSchema.docNodeParsers[subDocName] : teiSchema.domParser
     const doc = domParser.parse(textEl)
     teiSchema.teiDocuments.pop()
@@ -122,21 +122,12 @@ function stripSpaces(textEl) {
         const stripEls = textEl.querySelectorAll(xmlStripSpaceName)
         for( let i=0; i < stripEls.length; i++ ) {
             const stripEl = stripEls[i]
-            const nextEl = stripEl.cloneNode(false)
             for( let j=0; j < stripEl.childNodes.length; j++ ) {
                 const child = stripEl.childNodes[j]
-                const nextChild = child.cloneNode(true)
                 if( child.nodeName === '#text' ) {
-                    const nextChildContent = child.textContent.replace(/\s+/g, '')
-                    if( nextChildContent.length > 0 ) { 
-                        nextChild.innerHTML = nextChildContent
-                        nextEl.appendChild(nextChild)
-                    }
-                } else {
-                    nextEl.appendChild(nextChild)
+                    stripEl.removeChild(child)
                 }
             }
-            stripEl.parentNode.replaceChild(nextEl,stripEl)
         }
     }   
 }
