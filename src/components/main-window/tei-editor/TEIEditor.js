@@ -178,6 +178,8 @@ export default class TEIEditor extends Component {
         const editorView = teiDocument.getActiveView()
         const metaKey = ( event.ctrlKey || event.metaKey )
 
+        if( !editorView.hasFocus() ) return
+
         // move structure nodes with arrow keys
         if( event.key === 'ArrowUp' || event.key === 'ArrowDown' ) {
             const selection = (editorView) ? editorView.state.selection : null         
