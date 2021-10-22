@@ -89,19 +89,19 @@ export default class EditResourceDialog extends Component {
             const { name, type, localID } = this.state
 
             const nextErrors = {}
+
             const trimmedName = name.trim()
             if( trimmedName.length === 0 ) nextErrors['name'] = "Name cannot be blank."
+            const trimmedID = localID.trim()
+            if( trimmedID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
 
-            if( !resourceEntry || localID !== resourceEntry.localID ) {
-                if( localID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
-                else {
-                    if( !idMap.isUnique(localID, parentEntry?.localID ) ) {
-                        nextErrors['localID'] = parentEntry ? "ID is already in use in this TEI Document." : "ID is already in use in this project."
-                    } else {
-                        const idValid = idValidator(localID)
-                        if( idValid.error ) nextErrors['localID'] = idValid.errorMessage        
-                    }
-                }    
+            if( !resourceEntry || trimmedID !== resourceEntry.localID ) {
+                if( !idMap.isUnique(trimmedID, parentEntry?.localID ) ) {
+                    nextErrors['localID'] = parentEntry ? "ID is already in use in this TEI Document." : "ID is already in use in this project."
+                } else {
+                    const idValid = idValidator(trimmedID)
+                    if( idValid.error ) nextErrors['localID'] = idValid.errorMessage        
+                }
             }
 
             const hasErrors = Object.keys(nextErrors).length > 0
@@ -110,7 +110,7 @@ export default class EditResourceDialog extends Component {
             } else {
                 this.setState(this.initialState)
                 const actualType = type === 'facs-iiif' ? 'facs' : type
-                onSave(trimmedName,localID,actualType)    
+                onSave(trimmedName,trimmedID,actualType)    
             }
         }
 
