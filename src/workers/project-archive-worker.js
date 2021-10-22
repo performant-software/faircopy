@@ -1,7 +1,4 @@
 import JSZip from 'jszip'
-import debounce from 'debounce'
-
-const zipWriteDelay = 200
 
 const fairCopy = window.fairCopy
 
@@ -117,13 +114,12 @@ function postError(errorMessage,postMessage) {
     postMessage({ messageType: 'error', errorMessage })
 }
 
-// create a debounced function for writing the ZIP
-const save = debounce(() => {
+const save = () => {
     const { zipPath, zip } = projectArchiveState
     const jobNumber = Date.now()
     projectArchiveState.jobsInProgress++
     saveArchive(jobNumber, zipPath, zip, () => { projectArchiveState.jobsInProgress-- })
-},zipWriteDelay)
+}
 
 // terminate worker after all jobs are done
 const closeSafely = (close) => {      
@@ -132,7 +128,7 @@ const closeSafely = (close) => {
 
     if( jobsInProgress > 0 ) {
         // write jobs still active, wait a moment and then try again 
-        setTimeout( () => { closeSafely() }, zipWriteDelay*2 )
+        setTimeout( () => { closeSafely(close) }, 1000 )
     } else {
         // when we are done with jobs, clear cache and exit
         fs.rmSync(cacheFolder, { recursive: true, force: true })

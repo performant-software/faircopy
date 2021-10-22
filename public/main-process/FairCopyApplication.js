@@ -223,7 +223,6 @@ class FairCopyApplication {
   exitApp() {
     if( !this.exiting ) {
       this.exiting = true
-      this.projectStore.close()
 
       for( const imageView of Object.values(this.imageViews) ) {
         if( !imageView.isDestroyed() ) {
@@ -241,6 +240,7 @@ class FairCopyApplication {
 
       if( this.mainWindow ) {
         this.mainWindow.close()
+        this.projectStore.close()
       }
     }
   }
@@ -260,7 +260,6 @@ class FairCopyApplication {
     if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
-      this.projectStore.close()
     }
     if( this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()
