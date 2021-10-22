@@ -29,6 +29,10 @@ export default class EditGroupDialog extends Component {
             this.setState(nextState)
         }
 
+        const onKeyUp = (e) => {
+            if( e.keyCode === 13 ) onSaveInfo()
+        }
+        
         const onSaveInfo = () => {
             const { fairCopyConfig, onUpdateConfig, menuID } = this.props
     
@@ -79,6 +83,7 @@ export default class EditGroupDialog extends Component {
                         error={validationErrors['name'] !== undefined }
                         helperText={validationErrors['name']}
                         label="Group Name" 
+                        onKeyUp={onKeyUp}
                     /><br/>
                 </DialogContent>
                 <DialogActions>
