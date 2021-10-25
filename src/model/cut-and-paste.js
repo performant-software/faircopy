@@ -1,4 +1,4 @@
-import {DOMSerializer} from "prosemirror-model"
+import {DOMSerializer, Fragment, Slice} from "prosemirror-model"
 import TEISchema from "./TEISchema"
 
 const fairCopy = window.fairCopy
@@ -36,6 +36,14 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
             // schema needs access to this document while running parseSlice()
             // pops off in transformPastedHandler()
             teiSchema.teiDocuments.push(teiDocument)
+
+            // also set a flag to show the type of copy operation
+            const topLevelNode = xmlDom.firstChild.firstChild
+            if( topLevelNode.getAttribute('data-fc-node') === 'true' ) {
+                topLevelNode.removeAttribute('data-fc-node')
+                teiSchema.nodeCopyFlag = true
+            }
+
             let xhtml = new XMLSerializer().serializeToString(xmlDom);
             xhtml = xhtml.replace('<xml>','').replace('</xml>','')
             const nextHTML = `${metaTag}${xhtml}`
@@ -53,7 +61,16 @@ export function transformPastedHandler(teiSchema) {
     return (slice) => {
         // done parsing, disassociate this teidocument from schema parser
         teiSchema.teiDocuments.pop()
-        return slice
+
+        // perform transforms based on type of operation
+        let nextSlice
+        if( teiSchema.nodeCopyFlag ) {   
+            nextSlice = slice         
+            teiSchema.nodeCopyFlag = false
+        } else {
+            nextSlice = transformInlineCopy(slice)
+        }
+        return nextSlice
     }
 }
 
@@ -94,8 +111,10 @@ function serializeForClipboard(view, slice) {
   
     let firstChild = wrap.firstChild
 
-    if (firstChild && firstChild.nodeType === 1)
-      firstChild.setAttribute("data-pm-slice", `${openStart} ${openEnd} ${JSON.stringify(context)}`)
+    if (firstChild && firstChild.nodeType === 1) {
+        firstChild.setAttribute("data-pm-slice", `${openStart} ${openEnd} ${JSON.stringify(context)}`)
+        firstChild.setAttribute('data-fc-node','true')
+    }
   
     let text = view.someProp("clipboardTextSerializer", f => f(slice)) ||
         slice.content.textBetween(0, slice.content.size, "\n\n")
@@ -132,4 +151,41 @@ export function pasteSelectedNode(teiDocument) {
             fairCopy.services.ipcSend('requestPaste')
         }
     }
+}
+
+function transformInlineCopy(slice) {
+    
+    // remove structure nodes and concat inlines
+    const fragment = slice.content
+    const {schema} = fragment.firstChild.type
+    const inlineNodes = []
+
+    for( let i=0; i < fragment.childCount; i++ ) {
+        const child = fragment.child(i)
+        child.descendants( (node) => {
+            // if this is text node or global node, add it to the list
+            const nodeName = node.type.name
+            if( nodeName.includes('textNode') || nodeName.includes('globalNode') ) {
+                for( let j=0; j < node.childCount; j++ ) {
+                    const inlineNode = node.child(j) 
+                    inlineNodes.push(inlineNode)
+                    const spaceNode = schema.text(' ')
+                    inlineNodes.push(spaceNode)                    
+                }
+            }
+            return true
+        })
+    }
+
+    // if we didn't find any inline nodes, this could be from an external source, 
+    // bring over just the text content
+    if( inlineNodes.length === 0 ) {
+        for( let i=0; i < fragment.childCount; i++ ) {
+            const child = fragment.child(i)
+            const txtNode = schema.text(child.textContent)
+            inlineNodes.push(txtNode)
+        }
+    }
+
+    return new Slice( Fragment.from(inlineNodes), 0, 0 )
 }
