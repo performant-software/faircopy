@@ -22,7 +22,6 @@ function inValidationSet(element) {
 
 export function validAction( elementID, teiDocument ) {
     const { fairCopyProject } = teiDocument
-    if( !fairCopyProject.teiSchema.elements[elementID] ) debugger
     const { pmType } = fairCopyProject.teiSchema.elements[elementID]
     const { inter } = fairCopyProject.teiSchema.elementGroups
 
