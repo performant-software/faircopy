@@ -136,6 +136,7 @@ export default class EditResourceDialog extends Component {
                     <TextField 
                         name="name"
                         className="name-field"
+                        autoFocus={true}
                         value={name}
                         onChange={onChange}
                         error={validationErrors['name'] !== undefined }
@@ -154,7 +155,7 @@ export default class EditResourceDialog extends Component {
                     { !resourceEntry && this.renderResourceTypeSelect(type,onChange) }
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>
+                    <Button variant="contained" color="primary" onClick={onSaveResource}>Save</Button>
                     <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

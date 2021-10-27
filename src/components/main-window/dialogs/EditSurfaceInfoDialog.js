@@ -38,6 +38,10 @@ export default class EditSurfaceInfoDialog extends Component {
             }
         }
 
+        const onKeyUp = (e) => {
+            if( e.keyCode === 13 ) onSaveInfo()
+        }
+
         const onClickClose = () => {
             this.setState(this.initialState)
             onClose()
@@ -56,16 +60,18 @@ export default class EditSurfaceInfoDialog extends Component {
                 <DialogContent>
                     <TextField 
                         name="name"
+                        autoFocus={true}
                         className="name-field"
                         value={name}
                         onChange={onChange}
                         error={validationErrors['name'] !== undefined }
                         helperText={validationErrors['name']}
                         label="Surface Name" 
+                        onKeyUp={onKeyUp}
                     /><br/>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary" onClick={onSaveInfo} autoFocus>Save</Button>
+                    <Button variant="contained" color="primary" onClick={onSaveInfo}>Save</Button>
                     <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

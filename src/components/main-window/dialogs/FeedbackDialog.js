@@ -68,7 +68,8 @@ export default class FeedbackNotesDialog extends Component {
                             className="form-field"
                             variant="outlined"
                             onChange={onChange}
-                            label="Your Message" 
+                            label="Your Message"
+                            autoFocus={true}
                         />
                     </div>
                 </DialogContent>

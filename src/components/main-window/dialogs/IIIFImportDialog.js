@@ -67,6 +67,10 @@ export default class IIIFImportDialog extends Component {
             onClose()
         }
 
+        const onKeyUp = (e) => {
+            if( e.keyCode === 13 ) onSaveResource()
+        }
+
         const { url, loading, validationErrors } = this.state
 
         return (
@@ -85,17 +89,19 @@ export default class IIIFImportDialog extends Component {
                         </div> : 
                         <TextField 
                             name="url"
+                            autoFocus={true}
                             className="name-field"
                             value={url}
                             onChange={onChange}
                             error={validationErrors['url'] !== undefined }
                             helperText={validationErrors['url']}
-                        label="IIIF Manifest URL" 
+                            label="IIIF Manifest URL" 
+                            onKeyUp={onKeyUp}
                         />
                     }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={loading} variant="contained" color="primary" onClick={onSaveResource} autoFocus>Save</Button>
+                    <Button disabled={loading} variant="contained" color="primary" onClick={onSaveResource}>Save</Button>
                     <Button disabled={loading} variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

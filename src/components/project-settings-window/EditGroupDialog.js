@@ -78,6 +78,7 @@ export default class EditGroupDialog extends Component {
                     <TextField 
                         name="name"
                         className="name-field"
+                        autoFocus={true}
                         value={name}
                         onChange={onChange}
                         error={validationErrors['name'] !== undefined }
@@ -87,7 +88,7 @@ export default class EditGroupDialog extends Component {
                     /><br/>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary" onClick={onSaveInfo} autoFocus>Save</Button>
+                    <Button variant="contained" color="primary" onClick={onSaveInfo}>Save</Button>
                     <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
