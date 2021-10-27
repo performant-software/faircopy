@@ -177,7 +177,7 @@ function transformInlineCopy(slice) {
         })
     }
 
-    // if we didn't find any inline nodes, this could be from an external source, 
+    // if we didn't find any textnodes or globalnodes nodes, this could be from an external source, 
     // bring over just the text content
     if( inlineNodes.length === 0 ) {
         for( let i=0; i < fragment.childCount; i++ ) {
