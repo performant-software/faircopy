@@ -8,11 +8,16 @@ const log = require('electron-log')
 let fairCopyApplication
 
 function createApplicationWindowManager () {
-  fairCopyApplication = new FairCopyApplication()
-  log.info(`FairCopy ${app.getVersion()}`)
-  fairCopyApplication.createProjectWindow().then(() => {
-    log.info("Project Window Ready")   
-  })
+  const gotTheLock = app.requestSingleInstanceLock()
+
+  // don't launch a second copy of the app
+  if( gotTheLock ) {
+    fairCopyApplication = new FairCopyApplication()
+    log.info(`FairCopy ${app.getVersion()}`)
+    fairCopyApplication.createProjectWindow().then(() => {
+      log.info("Project Window Ready")   
+    })  
+  }
 }
 
 // This method will be called when Electron has finished
