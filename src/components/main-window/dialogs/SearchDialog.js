@@ -184,6 +184,7 @@ export default class SearchDialog extends Component {
         }
 
         const onReset = () => {
+            updateSearchFilter()
             this.setState({ ...this.initialState, changed: true })
         }
 
@@ -194,7 +195,7 @@ export default class SearchDialog extends Component {
 
         return (
             <Dialog id="SearchDialog" maxWidth="lg" open={true} onClose={this.onClose} aria-labelledby="attribute-dialog">
-                <DialogTitle id="attribute-dialog">Search Filters</DialogTitle>
+                <DialogTitle id="attribute-dialog"><i className="fas fa-filter"></i> Search Filters</DialogTitle>
                 <DialogContent className="vocab-content">
                     { this.renderElementFilter() }
                     { this.renderAttributeFilters() }         

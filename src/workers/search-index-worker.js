@@ -115,7 +115,7 @@ function searchResource( searchQuery, resourceID ) {
     if( bodyTextResults.length > 0 ) {
         const { result: mapIDs } = bodyTextResults[0]
         
-        if( elementName ) {
+        if( elementName.length > 0 ) {
             const elementMatchIDs = mapIDs.filter( i => elementMap[i].elementName === elementName )
             for( const elementID of elementMatchIDs ) {
                 const { pos:start, nodeSize } = elementMap[elementID]

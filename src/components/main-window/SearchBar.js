@@ -96,8 +96,11 @@ export default class SearchBar extends Component {
     }
 
     render() {
-        const { searchEnabled, onSearchFilter } = this.props
+        const { searchEnabled, onSearchFilter, searchFilterOptions } = this.props
+        const { active } = searchFilterOptions
+        
         const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
+        const filterIcon = active ? 'fas fa-filter' : 'far fa-filter'
 
         return (
             <div
@@ -118,7 +121,7 @@ export default class SearchBar extends Component {
                     className="search-button" 
                     size="small" 
                     color="inherit">
-                    <i className="fas fa-filter fa-lg"></i>               
+                    <i className={`${filterIcon} fa-lg`}></i>               
                 </Button> 
             </div>
         )

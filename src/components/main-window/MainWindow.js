@@ -69,7 +69,7 @@ export default class MainWindow extends Component {
             textImportDialogMode: false,
             searchQuery: '',
             searchResults: {},
-            searchFilterOptions: null,
+            searchFilterOptions: { active: false, elementName: '', attrQs: []},
             searchFilterMode: false,
             searchEnabled: false,
             leftPaneWidth: initialLeftPaneWidth
@@ -415,8 +415,13 @@ export default class MainWindow extends Component {
     }
 
     updateSearchFilter = ( elementName, attrQs ) => {
-        const searchFilterOptions = { elementName, attrQs }
-        this.setState({...this.state, searchFilterOptions, searchFilterMode: false })
+        if( elementName ) {
+            const searchFilterOptions = { elementName, attrQs, active: true }
+            this.setState({...this.state, searchFilterOptions, searchFilterMode: false })    
+        } else {
+            const searchFilterOptions = { elementName: '', attrQs: [], active: false }
+            this.setState({...this.state, searchFilterOptions, searchFilterMode: false })    
+        }
     }
 
     updateSearchResults(resource, searchQuery, searchResults) {
