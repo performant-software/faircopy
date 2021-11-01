@@ -26,6 +26,7 @@ import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults } from '../../model/search'
+import SearchDialog from './dialogs/SearchDialog';
 
 const fairCopy = window.fairCopy
 
@@ -68,6 +69,8 @@ export default class MainWindow extends Component {
             textImportDialogMode: false,
             searchQuery: '',
             searchResults: {},
+            searchFilterOptions: null,
+            searchFilterMode: false,
             searchEnabled: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
@@ -407,6 +410,15 @@ export default class MainWindow extends Component {
         this.setState({...this.state, searchQuery, searchResults, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
     }
 
+    onSearchFilter = () => {        
+        this.setState({...this.state, searchFilterMode: true })
+    }
+
+    updateSearchFilter = ( elementName, attrQs ) => {
+        const searchFilterOptions = { elementName, attrQs }
+        this.setState({...this.state, searchFilterOptions, searchFilterMode: false })
+    }
+
     updateSearchResults(resource, searchQuery, searchResults) {
         const { resourceID } = resource
         const resourceSearchResults = searchResults[resourceID] ?  searchResults[resourceID] : -1
@@ -526,7 +538,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
         const { fairCopyProject, appConfig, onProjectSettings } = this.props
         const { idMap } = fairCopyProject
 
@@ -646,6 +658,11 @@ export default class MainWindow extends Component {
                     onSave={onSaveSurfaceInfo}
                     onClose={()=>{ this.setState( {...this.state, editSurfaceInfoMode: false, surfaceInfo: null} )}}
                 ></EditSurfaceInfoDialog> }
+                { searchFilterMode && <SearchDialog
+                    searchFilterOptions={searchFilterOptions}
+                    updateSearchFilter={this.updateSearchFilter}
+                    onClose={()=>{ this.setState( {...this.state, searchFilterMode: false} )}}
+                ></SearchDialog> }
                 <SnackAlert
                     open={alertMessage !== null}
                     message={alertMessage}
@@ -710,7 +727,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled } = this.state
+        const { searchEnabled, searchFilterOptions } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -730,6 +747,8 @@ export default class MainWindow extends Component {
                         appConfig={appConfig}
                         fairCopyProject={fairCopyProject}
                         onSearchResults={this.onSearchResults}
+                        onSearchFilter={this.onSearchFilter}
+                        searchFilterOptions={searchFilterOptions}
                         searchEnabled={searchEnabled}
                         onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}

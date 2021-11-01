@@ -1,0 +1,14 @@
+
+#SearchDialog .search-content {
+    width: 400px;
+}
+
+#SearchDialog .search-name-field {
+    margin-bottom: 20px;
+}
+
+#SearchDialog .search-add-row {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: flex;
+}

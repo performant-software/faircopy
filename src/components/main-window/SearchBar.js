@@ -10,7 +10,7 @@ export default class SearchBar extends Component {
         super(props)
 
         this.initialState = {
-            searchQuery: ""
+            searchQuery: "",
         }
         this.state = this.initialState
         this.searchBarEl = null
@@ -70,8 +70,10 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
+        const { searchFilterOptions } = this.props
         const { searchQuery } = this.state
-        const searchQ = { query: searchQuery, elementName: "", attrQs: []}
+        const { elementName, attrQs } = searchFilterOptions
+        const searchQ = { query: searchQuery, elementName, attrQs }
         fairCopy.services.ipcSend('searchProject', searchQ)
     }
 
@@ -94,7 +96,7 @@ export default class SearchBar extends Component {
     }
 
     render() {
-        const { searchEnabled } = this.props
+        const { searchEnabled, onSearchFilter } = this.props
         const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
 
         return (
@@ -111,12 +113,12 @@ export default class SearchBar extends Component {
                     onKeyUp={this.onKeyUp}
                 />
                 <Button 
-                    onClick={this.onSearch} 
+                    onClick={onSearchFilter} 
                     disabled={!searchEnabled}
                     className="search-button" 
                     size="small" 
                     color="inherit">
-                    <i className="fas fa-search-plus fa-lg"></i>               
+                    <i className="fas fa-filter fa-lg"></i>               
                 </Button> 
             </div>
         )
