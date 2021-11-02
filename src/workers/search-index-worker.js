@@ -36,8 +36,8 @@ function createIndexDocs(teiSchema, doc) {
         const { fcType } = element
         const softNode = fcType === 'soft' || fcType === 'inters'
         const attrFields = {}
-        const contents = node.textContent
-        
+        const contents = doc.textBetween(pos, pos+nodeSize-2, ' ', ' ')
+
         for( const attrKey of Object.keys(node.attrs) ) {
             const attrVal = node.attrs[attrKey]
             const attrSafeKey = getSafeAttrKey(attrKey)
@@ -122,8 +122,8 @@ function searchResource( searchQuery, resourceID ) {
                 const end = start + nodeSize
                 for( const id of mapIDs ) {
                     const mapEntry = elementMap[id]
-                    const { pos, softNode } = mapEntry
-                    if( softNode && pos >= start && pos < end ) {
+                    const { pos } = mapEntry
+                    if( pos >= start && pos < end ) {
                         searchResults.push(pos)
                     }
                 }
@@ -131,10 +131,8 @@ function searchResource( searchQuery, resourceID ) {
         } else {
             for( const id of mapIDs ) {
                 const mapEntry = elementMap[id]
-                const { pos, softNode } = mapEntry
-                if( softNode ) {
-                    searchResults.push(pos)
-                }
+                const { pos } = mapEntry
+                searchResults.push(pos)
             }
         }
     }
@@ -148,7 +146,6 @@ function searchResource( searchQuery, resourceID ) {
             index: [`attr_${attrSafeKey}`],
             limit: maxSearchResults
         })
-
         if( attrResponse.length > 0 ) {
             const { result: mapIDs } = attrResponse[0]
             for( const mapID of mapIDs ) {
@@ -157,7 +154,7 @@ function searchResource( searchQuery, resourceID ) {
             }
         }
     }
-
+    
     // filter search results by matching attrQ results
     if( attrQs.length > 0 ) {
         searchResults = searchResults.filter( searchResult => attrResults.includes(searchResult) )

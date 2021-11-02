@@ -414,14 +414,9 @@ export default class MainWindow extends Component {
         this.setState({...this.state, searchFilterMode: true })
     }
 
-    updateSearchFilter = ( elementName, attrQs ) => {
-        if( elementName ) {
-            const searchFilterOptions = { elementName, attrQs, active: true }
-            this.setState({...this.state, searchFilterOptions, searchFilterMode: false })    
-        } else {
-            const searchFilterOptions = { elementName: '', attrQs: [], active: false }
-            this.setState({...this.state, searchFilterOptions, searchFilterMode: false })    
-        }
+    updateSearchFilter = ( elementName, attrQs, active ) => {
+        const searchFilterOptions = { elementName, attrQs, active }
+        this.setState({...this.state, searchFilterOptions, searchFilterMode: false })    
     }
 
     updateSearchResults(resource, searchQuery, searchResults) {
