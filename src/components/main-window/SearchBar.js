@@ -38,7 +38,7 @@ export default class SearchBar extends Component {
             <Typography>{resourceIcon} {name}</Typography>
         return (
             <div className='search-result-label'>
-                 {path} { this.renderStatusChip(hitCount) }
+                 {path}
             </div>
         )
     }
@@ -55,7 +55,7 @@ export default class SearchBar extends Component {
                 const parentEntry = fairCopyProject.getParent(resourceEntry)
                 const parentName = parentEntry ?  parentEntry.name : null
                 const { name, type } = resourceEntry
-                const resultLabel = this.renderResultLabel( name, parentName, type, hitCount )
+                const resultLabel = this.renderResultLabel( name, parentName, type )
                 const resultAction = () => { onResourceAction('open', [resourceID]) }
                 menuOptions.push({
                     id: `result-${resourceID}`,
