@@ -12,3 +12,7 @@
     margin-bottom: 20px;
     display: flex;
 }
+
+#SearchDialog .attr-filter-name {
+    margin-right: 10px;
+}

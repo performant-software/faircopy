@@ -138,6 +138,7 @@ export default class SearchDialog extends Component {
                 <div className="search-add-row">
                     <TextField
                         name="attrName"
+                        className="attr-filter-name"
                         value={attrName}            
                         onChange={onChange}
                     />
