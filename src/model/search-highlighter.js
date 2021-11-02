@@ -34,20 +34,21 @@ export function searchHighlighter() {
 
                 // find an exact match to the search query and highlight it
                 parentNode.descendants( (node,pos) => {
-                    if( node.text ) {
-                        // find whole word matches, ignoring spaces, punctuation, and possessive
+                    if( node.type.name.includes('textNode') ) {
                         for( const term of terms ) {
-                            const nodeTerms = node.textContent.toLowerCase().split(' ')
-                            let offset = 0
-                            for( const nodeTerm of nodeTerms ) {
-                                const regex = new RegExp(`^\\W*${term}\\W*\\w*$`)
-                                if( nodeTerm.match(regex) ) {
-                                    // highlight the matching term
-                                    const termFrom = nodePos+pos+offset+1
-                                    const termTo = termFrom + term.length
-                                    decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
+                            let childOffset = 1
+                            for( let i=0; i < node.childCount; i++ ) {
+                                const child = node.child(i)
+                                if( child.isText ) {
+                                    const textOffset = child.text.indexOf(term)
+                                    if( textOffset !== -1 ) {
+                                        // highlight the matching term
+                                        const termFrom = nodePos+pos+childOffset+textOffset+1
+                                        const termTo = termFrom + term.length
+                                        decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
+                                    }
                                 }
-                                offset = offset + nodeTerm.length+1
+                                childOffset += child.nodeSize
                             }
                         }
                         return false
