@@ -165,9 +165,9 @@ export default class SearchDialog extends Component {
                 <div className="search-add-row">
                     <Button 
                         onClick={onAddClick} 
-                        tooltip={"Add a Term"}
+                        tooltip={"Add an attribute filter."}
                     >
-                        <span><i className="fas fa-lg fa-plus-circle"></i> Add Term</span>
+                        <span><i className="fas fa-lg fa-plus-circle"></i> Add Attribute Filter</span>
                     </Button>
                 </div>
             )    
@@ -179,12 +179,14 @@ export default class SearchDialog extends Component {
 
         const onOK = () => {
             const { elementName, attrQs } = this.state
-            updateSearchFilter(elementName, attrQs, true)
+            const trimName = elementName.trim()
+            const active = trimName.length > 0 || attrQs.length > 0 
+            updateSearchFilter(trimName, attrQs, active, false)
             this.setState({ ...this.initialState })
         }
 
         const onReset = () => {
-            updateSearchFilter('',[],false)
+            updateSearchFilter('',[],false,true)
             this.setState({ ...this.initialState, changed: true })
         }
 
@@ -197,6 +199,7 @@ export default class SearchDialog extends Component {
             <Dialog id="SearchDialog" maxWidth="lg" open={true} onClose={this.onClose} aria-labelledby="attribute-dialog">
                 <DialogTitle id="attribute-dialog"><i className="fas fa-filter"></i> Search Filters</DialogTitle>
                 <DialogContent className="vocab-content">
+                    <Typography>You can limit your search to certain element types and/or attribute values.</Typography>
                     { this.renderElementFilter() }
                     { this.renderAttributeFilters() }         
                     { this.renderAddRow() }          
