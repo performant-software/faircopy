@@ -138,7 +138,7 @@ function searchResource( searchQuery, resourceID ) {
     }
 
     // next, search for the attributes
-    let attrResults = []
+    let attrMatches = {}
     for( const attrQ of attrQs ) {
         const { name, value } = attrQ
         const attrSafeKey = getSafeAttrKey(name)
@@ -150,14 +150,34 @@ function searchResource( searchQuery, resourceID ) {
             const { result: mapIDs } = attrResponse[0]
             for( const mapID of mapIDs ) {
                 const {pos} = elementMap[mapID]
-                attrResults.push(pos)
+                const key = `${name}-${value}`
+                if( attrMatches[key] ) {
+                    attrMatches[key].push(pos)
+                } else {
+                    attrMatches[key] = [ pos ]
+                }
             }
         }
     }
     
     // filter search results by matching attrQ results
     if( attrQs.length > 0 ) {
-        searchResults = searchResults.filter( searchResult => attrResults.includes(searchResult) )
+        const attrResults = []
+        for( const searchResult of searchResults ) {
+            let found = null
+            for( const attrMatchList of Object.values(attrMatches) ) {
+                if( attrMatchList.includes( searchResult ) ) {
+                    if( found === null ) found = true
+                } else {
+                    found = false
+                }
+            }    
+            if( found ) {
+                // found for all attrQs
+                attrResults.push( searchResult )
+            }
+        }
+        searchResults = attrResults
     }
         
     return searchResults
