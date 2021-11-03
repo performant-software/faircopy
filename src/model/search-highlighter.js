@@ -35,20 +35,16 @@ export function searchHighlighter() {
                 // find an exact match to the search query and highlight it
                 parentNode.descendants( (node,pos) => {
                     if( node.type.name.includes('textNode') ) {
+                        const from = nodePos+pos
+                        const to = from + node.nodeSize
+                        const text = doc.textBetween(from,to, ' ', ' ')
                         for( const term of terms ) {
-                            let childOffset = 1
-                            for( let i=0; i < node.childCount; i++ ) {
-                                const child = node.child(i)
-                                if( child.isText ) {
-                                    const textOffset = child.text.indexOf(term)
-                                    if( textOffset !== -1 ) {
-                                        // highlight the matching term
-                                        const termFrom = nodePos+pos+childOffset+textOffset+1
-                                        const termTo = termFrom + term.length
-                                        decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
-                                    }
-                                }
-                                childOffset += child.nodeSize
+                            const textOffset = text.indexOf(term)
+                            if( textOffset !== -1 ) {
+                                // highlight the matching term
+                                const termFrom = nodePos+pos+textOffset+2
+                                const termTo = termFrom + term.length
+                                decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
                             }
                         }
                         return false
@@ -63,4 +59,3 @@ export function searchHighlighter() {
 
     return plugin
 }
-
