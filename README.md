@@ -14,7 +14,7 @@ Developer Environment
 
 To run Faircopy in development mode, install the necessary dependencies using `yarn` and then `yarn start`. This will start the create react app server on port 3000. To run the electron main process on VS Code, a debug configuration has been created for the project. Run the debugger and this will allow you to work in the electron environment. Create React App will hot reload into Electron's browser as you work. 
 
-To create a distributable version of the application, add a text file `public/version.txt` that contains the version number. Update the package.json file `version` field. Then run:
+To create a distributable version of the application, run:
 
 `yarn dist`
 
@@ -24,4 +24,6 @@ The installers will be created in the `dist` folder.
 Notes
 -----
 
-Presently stuck at JSZip 3.2.0 because the latest version doesn't work on Electron Renderer.
+* Presently stuck at JSZip 3.2.0 because the latest version doesn't work on Electron Renderer.
+* README needs updating to include steps for configuring code signing for PC and Mac.
+* README should describe how turtle script works and how it relates to TEI repo.
