@@ -179,10 +179,14 @@ export default class SearchDialog extends Component {
         const { onClose, updateSearchFilter } = this.props
 
         const onOK = () => {
-            const { elementName, attrQs } = this.state
-            const trimName = elementName.trim()
-            const active = trimName.length > 0 || attrQs.length > 0 
-            updateSearchFilter(trimName, attrQs, active, false)
+            const { elementName, attrQs, changed } = this.state
+            if( changed ) {
+                const trimName = elementName.trim()
+                const active = trimName.length > 0 || attrQs.length > 0 
+                updateSearchFilter(trimName, attrQs, active, false)    
+            } else {
+                onClose()
+            }
             this.setState({ ...this.initialState })
         }
 
