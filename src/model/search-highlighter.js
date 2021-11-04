@@ -3,6 +3,7 @@ import {DecorationSet, Decoration } from "prosemirror-view"
 import { markExtent, gatherMarks } from "./commands"
 
 const searchHighlightColor = '#8dff50'
+const markPrefix = 'mark'
 
 export function searchHighlighter() {
     let plugin = new Plugin({
@@ -26,7 +27,7 @@ export function searchHighlighter() {
         const pluginState = plugin.getState(state)
         const { searchQuery, searchResults } = pluginState
         const emptySet = DecorationSet.create(doc, [])
-        
+
         if( !searchQuery ) return emptySet
 
         const terms = searchQuery.query.toLowerCase().split(' ')
@@ -94,7 +95,9 @@ function matchingMark( pos, searchQuery, doc, marks ) {
     const { elementName, attrQs } = searchQuery
 
     const mark = marks.find( m => {
-        if( elementName.length > 0 && elementName !== m.type.name ) return false
+        const markName = m.type.name
+        const elName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
+        if( elementName.length > 0 && elementName !== elName ) return false
         for( const attrQ of attrQs ) {
             const { name, value } = attrQ
             if( m.attrs[name] !== value ) return false

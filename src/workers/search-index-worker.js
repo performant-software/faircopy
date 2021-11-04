@@ -25,6 +25,7 @@ function defineAttrFields( attrs ) {
 
 function createIndexDocs(teiSchema, doc) {
 
+    const markPrefix = 'mark'
     const resourceMap = [], indexDocs = []
     let i=0
 
@@ -61,11 +62,14 @@ function createIndexDocs(teiSchema, doc) {
         // index marks within soft nodes
         if( softNode ) {
             const marks = gatherMarks(node)
-
+            
             for( const mark of marks ) {
+                const markName = mark.type.name
+                const elementName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
+    
                 resourceMap.push({
                     elementType: 'mark',
-                    elementName: mark.type.name,
+                    elementName,
                     pos,
                     nodeSize
                 })
