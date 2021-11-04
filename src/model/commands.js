@@ -252,3 +252,15 @@ export function markExtent($anchor, mark, doc) {
 
     return { from, to }
 }
+
+export function gatherMarks(softNode) {
+    const marks = []
+
+    softNode.descendants((node) => {    
+        if( node.type.name === 'text' ) {
+            marks.push( ...node.marks )
+        }        
+    })
+
+    return marks
+}

@@ -1,5 +1,6 @@
 import {Plugin } from "prosemirror-state"
 import {DecorationSet, Decoration } from "prosemirror-view"
+import { markExtent, gatherMarks } from "./commands"
 
 const searchHighlightColor = '#8dff50'
 
@@ -24,12 +25,17 @@ export function searchHighlighter() {
         const { doc } = state
         const pluginState = plugin.getState(state)
         const { searchQuery, searchResults } = pluginState
-        const terms = searchQuery.toLowerCase().split(' ')
+        const emptySet = DecorationSet.create(doc, [])
+        
+        if( !searchQuery ) return emptySet
+
+        const terms = searchQuery.query.toLowerCase().split(' ')
         let resultsInvalid = false
 
         if( searchResults.length > 0 ) {
             const decorations = []
-            for( const nodePos of searchResults ) {
+            for( const searchResult of searchResults ) {
+                const { pos: nodePos, elementType } = searchResult
                 const $node = doc.resolve(nodePos+1)
                 const parentNode = $node.parent
 
@@ -47,13 +53,25 @@ export function searchHighlighter() {
                                     // highlight the matching term
                                     const termFrom = nodePos+pos+textOffset+2
                                     const termTo = termFrom + term.length
-                                    decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
+                                    // if the result is a mark, see if there's matching mark at this location
+                                    if( elementType === 'mark' ) {
+                                        const marks = gatherMarks(node)
+                                        if( marks.length > 0 ) {
+                                            const markMatch = matchingMark(termFrom,searchQuery,doc,marks)
+                                            if( markMatch ) {
+                                                decorations.push(Decoration.inline(markMatch.from, markMatch.to, {style: `background: ${searchHighlightColor}`}))
+                                            }    
+                                        }
+                                    } else {
+                                        decorations.push(Decoration.inline(termFrom, termTo, {style: `background: ${searchHighlightColor}`}))
+                                    }
                                 }
                             }    
                         } catch(e) {
-                            // If the user edits the document, it can invalid the search results by moving the offsets around.
+                            // If the user edits the document, it can invalidate the search results by moving the offsets around.
                             // In this case, clear the highlights.
                             resultsInvalid = true
+                            console.log(e)
                         }
                         return false
                     }
@@ -62,7 +80,7 @@ export function searchHighlighter() {
             }
 
             if( resultsInvalid ) {
-                return DecorationSet.create(doc, [])
+                return emptySet
             } else {
                 return DecorationSet.create(doc, decorations)
             }            
@@ -70,4 +88,23 @@ export function searchHighlighter() {
     }
 
     return plugin
+}
+
+function matchingMark( pos, searchQuery, doc, marks ) {
+    const { elementName, attrQs } = searchQuery
+
+    const mark = marks.find( m => {
+        if( elementName.length > 0 && elementName !== m.type.name ) return false
+        for( const attrQ of attrQs ) {
+            const { name, value } = attrQ
+            if( m.attrs[name] !== value ) return false
+        }
+        return true
+    })
+
+    if( mark ) {
+        const $pos = doc.resolve(pos)
+        return  markExtent($pos, mark, doc)
+    }
+    return null
 }

@@ -2,6 +2,7 @@ import { Document } from "flexsearch";
 import TEISchema from  '../model/TEISchema'
 import TEIDocument from '../model/TEIDocument'
 import { addTextNodes } from '../model/xml'
+import { gatherMarks } from "../model/commands";
 
 // this is per index
 const maxSearchResults = 1000
@@ -44,22 +45,50 @@ function createIndexDocs(teiSchema, doc) {
             attrFields[`attr_${attrSafeKey}`] = attrVal
         }
 
-        // TODO index marks
-        // TODO sub docs
-        const id = i++
-
         resourceMap.push({
+            elementType: softNode ? 'softNode' : 'hardNode',
             elementName,
             pos,
-            softNode,
             nodeSize
         })
 
         indexDocs.push({
-            id,
+            id: i++,
             contents,
             ...attrFields
         })
+
+        // index marks within soft nodes
+        if( softNode ) {
+            const marks = gatherMarks(node)
+
+            for( const mark of marks ) {
+                resourceMap.push({
+                    elementType: 'mark',
+                    elementName: mark.type.name,
+                    pos,
+                    nodeSize
+                })
+        
+                const markAttrFields = {}
+    
+                for( const attrKey of Object.keys(mark.attrs) ) {
+                    const attrVal = mark.attrs[attrKey]
+                    const attrSafeKey = getSafeAttrKey(attrKey)
+                    markAttrFields[`attr_${attrSafeKey}`] = attrVal
+                }
+    
+                indexDocs.push({
+                    id: i++,
+                    contents,
+                    ...markAttrFields
+                })
+            }
+
+            // TODO index inline nodes
+        }
+
+        // don't descend into soft nodes
         return !softNode
     })
 
@@ -74,6 +103,7 @@ function indexResource( resourceID, resourceType, content ) {
     const indexPMDoc = addTextNodes( indexDoc.initialState )
 
     const { resourceMap, indexDocs } = createIndexDocs(teiSchema,indexPMDoc)
+    /// TODO index subdocs
 
     const attrFields = defineAttrFields( teiSchema.attrs )
 
@@ -97,7 +127,7 @@ function searchProject( query ) {
     for( const resourceID of Object.keys(searchIndex) ) {
         results[resourceID] = searchResource( query, resourceID )
     }    
-    return { query: query.query, results }
+    return { query, results }
 }
 
 function searchResource( searchQuery, resourceID ) {
@@ -118,21 +148,13 @@ function searchResource( searchQuery, resourceID ) {
         if( elementName.length > 0 ) {
             const elementMatchIDs = mapIDs.filter( i => elementMap[i].elementName === elementName )
             for( const elementID of elementMatchIDs ) {
-                const { pos:start, nodeSize } = elementMap[elementID]
-                const end = start + nodeSize
-                for( const id of mapIDs ) {
-                    const mapEntry = elementMap[id]
-                    const { pos } = mapEntry
-                    if( pos >= start && pos < end ) {
-                        searchResults.push(pos)
-                    }
-                }
+                const { pos, elementType } = elementMap[elementID]
+                searchResults.push({ pos, elementType })
             }    
         } else {
-            for( const id of mapIDs ) {
-                const mapEntry = elementMap[id]
-                const { pos } = mapEntry
-                searchResults.push(pos)
+            for( const elementID of mapIDs ) {
+                const { pos, elementType } = elementMap[elementID]
+                searchResults.push({ pos, elementType })
             }
         }
     }
@@ -166,7 +188,7 @@ function searchResource( searchQuery, resourceID ) {
         for( const searchResult of searchResults ) {
             let found = null
             for( const attrMatchList of Object.values(attrMatches) ) {
-                if( attrMatchList.includes( searchResult ) ) {
+                if( attrMatchList.includes( searchResult.pos ) ) {
                     if( found === null ) found = true
                 } else {
                     found = false

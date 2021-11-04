@@ -67,7 +67,7 @@ export default class MainWindow extends Component {
             expandedGutter: true,
             iiifDialogMode: false,
             textImportDialogMode: false,
-            searchQuery: '',
+            searchQuery: null,
             searchResults: {},
             searchFilterOptions: { active: false, elementName: '', attrQs: []},
             searchFilterMode: false,
