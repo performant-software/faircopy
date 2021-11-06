@@ -33,7 +33,7 @@ export default class ProjectSettingsWindow extends Component {
                 <Tabs orientation="vertical" value={selectedPage} onChange={onChangeMenu}>
                     <Tab value="general" label="General" />
                     <Tab value="elements" label="Schema"/>
-                    <Tab disabled value="vocabs" label="Vocabs"/>
+                    {/* <Tab disabled value="vocabs" label="Vocabs"/> */}
                 </Tabs>
             </div>
         )
