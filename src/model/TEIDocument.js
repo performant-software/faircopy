@@ -20,8 +20,7 @@ export default class TEIDocument {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errorCount = 0
-        this.searchResults = []
-        this.selectedSearchResult = 0
+        this.selectedSearchHighlight = 0
         this.editorView = null
         this.lastMessageID = null
         this.noteEditorView = null

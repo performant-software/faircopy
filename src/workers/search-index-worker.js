@@ -158,7 +158,12 @@ function searchResource( searchQuery, resourceID ) {
         } else {
             for( const elementID of mapIDs ) {
                 const { pos, elementType } = elementMap[elementID]
-                searchResults.push({ pos, elementType })
+                // don't return hard nodes if there's no elementName or attrQs in the query
+                if( attrQs.length === 0 ) {
+                    if( elementType !== 'hardNode' ) searchResults.push({ pos, elementType })
+                } else {
+                    searchResults.push({ pos, elementType })
+                }                
             }
         }
     }

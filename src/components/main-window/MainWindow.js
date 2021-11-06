@@ -403,12 +403,7 @@ export default class MainWindow extends Component {
 
     onSearchResults = ( searchQuery, searchResults, popupMenuOptions, searchBarEl) => {
         const { selectedResource, openResources } = this.state
-        for( const resourceID of Object.keys(openResources) ) {
-            const openResource = openResources[resourceID]
-            if( isIndexable(openResource.resourceType) ) {
-                openResource.searchResults = searchResults[resourceID] ? searchResults[resourceID] : []
-            }
-        }
+
         if( selectedResource ) {
             const resource = openResources[selectedResource]
             this.updateSearchResults(resource, searchQuery, searchResults)

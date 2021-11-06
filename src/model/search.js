@@ -22,10 +22,17 @@ export function highlightSearchResults(currentResource, searchQuery, searchResul
         // scroll to the first result        
         if( searchResults !== -1 && searchResults.length > 0 ) {
             const firstResult = searchResults[0]
-            currentResource.selectedSearchResult = 0
+            currentResource.selectedSearchHighlight = 0
             scrollToNodePos(firstResult.pos, resourceID, editorView)
         }
     }
+}
+
+export function getSearchHighlights( editorView ) {
+    const plugin = editorView.state.plugins.find( plugin => plugin.key.includes('searchHighlight'))
+    const pluginState = plugin.getState(editorView.state)
+    const { highlights } = pluginState
+    return highlights
 }
 
 export function isIndexable(resourceType) {

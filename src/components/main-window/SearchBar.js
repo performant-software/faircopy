@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { InputBase, Button, Typography, Chip } from '@material-ui/core'
 import { getResourceIcon } from '../../model/resource-icon'
+import { getSearchHighlights } from '../../model/search'
 
 const fairCopy = window.fairCopy
 
@@ -74,10 +75,14 @@ export default class SearchBar extends Component {
 
         if( !currentResource ) return null
 
-        const { selectedSearchResult, searchResults } = currentResource
+        const editorView = currentResource.getActiveView()
+        if( !editorView ) return null
+    
+        const highlights = getSearchHighlights( editorView ) 
+        if( highlights.length === 0 ) return null
 
-        if( searchResults.length === 0 ) return null
-        
+        const { selectedSearchHighlight } = currentResource
+
         const onPrev = () => {}
         const onNext = () => {}
 
@@ -91,7 +96,7 @@ export default class SearchBar extends Component {
                     color="inherit">
                     <i className={`fas fa-caret-circle-left fa-lg`}></i>               
                 </Button> 
-                <Typography className="search-button" >{ `${selectedSearchResult+1} of ${searchResults.length}` }</Typography>
+                <Typography className="search-button" >{ `${selectedSearchHighlight+1} of ${highlights.length}` }</Typography>
                 <Button 
                     onClick={onNext} 
                     className="search-button" 
