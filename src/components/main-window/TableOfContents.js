@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { animateScroll as scroll } from 'react-scroll'
 
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 
-// offset to account for height of the toolbar above the TEI editor
-const scrollTopOffset = 137
+import { scrollToNodePos } from '../../model/scrolling';
 
 export default class TableOfContents extends Component {
 
@@ -42,15 +40,8 @@ export default class TableOfContents extends Component {
     const treeID = `toc-${pos}`
     const label = this.getNodeLabel(node)
     
-    // scroll to this position in the document
     const onClick = () => {
-      const nodeEl = editorView.nodeDOM(pos) 
-      if( nodeEl ) {
-        const { top } = nodeEl.getBoundingClientRect()
-        const containerEl = editorView.dom.parentNode.parentNode
-        const scrollTargetPx = top + containerEl.scrollTop - scrollTopOffset
-        scroll.scrollTo( scrollTargetPx, { containerId: teiDocument.resourceID } )  
-      }
+      scrollToNodePos(pos, teiDocument.resourceID, editorView)
     }
 
     return (

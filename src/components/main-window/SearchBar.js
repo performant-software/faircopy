@@ -69,6 +69,41 @@ export default class SearchBar extends Component {
         return menuOptions
     }
 
+    renderSearchResultSpinner() {
+        const { currentResource } = this.props
+
+        if( !currentResource ) return null
+
+        const { selectedSearchResult, searchResults } = currentResource
+
+        if( searchResults.length === 0 ) return null
+        
+        const onPrev = () => {}
+        const onNext = () => {}
+
+        return (
+            <div className="search-result-spinner">
+                <Typography className="search-button" >Search Result </Typography>
+                <Button 
+                    onClick={onPrev} 
+                    className="search-button" 
+                    size="small" 
+                    color="inherit">
+                    <i className={`fas fa-caret-circle-left fa-lg`}></i>               
+                </Button> 
+                <Typography className="search-button" >{ `${selectedSearchResult+1} of ${searchResults.length}` }</Typography>
+                <Button 
+                    onClick={onNext} 
+                    className="search-button" 
+                    size="small" 
+                    color="inherit">
+                    <i className={`fas fa-caret-circle-right fa-lg`}></i>               
+                </Button> 
+            </div>
+        )
+
+    }
+
     onSearch = () => {
         const { searchFilterOptions } = this.props
         const { searchQuery } = this.state
@@ -123,6 +158,7 @@ export default class SearchBar extends Component {
                     color="inherit">
                     <i className={`${filterIcon} fa-lg`}></i>               
                 </Button> 
+                { this.renderSearchResultSpinner() }
             </div>
         )
     }

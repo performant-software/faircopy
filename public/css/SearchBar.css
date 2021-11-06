@@ -16,3 +16,7 @@
 #SearchBar .search-button {
     display: inline-block;
 }
+
+#SearchBar .search-result-spinner {
+    display: inline-block;
+}

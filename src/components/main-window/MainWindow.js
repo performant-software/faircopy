@@ -25,7 +25,7 @@ import StructurePalette from './tei-editor/StructurePalette'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
-import { highlightSearchResults } from '../../model/search'
+import { highlightSearchResults, isIndexable } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog';
 
 const fairCopy = window.fairCopy
@@ -403,6 +403,12 @@ export default class MainWindow extends Component {
 
     onSearchResults = ( searchQuery, searchResults, popupMenuOptions, searchBarEl) => {
         const { selectedResource, openResources } = this.state
+        for( const resourceID of Object.keys(openResources) ) {
+            const openResource = openResources[resourceID]
+            if( isIndexable(openResource.resourceType) ) {
+                openResource.searchResults = searchResults[resourceID] ? searchResults[resourceID] : []
+            }
+        }
         if( selectedResource ) {
             const resource = openResources[selectedResource]
             this.updateSearchResults(resource, searchQuery, searchResults)
@@ -727,12 +733,14 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions } = this.state
+        const { searchEnabled, searchFilterOptions, selectedResource, openResources } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
-   
+
+        const currentResource = ( selectedResource && isIndexable(openResources[selectedResource].resourceType) ) ? openResources[selectedResource] : null
+
         // hide the interface (to suspend state)
         const style = hidden ? { display: 'none' } : {}
 
@@ -748,6 +756,7 @@ export default class MainWindow extends Component {
                         fairCopyProject={fairCopyProject}
                         onSearchResults={this.onSearchResults}
                         onSearchFilter={this.onSearchFilter}
+                        currentResource={currentResource}
                         searchFilterOptions={searchFilterOptions}
                         searchEnabled={searchEnabled}
                         onResourceAction={this.onResourceAction}
