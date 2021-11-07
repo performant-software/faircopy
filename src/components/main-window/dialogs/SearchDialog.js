@@ -191,7 +191,6 @@ export default class SearchDialog extends Component {
         }
 
         const onReset = () => {
-            updateSearchFilter('',[],false,true)
             this.setState({ ...this.initialState, changed: true })
         }
 

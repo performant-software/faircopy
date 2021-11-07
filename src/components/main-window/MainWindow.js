@@ -416,8 +416,12 @@ export default class MainWindow extends Component {
     }
 
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
+        const { searchQuery } = this.state
+        const searchQ = { query: searchQuery.query, elementName, attrQs }
+        fairCopy.services.ipcSend('searchProject', searchQ)
+
         const searchFilterOptions = { elementName, attrQs, active }
-        this.setState({...this.state, searchFilterOptions, searchFilterMode: open })    
+        this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })    
     }
 
     updateSearchResults(resource, searchQuery, searchResults) {
