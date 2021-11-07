@@ -49,6 +49,13 @@ function generateHighlights(searchQuery, searchResults, doc) {
     let resultsInvalid = false
     const highlights = []
   
+    // add only unique highlight ranges
+    function addHighlight(highlight) {
+        if( !highlights.find( h => h.from === highlight.from && h.to === highlight.to )) {
+            highlights.push(highlight)
+        }
+    }
+
     const terms = searchQuery.query.toLowerCase().split(' ')
     
     if( searchResults.length > 0 ) {
@@ -76,11 +83,11 @@ function generateHighlights(searchQuery, searchResults, doc) {
                                     const marks = gatherMarks(node)
                                     if( marks.length > 0 ) {
                                         if( matchingMark(termFrom,searchQuery,doc,marks) ) {
-                                            highlights.push({ from: termFrom, to: termTo })
+                                            addHighlight({ from: termFrom, to: termTo })
                                         }    
                                     }
                                 } else {
-                                    highlights.push({ from: termFrom, to: termTo })
+                                    addHighlight({ from: termFrom, to: termTo })
                                 }
                             }
                         }    
@@ -99,7 +106,6 @@ function generateHighlights(searchQuery, searchResults, doc) {
     if( resultsInvalid ) {
         return []
     } else {
-        console.log(highlights)
         return highlights
     }            
 }
