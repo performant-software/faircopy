@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { InputBase, Button, Typography, Chip } from '@material-ui/core'
 import { getResourceIcon } from '../../model/resource-icon'
-import { getSearchHighlights } from '../../model/search'
+import { getSearchHighlights, getSelectionIndex, setSelectionIndex } from '../../model/search'
+import { scrollToNodePos } from "../../model/scrolling"
 
 const fairCopy = window.fairCopy
 
@@ -71,7 +72,7 @@ export default class SearchBar extends Component {
     }
 
     renderSearchResultSpinner() {
-        const { currentResource } = this.props
+        const { currentResource, searchSelectionIndex } = this.props
 
         if( !currentResource ) return null
 
@@ -79,12 +80,26 @@ export default class SearchBar extends Component {
         if( !editorView ) return null
     
         const highlights = getSearchHighlights( editorView ) 
-        if( highlights.length === 0 ) return null
+        const highlightCount = highlights.length
+        if( highlightCount === 0 ) return null
 
-        const { selectedSearchHighlight } = currentResource
+        function updateSelection( index ) {
+            const nextHighlight = highlights[index]
+            setSelectionIndex( index, editorView )
+            console.log( `${index} ${nextHighlight.from}`)
+            // TODO, find .. 
+            // scrollToNodePos(nextHighlight.from, currentResource.resourceID, editorView)
+        }
 
-        const onPrev = () => {}
-        const onNext = () => {}
+        const onPrev = () => {
+            const nextSelectionIndex = (searchSelectionIndex - 1) < 0 ? highlightCount-1  : searchSelectionIndex - 1
+            updateSelection( nextSelectionIndex )
+        }
+
+        const onNext = () => {
+            const nextSelectionIndex = (searchSelectionIndex + 1) >= highlightCount ? 0 : searchSelectionIndex + 1
+            updateSelection( nextSelectionIndex )
+        }
 
         return (
             <div className="search-result-spinner">
@@ -96,7 +111,7 @@ export default class SearchBar extends Component {
                     color="inherit">
                     <i className={`fas fa-caret-circle-left fa-lg`}></i>               
                 </Button> 
-                <Typography className="search-button" >{ `${selectedSearchHighlight+1} of ${highlights.length}` }</Typography>
+                <Typography className="search-button" >{ `${searchSelectionIndex+1} of ${highlights.length}` }</Typography>
                 <Button 
                     onClick={onNext} 
                     className="search-button" 
@@ -135,6 +150,10 @@ export default class SearchBar extends Component {
         if( e.keyCode === 13 ) this.onSearch()
     }
 
+    onCloseSearch = () => {
+        // TODO
+    }
+
     render() {
         const { searchEnabled, onSearchFilter, searchFilterOptions } = this.props
         const { active } = searchFilterOptions
@@ -147,6 +166,14 @@ export default class SearchBar extends Component {
                 ref={(el)=> { this.searchBarEl = el }}
                 id="SearchBar"
             >
+                <Button 
+                    onClick={this.onCloseSearch} 
+                    disabled={!searchEnabled}
+                    className="search-button" 
+                    size="small" 
+                    color="inherit">
+                    <i className={`fas fa-times-circle fa-lg`}></i>               
+                </Button> 
                 <InputBase
                     name="searchQuery"
                     className="search-input"

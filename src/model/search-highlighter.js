@@ -2,21 +2,26 @@ import {Plugin, PluginKey } from "prosemirror-state"
 import {DecorationSet, Decoration } from "prosemirror-view"
 import { markExtent, gatherMarks } from "./commands"
 
-const searchHighlightColor = '#8dff50'
+const searchHighlightColor = '#D4FFBC'
+const selectedHighlightColor = '#8dff50'
 const markPrefix = 'mark'
 
 export function searchHighlighter() {
     let plugin = new Plugin({
         key: new PluginKey('searchHighlighter'),
         state: {
-            init() { return { highlights: []} },
+            init() { return { highlights: [], selectionIndex: 0} },
             apply(tr,oldState) { 
                 const newResults = tr.getMeta('searchResults')
                 const searchQuery = tr.getMeta('searchQuery')
+                const selectionIndex = tr.getMeta('selectionIndex')
                 const searchResults = ( newResults === -1 ) ? [] : newResults
                 if( searchResults && searchQuery ) {
                     const highlights = generateHighlights(searchQuery, searchResults, tr.doc)
-                    return { highlights }
+                    return { highlights, selectionIndex }
+                } else if( typeof selectionIndex !== 'undefined' ) {
+                    console.log('update index to: '+selectionIndex)
+                    return { highlights: oldState.highlights, selectionIndex }
                 } else {
                     return oldState
                 }
@@ -31,12 +36,13 @@ export function searchHighlighter() {
     function drawHighlight(state) { 
         const { doc } = state
         const pluginState = plugin.getState(state)
-        const { highlights } = pluginState
+        const { highlights, selectionIndex } = pluginState
 
         const decorations = []
-        for( const highlight of highlights ) {
-            const { from, to } = highlight
-            decorations.push(Decoration.inline(from, to, {style: `background: ${searchHighlightColor}`}))
+        for( let i=0; i < highlights.length; i++ ) {
+            const { from, to } = highlights[i]
+            const backgroundColor = i === selectionIndex ? selectedHighlightColor : searchHighlightColor
+            decorations.push(Decoration.inline(from, to, {style: `background: ${backgroundColor}`}))
         }
 
         return DecorationSet.create(doc, decorations)
@@ -106,7 +112,7 @@ function generateHighlights(searchQuery, searchResults, doc) {
     if( resultsInvalid ) {
         return []
     } else {
-        return highlights
+        return highlights.sort( (a,b) => a.from - b.from ) 
     }            
 }
 

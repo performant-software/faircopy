@@ -47,7 +47,7 @@ export default class MainWindowStatusBar extends Component {
     }
 
     render() {
-        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes, fairCopyProject, currentResource, onSearchResults, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
+        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes, fairCopyProject, currentResource, onSearchResults, searchSelectionIndex, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
         const { softwareUpdateStatus, progress } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
@@ -58,6 +58,7 @@ export default class MainWindowStatusBar extends Component {
                     <SearchBar
                         fairCopyProject={fairCopyProject}
                         searchEnabled={searchEnabled}
+                        searchSelectionIndex={searchSelectionIndex}
                         currentResource={currentResource}
                         onResourceAction={onResourceAction}
                         onSearchResults={onSearchResults}

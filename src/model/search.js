@@ -1,5 +1,3 @@
-import { scrollToNodePos } from "./scrolling"
-
 const fairCopy = window.fairCopy
 
 export function searchProject( searchQuery ) {
@@ -7,7 +5,7 @@ export function searchProject( searchQuery ) {
 }
 
 export function highlightSearchResults(currentResource, searchQuery, searchResults) {
-    const { resourceID, resourceType } = currentResource
+    const { resourceType } = currentResource
 
     if( isIndexable(resourceType) ) {
         console.log(searchResults)
@@ -17,15 +15,22 @@ export function highlightSearchResults(currentResource, searchQuery, searchResul
         // highlight the results
         tr.setMeta('searchResults', searchResults)
         tr.setMeta('searchQuery', searchQuery)
+        tr.setMeta('selectionIndex', 0)
         editorView.dispatch(tr)       
-
-        // scroll to the first result        
-        if( searchResults !== -1 && searchResults.length > 0 ) {
-            const firstResult = searchResults[0]
-            currentResource.selectedSearchHighlight = 0
-            scrollToNodePos(firstResult.pos, resourceID, editorView)
-        }
     }
+}
+
+export function setSelectionIndex( selectionIndex, editorView ) {
+    const { tr } = editorView.state
+    tr.setMeta('selectionIndex', selectionIndex)
+    editorView.dispatch(tr)       
+}
+
+export function getSelectionIndex( editorView ) {
+    const plugin = editorView.state.plugins.find( plugin => plugin.key.includes('searchHighlight'))
+    const pluginState = plugin.getState(editorView.state)
+    const { selectionIndex } = pluginState
+    return selectionIndex
 }
 
 export function getSearchHighlights( editorView ) {
