@@ -75,9 +75,8 @@ function generateHighlights(searchQuery, searchResults, doc) {
                                 if( elementType === 'mark' ) {
                                     const marks = gatherMarks(node)
                                     if( marks.length > 0 ) {
-                                        const markMatch = matchingMark(termFrom,searchQuery,doc,marks)
-                                        if( markMatch ) {
-                                            highlights.push({ from: markMatch.from, to: markMatch.to })
+                                        if( matchingMark(termFrom,searchQuery,doc,marks) ) {
+                                            highlights.push({ from: termFrom, to: termTo })
                                         }    
                                     }
                                 } else {
@@ -108,21 +107,19 @@ function generateHighlights(searchQuery, searchResults, doc) {
 function matchingMark( pos, searchQuery, doc, marks ) {
     const { elementName, attrQs } = searchQuery
 
-    const mark = marks.find( m => {
-        const markName = m.type.name
+    return marks.find( mark => {
+        const markName = mark.type.name
         const elName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
+        // does this mark match the elementName if given?
         if( elementName.length > 0 && elementName !== elName ) return false
+        // does it match all the attribute queries?
         for( const attrQ of attrQs ) {
             const { name, value } = attrQ
-            if( m.attrs[name] !== value ) return false
+            if( mark.attrs[name] !== value ) return false
         }
-        return true
-    })
-
-    if( mark ) {
+        // does this mark extend over this position?
         const $pos = doc.resolve(pos)
-        const span = markExtent($pos, mark, doc)
-        if( span.from !== span.to ) return span
-    }
-    return null
+        const markSpan = markExtent($pos, mark, doc)
+        return ( markSpan.from !== markSpan.to ) 
+    })
 }
