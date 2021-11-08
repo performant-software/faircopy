@@ -72,7 +72,7 @@ export default class SearchBar extends Component {
     }
 
     renderSearchResultSpinner() {
-        const { currentResource, searchSelectionIndex } = this.props
+        const { currentResource, searchSelectionIndex, onUpdateSearchSelection } = this.props
 
         if( !currentResource ) return null
 
@@ -86,9 +86,9 @@ export default class SearchBar extends Component {
         function updateSelection( index ) {
             const nextHighlight = highlights[index]
             setSelectionIndex( index, editorView )
-            console.log( `${index} ${nextHighlight.from}`)
             // TODO, find .. 
             // scrollToNodePos(nextHighlight.from, currentResource.resourceID, editorView)
+            onUpdateSearchSelection( index )
         }
 
         const onPrev = () => {

@@ -27,7 +27,6 @@ import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults, isIndexable } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog';
-import { getSelectionIndex } from '../../model/search';
 
 const fairCopy = window.fairCopy
 
@@ -71,6 +70,7 @@ export default class MainWindow extends Component {
             searchQuery: null,
             searchResults: {},
             searchFilterOptions: { active: false, elementName: '', attrQs: []},
+            searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
             leftPaneWidth: initialLeftPaneWidth
@@ -409,7 +409,7 @@ export default class MainWindow extends Component {
             const resource = openResources[selectedResource]
             this.updateSearchResults(resource, searchQuery, searchResults)
         }
-        this.setState({...this.state, searchQuery, searchResults, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
+        this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
     }
 
     onSearchFilter = () => {        
@@ -733,21 +733,13 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions, selectedResource, openResources } = this.state
+        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
 
         const currentResource = ( selectedResource && isIndexable(openResources[selectedResource].resourceType) ) ? openResources[selectedResource] : null
-        let searchSelectionIndex = 0
-        if( currentResource ) {
-            const editorView = currentResource.getActiveView()
-            if( editorView ) { 
-                searchSelectionIndex = getSelectionIndex( editorView )
-                console.log('update index')
-            }
-        }
 
         // hide the interface (to suspend state)
         const style = hidden ? { display: 'none' } : {}
@@ -768,6 +760,7 @@ export default class MainWindow extends Component {
                         searchSelectionIndex={searchSelectionIndex}
                         searchFilterOptions={searchFilterOptions}
                         searchEnabled={searchEnabled}
+                        onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
