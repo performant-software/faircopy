@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { InputBase, Button, Typography, Chip } from '@material-ui/core'
 import { getResourceIcon } from '../../model/resource-icon'
-import { getSearchHighlights, getSelectionIndex, setSelectionIndex } from '../../model/search'
+import { getSearchHighlights, setSelectionIndex } from '../../model/search'
 import { scrollToNodePos } from "../../model/scrolling"
 
 const fairCopy = window.fairCopy
@@ -86,8 +86,11 @@ export default class SearchBar extends Component {
         function updateSelection( index ) {
             const nextHighlight = highlights[index]
             setSelectionIndex( index, editorView )
-            // TODO, find .. 
-            // scrollToNodePos(nextHighlight.from, currentResource.resourceID, editorView)
+            const {doc} = editorView.state
+            const $pos = doc.resolve( nextHighlight.from )
+            const parentPos = $pos.pos - $pos.parentOffset - 1
+            console.log(`parent pos: ${parentPos}`)
+            scrollToNodePos(parentPos, currentResource.resourceID, editorView)
             onUpdateSearchSelection( index )
         }
 

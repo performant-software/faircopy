@@ -20,7 +20,6 @@ export function searchHighlighter() {
                     const highlights = generateHighlights(searchQuery, searchResults, tr.doc)
                     return { highlights, selectionIndex }
                 } else if( typeof selectionIndex !== 'undefined' ) {
-                    console.log('update index to: '+selectionIndex)
                     return { highlights: oldState.highlights, selectionIndex }
                 } else {
                     return oldState
