@@ -25,7 +25,7 @@ import StructurePalette from './tei-editor/StructurePalette'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
-import { highlightSearchResults, isIndexable } from '../../model/search'
+import { highlightSearchResults, isIndexable, scrollToSearchResult } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog';
 
 const fairCopy = window.fairCopy
@@ -170,7 +170,7 @@ export default class MainWindow extends Component {
         }     
     }
 
-    selectResources(resourceIDs) {
+    selectResources(resourceIDs, openToSearchResult=false) {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource, searchQuery, searchResults } = this.state
 
@@ -229,7 +229,7 @@ export default class MainWindow extends Component {
             })    
             const nextResource = nextResources[nextSelection]
             if( nextResource instanceof TEIDocument ) {
-                this.refreshWhenReady(searchQuery, searchResults)
+                this.refreshWhenReady(searchQuery, searchResults, openToSearchResult)
             }
         } else {
             this.setState( {
@@ -296,15 +296,18 @@ export default class MainWindow extends Component {
     }
 
     // a bit of a hack - need to refresh after it renders
-    refreshWhenReady( searchQuery, searchResults ) {
+    refreshWhenReady( searchQuery, searchResults, openToSearchResult ) {
         setTimeout( () => { 
             const { selectedResource, openResources } = this.state
             const resource = openResources[selectedResource]
             if( resource && resource.getActiveView() ) {
                 this.updateSearchResults(resource, searchQuery, searchResults)
                 resource.refreshView()     
+                if( openToSearchResult ) {
+                    scrollToSearchResult( resource, 0 )
+                }
             } else {
-                this.refreshWhenReady(searchQuery,searchResults)
+                this.refreshWhenReady(searchQuery,searchResults, openToSearchResult)
             }
         }, 60 )
     }
@@ -377,6 +380,9 @@ export default class MainWindow extends Component {
                 return false
             case 'open':
                 this.selectResources(resourceIDs)
+                return false
+            case 'open-search-result':
+                this.selectResources(resourceIDs, true)
                 return false
             case 'close':
                 this.closeResources(resourceIDs)

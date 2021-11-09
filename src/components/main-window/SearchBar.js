@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { InputBase, Button, Typography, Chip } from '@material-ui/core'
 import { getResourceIcon } from '../../model/resource-icon'
-import { getSearchHighlights, setSelectionIndex } from '../../model/search'
-import { scrollToNodePos } from "../../model/scrolling"
+import { getSearchHighlights, setSelectionIndex, scrollToSearchResult } from '../../model/search'
 
 const fairCopy = window.fairCopy
 
@@ -58,7 +57,7 @@ export default class SearchBar extends Component {
                 const parentName = parentEntry ?  parentEntry.name : null
                 const { name, type } = resourceEntry
                 const resultLabel = this.renderResultLabel( name, parentName, type )
-                const resultAction = () => { onResourceAction('open', [resourceID]) }
+                const resultAction = () => { onResourceAction('open-search-result', [resourceID]) }
                 menuOptions.push({
                     id: `result-${resourceID}`,
                     label: resultLabel,
@@ -84,12 +83,8 @@ export default class SearchBar extends Component {
         if( highlightCount === 0 ) return null
 
         function updateSelection( index ) {
-            const nextHighlight = highlights[index]
             setSelectionIndex( index, editorView )
-            const {doc} = editorView.state
-            const $pos = doc.resolve( nextHighlight.from )
-            const parentPos = $pos.pos - $pos.parentOffset - 1
-            scrollToNodePos(parentPos, currentResource.resourceID, editorView)
+            scrollToSearchResult( currentResource, index ) 
             onUpdateSearchSelection( index )
         }
 

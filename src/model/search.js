@@ -1,3 +1,5 @@
+import { scrollToNodePos } from "./scrolling"
+
 const fairCopy = window.fairCopy
 
 export function searchProject( searchQuery ) {
@@ -42,4 +44,15 @@ export function getSearchHighlights( editorView ) {
 
 export function isIndexable(resourceType) {
     return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
+}
+
+export function scrollToSearchResult( currentResource, searchResultIndex ) {
+    const editorView = currentResource.getActiveView()
+    const highlights = getSearchHighlights( editorView ) 
+
+    const nextHighlight = highlights[searchResultIndex]
+    const {doc} = editorView.state
+    const $pos = doc.resolve( nextHighlight.from )
+    const parentPos = $pos.pos - $pos.parentOffset - 1
+    scrollToNodePos(parentPos, currentResource.resourceID, editorView)
 }
