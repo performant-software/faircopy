@@ -129,8 +129,7 @@ function matchingMark( pos, searchQuery, doc, markSets ) {
                 if( mark.attrs[name] !== value ) return false
             }
             // does this mark extend over this position?
-            const res = doc.rangeHasMark( pos, pos+1, mark ) 
-            return res
+            return doc.rangeHasMark( pos, pos+1, mark ) 
         })  
         if( mark ) return mark  
     }
