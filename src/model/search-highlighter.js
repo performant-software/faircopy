@@ -78,7 +78,7 @@ function generateHighlights(searchQuery, searchResults, doc) {
                         const to = from + node.nodeSize
                         const text = doc.textBetween(from,to, ' ', ' ').toLowerCase()
                         for( const term of terms ) {
-                            const textOffset = text.indexOf(term)
+                            const textOffset = text.search(new RegExp(`\\b${term}\\b`))
                             if( textOffset !== -1 ) {
                                 // highlight the matching term
                                 const termFrom = nodePos+pos+textOffset+2
