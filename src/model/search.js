@@ -51,8 +51,10 @@ export function scrollToSearchResult( currentResource, searchResultIndex ) {
     const highlights = getSearchHighlights( editorView ) 
 
     const nextHighlight = highlights[searchResultIndex]
-    const {doc} = editorView.state
-    const $pos = doc.resolve( nextHighlight.from )
-    const parentPos = $pos.pos - $pos.parentOffset - 1
-    scrollToNodePos(parentPos, currentResource.resourceID, editorView)
+    if( nextHighlight ) {
+        const {doc} = editorView.state
+        const $pos = doc.resolve( nextHighlight.from )
+        const parentPos = $pos.pos - $pos.parentOffset - 1
+        scrollToNodePos(parentPos, currentResource.resourceID, editorView)    
+    }
 }
