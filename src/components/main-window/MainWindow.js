@@ -222,6 +222,7 @@ export default class MainWindow extends Component {
                 openResources: nextResources, 
                 resourceBrowserOpen: false, 
                 currentSubmenuID: 0,
+                searchSelectionIndex: 0,
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null,
                 popupMenuPlacement: null

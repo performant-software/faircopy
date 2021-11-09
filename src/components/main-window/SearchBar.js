@@ -152,10 +152,6 @@ export default class SearchBar extends Component {
         if( e.keyCode === 13 ) this.onSearch()
     }
 
-    onCloseSearch = () => {
-        // TODO
-    }
-
     render() {
         const { searchEnabled, onSearchFilter, searchFilterOptions } = this.props
         const { active } = searchFilterOptions
@@ -168,14 +164,6 @@ export default class SearchBar extends Component {
                 ref={(el)=> { this.searchBarEl = el }}
                 id="SearchBar"
             >
-                <Button 
-                    onClick={this.onCloseSearch} 
-                    disabled={!searchEnabled}
-                    className="search-button" 
-                    size="small" 
-                    color="inherit">
-                    <i className={`fas fa-times-circle fa-lg`}></i>               
-                </Button> 
                 <InputBase
                     name="searchQuery"
                     className="search-input"
