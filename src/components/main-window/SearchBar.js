@@ -125,7 +125,7 @@ export default class SearchBar extends Component {
         const { searchFilterOptions } = this.props
         const { searchQuery } = this.state
         const { elementName, attrQs } = searchFilterOptions
-        const searchQ = { query: searchQuery, elementName, attrQs }
+        const searchQ = { query: searchQuery.toLowerCase(), elementName, attrQs }
         fairCopy.services.ipcSend('searchProject', searchQ)
     }
 

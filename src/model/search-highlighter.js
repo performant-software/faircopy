@@ -76,7 +76,7 @@ function generateHighlights(searchQuery, searchResults, doc) {
                     try {
                         const from = nodePos+pos
                         const to = from + node.nodeSize
-                        const text = doc.textBetween(from,to, ' ', ' ')
+                        const text = doc.textBetween(from,to, ' ', ' ').toLowerCase()
                         for( const term of terms ) {
                             const textOffset = text.indexOf(term)
                             if( textOffset !== -1 ) {
