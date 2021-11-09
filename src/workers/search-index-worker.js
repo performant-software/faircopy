@@ -2,7 +2,7 @@ import { Document } from "flexsearch";
 import TEISchema from  '../model/TEISchema'
 import TEIDocument from '../model/TEIDocument'
 import { addTextNodes } from '../model/xml'
-import { gatherMarks } from "../model/commands";
+import { gatherMarkSets } from "../model/commands";
 
 // this is per index
 const maxSearchResults = 1000
@@ -61,32 +61,35 @@ function createIndexDocs(teiSchema, doc) {
 
         // index marks within soft nodes
         if( softNode ) {
-            const marks = gatherMarks(node)
+            const markSets = gatherMarkSets(node)
             
-            for( const mark of marks ) {
-                const markName = mark.type.name
-                const elementName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
-    
-                resourceMap.push({
-                    elementType: 'mark',
-                    elementName,
-                    pos,
-                    nodeSize
-                })
+            for( const markSet of markSets ) {
+                const { marks, text } = markSet
+                for( const mark of marks ) {
+                    const markName = mark.type.name
+                    const elementName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
         
-                const markAttrFields = {}
-    
-                for( const attrKey of Object.keys(mark.attrs) ) {
-                    const attrVal = mark.attrs[attrKey]
-                    const attrSafeKey = getSafeAttrKey(attrKey)
-                    markAttrFields[`attr_${attrSafeKey}`] = attrVal
+                    resourceMap.push({
+                        elementType: 'mark',
+                        elementName,
+                        pos,
+                        nodeSize
+                    })
+            
+                    const markAttrFields = {}
+        
+                    for( const attrKey of Object.keys(mark.attrs) ) {
+                        const attrVal = mark.attrs[attrKey]
+                        const attrSafeKey = getSafeAttrKey(attrKey)
+                        markAttrFields[`attr_${attrSafeKey}`] = attrVal
+                    }
+        
+                    indexDocs.push({
+                        id: i++,
+                        contents: text,
+                        ...markAttrFields
+                    })
                 }
-    
-                indexDocs.push({
-                    id: i++,
-                    contents,
-                    ...markAttrFields
-                })
             }
 
             // TODO index inline nodes

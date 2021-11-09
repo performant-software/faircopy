@@ -1,6 +1,6 @@
 import {Plugin, PluginKey } from "prosemirror-state"
 import {DecorationSet, Decoration } from "prosemirror-view"
-import { markExtent, gatherMarks } from "./commands"
+import { gatherMarkSets } from "./commands"
 
 const searchHighlightColor = '#D4FFBC'
 const selectedHighlightColor = '#8dff50'
@@ -85,12 +85,10 @@ function generateHighlights(searchQuery, searchResults, doc) {
                                 const termTo = termFrom + term.length
                                 // if the result is a mark, see if there's matching mark at this location
                                 if( elementType === 'mark' ) {
-                                    const marks = gatherMarks(node)
-                                    if( marks.length > 0 ) {
-                                        if( matchingMark(termFrom,searchQuery,doc,marks) ) {
-                                            addHighlight({ from: termFrom, to: termTo })
-                                        }    
-                                    }
+                                    const markSets = gatherMarkSets(node)
+                                    if( matchingMark(termFrom,searchQuery,doc,markSets) ) {
+                                        addHighlight({ from: termFrom, to: termTo })
+                                    }    
                                 } else {
                                     addHighlight({ from: termFrom, to: termTo })
                                 }
@@ -115,22 +113,26 @@ function generateHighlights(searchQuery, searchResults, doc) {
     }            
 }
 
-function matchingMark( pos, searchQuery, doc, marks ) {
+function matchingMark( pos, searchQuery, doc, markSets ) {
     const { elementName, attrQs } = searchQuery
 
-    return marks.find( mark => {
-        const markName = mark.type.name
-        const elName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
-        // does this mark match the elementName if given?
-        if( elementName.length > 0 && elementName !== elName ) return false
-        // does it match all the attribute queries?
-        for( const attrQ of attrQs ) {
-            const { name, value } = attrQ
-            if( mark.attrs[name] !== value ) return false
-        }
-        // does this mark extend over this position?
-        const $pos = doc.resolve(pos)
-        const markSpan = markExtent($pos, mark, doc)
-        return ( markSpan.from !== markSpan.to ) 
-    })
+    for( const markSet of markSets ) {
+        const { marks } = markSet
+        const mark = marks.find( mark => {
+            const markName = mark.type.name
+            const elName = markName.startsWith(markPrefix) ? markName.slice(markPrefix.length) : markName
+            // does this mark match the elementName if given?
+            if( elementName.length > 0 && elementName !== elName ) return false
+            // does it match all the attribute queries?
+            for( const attrQ of attrQs ) {
+                const { name, value } = attrQ
+                if( mark.attrs[name] !== value ) return false
+            }
+            // does this mark extend over this position?
+            const res = doc.rangeHasMark( pos, pos+1, mark ) 
+            return res
+        })  
+        if( mark ) return mark  
+    }
+    return null
 }

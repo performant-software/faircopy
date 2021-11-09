@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
-import applyDevTools from "prosemirror-dev-tools";
+// import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
@@ -85,7 +85,7 @@ export default class TEIEditor extends Component {
             }
         )
         // uncomment to use ProseMirror dev tools
-        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
+        // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)
         editorView.focus()
         teiDocument.finalizeEditorView(editorView)
     }

@@ -89,7 +89,6 @@ export default class SearchBar extends Component {
             const {doc} = editorView.state
             const $pos = doc.resolve( nextHighlight.from )
             const parentPos = $pos.pos - $pos.parentOffset - 1
-            console.log(`parent pos: ${parentPos}`)
             scrollToNodePos(parentPos, currentResource.resourceID, editorView)
             onUpdateSearchSelection( index )
         }
