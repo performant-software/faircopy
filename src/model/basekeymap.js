@@ -386,65 +386,78 @@ export function selectAll(state, dispatch) {
 }
 
 function depthToLast(node,type,depth=0) {
-  if( node.type.name === type ) return depth
-  if( node.childCount === 0 ) return null
+  if( node.type.name === type ) return { node, depth }
+  if( node.childCount === 0 ) return { node: null, depth: 0 }
   return depthToLast(node.lastChild,type,depth+1) 
 }
 
+function okWithout(parentNode, node) {
+    const childNodes = []
+    for( let i=0; i<parentNode.childCount; i++) {
+      const child = parentNode.child(i)
+      if( child !== node ) {
+        childNodes.push(child)
+      }
+    }
+    return parentNode.type.validContent( Fragment.from(childNodes) ) 
+}
+
 function deleteBarrier(state, $cut, dispatch) {
-  const { tr, schema } = state
+  const { tr } = state
+
   const before = $cut.nodeBefore, after = $cut.nodeAfter
 
   // this function only deals with non-isolating nodes
   if (before.type.spec.isolating || after.type.spec.isolating) return false
 
   // check depth of textNodes
-  const beforeType = getTextNodeName(before.type.spec.content)
-  const afterType = getTextNodeName(after.type.spec.content)
-  const beforeDepth = depthToLast(before,beforeType)
-  const afterDepth = depthToLast(after,afterType)
-  if( beforeDepth === null || afterDepth === null ) return true 
-  const textNodeType = schema.nodes[beforeType]
+  const beforeTextNodeType = getTextNodeName(before.type.spec.content)
+  const afterTextNodeType = getTextNodeName(after.type.spec.content)
+  const { node: beforeTextNode, depth: beforeTextDepth } = depthToLast(before,beforeTextNodeType)
+  const { node: afterTextNode, depth: afterTextDepth }  = depthToLast(after,afterTextNodeType)
+
+  if( beforeTextNode === null || afterTextNode === null ) {
+    console.log('warning: soft node found without a textnode child.')
+    return true 
+  }
 
   try {
-    if( beforeDepth === afterDepth ) {
+    const parentNode = $cut.parent
+
+    if( beforeTextDepth === afterTextDepth ) {
+      // TODO refactor based on new method?
       // both textNodes at same depth
       const clearPos = after.textContent.length === 0 ? $cut.pos+1 : $cut.pos+2
       dispatch(tr
         .clearIncompatible(clearPos, before.type, before.contentMatchAt(before.childCount))
-        .join($cut.pos,beforeDepth + 1)  // to capture the textNode
+        .join($cut.pos,beforeTextDepth + 1)  // to capture the textNode
         .scrollIntoView())    
-      return true
-    } else if( afterDepth <= 1 ) {
-      // move after's textNode into before and join with before's textNode
-      const joinPos = $cut.pos-beforeDepth
-      const nextContent = replaceTextNodes( textNodeType, after.content )
-      if( !nextContent ) {
-        dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
-        return true
+    } else if( beforeTextDepth > afterTextDepth ) {
+      if( okWithout(parentNode, after) ) {
+        const joinPos = $cut.pos-beforeTextDepth
+        // textNodes must be of the same type  
+        const nextContent = replaceTextNodes( beforeTextNode.type, after.content )
+        if( !nextContent ) {
+          dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
+          return true
+        }
+        dispatch( tr
+          .delete($cut.pos,$cut.pos+after.nodeSize+1)
+          .insert(joinPos, nextContent)
+          .join(joinPos)
+          .scrollIntoView())
+      } else {
+        dispatch( tr.setMeta('alertMessage', `Structure is not valid without ${after.type.name}.`) )
       }
-      dispatch( tr
-        .delete($cut.pos,$cut.pos+after.nodeSize+1)
-        .insert(joinPos, nextContent)
-        .join(joinPos)
-        .scrollIntoView())
-      return true
     } else {
-      // TODO not sure this is reachable code
-      // delete nested soft node in after 
-      const nestedPos = $cut.pos+afterDepth
-      const nestedNode = tr.doc.resolve(nestedPos).node()
-      dispatch( tr
-        .deleteRange(nestedPos,nestedPos + nestedNode.nodeSize - 1)
-        .insert(nestedPos-1, nestedNode.content )
-        .setSelection(new TextSelection(tr.doc.resolve(nestedPos)))
-        .scrollIntoView())
+      // TODO handle this case
       return true
-    }  
+    }
   } catch (e) {
+    console.log(e)
     dispatch( tr.setMeta('alertMessage', `Unable to delete ${after.type.name}.`) )
-    return true
   }
+  return true
 }
 
 // Parameterized commands
