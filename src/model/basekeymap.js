@@ -425,7 +425,6 @@ function deleteBarrier(state, $cut, dispatch) {
     const parentNode = $cut.parent
 
     if( beforeTextDepth === afterTextDepth ) {
-      // TODO refactor based on new method?
       // both textNodes at same depth
       const clearPos = after.textContent.length === 0 ? $cut.pos+1 : $cut.pos+2
       dispatch(tr
