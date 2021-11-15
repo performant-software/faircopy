@@ -2,7 +2,7 @@ import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirro
 import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
 import {deleteParentNode} from "./commands"
-import {getTextNodeName} from "./xml"
+import {getTextNodeName, replaceTextNodes} from "./xml"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
 // Delete the selection, if there is one.
@@ -392,7 +392,7 @@ function depthToLast(node,type,depth=0) {
 }
 
 function deleteBarrier(state, $cut, dispatch) {
-  const { tr } = state
+  const { tr, schema } = state
   const before = $cut.nodeBefore, after = $cut.nodeAfter
 
   // this function only deals with non-isolating nodes
@@ -404,6 +404,7 @@ function deleteBarrier(state, $cut, dispatch) {
   const beforeDepth = depthToLast(before,beforeType)
   const afterDepth = depthToLast(after,afterType)
   if( beforeDepth === null || afterDepth === null ) return true 
+  const textNodeType = schema.nodes[beforeType]
 
   try {
     if( beforeDepth === afterDepth ) {
@@ -415,12 +416,16 @@ function deleteBarrier(state, $cut, dispatch) {
         .scrollIntoView())    
       return true
     } else if( afterDepth <= 1 ) {
-      // TODO not sure this is reachable code
       // move after's textNode into before and join with before's textNode
       const joinPos = $cut.pos-beforeDepth
+      const nextContent = replaceTextNodes( textNodeType, after.content )
+      if( !nextContent ) {
+        dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
+        return true
+      }
       dispatch( tr
-        .delete($cut.pos,$cut.pos+after.nodeSize)
-        .insert(joinPos, after.content )
+        .delete($cut.pos,$cut.pos+after.nodeSize+1)
+        .insert(joinPos, nextContent)
         .join(joinPos)
         .scrollIntoView())
       return true
@@ -437,7 +442,7 @@ function deleteBarrier(state, $cut, dispatch) {
       return true
     }  
   } catch (e) {
-    dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its marks are not valid in ${before.type.name}.`) )
+    dispatch( tr.setMeta('alertMessage', `Unable to delete ${after.type.name}.`) )
     return true
   }
 }

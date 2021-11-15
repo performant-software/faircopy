@@ -1,5 +1,5 @@
 import { Fragment } from "prosemirror-model"
-import { getTextNodeName } from './xml'
+import { getTextNodeName, replaceTextNodes } from './xml'
 import { markApplies } from "./commands"
 
 export function createValidationSet(elements, schema) {
@@ -211,33 +211,6 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
     }
     return node
 }    
-
-// take content fragment and replace any text nodes in there with text node type
-function replaceTextNodes( textNodeType, fragment ) {
-    let siblings = []
-    for( let i=0; i < fragment.childCount; i++ ) { 
-        const sibling = fragment.child(i)
-        if( sibling.type.name.includes('textNode') && sibling.type.name !== textNodeType.name ) {
-            const textNodeContent = sibling.content
-            for( let i=0; i < textNodeContent.childCount; i++ ) {
-                const node = textNodeContent.child(i)
-                for( const mark of node.marks ) {
-                    if( !textNodeType.allowsMarkType(mark.type) ) {
-                        // if any marks are not allowed for this textNode
-                        return null
-                    }
-                }
-            }
-            const nextSib = textNodeType.create(sibling.attr, sibling.content )
-            siblings.push( nextSib ) 
-        } else {
-            siblings.push( sibling ) 
-        }
-    }
-
-    // return new content fragment 
-    return Fragment.from(siblings) 
-}
 
 // Can the selected node move up or down the document?
 export function validMove(direction,teiDocument,metaKey) {
