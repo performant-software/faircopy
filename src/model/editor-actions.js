@@ -274,17 +274,18 @@ export function moveNode(direction,teiDocument,metaKey) {
             const insertPos = tr.mapping.map(selectedEndPos+1)
             tr.insert(insertPos, selectedNode )
 
-            // TODO
-            // // if this was the only element and this element can contain text, then add a textnode
-            // if( parentNode.childCount === 1 ) {
-            //     const textNodeName = getTextNodeName(parentNode.type.spec.content)
-            //     if( textNodeName ) {
-            //         const textNode = tr.doc.type.schema.node(textNodeName)
-            //         tr.insert(selectedPos, textNode)    
-            //     }
-            // }
-
-            tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
+            // if this was the only element and this element can contain text, then add a textnode
+            if( parentNode.childCount === 1 ) {
+                const textNodeName = getTextNodeName(parentNode.type.spec.content)
+                if( textNodeName ) {
+                    const textNode = tr.doc.type.schema.node(textNodeName)
+                    const textNodePos = tr.mapping.map(selectedPos)
+                    tr.insert(textNodePos, textNode)    
+                    tr.setSelection( NodeSelection.create(tr.doc, insertPos+2) )
+                }
+            } else {
+                tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
+            }
         // otherwise, move around within this parent
         } else {
             const selectedNode = selection.node
@@ -298,7 +299,18 @@ export function moveNode(direction,teiDocument,metaKey) {
                 tr.delete(selectedPos, selectedEndPos)
                 const insertPos = tr.mapping.map(selectedEndPos+1)
                 tr.insert(insertPos, selectedNode )
-                tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
+                let textNodePos = selectedEndPos+1
+                let nextSelectPos = insertPos
+                for( let i=0; i < swapNode.childCount; i++ ) {
+                    const child = swapNode.child(i)
+                    // if this element contains a blank text node, then remove it
+                    if( child.type.name.includes('textNode') && child.textContent.length === 0 ) {
+                        tr.delete(textNodePos,textNodePos+1)
+                        nextSelectPos = insertPos
+                    }
+                    textNodePos = textNodePos + child.nodeSize
+                }
+                tr.setSelection( NodeSelection.create(tr.doc, nextSelectPos) )
             } else {
                 tr.replaceWith(selectedPos,swapEndPos,[swapNode,selectedNode])    
                 tr.setSelection( NodeSelection.create(tr.doc, selectedPos+swapNode.nodeSize) )
