@@ -1,7 +1,7 @@
 import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirror-transform"
 import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
-import {deleteParentNode} from "./commands"
+import {deleteParentNode, depthToLast, fragmentWithout} from "./commands"
 import {getTextNodeName, replaceTextNodes} from "./xml"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
@@ -385,23 +385,6 @@ export function selectAll(state, dispatch) {
   return true
 }
 
-function depthToLast(node,type,depth=0) {
-  if( node.type.name === type ) return { node, depth }
-  if( node.childCount === 0 ) return { node: null, depth: 0 }
-  return depthToLast(node.lastChild,type,depth+1) 
-}
-
-function okWithout(parentNode, node) {
-    const childNodes = []
-    for( let i=0; i<parentNode.childCount; i++) {
-      const child = parentNode.child(i)
-      if( child !== node ) {
-        childNodes.push(child)
-      }
-    }
-    return parentNode.type.validContent( Fragment.from(childNodes) ) 
-}
-
 function deleteBarrier(state, $cut, dispatch) {
   const { tr } = state
 
@@ -432,7 +415,7 @@ function deleteBarrier(state, $cut, dispatch) {
         .join($cut.pos,beforeTextDepth + 1)  // to capture the textNode
         .scrollIntoView())    
     } else if( beforeTextDepth > afterTextDepth ) {
-      if( okWithout(parentNode, after) ) {
+      if( parentNode.type.validContent( fragmentWithout(parentNode.content, after)) ) {
         const joinPos = $cut.pos-beforeTextDepth
         // textNodes must be of the same type  
         const nextContent = replaceTextNodes( beforeTextNode.type, after.content )

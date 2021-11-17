@@ -2,6 +2,7 @@ import { NodeRange } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, deleteParentNode } from "./commands"
 import { validMove, createValidNode } from './element-validators'
+import { getTextNodeName } from './xml'
 
 const elementListLength = 30
 
@@ -215,13 +216,25 @@ export function moveNode(direction,teiDocument,metaKey) {
     const parentNode = $anchor.node()
 
     if( direction === 'up' ) { 
-        // if first sibling, see if we can move up and out of this parent
+        // if first sibling, move up and out of this parent
         if( nodeIndex === 0 ) {
             const selectedNode = selection.node
             const selectedPos = $anchor.pos
             const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
+            const parentNode = $anchor.parent
+
             tr.delete(selectedPos, selectedEndPos)
             tr.insert(selectedPos-1, selectedNode )
+
+            // if this was the only element and this element can contain text, then add a textnode
+            if( parentNode.childCount === 1 ) {
+                const textNodeName = getTextNodeName(parentNode.type.spec.content)
+                if( textNodeName ) {
+                    const textNode = tr.doc.type.schema.node(textNodeName)
+                    tr.insert(selectedEndPos, textNode)    
+                }
+            }
+
             tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
         // otherwise, we can move around within the parent  
         } else {
@@ -234,14 +247,25 @@ export function moveNode(direction,teiDocument,metaKey) {
             if( validState === 'join' ) {
                 tr.delete(selectedPos, selectedEndPos)
                 tr.insert(selectedPos-1, selectedNode )
-                tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
+                let textNodePos = nodeBeforePos+1
+                let nextSelectPos = selectedPos-1
+                for( let i=0; i < nodeBefore.childCount; i++ ) {
+                    const child = nodeBefore.child(i)
+                    // if this element contains a blank text node, then remove it
+                    if( child.type.name.includes('textNode') && child.textContent.length === 0 ) {
+                        tr.delete(textNodePos,textNodePos+1)
+                        nextSelectPos = nodeBeforePos+1
+                    }
+                    textNodePos = textNodePos + child.nodeSize
+                }
+                tr.setSelection( NodeSelection.create(tr.doc, nextSelectPos) )
             } else {
                 tr.replaceWith(nodeBeforePos,selectedEndPos,[selectedNode,nodeBefore])              
                 tr.setSelection( NodeSelection.create(tr.doc, nodeBeforePos) )
             }        
         }
     } else {
-        // if we are the last sibling, try to move down and out of this parent
+        // if we are the last sibling, move down and out of this parent
         if(nodeIndex >= parentNode.childCount-1) {
             const selectedNode = selection.node
             const selectedPos = $anchor.pos
@@ -249,6 +273,17 @@ export function moveNode(direction,teiDocument,metaKey) {
             tr.delete(selectedPos, selectedEndPos)
             const insertPos = tr.mapping.map(selectedEndPos+1)
             tr.insert(insertPos, selectedNode )
+
+            // TODO
+            // // if this was the only element and this element can contain text, then add a textnode
+            // if( parentNode.childCount === 1 ) {
+            //     const textNodeName = getTextNodeName(parentNode.type.spec.content)
+            //     if( textNodeName ) {
+            //         const textNode = tr.doc.type.schema.node(textNodeName)
+            //         tr.insert(selectedPos, textNode)    
+            //     }
+            // }
+
             tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
         // otherwise, move around within this parent
         } else {

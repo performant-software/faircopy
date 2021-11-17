@@ -264,3 +264,20 @@ export function gatherMarkSets(softNode) {
 
     return markSets
 }
+
+export function depthToLast(node,type,depth=0) {
+    if( node.type.name === type ) return { node, depth }
+    if( node.childCount === 0 ) return { node: null, depth: 0 }
+    return depthToLast(node.lastChild,type,depth+1) 
+}
+
+export function fragmentWithout(fragment, node) {
+    const childNodes = []
+    for( let i=0; i<fragment.childCount; i++) {
+      const child = fragment.child(i)
+      if( child !== node ) {
+        childNodes.push(child)
+      }
+    }
+    return Fragment.from(childNodes)
+}
