@@ -231,7 +231,7 @@ export function moveNode(direction,teiDocument,metaKey) {
             if( parentNode.childCount === 1 ) {
                 const textNodeName = getTextNodeName(parentNode.type.spec.content)
                 if( textNodeName ) {
-                    const textNode = tr.doc.type.schema.node(textNodeName)
+                    const textNode = schema.node(textNodeName)
                     tr.insert(selectedEndPos, textNode)    
                 } else {
                     // if parent doesn't have a textNode, then leave a blank copy of selected node in its place
@@ -284,7 +284,7 @@ export function moveNode(direction,teiDocument,metaKey) {
                 const textNodeName = getTextNodeName(parentNode.type.spec.content)
                 const textNodePos = tr.mapping.map(selectedPos)
                 if( textNodeName ) {
-                    const textNode = tr.doc.type.schema.node(textNodeName)
+                    const textNode = schema.node(textNodeName)
                     tr.insert(textNodePos, textNode)                        
                 } else {
                     // if parent doesn't have a textNode, then leave a blank copy of selected node in its place
