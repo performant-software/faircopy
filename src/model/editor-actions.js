@@ -1,4 +1,4 @@
-import { NodeRange } from 'prosemirror-model'
+import { NodeRange, Fragment } from 'prosemirror-model'
 import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, deleteParentNode } from "./commands"
 import { validMove, createValidNode } from './element-validators'
@@ -210,7 +210,8 @@ export function moveNode(direction,teiDocument,metaKey) {
     if(!validState) return 
 
     const editorView = teiDocument.getActiveView()
-    const { tr, selection } = editorView.state
+    const { tr, selection, schema } = editorView.state
+    const { elements } = teiDocument.fairCopyProject.teiSchema
     const { $anchor } = selection
     const nodeIndex = $anchor.index()
     const parentNode = $anchor.node()
@@ -232,6 +233,10 @@ export function moveNode(direction,teiDocument,metaKey) {
                 if( textNodeName ) {
                     const textNode = tr.doc.type.schema.node(textNodeName)
                     tr.insert(selectedEndPos, textNode)    
+                } else {
+                    // if parent doesn't have a textNode, then leave a blank copy of selected node in its place
+                    const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements )
+                    tr.insert(selectedEndPos, replacementNode) 
                 }
             }
 
@@ -277,12 +282,16 @@ export function moveNode(direction,teiDocument,metaKey) {
             // if this was the only element and this element can contain text, then add a textnode
             if( parentNode.childCount === 1 ) {
                 const textNodeName = getTextNodeName(parentNode.type.spec.content)
+                const textNodePos = tr.mapping.map(selectedPos)
                 if( textNodeName ) {
                     const textNode = tr.doc.type.schema.node(textNodeName)
-                    const textNodePos = tr.mapping.map(selectedPos)
-                    tr.insert(textNodePos, textNode)    
-                    tr.setSelection( NodeSelection.create(tr.doc, insertPos+2) )
+                    tr.insert(textNodePos, textNode)                        
+                } else {
+                    // if parent doesn't have a textNode, then leave a blank copy of selected node in its place
+                    const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements )
+                    tr.insert(textNodePos, replacementNode) 
                 }
+                tr.setSelection( NodeSelection.create(tr.doc, insertPos+2) )
             } else {
                 tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
             }
