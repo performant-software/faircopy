@@ -178,6 +178,7 @@ export default class ResourceBrowser extends Component {
       <Paper >
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
+                  <caption>Resources available in this project.</caption>
                   <TableHead>
                       <TableRow>
                           <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
@@ -210,9 +211,9 @@ export default class ResourceBrowser extends Component {
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
           <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction}></TitleBar>
           { this.renderToolbar() }
-          <div>
+          <main>
               { this.renderResourceTable() }
-          </div>
+          </main>
         </div>
       )
   }

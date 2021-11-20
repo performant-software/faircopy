@@ -163,7 +163,7 @@ export default class App extends Component {
 
     if( rootComponent === "MainWindow" && fairCopyProject ) {
       return (
-        <div>
+        <div lang="en">
           { projectSettingsActive && <ProjectSettingsWindow
             fairCopyProject={fairCopyProject}
             onSave={ onSave }

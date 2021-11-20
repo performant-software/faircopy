@@ -26,9 +26,9 @@ export default class ProjectSidebar extends Component {
     render() {
         const { fairCopyProject, selectedResource, openResources, onSelectResource, onEditProjectInfo, onCloseResource, panelWidth } = this.props
         return (
-            <div id="ProjectSidebar">
+            <nav id="ProjectSidebar">
                 <div className="title-bar">
-                    <Typography  variant="h6" className="project-title">{fairCopyProject.projectName}</Typography>
+                    <Typography  variant="h6" component="h1" className="project-title">{fairCopyProject.projectName}</Typography>
                     { this.renderButton('Edit Project Settings', 'fas fa-cog', onEditProjectInfo )}
                 </div>
                 <ProjectNavigator
@@ -44,7 +44,7 @@ export default class ProjectSidebar extends Component {
                     fairCopyProject={fairCopyProject}
                     panelWidth={panelWidth}  
                 ></TableOfContents>
-            </div>
+            </nav>
         )
     }
 }

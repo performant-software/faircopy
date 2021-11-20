@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { InputBase, Button, Typography, Chip } from '@material-ui/core'
+import { InputBase, Button, Typography, Chip, Tooltip } from '@material-ui/core'
 import { getResourceIcon } from '../../model/resource-icon'
 import { getSearchHighlights, setSelectionIndex, scrollToSearchResult } from '../../model/search'
 
@@ -101,21 +101,25 @@ export default class SearchBar extends Component {
         return (
             <div className="search-result-spinner">
                 <Typography className="search-button" >Search Result </Typography>
-                <Button 
-                    onClick={onPrev} 
-                    className="search-button" 
-                    size="small" 
-                    color="inherit">
-                    <i className={`fas fa-caret-circle-left fa-lg`}></i>               
-                </Button> 
+                <Tooltip title="Select previous search result">
+                    <Button 
+                        onClick={onPrev} 
+                        className="search-button" 
+                        size="small" 
+                        color="inherit">
+                        <i className={`fas fa-caret-circle-left fa-lg`}></i>               
+                    </Button> 
+                </Tooltip>
                 <Typography className="search-button" >{ `${searchSelectionIndex+1} of ${highlights.length}` }</Typography>
-                <Button 
-                    onClick={onNext} 
-                    className="search-button" 
-                    size="small" 
-                    color="inherit">
-                    <i className={`fas fa-caret-circle-right fa-lg`}></i>               
-                </Button> 
+                <Tooltip title="Select next search result">
+                    <Button 
+                        onClick={onNext} 
+                        className="search-button" 
+                        size="small" 
+                        color="inherit">
+                        <i className={`fas fa-caret-circle-right fa-lg`}></i>               
+                    </Button> 
+                </Tooltip>
             </div>
         )
 
@@ -162,19 +166,22 @@ export default class SearchBar extends Component {
                 <InputBase
                     name="searchQuery"
                     className="search-input"
+                    aria-label="Search Project"
                     placeholder={placeholder}
                     disabled={!searchEnabled}
                     onChange={this.onChange}
                     onKeyUp={this.onKeyUp}
                 />
-                <Button 
-                    onClick={onSearchFilter} 
-                    disabled={!searchEnabled}
-                    className="search-button" 
-                    size="small" 
-                    color="inherit">
-                    <i className={`${filterIcon} fa-lg`}></i>               
-                </Button> 
+                <Tooltip title="Filter project search">
+                    <Button 
+                        onClick={onSearchFilter} 
+                        disabled={!searchEnabled}
+                        className="search-button" 
+                        size="small" 
+                        color="inherit">
+                        <i className={`${filterIcon} fa-lg`}></i>               
+                    </Button> 
+                </Tooltip>
                 { this.renderSearchResultSpinner() }
             </div>
         )

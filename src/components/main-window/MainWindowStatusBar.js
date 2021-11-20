@@ -54,7 +54,7 @@ export default class MainWindowStatusBar extends Component {
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
         return (
-            <div id="MainWindowStatusBar" className="bar">
+            <footer id="MainWindowStatusBar" className="bar">
                     <SearchBar
                         fairCopyProject={fairCopyProject}
                         searchEnabled={searchEnabled}
@@ -94,7 +94,7 @@ export default class MainWindowStatusBar extends Component {
                         <Tooltip title="Send developer feedback">
                             <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
                         </Tooltip>
-            </div>
+            </footer>
         )
     }
 }

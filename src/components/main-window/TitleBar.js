@@ -44,12 +44,12 @@ export default class TitleBar extends Component {
         const { isImageWindow } = this.props
         
         return (
-            <div id="TitleBar" >
-                <Typography component="h1" variant="h6">
+            <header id="TitleBar" >
+                <Typography component="h2" variant="h6">
                     { !isImageWindow && <span className="nav-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> }
                     { this.renderTitle() }
                 </Typography>
-            </div>
+            </header>
         )
     }
 }

@@ -4,7 +4,7 @@ import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
-import { Button, Icon, Typography, Chip } from '@material-ui/core';
+import { Button, Icon, Typography, Chip, Tooltip } from '@material-ui/core';
 import { getResourceIcon } from '../../model/resource-icon';
 
 
@@ -28,17 +28,21 @@ export default class ProjectNavigator extends Component {
     renderStatusChip(errorCount) {
       if( errorCount === 0 ) {
         return (
-          <Icon className="fa fa-check-circle fa-xs" />
+          <Tooltip title={`Resource is valid.`}>
+            <Icon aria-label="resource valid" className="fa fa-check-circle fa-xs" />
+          </Tooltip>
         )
       } else {
         const errorCountLabel = ( errorCount > 999 ) ? "1k+" : errorCount
         return (
-          <Chip
-              className="error-chip"
-              label={errorCountLabel}
-              size="small"
-              color="secondary"
-            />
+          <Tooltip title={`Resource has ${errorCount} validation errors.`}>
+            <Chip
+                className="error-chip"
+                label={errorCountLabel}
+                size="small"
+                color="secondary"
+              />
+          </Tooltip>
         )  
       }
     }
@@ -55,12 +59,14 @@ export default class ProjectNavigator extends Component {
         <div className='tree-item'>
           <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceName}</Typography>
           { this.renderStatusChip(errorCount) }
-          <Button 
-            className="tree-item-close"
-            onClick={onClick}
-          >
-            <i className="fas fa-times-circle fa-lg"></i>
-          </Button>
+          <Tooltip title="Close resource">
+            <Button 
+              className="tree-item-close"
+              onClick={onClick}
+            >
+              <i className="fas fa-times-circle fa-lg"></i>
+            </Button>
+          </Tooltip>
         </div>
       )
     }

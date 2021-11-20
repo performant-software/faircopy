@@ -140,6 +140,7 @@ export default class ProjectWindow extends Component {
         return (
             <div className="content select-project">
                 <div className="left-side">
+                    <Typography variant="h6" component="h2">Select a Project</Typography>
                     <ul>
                         <li><Button onClick={onClickNew} variant='contained'>New Project...</Button></li>
                         <li><Button onClick={onClickOpen} variant='contained'>Open Project...</Button></li>
@@ -163,13 +164,13 @@ export default class ProjectWindow extends Component {
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
         return (
-            <div id="ProjectWindow" >
-                <div className='header'>
-        <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion} {devModeTag}</Typography>
+            <main id="ProjectWindow" >
+                <header className='header'>
+                    <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion} {devModeTag}</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
-                </div>
+                </header>
                 { mode === 'select' ? this.renderSelectProject(allowKeyReset) : this.renderNewProject() }
-            </div>
+            </main>
         )
     }
 
