@@ -104,18 +104,29 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
+    const { onResourceAction, resources } = this.props
 
-    const onClick = (e) => {
-      // if we clicked on check, let onClickCheck handle it
-      if( e.target.nodeName === 'INPUT' ) return
-      const { onResourceAction, resources } = this.props
-      const resourceID = e.currentTarget.getAttribute('dataresourceid')
+    const onOpen = (resourceID) => {
       const resource = resources[resourceID]
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
         onResourceAction( 'open-teidoc', resourceID )         
       } else {
         onResourceAction( 'open', [resourceID] )         
+      }
+    }
+
+    const onClick = (e) => {
+      // if we clicked on check, let onClickCheck handle it
+      if( e.target.nodeName === 'INPUT' ) return
+      const resourceID = e.currentTarget.getAttribute('dataresourceid')
+      onOpen(resourceID)
+    }
+
+    const onKeyUp = (e) => {
+      if( e.keyCode === 13 ) {
+        const resourceID = e.currentTarget.getAttribute('dataresourceid')
+        onOpen(resourceID)  
       }
     }
 
@@ -145,7 +156,6 @@ export default class ResourceBrowser extends Component {
     }
 
     const { checked, allChecked, currentPage } = this.state
-    const { resources } = this.props
     
     const resourceRows = []
     for( const resource of Object.values(resources) ) {
@@ -153,7 +163,7 @@ export default class ResourceBrowser extends Component {
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
       resourceRows.push(
-        <TableRow hover onClick={onClick} dataresourceid={resource.id} key={`resource-${resource.id}`}>
+        <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={resource.id} key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
             <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
@@ -178,7 +188,7 @@ export default class ResourceBrowser extends Component {
       <Paper >
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
-                  <caption>Resources available in this project.</caption>
+                  <caption>This table lists the resources in this project.</caption>
                   <TableHead>
                       <TableRow>
                           <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>

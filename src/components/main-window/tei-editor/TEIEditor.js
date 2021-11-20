@@ -330,7 +330,7 @@ export default class TEIEditor extends Component {
         const style = hidden ? { display: 'none' } : {}
         
         return (
-            <div 
+            <main 
                 style={style} 
                 className='TEIEditor'
             > 
@@ -385,7 +385,7 @@ export default class TEIEditor extends Component {
                     anchorEl={notePopupAnchorEl}
                     onStateChange={this.onNoteStateChange}
                 ></NotePopup> }
-            </div>
+            </main>
         )
     }
 }
