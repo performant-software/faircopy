@@ -58,6 +58,7 @@ export default class GeneralSettings extends Component {
                     onChange={onChange}
                     error={validationErrors['name'] !== undefined }
                     helperText={validationErrors['name']}
+                    aria-label="Project Name"
                     label="Project Name" 
                 /><br/>
                 <TextField 
@@ -65,6 +66,7 @@ export default class GeneralSettings extends Component {
                     className="name-field"
                     value={description}
                     onChange={onChange}
+                    aria-label="Project Description"
                     label="Project Description" 
                 /><br/>
                 <div className="actions">

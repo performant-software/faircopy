@@ -78,6 +78,7 @@ export default class EditGroupDialog extends Component {
                     <TextField 
                         name="name"
                         className="name-field"
+                        aria-label="Group Name"
                         autoFocus={true}
                         value={name}
                         onChange={onChange}

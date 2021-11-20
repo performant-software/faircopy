@@ -72,7 +72,7 @@ export default class ElementLibrary extends Component {
         return (
             <div id="ElementLibrary">
                 <div className="header">
-                    <Typography variant="h5" >TEI Elements</Typography>
+                    <Typography variant="h5" component="h2" >TEI Elements</Typography>
                     <Typography>Drag elements from here to customize the editor menus.</Typography>
                 </div>
                 <div className="modules">
