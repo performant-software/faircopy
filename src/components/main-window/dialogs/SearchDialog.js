@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core'
+import { Table, TableHead, TableBody, TableRow, TableCell, Typography, Tooltip } from '@material-ui/core'
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@material-ui/core'
 import { Button, IconButton, TextField } from '@material-ui/core'
 
@@ -43,6 +43,7 @@ export default class SearchDialog extends Component {
             <div className="search-name-field">
                 <TextField          
                     label="Element Name"
+                    aria-label="Element Name"
                     value={elementName}
                     onChange={onChange}                       
                     fullWidth={true}
@@ -138,27 +139,27 @@ export default class SearchDialog extends Component {
                 <div className="search-add-row">
                     <TextField
                         name="attrName"
+                        aria-label="Attribute Name"
                         className="attr-filter-name"
                         value={attrName}            
                         onChange={onChange}
                     />
                     <TextField
                         name="attrValue"
+                        aria-label="Attribute Value"
                         value={attrValue}            
                         onChange={onChange}
                     />
-                    <IconButton 
-                        onClick={onSaveClick} 
-                        tooltip={"Save Term"}
-                    >
-                        <i className="fas fa-check-circle"></i>
-                    </IconButton>
-                    <IconButton 
-                        onClick={onCancelClick} 
-                        tooltip={"Cancel"}
-                    >
-                        <i className="fas fa-times-circle"></i>
-                    </IconButton>
+                    <Tooltip title="Save Attribute Filter">
+                        <IconButton aria-label="Save Atrribute Filter" onClick={onSaveClick} >
+                            <i className="fas fa-check-circle"></i>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Cancel Attribute Filter">
+                        <IconButton aria-label="Cancel Attribute Filter" onClick={onCancelClick} >
+                            <i className="fas fa-times-circle"></i>
+                        </IconButton>
+                    </Tooltip>
                 </div>
             )    
         } else {
