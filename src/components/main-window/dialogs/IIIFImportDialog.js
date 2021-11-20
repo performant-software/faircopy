@@ -95,6 +95,7 @@ export default class IIIFImportDialog extends Component {
                             onChange={onChange}
                             error={validationErrors['url'] !== undefined }
                             helperText={validationErrors['url']}
+                            aria-label="IIIF Manifest URL" 
                             label="IIIF Manifest URL" 
                             onKeyUp={onKeyUp}
                         />
