@@ -30,6 +30,7 @@ export default class ImportTextsDialog extends Component {
                 name="learnStructure"
                 value={learnStructure}
                 onChange={this.onChange}
+                aria-label="Select learn structure mode"
                 className='import-option'
             >
                 <MenuItem value={true}>Add new elements to schema</MenuItem>
@@ -46,6 +47,7 @@ export default class ImportTextsDialog extends Component {
                 name="lineBreakParsing"
                 value={lineBreakParsing}
                 onChange={this.onChange}
+                aria-label="Select line break mode"
                 className='import-option'
             >
                 <MenuItem value={'all'}>Preserve all line breaks</MenuItem>
