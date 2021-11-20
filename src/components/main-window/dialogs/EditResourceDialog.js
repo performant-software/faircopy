@@ -47,6 +47,7 @@ export default class EditResourceDialog extends Component {
                     name="type"
                     value={type}
                     onChange={onChange}
+                    aria-label="Resource Type"
                     variant="outlined"
                 >
                     <MenuItem value={'text'}>
@@ -141,6 +142,7 @@ export default class EditResourceDialog extends Component {
                         onChange={onChange}
                         error={validationErrors['name'] !== undefined }
                         helperText={validationErrors['name']}
+                        aria-label="Resource Name"
                         label="Resource Name" 
                     /><br/>
                     <TextField 
@@ -148,6 +150,7 @@ export default class EditResourceDialog extends Component {
                         className="name-field"
                         value={localID}
                         onChange={onChange}
+                        aria-label="ID"
                         error={validationErrors['localID'] !== undefined }
                         helperText={validationErrors['localID']}
                         label="ID" 
