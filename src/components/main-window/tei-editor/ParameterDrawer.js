@@ -410,7 +410,7 @@ export default class ParameterDrawer extends Component {
 
         return (
             <div id="ParameterDrawer">
-                <div className="header">
+                <div role="status" className="header">
                     <Typography>{headerMessage}</Typography>
                 </div>
                 { elementEls.length > 0 ? 
