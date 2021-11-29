@@ -363,3 +363,35 @@ function createAside( asideName, attrs, teiDocument, editorView ) {
     tr.insert($head.pos, asideNode) 
     editorView.dispatch(tr)
 }
+
+export function getEnabledMenus(teiDocument) {
+    const editorView = teiDocument.getActiveView()
+
+    if( editorView ) {
+        const { selection } = editorView.state
+        if( selection.$cursor ) {
+            return {
+                marks: false,
+                inline: true,
+                eraser: false
+            }
+        } else if( selection.node ) {
+            return {
+                marks: false,
+                inline: false,
+                eraser: true
+            }
+        } else {
+            return {
+                marks: true,
+                inline: false,
+                eraser: true
+            }
+        }
+    } 
+    return {
+        marks: false,
+        inline: false,
+        eraser: false
+    }
+}

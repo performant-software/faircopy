@@ -14,7 +14,7 @@ import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
-import { moveNode } from "../../../model/editor-actions"
+import { moveNode, eraseSelection, getEnabledMenus } from "../../../model/editor-actions"
 
 const fairCopy = window.fairCopy
 
@@ -173,7 +173,7 @@ export default class TEIEditor extends Component {
 
     onKeyDown = ( event ) => {
         const { ctrlDown, altDown } = this.state
-        const { teiDocument } = this.props
+        const { teiDocument, onOpenElementMenu, onTogglePalette } = this.props
         const editorView = teiDocument.getActiveView()
         const metaKey = ( event.ctrlKey || event.metaKey )
 
@@ -201,6 +201,24 @@ export default class TEIEditor extends Component {
 
         if( metaKey && key === 'v' ) {
             pasteSelectedNode( teiDocument )
+        }
+
+        const enabledMenus = getEnabledMenus(teiDocument)
+
+        if( metaKey && key === '1' ) {
+            onTogglePalette()
+        }
+
+        if( enabledMenus.marks && metaKey && key === '2' ) {
+            onOpenElementMenu({ menuGroup: 'mark' })
+        }
+
+        if( enabledMenus.inline && metaKey && key === '3' ) {
+            onOpenElementMenu({ menuGroup: 'inline' })
+        }
+
+        if( enabledMenus.eraser && metaKey && key === '4' ) {
+            eraseSelection(teiDocument)
         }
 
         // handle undo and redo here so they are available even when focus is not in PM itself

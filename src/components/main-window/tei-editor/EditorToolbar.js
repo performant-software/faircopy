@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { IconButton, Tooltip } from '@material-ui/core'
 
 import {undo, redo} from "prosemirror-history"
-import { createPhraseElement, eraseSelection } from "../../../model/editor-actions"
+import { createPhraseElement, eraseSelection, getEnabledMenus } from "../../../model/editor-actions"
 
 export default class EditorToolbar extends Component {
     
@@ -17,52 +17,21 @@ export default class EditorToolbar extends Component {
         }
     }
 
-    getEnabledMenus() {
-        const { teiDocument } = this.props
-        const editorView = teiDocument.getActiveView()
-
-        if( editorView ) {
-            const { selection } = editorView.state
-            if( selection.$cursor ) {
-                return {
-                    marks: false,
-                    inline: true,
-                    eraser: false
-                }
-            } else if( selection.node ) {
-                return {
-                    marks: false,
-                    inline: false,
-                    eraser: true
-                }
-            } else {
-                return {
-                    marks: true,
-                    inline: false,
-                    eraser: true
-                }
-            }
-        } 
-        return {
-            marks: false,
-            inline: false,
-            eraser: false
-        }
-    }
-
     renderButton(title,icon,onClick,enabled=true,onRef=null,active=false) {
         const refProps = onRef ? { ref: onRef } : {}
         const colorProps = active ? { color: 'primary' } : {}
         const iconButton = (
-            <IconButton
-                disabled={!enabled}
-                onClick={onClick}
-                {...this.buttonProps}
-                {...refProps}
-                {...colorProps}
-            >
-                <i className={`${icon} fa-sm`}></i>
-            </IconButton> 
+            <span>            
+                <IconButton
+                    disabled={!enabled}
+                    onClick={onClick}
+                    {...this.buttonProps}
+                    {...refProps}
+                    {...colorProps}
+                >
+                    <i className={`${icon} fa-sm`}></i>
+                </IconButton> 
+            </span>
         )
              
         return <Tooltip title={title}>{iconButton}</Tooltip>
@@ -70,7 +39,7 @@ export default class EditorToolbar extends Component {
 
     renderActionButtons() {
         const { onOpenElementMenu, teiDocument, onTogglePalette, paletteActive, elementMenuAnchors } = this.props
-        const enabledMenus = this.getEnabledMenus()
+        const enabledMenus = getEnabledMenus(teiDocument)
 
         return (
             <span>

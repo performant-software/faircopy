@@ -173,14 +173,16 @@ export default class SearchBar extends Component {
                     onKeyUp={this.onKeyUp}
                 />
                 <Tooltip title="Filter project search">
-                    <Button 
-                        onClick={onSearchFilter} 
-                        disabled={!searchEnabled}
-                        className="search-button" 
-                        size="small" 
-                        color="inherit">
-                        <i className={`${filterIcon} fa-lg`}></i>               
-                    </Button> 
+                    <span>
+                        <Button 
+                            onClick={onSearchFilter} 
+                            disabled={!searchEnabled}
+                            className="search-button" 
+                            size="small" 
+                            color="inherit">
+                            <i className={`${filterIcon} fa-lg`}></i>               
+                        </Button> 
+                    </span>
                 </Tooltip>
                 { this.renderSearchResultSpinner() }
             </div>
