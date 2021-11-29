@@ -11,6 +11,5 @@
 }
 
 #ElementMenu .menu-chevron {
-    position: absolute;
-    right: 10px;
+    float: right;
 }

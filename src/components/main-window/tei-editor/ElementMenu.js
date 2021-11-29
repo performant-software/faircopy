@@ -30,7 +30,7 @@ export default class ElementMenu extends Component {
         const { elementInfoID } = this.state
         const anchorEl = this.itemEls[elementInfoID]
 
-        if( !elementInfoID || !anchorEl ) return null
+        if( elementInfoID === null || !anchorEl ) return null
 
         const { elements } = teiDocument.fairCopyProject.teiSchema
         const elementSpec = elements[elementInfoID]
@@ -57,12 +57,16 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
+        const { subMenuID } = this.state
+        if( subMenuID === null ) return null
+
         const { teiDocument } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
         const menuGroups = this.getMenuGroups()
-        const { subMenuID } = this.state
         const { members } = menuGroups[subMenuID]
         const groupEl = this.groupEls[subMenuID]
+
+        if( !groupEl ) return null
 
         // generate the sub menu items
         const menuItems = []
@@ -71,6 +75,11 @@ export default class ElementMenu extends Component {
             const {onProjectSettings} = this.props
             menuItems.push(<EmptyGroup key="empty-group" onProjectSettings={onProjectSettings}></EmptyGroup>)
             return menuItems
+        }
+
+        const onClose = () => { 
+            this.itemEls = {}
+            this.setState({...this.state, subMenuID: null})
         }
 
         for( const member of members ) {
@@ -82,8 +91,12 @@ export default class ElementMenu extends Component {
             }
 
             const valid = validAction( member, teiDocument )
-            const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: member })}
-            const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
+            const onShowInfo = () => { this.setState({ ...this.state, elementInfoID: member })}
+            const onHideInfo = () => { this.setState({ ...this.state, elementInfoID: null })}
+            const onKeyUp = (e) => { 
+                // left arrow
+                if( e.keyCode === 37 ) onClose()
+            }
             const icon = teiSchema.getElementIcon(member)
             const nameEl = icon ? <span><i className={`${icon} fa-sm`}></i><span className="element-menu-name">{member}</span></span> : <span>{member}</span>
 
@@ -93,9 +106,12 @@ export default class ElementMenu extends Component {
                     key={`submenu-${member}`}
                     disabled={!valid}
                     disableRipple={true}
-                    onMouseOver={onMouseOver}
-                    onMouseLeave={onMouseLeave}
+                    onFocus={onShowInfo}
+                    onBlur={onHideInfo}
+                    onMouseOver={onShowInfo}
+                    onMouseLeave={onHideInfo}
                     onClick={this.createMenuAction(selection, member)}
+                    onKeyUp={onKeyUp}
                 >
                     {nameEl}
                 </MenuItem>
@@ -104,17 +120,13 @@ export default class ElementMenu extends Component {
 
         const anchorOrigin = { vertical: 'top', horizontal: 'right' }
 
-        const onClose = () => { 
-            this.itemEls = {}
-            this.setState({...this.state, subMenuID: null})
-        }
-
         return (
             <Menu
                 open={true}
                 onClose={onClose}
                 anchorEl={groupEl}
                 anchorOrigin={anchorOrigin}
+                transitionDuration={0}
                 getContentAnchorEl={null}
             >
                 { menuItems }
@@ -132,16 +144,21 @@ export default class ElementMenu extends Component {
             const menuID = i
             const key = `menugroup-${menuID}`
             const showMenu = () => { this.setState({ subMenuID: menuID }) }
+            const onKeyUp = (e) => { 
+                // right arrow
+                if( e.keyCode === 39 ) showMenu()
+            }
             menuItems.push(
                 <MenuItem 
                     key={key} 
                     ref={(el)=> { this.groupEls[menuID] = el }}
                     disableRipple={true}
                     className="menu-item"
+                    onKeyUp={onKeyUp}
                     onClick={showMenu}
                     value={i++}
                 >                   
-                    <Typography>{menuGroup.label} <i className="menu-chevron fas fa-chevron-right"></i></Typography>
+                    <Typography>{menuGroup.label} </Typography><div className="menu-chevron" ><i className="fas fa-chevron-right"></i></div>
                 </MenuItem>
             )
         }
@@ -151,7 +168,6 @@ export default class ElementMenu extends Component {
 
     render() {  
         const { elementMenuAnchors, menuGroup, onClose } = this.props
-        const { subMenuID } = this.state
         const anchorEl = elementMenuAnchors[menuGroup]
         const anchorOrigin = { vertical: 'bottom', horizontal: 'left' }
 
@@ -166,7 +182,7 @@ export default class ElementMenu extends Component {
                 >
                     { this.renderMenuItems() }
                 </Menu>
-                { subMenuID !== null && this.renderSubMenu() }
+                { this.renderSubMenu() }
                 { this.renderElementInfo() }
             </div>
         )
