@@ -765,6 +765,7 @@ export default class MainWindow extends Component {
                         fairCopyProject={fairCopyProject}
                         onSearchResults={this.onSearchResults}
                         onSearchFilter={this.onSearchFilter}
+                        onAlertMessage={this.onAlertMessage}
                         currentResource={currentResource}
                         searchSelectionIndex={searchSelectionIndex}
                         searchFilterOptions={searchFilterOptions}

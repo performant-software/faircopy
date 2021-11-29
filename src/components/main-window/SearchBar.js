@@ -134,10 +134,14 @@ export default class SearchBar extends Component {
     }
 
     onResults = (event, searchResults) => {
-        const { onSearchResults } = this.props
+        const { onSearchResults, onAlertMessage } = this.props
         const { query, results } = searchResults
         const popupMenuOptions = this.renderSearchResults( results )
-        onSearchResults( query, results, popupMenuOptions, this.searchBarEl )    
+        if( popupMenuOptions.length > 0 ) {
+            onSearchResults( query, results, popupMenuOptions, this.searchBarEl )    
+        } else {
+            onAlertMessage("No search results found.")
+        }
     }
 
     onChange = (e) => {
