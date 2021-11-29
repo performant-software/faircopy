@@ -9,6 +9,7 @@ export default class SnackAlert extends Component {
         return (
             <Snackbar 
                 open={open} 
+                role="alert" 
                 onClose={handleClose}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
