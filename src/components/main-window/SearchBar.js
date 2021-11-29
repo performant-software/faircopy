@@ -175,6 +175,7 @@ export default class SearchBar extends Component {
                 <Tooltip title="Filter project search">
                     <span>
                         <Button 
+                            aria-label="Search Filter"
                             onClick={onSearchFilter} 
                             disabled={!searchEnabled}
                             className="search-button" 

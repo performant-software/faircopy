@@ -66,9 +66,7 @@ export default class ResourceBrowser extends Component {
     const buttonProps = {
       className: 'toolbar-button',
       variant: "outlined",
-      size: 'small',
-      disableRipple: true,
-      disableFocusRipple: true
+      size: 'small'
     }
 
     const onImportXML = () => { onImportResource('xml') }
