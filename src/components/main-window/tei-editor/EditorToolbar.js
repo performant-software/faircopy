@@ -13,9 +13,7 @@ export default class EditorToolbar extends Component {
         }
 
         this.buttonProps = {
-            className: 'toolbar-button',
-            disableRipple: true,
-            disableFocusRipple: true
+            className: 'toolbar-button'
         }
     }
 

@@ -12,7 +12,7 @@ export default class ElementInfoPopup extends Component {
                 <Card className="element-info-card" elevation={12}>
                     <CardContent>
                         <Typography color="textSecondary" gutterBottom>{name}</Typography>
-                        <Typography variant="body2" component="p">{desc}</Typography><br/>
+                        <Typography role="status" variant="body2" component="p">{desc}</Typography><br/>
                         { (containedBy||mayContain||notes) && 
                             <table className="rules-table">
                                 <tbody>
