@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Popper, MenuItem, MenuList, Paper, ClickAwayListener } from '@material-ui/core'
+import { MenuItem, Menu } from '@material-ui/core'
 
 export default class PopupMenu extends Component {
     render() {
@@ -17,7 +17,6 @@ export default class PopupMenu extends Component {
                 <MenuItem 
                     onClick={onClick}
                     key={key} 
-                    disableRipple={true}
                     className="menu-item"
                     disabled={menuOption.disabled}
                     value={menuOption.id}
@@ -27,20 +26,19 @@ export default class PopupMenu extends Component {
             )
         }
         
-        const finalPlacement = placement ? placement : 'bottom-start'
-        const elevation = 6
+        const anchorOrigin = placement ? placement : { vertical: 'bottom', horizontal: 'center' }
 
         return (
             <div id="PopupMenu">
-                 <Popper className="popup" placement={finalPlacement} open={true} anchorEl={anchorEl} role={undefined} disablePortal>
-                    <Paper elevation={elevation}>
-                        <ClickAwayListener onClickAway={onClose}>
-                            <MenuList>
-                                { menuItems }
-                            </MenuList>
-                        </ClickAwayListener>
-                    </Paper>
-                </Popper>
+                <Menu                            
+                    open={true}
+                    onClose={onClose}
+                    anchorEl={anchorEl}
+                    anchorOrigin={anchorOrigin}
+                    getContentAnchorEl={null}
+                >
+                    { menuItems }
+                </Menu>
             </div>
         )
     }

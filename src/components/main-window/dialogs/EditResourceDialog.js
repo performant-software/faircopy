@@ -130,7 +130,6 @@ export default class EditResourceDialog extends Component {
                 open={editDialogMode !== false}
                 onClose={onClickClose}
                 aria-labelledby="edit-resource-title"
-                aria-describedby="edit-resource-description"
             >
                 <DialogTitle id="edit-resource-title">{dialogTitle}</DialogTitle>
                 <DialogContent>

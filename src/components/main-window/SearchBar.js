@@ -32,7 +32,7 @@ export default class SearchBar extends Component {
         )  
     }
 
-    renderResultLabel( name, parentName, resourceType, hitCount ) {
+    renderResultLabel( name, parentName, resourceType ) {
         const resourceIcon = <i className={getResourceIcon(resourceType)}></i>
         const path = parentName ? 
             <Typography>{resourceIcon} {parentName} <i className='fa fa-chevron-right'></i> {name}</Typography> : 
@@ -160,11 +160,11 @@ export default class SearchBar extends Component {
 
         return (
             <div
-                ref={(el)=> { this.searchBarEl = el }}
                 id="SearchBar"
             >
                 <InputBase
                     name="searchQuery"
+                    ref={(el)=> { this.searchBarEl = el }}
                     className="search-input"
                     aria-label="Search Project"
                     placeholder={placeholder}

@@ -416,7 +416,8 @@ export default class MainWindow extends Component {
             const resource = openResources[selectedResource]
             this.updateSearchResults(resource, searchQuery, searchResults)
         }
-        this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement: 'top-start' })
+        const popupMenuPlacement =  { vertical: 'top', horizontal: 'left' }
+        this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement })
     }
 
     onSearchFilter = () => {        
