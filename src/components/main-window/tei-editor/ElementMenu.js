@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Menu, MenuItem } from '@material-ui/core'
+import { Menu, MenuItem, Typography } from '@material-ui/core'
 
-import NestedMenuItem from './NestedMenuItem';
 import ElementInfoPopup from './ElementInfoPopup'
 import EmptyGroup from './EmptyGroup';
 import { createPhraseElement } from "../../../model/editor-actions"
@@ -12,9 +11,11 @@ export default class ElementMenu extends Component {
     constructor() {
         super()
         this.state = {
+            subMenuID: null,
             elementInfoID: null
         }
         this.itemEls = {}
+        this.groupEls = {}
     }
 
     getMenuGroups() {
@@ -55,10 +56,13 @@ export default class ElementMenu extends Component {
         }
     }
 
-    renderGroup(menuGroup) {
+    renderSubMenu() {
         const { teiDocument } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
-        const { members } = menuGroup
+        const menuGroups = this.getMenuGroups()
+        const { subMenuID } = this.state
+        const { members } = menuGroups[subMenuID]
+        const groupEl = this.groupEls[subMenuID]
 
         // generate the sub menu items
         const menuItems = []
@@ -98,29 +102,47 @@ export default class ElementMenu extends Component {
             )
         }
 
-        return menuItems
+        const anchorOrigin = { vertical: 'top', horizontal: 'right' }
+
+        const onClose = () => { 
+            this.itemEls = {}
+            this.setState({...this.state, subMenuID: null})
+        }
+
+        return (
+            <Menu
+                open={true}
+                onClose={onClose}
+                anchorEl={groupEl}
+                anchorOrigin={anchorOrigin}
+                getContentAnchorEl={null}
+            >
+                { menuItems }
+            </Menu>
+        )
     }
 
-    renderGroups() {
+    renderMenuItems() {
         const menuGroups = this.getMenuGroups()
 
         // generate the menu items
         const menuItems = []
-        let menuGroupID=0
+        let i=0
         for( const menuGroup of menuGroups ) {
-            const key = `menugroup-${menuGroupID}`
+            const menuID = i
+            const key = `menugroup-${menuID}`
+            const showMenu = () => { this.setState({ subMenuID: menuID }) }
             menuItems.push(
-                <NestedMenuItem 
+                <MenuItem 
                     key={key} 
+                    ref={(el)=> { this.groupEls[menuID] = el }}
                     disableRipple={true}
-                    mainMenuOpen={true}
                     className="menu-item"
-                    value={menuGroupID++}
-                    label={menuGroup.label}
-                    rightIcon={<i className="menu-chevron fas fa-chevron-right"></i>}
-                >
-                    { this.renderGroup(menuGroup) }
-                </NestedMenuItem>
+                    onClick={showMenu}
+                    value={i++}
+                >                   
+                    <Typography>{menuGroup.label} <i className="menu-chevron fas fa-chevron-right"></i></Typography>
+                </MenuItem>
             )
         }
 
@@ -129,6 +151,7 @@ export default class ElementMenu extends Component {
 
     render() {  
         const { elementMenuAnchors, menuGroup, onClose } = this.props
+        const { subMenuID } = this.state
         const anchorEl = elementMenuAnchors[menuGroup]
         const anchorOrigin = { vertical: 'bottom', horizontal: 'left' }
 
@@ -141,8 +164,9 @@ export default class ElementMenu extends Component {
                     anchorOrigin={anchorOrigin}
                     getContentAnchorEl={null}
                 >
-                    { this.renderGroups() }
+                    { this.renderMenuItems() }
                 </Menu>
+                { subMenuID !== null && this.renderSubMenu() }
                 { this.renderElementInfo() }
             </div>
         )
