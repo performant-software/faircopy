@@ -141,11 +141,9 @@ export default class ProjectWindow extends Component {
             <div className="content select-project">
                 <div className="left-side">
                     <Typography variant="h6" component="h2">Select a Project</Typography>
-                    <ul>
-                        <li><Button onClick={onClickNew} variant='contained'>New Project...</Button></li>
-                        <li><Button onClick={onClickOpen} variant='contained'>Open Project...</Button></li>
-                        { allowKeyReset && <li><Button onClick={onResetKey} variant='contained'>Reset License Key</Button></li> }
-                    </ul>
+                    <Button className="left-action" onClick={onClickNew} variant='contained'>New Project...</Button>
+                    <Button className="left-action" onClick={onClickOpen} variant='contained'>Open Project...</Button>
+                    { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
