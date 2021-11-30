@@ -416,8 +416,12 @@ export default class MainWindow extends Component {
             const resource = openResources[selectedResource]
             this.updateSearchResults(resource, searchQuery, searchResults)
         }
-        const popupMenuPlacement =  { vertical: 'top', horizontal: 'left' }
-        this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement })
+        if( popupMenuOptions.length === 0 ) {
+            this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })    
+        } else {
+            const popupMenuPlacement = { vertical: 'top', horizontal: 'left' }
+            this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement })
+        }
     }
 
     onSearchFilter = () => {        

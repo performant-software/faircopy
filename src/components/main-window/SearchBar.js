@@ -137,11 +137,10 @@ export default class SearchBar extends Component {
         const { onSearchResults, onAlertMessage } = this.props
         const { query, results } = searchResults
         const popupMenuOptions = this.renderSearchResults( results )
-        if( popupMenuOptions.length > 0 ) {
-            onSearchResults( query, results, popupMenuOptions, this.searchBarEl )    
-        } else {
+        if( popupMenuOptions.length === 0 && query.query.length > 0 ) {
             onAlertMessage("No search results found.")
         }
+        onSearchResults( query, results, popupMenuOptions, this.searchBarEl )    
     }
 
     onChange = (e) => {
@@ -165,10 +164,10 @@ export default class SearchBar extends Component {
         return (
             <div
                 id="SearchBar"
+                ref={(el)=> { this.searchBarEl = el }}
             >
                 <InputBase
                     name="searchQuery"
-                    ref={(el)=> { this.searchBarEl = el }}
                     className="search-input"
                     aria-label="Search Project"
                     placeholder={placeholder}
