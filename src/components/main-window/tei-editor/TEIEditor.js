@@ -327,7 +327,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onOpenElementMenu, onDragElement, onEditResource, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter, elementMenuAnchors } = this.props
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
         const { noteID, notePopupAnchorEl, selectedElements } = this.state
 
         const onClickBody = () => {
@@ -368,8 +368,7 @@ export default class TEIEditor extends Component {
                         onSave={onSave}
                         onTogglePalette={onTogglePalette}
                         paletteActive={paletteActive}
-                        onOpenElementMenu={onOpenElementMenu}
-                        elementMenuAnchors={elementMenuAnchors}
+                        onProjectSettings={onProjectSettings}
                         onEditResource={onEditResource}
                     ></EditorToolbar> }
                     <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>

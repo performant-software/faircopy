@@ -8,7 +8,6 @@ import AlertDialog from './dialogs/AlertDialog'
 
 import TEIEditor from './tei-editor/TEIEditor'
 import ResourceBrowser from './resource-browser/ResourceBrowser'
-import ElementMenu from './tei-editor/ElementMenu'
 import EditResourceDialog from './dialogs/EditResourceDialog'
 import IIIFImportDialog from './dialogs/IIIFImportDialog'
 import AddImageDialog from './dialogs/AddImageDialog'
@@ -59,7 +58,6 @@ export default class MainWindow extends Component {
             editTEIDocDialogMode: false,
             moveResourceIDs: null,
             surfaceInfo: null,
-            elementMenuOptions: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
             popupMenuPlacement: null,
@@ -75,7 +73,6 @@ export default class MainWindow extends Component {
             searchEnabled: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
-        this.elementMenuAnchors = {}
     }
 
     componentDidMount() {
@@ -323,17 +320,9 @@ export default class MainWindow extends Component {
         }
     }
 
-    onOpenElementMenu = (elementMenuOptions ) => {
-        this.setState({...this.state, elementMenuOptions })
-    }
-
     onTogglePalette = () => {
         const { paletteWindowOpen } = this.state
         this.setState({...this.state, paletteWindowOpen: !paletteWindowOpen })
-    }
-
-    onCloseElementMenu = () => {
-        this.setState({...this.state, elementMenuOptions: null })
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -446,7 +435,7 @@ export default class MainWindow extends Component {
 
     renderEditors() {
         const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen, parentResourceID } = this.state
-        const { fairCopyProject } = this.props
+        const { fairCopyProject, onProjectSettings } = this.props
 
         const editors = []
         for( const resource of Object.values(openResources) ) {
@@ -477,10 +466,10 @@ export default class MainWindow extends Component {
                             fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onTogglePalette={this.onTogglePalette}
+                            onProjectSettings={onProjectSettings}
                             onDragElement={this.onDragElement}
                             paletteActive={paletteWindowOpen}
                             onEditResource={this.onEditResource}
-                            elementMenuAnchors={this.elementMenuAnchors}
                             onAlertMessage={this.onAlertMessage}
                             onResourceAction={this.onResourceAction}
                             onErrorCountChange={onErrorCountChange}
@@ -557,7 +546,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, elementMenuOptions, parentResourceID } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
         const { fairCopyProject, appConfig, onProjectSettings } = this.props
         const { idMap } = fairCopyProject
 
@@ -642,16 +631,6 @@ export default class MainWindow extends Component {
                     onDraggedAway={()=>{}}
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></EditorDraggingElement> }
-                { elementMenuOptions && <ElementMenu
-                    teiDocument={selectedDoc}
-                    onClose={this.onCloseElementMenu}
-                    elementMenuAnchors={this.elementMenuAnchors}
-                    onProjectSettings={() => { 
-                        onProjectSettings()
-                        this.setState({...this.state, elementMenuOptions: null }) }
-                    }
-                    {...elementMenuOptions}
-                ></ElementMenu> }
                 { moveResourceMode && <MoveResourceDialog
                     resourceIDs={moveResourceIDs}
                     fairCopyProject={fairCopyProject}

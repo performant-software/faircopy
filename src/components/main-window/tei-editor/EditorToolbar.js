@@ -4,17 +4,27 @@ import { IconButton, Tooltip } from '@material-ui/core'
 
 import {undo, redo} from "prosemirror-history"
 import { createPhraseElement, eraseSelection, getEnabledMenus } from "../../../model/editor-actions"
+import ElementMenu from "./ElementMenu"
 
 export default class EditorToolbar extends Component {
     
     constructor() {
         super()
         this.state = {
+            elementMenuOptions: null
         }
 
         this.buttonProps = {
             className: 'toolbar-button'
         }
+        this.elementMenuAnchors = {}
+    }
+
+    onOpenElementMenu = (elementMenuOptions ) => {
+        this.setState({...this.state, elementMenuOptions })
+    }
+    onCloseElementMenu = () => {
+        this.setState({...this.state, elementMenuOptions: null })
     }
 
     renderButton(title,icon,onClick,enabled=true,onRef=null,active=false) {
@@ -38,7 +48,7 @@ export default class EditorToolbar extends Component {
     }
 
     renderActionButtons() {
-        const { onOpenElementMenu, teiDocument, onTogglePalette, paletteActive, elementMenuAnchors } = this.props
+        const { teiDocument, onTogglePalette, paletteActive } = this.props
         const enabledMenus = getEnabledMenus(teiDocument)
 
         return (
@@ -47,16 +57,16 @@ export default class EditorToolbar extends Component {
                 { this.renderButton(
                     "Mark Phrase",
                     "fas fa-marker",
-                    () => { onOpenElementMenu({ menuGroup: 'mark' })},
+                    () => { this.onOpenElementMenu({ menuGroup: 'mark' })},
                     enabledMenus.marks,
-                    (el)=> { elementMenuAnchors.mark = el }
+                    (el)=> { this.elementMenuAnchors.mark = el }
                 )}
                 { this.renderButton(
                     "Insert Inline",
                     "fas fa-stamp",
-                    () => { onOpenElementMenu({ menuGroup: 'inline' }) },
+                    () => { this.onOpenElementMenu({ menuGroup: 'inline' }) },
                     enabledMenus.inline,
-                    (el)=> { elementMenuAnchors.inline = el }
+                    (el)=> { this.elementMenuAnchors.inline = el }
                 )}
                 { this.renderButton("Erase Mark/Structure", "fas fa-eraser", ()=>{eraseSelection(teiDocument)}, enabledMenus.eraser) }
             </span>
@@ -106,8 +116,9 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { onEditResource, onSave, teiDocument } = this.props
+        const { onEditResource, onSave, teiDocument, onProjectSettings } = this.props
         const { changedSinceLastSave } = teiDocument
+        const { elementMenuOptions } = this.state
 
          const seperator = <div className="seperator"><div className="line"></div></div>
 
@@ -134,6 +145,16 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
                 </div>
+                { elementMenuOptions && <ElementMenu
+                    teiDocument={teiDocument}
+                    onClose={this.onCloseElementMenu}
+                    elementMenuAnchors={this.elementMenuAnchors}
+                    onProjectSettings={() => { 
+                        onProjectSettings()
+                        this.setState({...this.state, elementMenuOptions: null }) }
+                    }
+                    {...elementMenuOptions}
+                ></ElementMenu> }
             </div>
         )
     }
