@@ -11,20 +11,12 @@ export default class EditorToolbar extends Component {
     constructor() {
         super()
         this.state = {
-            elementMenuOptions: null
         }
 
         this.buttonProps = {
             className: 'toolbar-button'
         }
         this.elementMenuAnchors = {}
-    }
-
-    onOpenElementMenu = (elementMenuOptions ) => {
-        this.setState({...this.state, elementMenuOptions })
-    }
-    onCloseElementMenu = () => {
-        this.setState({...this.state, elementMenuOptions: null })
     }
 
     renderButton(title,icon,onClick,enabled=true,onRef=null,active=false) {
@@ -48,7 +40,7 @@ export default class EditorToolbar extends Component {
     }
 
     renderActionButtons() {
-        const { teiDocument, onTogglePalette, paletteActive } = this.props
+        const { teiDocument, onTogglePalette, paletteActive, onOpenElementMenu } = this.props
         const enabledMenus = getEnabledMenus(teiDocument)
 
         return (
@@ -57,14 +49,14 @@ export default class EditorToolbar extends Component {
                 { this.renderButton(
                     "Mark Phrase",
                     "fas fa-marker",
-                    () => { this.onOpenElementMenu({ menuGroup: 'mark' })},
+                    () => { onOpenElementMenu({ menuGroup: 'mark' })},
                     enabledMenus.marks,
                     (el)=> { this.elementMenuAnchors.mark = el }
                 )}
                 { this.renderButton(
                     "Insert Inline",
                     "fas fa-stamp",
-                    () => { this.onOpenElementMenu({ menuGroup: 'inline' }) },
+                    () => { onOpenElementMenu({ menuGroup: 'inline' }) },
                     enabledMenus.inline,
                     (el)=> { this.elementMenuAnchors.inline = el }
                 )}
@@ -116,9 +108,8 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { onEditResource, onSave, teiDocument, onProjectSettings, focusBody } = this.props
+        const { onEditResource, onSave, teiDocument, onProjectSettings, onCloseElementMenu, elementMenuOptions } = this.props
         const { changedSinceLastSave } = teiDocument
-        const { elementMenuOptions } = this.state
 
          const seperator = <div className="seperator"><div className="line"></div></div>
 
@@ -145,17 +136,17 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
                 </div>
-                { elementMenuOptions && <ElementMenu
+                <ElementMenu
+                    open={elementMenuOptions !== null}
                     teiDocument={teiDocument}
-                    focusBody={focusBody}
-                    onClose={this.onCloseElementMenu}
+                    onClose={onCloseElementMenu}
                     elementMenuAnchors={this.elementMenuAnchors}
                     onProjectSettings={() => { 
                         onProjectSettings()
                         this.setState({...this.state, elementMenuOptions: null }) }
                     }
                     {...elementMenuOptions}
-                ></ElementMenu> }
+                ></ElementMenu>
             </div>
         )
     }

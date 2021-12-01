@@ -29,7 +29,8 @@ export default class TEIEditor extends Component {
             notePopupAnchorEl: null,
             ctrlDown: false,
             altDown: false,
-            selectedElements: []
+            selectedElements: [],
+            elementMenuOptions: null
         }
     }
 
@@ -173,7 +174,7 @@ export default class TEIEditor extends Component {
 
     onKeyDown = ( event ) => {
         const { ctrlDown, altDown } = this.state
-        const { teiDocument, onOpenElementMenu, onTogglePalette } = this.props
+        const { teiDocument, onTogglePalette } = this.props
         const editorView = teiDocument.getActiveView()
         const metaKey = ( event.ctrlKey || event.metaKey )
 
@@ -210,11 +211,11 @@ export default class TEIEditor extends Component {
         }
 
         if( enabledMenus.marks && metaKey && key === '2' ) {
-            onOpenElementMenu({ menuGroup: 'mark' })
+            this.onOpenElementMenu({ menuGroup: 'mark' })
         }
 
         if( enabledMenus.inline && metaKey && key === '3' ) {
-            onOpenElementMenu({ menuGroup: 'inline' })
+            this.onOpenElementMenu({ menuGroup: 'inline' })
         }
 
         if( enabledMenus.eraser && metaKey && key === '4' ) {
@@ -326,9 +327,17 @@ export default class TEIEditor extends Component {
         return elements
     }
 
+    onOpenElementMenu = (elementMenuOptions ) => {
+        this.setState({...this.state, elementMenuOptions })
+    }
+
+    onCloseElementMenu = () => {
+        this.setState({...this.state, elementMenuOptions: null })
+    }
+
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
-        const { noteID, notePopupAnchorEl, selectedElements } = this.state
+        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions } = this.state
 
         const onClickBody = () => {
             const { editorView } = teiDocument
@@ -346,13 +355,6 @@ export default class TEIEditor extends Component {
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
 
         const style = hidden ? { display: 'none' } : {}
-
-        const focusBody = () => { 
-            const { editorView } = teiDocument
-            editorView.dom.focus()
-            editorView.focus()
-            console.log(`${editorView.hasFocus()} has focus`)
-        }
         
         return (
             <main 
@@ -373,11 +375,13 @@ export default class TEIEditor extends Component {
                     { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
                         onSave={onSave}
-                        focusBody={focusBody}
                         onTogglePalette={onTogglePalette}
                         paletteActive={paletteActive}
                         onProjectSettings={onProjectSettings}
                         onEditResource={onEditResource}
+                        onOpenElementMenu={this.onOpenElementMenu}
+                        onCloseElementMenu={this.onCloseElementMenu}
+                        elementMenuOptions={elementMenuOptions}
                     ></EditorToolbar> }
                     <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
                         { !hidden && <EditorGutter

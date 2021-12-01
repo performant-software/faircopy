@@ -20,7 +20,7 @@ export default class ElementMenu extends Component {
 
     getMenuGroups() {
         const { teiDocument, menuGroup } = this.props
-        if(!teiDocument) return null
+        if( !teiDocument || !menuGroup ) return []
         const {menus} = teiDocument.fairCopyProject.fairCopyConfig
         return menus[menuGroup]
     }
@@ -46,13 +46,10 @@ export default class ElementMenu extends Component {
     }
 
     createMenuAction(selection,member) {
-        const { focusBody } = this.props
-
         return () => {
             const { teiDocument, onClose } = this.props
 
             if( selection && !selection.node ) {
-                focusBody()
                 createPhraseElement(member, {}, teiDocument) 
             }
             onClose()
@@ -63,9 +60,11 @@ export default class ElementMenu extends Component {
         const { subMenuID } = this.state
         if( subMenuID === null ) return null
 
-        const { teiDocument } = this.props
+        const { teiDocument, open } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
         const menuGroups = this.getMenuGroups()
+        if( menuGroups.length === 0 ) return null
+
         const { members } = menuGroups[subMenuID]
         const groupEl = this.groupEls[subMenuID]
 
@@ -125,7 +124,7 @@ export default class ElementMenu extends Component {
 
         return (
             <Menu
-                open={true}
+                open={open}
                 onClose={onClose}
                 anchorEl={groupEl}
                 anchorOrigin={anchorOrigin}
@@ -170,18 +169,26 @@ export default class ElementMenu extends Component {
     }
 
     render() {  
-        const { elementMenuAnchors, menuGroup, onClose } = this.props
+        const { elementMenuAnchors, menuGroup, onClose, open } = this.props
         const anchorEl = elementMenuAnchors[menuGroup]
         const anchorOrigin = { vertical: 'bottom', horizontal: 'left' }
+
+        // return focus to active editor after menu closes
+        const onExited = () => {
+            const { teiDocument } = this.props
+            const editorView = teiDocument.getActiveView()
+            editorView.focus()
+        }
 
         return (
             <div id="ElementMenu">
                 <Menu
-                    open={true}
+                    open={open}
                     onClose={onClose}
                     anchorEl={anchorEl}
                     anchorOrigin={anchorOrigin}
                     getContentAnchorEl={null}
+                    TransitionProps={ {onExited} }
                 >
                     { this.renderMenuItems() }
                 </Menu>
