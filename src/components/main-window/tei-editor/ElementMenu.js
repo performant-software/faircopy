@@ -46,10 +46,13 @@ export default class ElementMenu extends Component {
     }
 
     createMenuAction(selection,member) {
+        const { focusBody } = this.props
+
         return () => {
             const { teiDocument, onClose } = this.props
 
             if( selection && !selection.node ) {
+                focusBody()
                 createPhraseElement(member, {}, teiDocument) 
             }
             onClose()

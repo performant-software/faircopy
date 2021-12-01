@@ -346,6 +346,13 @@ export default class TEIEditor extends Component {
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
 
         const style = hidden ? { display: 'none' } : {}
+
+        const focusBody = () => { 
+            const { editorView } = teiDocument
+            editorView.dom.focus()
+            editorView.focus()
+            console.log(`${editorView.hasFocus()} has focus`)
+        }
         
         return (
             <main 
@@ -366,6 +373,7 @@ export default class TEIEditor extends Component {
                     { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
                         onSave={onSave}
+                        focusBody={focusBody}
                         onTogglePalette={onTogglePalette}
                         paletteActive={paletteActive}
                         onProjectSettings={onProjectSettings}

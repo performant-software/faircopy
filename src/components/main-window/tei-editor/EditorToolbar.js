@@ -116,7 +116,7 @@ export default class EditorToolbar extends Component {
     }
 
     render() {
-        const { onEditResource, onSave, teiDocument, onProjectSettings } = this.props
+        const { onEditResource, onSave, teiDocument, onProjectSettings, focusBody } = this.props
         const { changedSinceLastSave } = teiDocument
         const { elementMenuOptions } = this.state
 
@@ -147,6 +147,7 @@ export default class EditorToolbar extends Component {
                 </div>
                 { elementMenuOptions && <ElementMenu
                     teiDocument={teiDocument}
+                    focusBody={focusBody}
                     onClose={this.onCloseElementMenu}
                     elementMenuAnchors={this.elementMenuAnchors}
                     onProjectSettings={() => { 
