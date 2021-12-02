@@ -162,6 +162,7 @@ renderSelectStructureGroup(menuGroups, subMenuID) {
         name="type"
         className="select-structure-group"
         value={subMenuID}
+        autoFocus={true}
         onChange={onChange}
     >
       { menuItemEls }
@@ -206,6 +207,7 @@ renderElement(elementID,groupID,paletteOrder) {
         datamenugroupid={groupID}
         datapalettepos={paletteOrder}
         className={className}
+        tabIndex={0}
     >
       <div className="el-name">{elementIcon}{elementID}</div>
     </div>
@@ -229,16 +231,70 @@ renderStructures( currentMenu, currentSubmenuID ) {
   return structureEls
 }
 
+getElementID(el) {
+  // TODO
+}
+
+getCurrentMenu() {
+  const { currentSubmenuID } = this.props  
+  const menuGroups = this.getMenuGroups()
+  if( !menuGroups ) return { menuGroups: null }
+
+  // if the list of groups changed length out from under subMenuID
+  const validSubMenuID = ( menuGroups.length-1 >= currentSubmenuID ) ? currentSubmenuID : 0
+  return { currentMenuID: validSubMenuID, menuGroups }
+}
+
+onKeyUp = (event) => {
+  const { onClose } = this.props
+  const { activeElement } = document
+  const elementIndex = this.getElementIndex(activeElement)
+  const { currentMenuID, menuGroups } = this.getCurrentMenu()
+  const keyCode = event.key
+  const metaKey = ( event.ctrlKey || event.metaKey )
+
+  if( keyCode === 'ESC' ) {
+    onClose()
+  }
+  else if( elementIndex !== null && menuGroups !== null ) {
+    if( keyCode === 'Enter' ) {
+      // TODO
+    } else if( metaKey ) {
+      // handle element placement
+      switch( keyCode ) {
+        case 'ArrowUp':
+          break
+        case 'ArrowDown':
+          break
+        case 'ArrowLeft':
+          break
+        case 'ArrowRight':
+          break
+        default:
+      } 
+    } else {
+      const menuLength = menuGroups[currentMenuID].length
+  
+      switch( keyCode ) {
+        case 'ArrowUp':
+          // This should set focus to the previous element, or the last element if this is the first element
+          // for the element at the target index, determine which el it is and set focus on it
+          
+          break
+        case 'ArrowDown':
+          break
+        default:
+      } 
+    }
+  }
+}
+
 render() {      
     const { offsetX, offsetY, dragging } = this.state
-    const { onClose, currentSubmenuID } = this.props
+    const { onClose } = this.props
+    const { currentMenuID, menuGroups } = this.getCurrentMenu()
     
-    const menuGroups = this.getMenuGroups()
     if( !menuGroups ) return null
-
-    // if the list of groups changed length out from under subMenuID
-    const validSubMenuID = ( menuGroups.length-1 >= currentSubmenuID ) ? currentSubmenuID : 0
-    const currentMenu = menuGroups[validSubMenuID]
 
     const style = {
       left: offsetX,
@@ -255,14 +311,15 @@ render() {
         id="StructurePalette"
         style={style}
         ref={onRef} 
+        onKeyUp={this.onKeyUp}
       >
         <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
         <div className="header" onMouseDown={this.dragMouseDown}>
           <Typography><i className="fas fa-palette fa-sm"></i><span className="title">Elements</span></Typography>
         </div>
         <div className="content">
-          { this.renderSelectStructureGroup(menuGroups,validSubMenuID) }
-          { this.renderStructures(currentMenu,validSubMenuID) }
+          { this.renderSelectStructureGroup(menuGroups,currentMenuID) }
+          { this.renderStructures(menuGroups[currentMenuID],currentMenuID) }
         </div>
         { this.renderElementInfo() }
       </div>
