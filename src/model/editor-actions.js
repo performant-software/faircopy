@@ -202,6 +202,46 @@ export function eraseSelection(teiDocument) {
     editorView.focus()
 }
 
+export function navigateTree( direction, teiDocument ) {
+    const editorView = teiDocument.getActiveView()
+    const { tr, doc, selection } = editorView.state
+    const { $anchor } = selection
+    const nodeIndex = $anchor.index()
+    const parentNode = $anchor.node()
+    let nextPos = null
+
+    if( direction === 'up' ) { 
+        // move the selection to the previous sibling. 
+        if( nodeIndex > 0 ) {
+            nextPos = $anchor.pos - $anchor.nodeBefore.nodeSize
+        }
+    } else if( direction === 'down' ) {
+        // select the next sibling
+        if( nodeIndex < parentNode.childCount-1 ) {
+            nextPos = $anchor.pos + $anchor.nodeAfter.nodeSize
+        }
+    } else if( direction === 'left' ) {
+        // select parent
+        const parentPos = $anchor.start() - 1
+        if( parentPos >= 0 ) {
+            nextPos = parentPos
+        }
+    } else if( direction === 'right' ) {
+        // select first child
+        if( selection.node.childCount > 0 ) {
+            const childNodeType = selection.node.child(0).type.name
+            if( !childNodeType.includes('textNode') && !childNodeType.includes('globalNode') ) {
+                nextPos = $anchor.pos + 1
+            }
+        }
+    }
+
+    if( nextPos !== null ) {
+        tr.setSelection( NodeSelection.create(doc,nextPos) )
+        editorView.dispatch(tr)    
+    }
+}
+
 // Move the selected node up or down the document
 export function moveNode(direction,teiDocument,metaKey) {
 

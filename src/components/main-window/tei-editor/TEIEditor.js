@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
-// import applyDevTools from "prosemirror-dev-tools";
+import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
@@ -14,7 +14,7 @@ import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
-import { moveNode, eraseSelection, getEnabledMenus } from "../../../model/editor-actions"
+import { moveNode, eraseSelection, getEnabledMenus, navigateTree } from "../../../model/editor-actions"
 
 const fairCopy = window.fairCopy
 
@@ -86,7 +86,7 @@ export default class TEIEditor extends Component {
             }
         )
         // uncomment to use ProseMirror dev tools
-        // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)        
+        if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)        
         teiDocument.finalizeEditorView(editorView)
     }
 
@@ -181,11 +181,15 @@ export default class TEIEditor extends Component {
         if( !editorView.hasFocus() ) return
 
         // move structure nodes with arrow keys
-        if( event.key === 'ArrowUp' || event.key === 'ArrowDown' ) {
+        const arrowDir = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : event.key === 'ArrowLeft' ? 'left' : event.key === 'ArrowRight' ? 'right' : null
+        if( arrowDir ) {
             const selection = (editorView) ? editorView.state.selection : null         
             if( selection && selection.node ) {
-                const dir = event.key === 'ArrowUp' ? 'up' : 'down'
-                moveNode( dir, teiDocument, metaKey )
+                if( metaKey ) { 
+                    moveNode( arrowDir, teiDocument, event.shiftKey )    
+                } else {
+                    navigateTree( arrowDir, teiDocument )
+                }
             }
         }
 
