@@ -231,10 +231,6 @@ renderStructures( currentMenu, currentSubmenuID ) {
   return structureEls
 }
 
-getElementID(el) {
-  // TODO
-}
-
 getCurrentMenu() {
   const { currentSubmenuID } = this.props  
   const menuGroups = this.getMenuGroups()
@@ -248,12 +244,12 @@ getCurrentMenu() {
 onKeyUp = (event) => {
   const { onClose } = this.props
   const { activeElement } = document
-  const elementIndex = this.getElementIndex(activeElement)
+  const elementIndex = parseInt(activeElement.getAttribute('datapalettepos'))
   const { currentMenuID, menuGroups } = this.getCurrentMenu()
   const keyCode = event.key
   const metaKey = ( event.ctrlKey || event.metaKey )
 
-  if( keyCode === 'ESC' ) {
+  if( keyCode === 'Escape' ) {
     onClose()
   }
   else if( elementIndex !== null && menuGroups !== null ) {
@@ -273,18 +269,25 @@ onKeyUp = (event) => {
         default:
       } 
     } else {
-      const menuLength = menuGroups[currentMenuID].length
-  
+      const currentMenu = menuGroups[currentMenuID]
+      const maxIndex = currentMenu.members.length-1
+      let nextIndex = null
+
       switch( keyCode ) {
         case 'ArrowUp':
-          // This should set focus to the previous element, or the last element if this is the first element
-          // for the element at the target index, determine which el it is and set focus on it
-          
+          nextIndex = elementIndex === 0 ? maxIndex : elementIndex-1          
           break
         case 'ArrowDown':
+          nextIndex = elementIndex < maxIndex ? elementIndex+1 : 0
           break
         default:
       } 
+
+      if( nextIndex !== null ) {
+        const nextMenuItem = currentMenu.members[nextIndex]
+        const nextEl = this.itemEls[nextMenuItem]
+        nextEl.focus()
+      }
     }
   }
 }
