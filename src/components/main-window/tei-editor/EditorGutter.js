@@ -209,6 +209,10 @@ export default class EditorGutter extends Component {
         return { gutterMarkEls, totalWidth }
     }
 
+    onFocus = () => {
+        console.log('gutter has focus')
+    }
+
     render() {   
         const { editorView } = this.props
 
@@ -219,7 +223,7 @@ export default class EditorGutter extends Component {
 
         return (
             <div className='EditorGutter'>
-                <div className='markers' style={style}>
+                <div className='markers' style={style} tabIndex={0} onFocus={this.onFocus}>
                     { gutterMarkEls }
                 </div>
             </div>

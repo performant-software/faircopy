@@ -92,7 +92,7 @@ export default class ThumbnailMargin extends Component {
         if( !editorView ) return null
         
         return (
-            <div id="ThumbnailMargin">
+            <div id="ThumbnailMargin" tabIndex={0}>
                 { this.renderThumbnails() }
             </div>
         )     
