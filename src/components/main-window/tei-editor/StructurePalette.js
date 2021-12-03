@@ -179,6 +179,7 @@ renderElement(elementID,groupID,paletteOrder) {
     const { onDragElement } = this.props
     const startingPoint = { x: e.clientX-clientOffset.x, y: e.clientY-clientOffset.y }
     this.setState({ ...this.state, elementInfoID: null })
+    this.itemEls[elementID].focus()
     onDragElement(elementID,clientOffset,startingPoint,"document")
   }
 
@@ -241,16 +242,24 @@ getCurrentMenu() {
   return { currentMenuID: validSubMenuID, menuGroups }
 }
 
-onKeyUp = (event) => {
+close() {
   const { onClose } = this.props
+  const { teiDocument } = this.props
+  const editorView = teiDocument.getActiveView()
+  editorView.focus()
+  onClose()
+}
+
+onKeyUp = (event) => {
   const { activeElement } = document
-  const elementIndex = parseInt(activeElement.getAttribute('datapalettepos'))
+  const palettePos = activeElement.getAttribute('datapalettepos')
+  const elementIndex = palettePos ? parseInt(palettePos) : null
   const { currentMenuID, menuGroups } = this.getCurrentMenu()
   const keyCode = event.key
   const metaKey = ( event.ctrlKey || event.metaKey )
 
   if( keyCode === 'Escape' ) {
-    onClose()
+    this.close()
   }
   else if( elementIndex !== null && menuGroups !== null ) {
     if( keyCode === 'Enter' ) {
