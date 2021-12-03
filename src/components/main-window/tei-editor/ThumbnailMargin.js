@@ -90,10 +90,13 @@ export default class ThumbnailMargin extends Component {
         const { teiDocument } = this.props
         const { editorView } = teiDocument
         if( !editorView ) return null
+        const thumbnails = this.renderThumbnails()
+        // skip in tab index if there are no thumbnails
+        const tabIndex = thumbnails.length > 0 ? 0 : -1
         
         return (
-            <div id="ThumbnailMargin" tabIndex={0}>
-                { this.renderThumbnails() }
+            <div id="ThumbnailMargin" tabIndex={tabIndex}>
+                { thumbnails }
             </div>
         )     
     }
