@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { NodeSelection } from "prosemirror-state"
+import { navigateFromEditorToTree } from '../../../model/editor-navigation'
 
 export default class EditorGutter extends Component {
 
@@ -210,7 +211,8 @@ export default class EditorGutter extends Component {
     }
 
     onFocus = () => {
-        console.log('gutter has focus')
+        const { editorView } = this.props
+        navigateFromEditorToTree(editorView)
     }
 
     render() {   

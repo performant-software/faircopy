@@ -14,7 +14,8 @@ import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
-import { moveNode, eraseSelection, getEnabledMenus, navigateTree } from "../../../model/editor-actions"
+import { moveNode, eraseSelection } from "../../../model/editor-actions"
+import { navigateTree, navigateFromTreeToEditor, getEnabledMenus } from '../../../model/editor-navigation'
 
 const fairCopy = window.fairCopy
 
@@ -188,7 +189,7 @@ export default class TEIEditor extends Component {
                 if( metaKey ) { 
                     moveNode( arrowDir, teiDocument, event.shiftKey )    
                 } else {
-                    navigateTree( arrowDir, teiDocument )
+                    navigateTree( arrowDir, editorView )
                 }
             }
         }
@@ -250,6 +251,15 @@ export default class TEIEditor extends Component {
         }
         if( !event.ctrlKey && ctrlDown ) {
             this.setState({...this.state, ctrlDown: false })            
+        }
+    }
+    
+    onFocusEditor = () => {
+        const { teiDocument } = this.props
+        const editorView = teiDocument.getActiveView()
+        const selection = (editorView) ? editorView.state.selection : null         
+        if( selection && selection.node ) {
+           // navigateFromTreeToEditor( editorView )
         }
     }
 
@@ -396,6 +406,7 @@ export default class TEIEditor extends Component {
                             gutterTop={125}
                         /> }     
                         <ProseMirrorComponent
+                            onFocus={ this.onFocusEditor }
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                             thumbMargin={true}

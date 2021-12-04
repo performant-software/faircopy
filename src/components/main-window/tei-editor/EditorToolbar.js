@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { IconButton, Tooltip } from '@material-ui/core'
 
 import {undo, redo} from "prosemirror-history"
-import { createPhraseElement, eraseSelection, getEnabledMenus } from "../../../model/editor-actions"
+import { createPhraseElement, eraseSelection } from "../../../model/editor-actions"
+import { getEnabledMenus } from '../../../model/editor-navigation'
 import ElementMenu from "./ElementMenu"
 
 export default class EditorToolbar extends Component {
