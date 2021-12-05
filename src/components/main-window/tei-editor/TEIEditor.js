@@ -15,7 +15,7 @@ import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
 import { moveNode, eraseSelection } from "../../../model/editor-actions"
-import { navigateTree, navigateFromTreeToEditor, getEnabledMenus } from '../../../model/editor-navigation'
+import { navigateTree, getEnabledMenus } from '../../../model/editor-navigation'
 
 const fairCopy = window.fairCopy
 
@@ -31,7 +31,8 @@ export default class TEIEditor extends Component {
             ctrlDown: false,
             altDown: false,
             selectedElements: [],
-            elementMenuOptions: null
+            elementMenuOptions: null,
+            editorGutterPos: null
         }
     }
 
@@ -178,19 +179,17 @@ export default class TEIEditor extends Component {
         const { teiDocument, onTogglePalette } = this.props
         const editorView = teiDocument.getActiveView()
         const metaKey = ( event.ctrlKey || event.metaKey )
-
-        if( !editorView.hasFocus() ) return
+        const { editorGutterPos } = this.state
 
         // move structure nodes with arrow keys
         const arrowDir = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : event.key === 'ArrowLeft' ? 'left' : event.key === 'ArrowRight' ? 'right' : null
         if( arrowDir ) {
             const selection = (editorView) ? editorView.state.selection : null         
-            if( selection && selection.node ) {
-                if( metaKey ) { 
-                    moveNode( arrowDir, teiDocument, event.shiftKey )    
-                } else {
-                    navigateTree( arrowDir, editorView )
-                }
+            if( metaKey && selection && selection.node ) {
+                moveNode( arrowDir, teiDocument, event.shiftKey )    
+            } else if( !metaKey && editorGutterPos !== null ) {
+                const nextPos = navigateTree( arrowDir, editorView, editorGutterPos )
+                this.setState({...this.state, editorGutterPos: nextPos })
             }
         }
 
@@ -251,15 +250,6 @@ export default class TEIEditor extends Component {
         }
         if( !event.ctrlKey && ctrlDown ) {
             this.setState({...this.state, ctrlDown: false })            
-        }
-    }
-    
-    onFocusEditor = () => {
-        const { teiDocument } = this.props
-        const editorView = teiDocument.getActiveView()
-        const selection = (editorView) ? editorView.state.selection : null         
-        if( selection && selection.node ) {
-           // navigateFromTreeToEditor( editorView )
         }
     }
 
@@ -351,12 +341,12 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
-        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions } = this.state
+        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, editorGutterPos } = this.state
 
         const onClickBody = () => {
             const { editorView } = teiDocument
             if( editorView && !editorView.hasFocus() ) {
-                editorView.focus()
+                // editorView.focus()
             }
         }
 
@@ -403,10 +393,11 @@ export default class TEIEditor extends Component {
                             onDragElement={onDragElement}
                             teiDocument={teiDocument}
                             editorView={teiDocument.editorView}
+                            editorGutterPos={editorGutterPos}
+                            onChangePos={ (nextPos)=> { this.setState({ ...this.state, editorGutterPos: nextPos })}}
                             gutterTop={125}
                         /> }     
                         <ProseMirrorComponent
-                            onFocus={ this.onFocusEditor }
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
                             thumbMargin={true}

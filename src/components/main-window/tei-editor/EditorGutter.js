@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
-import { NodeSelection } from "prosemirror-state"
 import { navigateFromEditorToTree } from '../../../model/editor-navigation'
 
 export default class EditorGutter extends Component {
 
-    renderName( nodeName ) {
+    displayName( nodeName ) {
         const { expanded } = this.props
         if( !expanded ) return ''
-        const name = nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName
-        return <div className={`el-name`}>{name}</div>
+        return nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName
+    }
+
+    renderName( nodeName ) {
+        return <div aria-hidden="true" className={`el-name`}>{this.displayName( nodeName )}</div>
     }
 
     getBorderStyles( node ) {
@@ -31,11 +33,8 @@ export default class EditorGutter extends Component {
     renderGutterMark(elementID,targetPos,top,bottom,index,column,markerClass,borderStyles,columnPositions) {
      
         const onClick = () => {
-            const { editorView } = this.props
-            const editorState = editorView.state
-            const {tr,doc} = editorState
-            tr.setSelection( NodeSelection.create(doc,targetPos) )
-            editorView.dispatch(tr)
+            const { onChangePos } = this.props
+            onChangePos( targetPos )
         }
 
         const onStartDrag = (e) => {
@@ -53,8 +52,8 @@ export default class EditorGutter extends Component {
             }
         }
 
-        const { editorView } = this.props
-        const highlighted = editorView.state.selection.from === targetPos ? 'highlighted' : ''
+        const { editorGutterPos } = this.props
+        const highlighted = editorGutterPos === targetPos ? 'highlighted' : ''
         const className = `marker ${highlighted} ${markerClass}`
         const height = bottom - top 
         const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }
@@ -211,21 +210,28 @@ export default class EditorGutter extends Component {
     }
 
     onFocus = () => {
-        const { editorView } = this.props
-        navigateFromEditorToTree(editorView)
+        const { editorView, onChangePos } = this.props
+        const selectionPos = navigateFromEditorToTree(editorView)
+        onChangePos(selectionPos)
+    }
+
+    onBlur = () => {
+        const { onChangePos } = this.props
+        onChangePos(null)
     }
 
     render() {   
-        const { editorView } = this.props
+        const { editorView, editorGutterPos } = this.props
 
         if( !editorView ) return null
 
         const { gutterMarkEls, totalWidth } = this.renderGutterMarkers()
         const style = { marginRight: totalWidth }
+        const displayName = editorGutterPos
 
         return (
             <div className='EditorGutter'>
-                <div className='markers' style={style} tabIndex={0} onFocus={this.onFocus}>
+                <div className='markers' style={style} role="application" tabIndex={0} aria-live="polite" aria-label={displayName} onFocus={this.onFocus} onBlur={this.onBlur}>
                     { gutterMarkEls }
                 </div>
             </div>
