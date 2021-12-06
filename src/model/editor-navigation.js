@@ -37,7 +37,7 @@ export function navigateTree( direction, editorView, pos ) {
                 nextNode = firstChild
                 nextPos = $pos.pos + 1
             } else {
-                navigateFromTreeToEditor(editorView,pos)
+                return navigateFromTreeToEditor(editorView,pos)
             }
         }
     }
@@ -49,10 +49,11 @@ export function navigateTree( direction, editorView, pos ) {
 
 // Move the cursor to the beginning of the first child textNode or globalNode
 export function navigateFromTreeToEditor( editorView, pos ) {
-    const { tr, doc } = editorView.state
-    tr.setSelection( TextSelection.create(doc,pos+1) )
-    editorView.focus()
-    editorView.dispatch(tr.scrollIntoView())
+    // const { tr, doc } = editorView.state
+    // tr.setSelection( TextSelection.create(doc,pos+1) )
+    // tr.scrollIntoView()
+    // editorView.focus()
+    return { nextPos:null, nextPath:null }
 }
 
 // Find the node position closest to the editor cursor

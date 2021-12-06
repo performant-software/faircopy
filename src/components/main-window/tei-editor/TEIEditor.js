@@ -107,9 +107,14 @@ export default class TEIEditor extends Component {
                 onAlertMessage(alertMessage)
             }
 
+            const editorGutterPosMeta = transaction.getMeta('editorGutterPos')
+            const editorGutterPathMeta = transaction.getMeta('editorGutterPath')
+            const editorGutterPos = (editorGutterPosMeta !== undefined ) ? editorGutterPosMeta : this.state.editorGutterPos
+            const editorGutterPath = (editorGutterPathMeta !== undefined ) ? editorGutterPathMeta : this.state.editorGutterPath
+
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const nextNoteID = nextNotePopupAnchorEl ? noteID : null
-            const selectedElements = this.getSelectedElements()
+            const selectedElements = this.getSelectedElements(editorGutterPos)
             this.broadcastZoneLinks(selectedElements)
 
             if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
@@ -119,7 +124,7 @@ export default class TEIEditor extends Component {
                     editorView.dispatch(tr)
                 }, 100 )        
             }
-            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
+            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl, editorGutterPos, editorGutterPath })
         }
     }
 
@@ -285,7 +290,7 @@ export default class TEIEditor extends Component {
         fairCopy.services.ipcSend('selectedZones', selectedZones )
     }
 
-    getSelectedElements() {
+    getSelectedElements(editorGutterPos) {
         const { teiDocument } = this.props
         const { noteID } = this.state
         const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
@@ -295,7 +300,12 @@ export default class TEIEditor extends Component {
         
         // create a list of the selected phrase level elements 
         let elements = []
-        if( selection ) {
+        if( editorGutterPos !== null ) {
+            const { doc } = editorView.state
+            const $pos = doc.resolve(editorGutterPos)
+            const node = $pos.node().child($pos.index())
+            elements.push( node )
+        } else if( selection ) {
             if( selection.node ) {
                 // don't display drawer for notes here, see below
                 const name = selection.node.type.name
@@ -317,7 +327,7 @@ export default class TEIEditor extends Component {
                     }            
                 }
             } else {
-                // highlight ranges are not active when there's a browser selection
+                // highlight ranges are not active when there's a browser selection 
                 const browserSelection = window.getSelection()
                 if( browserSelection.isCollapsed ) {
                     const { doc } = editorView.state
@@ -328,7 +338,7 @@ export default class TEIEditor extends Component {
                     }         
                 } 
             }
-        }
+        } 
 
         return elements
     }
@@ -341,8 +351,14 @@ export default class TEIEditor extends Component {
         this.setState({...this.state, elementMenuOptions: null })
     }
 
-    onChangePos = (nextPos, nextPath) => { 
-        this.setState({ ...this.state, editorGutterPos: nextPos, editorGutterPath: nextPath })
+    onChangePos = (editorGutterPos, editorGutterPath) => {
+        const { teiDocument } = this.props 
+        const editorView = teiDocument.getActiveView()
+        const { tr } = editorView.state
+        tr.setMeta( 'editorGutterPos', editorGutterPos )
+        tr.setMeta( 'editorGutterPath', editorGutterPath )
+        tr.setMeta( 'highlightEnabled', editorGutterPos === null )
+        editorView.dispatch(tr)
     }
 
     render() {    

@@ -3,11 +3,51 @@ import {DecorationSet, Decoration } from "prosemirror-view"
 import {markExtent} from "./commands"
 
 export function highlighter() {
-    return new Plugin({
+
+    // look at the selections in this state and highlight mark extents
+    const drawHighlight = function(state) { 
+        const { doc, selection } = state
+        const pluginState = plugin.getState(state)
+        const { highlightEnabled } = pluginState
+
+        // highlight ranges are not active when there's a browser selection or disabled
+        const browserSelection = window.getSelection()
+        if( !browserSelection.isCollapsed || !highlightEnabled ) return 
+        
+        if( selection && selection instanceof TextSelection ) {
+            const { $anchor } = selection
+            const highlights = getHighlightRanges(doc, $anchor) 
+            const decorations = []
+            let i = 0
+            for( const highlight of highlights ) {
+                const {from,to} = highlight
+                decorations.push(
+                    Decoration.inline(from, to, {style: `background: ${getHighlightColor(i++)}`})
+                )
+            }
+
+            return DecorationSet.create(doc, decorations)
+        }
+    }
+
+    let plugin = new Plugin({
+        state: {
+            init() { return { highlightEnabled: true} },
+            apply(tr,oldState) { 
+                const nextEnabled = tr.getMeta('highlightEnabled')
+                if( nextEnabled !== null & nextEnabled !== undefined ) {
+                    return { highlightEnabled: nextEnabled }
+                } else {
+                    return oldState
+                }
+            }
+        },
         props: {
           decorations: drawHighlight
         }
     })
+
+    return plugin
 }
 
 // yellow scale
@@ -16,30 +56,6 @@ const heatMapColors = [
     "#E6E501",
     "#CCCC01"
 ]
-
-// look at the selections in this state and highlight mark extents
-const drawHighlight = function(state) { 
-    const { doc, selection } = state
-
-    // highlight ranges are not active when there's a browser selection
-    const browserSelection = window.getSelection()
-    if( !browserSelection.isCollapsed ) return 
-    
-    if( selection && selection instanceof TextSelection ) {
-        const { $anchor } = selection
-        const highlights = getHighlightRanges(doc, $anchor) 
-        const decorations = []
-        let i = 0
-        for( const highlight of highlights ) {
-            const {from,to} = highlight
-            decorations.push(
-                Decoration.inline(from, to, {style: `background: ${getHighlightColor(i++)}`})
-            )
-        }
-
-        return DecorationSet.create(doc, decorations)
-    }
-}
 
 export function getHighlightColor(idx) {
     return heatMapColors[idx % heatMapColors.length]
