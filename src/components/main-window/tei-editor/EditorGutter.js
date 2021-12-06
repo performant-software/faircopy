@@ -218,15 +218,20 @@ export default class EditorGutter extends Component {
                 // TODO refactor to use editor gutter pos
                 moveNode( arrowDir, teiDocument, event.shiftKey )    
             } else {
-                let pos
-                if( editorGutterPos === null ) {
-                    pos = navigateFromEditorToTree( editorView )
-                } else {
-                    pos = editorGutterPos
-                }
-                const { nextPos, nextPath } = navigateTree( arrowDir, editorView, pos )
-                onChangePos(nextPos, nextPath)
+                if( editorGutterPos !== null ) {
+                    const { nextPos, nextPath } = navigateTree( arrowDir, editorView, editorGutterPos )
+                    onChangePos(nextPos, nextPath)
+                }                
             }
+        }
+    }
+
+    onFocus = () => {
+        const { editorView, editorGutterPos, onChangePos } = this.props
+
+        if( editorGutterPos === null ) {
+            const { nextPos, nextPath } = navigateFromEditorToTree( editorView )
+            onChangePos(nextPos, nextPath)
         }
     }
 
@@ -249,6 +254,7 @@ export default class EditorGutter extends Component {
                     aria-live="polite" 
                     aria-roledescription="document structure tree" 
                     onKeyUp={this.onKeyUp}
+                    onFocus={this.onFocus}
                 >
                     { gutterMarkEls }
                 </div>

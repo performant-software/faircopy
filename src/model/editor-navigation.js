@@ -46,10 +46,29 @@ export function navigateTree( direction, editorView, pos ) {
     return { nextPos, nextPath }
 }
 
-// Find the node position closest to the editor cursor
+// Find the structure tree leaf closest to the editor cursor
 export function navigateFromEditorToTree( editorView ) {
-    // TODO find leaf node on structure tree that is the parent of the current text selection pos
-    return 0
+    const { doc, selection } = editorView.state
+    
+    function findLeaf($pos) {
+        const nextNode = $pos.node()
+        const nodeType = nextNode.type.name
+        const nextPos = $pos.start() - 1
+
+        if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
+            if( nextPos >= 0 ) {
+                return findLeaf(doc.resolve(nextPos))
+            } else {
+                return { nextPos:null, nextPath:null }
+            }
+        } else {
+            const nextPath = nextNode ? getStructureNodeDisplayName( nextNode.type.name ) : null
+            return { nextPos, nextPath }
+        }
+    }
+    
+    const { $anchor } = selection
+    return findLeaf($anchor)
 }
 
 export function getStructureNodeDisplayName( nodeName ) {
