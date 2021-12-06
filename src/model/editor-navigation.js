@@ -5,7 +5,7 @@ export function navigateTree( direction, editorView, pos ) {
     const nodeIndex = $pos.index()
     const parentNode = $pos.node()
     
-    let nextPos = null, nextNode = null
+    let nextPos = pos, nextNode = parentNode
 
     if( direction === 'up' ) { 
         // move the selection to the previous sibling. 
@@ -36,13 +36,14 @@ export function navigateTree( direction, editorView, pos ) {
                 nextNode = firstChild
                 nextPos = $pos.pos + 1
             } else {
+                nextNode = null
+                nextPos = null
                 editorView.focus()
             }
         }
     }
 
     const nextPath = nextNode ? getStructureNodeDisplayName( nextNode.type.name ) : null
-    console.log(nextPath)
     return { nextPos, nextPath }
 }
 
