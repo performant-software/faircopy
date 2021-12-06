@@ -32,7 +32,8 @@ export default class TEIEditor extends Component {
             altDown: false,
             selectedElements: [],
             elementMenuOptions: null,
-            editorGutterPos: null
+            editorGutterPos: null,
+            editorGutterPath: null
         }
     }
 
@@ -188,8 +189,8 @@ export default class TEIEditor extends Component {
             if( metaKey && selection && selection.node ) {
                 moveNode( arrowDir, teiDocument, event.shiftKey )    
             } else if( !metaKey && editorGutterPos !== null ) {
-                const nextPos = navigateTree( arrowDir, editorView, editorGutterPos )
-                this.setState({...this.state, editorGutterPos: nextPos })
+                const nextState = navigateTree( arrowDir, editorView, editorGutterPos )
+                this.setState({...this.state, ...nextState })
             }
         }
 
@@ -341,7 +342,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
-        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, editorGutterPos } = this.state
+        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, editorGutterPos, editorGutterPath } = this.state
 
         const onClickBody = () => {
             const { editorView } = teiDocument
@@ -393,8 +394,9 @@ export default class TEIEditor extends Component {
                             onDragElement={onDragElement}
                             teiDocument={teiDocument}
                             editorView={teiDocument.editorView}
+                            editorGutterPath={editorGutterPath}
                             editorGutterPos={editorGutterPos}
-                            onChangePos={ (nextPos)=> { this.setState({ ...this.state, editorGutterPos: nextPos })}}
+                            onChangePos={ (nextPos, nextPath)=> { this.setState({ ...this.state, editorGutterPos: nextPos, editorGutterPath: nextPath })}}
                             gutterTop={125}
                         /> }     
                         <ProseMirrorComponent

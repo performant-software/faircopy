@@ -1,16 +1,12 @@
 import React, { Component } from 'react'
-import { navigateFromEditorToTree } from '../../../model/editor-navigation'
+import { navigateFromEditorToTree, getStructureNodeDisplayName } from '../../../model/editor-navigation'
 
 export default class EditorGutter extends Component {
 
-    displayName( nodeName ) {
+    renderName( nodeName ) {
         const { expanded } = this.props
         if( !expanded ) return ''
-        return nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName
-    }
-
-    renderName( nodeName ) {
-        return <div aria-hidden="true" className={`el-name`}>{this.displayName( nodeName )}</div>
+        return <div aria-hidden="true" className={`el-name`}>{ getStructureNodeDisplayName( nodeName )}</div>
     }
 
     getBorderStyles( node ) {
@@ -34,7 +30,8 @@ export default class EditorGutter extends Component {
      
         const onClick = () => {
             const { onChangePos } = this.props
-            onChangePos( targetPos )
+            const editorGutterPath = getStructureNodeDisplayName(elementID)
+            onChangePos( targetPos, editorGutterPath )
         }
 
         const onStartDrag = (e) => {
@@ -221,17 +218,26 @@ export default class EditorGutter extends Component {
     }
 
     render() {   
-        const { editorView, editorGutterPos } = this.props
+        const { editorView, editorGutterPath } = this.props
 
         if( !editorView ) return null
 
         const { gutterMarkEls, totalWidth } = this.renderGutterMarkers()
         const style = { marginRight: totalWidth }
-        const displayName = editorGutterPos
 
         return (
             <div className='EditorGutter'>
-                <div className='markers' style={style} role="application" tabIndex={0} aria-live="polite" aria-label={displayName} onFocus={this.onFocus} onBlur={this.onBlur}>
+                <div 
+                    className='markers' 
+                    style={style} 
+                    tabIndex={0} 
+                    role="application" 
+                    aria-label={editorGutterPath} 
+                    aria-live="polite" 
+                    aria-roledescription="document structure tree" 
+                    onFocus={this.onFocus} 
+                    onBlur={this.onBlur}
+                >
                     { gutterMarkEls }
                 </div>
             </div>
