@@ -4,6 +4,7 @@ import { debounce } from "debounce";
 
 import applyDevTools from "prosemirror-dev-tools";
 import {undo, redo} from "prosemirror-history"
+import {TextSelection} from "prosemirror-state"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
@@ -14,8 +15,8 @@ import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
-import { moveNode, eraseSelection } from "../../../model/editor-actions"
-import { navigateTree, getEnabledMenus } from '../../../model/editor-navigation'
+import { eraseSelection } from "../../../model/editor-actions"
+import { getEnabledMenus } from '../../../model/editor-navigation'
 
 const fairCopy = window.fairCopy
 
@@ -185,21 +186,7 @@ export default class TEIEditor extends Component {
         const { teiDocument, onTogglePalette } = this.props
         const editorView = teiDocument.getActiveView()
         const metaKey = ( event.ctrlKey || event.metaKey )
-        const { editorGutterPos } = this.state
-
-        // move structure nodes with arrow keys
-        const arrowDir = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : event.key === 'ArrowLeft' ? 'left' : event.key === 'ArrowRight' ? 'right' : null
-        if( arrowDir ) {
-            const selection = (editorView) ? editorView.state.selection : null         
-            if( metaKey && selection && selection.node ) {
-                moveNode( arrowDir, teiDocument, event.shiftKey )    
-            } else if( !metaKey ) {
-                const pos = editorGutterPos === null ? 0 : editorGutterPos
-                const { nextPos, nextPath } = navigateTree( arrowDir, editorView, pos )
-                this.onChangePos(nextPos, nextPath)
-            }
-        }
-
+ 
         const key = event.key.toLowerCase()
         // console.log(`meta: ${metaKey} shift: ${event.shiftKey} ${key}`)
 
@@ -373,7 +360,17 @@ export default class TEIEditor extends Component {
         }
 
         const onFocus = () => {
-            this.onChangePos(null,null)
+            const { editorGutterPos } = this.state
+            if( editorGutterPos !== null ) {
+                const editorView = teiDocument.getActiveView()
+                const { tr, doc } = editorView.state
+                tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
+                tr.scrollIntoView()
+                tr.setMeta( 'editorGutterPos', null )
+                tr.setMeta( 'editorGutterPath', null )
+                tr.setMeta( 'highlightEnabled', true )
+                editorView.dispatch(tr)
+            }
         }
 
         const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335

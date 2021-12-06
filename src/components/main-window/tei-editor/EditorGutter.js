@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { getStructureNodeDisplayName } from '../../../model/editor-navigation'
+import { getStructureNodeDisplayName, navigateTree, navigateFromEditorToTree } from '../../../model/editor-navigation'
+import { moveNode } from '../../../model/editor-actions'
 
 export default class EditorGutter extends Component {
 
@@ -206,16 +207,28 @@ export default class EditorGutter extends Component {
         return { gutterMarkEls, totalWidth }
     }
 
-    // onFocus = () => {
-    //     const { editorView, onChangePos } = this.props
-    //     const selectionPos = navigateFromEditorToTree(editorView)
-    //     onChangePos(selectionPos)
-    // }
+    onKeyUp = (event) => {
+        const { editorView, teiDocument, editorGutterPos, onChangePos } = this.props
+        const metaKey = ( event.ctrlKey || event.metaKey )
 
-    // onBlur = () => {
-    //     const { onChangePos } = this.props
-    //     onChangePos(null)
-    // }
+         // move structure nodes with arrow keys
+         const arrowDir = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : event.key === 'ArrowLeft' ? 'left' : event.key === 'ArrowRight' ? 'right' : null
+         if( arrowDir ) {
+            if( metaKey ) {
+                // TODO refactor to use editor gutter pos
+                moveNode( arrowDir, teiDocument, event.shiftKey )    
+            } else {
+                let pos
+                if( editorGutterPos === null ) {
+                    pos = navigateFromEditorToTree( editorView )
+                } else {
+                    pos = editorGutterPos
+                }
+                const { nextPos, nextPath } = navigateTree( arrowDir, editorView, pos )
+                onChangePos(nextPos, nextPath)
+            }
+        }
+    }
 
     render() {   
         const { editorView, editorGutterPath } = this.props
@@ -235,8 +248,7 @@ export default class EditorGutter extends Component {
                     aria-label={editorGutterPath} 
                     aria-live="polite" 
                     aria-roledescription="document structure tree" 
-                    // onFocus={this.onFocus} 
-                    // onBlur={this.onBlur}
+                    onKeyUp={this.onKeyUp}
                 >
                     { gutterMarkEls }
                 </div>

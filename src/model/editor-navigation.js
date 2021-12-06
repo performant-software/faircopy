@@ -1,4 +1,3 @@
-import { TextSelection } from 'prosemirror-state'
 
 export function navigateTree( direction, editorView, pos ) {
     const { doc } = editorView.state
@@ -37,7 +36,7 @@ export function navigateTree( direction, editorView, pos ) {
                 nextNode = firstChild
                 nextPos = $pos.pos + 1
             } else {
-                return navigateFromTreeToEditor(editorView,pos)
+                editorView.focus()
             }
         }
     }
@@ -47,20 +46,9 @@ export function navigateTree( direction, editorView, pos ) {
     return { nextPos, nextPath }
 }
 
-// Move the cursor to the beginning of the first child textNode or globalNode
-export function navigateFromTreeToEditor( editorView, pos ) {
-    // const { tr, doc } = editorView.state
-    // tr.setSelection( TextSelection.create(doc,pos+1) )
-    // tr.scrollIntoView()
-    // editorView.focus()
-    return { nextPos:null, nextPath:null }
-}
-
 // Find the node position closest to the editor cursor
 export function navigateFromEditorToTree( editorView ) {
-    // const { tr, doc } = editorView.state
-    // tr.setSelection( TextSelection.create(doc,0) )
-    // editorView.dispatch(tr)
+    // TODO find leaf node on structure tree that is the parent of the current text selection pos
     return 0
 }
 
