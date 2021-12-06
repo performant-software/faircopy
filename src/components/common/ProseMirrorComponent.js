@@ -30,8 +30,8 @@ export default class ProseMirrorComponent extends Component {
   render() {
     // Render just an empty div which is then used as a container for an
     // EditorView instance.
-    const { createEditorView, thumbMargin } = this.props
+    const { createEditorView, thumbMargin, onFocus} = this.props
     const className = (thumbMargin) ? 'ProseMirrorComponent thumb-margin' : 'ProseMirrorComponent'
-    return <div className={className} ref={ (el) => { createEditorView(el)} }  />
+    return <div onFocus={onFocus} className={className} ref={ (el) => { createEditorView(el)} }  />
   }
 }

@@ -44,7 +44,7 @@ export function navigateTree( direction, editorView, pos ) {
 
     const nextPath = nextNode ? getStructureNodeDisplayName( nextNode.type.name ) : null
     console.log(nextPath)
-    return { editorGutterPos: nextPos, editorGutterPath: nextPath }
+    return { nextPos, nextPath }
 }
 
 // Move the cursor to the beginning of the first child textNode or globalNode

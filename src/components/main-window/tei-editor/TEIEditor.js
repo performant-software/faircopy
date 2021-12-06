@@ -188,9 +188,10 @@ export default class TEIEditor extends Component {
             const selection = (editorView) ? editorView.state.selection : null         
             if( metaKey && selection && selection.node ) {
                 moveNode( arrowDir, teiDocument, event.shiftKey )    
-            } else if( !metaKey && editorGutterPos !== null ) {
-                const nextState = navigateTree( arrowDir, editorView, editorGutterPos )
-                this.setState({...this.state, ...nextState })
+            } else if( !metaKey ) {
+                const pos = editorGutterPos === null ? 0 : editorGutterPos
+                const { nextPos, nextPath } = navigateTree( arrowDir, editorView, pos )
+                this.onChangePos(nextPos, nextPath)
             }
         }
 
@@ -340,15 +341,23 @@ export default class TEIEditor extends Component {
         this.setState({...this.state, elementMenuOptions: null })
     }
 
+    onChangePos = (nextPos, nextPath) => { 
+        this.setState({ ...this.state, editorGutterPos: nextPos, editorGutterPath: nextPath })
+    }
+
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
         const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, editorGutterPos, editorGutterPath } = this.state
 
         const onClickBody = () => {
-            const { editorView } = teiDocument
-            if( editorView && !editorView.hasFocus() ) {
-                // editorView.focus()
-            }
+            // const { editorView } = teiDocument
+            // if( editorView && !editorView.hasFocus() && editorGutterPos === null ) {
+            //     editorView.focus()
+            // }
+        }
+
+        const onFocus = () => {
+            this.onChangePos(null,null)
         }
 
         const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
@@ -396,12 +405,13 @@ export default class TEIEditor extends Component {
                             editorView={teiDocument.editorView}
                             editorGutterPath={editorGutterPath}
                             editorGutterPos={editorGutterPos}
-                            onChangePos={ (nextPos, nextPath)=> { this.setState({ ...this.state, editorGutterPos: nextPos, editorGutterPath: nextPath })}}
+                            onChangePos={this.onChangePos}
                             gutterTop={125}
                         /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
                             editorView={teiDocument.editorView}
+                            onFocus={onFocus}
                             thumbMargin={true}
                         />
                         { !hidden && <ThumbnailMargin

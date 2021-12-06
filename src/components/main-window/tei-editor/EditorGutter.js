@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { navigateFromEditorToTree, getStructureNodeDisplayName } from '../../../model/editor-navigation'
+import { getStructureNodeDisplayName } from '../../../model/editor-navigation'
 
 export default class EditorGutter extends Component {
 
@@ -206,16 +206,16 @@ export default class EditorGutter extends Component {
         return { gutterMarkEls, totalWidth }
     }
 
-    onFocus = () => {
-        const { editorView, onChangePos } = this.props
-        const selectionPos = navigateFromEditorToTree(editorView)
-        onChangePos(selectionPos)
-    }
+    // onFocus = () => {
+    //     const { editorView, onChangePos } = this.props
+    //     const selectionPos = navigateFromEditorToTree(editorView)
+    //     onChangePos(selectionPos)
+    // }
 
-    onBlur = () => {
-        const { onChangePos } = this.props
-        onChangePos(null)
-    }
+    // onBlur = () => {
+    //     const { onChangePos } = this.props
+    //     onChangePos(null)
+    // }
 
     render() {   
         const { editorView, editorGutterPath } = this.props
@@ -235,8 +235,8 @@ export default class EditorGutter extends Component {
                     aria-label={editorGutterPath} 
                     aria-live="polite" 
                     aria-roledescription="document structure tree" 
-                    onFocus={this.onFocus} 
-                    onBlur={this.onBlur}
+                    // onFocus={this.onFocus} 
+                    // onBlur={this.onBlur}
                 >
                     { gutterMarkEls }
                 </div>
