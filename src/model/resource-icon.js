@@ -15,3 +15,20 @@ export function getResourceIcon(resourceType, open=false) {
         throw new Error('Unrecognized resource type.')
     }
   }
+
+  export function getResourceIconLabel( resourceType ) {
+    switch( resourceType ) {
+      case 'text':
+        return 'text resource'
+      case 'facs':
+        return 'facsimile resource'
+      case 'header':
+        return 'TEI Header'
+      case 'teidoc':
+        return 'TEI Document'
+      case 'standOff':
+        return 'standoff resource'
+      default:
+        throw new Error('Unrecognized resource type.')
+    }
+  }

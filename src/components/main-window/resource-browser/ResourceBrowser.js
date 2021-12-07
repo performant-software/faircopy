@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 import TitleBar from '../TitleBar'
-import { getResourceIcon } from '../../../model/resource-icon';
+import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
 
 const rowsPerPage = 100
 
@@ -166,7 +166,7 @@ export default class ResourceBrowser extends Component {
             <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
           <TableCell {...cellProps} >
-            <i className={`${resourceIcon} fa-lg`}></i>
+            <i aria-label={getResourceIconLabel(resource.type)} className={`${resourceIcon} fa-lg`}></i>
           </TableCell>
           <TableCell {...cellProps} >
             {resource.name}
