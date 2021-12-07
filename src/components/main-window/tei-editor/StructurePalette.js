@@ -187,6 +187,9 @@ renderElement(elementID,groupID,paletteOrder) {
   const onMouseOver = () => { 
     if( !this.state.dragging ) this.setState({ ...this.state, elementInfoID: elementID })
   }
+  const onFocus = () => {
+    if( !this.state.dragging ) this.setState({ ...this.state, elementInfoID: elementID })
+  }
   const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
 
   const setItemElRef = (el) => {
@@ -205,6 +208,7 @@ renderElement(elementID,groupID,paletteOrder) {
         onMouseDown={onStartDrag} 
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
         datamenuid="structure"
         datamenugroupid={groupID}
         datapalettepos={paletteOrder}
@@ -259,7 +263,6 @@ onKeyDown = (event) => {
   const { currentMenuID, menuGroups } = this.getCurrentMenu()
   const keyCode = event.key
   const metaKey = ( event.ctrlKey || event.metaKey )
-  console.log(metaKey)
 
   if( keyCode === 'Escape' ) {
     this.close()
@@ -271,39 +274,43 @@ onKeyDown = (event) => {
     let { tr } = editorView.state
 
     if( keyCode === 'Enter' ) {
-      if( validNodeAction('replace', elementID, teiDocument, editorGutterPos) ) {
-        tr = createStructureElement( elementID, editorGutterPos, 'replace', teiDocument, tr )
-        editorView.dispatch(tr)
-      } else {
-        onAlertMessage(`Cannot replace selected element with ${elementID}.`)
+      if( editorGutterPos !== null ) {
+        if( validNodeAction('replace', elementID, teiDocument, editorGutterPos) ) {
+          tr = createStructureElement( elementID, editorGutterPos, 'replace', teiDocument, tr )
+          editorView.dispatch(tr)
+        } else {
+          onAlertMessage(`Cannot replace selected element with ${elementID}.`)
+        }  
       }
     } else if( metaKey ) {
-      let actionType = null, position = null
-      switch( keyCode ) {
-        case 'ArrowUp':
-          position = 'above'
-          actionType = 'addAbove'
-          break
-        case 'ArrowDown':
-          position = 'below'
-          actionType = 'addBelow'
-          break
-        case 'ArrowLeft':
-          position = 'outside'
-          actionType = 'addOutside'
-          break
-        case 'ArrowRight':
-          position = 'inside'
-          actionType = 'addInside'
-          break
-        default:
-      }
+      if( editorGutterPos !== null ) {
+        let actionType = null, position = null
+        switch( keyCode ) {
+          case 'ArrowUp':
+            position = 'above'
+            actionType = 'addAbove'
+            break
+          case 'ArrowDown':
+            position = 'below'
+            actionType = 'addBelow'
+            break
+          case 'ArrowLeft':
+            position = 'outside'
+            actionType = 'addOutside'
+            break
+          case 'ArrowRight':
+            position = 'inside'
+            actionType = 'addInside'
+            break
+          default:
+        }
 
-      if( actionType && validNodeAction(actionType, elementID, teiDocument, editorGutterPos)) {
-          tr = createStructureElement( elementID, editorGutterPos, actionType, teiDocument, tr )
-          editorView.dispatch(tr)
-      } else {
-          onAlertMessage(`Cannot add ${elementID} ${position} the selected element.`)
+        if( actionType && validNodeAction(actionType, elementID, teiDocument, editorGutterPos)) {
+            tr = createStructureElement( elementID, editorGutterPos, actionType, teiDocument, tr )
+            editorView.dispatch(tr)
+        } else {
+            onAlertMessage(`Cannot add ${elementID} ${position} the selected element.`)
+        }
       }
     } else {
       const currentMenu = menuGroups[currentMenuID]
