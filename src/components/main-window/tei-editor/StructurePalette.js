@@ -191,6 +191,9 @@ renderElement(elementID,groupID,paletteOrder) {
     if( !this.state.dragging ) this.setState({ ...this.state, elementInfoID: elementID })
   }
   const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
+  const onBlur = () => {
+    if( !this.state.dragging ) this.setState({ ...this.state, elementInfoID: null })
+  }
 
   const setItemElRef = (el) => {
     this.itemEls[elementID] = el
@@ -209,6 +212,7 @@ renderElement(elementID,groupID,paletteOrder) {
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
         onFocus={onFocus}
+        onBlur={onBlur}
         datamenuid="structure"
         datamenugroupid={groupID}
         datapalettepos={paletteOrder}
