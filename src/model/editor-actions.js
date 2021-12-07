@@ -1,8 +1,8 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
-import { NodeSelection } from 'prosemirror-state'
 import { addMark, insertNodeAt, insertAtomNodeAt, deleteParentNode } from "./commands"
 import { validMove, createValidNode } from './element-validators'
 import { getTextNodeName } from './xml'
+import { getStructureNodeDisplayName } from './editor-navigation'
 
 const elementListLength = 30
 
@@ -203,23 +203,23 @@ export function eraseSelection(teiDocument) {
 }
 
 // Move the selected node up or down the document
-export function moveNode(direction,teiDocument,metaKey) {
+export function moveNode(direction,teiDocument,pos,metaKey) {
 
     // can we move? if so, how?
-    const validState = validMove( direction, teiDocument, metaKey ) 
+    const validState = validMove( direction, teiDocument, pos, metaKey ) 
     if(!validState) return 
 
     const editorView = teiDocument.getActiveView()
-    const { tr, selection, schema } = editorView.state
+    const { tr, doc, schema } = editorView.state
     const { elements } = teiDocument.fairCopyProject.teiSchema
-    const { $anchor } = selection
+    const $anchor = doc.resolve(pos) 
     const nodeIndex = $anchor.index()
     const parentNode = $anchor.node()
+    const selectedNode = parentNode.child(nodeIndex)
 
     if( direction === 'up' ) { 
         // if first sibling, move up and out of this parent
         if( nodeIndex === 0 ) {
-            const selectedNode = selection.node
             const selectedPos = $anchor.pos
             const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
             const parentNode = $anchor.parent
@@ -240,10 +240,9 @@ export function moveNode(direction,teiDocument,metaKey) {
                 }
             }
 
-            tr.setSelection( NodeSelection.create(tr.doc, selectedPos-1) )
+            tr.setMeta( 'editorGutterPos', selectedPos-1 )
         // otherwise, we can move around within the parent  
         } else {
-            const selectedNode = selection.node
             const selectedPos = $anchor.pos
             const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
             const nodeBefore = $anchor.nodeBefore
@@ -263,16 +262,15 @@ export function moveNode(direction,teiDocument,metaKey) {
                     }
                     textNodePos = textNodePos + child.nodeSize
                 }
-                tr.setSelection( NodeSelection.create(tr.doc, nextSelectPos) )
+                tr.setMeta( 'editorGutterPos', nextSelectPos )
             } else {
                 tr.replaceWith(nodeBeforePos,selectedEndPos,[selectedNode,nodeBefore])              
-                tr.setSelection( NodeSelection.create(tr.doc, nodeBeforePos) )
+                tr.setMeta( 'editorGutterPos', nodeBeforePos )
             }        
         }
     } else {
         // if we are the last sibling, move down and out of this parent
         if(nodeIndex >= parentNode.childCount-1) {
-            const selectedNode = selection.node
             const selectedPos = $anchor.pos
             const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
             tr.delete(selectedPos, selectedEndPos)
@@ -291,13 +289,12 @@ export function moveNode(direction,teiDocument,metaKey) {
                     const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements )
                     tr.insert(textNodePos, replacementNode) 
                 }
-                tr.setSelection( NodeSelection.create(tr.doc, insertPos+2) )
+                tr.setMeta( 'editorGutterPos', insertPos+2 )
             } else {
-                tr.setSelection( NodeSelection.create(tr.doc, insertPos) )
+                tr.setMeta( 'editorGutterPos', insertPos )
             }
         // otherwise, move around within this parent
         } else {
-            const selectedNode = selection.node
             const selectedPos = $anchor.pos
             const selectedEndPos = selectedPos + $anchor.nodeAfter.nodeSize 
             const swapNode = parentNode.child(nodeIndex+1)
@@ -319,17 +316,18 @@ export function moveNode(direction,teiDocument,metaKey) {
                     }
                     textNodePos = textNodePos + child.nodeSize
                 }
-                tr.setSelection( NodeSelection.create(tr.doc, nextSelectPos) )
+                tr.setMeta( 'editorGutterPos', nextSelectPos )
             } else {
                 tr.replaceWith(selectedPos,swapEndPos,[swapNode,selectedNode])    
-                tr.setSelection( NodeSelection.create(tr.doc, selectedPos+swapNode.nodeSize) )
+                tr.setMeta( 'editorGutterPos', selectedPos+swapNode.nodeSize )
             }
         }
     }
 
+    const editorGutterPath = getStructureNodeDisplayName( selectedNode.type.name )
+    tr.setMeta( 'editorGutterPath', editorGutterPath )
     tr.scrollIntoView()
     editorView.dispatch(tr)
-    editorView.focus()
 }
 
 function createMark(markType, attrs, editorView) {

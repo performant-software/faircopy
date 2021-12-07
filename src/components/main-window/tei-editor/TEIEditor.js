@@ -421,7 +421,7 @@ export default class TEIEditor extends Component {
                             editorGutterPath={editorGutterPath}
                             editorGutterPos={editorGutterPos}
                             onChangePos={this.onChangePos}
-                            gutterTop={125}
+                            gutterTop={120}
                         /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}

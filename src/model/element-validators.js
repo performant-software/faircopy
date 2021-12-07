@@ -213,15 +213,15 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
 }    
 
 // Can the selected node move up or down the document?
-export function validMove(direction,teiDocument,metaKey) {
+export function validMove(direction,teiDocument,pos,metaKey) {
     const editorView = teiDocument.getActiveView()
     const {hard, inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
-    const { selection } = editorView.state
-    const { $anchor } = selection
+    const { doc } = editorView.state
+    const $anchor = doc.resolve(pos)
     const nodeIndex = $anchor.index()
     const parentNode = $anchor.node()
     const grandParentNode = $anchor.node(-1)
-    const selectedNode = selection.node
+    const selectedNode = parentNode.child(nodeIndex)
 
     // do nothing if root node, or can't move in requested direction
     // also, this doesn't apply to inline nodes

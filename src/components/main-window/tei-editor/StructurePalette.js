@@ -309,7 +309,7 @@ onKeyDown = (event) => {
             tr = createStructureElement( elementID, editorGutterPos, actionType, teiDocument, tr )
             editorView.dispatch(tr)
         } else {
-            onAlertMessage(`Cannot add ${elementID} ${position} the selected element.`)
+            if(position) onAlertMessage(`Cannot add ${elementID} ${position} the selected element.`)
         }
       }
     } else {
