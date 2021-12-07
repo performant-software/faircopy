@@ -32,9 +32,7 @@ export default class TEIEditor extends Component {
             ctrlDown: false,
             altDown: false,
             selectedElements: [],
-            elementMenuOptions: null,
-            editorGutterPos: null,
-            editorGutterPath: null
+            elementMenuOptions: null
         }
     }
 
@@ -96,7 +94,7 @@ export default class TEIEditor extends Component {
 
     dispatchTransaction = (transaction) => {
         const { noteID } = this.state
-        const { teiDocument, onAlertMessage, onErrorCountChange } = this.props
+        const { teiDocument, onAlertMessage, onErrorCountChange, onChangePos } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -108,10 +106,13 @@ export default class TEIEditor extends Component {
                 onAlertMessage(alertMessage)
             }
 
-            const editorGutterPosMeta = transaction.getMeta('editorGutterPos')
-            const editorGutterPathMeta = transaction.getMeta('editorGutterPath')
-            const editorGutterPos = (editorGutterPosMeta !== undefined ) ? editorGutterPosMeta : this.state.editorGutterPos
-            const editorGutterPath = (editorGutterPathMeta !== undefined ) ? editorGutterPathMeta : this.state.editorGutterPath
+            let editorGutterPos = transaction.getMeta('editorGutterPos')
+            const editorGutterPath = transaction.getMeta('editorGutterPath')
+            if( editorGutterPos !== undefined ) {
+                onChangePos(editorGutterPos, editorGutterPath)
+            } else {
+                editorGutterPos = this.props.editorGutterPos
+            }
 
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const nextNoteID = nextNotePopupAnchorEl ? noteID : null
@@ -125,7 +126,8 @@ export default class TEIEditor extends Component {
                     editorView.dispatch(tr)
                 }, 100 )        
             }
-            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl, editorGutterPos, editorGutterPath })
+            
+            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
         }
     }
 
@@ -349,8 +351,8 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
-        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, editorGutterPos, editorGutterPath } = this.state
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, editorGutterPos, editorGutterPath, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
+        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions } = this.state
 
         const onClickBody = () => {
             // const { editorView } = teiDocument
@@ -360,7 +362,7 @@ export default class TEIEditor extends Component {
         }
 
         const onFocus = () => {
-            const { editorGutterPos } = this.state
+            const { editorGutterPos } = this.props
             if( editorGutterPos !== null ) {
                 const editorView = teiDocument.getActiveView()
                 const { tr, doc } = editorView.state

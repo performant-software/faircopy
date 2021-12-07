@@ -2,7 +2,8 @@ import { Select, MenuItem, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 import EmptyGroup from './EmptyGroup'
 import ElementInfoPopup from './ElementInfoPopup'
-import { determineRules } from '../../../model/editor-actions'
+import { determineRules, createStructureElement } from '../../../model/editor-actions'
+import { validNodeAction } from '../../../model/element-validators'
 
 const clientOffset = { x: 0, y: 0 }
 
@@ -250,33 +251,60 @@ close() {
   onClose()
 }
 
-onKeyUp = (event) => {
+onKeyDown = (event) => {
+  const { editorGutterPos, teiDocument, onAlertMessage } = this.props
   const { activeElement } = document
   const palettePos = activeElement.getAttribute('datapalettepos')
   const elementIndex = palettePos ? parseInt(palettePos) : null
   const { currentMenuID, menuGroups } = this.getCurrentMenu()
   const keyCode = event.key
   const metaKey = ( event.ctrlKey || event.metaKey )
+  console.log(metaKey)
 
   if( keyCode === 'Escape' ) {
     this.close()
   }
   else if( elementIndex !== null && menuGroups !== null ) {
+    const currentMenu = menuGroups[currentMenuID]
+    const elementID = currentMenu.members[elementIndex]
+    const editorView = teiDocument.getActiveView()
+    let { tr } = editorView.state
+
     if( keyCode === 'Enter' ) {
-      // TODO
+      if( validNodeAction('replace', elementID, teiDocument, editorGutterPos) ) {
+        tr = createStructureElement( elementID, editorGutterPos, 'replace', teiDocument, tr )
+        editorView.dispatch(tr)
+      } else {
+        onAlertMessage(`Cannot replace selected element with ${elementID}.`)
+      }
     } else if( metaKey ) {
-      // handle element placement
+      let actionType = null, position = null
       switch( keyCode ) {
         case 'ArrowUp':
+          position = 'above'
+          actionType = 'addAbove'
           break
         case 'ArrowDown':
+          position = 'below'
+          actionType = 'addBelow'
           break
         case 'ArrowLeft':
+          position = 'outside'
+          actionType = 'addOutside'
           break
         case 'ArrowRight':
+          position = 'inside'
+          actionType = 'addInside'
           break
         default:
-      } 
+      }
+
+      if( actionType && validNodeAction(actionType, elementID, teiDocument, editorGutterPos)) {
+          tr = createStructureElement( elementID, editorGutterPos, actionType, teiDocument, tr )
+          editorView.dispatch(tr)
+      } else {
+          onAlertMessage(`Cannot add ${elementID} ${position} the selected element.`)
+      }
     } else {
       const currentMenu = menuGroups[currentMenuID]
       const maxIndex = currentMenu.members.length-1
@@ -323,7 +351,7 @@ render() {
         id="StructurePalette"
         style={style}
         ref={onRef} 
-        onKeyUp={this.onKeyUp}
+        onKeyDown={this.onKeyDown}
       >
         <div className="close-x" onClick={onClose}><i className="fas fa-times fa-sm"></i></div>
         <div className="header" onMouseDown={this.dragMouseDown}>

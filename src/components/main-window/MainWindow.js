@@ -71,6 +71,8 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
+            editorGutterPos: null,
+            editorGutterPath: null,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -434,7 +436,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen, parentResourceID } = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter, paletteWindowOpen, parentResourceID, editorGutterPos, editorGutterPath } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
 
         const editors = []
@@ -447,6 +449,10 @@ export default class MainWindow extends Component {
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
                 this.setState({ ...this.state, alertDialogMode: 'confirmDeleteImages', alertOptions })
+            }
+
+            const onChangePos = ( editorGutterPos, editorGutterPath ) => {
+                this.setState({...this.state, editorGutterPos, editorGutterPath })
             }
 
             // bump state to update sidebar
@@ -474,6 +480,9 @@ export default class MainWindow extends Component {
                             onResourceAction={this.onResourceAction}
                             onErrorCountChange={onErrorCountChange}
                             onSave={onSave}
+                            editorGutterPos={editorGutterPos}
+                            editorGutterPath={editorGutterPath}
+                            onChangePos={onChangePos}
                             leftPaneWidth={leftPaneWidth}
                             expandedGutter={expandedGutter}
                         ></TEIEditor>
@@ -546,7 +555,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, editorGutterPos, releaseNotesMode, feedbackMode, currentSubmenuID, dragInfo, draggingElementActive, paletteWindowOpen, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
         const { fairCopyProject, appConfig, onProjectSettings } = this.props
         const { idMap } = fairCopyProject
 
@@ -617,6 +626,8 @@ export default class MainWindow extends Component {
                     onDragElement={this.onDragElement}
                     teiDocument={selectedDoc}
                     currentSubmenuID={currentSubmenuID}
+                    editorGutterPos={editorGutterPos}
+                    onAlertMessage={this.onAlertMessage}
                     onProjectSettings={onProjectSettings}
                     onChangeMenu={(currentSubmenuID)=>{ this.setState( {...this.state, currentSubmenuID} )}}
                     onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
