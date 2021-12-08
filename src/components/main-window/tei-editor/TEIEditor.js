@@ -163,9 +163,9 @@ export default class TEIEditor extends Component {
         return notePopupAnchorEl
     }
 
-    onNoteStateChange = (editorGutterPos) => {
+    onNoteStateChange = (editorGutterPos, editorGutterPath) => {
         const selectedElements = this.getSelectedElements(editorGutterPos)
-        this.setState({...this.state, selectedElements })
+        this.setState({...this.state, selectedElements, editorGutterPos, editorGutterPath })
     }
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {

@@ -52,7 +52,7 @@ export default class NotePopup extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { teiDocument, onStateChange, onAlertMessage, onChangePos } = this.props
+        const { teiDocument, onStateChange, onAlertMessage } = this.props
         const { noteEditorView } = teiDocument
 
         // TODO how to handle error counts here?
@@ -66,10 +66,7 @@ export default class NotePopup extends Component {
         let editorGutterPos = transaction.getMeta('editorGutterPos')
         const editorGutterPath = transaction.getMeta('editorGutterPath')
         if( editorGutterPos !== undefined ) {
-            onChangePos(editorGutterPos, editorGutterPath)
-            onStateChange(editorGutterPos)
-        } else {
-            editorGutterPos = this.props.editorGutterPos
+            onStateChange(editorGutterPos,editorGutterPath)
         }
 
         if( noteEditorView ) {
