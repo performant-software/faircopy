@@ -355,10 +355,10 @@ export default class TEIEditor extends Component {
         const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions } = this.state
 
         const onClickBody = () => {
-            // const { editorView } = teiDocument
-            // if( editorView && !editorView.hasFocus() && editorGutterPos === null ) {
-            //     editorView.focus()
-            // }
+            const { editorView } = teiDocument
+            if( editorView && !editorView.hasFocus() && editorGutterPos === null ) {
+                editorView.focus()
+            }
         }
 
         const onFocus = () => {
