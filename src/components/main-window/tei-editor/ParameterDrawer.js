@@ -317,7 +317,7 @@ export default class ParameterDrawer extends Component {
         const configElements = fairCopyConfig.elements
         const name = element.type.name
         const elementSpec = elements[name]
-        const elementID = name.startsWith('mark') ? name.slice('mark'.length) : name
+        const elementID = name.startsWith('mark') ? name.slice('mark'.length) : name.endsWith('X') ? name.slice(0,name.length-1) : name
         const {attrState} = configElements[elementID]
 
         const openAttributeDialog = () => {

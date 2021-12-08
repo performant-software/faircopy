@@ -157,8 +157,8 @@ export default class TEIEditor extends Component {
         return notePopupAnchorEl
     }
 
-    onNoteStateChange = () => {
-        const selectedElements = this.getSelectedElements()
+    onNoteStateChange = (editorGutterPos) => {
+        const selectedElements = this.getSelectedElements(editorGutterPos)
         this.setState({...this.state, selectedElements })
     }
 
@@ -351,7 +351,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onEditResource, editorGutterPos, editorGutterPath, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onChangePos, onEditResource, editorGutterPos, editorGutterPath, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
         const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions } = this.state
 
         const onClickBody = () => {
@@ -444,7 +444,10 @@ export default class TEIEditor extends Component {
                     noteID={noteID}
                     expanded={expandedGutter}
                     teiDocument={teiDocument}
+                    onDragElement={onDragElement}
+                    onAlertMessage={onAlertMessage}
                     anchorEl={notePopupAnchorEl}
+                    onChangePos={onChangePos}
                     onStateChange={this.onNoteStateChange}
                 ></NotePopup> }
             </main>
