@@ -12,7 +12,7 @@ export default class StructurePalette extends Component {
   constructor(props) {
     super(props)
 
-    const x = window.innerWidth - 235
+    const x = window.innerWidth - 300 - props.leftPaneWidth
 
     this.initialPosition = {
       dragging: false,
@@ -77,10 +77,12 @@ elementDrag = (e) => {
 }
 
 constrainToWindow( offsetX, offsetY ) {
+  const { leftPaneWidth } = this.props 
+  
   if( !this.el ) return { nextX: offsetX, nextY: offsetY }
 
   const { width, height } = this.el.getBoundingClientRect()
-  const maxX = window.innerWidth - width
+  const maxX = window.innerWidth - width - leftPaneWidth
   const maxY = window.innerHeight - height
 
   let nextX, nextY  

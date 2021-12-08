@@ -8,6 +8,7 @@ import {TextSelection} from "prosemirror-state"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
+import StructurePalette from "./StructurePalette"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
@@ -32,7 +33,11 @@ export default class TEIEditor extends Component {
             ctrlDown: false,
             altDown: false,
             selectedElements: [],
-            elementMenuOptions: null
+            elementMenuOptions: null,
+            paletteWindowOpen: false,
+            editorGutterPos: null,
+            editorGutterPath: null,
+            currentSubmenuID: 0
         }
     }
 
@@ -94,7 +99,7 @@ export default class TEIEditor extends Component {
 
     dispatchTransaction = (transaction) => {
         const { noteID } = this.state
-        const { teiDocument, onAlertMessage, onErrorCountChange, onChangePos } = this.props
+        const { teiDocument, onAlertMessage, onErrorCountChange } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -108,10 +113,11 @@ export default class TEIEditor extends Component {
 
             let editorGutterPos = transaction.getMeta('editorGutterPos')
             const editorGutterPath = transaction.getMeta('editorGutterPath')
+            let nextStructureNode = {}
             if( editorGutterPos !== undefined ) {
-                onChangePos(editorGutterPos, editorGutterPath)
+                nextStructureNode = { editorGutterPos, editorGutterPath }
             } else {
-                editorGutterPos = this.props.editorGutterPos
+                editorGutterPos = this.state.editorGutterPos
             }
 
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
@@ -126,8 +132,8 @@ export default class TEIEditor extends Component {
                     editorView.dispatch(tr)
                 }, 100 )        
             }
-            
-            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
+ 
+            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl, ...nextStructureNode })
         }
     }
 
@@ -183,9 +189,14 @@ export default class TEIEditor extends Component {
         }
     }
 
+    onTogglePalette = () => {
+        const { paletteWindowOpen } = this.state
+        this.setState({...this.state, paletteWindowOpen: !paletteWindowOpen})
+    }
+
     onKeyDown = ( event ) => {
         const { ctrlDown, altDown } = this.state
-        const { teiDocument, onTogglePalette } = this.props
+        const { teiDocument } = this.props
         const editorView = teiDocument.getActiveView()
         const metaKey = ( event.ctrlKey || event.metaKey )
  
@@ -207,7 +218,7 @@ export default class TEIEditor extends Component {
         const enabledMenus = getEnabledMenus(teiDocument)
 
         if( metaKey && key === '1' ) {
-            onTogglePalette()
+            this.onTogglePalette()
         }
 
         if( enabledMenus.marks && metaKey && key === '2' ) {
@@ -351,8 +362,8 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onChangePos, onEditResource, editorGutterPos, editorGutterPath, onProjectSettings, onResourceAction, onTogglePalette, paletteActive, resourceEntry, leftPaneWidth, expandedGutter } = this.props
-        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions } = this.state
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter } = this.props
+        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, currentSubmenuID, paletteWindowOpen, editorGutterPos, editorGutterPath } = this.state
 
         const onClickBody = () => {
             const { editorView } = teiDocument
@@ -362,7 +373,7 @@ export default class TEIEditor extends Component {
         }
 
         const onFocus = () => {
-            const { editorGutterPos } = this.props
+            const { editorGutterPos } = this.state
             if( editorGutterPos !== null ) {
                 const editorView = teiDocument.getActiveView()
                 const { tr, doc } = editorView.state
@@ -404,8 +415,8 @@ export default class TEIEditor extends Component {
                     { !hidden && <EditorToolbar
                         teiDocument={teiDocument}
                         onSave={onSave}
-                        onTogglePalette={onTogglePalette}
-                        paletteActive={paletteActive}
+                        onTogglePalette={this.onTogglePalette}
+                        paletteActive={paletteWindowOpen}
                         onProjectSettings={onProjectSettings}
                         onEditResource={onEditResource}
                         onOpenElementMenu={this.onOpenElementMenu}
@@ -447,9 +458,21 @@ export default class TEIEditor extends Component {
                     onDragElement={onDragElement}
                     onAlertMessage={onAlertMessage}
                     anchorEl={notePopupAnchorEl}
-                    onChangePos={onChangePos}
+                    onChangePos={this.onChangePos}
                     onStateChange={this.onNoteStateChange}
                 ></NotePopup> }
+                { paletteWindowOpen && <StructurePalette
+                    onDragElement={onDragElement}
+                    leftPaneWidth={leftPaneWidth}
+                    teiDocument={teiDocument}
+                    currentSubmenuID={currentSubmenuID}
+                    editorGutterPos={editorGutterPos}
+                    onAlertMessage={onAlertMessage}
+                    onProjectSettings={onProjectSettings}
+                    onChangeMenu={(currentSubmenuID)=>{ this.setState( {...this.state, currentSubmenuID} )}}
+                    onClose={()=>{ this.setState( {...this.state, paletteWindowOpen: false} )}}
+                  ></StructurePalette> 
+                }
             </main>
         )
     }
