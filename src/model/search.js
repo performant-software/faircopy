@@ -10,7 +10,6 @@ export function highlightSearchResults(currentResource, searchQuery, searchResul
     const { resourceType } = currentResource
 
     if( isIndexable(resourceType) ) {
-        console.log(searchResults)
         const editorView = currentResource.getActiveView()
         const { tr } = editorView.state
 
