@@ -50,9 +50,9 @@ export default class EditorGutter extends Component {
             }
         }
 
-        const { currentTreeNode } = this.props
-        const { editorGutterPos } = currentTreeNode
-        const highlighted = editorGutterPos === targetPos ? 'highlighted' : ''
+        const { currentTreeNode, treeID } = this.props
+        const { editorGutterPos, treeID: selectedTree } = currentTreeNode
+        const highlighted = editorGutterPos === targetPos && selectedTree === treeID ? 'highlighted' : ''
         const className = `marker ${highlighted} ${markerClass}`
         const height = bottom - top 
         const markStyle = { top, height, marginLeft: columnPositions[column], ...borderStyles }

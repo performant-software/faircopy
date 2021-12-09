@@ -54,7 +54,7 @@ export function navigateFromEditorToTree( editorView ) {
     function findLeaf($pos) {
         const nextNode = $pos.node()
         const nodeType = nextNode.type.name
-        const nextPos = $pos.start() - 1
+        const nextPos = $pos.start() - 1 >= 0 ? $pos.start() - 1 : 0
 
         if( nodeType.startsWith('textNode') || nodeType.startsWith('globalNode') ) {
             if( nextPos >= 0 ) {
