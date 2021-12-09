@@ -30,9 +30,9 @@ export default class EditorGutter extends Component {
     renderGutterMark(elementID,targetPos,top,bottom,index,column,markerClass,borderStyles,columnPositions) {
      
         const onClick = () => {
-            const { onChangePos } = this.props
+            const { onChangePos, treeID } = this.props
             const editorGutterPath = getStructureNodeDisplayName(elementID)
-            onChangePos( targetPos, editorGutterPath )
+            onChangePos( targetPos, editorGutterPath, treeID )
         }
 
         const onStartDrag = (e) => {
@@ -50,7 +50,8 @@ export default class EditorGutter extends Component {
             }
         }
 
-        const { editorGutterPos } = this.props
+        const { currentTreeNode } = this.props
+        const { editorGutterPos } = currentTreeNode
         const highlighted = editorGutterPos === targetPos ? 'highlighted' : ''
         const className = `marker ${highlighted} ${markerClass}`
         const height = bottom - top 
@@ -208,7 +209,8 @@ export default class EditorGutter extends Component {
     }
 
     onKeyDown = (event) => {
-        const { editorView, teiDocument, editorGutterPos, onChangePos } = this.props
+        const { editorView, teiDocument, currentTreeNode, onChangePos } = this.props
+        const { editorGutterPos, treeID } = currentTreeNode
         const metaKey = ( event.ctrlKey || event.metaKey )
 
          // move structure nodes with arrow keys
@@ -219,18 +221,19 @@ export default class EditorGutter extends Component {
             } else {
                 if( editorGutterPos !== null ) {
                     const { nextPos, nextPath } = navigateTree( arrowDir, editorView, editorGutterPos )
-                    onChangePos(nextPos, nextPath)
+                    onChangePos(nextPos, nextPath, treeID)
                 }                
             }
         }
     }
 
     onFocus = () => {
-        const { editorView, editorGutterPos, onChangePos } = this.props
+        const { editorView, currentTreeNode, onChangePos, treeID } = this.props
+        const { editorGutterPos } = currentTreeNode
 
         if( editorGutterPos === null ) {
             const { nextPos, nextPath } = navigateFromEditorToTree( editorView )
-            onChangePos(nextPos, nextPath)
+            onChangePos(nextPos, nextPath, treeID)
         }
     }
 

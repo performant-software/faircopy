@@ -27,6 +27,7 @@ export default class TEIEditor extends Component {
 
     constructor() {
         super()
+        this.emptyTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
         this.state = {
             noteID: null,
             notePopupAnchorEl: null,
@@ -35,8 +36,7 @@ export default class TEIEditor extends Component {
             selectedElements: [],
             elementMenuOptions: null,
             paletteWindowOpen: false,
-            editorGutterPos: null,
-            editorGutterPath: null,
+            currentTreeNode: this.emptyTreeNode,
             currentSubmenuID: 0
         }
     }
@@ -111,18 +111,11 @@ export default class TEIEditor extends Component {
                 onAlertMessage(alertMessage)
             }
 
-            let editorGutterPos = transaction.getMeta('editorGutterPos')
-            const editorGutterPath = transaction.getMeta('editorGutterPath')
-            let nextStructureNode = {}
-            if( editorGutterPos !== undefined ) {
-                nextStructureNode = { editorGutterPos, editorGutterPath }
-            } else {
-                editorGutterPos = this.state.editorGutterPos
-            }
+            let nextTreeNode = transaction.getMeta('currentTreeNode') ? transaction.getMeta('currentTreeNode') : this.state.currentTreeNode
 
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const nextNoteID = nextNotePopupAnchorEl ? noteID : null
-            const selectedElements = this.getSelectedElements(editorGutterPos)
+            const selectedElements = this.getSelectedElements(nextTreeNode)
             this.broadcastZoneLinks(selectedElements)
 
             if( this.state.selectedElements.length === 0 && selectedElements.length > 0 ) {
@@ -133,7 +126,7 @@ export default class TEIEditor extends Component {
                 }, 100 )        
             }
  
-            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl, ...nextStructureNode })
+            this.setState({...this.state, selectedElements, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl, currentTreeNode: nextTreeNode })
         }
     }
 
@@ -163,9 +156,9 @@ export default class TEIEditor extends Component {
         return notePopupAnchorEl
     }
 
-    onNoteStateChange = (editorGutterPos, editorGutterPath) => {
-        const selectedElements = this.getSelectedElements(editorGutterPos)
-        this.setState({...this.state, selectedElements, editorGutterPos, editorGutterPath })
+    onNoteStateChange = (currentTreeNode) => {
+        const selectedElements = this.getSelectedElements(currentTreeNode)
+        this.setState({...this.state, selectedElements, currentTreeNode })
     }
 
     onClickOn = ( editorView, pos, node, nodePos, event, direct ) => {
@@ -290,10 +283,11 @@ export default class TEIEditor extends Component {
         fairCopy.services.ipcSend('selectedZones', selectedZones )
     }
 
-    getSelectedElements(editorGutterPos) {
+    getSelectedElements(currentTreeNode) {
         const { teiDocument } = this.props
         const { noteID } = this.state
         const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
+        const { editorGutterPos } = currentTreeNode
 
         const editorView = teiDocument.getActiveView()
         const selection = (editorView) ? editorView.state.selection : null 
@@ -351,36 +345,37 @@ export default class TEIEditor extends Component {
         this.setState({...this.state, elementMenuOptions: null })
     }
 
-    onChangePos = (editorGutterPos, editorGutterPath) => {
+    onChangePos = (editorGutterPos, editorGutterPath, treeID ) => {
         const { teiDocument } = this.props 
         const editorView = teiDocument.getActiveView()
         const { tr } = editorView.state
-        tr.setMeta( 'editorGutterPos', editorGutterPos )
-        tr.setMeta( 'editorGutterPath', editorGutterPath )
+        const currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
+        tr.setMeta( 'currentTreeNode', currentTreeNode )
         tr.setMeta( 'highlightEnabled', editorGutterPos === null )
         editorView.dispatch(tr)
     }
 
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter } = this.props
-        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, currentSubmenuID, paletteWindowOpen, editorGutterPos, editorGutterPath } = this.state
+        const { noteID, notePopupAnchorEl, selectedElements, elementMenuOptions, currentSubmenuID, paletteWindowOpen, currentTreeNode } = this.state
 
         const onClickBody = () => {
             const { editorView } = teiDocument
-            if( editorView && !editorView.hasFocus() && editorGutterPos === null ) {
+            const { currentTreeNode } = this.state
+            if( editorView && !editorView.hasFocus() && currentTreeNode && currentTreeNode.editorGutterPos === null ) {
                 editorView.focus()
             }
         }
 
         const onFocus = () => {
-            const { editorGutterPos } = this.state
+            const { currentTreeNode } = this.state
+            const { editorGutterPos } = currentTreeNode
             if( editorGutterPos !== null ) {
                 const editorView = teiDocument.getActiveView()
                 const { tr, doc } = editorView.state
                 tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
                 tr.scrollIntoView()
-                tr.setMeta( 'editorGutterPos', null )
-                tr.setMeta( 'editorGutterPath', null )
+                tr.setMeta( 'currentTreeNode', this.emptyTreeNode )
                 tr.setMeta( 'highlightEnabled', true )
                 editorView.dispatch(tr)
             }
@@ -425,12 +420,12 @@ export default class TEIEditor extends Component {
                     ></EditorToolbar> }
                     <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
                         { !hidden && <EditorGutter
+                            treeID="main"
                             expanded={expandedGutter}
                             onDragElement={onDragElement}
                             teiDocument={teiDocument}
                             editorView={teiDocument.editorView}
-                            editorGutterPath={editorGutterPath}
-                            editorGutterPos={editorGutterPos}
+                            currentTreeNode={currentTreeNode}
                             onChangePos={this.onChangePos}
                             gutterTop={120}
                         /> }     
@@ -457,6 +452,7 @@ export default class TEIEditor extends Component {
                     teiDocument={teiDocument}
                     onDragElement={onDragElement}
                     onAlertMessage={onAlertMessage}
+                    currentTreeNode={currentTreeNode}
                     anchorEl={notePopupAnchorEl}
                     onChangePos={this.onChangePos}
                     onStateChange={this.onNoteStateChange}
@@ -466,7 +462,7 @@ export default class TEIEditor extends Component {
                     leftPaneWidth={leftPaneWidth}
                     teiDocument={teiDocument}
                     currentSubmenuID={currentSubmenuID}
-                    editorGutterPos={editorGutterPos}
+                    currentTreeNode={currentTreeNode}
                     onAlertMessage={onAlertMessage}
                     onProjectSettings={onProjectSettings}
                     onChangeMenu={(currentSubmenuID)=>{ this.setState( {...this.state, currentSubmenuID} )}}

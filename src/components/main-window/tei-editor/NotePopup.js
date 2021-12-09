@@ -63,10 +63,9 @@ export default class NotePopup extends Component {
             onAlertMessage(alertMessage)
         }
 
-        let editorGutterPos = transaction.getMeta('editorGutterPos')
-        const editorGutterPath = transaction.getMeta('editorGutterPath')
-        if( editorGutterPos !== undefined ) {
-            onStateChange(editorGutterPos,editorGutterPath)
+        const currentTreeNode = transaction.getMeta('currentTreeNode')
+        if( currentTreeNode ) {
+            onStateChange(currentTreeNode)
         }
 
         if( noteEditorView ) {
@@ -95,12 +94,12 @@ export default class NotePopup extends Component {
         this.setState({ ...this.state, currentNoteID: null })
     }
 
-    onChangePos = (editorGutterPos, editorGutterPath) => {
+    onChangePos = (editorGutterPos, editorGutterPath, treeID) => {
         const { teiDocument } = this.props 
         const editorView = teiDocument.getActiveView()
         const { tr } = editorView.state
-        tr.setMeta( 'editorGutterPos', editorGutterPos )
-        tr.setMeta( 'editorGutterPath', editorGutterPath )
+        const currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
+        tr.setMeta( 'currentTreeNode', currentTreeNode )
         tr.setMeta( 'highlightEnabled', editorGutterPos === null )
         editorView.dispatch(tr)
     }
@@ -135,7 +134,7 @@ export default class NotePopup extends Component {
     }
 
     renderEditor() {
-        const { teiDocument, expanded, editorGutterPos, editorGutterPath, onDragElement } = this.props
+        const { teiDocument, expanded, onDragElement, currentTreeNode } = this.props
         const { noteEditorView } = teiDocument
 
         const onRef = (el) => {
@@ -148,13 +147,13 @@ export default class NotePopup extends Component {
         return (
             <div className='note-body' ref={onRef} onKeyDown={this.onKeyDown} >
                 <EditorGutter 
+                    treeID="note"
                     gutterTop={gutterTop}
                     expanded={expanded}
                     onDragElement={onDragElement}
                     teiDocument={teiDocument}
                     editorView={noteEditorView}
-                    editorGutterPath={editorGutterPath}
-                    editorGutterPos={editorGutterPos}
+                    currentTreeNode={currentTreeNode}
                     onChangePos={this.onChangePos}
                 /> 
                 <ProseMirrorComponent
