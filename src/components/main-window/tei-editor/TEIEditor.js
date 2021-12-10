@@ -156,7 +156,8 @@ export default class TEIEditor extends Component {
         return notePopupAnchorEl
     }
 
-    onNoteStateChange = (currentTreeNode) => {
+    onNoteStateChange = (nextTreeNode) => {
+        const currentTreeNode = nextTreeNode ? nextTreeNode : this.state.currentTreeNode
         const selectedElements = this.getSelectedElements(currentTreeNode)
         this.setState({...this.state, selectedElements, currentTreeNode })
     }

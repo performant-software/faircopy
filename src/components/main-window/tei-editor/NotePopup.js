@@ -63,16 +63,13 @@ export default class NotePopup extends Component {
             onAlertMessage(alertMessage)
         }
 
-        const currentTreeNode = transaction.getMeta('currentTreeNode')
-        if( currentTreeNode ) {
-            onStateChange(currentTreeNode)
-        }
-
         if( noteEditorView ) {
             const editorState = noteEditorView.state
             const nextEditorState = editorState.apply(transaction)
             noteEditorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
+            const currentTreeNode = transaction.getMeta('currentTreeNode')
+            onStateChange(currentTreeNode)
         }
     }
 
