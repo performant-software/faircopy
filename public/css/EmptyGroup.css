@@ -1,4 +1,8 @@
 #EmptyGroup { 
+    z-index: 700;
+}
+
+#EmptyGroup .empty-group-body {
     padding: 15px;
     max-width: 200px;
 }

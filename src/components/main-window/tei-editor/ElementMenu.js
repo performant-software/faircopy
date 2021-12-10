@@ -89,7 +89,6 @@ export default class ElementMenu extends Component {
                 <EmptyGroup 
                     key="empty-group" 
                     anchorEl={groupEl}
-                    anchorOrigin={anchorOrigin}
                     onProjectSettings={onProjectSettings}
                     onClose={onClose}
                 ></EmptyGroup>
