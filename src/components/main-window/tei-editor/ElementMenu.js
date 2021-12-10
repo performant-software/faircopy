@@ -63,12 +63,12 @@ export default class ElementMenu extends Component {
 
     renderSubMenu() {
         const { subMenuID } = this.state
-        if( subMenuID === null ) return null
-
         const { teiDocument, open } = this.props
         const { teiSchema } = teiDocument.fairCopyProject
         const menuGroups = this.getMenuGroups()
-        if( menuGroups.length === 0 ) return null
+        const anchorOrigin = { vertical: 'top', horizontal: 'right' }
+
+        if( subMenuID === null || !menuGroups[subMenuID] ) return null
 
         const { members } = menuGroups[subMenuID]
         const groupEl = this.groupEls[subMenuID]
@@ -78,15 +78,23 @@ export default class ElementMenu extends Component {
         // generate the sub menu items
         const menuItems = []
 
-        if( members.length === 0 ) {
-            const {onProjectSettings} = this.props
-            menuItems.push(<EmptyGroup key="empty-group" onProjectSettings={onProjectSettings}></EmptyGroup>)
-            return menuItems
-        }
-
         const onClose = () => { 
             this.itemEls = {}
             this.setState({...this.state, subMenuID: null })
+        }
+
+        if( members.length === 0 ) {
+            const {onProjectSettings} = this.props
+            menuItems.push(
+                <EmptyGroup 
+                    key="empty-group" 
+                    anchorEl={groupEl}
+                    anchorOrigin={anchorOrigin}
+                    onProjectSettings={onProjectSettings}
+                    onClose={onClose}
+                ></EmptyGroup>
+            )
+            return menuItems
         }
 
         for( const member of members ) {
@@ -124,8 +132,6 @@ export default class ElementMenu extends Component {
                 </MenuItem>
             )
         }
-
-        const anchorOrigin = { vertical: 'top', horizontal: 'right' }
 
         return (
             <Menu
@@ -188,11 +194,16 @@ export default class ElementMenu extends Component {
             editorView.focus()
         }
 
+        const onCloseMenu = () => {
+            this.setState({...this.state, subMenuID: null})
+            onClose()
+        }
+
         return (
             <div id="ElementMenu">
                 <Menu
                     open={open}
-                    onClose={onClose}
+                    onClose={onCloseMenu}
                     anchorEl={anchorEl}
                     anchorOrigin={anchorOrigin}
                     getContentAnchorEl={null}
