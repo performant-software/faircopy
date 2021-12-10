@@ -47,7 +47,7 @@ hitDetection(offsetX,offsetY) {
 
   let nodePos = parseInt(el.getAttribute('datanodepos'))
   nodePos = isNaN(nodePos) ? null : nodePos
-  console.log(nodePos)  
+
   let actionType = null
   let menuID = null
   let groupID = null
