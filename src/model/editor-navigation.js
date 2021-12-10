@@ -1,3 +1,6 @@
+import { cutSelectedNode, copySelectedNode, pasteSelectedNode } from "./cut-and-paste"
+import { eraseSelection } from "./editor-actions"
+import {undo, redo} from "prosemirror-history"
 
 export function navigateTree( direction, editorView, pos ) {
     const { doc } = editorView.state
@@ -106,4 +109,49 @@ export function getEnabledMenus(teiDocument) {
         inline: false,
         eraser: false
     }
+}
+
+export function handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) {
+    const editorView = teiDocument.getActiveView()
+    const metaKey = ( event.ctrlKey || event.metaKey )
+
+    const key = event.key.toLowerCase()
+
+    if( metaKey && key === 'x' ) {
+        cutSelectedNode( teiDocument, clipboardSerializer )
+    }
+
+    if( metaKey && key === 'c' ) {
+        copySelectedNode( teiDocument, clipboardSerializer )
+    }
+
+    if( metaKey && key === 'v' ) {
+        pasteSelectedNode( teiDocument )
+    }
+
+    const enabledMenus = getEnabledMenus(teiDocument)
+
+    if( metaKey && key === '1' ) {
+        onTogglePalette()
+    }
+
+    if( enabledMenus.marks && metaKey && key === '2' ) {
+        onOpenElementMenu({ menuGroup: 'mark' })
+    }
+
+    if( enabledMenus.inline && metaKey && key === '3' ) {
+        onOpenElementMenu({ menuGroup: 'inline' })
+    }
+
+    if( enabledMenus.eraser && metaKey && key === '4' ) {
+        eraseSelection(teiDocument)
+    }
+
+    // handle undo and redo here so they are available even when focus is not in PM itself
+    if( metaKey && key === 'z' ) {
+        undo(editorView.state,editorView.dispatch)
+    } 
+    if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
+        redo(editorView.state,editorView.dispatch)
+    } 
 }

@@ -3,7 +3,6 @@ import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
 // import applyDevTools from "prosemirror-dev-tools";
-import {undo, redo} from "prosemirror-history"
 import {TextSelection} from "prosemirror-state"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
@@ -14,10 +13,9 @@ import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
 import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
-import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode } from "../../../model/cut-and-paste"
+import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
-import { eraseSelection } from "../../../model/editor-actions"
-import { getEnabledMenus } from '../../../model/editor-navigation'
+import { handleEditorHotKeys } from '../../../model/editor-navigation'
 
 const fairCopy = window.fairCopy
 
@@ -189,58 +187,16 @@ export default class TEIEditor extends Component {
     }
 
     onKeyDown = ( event ) => {
-        const { ctrlDown, altDown } = this.state
-        const { teiDocument } = this.props
-        const editorView = teiDocument.getActiveView()
-        const metaKey = ( event.ctrlKey || event.metaKey )
- 
-        const key = event.key.toLowerCase()
-        // console.log(`meta: ${metaKey} shift: ${event.shiftKey} ${key}`)
-
-        if( metaKey && key === 'x' ) {
-            cutSelectedNode( teiDocument, this.clipboardSerializer )
-        }
-
-        if( metaKey && key === 'c' ) {
-            copySelectedNode( teiDocument, this.clipboardSerializer )
-        }
-
-        if( metaKey && key === 'v' ) {
-            pasteSelectedNode( teiDocument )
-        }
-
-        const enabledMenus = getEnabledMenus(teiDocument)
-
-        if( metaKey && key === '1' ) {
-            this.onTogglePalette()
-        }
-
-        if( enabledMenus.marks && metaKey && key === '2' ) {
-            this.onOpenElementMenu({ menuGroup: 'mark' })
-        }
-
-        if( enabledMenus.inline && metaKey && key === '3' ) {
-            this.onOpenElementMenu({ menuGroup: 'inline' })
-        }
-
-        if( enabledMenus.eraser && metaKey && key === '4' ) {
-            eraseSelection(teiDocument)
-        }
-
-        // handle undo and redo here so they are available even when focus is not in PM itself
-        if( metaKey && key === 'z' ) {
-            undo(editorView.state,editorView.dispatch)
-        } 
-        if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
-            redo(editorView.state,editorView.dispatch)
-        } 
+        const { teiDocument, altDown, ctrlDown } = this.props 
 
         if( event.altKey && !altDown ) {
-           this.setState({...this.state, altDown: true })
+            this.setState({...this.state, altDown: true })
         }
         if( event.ctrlKey && !ctrlDown ) {
             this.setState({...this.state, ctrlDown: true })            
         }
+ 
+        return handleEditorHotKeys(event, teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer );
     }
 
     onKeyUp = ( event ) => {
@@ -454,6 +410,8 @@ export default class TEIEditor extends Component {
                     onDragElement={onDragElement}
                     onAlertMessage={onAlertMessage}
                     currentTreeNode={currentTreeNode}
+                    onTogglePalette={this.onTogglePalette}
+                    onOpenElementMenu={this.onOpenElementMenu}
                     anchorEl={notePopupAnchorEl}
                     onChangePos={this.onChangePos}
                     onStateChange={this.onNoteStateChange}

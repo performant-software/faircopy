@@ -4,7 +4,7 @@ import { Button, Typography } from '@material-ui/core'
 
 export default class EmptyGroup extends Component {
     render() {  
-        const { onProjectSettings, onClose, anchorEl} = this.props
+        const { onProjectSettings, anchorEl} = this.props
 
         // TODO handle left arrow .. add tabIndex and onClose
         // TODO neeed a mode for the structure palette

@@ -3,11 +3,11 @@ import { Popper, Paper } from '@material-ui/core'
 import {EditorView} from "prosemirror-view"
 import EditorGutter from "./EditorGutter"
 // import applyDevTools from "prosemirror-dev-tools";
-import {undo, redo} from "prosemirror-history"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
-import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer, cutSelectedNode, copySelectedNode, pasteSelectedNode} from "../../../model/cut-and-paste"
+import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import {addTextNodes} from "../../../model/xml"
+import { handleEditorHotKeys } from "../../../model/editor-navigation"
 
 export default class NotePopup extends Component {
 
@@ -102,32 +102,14 @@ export default class NotePopup extends Component {
     }
 
     onKeyDown = ( event ) => {
-        const { teiDocument } = this.props
-        const editorView = teiDocument.getActiveView()
-        const metaKey = ( event.ctrlKey || event.metaKey )
+        const { teiDocument, onTogglePalette, onOpenElementMenu } = this.props
 
-        const key = event.key.toLowerCase()
-
-        // TODO support Escape for closing and saving
-
-        if( metaKey && key === 'x' ) {
-            cutSelectedNode( teiDocument, this.clipboardSerializer )
+        if( event.key === 'Escape' ) {
+            // TODO close window and save
         }
-
-        if( metaKey && key === 'c' ) {
-            copySelectedNode( teiDocument, this.clipboardSerializer )
+        else {
+            return handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenElementMenu, this.clipboardSerializer )
         }
-
-        if( metaKey && key === 'v' ) {
-            pasteSelectedNode( teiDocument )
-        }
-
-        if( metaKey && key === 'z' ) {
-            undo(editorView.state,editorView.dispatch)
-        } 
-        if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
-            redo(editorView.state,editorView.dispatch)
-        } 
     }
 
     renderEditor() {
