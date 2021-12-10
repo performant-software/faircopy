@@ -360,4 +360,5 @@ function createAside( asideName, attrs, teiDocument, editorView ) {
 
     tr.insert($head.pos, asideNode) 
     editorView.dispatch(tr)
+    editorView.focus()
 }

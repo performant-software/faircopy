@@ -12,10 +12,10 @@ export default class ElementMenu extends Component {
         super()
         this.state = {
             subMenuID: null,
-            elementInfoID: null,
-            itemEls: {},
-            groupEls: {}    
+            elementInfoID: null
         }
+        this.itemEls = {}
+        this.groupEls = {}    
     }
 
     getMenuGroups() {
@@ -27,20 +27,25 @@ export default class ElementMenu extends Component {
 
     renderElementInfo() {
         const { teiDocument } = this.props
-        const { elementInfoID, itemEls } = this.state
-        const anchorEl = itemEls[elementInfoID]
+        const { elementInfoID } = this.state
+        const anchorEl = this.itemEls[elementInfoID]
 
         if( elementInfoID === null || !anchorEl ) return null
 
         const { elements } = teiDocument.fairCopyProject.teiSchema
         const elementSpec = elements[elementInfoID]
 
+        const onAnchorEl = () => {
+            const { elementInfoID } = this.state
+            return this.itemEls[elementInfoID]
+        }
+
         if(!elementSpec) return null
         
         return (
             <ElementInfoPopup
                 elementSpec={elementSpec}
-                anchorEl={()=>{ return itemEls[elementInfoID]}}        
+                anchorEl={onAnchorEl}        
             ></ElementInfoPopup>
         )
     }
@@ -57,7 +62,7 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { subMenuID, groupEls } = this.state
+        const { subMenuID } = this.state
         if( subMenuID === null ) return null
 
         const { teiDocument, open } = this.props
@@ -66,7 +71,7 @@ export default class ElementMenu extends Component {
         if( menuGroups.length === 0 ) return null
 
         const { members } = menuGroups[subMenuID]
-        const groupEl = groupEls[subMenuID]
+        const groupEl = this.groupEls[subMenuID]
 
         if( !groupEl ) return null
 
@@ -80,7 +85,8 @@ export default class ElementMenu extends Component {
         }
 
         const onClose = () => { 
-            this.setState({...this.state, subMenuID: null, itemEls: {} })
+            this.itemEls = {}
+            this.setState({...this.state, subMenuID: null })
         }
 
         for( const member of members ) {
@@ -88,9 +94,7 @@ export default class ElementMenu extends Component {
             const selection = (editorView) ? editorView.state.selection : null 
 
             const setItemElRef = (el) => {
-                const { itemEls } = this.state
-                itemEls[member] = el
-                this.setState( { ...this.state, itemEls })
+                this.itemEls[member] = el
             }
 
             const valid = validAction( member, teiDocument )
@@ -152,9 +156,7 @@ export default class ElementMenu extends Component {
                 if( e.keyCode === 39 ) showMenu()
             }
             const setGroupElRef = (el) => {
-                const { groupEls } = this.state
-                groupEls[menuID] = el
-                this.setState( { ...this.state, groupEls })
+                this.groupEls[menuID] = el
             }
             menuItems.push(
                 <MenuItem 
