@@ -12,10 +12,10 @@ export default class ElementMenu extends Component {
         super()
         this.state = {
             subMenuID: null,
-            elementInfoID: null
+            elementInfoID: null,
+            itemEls: {},
+            groupEls: {}    
         }
-        this.itemEls = {}
-        this.groupEls = {}
     }
 
     getMenuGroups() {
@@ -27,8 +27,8 @@ export default class ElementMenu extends Component {
 
     renderElementInfo() {
         const { teiDocument } = this.props
-        const { elementInfoID } = this.state
-        const anchorEl = this.itemEls[elementInfoID]
+        const { elementInfoID, itemEls } = this.state
+        const anchorEl = itemEls[elementInfoID]
 
         if( elementInfoID === null || !anchorEl ) return null
 
@@ -40,7 +40,7 @@ export default class ElementMenu extends Component {
         return (
             <ElementInfoPopup
                 elementSpec={elementSpec}
-                anchorEl={()=>{ return this.itemEls[elementInfoID]}}        
+                anchorEl={()=>{ return itemEls[elementInfoID]}}        
             ></ElementInfoPopup>
         )
     }
@@ -57,7 +57,7 @@ export default class ElementMenu extends Component {
     }
 
     renderSubMenu() {
-        const { subMenuID } = this.state
+        const { subMenuID, groupEls } = this.state
         if( subMenuID === null ) return null
 
         const { teiDocument, open } = this.props
@@ -66,7 +66,7 @@ export default class ElementMenu extends Component {
         if( menuGroups.length === 0 ) return null
 
         const { members } = menuGroups[subMenuID]
-        const groupEl = this.groupEls[subMenuID]
+        const groupEl = groupEls[subMenuID]
 
         if( !groupEl ) return null
 
@@ -80,8 +80,7 @@ export default class ElementMenu extends Component {
         }
 
         const onClose = () => { 
-            this.itemEls = {}
-            this.setState({...this.state, subMenuID: null})
+            this.setState({...this.state, subMenuID: null, itemEls: {} })
         }
 
         for( const member of members ) {
@@ -89,7 +88,9 @@ export default class ElementMenu extends Component {
             const selection = (editorView) ? editorView.state.selection : null 
 
             const setItemElRef = (el) => {
-                this.itemEls[member] = el
+                const { itemEls } = this.state
+                itemEls[member] = el
+                this.setState( { ...this.state, itemEls })
             }
 
             const valid = validAction( member, teiDocument )
@@ -150,10 +151,15 @@ export default class ElementMenu extends Component {
                 // right arrow
                 if( e.keyCode === 39 ) showMenu()
             }
+            const setGroupElRef = (el) => {
+                const { groupEls } = this.state
+                groupEls[menuID] = el
+                this.setState( { ...this.state, groupEls })
+            }
             menuItems.push(
                 <MenuItem 
                     key={key} 
-                    ref={(el)=> { this.groupEls[menuID] = el }}
+                    ref={(el)=> { setGroupElRef(el) }}
                     disableRipple={true}
                     className="menu-item"
                     onKeyUp={onKeyUp}
