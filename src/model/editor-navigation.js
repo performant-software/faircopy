@@ -1,6 +1,7 @@
 import { cutSelectedNode, copySelectedNode, pasteSelectedNode } from "./cut-and-paste"
 import { eraseSelection } from "./editor-actions"
 import {undo, redo} from "prosemirror-history"
+import {TextSelection} from "prosemirror-state"
 
 export function navigateTree( direction, editorView, pos ) {
     const { doc } = editorView.state
@@ -73,6 +74,15 @@ export function navigateFromEditorToTree( editorView ) {
     
     const { $anchor } = selection
     return findLeaf($anchor)
+}
+
+export function navigateFromTreeToEditor( editorView, editorGutterPos ) {
+    const { tr, doc } = editorView.state
+    tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
+    tr.scrollIntoView()
+    tr.setMeta( 'currentTreeNode', { editorGutterPos: null, editorGutterPath: null, treeID: "main" } )
+    tr.setMeta( 'highlightEnabled', true )
+    editorView.dispatch(tr)
 }
 
 export function getStructureNodeDisplayName( nodeName ) {

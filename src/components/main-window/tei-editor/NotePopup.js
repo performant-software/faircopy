@@ -7,7 +7,7 @@ import EditorGutter from "./EditorGutter"
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import {addTextNodes} from "../../../model/xml"
-import { handleEditorHotKeys } from "../../../model/editor-navigation"
+import { handleEditorHotKeys, navigateFromTreeToEditor } from "../../../model/editor-navigation"
 
 export default class NotePopup extends Component {
 
@@ -116,6 +116,14 @@ export default class NotePopup extends Component {
         const { teiDocument, expanded, onDragElement, currentTreeNode } = this.props
         const { noteEditorView } = teiDocument
 
+        const onFocus = () => {
+            const { editorGutterPos } = currentTreeNode
+            if( editorGutterPos !== null ) {
+                const editorView = teiDocument.noteEditorView
+                navigateFromTreeToEditor( editorView, editorGutterPos )
+            }
+        }
+        
         const onRef = (el) => {
             this.el = el
         }
@@ -138,6 +146,7 @@ export default class NotePopup extends Component {
                 <ProseMirrorComponent
                     destroyEditorView={this.destroyEditorView}
                     createEditorView={this.createEditorView}
+                    onFocus={onFocus}
                     editorView={noteEditorView}
                 />                  
             </div>

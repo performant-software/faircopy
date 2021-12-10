@@ -3,7 +3,6 @@ import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
 
 // import applyDevTools from "prosemirror-dev-tools";
-import {TextSelection} from "prosemirror-state"
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
 import EditorGutter from "./EditorGutter"
@@ -15,7 +14,7 @@ import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import { getHighlightRanges } from "../../../model/highlighter"
-import { handleEditorHotKeys } from '../../../model/editor-navigation'
+import { handleEditorHotKeys, navigateFromTreeToEditor } from '../../../model/editor-navigation'
 
 const fairCopy = window.fairCopy
 
@@ -25,7 +24,6 @@ export default class TEIEditor extends Component {
 
     constructor() {
         super()
-        this.emptyTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
         this.state = {
             noteID: null,
             notePopupAnchorEl: null,
@@ -34,7 +32,7 @@ export default class TEIEditor extends Component {
             selectedElements: [],
             elementMenuOptions: null,
             paletteWindowOpen: false,
-            currentTreeNode: this.emptyTreeNode,
+            currentTreeNode: { editorGutterPos: null, editorGutterPath: null, treeID: "main" },
             currentSubmenuID: 0
         }
     }
@@ -328,13 +326,8 @@ export default class TEIEditor extends Component {
             const { currentTreeNode } = this.state
             const { editorGutterPos } = currentTreeNode
             if( editorGutterPos !== null ) {
-                const editorView = teiDocument.getActiveView()
-                const { tr, doc } = editorView.state
-                tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
-                tr.scrollIntoView()
-                tr.setMeta( 'currentTreeNode', this.emptyTreeNode )
-                tr.setMeta( 'highlightEnabled', true )
-                editorView.dispatch(tr)
+                const { editorView } = teiDocument
+                navigateFromTreeToEditor( editorView, editorGutterPos )
             }
         }
 
