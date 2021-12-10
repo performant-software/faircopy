@@ -65,10 +65,10 @@ export default class NotePopup extends Component {
 
         if( noteEditorView ) {
             const editorState = noteEditorView.state
+            const currentTreeNode = transaction.getMeta('currentTreeNode')
             const nextEditorState = editorState.apply(transaction)
             noteEditorView.updateState(nextEditorState)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
-            const currentTreeNode = transaction.getMeta('currentTreeNode')
             onStateChange(currentTreeNode)
         }
     }
@@ -120,7 +120,7 @@ export default class NotePopup extends Component {
             const { editorGutterPos } = currentTreeNode
             if( editorGutterPos !== null ) {
                 const editorView = teiDocument.noteEditorView
-                navigateFromTreeToEditor( editorView, editorGutterPos )
+                navigateFromTreeToEditor( editorView, editorGutterPos, "note" )
             }
         }
         

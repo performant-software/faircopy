@@ -76,11 +76,11 @@ export function navigateFromEditorToTree( editorView ) {
     return findLeaf($anchor)
 }
 
-export function navigateFromTreeToEditor( editorView, editorGutterPos ) {
+export function navigateFromTreeToEditor( editorView, editorGutterPos, treeID ) {
     const { tr, doc } = editorView.state
     tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
     tr.scrollIntoView()
-    tr.setMeta( 'currentTreeNode', { editorGutterPos: null, editorGutterPath: null, treeID: "main" } )
+    tr.setMeta( 'currentTreeNode', { editorGutterPos: null, editorGutterPath: null, treeID } )
     tr.setMeta( 'highlightEnabled', true )
     editorView.dispatch(tr)
 }

@@ -327,7 +327,7 @@ export default class TEIEditor extends Component {
             const { editorGutterPos } = currentTreeNode
             if( editorGutterPos !== null ) {
                 const { editorView } = teiDocument
-                navigateFromTreeToEditor( editorView, editorGutterPos )
+                navigateFromTreeToEditor( editorView, editorGutterPos, "main" )
             }
         }
 

@@ -316,9 +316,9 @@ export default class ParameterDrawer extends Component {
         const { elements } = teiSchema
         const configElements = fairCopyConfig.elements
         const name = element.type.name
-        const elementSpec = elements[name]
         const elementID = name.startsWith('mark') ? name.slice('mark'.length) : name.endsWith('X') ? name.slice(0,name.length-1) : name
         const {attrState} = configElements[elementID]
+        const elementSpec = elements[elementID]
 
         const openAttributeDialog = () => {
             this.setState({...this.state, openElementName: elementID, attributeDialogOpen: true })
