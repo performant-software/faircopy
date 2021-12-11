@@ -50,8 +50,8 @@ export default class EditorGutter extends Component {
             }
         }
 
-        const { currentTreeNode, treeID } = this.props
-        const { editorGutterPos, treeID: selectedTree } = currentTreeNode
+        const { teiDocument, treeID } = this.props
+        const { editorGutterPos, treeID: selectedTree } = teiDocument.currentTreeNode
         const highlighted = editorGutterPos === targetPos && selectedTree === treeID ? 'highlighted' : ''
         const className = `marker ${highlighted} ${markerClass}`
         const height = bottom - top 
@@ -209,8 +209,8 @@ export default class EditorGutter extends Component {
     }
 
     onKeyDown = (event) => {
-        const { editorView, teiDocument, currentTreeNode, onChangePos } = this.props
-        const { editorGutterPos, treeID } = currentTreeNode
+        const { editorView, teiDocument, onChangePos } = this.props
+        const { editorGutterPos, treeID } = teiDocument.currentTreeNode
         const metaKey = ( event.ctrlKey || event.metaKey )
 
          // move structure nodes with arrow keys
@@ -228,8 +228,8 @@ export default class EditorGutter extends Component {
     }
 
     onFocus = () => {
-        const { editorView, currentTreeNode, onChangePos, treeID } = this.props
-        const { editorGutterPos } = currentTreeNode
+        const { editorView, teiDocument, onChangePos, treeID } = this.props
+        const { editorGutterPos } = teiDocument.currentTreeNode
 
         if( editorGutterPos === null ) {
             const { nextPos, nextPath } = navigateFromEditorToTree( editorView )

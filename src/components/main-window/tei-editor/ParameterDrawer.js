@@ -395,8 +395,9 @@ export default class ParameterDrawer extends Component {
     }
 
     render() {
-        const { elements, width, height } = this.props
+        const { teiDocument, width, height } = this.props
 
+        const elements = teiDocument.selectedElements
         if( elements.length === 0 ) return null
 
         const elementEls = []

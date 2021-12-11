@@ -27,6 +27,8 @@ export default class TEIDocument {
         this.resourceType = resourceType
         this.fairCopyProject = fairCopyProject
         this.teiSchema = teiSchema
+        this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
+        this.selectedElements = []
         this.plugins = [
             keymap(baseKeymap),
             dropCursor(),

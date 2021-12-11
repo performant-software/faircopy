@@ -262,7 +262,7 @@ close() {
 }
 
 onKeyDown = (event) => {
-  const { currentTreeNode, teiDocument, onAlertMessage } = this.props
+  const { teiDocument, onAlertMessage } = this.props
   const { activeElement } = document
   const palettePos = activeElement.getAttribute('datapalettepos')
   const elementIndex = palettePos ? parseInt(palettePos) : null
@@ -279,7 +279,7 @@ onKeyDown = (event) => {
     const editorView = teiDocument.getActiveView()
     let { tr } = editorView.state
 
-    const { editorGutterPos } = currentTreeNode
+    const { editorGutterPos } = teiDocument.currentTreeNode
 
     if( keyCode === 'Enter' ) {
       if( editorGutterPos !== null ) {

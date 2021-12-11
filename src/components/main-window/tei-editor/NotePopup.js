@@ -7,7 +7,7 @@ import EditorGutter from "./EditorGutter"
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import {addTextNodes} from "../../../model/xml"
-import { handleEditorHotKeys, navigateFromTreeToEditor } from "../../../model/editor-navigation"
+import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements } from "../../../model/editor-navigation"
 
 export default class NotePopup extends Component {
 
@@ -52,7 +52,7 @@ export default class NotePopup extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { teiDocument, onStateChange, onAlertMessage } = this.props
+        const { teiDocument, onAlertMessage } = this.props
         const { noteEditorView } = teiDocument
 
         // TODO how to handle error counts here?
@@ -65,11 +65,13 @@ export default class NotePopup extends Component {
 
         if( noteEditorView ) {
             const editorState = noteEditorView.state
-            const currentTreeNode = transaction.getMeta('currentTreeNode')
             const nextEditorState = editorState.apply(transaction)
             noteEditorView.updateState(nextEditorState)
-            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged
-            onStateChange(currentTreeNode)
+            const { currentNoteID } = this.state
+            const selectedElements = getSelectedElements(teiDocument,currentNoteID)
+            teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged   
+            teiDocument.selectedElements = selectedElements
+            teiDocument.refreshView()
         }
     }
 
@@ -95,8 +97,7 @@ export default class NotePopup extends Component {
         const { teiDocument } = this.props 
         const editorView = teiDocument.getActiveView()
         const { tr } = editorView.state
-        const currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
-        tr.setMeta( 'currentTreeNode', currentTreeNode )
+        teiDocument.currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
         tr.setMeta( 'highlightEnabled', editorGutterPos === null )
         editorView.dispatch(tr)
     }
@@ -113,14 +114,15 @@ export default class NotePopup extends Component {
     }
 
     renderEditor() {
-        const { teiDocument, expanded, onDragElement, currentTreeNode } = this.props
+        const { teiDocument, expanded, onDragElement } = this.props
         const { noteEditorView } = teiDocument
 
         const onFocus = () => {
-            const { editorGutterPos } = currentTreeNode
+            const { editorGutterPos } = teiDocument.currentTreeNode
             if( editorGutterPos !== null ) {
                 const editorView = teiDocument.noteEditorView
-                navigateFromTreeToEditor( editorView, editorGutterPos, "note" )
+                teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "note" }
+                navigateFromTreeToEditor( editorView, editorGutterPos )
             }
         }
         
@@ -140,7 +142,6 @@ export default class NotePopup extends Component {
                     onDragElement={onDragElement}
                     teiDocument={teiDocument}
                     editorView={noteEditorView}
-                    currentTreeNode={currentTreeNode}
                     onChangePos={this.onChangePos}
                 /> 
                 <ProseMirrorComponent

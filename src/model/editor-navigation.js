@@ -2,6 +2,9 @@ import { cutSelectedNode, copySelectedNode, pasteSelectedNode } from "./cut-and-
 import { eraseSelection } from "./editor-actions"
 import {undo, redo} from "prosemirror-history"
 import {TextSelection} from "prosemirror-state"
+import { getHighlightRanges } from "./highlighter"
+
+const fairCopy = window.fairCopy
 
 export function navigateTree( direction, editorView, pos ) {
     const { doc } = editorView.state
@@ -76,11 +79,10 @@ export function navigateFromEditorToTree( editorView ) {
     return findLeaf($anchor)
 }
 
-export function navigateFromTreeToEditor( editorView, editorGutterPos, treeID ) {
+export function navigateFromTreeToEditor( editorView, editorGutterPos ) {
     const { tr, doc } = editorView.state
     tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
     tr.scrollIntoView()
-    tr.setMeta( 'currentTreeNode', { editorGutterPos: null, editorGutterPath: null, treeID } )
     tr.setMeta( 'highlightEnabled', true )
     editorView.dispatch(tr)
 }
@@ -164,4 +166,86 @@ export function handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenE
     if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
         redo(editorView.state,editorView.dispatch)
     } 
+}
+
+export function getSelectedElements( teiDocument, noteID ) {
+    const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
+    const { editorGutterPos } = teiDocument.currentTreeNode
+
+    const editorView = teiDocument.getActiveView()
+    const selection = (editorView) ? editorView.state.selection : null 
+    
+    // create a list of the selected phrase level elements 
+    let elements = []
+    if( editorGutterPos !== null ) {
+        const { doc } = editorView.state
+        const $pos = doc.resolve(editorGutterPos)
+        const node = $pos.node().child($pos.index())
+        elements.push( node )
+    } else if( selection ) {
+        if( selection.node ) {
+            // don't display drawer for notes here, see below
+            const name = selection.node.type.name
+            if( !asides.includes(name) && !name.includes('globalNode') && !name.endsWith('X') ) {
+                elements.push( selection.node )
+            } else {
+                if( noteID && name.endsWith('X') ) {
+                    const { doc } = teiDocument.editorView.state
+                    let noteNode
+                    doc.descendants( (node) => {
+                        if( node.attrs['__id__'] === noteID ) {
+                            noteNode = node
+                        }
+                        if( noteNode ) return false
+                    })
+                    if( noteNode ) {
+                        elements.push( noteNode )
+                    }
+                }            
+            }
+        } else {
+            // highlight ranges are not active when there's a browser selection 
+            const browserSelection = window.getSelection()
+            if( browserSelection.isCollapsed ) {
+                const { doc } = editorView.state
+                const { $anchor } = selection
+                const highlightRanges = getHighlightRanges(doc,$anchor)
+                for( const highlightRange of highlightRanges ) {
+                    elements.push( highlightRange.mark )
+                }         
+            } 
+        }
+    } 
+
+    return elements
+}
+
+export function broadcastZoneLinks( teiDocument ) {
+    const { selectedElements } = teiDocument
+    const {teiSchema, idMap} = teiDocument.fairCopyProject
+    const parentEntry = teiDocument.getParent()
+
+    const selectedZones = []
+    for( const element of selectedElements ) {
+        for( const attr of Object.keys(element.attrs) ) {
+            const attrSpec = teiSchema.getAttrSpec( attr, element.type.name )
+            const dataType = attrSpec?.dataType
+
+            // is the attribute a tei data pointer?
+            if( dataType === 'teidata.pointer' ) {
+                const uris = element.attrs[attr]?.split(" ")
+                if( uris ) {
+                    for( const uri of uris ) {
+                        // gather any zone uris
+                        const entry = idMap.get( uri, parentEntry?.localID )
+                        if( entry && entry.type === 'zone' ) {
+                            selectedZones.push(uri)
+                        }
+                    }    
+                }
+            }
+        }
+    }
+
+    fairCopy.services.ipcSend('selectedZones', selectedZones )
 }
