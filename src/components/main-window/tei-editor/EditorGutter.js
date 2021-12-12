@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import { getStructureNodeDisplayName, navigateTree, navigateFromEditorToTree } from '../../../model/editor-navigation'
+import { navigateTree, navigateFromEditorToTree } from '../../../model/editor-navigation'
 import { moveNode } from '../../../model/editor-actions'
+import { synthNameToElementName } from '../../../model/xml'
 
 export default class EditorGutter extends Component {
 
     renderName( nodeName ) {
         const { expanded } = this.props
         if( !expanded ) return ''
-        return <div aria-hidden="true" className={`el-name`}>{ getStructureNodeDisplayName( nodeName )}</div>
+        return <div aria-hidden="true" className={`el-name`}>{ synthNameToElementName( nodeName )}</div>
     }
 
     getBorderStyles( node ) {
@@ -31,7 +32,7 @@ export default class EditorGutter extends Component {
      
         const onClick = () => {
             const { onChangePos, treeID } = this.props
-            const editorGutterPath = getStructureNodeDisplayName(elementID)
+            const editorGutterPath = synthNameToElementName(elementID)
             onChangePos( targetPos, editorGutterPath, treeID )
         }
 

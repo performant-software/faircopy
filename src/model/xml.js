@@ -67,6 +67,11 @@ export function getTextNodeName(content) {
     return textNodeName
 }
 
+export function synthNameToElementName(nodeName) {
+    if( nodeName.includes('textNode') || nodeName.includes('globalNode') ) return null
+    return nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName.startsWith('mark') ? nodeName.slice('mark'.length) : nodeName
+}
+
 // Internodes are a set of elements that can be processed as either nodes or marks, depending on their
 // location in the document structure. They have to be determined before parsing with ProseMirror.
 function parseInterNodes(textEl,teiSchema) {

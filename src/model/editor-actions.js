@@ -1,8 +1,7 @@
 import { NodeRange, Fragment } from 'prosemirror-model'
 import { addMark, insertNodeAt, insertAtomNodeAt, deleteParentNode } from "./commands"
 import { validMove, createValidNode } from './element-validators'
-import { getTextNodeName } from './xml'
-import { getStructureNodeDisplayName } from './editor-navigation'
+import { getTextNodeName, synthNameToElementName } from './xml'
 
 const elementListLength = 30
 
@@ -324,7 +323,7 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
         }
     }
 
-    const editorGutterPath = getStructureNodeDisplayName( selectedNode.type.name )
+    const editorGutterPath = synthNameToElementName( selectedNode.type.name )
     tr.setMeta( 'editorGutterPath', editorGutterPath )
     tr.scrollIntoView()
     editorView.dispatch(tr)

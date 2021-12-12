@@ -3,6 +3,7 @@ import { eraseSelection } from "./editor-actions"
 import {undo, redo} from "prosemirror-history"
 import {TextSelection} from "prosemirror-state"
 import { getHighlightRanges } from "./highlighter"
+import { synthNameToElementName } from "./xml"
 
 const fairCopy = window.fairCopy
 
@@ -50,7 +51,7 @@ export function navigateTree( direction, editorView, pos ) {
         }
     }
 
-    const nextPath = nextNode ? getStructureNodeDisplayName( nextNode.type.name ) : null
+    const nextPath = nextNode ? synthNameToElementName( nextNode.type.name ) : null
     return { nextPos, nextPath }
 }
 
@@ -70,7 +71,7 @@ export function navigateFromEditorToTree( editorView ) {
                 return { nextPos:null, nextPath:null }
             }
         } else {
-            const nextPath = nextNode ? getStructureNodeDisplayName( nextNode.type.name ) : null
+            const nextPath = nextNode ? synthNameToElementName( nextNode.type.name ) : null
             return { nextPos, nextPath }
         }
     }
@@ -85,10 +86,6 @@ export function navigateFromTreeToEditor( editorView, editorGutterPos ) {
     tr.scrollIntoView()
     tr.setMeta( 'highlightEnabled', true )
     editorView.dispatch(tr)
-}
-
-export function getStructureNodeDisplayName( nodeName ) {
-    return nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName
 }
 
 export function getEnabledMenus(teiDocument) {
