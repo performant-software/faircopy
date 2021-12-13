@@ -32,6 +32,7 @@ export default class TEIEditor extends Component {
             paletteWindowOpen: false,
             currentSubmenuID: 0
         }
+        this.drawerRef = null
     }
 
     componentDidMount() {
@@ -272,6 +273,12 @@ export default class TEIEditor extends Component {
             }
         }
 
+        const onJumpToDrawer = () => {
+            if( this.drawerRef ) {
+                this.drawerRef.focus()
+            }
+        }
+
         const { selectedElements } = teiDocument
         const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
@@ -317,6 +324,7 @@ export default class TEIEditor extends Component {
                             onDragElement={onDragElement}
                             teiDocument={teiDocument}
                             editorView={teiDocument.editorView}
+                            onJumpToDrawer={onJumpToDrawer}
                             onChangePos={this.onChangePos}
                             gutterTop={120}
                         /> }     
@@ -332,6 +340,7 @@ export default class TEIEditor extends Component {
                     </div>
                     { !hidden && <ParameterDrawer 
                         teiDocument={teiDocument} 
+                        onRef={(el) => { this.drawerRef = el}}
                         noteID={noteID}
                         height={drawerHeight}
                         width={drawerWidthCSS}
@@ -347,6 +356,7 @@ export default class TEIEditor extends Component {
                     onTogglePalette={this.onTogglePalette}
                     onOpenElementMenu={this.onOpenElementMenu}
                     anchorEl={notePopupAnchorEl}
+                    drawerRef={this.drawerRef}
                 ></NotePopup> }
                 { paletteWindowOpen && <StructurePalette
                     onDragElement={onDragElement}

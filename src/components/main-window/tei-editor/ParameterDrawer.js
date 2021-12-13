@@ -416,7 +416,7 @@ export default class ParameterDrawer extends Component {
     }
 
     render() {
-        const { teiDocument, width, height } = this.props
+        const { teiDocument, width, height, onRef } = this.props
 
         const elements = teiDocument.selectedElements
         if( elements.length === 0 ) return null
@@ -431,7 +431,7 @@ export default class ParameterDrawer extends Component {
         const headerMessage = `Element Inspector (${elements.length} element${s})`
 
         return (
-            <div id="ParameterDrawer">
+            <div id="ParameterDrawer" tabIndex={0} ref={onRef}>
                 <div role="status" className="header">
                     <Typography>{headerMessage}</Typography>
                 </div>

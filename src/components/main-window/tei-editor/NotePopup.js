@@ -17,6 +17,7 @@ export default class NotePopup extends Component {
         this.state = {
             currentNoteID: null
         }
+        this.drawerRef = null
     }
 
     createEditorView = (element) => {
@@ -122,7 +123,7 @@ export default class NotePopup extends Component {
     }
 
     renderEditor() {
-        const { teiDocument, expanded, onDragElement } = this.props
+        const { teiDocument, expanded, onDragElement, drawerRef } = this.props
         const { noteEditorView } = teiDocument
 
         const onFocus = () => {
@@ -131,6 +132,12 @@ export default class NotePopup extends Component {
                 const editorView = teiDocument.noteEditorView
                 teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "note" }
                 navigateFromTreeToEditor( editorView, editorGutterPos )
+            }
+        }
+
+        const onJumpToDrawer = () => {
+            if( drawerRef ) {
+                drawerRef.focus()
             }
         }
         
@@ -147,6 +154,7 @@ export default class NotePopup extends Component {
                     treeID="note"
                     gutterTop={gutterTop}
                     expanded={expanded}
+                    onJumpToDrawer={onJumpToDrawer}
                     onDragElement={onDragElement}
                     teiDocument={teiDocument}
                     editorView={noteEditorView}

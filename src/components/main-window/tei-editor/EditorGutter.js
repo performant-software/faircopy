@@ -210,7 +210,7 @@ export default class EditorGutter extends Component {
     }
 
     onKeyDown = (event) => {
-        const { editorView, teiDocument, onChangePos } = this.props
+        const { editorView, teiDocument, onChangePos, onJumpToDrawer } = this.props
         const { editorGutterPos, treeID } = teiDocument.currentTreeNode
         const metaKey = ( event.ctrlKey || event.metaKey )
 
@@ -226,6 +226,12 @@ export default class EditorGutter extends Component {
                 }                
             }
         }
+        if( event.key === 'Enter') {
+            // Move focus to the parameter drawer if a node is selected
+            if( editorGutterPos !== null ) {
+                onJumpToDrawer()
+            }
+        } 
     }
 
     onFocus = () => {
