@@ -14,6 +14,7 @@ import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks } from '../../../model/editor-navigation'
+import { findNoteNode } from '../../../model/xml'
 
 const resizeRefreshRate = 100
 
@@ -116,6 +117,7 @@ export default class TEIEditor extends Component {
  
             teiDocument.selectedElements = selectedElements
             broadcastZoneLinks(teiDocument)
+
             this.setState({...this.state, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
         }
     }
@@ -128,13 +130,7 @@ export default class TEIEditor extends Component {
         const {noteID, notePopupAnchorEl} = this.state 
         if( notePopupAnchorEl ) {
             const { doc } = editorView.state
-            let notePos = null
-            doc.descendants( (node,pos) => {
-                if( node.attrs['__id__'] === noteID ) {
-                    notePos = pos
-                }
-                if( notePos !== null ) return false
-            })
+            const { notePos } = findNoteNode( doc, noteID )
             if( notePos !== null ) {
                 const domPos = editorView.domAtPos(notePos)
                 return domPos.node.childNodes[domPos.offset]
@@ -157,19 +153,27 @@ export default class TEIEditor extends Component {
             const nextID = node.attrs['__id__']
             if( noteID !== nextID ) {
                 if( noteID !== null ) {
-                    this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+                    this.closeNotePopup()
                 } else {
-                    this.setState({...this.state, noteID: nextID, notePopupAnchorEl: event.target })
+                    this.openNotePopup(nextID, event.target)
                 }
             }
         } else {
-            this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+            this.closeNotePopup()
         }
     }
 
     onTogglePalette = () => {
         const { paletteWindowOpen } = this.state
         this.setState({...this.state, paletteWindowOpen: !paletteWindowOpen})
+    }
+
+    openNotePopup(noteID, notePopupAnchorEl) {
+        this.setState({...this.state, noteID, notePopupAnchorEl })
+    }
+
+    closeNotePopup() {
+        this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
     }
 
     onKeyDown = ( event ) => {
@@ -205,12 +209,18 @@ export default class TEIEditor extends Component {
     }
 
     onChangePos = (editorGutterPos, editorGutterPath, treeID ) => {
+        const { noteID } = this.state
         const { teiDocument } = this.props 
         const editorView = teiDocument.getActiveView()
         const { tr } = editorView.state
-        teiDocument.currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
-        tr.setMeta( 'highlightEnabled', editorGutterPos === null )
-        editorView.dispatch(tr)
+        if( treeID === "main" && noteID ) {
+            // close the note window
+            this.closeNotePopup()
+        } else {
+            teiDocument.currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
+            tr.setMeta( 'highlightEnabled', editorGutterPos === null )
+            editorView.dispatch(tr)    
+        }
     }
 
     render() {    
