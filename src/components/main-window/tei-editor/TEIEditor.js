@@ -172,7 +172,7 @@ export default class TEIEditor extends Component {
         this.setState({...this.state, noteID, notePopupAnchorEl })
     }
 
-    closeNotePopup() {
+    closeNotePopup = () => {
         this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
     }
 
@@ -313,6 +313,7 @@ export default class TEIEditor extends Component {
                     expanded={expandedGutter}
                     teiDocument={teiDocument}
                     onDragElement={onDragElement}
+                    onClose={this.closeNotePopup}
                     onAlertMessage={onAlertMessage}
                     onTogglePalette={this.onTogglePalette}
                     onOpenElementMenu={this.onOpenElementMenu}

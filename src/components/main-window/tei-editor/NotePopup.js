@@ -102,10 +102,11 @@ export default class NotePopup extends Component {
     }
 
     onKeyDown = ( event ) => {
-        const { teiDocument, onTogglePalette, onOpenElementMenu } = this.props
+        const { teiDocument, onTogglePalette, onOpenElementMenu, onClose } = this.props
 
         if( event.key === 'Escape' ) {
-            // TODO close window and save
+            this.saveSubDoc()
+            onClose()
         }
         else {
             return handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenElementMenu, this.clipboardSerializer )
