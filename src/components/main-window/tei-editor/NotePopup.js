@@ -52,7 +52,7 @@ export default class NotePopup extends Component {
     }
 
     dispatchTransaction = (transaction) => {
-        const { teiDocument, onAlertMessage } = this.props
+        const { teiDocument, onAlertMessage, noteID } = this.props
         const { noteEditorView } = teiDocument
 
         // TODO how to handle error counts here?
@@ -67,8 +67,7 @@ export default class NotePopup extends Component {
             const editorState = noteEditorView.state
             const nextEditorState = editorState.apply(transaction)
             noteEditorView.updateState(nextEditorState)
-            const { currentNoteID } = this.state
-            const selectedElements = getSelectedElements(teiDocument,currentNoteID)
+            const selectedElements = getSelectedElements(teiDocument,noteID)
             teiDocument.changedSinceLastSave = teiDocument.changedSinceLastSave || transaction.docChanged   
             teiDocument.selectedElements = selectedElements
             teiDocument.refreshView()

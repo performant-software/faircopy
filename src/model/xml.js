@@ -67,6 +67,18 @@ export function getTextNodeName(content) {
     return textNodeName
 }
 
+export function findNoteNode( doc, noteID ) {
+    let noteNode, notePos
+    doc.descendants( (node,pos) => {
+        if( node.attrs['__id__'] === noteID ) {
+            noteNode = node
+            notePos = pos
+        }
+        if( noteNode ) return false
+    })
+    return { noteNode, notePos }
+}
+
 export function synthNameToElementName(nodeName) {
     if( nodeName.includes('textNode') || nodeName.includes('globalNode') ) return null
     return nodeName.endsWith('X') ? nodeName.slice(0,-1) : nodeName.startsWith('mark') ? nodeName.slice('mark'.length) : nodeName

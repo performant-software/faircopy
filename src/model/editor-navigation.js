@@ -3,7 +3,7 @@ import { eraseSelection } from "./editor-actions"
 import {undo, redo} from "prosemirror-history"
 import {TextSelection} from "prosemirror-state"
 import { getHighlightRanges } from "./highlighter"
-import { synthNameToElementName } from "./xml"
+import { synthNameToElementName, findNoteNode } from "./xml"
 
 const fairCopy = window.fairCopy
 
@@ -178,28 +178,22 @@ export function getSelectedElements( teiDocument, noteID ) {
         const { doc } = editorView.state
         const $pos = doc.resolve(editorGutterPos)
         const node = $pos.node().child($pos.index())
-        elements.push( node )
+        if( node.type.name.endsWith('X') ) {
+            // find the node in the main document
+            const mainDoc = teiDocument.editorView.state.doc
+            const { noteNode } = findNoteNode( mainDoc, noteID )
+            if( noteNode ) {
+                elements.push( noteNode )
+            }
+        } else {
+            elements.push( node )
+        }
     } else if( selection ) {
         if( selection.node ) {
-            // don't display drawer for notes here, see below
             const name = selection.node.type.name
-            if( !asides.includes(name) && !name.includes('globalNode') && !name.endsWith('X') ) {
+            if( !asides.includes(name) && !name.includes('globalNode') ) {
                 elements.push( selection.node )
-            } else {
-                if( noteID && name.endsWith('X') ) {
-                    const { doc } = teiDocument.editorView.state
-                    let noteNode
-                    doc.descendants( (node) => {
-                        if( node.attrs['__id__'] === noteID ) {
-                            noteNode = node
-                        }
-                        if( noteNode ) return false
-                    })
-                    if( noteNode ) {
-                        elements.push( noteNode )
-                    }
-                }            
-            }
+            } 
         } else {
             // highlight ranges are not active when there's a browser selection 
             const browserSelection = window.getSelection()

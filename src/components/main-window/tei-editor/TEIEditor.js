@@ -104,7 +104,7 @@ export default class TEIEditor extends Component {
 
             const nextNotePopupAnchorEl = this.maintainNoteAnchor()
             const nextNoteID = nextNotePopupAnchorEl ? noteID : null
-            const selectedElements = getSelectedElements(teiDocument,nextNoteID)
+            const selectedElements = getSelectedElements(teiDocument,noteID)
 
             if( teiDocument.selectedElements.length === 0 && selectedElements.length > 0 ) {
                 setTimeout( () => {
@@ -293,6 +293,7 @@ export default class TEIEditor extends Component {
                     </div>
                     { !hidden && <ParameterDrawer 
                         teiDocument={teiDocument} 
+                        noteID={noteID}
                         height={drawerHeight}
                         width={drawerWidthCSS}
                     /> }

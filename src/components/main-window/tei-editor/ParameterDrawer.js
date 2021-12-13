@@ -19,6 +19,7 @@ import { getHighlightColor } from "../../../model/highlighter"
 import { checkID } from '../../../model/attribute-validators'
 import { saveConfig, addElementToSchema } from '../../../model/faircopy-config'
 import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability, teiDataTruthValue } from '../../../model/attribute-validators'
+import { findNoteNode } from '../../../model/xml';
 
 export default class ParameterDrawer extends Component {
 
@@ -57,21 +58,41 @@ export default class ParameterDrawer extends Component {
 
     changeAttributeHandler = ( element, attributeKey ) => {
         return (value,error) => {
-            const { teiDocument } = this.props
+            const { teiDocument, noteID } = this.props
+            const { editorGutterPos } = teiDocument.currentTreeNode
             const elementName = element.type.name
-            const {asides} = teiDocument.fairCopyProject.teiSchema.elementGroups
-            const editorView = asides.includes(elementName) ? teiDocument.editorView : teiDocument.getActiveView()
-            const { state } = editorView 
-            const { $anchor } = state.selection
-            let {tr} = state
-    
+
             const nextErrorStates = this.getNextErrorStates(elementName,attributeKey,error)
             this.setState({...this.state, errorStates: nextErrorStates })
 
             const newAttrs = { ...element.attrs }
             newAttrs[attributeKey] = value
-            changeAttributes( element, newAttrs, $anchor, tr )
-            editorView.dispatch(tr)
+
+            const editorView = teiDocument.getActiveView()
+            const { state } = editorView 
+            const { doc, tr } = state
+
+            if( editorGutterPos !== null ) {
+                const $pos = doc.resolve(editorGutterPos)
+                const node = $pos.node().child($pos.index())
+                // if this is pointing to an aside content node, we want to transform the node in the main doc
+                if( node.type.name.endsWith('X') ) {
+                    const { doc: mainDoc, tr: mainTr } = teiDocument.editorView.state
+                    const { notePos } = findNoteNode( mainDoc, noteID )
+                    const $notePos = mainDoc.resolve(notePos)
+                    changeAttributes( element, newAttrs, $notePos, mainTr )
+                    teiDocument.editorView.dispatch(mainTr)
+                } else {
+                    // pointing at a node 
+                    changeAttributes( element, newAttrs, $pos, tr )
+                    editorView.dispatch(tr)
+                }
+            } else {
+                // pointing at a mark or inline element
+                const { $anchor } = state.selection
+                changeAttributes( element, newAttrs, $anchor, tr )
+                editorView.dispatch(tr)
+            }
         }
     }
 
