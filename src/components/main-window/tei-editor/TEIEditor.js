@@ -185,6 +185,22 @@ export default class TEIEditor extends Component {
         if( event.ctrlKey && !ctrlDown ) {
             this.setState({...this.state, ctrlDown: true })            
         }
+        // if we are on an aside, open it
+        if( event.key === ' ' ) {
+            const { editorView } = teiDocument
+            const { selection } = editorView.state
+            if( selection && selection.node ) {            
+                const { node } = selection    
+                const nodeName = node.type.name
+                const {teiSchema} = teiDocument.fairCopyProject
+                if( teiSchema.elementGroups.asides.includes(nodeName) ) {
+                    const noteID = node.attrs['__id__']
+                    const { $anchor } = selection
+                    const anchorEl = editorView.nodeDOM($anchor.pos)
+                    this.openNotePopup(noteID, anchorEl)
+                }
+            }
+        }
  
         return handleEditorHotKeys(event, teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer );
     }
