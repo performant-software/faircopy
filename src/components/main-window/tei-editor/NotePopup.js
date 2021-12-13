@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Popper, Paper } from '@material-ui/core'
 import {EditorView} from "prosemirror-view"
+import {TextSelection} from "prosemirror-state"
 import EditorGutter from "./EditorGutter"
 // import applyDevTools from "prosemirror-dev-tools";
 
@@ -105,8 +106,15 @@ export default class NotePopup extends Component {
         const { teiDocument, onTogglePalette, onOpenElementMenu, onClose } = this.props
 
         if( event.key === 'Escape' ) {
+            // move the selection past the inline node and return to main editor
+            const {editorView} = teiDocument
+            const {tr, selection} = editorView.state
+            const {$anchor} = selection
+            tr.setSelection(TextSelection.create(tr.doc, $anchor.pos + 1))
+            editorView.dispatch(tr)
             this.saveSubDoc()
             onClose()
+            editorView.focus()
         }
         else {
             return handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenElementMenu, this.clipboardSerializer )

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
+import {TextSelection} from "prosemirror-state"
 
 // import applyDevTools from "prosemirror-dev-tools";
 
@@ -185,20 +186,32 @@ export default class TEIEditor extends Component {
         if( event.ctrlKey && !ctrlDown ) {
             this.setState({...this.state, ctrlDown: true })            
         }
+
         // if we are on an aside, open it
-        if( event.key === ' ' ) {
+        if( event.key === 'ArrowRight' || event.key === 'ArrowLeft' ) {
             const { editorView } = teiDocument
             const { selection } = editorView.state
             if( selection && selection.node ) {            
                 const { node } = selection    
                 const nodeName = node.type.name
+
                 const {teiSchema} = teiDocument.fairCopyProject
                 if( teiSchema.elementGroups.asides.includes(nodeName) ) {
                     const noteID = node.attrs['__id__']
                     const { $anchor } = selection
                     const anchorEl = editorView.nodeDOM($anchor.pos)
                     this.openNotePopup(noteID, anchorEl)
+                } 
+                else {
+                    const {editorView} = teiDocument
+                    const {tr, selection} = editorView.state
+                    const {$anchor} = selection
+                    const direction = event.key === 'ArrowRight' ? 1 : -1
+                    tr.setSelection(TextSelection.create(tr.doc, $anchor.pos + direction))
+                    editorView.dispatch(tr)
                 }
+
+                return
             }
         }
  
