@@ -241,7 +241,7 @@ export default class EditorGutter extends Component {
     render() {   
         const { editorView, editorGutterPath } = this.props
 
-        if( !editorView ) return null
+        if( !editorView || !editorView.dom.parentNode || !editorView.dom.parentNode.parentNode  ) return null
 
         const { gutterMarkEls, totalWidth } = this.renderGutterMarkers()
         const style = { marginRight: totalWidth }
