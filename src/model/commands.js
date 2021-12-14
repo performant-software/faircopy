@@ -139,7 +139,7 @@ export function insertAtomNodeAt(elementID, attrs, pos, schema, elements, below,
 }
 
 export function insertNodeAt( elementID, attrs, insertPos, schema, elements, tr, createSubDocument ) {
-    const validNode = createValidNode(elementID,attrs,Fragment.empty,schema,elements, createSubDocument )
+    const validNode = createValidNode(elementID,attrs,Fragment.empty,schema,elements, null, createSubDocument )
     tr.insert( insertPos, validNode )
     return tr             
 }

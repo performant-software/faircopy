@@ -98,8 +98,10 @@ function replaceElement( elementID, attrs, teiDocument, pos, tr ) {
     const { elements } = teiDocument.fairCopyProject.teiSchema
     const { createSubDocument } = teiDocument
     const node = tr.doc.nodeAt(pos)
+    const $pos =  tr.doc.resolve(pos)
+    const parentType = $pos.parent.type
 
-    const fragment = createValidNode( elementID, attrs, node.content, schema, elements, createSubDocument )
+    const fragment = createValidNode( elementID, attrs, node.content, schema, elements, parentType, createSubDocument )
     tr.replaceWith(pos, pos+2+node.content.size, fragment)    
     return tr
 }
@@ -113,7 +115,7 @@ function addInside( elementID, attrs, teiDocument, pos, tr ) {
 
     if( parentNode.childCount > 0 ) {
         // take the content of the parent and put it inside the new node
-        const fragment = createValidNode( elementID, attrs, parentNode.content, schema, elements, createSubDocument )
+        const fragment = createValidNode( elementID, attrs, parentNode.content, schema, elements, parentNode, createSubDocument )
         tr.replaceWith(pos+1, pos+1+parentNode.content.size, fragment)    
         return tr
     } else {
@@ -234,7 +236,7 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
                     tr.insert(selectedEndPos, textNode)    
                 } else {
                     // if parent doesn't have a textNode, then leave a blank copy of selected node in its place
-                    const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements )
+                    const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements, parentNode )
                     tr.insert(selectedEndPos, replacementNode) 
                 }
             }
@@ -285,7 +287,7 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
                     tr.insert(textNodePos, textNode)                        
                 } else {
                     // if parent doesn't have a textNode, then leave a blank copy of selected node in its place
-                    const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements )
+                    const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements, parentNode )
                     tr.insert(textNodePos, replacementNode) 
                 }
                 tr.setMeta( 'editorGutterPos', insertPos+2 )
@@ -356,7 +358,6 @@ function createAside( asideName, attrs, teiDocument, editorView ) {
     const subDocID = createSubDocument(document,asideName,attrs)
     const nodeType = schema.nodes[asideName]
     const asideNode = nodeType.create({ id: '', __id__: subDocID, ...attrs })
-
     tr.insert($head.pos, asideNode) 
     editorView.dispatch(tr)
     editorView.focus()

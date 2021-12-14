@@ -5,10 +5,14 @@ import { markApplies } from "./commands"
 export function createValidationSet(elements, schema) {
     const validationSet = {}
 
+    // parent node type is only needed to produce correct global node wrapper for inlines
+    // for the validation set, assume it is a p node.
+    const defaultParentNodeType = schema.nodes['p']
+
     for( const element of Object.values(elements) ) {
         if( inValidationSet(element) ) {
             const { name } = element
-            validationSet[name] = Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements ) )
+            validationSet[name] = Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements, defaultParentNodeType ) )
         }
     }
 
@@ -70,25 +74,26 @@ export function validNodeAction( actionType, elementID, teiDocument, pos ) {
             before = siblings.slice(0,nodeIndex+1)
             after = siblings.slice(nodeIndex+1)
         }   
-        const testNode = createValidNode( elementID, {}, Fragment.empty, schema, elements )
+        const testNode = createValidNode( elementID, {}, Fragment.empty, schema, elements, parentNode.type )
+        if( !testNode ) return false
         siblings = before.concat([testNode]).concat(after)
         const testFragment = Fragment.from(siblings)  
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'replace' ) {
         if( isAtom ) return false
-        const testNode = createValidNode( elementID, {}, node.content, schema, elements )
+        const testNode = createValidNode( elementID, {}, node.content, schema, elements, parentNode.type )
         if( !testNode ) return false
         const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addOutside' ) {
         if( isAtom ) return false
-        const testNode = createValidNode( elementID, {}, Fragment.from(node), schema, elements )
+        const testNode = createValidNode( elementID, {}, Fragment.from(node), schema, elements, parentNode.type )
         if( !testNode ) return false
         const testFragment = parentNode.content.replaceChild(nodeIndex, testNode)
         return parentNode.type.validContent(testFragment)
     } else if( actionType === 'addInside') {
         if( isAtom && node.childCount > 0 ) return false
-        const testNode = createValidNode( elementID, {}, node.content, schema, elements )
+        const testNode = createValidNode( elementID, {}, node.content, schema, elements, parentNode.type )
         return testNode && node.type.validContent(Fragment.from(testNode))
     } else {
         throw new Error('Unrecognized action type.')
@@ -112,7 +117,7 @@ function validInlineAction(elementID, teiDocument ) {
     }
 }
 
-export function createValidNode( elementID, attrs, content, schema, elements, createSubDocument = () => { return '___TEMPID___' } ) {
+export function createValidNode( elementID, attrs, content, schema, elements, parentNodeType, createSubDocument = () => { return '___TEMPID___' } ) {
     const { fcType, pmType, defaultNodes } = elements[elementID]
     const nodeType = schema.nodes[elementID]
     let node
@@ -123,7 +128,7 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
         if( content.childCount === 0 ) {
             const nodes = []
             for( const defaultNode of defaultNodes ) {
-                const node = createValidNode( defaultNode, {}, content, schema, elements, createSubDocument )
+                const node = createValidNode( defaultNode, {}, content, schema, elements, nodeType, createSubDocument )
                 if( !node ) return null
                 nodes.push(node)
             }    
@@ -143,7 +148,7 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
                 let nodes = [], seekingFirstValid = true
                 for( const defaultNode of defaultNodes ) {
                     const childContent = seekingFirstValid ? content : Fragment.empty
-                    let node = createValidNode( defaultNode, {}, childContent, schema, elements, createSubDocument )
+                    let node = createValidNode( defaultNode, {}, childContent, schema, elements, nodeType, createSubDocument )
                     if( node ) {
                         // found a place for the content
                         seekingFirstValid = false
@@ -153,7 +158,7 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
                         if( seekingFirstValid && defaultNode === defaultNodes[defaultNodes.length-1] ) {
                             return null
                         } else {
-                            node = createValidNode( defaultNode, {}, Fragment.empty, schema, elements, createSubDocument )
+                            node = createValidNode( defaultNode, {}, Fragment.empty, schema, elements, nodeType, createSubDocument )
                             if( !node ) return null    
                         }
                     }                    
@@ -178,14 +183,16 @@ export function createValidNode( elementID, attrs, content, schema, elements, cr
             // search the global nodes for one that can contain this group
             const groups = nodeType.spec.group.split(' ')
             groups.push(elementID)
+            const parentContent = parentNodeType.spec.content
             const globalNodeElement = Object.values(elements).find( element => {
                 const { name, content } = element
                 if( name.startsWith('globalNode') ) {
-                    const matchingGroup = groups.find(group => group !== '' && content.includes(group))
+                    // matching group must match both the group of the inline and the content of the parent node
+                    const matchingGroup = groups.find(group => group !== '' && content.includes(group) && parentContent.includes(group.slice(0,group.length-'_i'.length)))
                     if( matchingGroup ) return true
                 }
                 return false
-            })
+            })    
             // wrap the inline node in the appropriate globalNode
             if( !globalNodeElement ) return null
             const globalNodeType = schema.nodes[globalNodeElement.name]
