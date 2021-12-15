@@ -174,11 +174,10 @@ function isBlank(node) {
     return false
 }
 
-export function deleteParentNode(state) {
-    const { tr, selection } = state
-    const { node, $anchor } = selection
-    const { pos } = $anchor
-    const grandParentNode = $anchor.node()
+export function deleteParentNode(pos, tr) {
+    const $pos = tr.doc.resolve(pos)
+    const node = $pos.node().child($pos.index())
+    const grandParentNode = $pos.node()
 
     // need to have a grand parent to adopt children
     if(!grandParentNode) return tr

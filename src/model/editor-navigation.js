@@ -90,20 +90,21 @@ export function navigateFromTreeToEditor( editorView, editorGutterPos ) {
 
 export function getEnabledMenus(teiDocument) {
     const editorView = teiDocument.getActiveView()
+    const {editorGutterPos} = teiDocument.currentTreeNode
 
     if( editorView ) {
         const { selection } = editorView.state
-        if( selection.$cursor ) {
-            return {
-                marks: false,
-                inline: true,
-                eraser: false
-            }
-        } else if( selection.node ) {
+        if( editorGutterPos !== null ) {
             return {
                 marks: false,
                 inline: false,
                 eraser: true
+            }
+        } else if( selection.$cursor) {
+            return {
+                marks: false,
+                inline: true,
+                eraser: false
             }
         } else {
             return {

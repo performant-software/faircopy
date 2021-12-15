@@ -1,7 +1,7 @@
 import {joinPoint, canJoin, findWrapping, liftTarget, canSplit} from "prosemirror-transform"
 import {Fragment} from "prosemirror-model"
 import {Selection, TextSelection, NodeSelection, AllSelection} from "prosemirror-state"
-import {deleteParentNode, depthToLast, fragmentWithout} from "./commands"
+import {depthToLast, fragmentWithout} from "./commands"
 import {getTextNodeName, replaceTextNodes} from "./xml"
 
 // :: (EditorState, ?(tr: Transaction)) → bool
@@ -9,11 +9,7 @@ import {getTextNodeName, replaceTextNodes} from "./xml"
 export function deleteSelection(state, dispatch) {
   const { tr, selection } = state
   if (selection.empty) return false
-  if( selection.node && !selection.node.isAtom ) {
-    if (dispatch) dispatch(deleteParentNode(state).scrollIntoView())
-  } else {
-    if (dispatch) dispatch(tr.deleteSelection().scrollIntoView())
-  }
+  if (dispatch) dispatch(tr.deleteSelection().scrollIntoView())
   return true
 }
 

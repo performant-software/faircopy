@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { navigateTree, navigateFromEditorToTree } from '../../../model/editor-navigation'
-import { moveNode } from '../../../model/editor-actions'
+import { moveNode, eraseSelection } from '../../../model/editor-actions'
 import { synthNameToElementName } from '../../../model/xml'
 
 export default class EditorGutter extends Component {
@@ -232,6 +232,10 @@ export default class EditorGutter extends Component {
                 onJumpToDrawer()
             }
         } 
+        if( event.key === 'Backspace' || event.key === 'Delete' ) {
+            eraseSelection(teiDocument)
+            event.preventDefault()
+        }
     }
 
     onFocus = () => {

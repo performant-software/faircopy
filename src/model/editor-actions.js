@@ -185,11 +185,13 @@ export function onClippy() {
 
 export function eraseSelection(teiDocument) {
     const editorView = teiDocument.getActiveView()
-    const { selection } = editorView.state
-    let tr
+    let { selection, tr } = editorView.state
+    const { currentTreeNode } = teiDocument
 
-    if( selection.node && !selection.node.isAtom ) {
-        tr = deleteParentNode(editorView.state)
+    if( currentTreeNode.editorGutterPos !== null ) {
+        tr = deleteParentNode(currentTreeNode.editorGutterPos, editorView.state.tr)
+        teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
+        tr.setMeta( 'highlightEnabled', true )
     } else {
         tr = editorView.state.tr
         let {empty, $cursor, ranges} = selection
