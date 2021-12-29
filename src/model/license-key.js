@@ -1,20 +1,16 @@
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid'
 
-const devEndpoint = 'https://faircopy-activate-dev.netlify.app/api/activation'
+const devEndpoint = 'https://faircopy-activate-2-staging.herokuapp.com/api/public/user_licenses'
 const prodEndpoint = 'https://activate.faircopyeditor.com/api/activation'
 
 export function activateLicense(devMode,license,machine_uuid,onActivate,onError) {
     const activationEndpoint = devMode ? devEndpoint : prodEndpoint
-    axios.post(activationEndpoint, {
-        customer: {
-            license,
-            machine_uuid    
-        }
-    }).then(
+    const endPointURL = `${activationEndpoint}/${license}?machine_uuid=${machine_uuid}`
+    axios.put(endPointURL).then(
         (resp) => {
-            // successful activation
-            const licenseData = { licenseKey: license, machineID: machine_uuid, activated: true }
+            const { expires_at, license_type, secure_id, subscription } = resp.data
+            const licenseData = { licenseKey: license, machineID: machine_uuid, activated: true, expires_at, license_type, secure_id, subscription }
             localStorage.setItem('licenseData',JSON.stringify(licenseData))
             onActivate()
         },
