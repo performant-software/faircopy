@@ -9,3 +9,4 @@ yarn-error.log
 /test-docs/example.faircopy
 /temp
 faircopy*.tgz
+.env
