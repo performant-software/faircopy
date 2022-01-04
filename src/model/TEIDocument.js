@@ -220,6 +220,10 @@ export default class TEIDocument {
         return this.noteEditorView ? this.noteEditorView : this.editorView
     }
 
+    getActiveViewType() {
+        return this.noteEditorView ? 'note' : 'main'
+    }
+
     getParent() {
         const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
         return this.fairCopyProject.getParent(resourceEntry)
