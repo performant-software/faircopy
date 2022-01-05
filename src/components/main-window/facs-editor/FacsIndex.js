@@ -76,6 +76,13 @@ export default class FacsIndex extends Component {
             onChangeView(parseInt(selection), 'detail')
         }
 
+        const onKeyUp = (e) => {
+            if( e.keyCode === 13 ) {
+                const selection = e.currentTarget.getAttribute('datasurfaceindex')
+                onChangeView(parseInt(selection), 'detail')
+            }
+        }
+
         const onClickCheck = (e) => {
             const { checked } = this.state
             const nextChecked = { ...checked }
@@ -102,12 +109,12 @@ export default class FacsIndex extends Component {
                 <TableRow component={DraggableComponent(surface.id, index)} hover className={selectionClass} key={`surface-${index}`}>
                     <TableCell {...cellProps} >
                         <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
-                        <Checkbox onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
+                        <Checkbox onKeyUp={onKeyUp} onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
                     </TableCell>
-                    <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
+                    <TableCell onKeyUp={onKeyUp} onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {title}
                     </TableCell>
-                    <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
+                    <TableCell onKeyUp={onKeyUp} onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {surface.id}
                     </TableCell>
                 </TableRow>
