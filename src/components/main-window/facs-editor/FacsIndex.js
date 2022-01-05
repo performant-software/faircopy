@@ -206,7 +206,7 @@ export default class FacsIndex extends Component {
     
     renderToolbar() {
         const { checked } = this.state
-        const { onChangeView, onEditResource, surfaceIndex, onAddImages, onWindow } = this.props
+        const { onChangeView, onEditResource, surfaceIndex, onAddImages, onWindow, facsDocument } = this.props
 
         const iconButtonProps = {
             disableRipple: true,
@@ -222,6 +222,8 @@ export default class FacsIndex extends Component {
         }
 
         const actionsEnabled = Object.values(checked).find( c => c === true )
+        const { surfaces } = facsDocument.facs
+        const detailEnabled = surfaces.length > 0
 
         return (
             <div className='top-bar' >
@@ -246,6 +248,7 @@ export default class FacsIndex extends Component {
                 </Button>                   
                 <FacsModeControl
                     selected={'index'}
+                    detailEnabled={detailEnabled}
                     surfaceIndex={surfaceIndex}
                     buttonProps={iconButtonProps}
                     onChangeView={onChangeView}
