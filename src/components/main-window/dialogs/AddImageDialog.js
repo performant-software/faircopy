@@ -52,7 +52,7 @@ export default class AddImageDialog extends Component {
     }
     
     render() {      
-        const { spinner } = this.state
+        const { spinner, imagesData } = this.state
         const { onClose } = this.props
         
         const onAddImages = () => {
@@ -61,7 +61,8 @@ export default class AddImageDialog extends Component {
             facsDocument.addLocalImages(imagesData)
             onClose()
         }
-        const disabled = spinner
+        const disableAdd = imagesData.length === 0
+        const disableCancel = spinner
 
         return (
             <Dialog
@@ -76,8 +77,8 @@ export default class AddImageDialog extends Component {
                     { this.renderForm() }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={disabled} variant="contained" onClick={onAddImages} color="primary">Add</Button>
-                    <Button disabled={disabled} variant="outlined" onClick={onClose}>Cancel</Button>
+                    <Button disabled={disableAdd} variant="contained" onClick={onAddImages} color="primary">Add</Button>
+                    <Button disabled={disableCancel} variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )

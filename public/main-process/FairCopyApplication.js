@@ -101,9 +101,13 @@ class FairCopyApplication {
     })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
-      this.processImageData(paths).then((imageData) => {
-        this.sendToAllWindows('imagesOpened', imageData )  
-      })     
+      if( paths ) {
+        this.processImageData(paths).then((imageData) => {
+          this.sendToAllWindows('imagesOpened', imageData )  
+        })       
+      } else {
+        this.sendToAllWindows('imagesOpened', [])
+      }
     })
     
     // Main window events //////
