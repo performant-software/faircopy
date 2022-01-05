@@ -198,7 +198,7 @@ export function getSurfaceNames( surface, lang='en') {
 
 export function setSurfaceTitle( surface, title, lang='en' ) {
     const key = surface.localLabels[lang] ? lang : 'none'
-    surface.localLabels[key][0] = title
+    surface.localLabels[key] = [ title ]
 } 
 
 function parseMetadata(manifestID,manifestLabel) {
