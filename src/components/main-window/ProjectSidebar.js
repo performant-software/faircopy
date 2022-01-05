@@ -12,7 +12,7 @@ export default class ProjectSidebar extends Component {
             <IconButton
                 disabled={!enabled}
                 onClick={onClick}
-                {...this.buttonProps}
+                className="action-button"
                 {...refProps}
                 {...colorProps}
             >

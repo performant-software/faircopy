@@ -43,10 +43,10 @@ export default class App extends Component {
       })
   
       // tell main process to check for updates 
-      if( !licenseData.activated ) {
-        this.setTitle('Activate License')
-        return
-      }
+      // if( !licenseData.activated ) {
+      //   this.setTitle('Activate License')
+      //   return
+      // }
   
       this.initRootComponent()        
     }
@@ -128,14 +128,14 @@ export default class App extends Component {
   render() {
     const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo, projectSettingsActive } = this.state
     const {rootComponent} = window.fairCopy
-    if( !licenseData.activated ) {
-      return (
-        <LicenseWindow
-          appConfig={appConfig}
-          onActivate={this.onActivate}
-        ></LicenseWindow>
-      )
-    }
+    // if( !licenseData.activated ) {
+    //   return (
+    //     <LicenseWindow
+    //       appConfig={appConfig}
+    //       onActivate={this.onActivate}
+    //     ></LicenseWindow>
+    //   )
+    // }
 
     if( incompatInfo ) {
       const { projectFilePath, projectFileVersion } = incompatInfo

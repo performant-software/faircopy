@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
+import { IconButton, Tooltip } from '@material-ui/core'
 
 const maxTitleLength = 120
 
@@ -13,6 +14,21 @@ export default class TitleBar extends Component {
     onClickTeiDoc = () => {
         const { onResourceAction, teiDocID } = this.props
         onResourceAction('open-teidoc',[teiDocID])        
+    }
+
+    renderHomeButton() {             
+        return (
+            <Tooltip title="Home">
+                <span>            
+                    <IconButton
+                        onClick={this.onClickHome}
+                        className="home-icon" 
+                    >
+                        <i className={`fa fa-home-alt fa-sm`}></i>
+                    </IconButton> 
+                </span>
+            </Tooltip>
+        )
     }
 
     renderTitle() {
@@ -30,13 +46,16 @@ export default class TitleBar extends Component {
 
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images"></i> : <i aria-label="/" className={chevClass}></i>
-        const surfaceNameEl = surfaceName && <span><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
+        const homeEl = !isImageWindow ? <span onClick={this.onClickHome} className="nav-link" >Home</span> : ""
+        const surfaceNameEl = surfaceName && <span className="nav-link" ><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
         const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>
         const teiDocNameEl = teiDocName && <span className="nav-link" onClick={this.onClickTeiDoc} ><i aria-label="/" className={chevClass}></i> {teiDocNameShort}</span>
         return (
-            <span>
-                {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
-            </span>
+            <div className="breadcrumbs">
+                <Typography component="h2" variant="h6">
+                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
+                </Typography>
+            </div>
         )
     }
 
@@ -44,11 +63,9 @@ export default class TitleBar extends Component {
         const { isImageWindow } = this.props
         
         return (
-            <header id="TitleBar" >
-                <Typography component="h2" variant="h6">
-                    { !isImageWindow && <span className="nav-link" onClick={this.onClickHome}><i className="fa fa-home-alt"></i> Home </span> }
+            <header id="TitleBar" >                
+                    { !isImageWindow && this.renderHomeButton() }
                     { this.renderTitle() }
-                </Typography>
             </header>
         )
     }
