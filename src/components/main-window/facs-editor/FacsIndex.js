@@ -93,7 +93,7 @@ export default class FacsIndex extends Component {
 
         const cellProps = {
             padding: 'none',
-            component: "th",
+            component: "td",
             scope: "row"
         }
         const surfaceRows = []
@@ -107,9 +107,9 @@ export default class FacsIndex extends Component {
             const selectionClass = surfaceIndex === index ? 'row-selected' : ''
             surfaceRows.push(
                 <TableRow component={DraggableComponent(surface.id, index)} hover className={selectionClass} key={`surface-${index}`}>
-                    <TableCell {...cellProps} >
+                    <TableCell onClick={onClickCheck} datasurfaceindex={index} {...cellProps} >
                         <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
-                        <Checkbox onKeyUp={onKeyUp} onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
+                        <Checkbox onKeyUp={onKeyUp} color="default" checked={check} />
                     </TableCell>
                     <TableCell onKeyUp={onKeyUp} onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {title}
