@@ -190,6 +190,7 @@ export default class FacsIndex extends Component {
                     tableHead={this.renderTableHead()}
                     rows={surfaceRows.slice(start,end)}
                     onDragEnd={this.onDragEnd}
+                    caption={"This table lists the image surfaces for this facsimile."}
                 ></DragAndDropTable>
                 <TablePagination
                     component="div"

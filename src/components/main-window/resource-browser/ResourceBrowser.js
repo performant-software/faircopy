@@ -149,7 +149,7 @@ export default class ResourceBrowser extends Component {
 
     const cellProps = {
       padding: 'none',
-      component: "th",
+      component: "td",
       scope: "row"
     }
 
