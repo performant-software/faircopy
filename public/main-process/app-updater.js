@@ -1,24 +1,15 @@
-const { NsisUpdater, MacUpdater, AppImageUpdater } = require("electron-updater")
+const { autoUpdater } = require('electron-updater')
 const log = require('electron-log')
-const { platform } = process
 
-let autoUpdater = null
+const testActivationToken = 'activ-039efab62a98b94765e5cc382e5b7d43v3'
 
 const checkForUpdates = function checkForUpdates( licenseData, config, sendToMainWindow ) {
-    const { licenseKey, machineID, activated } = licenseData
+    const { activated } = licenseData
 
     // Don't ask for updates if machine isn't activated
     if( !activated ) return
 
-    const productID = config.devMode ? config.devChannelID : config.productionChannelID
-    const keygenDistURL = `https://dist.keygen.sh/v1/${config.keyGenAccountID}/${productID}/releases/${platform}?key=${licenseKey}&fingerprint=${machineID}`
-
-    autoUpdater = createAutoUpdater( {
-      url: keygenDistURL,
-      provider: 'generic',
-      channel: 'latest',
-    })
-
+    autoUpdater.addAuthHeader(`Bearer ${testActivationToken}`)
     autoUpdater.autoDownload = false
     autoUpdater.logger = log
 
@@ -51,22 +42,6 @@ const downloadUpdate = function downloadUpdate(sendToMainWindow) {
   }).catch( () => {
     sendToMainWindow('errorUpdating')
   })
-}
-
-function createAutoUpdater(options) {
-  let updater
-
-  if (platform === "win32") {
-    updater = new NsisUpdater(options)
-  }
-  else if (platform === "darwin") {
-    updater = new MacUpdater(options)
-  }
-  else {
-    updater = new AppImageUpdater(options)
-  }
-
-  return updater
 }
 
 exports.checkForUpdates = checkForUpdates

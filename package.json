@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.11.14",
+  "version": "0.11.15-dev.2",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -10,10 +10,10 @@
     "predist-mac": "yarn build",
     "predist-win": "yarn build",
     "predist-linux": "yarn build",
-    "dist-mac": "electron-builder -m",
-    "dist-win": "electron-builder -w",
-    "dist-linux": "electron-builder -l",
-    "dist": "electron-builder -mwl",
+    "dist-mac": "electron-builder -m --publish always",
+    "dist-win": "electron-builder -w --publish always",
+    "dist-linux": "electron-builder -l --publish always",
+    "dist": "electron-builder -mwl --publish always",
     "build": "react-scripts build",
     "start": "BROWSER=none PORT=4000 react-scripts start",
     "test": "react-scripts test"
@@ -40,7 +40,7 @@
     "axios": "^0.19.2",
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
-    "electron-updater": "^4.3.8",
+    "electron-updater": "^4.6.1",
     "flexsearch": "^0.7.21",
     "jimp": "^0.16.1",
     "jszip": "3.2.0",
@@ -113,7 +113,13 @@
       "license": "LICENSE",
       "createDesktopShortcut": false
     },
-    "afterSign": "scripts/notarize.js"
+    "afterSign": "scripts/notarize.js",
+    "publish": {
+      "provider": "keygen",
+      "account": "8a8d3d6a-ab09-4f51-aea5-090bfd025dd8",
+      "product": "b2bfc67b-26bf-4407-b3d9-d7ad94d7f225",
+      "channel": "dev"
+    }
   },
   "postinstall": "electron-builder install-app-deps",
   "browserslist": {
