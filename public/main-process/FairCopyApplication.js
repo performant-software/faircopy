@@ -101,9 +101,13 @@ class FairCopyApplication {
     })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
-      this.processImageData(paths).then((imageData) => {
-        this.sendToAllWindows('imagesOpened', imageData )  
-      })     
+      if( paths ) {
+        this.processImageData(paths).then((imageData) => {
+          this.sendToAllWindows('imagesOpened', imageData )  
+        })       
+      } else {
+        this.sendToAllWindows('imagesOpened', [])
+      }
     })
     
     // Main window events //////
@@ -203,7 +207,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 550, false, '#E6DEF9', true )
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 550, false, '#E6DEF9' )
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 

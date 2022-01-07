@@ -5,15 +5,19 @@
 }
 
 #ProjectSidebar .title-bar {
-    padding: 10px;
+    padding: 12px;
 }
 
 #ProjectSidebar .project-title {
-    padding: 10px;
     display: inline-block;
 }
 
 #ProjectSidebar .edit-button {
-    padding-top: 10px;
+    margin-top: 10px;
     float: right;
+}
+
+#ProjectSidebar .action-button {
+    margin-left: 5px;
+    margin-top: -8px;
 }

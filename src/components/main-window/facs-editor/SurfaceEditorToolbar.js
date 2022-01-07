@@ -9,9 +9,7 @@ export default class SurfaceEditorToolbar extends Component {
         super()
 
         this.buttonProps = {
-            className: 'toolbar-button',
-            disableRipple: true,
-            disableFocusRipple: true
+            className: 'toolbar-button'
         }
     }
 

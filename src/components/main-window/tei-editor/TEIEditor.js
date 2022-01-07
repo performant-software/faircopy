@@ -326,7 +326,7 @@ export default class TEIEditor extends Component {
                             editorView={teiDocument.editorView}
                             onJumpToDrawer={onJumpToDrawer}
                             onChangePos={this.onChangePos}
-                            gutterTop={120}
+                            gutterTop={115}
                         /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}

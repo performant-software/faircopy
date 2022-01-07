@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@material-ui/core';
 
 export default class FacsModeControl extends Component {    
     render() {
-        const { selected, buttonProps, onChangeView, surfaceIndex, onWindow } = this.props
+        const { selected, buttonProps, onChangeView, surfaceIndex, onWindow, detailEnabled } = this.props
 
         return (
             <div id="FacsModeControl" >
@@ -21,6 +21,7 @@ export default class FacsModeControl extends Component {
                     <span>
                         <Button
                             {...buttonProps}
+                            disabled={!detailEnabled}
                             onClick={ () => onChangeView(surfaceIndex,'detail') }
                         >
                             <i className={`${ selected === 'detail' ? 'selected-action' : ''} fas fa-image fa-2x`}></i>

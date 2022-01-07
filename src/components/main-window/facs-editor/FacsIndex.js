@@ -76,6 +76,13 @@ export default class FacsIndex extends Component {
             onChangeView(parseInt(selection), 'detail')
         }
 
+        const onKeyUp = (e) => {
+            if( e.keyCode === 13 ) {
+                const selection = e.currentTarget.getAttribute('datasurfaceindex')
+                onChangeView(parseInt(selection), 'detail')
+            }
+        }
+
         const onClickCheck = (e) => {
             const { checked } = this.state
             const nextChecked = { ...checked }
@@ -86,7 +93,7 @@ export default class FacsIndex extends Component {
 
         const cellProps = {
             padding: 'none',
-            component: "th",
+            component: "td",
             scope: "row"
         }
         const surfaceRows = []
@@ -100,14 +107,14 @@ export default class FacsIndex extends Component {
             const selectionClass = surfaceIndex === index ? 'row-selected' : ''
             surfaceRows.push(
                 <TableRow component={DraggableComponent(surface.id, index)} hover className={selectionClass} key={`surface-${index}`}>
-                    <TableCell {...cellProps} >
+                    <TableCell onClick={onClickCheck} datasurfaceindex={index} {...cellProps} >
                         <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
-                        <Checkbox onClick={onClickCheck} datasurfaceindex={index} color="default" checked={check} />
+                        <Checkbox onKeyUp={onKeyUp} color="default" checked={check} />
                     </TableCell>
-                    <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
+                    <TableCell onKeyUp={onKeyUp} onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {title}
                     </TableCell>
-                    <TableCell onClick={onClick} datasurfaceindex={index} {...cellProps} >
+                    <TableCell onKeyUp={onKeyUp} onClick={onClick} datasurfaceindex={index} {...cellProps} >
                         {surface.id}
                     </TableCell>
                 </TableRow>
@@ -183,6 +190,7 @@ export default class FacsIndex extends Component {
                     tableHead={this.renderTableHead()}
                     rows={surfaceRows.slice(start,end)}
                     onDragEnd={this.onDragEnd}
+                    caption={"This table lists the image surfaces for this facsimile."}
                 ></DragAndDropTable>
                 <TablePagination
                     component="div"
@@ -198,7 +206,7 @@ export default class FacsIndex extends Component {
     
     renderToolbar() {
         const { checked } = this.state
-        const { onChangeView, onEditResource, surfaceIndex, onAddImages, onWindow } = this.props
+        const { onChangeView, onEditResource, surfaceIndex, onAddImages, onWindow, facsDocument } = this.props
 
         const iconButtonProps = {
             disableRipple: true,
@@ -214,6 +222,8 @@ export default class FacsIndex extends Component {
         }
 
         const actionsEnabled = Object.values(checked).find( c => c === true )
+        const { surfaces } = facsDocument.facs
+        const detailEnabled = surfaces.length > 0
 
         return (
             <div className='top-bar' >
@@ -238,6 +248,7 @@ export default class FacsIndex extends Component {
                 </Button>                   
                 <FacsModeControl
                     selected={'index'}
+                    detailEnabled={detailEnabled}
                     surfaceIndex={surfaceIndex}
                     buttonProps={iconButtonProps}
                     onChangeView={onChangeView}

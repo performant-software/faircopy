@@ -1,13 +1,14 @@
 import React, { Component } from "react"
-import { TableContainer, Table, TableBody, Paper } from '@material-ui/core'
+import { TableContainer, Table, TableBody } from '@material-ui/core'
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
 
 export default class DragAndDropTable extends Component {
     render() {
-        const { tableHead, rows, onDragEnd } = this.props
+        const { tableHead, rows, onDragEnd, caption } = this.props
         return (
-            <TableContainer className="table-container" component={Paper}>
+            <TableContainer className="table-container">
                 <Table stickyHeader size="small">
+                    <caption>{caption}</caption>
                     { tableHead }
                     <TableBody component={DroppableComponent(onDragEnd)}>
                         {rows}

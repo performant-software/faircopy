@@ -219,6 +219,7 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
     const nodeIndex = $anchor.index()
     const parentNode = $anchor.node()
     const selectedNode = parentNode.child(nodeIndex)
+    let editorGutterPos
 
     if( direction === 'up' ) { 
         // if first sibling, move up and out of this parent
@@ -243,7 +244,7 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
                 }
             }
 
-            tr.setMeta( 'editorGutterPos', selectedPos-1 )
+            editorGutterPos = selectedPos-1
         // otherwise, we can move around within the parent  
         } else {
             const selectedPos = $anchor.pos
@@ -265,10 +266,10 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
                     }
                     textNodePos = textNodePos + child.nodeSize
                 }
-                tr.setMeta( 'editorGutterPos', nextSelectPos )
+                editorGutterPos = nextSelectPos
             } else {
                 tr.replaceWith(nodeBeforePos,selectedEndPos,[selectedNode,nodeBefore])              
-                tr.setMeta( 'editorGutterPos', nodeBeforePos )
+                editorGutterPos = nodeBeforePos
             }        
         }
     } else {
@@ -292,9 +293,9 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
                     const replacementNode = createValidNode( selectedNode.type.name, {}, Fragment.empty, schema, elements, parentNode )
                     tr.insert(textNodePos, replacementNode) 
                 }
-                tr.setMeta( 'editorGutterPos', insertPos+2 )
+                editorGutterPos =insertPos+2
             } else {
-                tr.setMeta( 'editorGutterPos', insertPos )
+                editorGutterPos =insertPos
             }
         // otherwise, move around within this parent
         } else {
@@ -319,16 +320,17 @@ export function moveNode(direction,teiDocument,pos,metaKey) {
                     }
                     textNodePos = textNodePos + child.nodeSize
                 }
-                tr.setMeta( 'editorGutterPos', nextSelectPos )
+                editorGutterPos = nextSelectPos
             } else {
                 tr.replaceWith(selectedPos,swapEndPos,[swapNode,selectedNode])    
-                tr.setMeta( 'editorGutterPos', selectedPos+swapNode.nodeSize )
+                editorGutterPos =selectedPos+swapNode.nodeSize
             }
         }
     }
 
     const editorGutterPath = synthNameToElementName( selectedNode.type.name )
-    tr.setMeta( 'editorGutterPath', editorGutterPath )
+    const treeID = teiDocument.getActiveViewType()
+    teiDocument.currentTreeNode = { editorGutterPos, editorGutterPath, treeID }
     tr.scrollIntoView()
     editorView.dispatch(tr)
 }

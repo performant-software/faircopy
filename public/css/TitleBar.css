@@ -1,12 +1,17 @@
 #TitleBar {
     background: #3787AA;
-    color: white;
-    padding: 10px;
-    height: 32px;
+    height: 50px;
 }
 
-#TitleBar h1 {
-    padding-top: 5px;
+#TitleBar .home-icon {
+    margin-top: -5px;
+    color: white;
+}
+
+#TitleBar .breadcrumbs {
+    display: inline-block;
+    margin-top: 10px;
+    color: white;
 }
 
 #TitleBar .nav-link:hover {
