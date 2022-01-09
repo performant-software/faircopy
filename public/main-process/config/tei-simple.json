@@ -198,6 +198,52 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "altGrp",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_descLike* (alt_g|ptr_g)*)",
+			"group": "model_global model_standOffPart model_global_meta",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"domains",
+				"evaluate",
+				"exclude",
+				"facs",
+				"mode",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"targFunc",
+				"target",
+				"targetLang",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"desc"
+			],
+			"desc": "groups a collection of alt elements and possibly pointers.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "altIdentifier",
 			"pmType": "node",
 			"fcType": "hard",
@@ -344,7 +390,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(u|model_global_spoken)*",
+			"content": "(u|spanGrp|model_global_spoken)*",
 			"group": "model_common model_divPart model_divPart_spoken model_standOffPart model_annotationLike",
 			"validAttrs": [
 				"ana",
@@ -1087,6 +1133,48 @@
 				"bibl"
 			],
 			"desc": "contains a quotation from some other document, together with a bibliographic reference to its source. In a dictionary it may contain an example text with at least one occurrence of the word form, used in the sense being described, or a translation of the headword, or an example.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "citeStructure",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(citeData_g* citeStructure* model_descLike*)",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"delim",
+				"exclude",
+				"facs",
+				"match",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"unit",
+				"use",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"desc"
+			],
+			"desc": "declares a structure and method for citing the current document.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -3758,6 +3846,44 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "listTranspose",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(desc* transpose+)",
+			"group": "model_profileDescPart model_global model_standOffPart model_global_meta",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"transpose"
+			],
+			"desc": "supplies a list of transpositions, each of which is indicated at some point in a document typically by means of metamarks.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "listWit",
 			"pmType": "node",
 			"fcType": "hard",
@@ -6280,6 +6406,129 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "spanGrp",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_descLike* span_g*)",
+			"group": "model_global model_standOffPart model_global_meta",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"inst",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"desc"
+			],
+			"desc": "collects together span tags.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "samplingDecl",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "model_pLike+",
+			"group": "model_encodingDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"p"
+			],
+			"desc": "contains a prose description of the rationale and methods used in sampling texts in the creation of a corpus or collection.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "spGrp",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_headLike* (model_global|sp|model_stageLike)+)",
+			"group": "model_common model_divPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"toWhom",
+				"type",
+				"who",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"sp"
+			],
+			"desc": "contains a group of speeches or songs in a performance text presented in a source as constituting a single unit or number.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "state",
 			"pmType": "node",
 			"fcType": "hard",
@@ -6431,6 +6680,122 @@
 				"p"
 			],
 			"desc": "specifies the name of the formal language in which style or renditional information is supplied elsewhere in the document. The specific version of the scheme may also be supplied.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "refsDecl",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_pLike+|citeStructure+|cRefPattern+|refState_g+)",
+			"group": "model_encodingDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"default",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"p"
+			],
+			"desc": "specifies how canonical references are constructed for this text.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "tagsDecl",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(rendition* namespace*)",
+			"group": "model_encodingDescPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"partial",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"rendition"
+			],
+			"desc": "provides detailed information about the tagging applied to a document.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "taxonomy",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(((category|taxonomy)+|((model_descLike)+ (category|taxonomy)*))|(model_biblLike (category|taxonomy)*))",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"category"
+			],
+			"desc": "defines a typology either implicitly, by means of a bibliographic citation, or explicitly by a structured taxonomy.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -6863,6 +7228,44 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "transpose",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "ptr_g{2,}",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"ptr"
+			],
+			"desc": " describes a single textual transposition as an ordered list of at least two pointers specifying the order in which the elements indicated should be re-combined.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "typeDesc",
 			"pmType": "node",
 			"fcType": "hard",
@@ -6897,203 +7300,6 @@
 				"p"
 			],
 			"desc": "contains a description of the typefaces or other aspects of the printing of an incunable or other printed source.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
-			"name": "refsDecl",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "(model_pLike+|cRefPattern+|refState_g+)",
-			"group": "model_encodingDescPart",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"default",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"p"
-			],
-			"desc": "specifies how canonical references are constructed for this text.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
-			"name": "samplingDecl",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "model_pLike+",
-			"group": "model_encodingDescPart",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"default",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"p"
-			],
-			"desc": "contains a prose description of the rationale and methods used in sampling texts in the creation of a corpus or collection.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
-			"name": "spGrp",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "(model_headLike* (model_global|sp|model_stageLike)+)",
-			"group": "model_common model_divPart",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"subtype",
-				"synch",
-				"toWhom",
-				"type",
-				"who",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"sp"
-			],
-			"desc": "contains a group of speeches or songs in a performance text presented in a source as constituting a single unit or number.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
-			"name": "tagsDecl",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "(rendition* namespace*)",
-			"group": "model_encodingDescPart",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"partial",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"rendition"
-			],
-			"desc": "provides detailed information about the tagging applied to a document.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
-			"name": "taxonomy",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "(((category|taxonomy)+|((model_descLike)+ (category|taxonomy)*))|(model_biblLike (category|taxonomy)*))",
-			"group": "",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"category"
-			],
-			"desc": "defines a typology either implicitly, by means of a bibliographic citation, or explicitly by a structured taxonomy.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -22157,6 +22363,94 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"targetLang": {
+			"ident": "targetLang",
+			"description": "specifies the language of the content to be found at the destination referenced by target, using a language tag generated according to BCP 47.",
+			"dataType": "teidata.language",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"target": {
+			"ident": "target",
+			"description": "specifies the destination of the reference by supplying one or more URI References",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"evaluate": {
+			"ident": "evaluate",
+			"description": "specifies the intended meaning when the target of a pointer is itself a pointer.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "all",
+					"desc": "if the element pointed to is itself a pointer, then the target of that pointer will be taken, and so on, until an element is found which is not a pointer."
+				},
+				{
+					"ident": "one",
+					"desc": "if the element pointed to is itself a pointer, then its target (whether a pointer or not) is taken as the target of this pointer."
+				},
+				{
+					"ident": "none",
+					"desc": "no further evaluation of targets is carried out beyond that needed to find the element specified in the pointer's target."
+				}
+			],
+			"valListType": "closed",
+			"usage": "opt",
+			"mode": null
+		},
+		"domains": {
+			"ident": "domains",
+			"description": "optionally specifies the identifiers of the elements within which all elements indicated by the contents of this element lie.",
+			"dataType": "teidata.pointer",
+			"minOccurs": "2",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"targFunc": {
+			"ident": "targFunc",
+			"description": "describes the function of each of the values of the target attribute of the enclosed link, join, or alt tags.",
+			"dataType": "teidata.word",
+			"minOccurs": "2",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"mode": {
+			"ident": "mode",
+			"description": "states whether the alternations gathered in this collection are exclusive or inclusive.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "excl",
+					"desc": "indicates that the alternation is exclusive, i.e. that at most one of the alternatives occurs."
+				},
+				{
+					"ident": "incl",
+					"desc": "indicates that the alternation is not exclusive, i.e. that one or more of the alternatives occur."
+				}
+			],
+			"valListType": "closed",
+			"usage": "opt",
+			"mode": null
+		},
 		"when": {
 			"ident": "when",
 			"description": "supplies the value of the date or time in a standard form, e.g. yyyy-mm-dd.",
@@ -22341,52 +22635,6 @@
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"targetLang": {
-			"ident": "targetLang",
-			"description": "specifies the language of the content to be found at the destination referenced by target, using a language tag generated according to BCP 47.",
-			"dataType": "teidata.language",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"target": {
-			"ident": "target",
-			"description": "specifies the destination of the reference by supplying one or more URI References",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"evaluate": {
-			"ident": "evaluate",
-			"description": "specifies the intended meaning when the target of a pointer is itself a pointer.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "all",
-					"desc": "if the element pointed to is itself a pointer, then the target of that pointer will be taken, and so on, until an element is found which is not a pointer."
-				},
-				{
-					"ident": "one",
-					"desc": "if the element pointed to is itself a pointer, then its target (whether a pointer or not) is taken as the target of this pointer."
-				},
-				{
-					"ident": "none",
-					"desc": "no further evaluation of targets is carried out beyond that needed to find the element specified in the pointer's target."
-				}
-			],
-			"valListType": "closed",
 			"usage": "opt",
 			"mode": null
 		},
@@ -22627,6 +22875,78 @@
 			"usage": null,
 			"mode": null
 		},
+		"use": {
+			"ident": "use",
+			"description": "supplies an XPath selection pattern using the syntax defined in . The XPath pattern is relative to the context given in match, which will either be a sibling attribute in the case of citeStructure or on the parent citeStructure in the case of citeData.",
+			"dataType": "teidata.xpath",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "req",
+			"mode": null
+		},
+		"delim": {
+			"ident": "delim",
+			"description": "supplies a delimiting string preceding the structural component.",
+			"dataType": "string",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"match": {
+			"ident": "match",
+			"description": "supplies an XPath selection pattern using the syntax defined in which identifies a set of nodes which are citable structural components. The expression may be absolute (beginning with /) or relative. match on a citeStructure without a citeStructure parent must be an absolute XPath. If it is relative, its context is set by the match of the parent citeStructure. ",
+			"dataType": "teidata.xpath",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "req",
+			"mode": null
+		},
+		"unit": {
+			"ident": "unit",
+			"description": "describes the structural unit indicated by the citeStructure.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "book"
+				},
+				{
+					"ident": "chapter"
+				},
+				{
+					"ident": "entry"
+				},
+				{
+					"ident": "poem"
+				},
+				{
+					"ident": "letter"
+				},
+				{
+					"ident": "line"
+				},
+				{
+					"ident": "section"
+				},
+				{
+					"ident": "verse"
+				},
+				{
+					"ident": "volume"
+				}
+			],
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
 		"evidence": {
 			"ident": "evidence",
 			"description": "indicates the nature of the evidence supporting the reliability or accuracy of the intervention or interpretation.",
@@ -22833,35 +23153,6 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": null,
-			"mode": null
-		},
-		"unit": {
-			"ident": "unit",
-			"description": "names the unit used for the measurement",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "cm"
-				},
-				{
-					"ident": "mm"
-				},
-				{
-					"ident": "in"
-				},
-				{
-					"ident": "line",
-					"desc": "lines of text"
-				},
-				{
-					"ident": "char",
-					"desc": "characters of text"
-				}
-			],
-			"valListType": "semi",
-			"usage": "opt",
 			"mode": null
 		},
 		"quantity": {
@@ -23304,28 +23595,6 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"domains": {
-			"ident": "domains",
-			"description": "optionally specifies the identifiers of the elements within which all elements indicated by the contents of this element lie.",
-			"dataType": "teidata.pointer",
-			"minOccurs": "2",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"targFunc": {
-			"ident": "targFunc",
-			"description": "describes the function of each of the values of the target attribute of the enclosed link, join, or alt tags.",
-			"dataType": "teidata.word",
-			"minOccurs": "2",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
 		"scheme": {
 			"ident": "scheme",
 			"description": "identifies the controlled vocabulary within which the set of keywords concerned is defined, for example by a taxonomy element, or by some other resource.",
@@ -23759,6 +24028,17 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"partial": {
+			"ident": "partial",
+			"description": "indicates whether the element types listed exhaustively include all those found within text, or represent only a subset.",
+			"dataType": "teidata.truthValue",
+			"minOccurs": "1",
+			"maxOccurs": "1",
+			"valList": null,
+			"valListType": "open",
+			"usage": "rec",
+			"mode": null
+		},
 		"origin": {
 			"ident": "origin",
 			"description": "designates the origin of the timeline, i.e. the time at which it begins.",
@@ -23792,17 +24072,6 @@
 			"usage": "opt",
 			"mode": "change"
 		},
-		"partial": {
-			"ident": "partial",
-			"description": "indicates whether the element types listed exhaustively include all those found within text, or represent only a subset.",
-			"dataType": "teidata.truthValue",
-			"minOccurs": "1",
-			"maxOccurs": "1",
-			"valList": null,
-			"valListType": "open",
-			"usage": "rec",
-			"mode": null
-		},
 		"seq": {
 			"ident": "seq",
 			"description": "assigns a sequence number related to the order in which the encoded features carrying this attribute are believed to have occurred.",
@@ -23834,26 +24103,6 @@
 			"valListType": "open",
 			"usage": "opt",
 			"mode": "change"
-		},
-		"mode": {
-			"ident": "mode",
-			"description": "states whether the alternations gathered in this collection are exclusive or inclusive.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "excl",
-					"desc": "indicates that the alternation is exclusive, i.e. that at most one of the alternatives occurs."
-				},
-				{
-					"ident": "incl",
-					"desc": "indicates that the alternation is not exclusive, i.e. that one or more of the alternatives occur."
-				}
-			],
-			"valListType": "closed",
-			"usage": "rec",
-			"mode": null
 		},
 		"weights": {
 			"ident": "weights",
@@ -23910,17 +24159,6 @@
 			],
 			"valListType": "open",
 			"usage": "rec",
-			"mode": null
-		},
-		"use": {
-			"ident": "use",
-			"description": "supplies an XPath selection pattern using the syntax defined in . The XPath pattern is relative to the context given in match, which will either be a sibling attribute in the case of citeStructure or on the parent citeStructure in the case of citeData.",
-			"dataType": "teidata.xpath",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open",
-			"usage": "req",
 			"mode": null
 		},
 		"property": {
@@ -24181,17 +24419,6 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"delim": {
-			"ident": "delim",
-			"description": "supplies a delimiting string following the reference component.",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
 		"feature": {
 			"ident": "feature",
 			"description": "a paralinguistic feature.",
@@ -24287,17 +24514,6 @@
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"match": {
-			"ident": "match",
-			"description": "supplies an XPath selection pattern using the syntax defined in which identifies a set of nodes, selected within the context identified by the target attribute if this is supplied, or within the context of the parent element if it is not. ",
-			"dataType": "teidata.xpath",
-			"minOccurs": null,
-			"maxOccurs": null,
 			"valList": null,
 			"valListType": "open",
 			"usage": "opt",
@@ -25797,6 +26013,7 @@
 			"additional",
 			"address",
 			"adminInfo",
+			"altGrp",
 			"altIdentifier",
 			"analytic",
 			"annotation",
@@ -25818,6 +26035,7 @@
 			"castList",
 			"category",
 			"cit",
+			"citeStructure",
 			"classDecl",
 			"climate",
 			"correction",
@@ -25880,6 +26098,7 @@
 			"listPlace",
 			"listPrefixDef",
 			"listRelation",
+			"listTranspose",
 			"listWit",
 			"location",
 			"locusGrp",
@@ -25940,9 +26159,15 @@
 			"sourceDesc",
 			"supportDesc",
 			"sp",
+			"spanGrp",
+			"samplingDecl",
+			"spGrp",
 			"state",
 			"stdVals",
 			"styleDefDecl",
+			"refsDecl",
+			"tagsDecl",
+			"taxonomy",
 			"table",
 			"terrain",
 			"textClass",
@@ -25952,12 +26177,8 @@
 			"titleStmt",
 			"trait",
 			"transcriptionDesc",
+			"transpose",
 			"typeDesc",
-			"refsDecl",
-			"samplingDecl",
-			"spGrp",
-			"tagsDecl",
-			"taxonomy",
 			"unitDecl",
 			"unitDef",
 			"vocal"
@@ -26317,6 +26538,7 @@
 			"fw",
 			"handNotes",
 			"handShift",
+			"listTranspose",
 			"metamark",
 			"mod",
 			"redo",
@@ -26328,6 +26550,7 @@
 			"substJoin",
 			"supplied",
 			"surplus",
+			"transpose",
 			"undo"
 		],
 		"analysis": [
@@ -26336,7 +26559,8 @@
 			"interpGrp",
 			"phr",
 			"s",
-			"span"
+			"span",
+			"spanGrp"
 		],
 		"textcrit": [
 			"app",
@@ -26369,6 +26593,7 @@
 			"category",
 			"change",
 			"citeData",
+			"citeStructure",
 			"classCode",
 			"classDecl",
 			"conversion",
@@ -26501,6 +26726,7 @@
 		"linking": [
 			"ab",
 			"alt",
+			"altGrp",
 			"anchor",
 			"annotation",
 			"join",
