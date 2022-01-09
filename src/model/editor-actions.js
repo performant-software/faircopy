@@ -50,8 +50,9 @@ export function createStructureElement( elementID, nodePos, actionType, teiDocum
 }
 
 export function determineRules( elementID, teiSchema ) {
-    const {schema, validationSet} = teiSchema
-    const targetType = schema.nodes[elementID]
+    const {schema, validationSet, elements} = teiSchema
+    const element = elements[elementID]
+    const { fcType } = element
 
     const listToString = (list) => {
         let strList
@@ -67,12 +68,20 @@ export function determineRules( elementID, teiSchema ) {
     }
 
     let mayContainIDs = []
-    for( const elementName of Object.keys(validationSet) ) {
-        const testFragment = validationSet[elementName]
-        if( targetType.validContent(testFragment) ) {
-            mayContainIDs.push(elementName)
+
+    // inlines can't contain anything
+    if( fcType !== 'inlines' ) {
+        // use the content element (eg noteX) to determine what can be 
+        const targetType = fcType === 'asides' ? schema.nodes[`${elementID}X`] : schema.nodes[elementID]
+
+        for( const elementName of Object.keys(validationSet) ) {        
+            const testFragment = validationSet[elementName]
+            if( targetType.validContent(testFragment) ) {
+                mayContainIDs.push(elementName)
+            }    
         }
-    }
+    }    
+
     const mayContain = listToString(mayContainIDs.sort())
 
     const containedByIDs = []
