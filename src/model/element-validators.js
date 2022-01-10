@@ -5,14 +5,10 @@ import { markApplies } from "./commands"
 export function createValidationSet(elements, schema) {
     const validationSet = {}
 
-    // parent node type is only needed to produce correct global node wrapper for inlines
-    // for the validation set, assume it is a p node.
-    const defaultParentNodeType = schema.nodes['p']
-
     for( const element of Object.values(elements) ) {
         if( inValidationSet(element) ) {
             const { name } = element
-            validationSet[name] = Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements, defaultParentNodeType ) )
+            validationSet[name] = Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements ) )
         }
     }
 
@@ -21,7 +17,7 @@ export function createValidationSet(elements, schema) {
 
 function inValidationSet(element) {
     const { fcType, pmType, synth } = element
-    return !synth && fcType !== 'docNodes' && pmType !== 'mark'
+    return !synth && fcType !== 'docNodes' && pmType !== 'mark' && fcType !== 'inlines' && fcType !== 'asides'
 }
 
 export function validAction( elementID, teiDocument ) {

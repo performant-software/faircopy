@@ -85,10 +85,20 @@ export function determineRules( elementID, teiSchema ) {
     const mayContain = listToString(mayContainIDs.sort())
 
     const containedByIDs = []
-    const testFragment = validationSet[elementID]
+
     for( const elementName of Object.keys(validationSet) ) {
         const parentType = schema.nodes[elementName]
-        if( parentType.validContent(testFragment) ) {
+        let testFragment
+        // the validation set is an optimization to reduce the amount of fragments we are creating/destroying
+        // here. However, for inlines and asides, their globalNode depends on parent, so can't create them ahead of time.
+        if( fcType === 'inlines' || fcType === 'asides' ) {
+            let node = createValidNode( elementID, {}, Fragment.empty, schema, elements, parentType )
+            testFragment = node ? Fragment.from(node) : null
+        } else {
+            testFragment = validationSet[elementID]
+        }
+
+        if( testFragment && parentType.validContent(testFragment) ) {
             containedByIDs.push(elementName)
         }
     }    
