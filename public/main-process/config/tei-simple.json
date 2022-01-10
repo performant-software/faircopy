@@ -2444,7 +2444,9 @@
 				"xml:space"
 			],
 			"defaultNodes": [
-				"titleStmt"
+				"titleStmt",
+				"publicationStmt",
+				"sourceDesc"
 			],
 			"desc": "contains a full bibliographic description of an electronic file.",
 			"synth": false,

@@ -7,8 +7,9 @@ export function createValidationSet(elements, schema) {
 
     for( const element of Object.values(elements) ) {
         if( inValidationSet(element) ) {
-            const { name } = element
-            validationSet[name] = Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements ) )
+            const { name, fcType } = element
+            // make a blank entry for inlines and asides
+            validationSet[name] = ( fcType !== 'inlines' && fcType !== 'asides' ) ? Fragment.from( createValidNode( name, {}, Fragment.empty, schema, elements ) ) : null
         }
     }
 
@@ -17,7 +18,7 @@ export function createValidationSet(elements, schema) {
 
 function inValidationSet(element) {
     const { fcType, pmType, synth } = element
-    return !synth && fcType !== 'docNodes' && pmType !== 'mark' && fcType !== 'inlines' && fcType !== 'asides'
+    return !synth && fcType !== 'docNodes' && pmType !== 'mark' 
 }
 
 export function validAction( elementID, teiDocument ) {

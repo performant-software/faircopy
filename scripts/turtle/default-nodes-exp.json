@@ -57,7 +57,7 @@
     "epilogue": ["sp"],
     "event": ["desc"],
     "figure": ["graphic"],
-    "fileDesc": ["titleStmt"],
+    "fileDesc": ["titleStmt","publicationStmt","sourceDesc"],
     "floatingText": ["body"],
     "front": ["p"],
     "graphic": ["desc"],

@@ -74,9 +74,18 @@ export function determineRules( elementID, teiSchema ) {
         // use the content element (eg noteX) to determine what can be 
         const targetType = fcType === 'asides' ? schema.nodes[`${elementID}X`] : schema.nodes[elementID]
 
-        for( const elementName of Object.keys(validationSet) ) {        
-            const testFragment = validationSet[elementName]
-            if( targetType.validContent(testFragment) ) {
+        for( const elementName of Object.keys(validationSet) ) {   
+            const elementFCType = elements[elementName].fcType
+            let testFragment
+            // the validation set is an optimization to reduce the amount of fragments we are creating/destroying
+            // here. However, for inlines and asides, their globalNode depends on parent, so can't create them ahead of time.
+            if( elementFCType === 'inlines' || elementFCType === 'asides' ) {
+                let node = createValidNode( elementName, {}, Fragment.empty, schema, elements, targetType )
+                testFragment = node ? Fragment.from(node) : null
+            } else {
+                testFragment = validationSet[elementName]
+            }
+            if( testFragment && targetType.validContent(testFragment) ) {
                 mayContainIDs.push(elementName)
             }    
         }
@@ -87,12 +96,14 @@ export function determineRules( elementID, teiSchema ) {
     const containedByIDs = []
 
     for( const elementName of Object.keys(validationSet) ) {
-        const parentType = schema.nodes[elementName]
+        const elementFCType = elements[elementName].fcType
+        // can't be contained by inlines
+        if( elementFCType === 'inlines' ) continue
+        const parentType = elementFCType === 'asides' ? schema.nodes[`${elementName}X`] : schema.nodes[elementName]
+        
         let testFragment
-        // the validation set is an optimization to reduce the amount of fragments we are creating/destroying
-        // here. However, for inlines and asides, their globalNode depends on parent, so can't create them ahead of time.
         if( fcType === 'inlines' || fcType === 'asides' ) {
-            let node = createValidNode( elementID, {}, Fragment.empty, schema, elements, parentType )
+            const node = createValidNode( elementID, {}, Fragment.empty, schema, elements, parentType )
             testFragment = node ? Fragment.from(node) : null
         } else {
             testFragment = validationSet[elementID]
