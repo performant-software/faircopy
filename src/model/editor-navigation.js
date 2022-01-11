@@ -1,4 +1,4 @@
-import { cutSelectedNode, copySelectedNode, pasteSelectedNode } from "./cut-and-paste"
+import { cutSelectedNode, copySelectedNode } from "./cut-and-paste"
 import { eraseSelection } from "./editor-actions"
 import {undo, redo} from "prosemirror-history"
 import {TextSelection} from "prosemirror-state"
@@ -133,10 +133,6 @@ export function handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenE
 
     if( metaKey && key === 'c' ) {
         copySelectedNode( teiDocument, clipboardSerializer )
-    }
-
-    if( metaKey && key === 'v' ) {
-        pasteSelectedNode( teiDocument )
     }
 
     const enabledMenus = getEnabledMenus(teiDocument)

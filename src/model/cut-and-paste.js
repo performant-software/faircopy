@@ -150,21 +150,6 @@ function copyNode(teiDocument,cut=false) {
     }
 }
 
-// Handle paste events when the node is selected via the EditorGutter
-export function pasteSelectedNode(teiDocument) {
-    const html = fairCopy.services.readClipBoardHTML()    
-    if( html ) {
-        const editorView = teiDocument.getActiveView()
-        const {inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
-        const selection = (editorView) ? editorView.state.selection : null  
-        if( selection && selection.node && !inlines.includes(selection.node.type.name)  ) {
-            // make the paste happen in the editor view
-            editorView.focus()
-            fairCopy.services.ipcSend('requestPaste')
-        }
-    }
-}
-
 function transformInlineCopy(slice) {
     
     // remove structure nodes and concat inlines
