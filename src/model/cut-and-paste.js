@@ -124,17 +124,29 @@ function serializeForClipboard(view, slice) {
 
 function copyNode(teiDocument,cut=false) {
     const editorView = teiDocument.getActiveView()
+    const { doc } = editorView.state
     const {inlines} = teiDocument.fairCopyProject.teiSchema.elementGroups
-    const selection = (editorView) ? editorView.state.selection : null  
-    
-    if( selection && selection.node && !inlines.includes(selection.node.type.name)  ) {
-        const clips = serializeForClipboard(editorView,selection.content())
-        fairCopy.services.copyToClipBoardHTML(clips.dom.innerHTML)
-        if( cut ) {
-            const {tr} = editorView.state
-            tr.deleteSelection()
-            editorView.dispatch(tr)    
-        }
+    const { currentTreeNode } = teiDocument
+    const { editorGutterPos } = currentTreeNode
+
+    if( editorGutterPos !== null ) {
+        const $pos = doc.resolve(editorGutterPos)
+        const node = $pos.node().child($pos.index())
+        
+        if( node && !inlines.includes(node.type.name)  ) {
+            const start = editorGutterPos
+            const end = start + node.nodeSize
+            const slice = doc.slice(start,end)
+            const clips = serializeForClipboard(editorView,slice)
+            fairCopy.services.copyToClipBoardHTML(clips.dom.innerHTML)
+            if( cut ) {
+                const {tr} = editorView.state
+                tr.delete(start,end)
+                currentTreeNode.editorGutterPos = null
+                currentTreeNode.editorGutterPath = null
+                editorView.dispatch(tr)    
+            }
+        }    
     }
 }
 
