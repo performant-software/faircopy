@@ -3848,44 +3848,6 @@
 			"derivedAttrs": []
 		},
 		{
-			"name": "listTranspose",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "(desc* transpose+)",
-			"group": "model_profileDescPart model_global model_standOffPart model_global_meta",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"transpose"
-			],
-			"desc": "supplies a list of transpositions, each of which is indicated at some point in a document typically by means of metamarks.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
 			"name": "listWit",
 			"pmType": "node",
 			"fcType": "hard",
@@ -7226,44 +7188,6 @@
 				"desc"
 			],
 			"desc": "describes the set of transcription conventions used, particularly for spoken material.",
-			"synth": false,
-			"derivedAttrs": []
-		},
-		{
-			"name": "transpose",
-			"pmType": "node",
-			"fcType": "hard",
-			"isolating": true,
-			"content": "ptr_g{2,}",
-			"group": "",
-			"validAttrs": [
-				"ana",
-				"cert",
-				"change",
-				"copyOf",
-				"corresp",
-				"exclude",
-				"facs",
-				"n",
-				"next",
-				"prev",
-				"rend",
-				"rendition",
-				"resp",
-				"sameAs",
-				"select",
-				"source",
-				"style",
-				"synch",
-				"xml:base",
-				"xml:id",
-				"xml:lang",
-				"xml:space"
-			],
-			"defaultNodes": [
-				"ptr"
-			],
-			"desc": " describes a single textual transposition as an ordered list of at least two pointers specifying the order in which the elements indicated should be re-combined.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -26100,7 +26024,6 @@
 			"listPlace",
 			"listPrefixDef",
 			"listRelation",
-			"listTranspose",
 			"listWit",
 			"location",
 			"locusGrp",
@@ -26179,7 +26102,6 @@
 			"titleStmt",
 			"trait",
 			"transcriptionDesc",
-			"transpose",
 			"typeDesc",
 			"unitDecl",
 			"unitDef",
@@ -26540,7 +26462,6 @@
 			"fw",
 			"handNotes",
 			"handShift",
-			"listTranspose",
 			"metamark",
 			"mod",
 			"redo",
@@ -26552,7 +26473,6 @@
 			"substJoin",
 			"supplied",
 			"surplus",
-			"transpose",
 			"undo"
 		],
 		"analysis": [
