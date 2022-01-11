@@ -153,7 +153,7 @@ function addInside( elementID, attrs, teiDocument, pos, tr ) {
 
         // insert node inside parent
         if( nodeType.isAtom ) {
-            return insertAtomNodeAt(elementID, attrs, pos+1, schema, elements, false, tr, createSubDocument )
+            return insertAtomNodeAt(elementID, attrs, pos+1, schema, elements, 'inside', tr, createSubDocument )
         } else {
             return insertNodeAt(elementID, attrs, pos+1, schema, elements, tr, createSubDocument )    
         }
@@ -183,7 +183,7 @@ function addAbove( elementID, attrs, teiDocument, pos, tr ) {
     const nodeType = schema.nodes[elementID]
 
     if( nodeType.isAtom ) {
-        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, false, tr, createSubDocument )
+        return insertAtomNodeAt(elementID, attrs, pos, schema, elements, 'above', tr, createSubDocument )
     } else {
         return insertNodeAt(elementID, attrs, pos, schema, elements, tr, createSubDocument )    
     }
@@ -202,7 +202,7 @@ function addBelow( elementID, attrs, teiDocument, pos, tr ) {
     const insertPos = pos + targetNode.nodeSize
 
     if( nodeType.isAtom ) {
-        return insertAtomNodeAt(elementID, attrs, insertPos, schema, elements, true, tr, createSubDocument )
+        return insertAtomNodeAt(elementID, attrs, insertPos, schema, elements, 'below', tr, createSubDocument )
     } else {
         return insertNodeAt(elementID, attrs, insertPos, schema, teiSchema.elements, tr, createSubDocument )    
     }
@@ -383,16 +383,13 @@ function createInline( nodeType, editorView ) {
 
 function createAside( asideName, attrs, teiDocument, editorView ) {
     const { state } = editorView
-    const { tr, selection } = state
+    const { selection } = state
     const { $head } = selection
     const { teiSchema } = teiDocument.fairCopyProject
-    const { schema } = teiSchema
+    const { schema, elements } = teiSchema
     const { createSubDocument } = teiDocument
-
-    const subDocID = createSubDocument(document,asideName,attrs)
-    const nodeType = schema.nodes[asideName]
-    const asideNode = nodeType.create({ id: '', __id__: subDocID, ...attrs })
-    tr.insert($head.pos, asideNode) 
+    
+    const tr = insertAtomNodeAt(asideName, attrs, $head.pos, schema, elements, 'inside', state.tr, createSubDocument )
     editorView.dispatch(tr)
     editorView.focus()
 }
