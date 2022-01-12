@@ -33,6 +33,10 @@ const getBasename = function getBasename( mypath, ext ) {
     return path.basename(mypath,ext)
 }
 
+const openBuyNowWebpage = function openBuyNowWebpage() {
+    electron.shell.openExternal("https://faircopy-activate-2-staging.herokuapp.com/?scrollTo=prices");
+}
+
 exports.services = { 
     ipcRegisterCallback, 
     ipcRemoveListener,
@@ -41,5 +45,6 @@ exports.services = {
     readClipBoardText,
     copyToClipBoard,
     copyToClipBoardHTML,
-    getBasename
+    getBasename,
+    openBuyNowWebpage
 }

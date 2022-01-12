@@ -87,6 +87,21 @@
     margin: 20px;
 }
 
+#ProjectWindow .license-line {
+    margin-left: 20px;    
+    display: flex;
+}
+
+#ProjectWindow .license-button {
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+#ProjectWindow .license-blurb {
+    padding-top: 10px;
+}
+
 #ProjectVersion .quit-button {
     float: right;
 }
+
