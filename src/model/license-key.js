@@ -9,15 +9,24 @@ export function activateLicense(devMode,license,machine_uuid,onActivate,onError)
     const endPointURL = `${activationEndpoint}/${license}?machine_uuid=${machine_uuid}`
     axios.put(endPointURL).then(
         (resp) => {
-            const { expires_at, license_type, secure_id, subscription } = resp.data
-            const licenseData = { licenseKey: license, machineID: machine_uuid, activated: true, expires_at, license_type, secure_id, subscription }
+            const { expires_at, license_type, secure_id, subscription, activation_token } = resp.data
+            const licenseData = { 
+                licenseKey: license, 
+                machineID: machine_uuid, 
+                activated: true, 
+                expiresAt: expires_at, 
+                licenseType: license_type, 
+                secureID: secure_id,
+                activationToken: activation_token, 
+                subscription 
+            }
             localStorage.setItem('licenseData',JSON.stringify(licenseData))
             onActivate()
         },
         (error) => {
             // problem with the license 
-            if( error && error.response && error.response.status === 401 ) {
-                const errorMessage = error.response.data.status
+            if( error && error.response && error.response.status === 400 ) {
+                const errorMessage = error.response.data.errors.base[0]
                 onError(errorMessage)    
             } else {
                 onError("Unable to connect to server.")
