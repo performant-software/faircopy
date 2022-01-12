@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
-import { initLicenseData } from '../../model/license-key'
+import { initLicenseData, licenseDaysLeft } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -153,6 +153,49 @@ export default class ProjectWindow extends Component {
         )
     }
 
+    renderManageLicense() {
+        const onManageLicense = () => {
+            this.setState({ ...this.state, mode: 'manageLicense' })
+        } 
+        return (
+            <div className="content">
+                <Button className="license-button" size="small" onClick={onManageLicense} variant='contained'>Manage License</Button>
+            </div>
+        )
+    }
+
+    renderLicenseLine() {
+        // determined based on activation state
+        // this.renderManageLicenseButton()
+        return this.renderFreeTrialLine()
+    }
+
+    renderManageLicenseButton() {
+        const onManageLicense = () => {
+           this.setState({ ...this.state, mode: 'manageLicense' })
+        }
+        return (
+            <div className="license-line">
+                <Button className="license-button" size="small" onClick={onManageLicense} variant='contained'>Manage License</Button>
+            </div>
+        )
+    }
+
+    renderFreeTrialLine() {
+        const onBuyNow = () => {
+            fairCopy.services.openBuyNowWebpage()
+        }
+        const daysLeft = licenseDaysLeft()
+        const s = daysLeft !== 1 ? "s" : ""
+
+        return (
+            <div className="license-line">
+                <Typography className="license-blurb">You have {daysLeft} day{s} left in your free trial.</Typography>
+                <Button className="license-button" size="small" onClick={onBuyNow} variant='contained'>Buy Now</Button>
+            </div>
+        )
+    }
+
     render() {
         const { appConfig } = this.props
         const { mode } = this.state
@@ -161,13 +204,33 @@ export default class ProjectWindow extends Component {
         const allowKeyReset = appConfig ? appConfig.devMode : false
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
+        let content 
+        switch(mode) {
+            case 'select':
+                content = this.renderSelectProject(allowKeyReset)
+                break
+            case 'new':
+                content = this.renderNewProject()
+                break
+            case 'manageLicense':
+                content = this.renderManageLicense()
+                break
+            case 'enterLicenseKey':
+                // TODO
+                break
+            default:
+                console.log("Unrecognized view mode.")
+                break
+        }
+
         return (
             <main id="ProjectWindow" >
                 <header className='header'>
                     <Typography variant="h5" component="h1"><i className='fas fa-feather-alt fa-lg'></i> FairCopy {appVersion} {devModeTag}</Typography>
                     <Typography>A word processor for the humanities scholar.</Typography>
                 </header>
-                { mode === 'select' ? this.renderSelectProject(allowKeyReset) : this.renderNewProject() }
+                { content }
+                { mode === 'select' && this.renderLicenseLine() }
             </main>
         )
     }
