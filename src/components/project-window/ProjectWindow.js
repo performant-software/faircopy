@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
-import { initLicenseData, licenseDaysLeft } from '../../model/license-key'
+import LicensePanel from '../license-window/LicensePanel'
+import { initLicenseData, licenseDaysLeft, activateLicense } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -181,17 +182,44 @@ export default class ProjectWindow extends Component {
         )
     }
 
-    renderFreeTrialLine() {
+    renderLicensePanel() {
+        const onActivateLicense = ( licenseKey, onError ) => {
+            const { licenseData } = this.state
+            const { machineID } = licenseData
+            const { onActivate, appConfig } = this.props
+            activateLicense( appConfig.devMode, licenseKey, machineID, onActivate, onError)
+        }
+
         const onBuyNow = () => {
             fairCopy.services.openBuyNowWebpage()
         }
+
+        const onCancel = () => {
+            this.setState({ ...this.state, mode: 'select' })
+        }
+
+        // TODO add buy now link
+        
+        return (
+            <LicensePanel
+                onActivate={onActivateLicense}
+                onCancel={onCancel}
+            ></LicensePanel>
+        )
+    }
+
+    renderFreeTrialLine() {
+        const onBuyNow = () => {
+            this.setState({ ...this.state, mode: 'licensePanel' })
+        }
+
         const daysLeft = licenseDaysLeft()
         const s = daysLeft !== 1 ? "s" : ""
 
         return (
             <div className="license-line">
-                <Typography className="license-blurb">You have {daysLeft} day{s} left in your free trial.</Typography>
-                <Button className="license-button" size="small" onClick={onBuyNow} variant='contained'>Buy Now</Button>
+                <Typography className="license-blurb">You have X day{s} left in your free trial.</Typography>
+                <Button disabled className="license-button" size="small" onClick={onBuyNow} variant='contained'>Buy Now</Button>
             </div>
         )
     }
@@ -215,8 +243,8 @@ export default class ProjectWindow extends Component {
             case 'manageLicense':
                 content = this.renderManageLicense()
                 break
-            case 'enterLicenseKey':
-                // TODO
+            case 'licensePanel':
+                content = this.renderLicensePanel()
                 break
             default:
                 console.log("Unrecognized view mode.")

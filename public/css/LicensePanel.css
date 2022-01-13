@@ -1,0 +1,85 @@
+#LicensePanel .header {
+    margin: 20px;
+}
+
+#LicensePanel h1 {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+#LicensePanel .content {
+    margin: 12px;
+    background: #F8F5FF;
+    padding: 5px;
+    padding-top: 15px;
+    border-radius: 10px;
+}
+
+#LicensePanel .license-field {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+#LicensePanel .word-field {
+    width: 90px;
+    display: inline-block;
+    background: white;
+}
+
+#LicensePanel input {
+    text-transform: uppercase;
+}
+
+#LicensePanel .dash {
+    margin: 5px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+#LicensePanel .errorMessage {
+    margin-top: 12px;
+    margin-left: 20px;
+    float: left;
+    color: red;
+}
+
+#LicensePanel .action-button {
+    margin-right: 10px;
+}
+
+#LicensePanel .browse-button {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#LicensePanel .form-actions {
+    margin-left: 430px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#LicensePanel .left-side {
+    width: 40%;
+    height: 300px;
+    margin-top: 30px;
+}
+
+#LicensePanel .right-side {
+    width: 40%;
+    height: 300px;
+    padding-left: 20px;
+    border-left: 3px solid gray;
+}
+
+#LicensePanel button {
+    background: white;
+}
+
+#LicensePanel .save-button-active {
+    background: #1976d2;
+    margin-right: 10px;
+}
+
+#ProjectVersion .quit-button {
+    float: right;
+}
