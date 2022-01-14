@@ -270,9 +270,11 @@ class ProjectStore {
             this.searchIndex.removeIndex(resourceID)
         }
 
-        const idMap = this.idMapAuthority.removeResource(resourceID)
-        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
-        this.sendIDMapUpdate()
+        if( resourceEntry.type !== 'image' ) {
+            const idMap = this.idMapAuthority.removeResource(resourceID)
+            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
+            this.sendIDMapUpdate()    
+        }
 
         delete this.manifestData.resources[resourceID] 
         this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })    

@@ -36,7 +36,7 @@ export function activateLicense(devMode,license,machine_uuid,onActivate,onError)
 }
 
 export function licenseDaysLeft() {
-    const licenseData = JSON.parse(localStorage.getItem('licenseData'))
+    // const licenseData = JSON.parse(localStorage.getItem('licenseData'))
     // TODO compare time now to expiresAt
     return 13
 }

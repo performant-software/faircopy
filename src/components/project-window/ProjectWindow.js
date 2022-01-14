@@ -190,9 +190,9 @@ export default class ProjectWindow extends Component {
             activateLicense( appConfig.devMode, licenseKey, machineID, onActivate, onError)
         }
 
-        const onBuyNow = () => {
-            fairCopy.services.openBuyNowWebpage()
-        }
+        // const onBuyNow = () => {
+        //     fairCopy.services.openBuyNowWebpage()
+        // }
 
         const onCancel = () => {
             this.setState({ ...this.state, mode: 'select' })
