@@ -3,7 +3,7 @@ import JSZip from 'jszip'
 const fairCopy = window.fairCopy
 
 // Worker state
-let projectArchiveState = { open: false }
+let projectArchiveState = { open: false, jobQueue: [] }
 
 function setupTempFolder() {
     const os = fairCopy.services.getOs()
@@ -59,12 +59,10 @@ async function cacheResource(resourceID, fileName, cacheFolder, zip) {
     return cacheFile
 }
 
-function saveArchive(jobNumber, zipPath, zip, callback) {
+function saveArchive(startTime, zipPath, zip, callback) {
     const fs = fairCopy.services.getFs()
     const { projectFilePath } = projectArchiveState
-    const zipFile = `${zipPath}/${jobNumber}.zip`
-
-    const startTime = Date.now()
+    const zipFile = `${zipPath}/${startTime}.zip`
 
     // write to a temp file first so that zip won't get 
     // corrupted if we terminate unexpectedly
@@ -105,9 +103,9 @@ async function openArchive(postMessage,workerData) {
     postMessage({ messageType: 'project-data', project })
 
     const open = true
-    const jobsInProgress = 0
+    const jobQueue = []
 
-    return { zip, cacheFolder, zipPath, open, jobsInProgress, projectFilePath }
+    return { zip, cacheFolder, zipPath, open, jobQueue, projectFilePath }
 }
 
 function postError(errorMessage,postMessage) {
@@ -115,18 +113,35 @@ function postError(errorMessage,postMessage) {
 }
 
 const save = () => {
+    // process write operations in order and one at a time.
+    const processNextJob = (job) => {
+        const {startTime, zipPath, zip } = job
+        saveArchive(startTime, zipPath, zip, () => {  
+            projectArchiveState.jobQueue.shift()
+            const job = projectArchiveState.jobQueue[0]
+            if( job ) processNextJob(job)
+        })
+    }
+
     const { zipPath, zip } = projectArchiveState
-    const jobNumber = Date.now()
-    projectArchiveState.jobsInProgress++
-    saveArchive(jobNumber, zipPath, zip, () => { projectArchiveState.jobsInProgress-- })
+    const startTime = Date.now()
+    const job = { startTime, zipPath, zip }
+    console.log(`job starting ${startTime}`)
+
+    if( projectArchiveState.jobQueue.length === 0 ) {
+        projectArchiveState.jobQueue.push(job)
+        processNextJob(job)
+    } else {
+        projectArchiveState.jobQueue.push(job)
+    }
 }
 
 // terminate worker after all jobs are done
 const closeSafely = (close) => {      
     const fs = fairCopy.services.getFs()
-    const { jobsInProgress, cacheFolder } = projectArchiveState
+    const { jobQueue, cacheFolder } = projectArchiveState
 
-    if( jobsInProgress > 0 ) {
+    if( jobQueue.length > 0 ) {
         // write jobs still active, wait a moment and then try again 
         setTimeout( () => { closeSafely(close) }, 1000 )
     } else {
