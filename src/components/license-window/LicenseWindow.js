@@ -35,6 +35,7 @@ export default class LicenseWindow extends Component {
                 <LicensePanel
                     onActivate={onActivateLicense}
                     onCancel={onCancel}
+                    mode='activate'
                 ></LicensePanel>
             </main>
         )

@@ -25,6 +25,7 @@ import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults, isIndexable, scrollToSearchResult } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog';
+import LicenseBar from './LicenseBar';
 
 const fairCopy = window.fairCopy
 
@@ -721,6 +722,7 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
+                    <LicenseBar></LicenseBar>
                     <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                         { this.renderProjectSidebar() }
                         { this.renderContentPane() }

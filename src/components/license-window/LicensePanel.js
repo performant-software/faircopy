@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Typography, TextField} from '@material-ui/core'
+import { licenseDaysLeft } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -74,6 +75,37 @@ export default class LicensePanel extends Component {
             </div>
         )
     }
+
+    renderBlurb() {
+        const { mode } = this.props
+
+        const onBuyNow = () => {
+            fairCopy.services.openBuyNowWebpage()
+        }
+        const daysLeft = licenseDaysLeft()
+        const s = daysLeft !== 1 ? "s" : ""
+
+        switch(mode) {
+            case 'buy':
+                return (
+                    <div>
+                        <div className="buy-pitch">
+                            <Typography>You have {daysLeft} day{s} left on your trial. Upgrade to a paid version and get free updates to the software for a year.</Typography>
+                            <Button className="license-button" size="small" onClick={onBuyNow} variant='contained'>Learn More</Button>
+                        </div>
+                        <Typography variant="h6" component="h1">Enter your license key to activate.</Typography>
+                    </div>
+                )
+            case 'activate':
+                return (
+                    <div>
+                        <Typography variant="h6" component="h1">Please enter your license key.</Typography>
+                    </div>                    
+                )
+            default:
+                return null
+        }
+    }
         
     render() {
 
@@ -96,7 +128,7 @@ export default class LicensePanel extends Component {
 
         return (
             <div id="LicensePanel">
-                <Typography variant="h6" component="h1">Please enter your license key.</Typography>
+                { this.renderBlurb() }
                 { this.renderLicenseField() }
                 { errorMessage && 
                     <div className="errorMessage">

@@ -83,3 +83,14 @@
 #ProjectVersion .quit-button {
     float: right;
 }
+
+#LicensePanel .buy-pitch {
+    margin-left: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background: #F8F5FF;
+    padding: 15px;
+    border-radius: 15px;
+    display:flex;
+    max-width: 80%;
+}

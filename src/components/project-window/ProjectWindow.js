@@ -183,25 +183,26 @@ export default class ProjectWindow extends Component {
     }
 
     renderLicensePanel() {
+
+        const onActivateSuccess = () => {
+            // TODO activation success 
+            this.setState({ ...this.state, mode: 'select' })
+        }
+
         const onActivateLicense = ( licenseKey, onError ) => {
             const { licenseData } = this.state
             const { machineID } = licenseData
-            const { onActivate, appConfig } = this.props
-            activateLicense( appConfig.devMode, licenseKey, machineID, onActivate, onError)
+            const { appConfig } = this.props
+            activateLicense( appConfig.devMode, licenseKey, machineID, onActivateSuccess, onError)
         }
-
-        // const onBuyNow = () => {
-        //     fairCopy.services.openBuyNowWebpage()
-        // }
 
         const onCancel = () => {
             this.setState({ ...this.state, mode: 'select' })
         }
-
-        // TODO add buy now link
         
         return (
             <LicensePanel
+                mode='buy'
                 onActivate={onActivateLicense}
                 onCancel={onCancel}
             ></LicensePanel>
@@ -219,7 +220,7 @@ export default class ProjectWindow extends Component {
         return (
             <div className="license-line">
                 <Typography className="license-blurb">You have X day{s} left in your free trial.</Typography>
-                <Button disabled className="license-button" size="small" onClick={onBuyNow} variant='contained'>Buy Now</Button>
+                <Button className="license-button" size="small" onClick={onBuyNow} variant='contained'>Buy Now</Button>
             </div>
         )
     }
