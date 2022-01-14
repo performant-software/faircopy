@@ -219,7 +219,7 @@ export default class ProjectWindow extends Component {
 
         return (
             <div className="license-line">
-                <Typography className="license-blurb">You have X day{s} left in your free trial.</Typography>
+                <Typography className="license-blurb">You have {daysLeft} day{s} left in your free trial.</Typography>
                 <Button className="license-button" size="small" onClick={onBuyNow} variant='contained'>Buy Now</Button>
             </div>
         )
