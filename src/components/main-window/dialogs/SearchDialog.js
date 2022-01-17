@@ -201,7 +201,7 @@ export default class SearchDialog extends Component {
         }
 
         return (
-            <Dialog id="SearchDialog" maxWidth="lg" open={true} onClose={this.onClose} aria-labelledby="attribute-dialog">
+            <Dialog id="SearchDialog" maxWidth="lg" open={true} onClose={onClose} aria-labelledby="attribute-dialog">
                 <DialogTitle id="attribute-dialog"><i className="fas fa-filter"></i> Search Filters</DialogTitle>
                 <DialogContent className="vocab-content">
                     <Typography>You can limit your search to certain element types and/or attribute values.</Typography>
