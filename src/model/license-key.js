@@ -42,11 +42,17 @@ export function activateLicense(devMode,license,onActivate,onError) {
 export function licenseDaysLeft() {
     const licenseData = JSON.parse(localStorage.getItem('licenseData'))
     const { expiresAt } = licenseData 
+    if( !expiresAt ) return -1
     const now = Date.now()
     const expireDate = new Date(expiresAt)
     const diffTime = Math.abs(now - expireDate);
     const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return daysLeft
+}
+
+export function licenseHasExpired() {
+    const daysLeft = licenseDaysLeft()
+    return daysLeft < 0 
 }
 
 export function getLicenseType() {
