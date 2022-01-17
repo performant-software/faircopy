@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Typography } from '@material-ui/core'
-import { licenseDaysLeft } from '../../model/license-key'
+import { licenseDaysLeft, getLicenseType } from '../../model/license-key'
 
 export default class LicenseBar extends Component {
     render() {
+        const licenseType = getLicenseType()
+        if( licenseType === 'paid' ) return null
+
         const onBuyNow = () => {
             const { onLicense } = this.props
             onLicense()

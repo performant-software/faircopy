@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { initLicenseData, licenseDaysLeft, activateLicense } from '../../model/license-key'
+import { initLicenseData, licenseDaysLeft, activateLicense, getLicenseType } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -155,20 +155,31 @@ export default class ProjectWindow extends Component {
     }
 
     renderManageLicense() {
-        const onManageLicense = () => {
-            this.setState({ ...this.state, mode: 'manageLicense' })
+        const onClose = () => {
+            this.setState({ ...this.state, mode: 'select' })
         } 
+        const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
+        const { licenseKey, subscription, expiresAt } = currentLicenseData
+        const renewalDate = new Date(expiresAt).toLocaleDateString()
+
         return (
             <div className="content">
-                <Button className="license-button" size="small" onClick={onManageLicense} variant='contained'>Manage License</Button>
+                <Typography>License Key: {licenseKey}</Typography>
+                <Typography>Renewal Date: {renewalDate}</Typography>
+                <Typography>Autorenew? {subscription ? 'true' : 'false'}</Typography>
+                <Button className="license-button" size="small" onClick={onClose} variant='contained'>Done</Button>
             </div>
         )
     }
 
     renderLicenseLine() {
-        // determined based on activation state
-        // this.renderManageLicenseButton()
-        return this.renderFreeTrialLine()
+        const licenseType = getLicenseType()
+        console.log(`license type: ${licenseType}`)
+        if( licenseType === 'paid' ) {
+            return this.renderManageLicenseButton()
+        } else {
+            return this.renderFreeTrialLine()
+        }
     }
 
     renderManageLicenseButton() {

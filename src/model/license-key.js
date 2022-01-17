@@ -49,6 +49,12 @@ export function licenseDaysLeft() {
     return daysLeft
 }
 
+export function getLicenseType() {
+    const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
+    const { licenseType } = currentLicenseData
+    return licenseType
+}
+
 export function initLicenseData() {
     const licenseData = {
         activated: false,
