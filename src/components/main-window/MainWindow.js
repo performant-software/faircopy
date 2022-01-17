@@ -26,6 +26,7 @@ import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults, isIndexable, scrollToSearchResult } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog';
 import LicenseBar from './LicenseBar';
+import LicenseDialog from './dialogs/LicenseDialog';
 
 const fairCopy = window.fairCopy
 
@@ -69,6 +70,7 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
+            licenseMode: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -410,6 +412,10 @@ export default class MainWindow extends Component {
         this.setState({...this.state, searchFilterMode: true })
     }
 
+    onLicense = () => {
+        this.setState({...this.state, licenseMode: true })
+    }
+
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
         const { searchQuery } = this.state
         const query = searchQuery ? searchQuery.query : ""
@@ -537,7 +543,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -644,6 +650,9 @@ export default class MainWindow extends Component {
                     updateSearchFilter={this.updateSearchFilter}
                     onClose={()=>{ this.setState( {...this.state, searchFilterMode: false} )}}
                 ></SearchDialog> }
+                { licenseMode && <LicenseDialog
+                    onClose={()=>{ this.setState( {...this.state, licenseMode: false} )}}
+                ></LicenseDialog> }
                 <SnackAlert
                     open={alertMessage !== null}
                     message={alertMessage}
@@ -722,7 +731,9 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
-                    <LicenseBar></LicenseBar>
+                    <LicenseBar
+                        onLicense={this.onLicense}
+                    ></LicenseBar>
                     <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                         { this.renderProjectSidebar() }
                         { this.renderContentPane() }

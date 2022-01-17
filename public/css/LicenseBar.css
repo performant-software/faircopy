@@ -1,5 +1,10 @@
 #LicenseBar {
-    padding: 5px;
-    background: yellow;
+    padding: 10px;
+    background: #E6DEF9;
     display: flex;
+}
+
+#LicenseBar .license-button {
+    margin-left: 10px;
+    background: white;
 }
