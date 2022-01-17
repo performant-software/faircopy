@@ -80,7 +80,7 @@ export default class LicensePanel extends Component {
         const { mode } = this.props
 
         const onBuyNow = () => {
-            fairCopy.services.openBuyNowWebpage()
+            fairCopy.services.ipcSend('openBuyNowWebpage')
         }
         const daysLeft = licenseDaysLeft()
         const s = daysLeft !== 1 ? "s" : ""

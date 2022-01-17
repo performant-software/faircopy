@@ -170,7 +170,7 @@ export default class ProjectWindow extends Component {
         const renewalDate = new Date(expiresAt).toLocaleDateString()
 
         const onRenew = () => {
-            fairCopy.services.openRenewalWebpage(secureID)
+            fairCopy.services.ipcSend('openRenewalWebpage', secureID)
         }
 
         return (

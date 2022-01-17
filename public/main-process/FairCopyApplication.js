@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
 const { ProjectStore } = require('./ProjectStore')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
@@ -32,6 +32,7 @@ class FairCopyApplication {
     const distConfig = JSON.parse(distConfigJSON)
     distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/release-notes/latest.md`).toString('utf-8')
     distConfig.version = this.isDebugMode() ? process.env.FAIRCOPY_DEV_VERSION : app.getVersion()
+    distConfig.websiteURL = distConfig.devMode ? distConfig.devURL : distConfig.prodURL
     return distConfig
   }
 
@@ -109,6 +110,14 @@ class FairCopyApplication {
         this.sendToAllWindows('imagesOpened', [])
       }
     })
+
+    ipcMain.on('openBuyNowWebpage', (event) => {
+      shell.openExternal(`${this.config.websiteURL}/?scrollTo=prices`);
+    })
+
+    ipcMain.on('openRenewalWebpage', (event, secureID ) => {
+      shell.openExternal(`${this.config.websiteURL}/renew/${secureID}`);
+    })  
     
     // Main window events //////
 
