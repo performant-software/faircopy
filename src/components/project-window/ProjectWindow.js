@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { initLicenseData, licenseDaysLeft, activateLicense, getLicenseType, simulateEAP } from '../../model/license-key'
+import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, simulateEAP } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -129,7 +129,7 @@ export default class ProjectWindow extends Component {
         }  
 
         const onResetKey = () => {
-            initLicenseData()
+            resetLicenseData()
             fairCopy.services.ipcSend('exitApp')
         }
 

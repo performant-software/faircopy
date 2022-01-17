@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid'
 const devEndpoint = 'https://faircopy-activate-2-staging.herokuapp.com/api/public/user_licenses'
 const prodEndpoint = 'https://activate.faircopyeditor.com/api/activation'
 
+const fourteenDaysMs = (1000 * 60 * 60 * 24 * 14)
+
 export function activateLicense(devMode,license,onActivate,onError) {
     const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
     const { machineID } = currentLicenseData
@@ -63,12 +65,36 @@ export function getLicenseType() {
     return licenseType
 }
 
-// This is to make it easier to test the automated migration from EAP to Free Trial
-export function simulateEAP() {
-    // TODO
+export function initLicenseData() {
+    const licenseDataJSON = localStorage.getItem('licenseData')
+    if( licenseDataJSON ) {
+        let licenseData = JSON.parse(licenseDataJSON) 
+        // In EAP state, migrate to free trial
+        if( licenseData.activated && !licenseData.expiresAt ) {
+            licenseData.licenseType = 'free'
+            licenseData.expiresAt = Date.now() + fourteenDaysMs 
+            localStorage.setItem('licenseData',JSON.stringify(licenseData))
+            return licenseData
+        } else {
+            return licenseData
+        }
+    } else {
+       return resetLicenseData()
+    }
 }
 
-export function initLicenseData() {
+// This is to make it easier to test the automated migration from EAP to Free Trial
+export function simulateEAP() {
+    const licenseData = {
+        activated: true,
+        licenseKey: 'S224-59W9-XXXX-XXXX-R9GO-AD4C',
+        machineID: uuidv4()
+    }
+    localStorage.setItem('licenseData',JSON.stringify(licenseData))
+    return licenseData
+}
+
+export function resetLicenseData() {
     const licenseData = {
         activated: false,
         licenseKey: '',

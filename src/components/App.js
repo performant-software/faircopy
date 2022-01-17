@@ -19,8 +19,7 @@ export default class App extends Component {
   constructor(props) {
     super(props)
 
-    const licenseDataJSON = localStorage.getItem('licenseData')
-    const licenseData = licenseDataJSON ? JSON.parse(licenseDataJSON) : initLicenseData()
+    const licenseData = initLicenseData()
 
     this.state = {
       fairCopyProject: null,
