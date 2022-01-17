@@ -50,15 +50,22 @@ export function licenseDaysLeft() {
     return daysLeft
 }
 
-export function licenseHasExpired() {
+export function licenseLock() {
+    const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
+    const { activated, licenseType } = currentLicenseData
     const daysLeft = licenseDaysLeft()
-    return daysLeft < 0 
+    return !activated || (daysLeft < 0 && licenseType === 'free' ) 
 }
 
 export function getLicenseType() {
     const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
     const { licenseType } = currentLicenseData
     return licenseType
+}
+
+// This is to make it easier to test the automated migration from EAP to Free Trial
+export function simulateEAP() {
+    // TODO
 }
 
 export function initLicenseData() {

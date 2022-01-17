@@ -49,7 +49,7 @@ class FairCopyApplication {
 
   initIPC() {
     
-    ipcMain.on('checkForUpdates', (event,licenseData) => { checkForUpdates(licenseData, this.config, this.sendToMainWindow) })
+    ipcMain.on('checkForUpdates', (event,licenseData) => { checkForUpdates(licenseData, this.sendToMainWindow) })
     ipcMain.on('downloadUpdate', (event) => { downloadUpdate(this.sendToMainWindow) })
     ipcMain.on('closeProject', (event) => { 
       this.closeProject()

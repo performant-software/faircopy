@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { initLicenseData, licenseDaysLeft, activateLicense, getLicenseType } from '../../model/license-key'
+import { initLicenseData, licenseDaysLeft, activateLicense, getLicenseType, simulateEAP } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -133,6 +133,11 @@ export default class ProjectWindow extends Component {
             fairCopy.services.ipcSend('exitApp')
         }
 
+        const onEAPKey = () => {
+            simulateEAP()
+            fairCopy.services.ipcSend('exitApp')
+        }
+
         const projectCards = []
         for( const project of projects ) {
             projectCards.push(this.renderProjectCard(project))
@@ -145,6 +150,7 @@ export default class ProjectWindow extends Component {
                     <Button className="left-action" onClick={onClickNew} variant='contained'>New Project...</Button>
                     <Button className="left-action" onClick={onClickOpen} variant='contained'>Open Project...</Button>
                     { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
+                    { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
@@ -158,15 +164,21 @@ export default class ProjectWindow extends Component {
         const onClose = () => {
             this.setState({ ...this.state, mode: 'select' })
         } 
+
         const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
-        const { licenseKey, subscription, expiresAt } = currentLicenseData
+        const { licenseKey, subscription, expiresAt, secureID } = currentLicenseData
         const renewalDate = new Date(expiresAt).toLocaleDateString()
+
+        const onRenew = () => {
+            fairCopy.services.openRenewalWebpage(secureID)
+        }
 
         return (
             <div className="content">
                 <Typography>License Key: {licenseKey}</Typography>
                 <Typography>Renewal Date: {renewalDate}</Typography>
                 <Typography>Autorenew? {subscription ? 'true' : 'false'}</Typography>
+                <Button className="license-button" size="small" onClick={onRenew} variant='contained'>Renew License</Button>
                 <Button className="license-button" size="small" onClick={onClose} variant='contained'>Done</Button>
             </div>
         )

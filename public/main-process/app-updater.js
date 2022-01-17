@@ -1,15 +1,14 @@
 const { autoUpdater } = require('electron-updater')
 const log = require('electron-log')
 
-const testActivationToken = 'activ-039efab62a98b94765e5cc382e5b7d43v3'
-
-const checkForUpdates = function checkForUpdates( licenseData, config, sendToMainWindow ) {
+const checkForUpdates = function checkForUpdates( licenseData, sendToMainWindow ) {
     const { activated } = licenseData
+    const activationToken = licenseData.activationToken
 
     // Don't ask for updates if machine isn't activated
-    if( !activated ) return
+    if( !activated || !activationToken ) return
 
-    autoUpdater.addAuthHeader(`Bearer ${testActivationToken}`)
+    autoUpdater.addAuthHeader(`Bearer ${activationToken}`)
     autoUpdater.autoDownload = false
     autoUpdater.logger = log
 

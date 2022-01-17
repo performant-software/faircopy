@@ -9,7 +9,7 @@ import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWind
 
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
-import { initLicenseData, licenseHasExpired } from '../model/license-key'
+import { initLicenseData, licenseLock } from '../model/license-key'
 import { saveConfig } from '../model/faircopy-config'
 
 const fairCopy = window.fairCopy
@@ -126,9 +126,9 @@ export default class App extends Component {
   }
 
   render() {
-    const {fairCopyProject, imageView, licenseData, appConfig, incompatInfo, projectSettingsActive } = this.state
+    const {fairCopyProject, imageView, appConfig, incompatInfo, projectSettingsActive } = this.state
     const {rootComponent} = window.fairCopy
-    if( !licenseData.activated || licenseHasExpired() ) {
+    if( licenseLock() ) {
       return (
         <LicenseWindow
           appConfig={appConfig}
