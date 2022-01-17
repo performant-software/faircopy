@@ -207,7 +207,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 570, false, '#E6DEF9' )
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 700, false, '#E6DEF9', true )  // 570
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 

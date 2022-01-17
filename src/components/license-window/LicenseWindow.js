@@ -4,26 +4,11 @@ import LicensePanel from './LicensePanel.js'
 
 const fairCopy = window.fairCopy
 
-export default class LicenseWindow extends Component {
-
-    constructor(props) {
-        super(props)
-    
-        const licenseData = JSON.parse(localStorage.getItem('licenseData'))
-
-        this.state = {
-          licenseData
-        }
-    }
-
-   
+export default class LicenseWindow extends Component {   
     render() {
-
         const onActivateLicense = ( licenseKey, onError ) => {
-            const { licenseData } = this.state
-            const { machineID } = licenseData
             const { onActivate, appConfig } = this.props
-            activateLicense( appConfig.devMode, licenseKey, machineID, onActivate, onError)
+            activateLicense( appConfig.devMode, licenseKey, onActivate, onError)
         }
 
         const onCancel = () => {

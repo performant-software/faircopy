@@ -651,6 +651,7 @@ export default class MainWindow extends Component {
                     onClose={()=>{ this.setState( {...this.state, searchFilterMode: false} )}}
                 ></SearchDialog> }
                 { licenseMode && <LicenseDialog
+                    appConfig={appConfig}
                     onClose={()=>{ this.setState( {...this.state, licenseMode: false} )}}
                 ></LicenseDialog> }
                 <SnackAlert

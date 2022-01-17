@@ -4,15 +4,17 @@ import { v4 as uuidv4 } from 'uuid'
 const devEndpoint = 'https://faircopy-activate-2-staging.herokuapp.com/api/public/user_licenses'
 const prodEndpoint = 'https://activate.faircopyeditor.com/api/activation'
 
-export function activateLicense(devMode,license,machine_uuid,onActivate,onError) {
+export function activateLicense(devMode,license,onActivate,onError) {
+    const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
+    const { machineID } = currentLicenseData
     const activationEndpoint = devMode ? devEndpoint : prodEndpoint
-    const endPointURL = `${activationEndpoint}/${license}?machine_uuid=${machine_uuid}`
+    const endPointURL = `${activationEndpoint}/${license}?machine_uuid=${machineID}`
     axios.put(endPointURL).then(
         (resp) => {
             const { expires_at, license_type, secure_id, subscription, activation_token } = resp.data
             const licenseData = { 
                 licenseKey: license, 
-                machineID: machine_uuid, 
+                machineID, 
                 activated: true, 
                 expiresAt: expires_at, 
                 licenseType: license_type, 
@@ -25,9 +27,11 @@ export function activateLicense(devMode,license,machine_uuid,onActivate,onError)
         },
         (error) => {
             // problem with the license 
-            if( error && error.response && error.response.status === 400 ) {
-                const errorMessage = error.response.data.errors.base[0]
-                onError(errorMessage)    
+            if( error && error.response ) {
+                if( error.response.status === 400 ) {
+                    const errorMessage = error.response.data.errors.base[0]
+                    onError(errorMessage)        
+                }
             } else {
                 onError("Unable to connect to server.")
             }

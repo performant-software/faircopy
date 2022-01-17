@@ -183,6 +183,7 @@ export default class ProjectWindow extends Component {
     }
 
     renderLicensePanel() {
+        const { appConfig } = this.props
 
         const onActivateSuccess = () => {
             // TODO activation success 
@@ -190,10 +191,7 @@ export default class ProjectWindow extends Component {
         }
 
         const onActivateLicense = ( licenseKey, onError ) => {
-            const { licenseData } = this.state
-            const { machineID } = licenseData
-            const { appConfig } = this.props
-            activateLicense( appConfig.devMode, licenseKey, machineID, onActivateSuccess, onError)
+            activateLicense( appConfig.devMode, licenseKey, onActivateSuccess, onError)
         }
 
         const onCancel = () => {

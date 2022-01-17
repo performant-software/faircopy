@@ -90,8 +90,8 @@ export default class LicensePanel extends Component {
                 return (
                     <div>
                         <div className="buy-pitch">
-                            <Typography>You have {daysLeft} day{s} left on your trial. Upgrade to a paid version and get free updates to the software for a year.</Typography>
-                            <Button className="license-button" size="small" onClick={onBuyNow} variant='contained'>Learn More</Button>
+                            <Typography>You have {daysLeft} day{s} left of your free trial of FairCopy. Visit our website to purchase a license. Then, copy and paste the license key in the form below.</Typography>
+                            <Button className="license-button" onClick={onBuyNow} variant='contained'>Visit Website <i className="fas fa-external-link-alt link"></i></Button>
                         </div>
                         <Typography variant="h6" component="h1">Enter your license key to activate.</Typography>
                     </div>

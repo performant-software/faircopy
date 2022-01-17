@@ -91,6 +91,9 @@
     background: #F8F5FF;
     padding: 15px;
     border-radius: 15px;
-    display:flex;
     max-width: 80%;
+}
+
+#LicensePanel .link {
+    margin-left: 5px;
 }
