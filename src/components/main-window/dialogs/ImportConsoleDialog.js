@@ -57,8 +57,7 @@ export default class ImportConsoleDialog extends Component {
                         nextConsole.push(`File is too large, 3MB max size: ${filename}`)
                     } else {
                         nextConsole.push(`Unable to read file: ${filename}`)
-                    }
-                    fairCopy.services.ipcSend('importContinue')
+                    }                    
                 } else {
                     nextConsole.push(`Importing file ${filename}...`)
                     const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentResourceID)
@@ -69,6 +68,7 @@ export default class ImportConsoleDialog extends Component {
                         success = true
                     }    
                 }
+                fairCopy.services.ipcSend('importContinue')
             } else {
                 done = true
                 const s = successCount !== 1 ? 's' : ''
