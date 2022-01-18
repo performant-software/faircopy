@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 const devEndpoint = 'https://faircopy-activate-2-staging.herokuapp.com/api/public/user_licenses'
 const prodEndpoint = 'https://activate.faircopyeditor.com/api/activation'
 
-const fourteenDaysMs = (1000 * 60 * 60 * 24 * 14)
+export const oneDayMs = (1000 * 60 * 60 * 24)
 
 export function activateLicense(devMode,license,onActivate,onError) {
     const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
@@ -41,14 +41,19 @@ export function activateLicense(devMode,license,onActivate,onError) {
     );
 }
 
+export function setExpiration( timeLeft ) {
+    const licenseData = JSON.parse(localStorage.getItem('licenseData'))
+    licenseData.expiresAt = new Date( Date.now() + timeLeft ).toString()
+    localStorage.setItem('licenseData',JSON.stringify(licenseData))
+}
+
 export function licenseDaysLeft() {
     const licenseData = JSON.parse(localStorage.getItem('licenseData'))
     const { expiresAt } = licenseData 
     if( !expiresAt ) return -1
-    const now = Date.now()
     const expireDate = new Date(expiresAt)
-    const diffTime = Math.abs(now - expireDate);
-    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = expireDate - Date.now()
+    const daysLeft = Math.ceil(diffTime / oneDayMs)
     return daysLeft
 }
 
@@ -72,7 +77,7 @@ export function initLicenseData() {
         // In EAP state, migrate to free trial
         if( licenseData.activated && !licenseData.expiresAt ) {
             licenseData.licenseType = 'free'
-            licenseData.expiresAt = Date.now() + fourteenDaysMs 
+            licenseData.expiresAt = new Date( Date.now() + (oneDayMs*14) ).toString()
             localStorage.setItem('licenseData',JSON.stringify(licenseData))
             return licenseData
         } else {

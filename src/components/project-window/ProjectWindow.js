@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, simulateEAP } from '../../model/license-key'
+import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, setExpiration, oneDayMs } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -133,8 +133,18 @@ export default class ProjectWindow extends Component {
             fairCopy.services.ipcSend('exitApp')
         }
 
-        const onEAPKey = () => {
-            simulateEAP()
+        // const onEAPKey = () => {
+        //     simulateEAP()
+        //     fairCopy.services.ipcSend('exitApp')
+        // }
+
+        const onExpired = () => {
+            setExpiration(-oneDayMs)
+            fairCopy.services.ipcSend('exitApp')
+        }
+
+        const on14Days = () => {
+            setExpiration(oneDayMs*14)
             fairCopy.services.ipcSend('exitApp')
         }
 
@@ -143,6 +153,8 @@ export default class ProjectWindow extends Component {
             projectCards.push(this.renderProjectCard(project))
         }
 
+        //                     { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
+
         return (
             <div className="content select-project">
                 <div className="left-side">
@@ -150,7 +162,8 @@ export default class ProjectWindow extends Component {
                     <Button className="left-action" onClick={onClickNew} variant='contained'>New Project...</Button>
                     <Button className="left-action" onClick={onClickOpen} variant='contained'>Open Project...</Button>
                     { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
-                    { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
+                    { allowKeyReset && <Button className="left-action" onClick={onExpired} variant='contained'>Simulate Expired</Button> }
+                    { allowKeyReset && <Button className="left-action" onClick={on14Days} variant='contained'>Simulate 14 Days</Button> }
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
@@ -173,12 +186,26 @@ export default class ProjectWindow extends Component {
             fairCopy.services.ipcSend('openRenewalWebpage', secureID)
         }
 
+        let buttonLabel, renewalBlurb
+        if( subscription ) {
+            buttonLabel = "Manage Subscription"
+            renewalBlurb = `Your license will automatically renew on ${renewalDate}`
+    
+        } else {
+            const daysLeft = licenseDaysLeft()
+            buttonLabel = "Renew License"
+            if( daysLeft >= 0 ) {
+                renewalBlurb = `Renew by ${renewalDate} to get 50% off next year.`
+            } else {
+                renewalBlurb = "Renew your license now to get access to the latest features."
+            }
+        }
+
         return (
             <div className="content">
                 <Typography>License Key: {licenseKey}</Typography>
-                <Typography>Renewal Date: {renewalDate}</Typography>
-                <Typography>Autorenew? {subscription ? 'true' : 'false'}</Typography>
-                <Button className="license-button" size="small" onClick={onRenew} variant='contained'>Renew License</Button>
+                <Typography>{renewalBlurb}</Typography>
+                <Button className="license-button" size="small" onClick={onRenew} variant='contained'>{buttonLabel}</Button>
                 <Button className="license-button" size="small" onClick={onClose} variant='contained'>Done</Button>
             </div>
         )
@@ -188,18 +215,23 @@ export default class ProjectWindow extends Component {
         const licenseType = getLicenseType()
         console.log(`license type: ${licenseType}`)
         if( licenseType === 'paid' ) {
-            return this.renderManageLicenseButton()
+            return this.renderManageLicenseLine()
         } else {
             return this.renderFreeTrialLine()
         }
     }
 
-    renderManageLicenseButton() {
+    renderManageLicenseLine() {
         const onManageLicense = () => {
            this.setState({ ...this.state, mode: 'manageLicense' })
         }
+
+        const daysLeft = licenseDaysLeft()
+        const s = daysLeft !== 1 ? "s" : ""
+        
         return (
             <div className="license-line">
+                { daysLeft <= 14 && daysLeft >= 0 && <Typography className="license-blurb">Renew now! You have {daysLeft} day{s} left to get 50% off. </Typography> }
                 <Button className="license-button" size="small" onClick={onManageLicense} variant='contained'>Manage License</Button>
             </div>
         )
