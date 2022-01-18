@@ -129,6 +129,8 @@ onDrop = () => {
     const editorView = teiDocument.getActiveView()
     let tr = editorView.state.tr
     this.clearNodeBorder(nodePos,tr.doc,tr)
+    editorView.dispatch(tr)
+    tr = editorView.state.tr
     if( actionType ) {
       tr = createStructureElement( elementID, nodePos, actionType, teiDocument, tr )
     }
