@@ -112,7 +112,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('openBuyNowWebpage', (event) => {
-      shell.openExternal(`${this.config.websiteURL}/?scrollTo=prices`);
+      shell.openExternal(`${this.config.websiteURL}/prices`);
     })
 
     ipcMain.on('openRenewalWebpage', (event, secureID ) => {
