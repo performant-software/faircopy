@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "0.11.17-dev.0",
+  "version": "0.11.18-dev.0",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -103,6 +103,10 @@
     },
     "win": {
       "icon": "build/icon.ico",
+      "certificateSubjectName": "Performant Software Solutions LLC",
+      "signingHashAlgorithms": ["sha256"],
+      "publisherName": "Performant Software Solutions LLC",
+      "signAndEditExecutable": true,
       "target": [
         {
           "target": "nsis"

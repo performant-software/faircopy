@@ -10,3 +10,4 @@ yarn-error.log
 /temp
 faircopy*.tgz
 .env
+/certs
