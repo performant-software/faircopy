@@ -33,6 +33,10 @@ const getBasename = function getBasename( mypath, ext ) {
     return path.basename(mypath,ext)
 }
 
+const getPlatform = function getPlatform() {
+    return process.platform
+}
+
 exports.services = { 
     ipcRegisterCallback, 
     ipcRemoveListener,
@@ -41,5 +45,6 @@ exports.services = {
     readClipBoardText,
     copyToClipBoard,
     copyToClipBoardHTML,
-    getBasename
+    getBasename,
+    getPlatform
 }
