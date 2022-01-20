@@ -13,7 +13,7 @@
     "dist-mac": "electron-builder -m --publish always",
     "dist-win": "electron-builder -w --publish always",
     "dist-linux": "electron-builder -l --publish always",
-    "dist": "electron-builder -mwl --publish always",
+    "dist": "electron-builder -ml --publish always",
     "build": "react-scripts build",
     "start": "BROWSER=none PORT=4000 react-scripts start",
     "test": "react-scripts test"
