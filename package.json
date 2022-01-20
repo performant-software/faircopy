@@ -15,7 +15,7 @@
     "dist-linux": "electron-builder -l --publish always",
     "dist": "electron-builder -ml --publish always",
     "build": "react-scripts build",
-    "start": "BROWSER=none PORT=4000 react-scripts start",
+    "start": "react-scripts start",
     "test": "react-scripts test"
   },
   "repository": "https://github.com/performant-software/faircopy",
