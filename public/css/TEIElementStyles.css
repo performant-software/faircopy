@@ -19,6 +19,11 @@
     text-align:left;
 }
 
+tei-line {
+    direction:rtl;
+    text-align:right;
+}
+
 /* Phrase level markup styling is based on information layers */
 [phraselvl = "true"] {
     border-bottom: dotted #0187a8;
