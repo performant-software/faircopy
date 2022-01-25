@@ -42,7 +42,7 @@ export function getSearchHighlights( editorView ) {
 }
 
 export function isIndexable(resourceType) {
-    return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
+    return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff' || resourceType === 'sourceDoc'
 }
 
 export function scrollToSearchResult( currentResource, searchResultIndex ) {

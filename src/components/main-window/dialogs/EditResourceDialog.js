@@ -65,6 +65,11 @@ export default class EditResourceDialog extends Component {
                             <span>A container for linked data, <br/>contextual information, and <br/>stand-off annotations.</span>
                         )}
                     </MenuItem>
+                    <MenuItem value={'sourceDoc'}>
+                        { this.renderTypeCard("Source Document","fa fa-scroll-old",
+                            <span>A lineated transcription of a <br/>single source document.</span>
+                        )}
+                    </MenuItem>
                     { !parentEntry && <MenuItem value={'teidoc'}>
                         { this.renderTypeCard("TEI Document","fa fa-books",
                             <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed <br/>metadata.</span>

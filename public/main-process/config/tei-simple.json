@@ -6291,6 +6291,45 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "sourceDoc",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_global|model_graphicLike|surface|surfaceGrp)+",
+			"group": "model_resource",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"decls",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"synch",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"surface"
+			],
+			"desc": " contains a transcription or other representation of a single source document potentially forming part of a dossier génétique or collection of sources.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "supportDesc",
 			"pmType": "node",
 			"fcType": "hard",
@@ -6644,6 +6683,96 @@
 				"p"
 			],
 			"desc": "specifies the name of the formal language in which style or renditional information is supplied elsewhere in the document. The specific version of the scheme may also be supplied.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "surfaceGrp",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "(model_global|surface|surfaceGrp)+",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"decls",
+				"exclude",
+				"facs",
+				"n",
+				"next",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"surface"
+			],
+			"desc": "defines any kind of useful grouping of written surfaces, for example the recto and verso of a single leaf, which the encoder wishes to treat as a single unit.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
+			"name": "surface",
+			"pmType": "node",
+			"fcType": "hard",
+			"isolating": true,
+			"content": "((model_global|model_labelLike|model_graphicLike)* ((zone|line|surface|surfaceGrp) model_global*)*)",
+			"group": "",
+			"validAttrs": [
+				"ana",
+				"attachment",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"decls",
+				"exclude",
+				"facs",
+				"flipping",
+				"lrx",
+				"lry",
+				"n",
+				"next",
+				"points",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"start",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"ulx",
+				"uly",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": [
+				"line"
+			],
+			"desc": "defines a written surface as a two-dimensional coordinate space, optionally grouping one or more graphic representations of that space, zones of interest within that space, and transcriptions of the writing within them.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -18140,6 +18269,51 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "line",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode12|model_global|model_linePart)*",
+			"group": "model_linePart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"hand",
+				"lrx",
+				"lry",
+				"n",
+				"next",
+				"points",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"sameAs",
+				"select",
+				"source",
+				"start",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"ulx",
+				"uly",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "contains the transcription of a topographic line in the source document",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "locale",
 			"pmType": "node",
 			"fcType": "soft",
@@ -18224,7 +18398,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode12|model_measureLike)*",
+			"content": "(textNode13|model_measureLike)*",
 			"group": "model_phrase model_limitedPhrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
@@ -19560,7 +19734,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode13|title|model_ptrLike|editor|respStmt|biblScope|idno|textLang|model_global|availability)*",
+			"content": "(textNode14|title|model_ptrLike|editor|respStmt|biblScope|idno|textLang|model_global|availability)*",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -20643,6 +20817,52 @@
 			"derivedAttrs": []
 		},
 		{
+			"name": "zone",
+			"pmType": "node",
+			"fcType": "soft",
+			"isolating": false,
+			"content": "(textNode12|model_graphicLike|model_global|surface|model_linePart)*",
+			"group": "model_linePart model_standOffPart",
+			"validAttrs": [
+				"ana",
+				"cert",
+				"change",
+				"copyOf",
+				"corresp",
+				"exclude",
+				"facs",
+				"hand",
+				"lrx",
+				"lry",
+				"n",
+				"next",
+				"points",
+				"prev",
+				"rend",
+				"rendition",
+				"resp",
+				"rotate",
+				"sameAs",
+				"select",
+				"source",
+				"start",
+				"style",
+				"subtype",
+				"synch",
+				"type",
+				"ulx",
+				"uly",
+				"xml:base",
+				"xml:id",
+				"xml:lang",
+				"xml:space"
+			],
+			"defaultNodes": null,
+			"desc": "defines any two-dimensional area within a surface element.",
+			"synth": false,
+			"derivedAttrs": []
+		},
+		{
 			"name": "textNode0",
 			"pmType": "node",
 			"fcType": "textNodes",
@@ -20827,9 +21047,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "text*",
+			"content": "((model_global_i|model_linePart_i)*|text)*",
 			"selectable": false,
-			"marks": "model_measureLike",
+			"marks": "model_linePart",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -20842,13 +21062,28 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
+			"content": "text*",
+			"selectable": false,
+			"marks": "model_measureLike",
+			"draggable": false,
+			"parseDOM": [
+				{
+					"tag": "textNode13"
+				}
+			]
+		},
+		{
+			"name": "textNode14",
+			"pmType": "node",
+			"fcType": "textNodes",
+			"synth": true,
 			"content": "((model_ptrLike_i|model_global_i)*|text)*",
 			"selectable": false,
 			"marks": "model_ptrLike",
 			"draggable": false,
 			"parseDOM": [
 				{
-					"tag": "textNode13"
+					"tag": "textNode14"
 				}
 			]
 		},
@@ -21894,6 +22129,14 @@
 			"fcType": "docNodes",
 			"isolating": true,
 			"content": "model_standOffPart+",
+			"synth": true
+		},
+		{
+			"name": "sourceDocDoc",
+			"pmType": "node",
+			"fcType": "docNodes",
+			"isolating": true,
+			"content": "( model_global | model_graphicLike | surface | surfaceGrp )+",
 			"synth": true
 		}
 	],
@@ -23882,6 +24125,96 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"ulx": {
+			"ident": "ulx",
+			"description": "gives the x coordinate value for the upper left corner of a rectangular space.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
+		"uly": {
+			"ident": "uly",
+			"description": "gives the y coordinate value for the upper left corner of a rectangular space.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
+		"lrx": {
+			"ident": "lrx",
+			"description": "gives the x coordinate value for the lower right corner of a rectangular space.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
+		"lry": {
+			"ident": "lry",
+			"description": "gives the y coordinate value for the lower right corner of a rectangular space.",
+			"dataType": "teidata.numeric",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
+		"points": {
+			"ident": "points",
+			"description": "identifies a two dimensional area by means of a series of pairs of numbers, each of which gives the x,y coordinates of a point on a line enclosing the area.",
+			"dataType": "teidata.point",
+			"minOccurs": "3",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
+		"attachment": {
+			"ident": "attachment",
+			"description": "describes the method by which this surface is or was connected to the main surface",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "glued",
+					"desc": "glued in place"
+				},
+				{
+					"ident": "pinned",
+					"desc": "pinned or stapled in place"
+				},
+				{
+					"ident": "sewn",
+					"desc": "sewn in place"
+				}
+			],
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
+		"flipping": {
+			"ident": "flipping",
+			"description": "indicates whether the surface is attached and folded in such a way as to provide two writing surfaces",
+			"dataType": "teidata.truthValue",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
 		"partial": {
 			"ident": "partial",
 			"description": "indicates whether the element types listed exhaustively include all those found within text, or represent only a subset.",
@@ -25829,6 +26162,17 @@
 			"valListType": "open",
 			"usage": "opt",
 			"mode": null
+		},
+		"rotate": {
+			"ident": "rotate",
+			"description": "indicates the amount by which this zone has been rotated clockwise, with respect to the normal orientation of the parent surface element as implied by the dimensions given in the msDesc element or by the coordinates of the surface itself. The orientation is expressed in arc degrees.",
+			"dataType": "teidata.count",
+			"minOccurs": "1",
+			"maxOccurs": "1",
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
 		}
 	},
 	"elementGroups": {
@@ -25855,6 +26199,7 @@
 			"metamarkDoc",
 			"precisionDoc",
 			"responsDoc",
+			"sourceDocDoc",
 			"spaceDoc",
 			"spanDoc",
 			"standOffDoc",
@@ -26010,6 +26355,7 @@
 			"setting",
 			"settingDesc",
 			"sourceDesc",
+			"sourceDoc",
 			"supportDesc",
 			"sp",
 			"spanGrp",
@@ -26018,6 +26364,8 @@
 			"state",
 			"stdVals",
 			"styleDefDecl",
+			"surfaceGrp",
+			"surface",
 			"refsDecl",
 			"tagsDecl",
 			"taxonomy",
@@ -26148,10 +26496,8 @@
 			"w",
 			"facsimile",
 			"group",
-			"surface",
 			"TEI",
-			"teiCorpus",
-			"zone"
+			"teiCorpus"
 		],
 		"soft": [
 			"ab",
@@ -26232,6 +26578,7 @@
 			"layout",
 			"lem",
 			"licence",
+			"line",
 			"locale",
 			"locus",
 			"measureGrp",
@@ -26289,7 +26636,8 @@
 			"wit",
 			"witDetail",
 			"witness",
-			"writing"
+			"writing",
+			"zone"
 		]
 	},
 	"modules": {
@@ -26386,18 +26734,23 @@
 			"fw",
 			"handNotes",
 			"handShift",
+			"line",
 			"metamark",
 			"mod",
 			"redo",
 			"restore",
 			"retrace",
 			"secl",
+			"sourceDoc",
 			"space",
 			"subst",
 			"substJoin",
 			"supplied",
+			"surface",
+			"surfaceGrp",
 			"surplus",
-			"undo"
+			"undo",
+			"zone"
 		],
 		"analysis": [
 			"cl",

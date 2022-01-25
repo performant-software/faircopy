@@ -27,6 +27,9 @@ export function serializeText(doc, teiDocument, teiSchema) {
     } else if( resourceType === 'standOff' ) {
         domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
         textEl = xmlDom.getElementsByTagName('standOff')[0]    
+    } else if( resourceType === 'sourceDoc' ) {
+        domFragment = proseMirrorToDOM(doc.content, teiDocument, teiSchema)
+        textEl = xmlDom.getElementsByTagName('sourceDoc')[0]         
     }
 
     // take the body of the document from prosemirror and reunite it with 

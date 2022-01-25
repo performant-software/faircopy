@@ -72,7 +72,7 @@ class SearchIndex {
     }
 
     isIndexable(resourceType) {
-        return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff'
+        return resourceType === 'text' || resourceType === 'header' || resourceType === 'standOff' || resourceType === 'sourceDoc'
     }
 
     indexResource( resourceID, resourceType, content ) {

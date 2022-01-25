@@ -22,6 +22,7 @@
         "metamarkDoc",
         "precisionDoc",
         "responsDoc",
+        "sourceDocDoc",
         "spaceDoc",
         "spanDoc",
         "standOffDoc",
@@ -177,6 +178,7 @@
         "setting",
         "settingDesc",
         "sourceDesc",
+        "sourceDoc",
         "supportDesc",
         "sp",
         "spanGrp",
@@ -185,6 +187,8 @@
         "state",
         "stdVals",
         "styleDefDecl",
+        "surfaceGrp",
+        "surface",
         "refsDecl",
         "tagsDecl",
         "taxonomy",
@@ -315,10 +319,8 @@
         "w",
         "facsimile",
         "group",
-        "surface",
         "TEI",
-        "teiCorpus",
-        "zone"
+        "teiCorpus"
     ],
     "soft": [
         "ab",
@@ -399,6 +401,7 @@
         "layout",
         "lem",
         "licence",
+        "line",
         "locale",
         "locus",
         "measureGrp",
@@ -456,6 +459,7 @@
         "wit",
         "witDetail",
         "witness",
-        "writing"
+        "writing",
+        "zone"
     ]
 }

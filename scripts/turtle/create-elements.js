@@ -209,6 +209,14 @@ const createDocNode = function createDocNode() {
             isolating: true,
             content: 'model_standOffPart+',
             synth: true
+        },
+        {
+            name: "sourceDocDoc",
+            pmType: "node",
+            fcType: "docNodes",
+            isolating: true,
+            content: '( model_global | model_graphicLike | surface | surfaceGrp )+',
+            synth: true
         }
     ]
 }

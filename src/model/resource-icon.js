@@ -11,6 +11,8 @@ export function getResourceIcon(resourceType, open=false) {
         return 'fa fa-books'
       case 'standOff':
         return 'fa fa-bullseye-pointer'
+      case 'sourceDoc':
+        return 'fa fa-scroll-old'
       default:
         throw new Error('Unrecognized resource type.')
     }
@@ -28,6 +30,8 @@ export function getResourceIcon(resourceType, open=false) {
         return 'TEI Document'
       case 'standOff':
         return 'standoff resource'
+      case 'sourceDoc':
+        return 'source document resource'
       default:
         throw new Error('Unrecognized resource type.')
     }
