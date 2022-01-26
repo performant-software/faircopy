@@ -154,6 +154,9 @@ export default class ProjectWindow extends Component {
         }
 
         //                     { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
+        // { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
+        // { allowKeyReset && <Button className="left-action" onClick={onExpired} variant='contained'>Simulate Expired</Button> }
+        // { allowKeyReset && <Button className="left-action" onClick={on14Days} variant='contained'>Simulate 14 Days</Button> }
 
         return (
             <div className="content select-project">
@@ -161,9 +164,6 @@ export default class ProjectWindow extends Component {
                     <Typography variant="h6" component="h2">Select a Project</Typography>
                     <Button className="left-action" onClick={onClickNew} variant='contained'>New Project...</Button>
                     <Button className="left-action" onClick={onClickOpen} variant='contained'>Open Project...</Button>
-                    { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
-                    { allowKeyReset && <Button className="left-action" onClick={onExpired} variant='contained'>Simulate Expired</Button> }
-                    { allowKeyReset && <Button className="left-action" onClick={on14Days} variant='contained'>Simulate 14 Days</Button> }
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
