@@ -45,7 +45,7 @@ export default class TitleBar extends Component {
         const surfaceNameShort = surfaceName ? shorten( surfaceName, titleLength ) : ''
 
         const chevClass = "fa fa-chevron-right"
-        const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images"></i> : <i aria-label="/" className={chevClass}></i>
+        const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
         const homeEl = !isImageWindow ? <span onClick={this.onClickHome} className="nav-link" >Home</span> : ""
         const surfaceNameEl = surfaceName && <span className="nav-link" ><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
         const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>

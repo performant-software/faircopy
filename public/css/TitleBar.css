@@ -17,3 +17,7 @@
 #TitleBar .nav-link:hover {
     text-decoration: underline;
 }
+
+#TitleBar .image-icon-padding {
+    padding-left: 15px;
+}
