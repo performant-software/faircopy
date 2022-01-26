@@ -1,7 +1,13 @@
-
 #SurfaceEditor .osd-viewer {
-    height: calc( 100vh - 152px );
-    width: 100%;
+  width: 100%;
+}
+
+#SurfaceEditor .full {
+  height: calc( 100vh - 144px );
+}
+
+#SurfaceEditor .windowed {
+  height: calc( 100vh - 89px );
 }
 
 #SurfaceEditor .editor {

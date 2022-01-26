@@ -1,3 +1,6 @@
+#FacsEditor {
+    height: calc( 100% - 48px );
+}
 
 #FacsEditor .top-bar {
     position: absolute;

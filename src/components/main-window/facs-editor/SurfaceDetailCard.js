@@ -23,7 +23,7 @@ export default class SurfaceDetailCard extends Component {
     }
 
     render() {
-        const { facsDocument, facsID, surfaceIndex, changeSurfaceIndex, onChange } = this.props
+        const { facsDocument, facsID, surfaceIndex, changeSurfaceIndex, onChange, isWindowed } = this.props
         const surface = facsDocument.getSurface(surfaceIndex)
         const {surfaces} = facsDocument.facs
         // const names = getSurfaceNames(surface)
@@ -43,9 +43,10 @@ export default class SurfaceDetailCard extends Component {
             }
         }
         const onChangeID = (value,error) => onChange('id',value,error)
+        const modeClass = isWindowed ? 'windowed-card' : 'full-card'
 
         return (
-            <Card id="SurfaceDetailCard" >
+            <Card id="SurfaceDetailCard" className={modeClass} >
                 <IDField
                     hasID={facsDocument.hasID}
                     value={surface.id}

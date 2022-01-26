@@ -238,8 +238,15 @@ export default class SurfaceEditor extends Component {
                     ></SurfaceEditorToolbar>
                 </div>
                 <div className="editor">
-                    <SurfaceDetailCard facsDocument={facsDocument} facsID={facsID} surfaceIndex={surfaceIndex} onChange={onChangeSurface} changeSurfaceIndex={this.setSurfaceIndex} ></SurfaceDetailCard>
-                    <SeaDragonComponent initViewer={this.initViewer} ></SeaDragonComponent>
+                    <SurfaceDetailCard 
+                        facsDocument={facsDocument} 
+                        facsID={facsID} 
+                        surfaceIndex={surfaceIndex} 
+                        onChange={onChangeSurface} 
+                        changeSurfaceIndex={this.setSurfaceIndex} 
+                        isWindowed={isWindowed}
+                    ></SurfaceDetailCard>
+                    <SeaDragonComponent initViewer={this.initViewer} isWindowed={isWindowed} ></SeaDragonComponent>
                     <ZonePopup
                         zone={selectedZone}
                         anchorEl={selectedDOMElement}
@@ -263,8 +270,9 @@ class SeaDragonComponent extends Component {
     }
 
     render() {
-        const { initViewer } = this.props
-        return <div className={`osd-viewer`} ref={(el)=> { initViewer(el) }}></div>
+        const { initViewer, isWindowed } = this.props
+        const modeClass = isWindowed ? 'windowed' : 'full'
+        return <div className={`osd-viewer ${modeClass}`} ref={(el)=> { initViewer(el) }}></div>
     }
 }
   

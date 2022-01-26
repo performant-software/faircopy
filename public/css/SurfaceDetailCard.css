@@ -3,11 +3,18 @@
     display: flex;
     position: absolute;
     z-index: 200;
-    bottom: 0px;
+    bottom: 5px;
     opacity: 0.8;
     margin-left: 5px;
     margin-right: 5px;
-    margin-bottom: 55px;
+}
+
+#SurfaceDetailCard.windowed-card {
+    margin-bottom: 5px;
+}
+
+#SurfaceDetailCard.full-card {
+    margin-bottom: 55px;    
 }
 
 #SurfaceDetailCard .element-id-field {
