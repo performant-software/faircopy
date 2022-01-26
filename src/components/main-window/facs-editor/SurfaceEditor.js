@@ -49,7 +49,7 @@ export default class SurfaceEditor extends Component {
         const highlightedZones = []
         for( const zoneID of selectedZones ) {
             const idParts = zoneID.split('#')
-            if( idParts[0] === facsID ) {
+            if( idParts[0] === facsID || idParts[0] === "" ) {
                 const zoneID = idParts[1]
                 highlightedZones.push(zoneID)
             }
