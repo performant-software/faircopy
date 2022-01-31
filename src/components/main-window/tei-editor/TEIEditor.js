@@ -16,6 +16,7 @@ import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks } from '../../../model/editor-navigation'
 import { findNoteNode } from '../../../model/xml'
+import { getLicenseType } from '../../../model/license-key'
 
 const resizeRefreshRate = 100
 
@@ -287,8 +288,12 @@ export default class TEIEditor extends Component {
         const editorHeightCSS = `calc(100% - ${editorHeight}px)`
         const editorWidthCSS = `calc(100vw - 10px - ${leftPaneWidth}px)`
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
-
         const style = hidden ? { display: 'none' } : {}
+
+        // Offsets are dependent on the presence of free trial bar
+        const licenseType = getLicenseType()
+        const gutterTop = licenseType === 'free' ? 165 : 115
+        const marginTop = licenseType === 'free' ? 175 : 125
         
         return (
             <main 
@@ -326,7 +331,7 @@ export default class TEIEditor extends Component {
                             editorView={teiDocument.editorView}
                             onJumpToDrawer={onJumpToDrawer}
                             onChangePos={this.onChangePos}
-                            gutterTop={115}
+                            gutterTop={gutterTop}
                         /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
@@ -336,6 +341,7 @@ export default class TEIEditor extends Component {
                         />
                         { !hidden && <ThumbnailMargin
                             teiDocument={teiDocument}
+                            marginTop={marginTop}
                         /> }      
                     </div>
                     { !hidden && <ParameterDrawer 

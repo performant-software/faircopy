@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 
 const fairCopy = window.fairCopy
 
-const marginTop = 125
-
 export default class ThumbnailMargin extends Component {
     
     renderThumbnails() {
-        const { teiDocument } = this.props
+        const { teiDocument, marginTop } = this.props
         const { editorView } = teiDocument
 
         const editorState = editorView.state
