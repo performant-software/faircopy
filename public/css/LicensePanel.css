@@ -20,6 +20,11 @@
     margin-bottom: 10px;
 }
 
+#LicensePanel .license-button {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 #LicensePanel .word-field {
     width: 90px;
     display: inline-block;

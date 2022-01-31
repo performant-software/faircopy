@@ -93,7 +93,8 @@
 }
 
 #ProjectWindow .license-button {
-    margin-top: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
 }
 
 #ProjectWindow .license-blurb {
