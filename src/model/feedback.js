@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const devFeedbackURL = 'https://faircopy-activate-dev.netlify.app/api/feedback'
-const prodFeedbackURL = 'https://activate.faircopyeditor.com/api/feedback'
+const devFeedbackURL = 'https://faircopy-activate-2-staging.herokuapp.com/feedback'
+const prodFeedbackURL = 'https://faircopyeditor.com/feedback'
 
 export function sendFeedback(devMode,message,version,onSuccess,onError) {
 
