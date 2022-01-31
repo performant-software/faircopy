@@ -203,8 +203,8 @@ export default class ProjectWindow extends Component {
 
         return (
             <div className="content">
-                <Typography>License Key: {licenseKey}</Typography>
-                <Typography>{renewalBlurb}</Typography>
+                <Typography className="license-info" >License Key: {licenseKey}</Typography>
+                <Typography className="license-info" >{renewalBlurb}</Typography>
                 <Button className="license-button" size="small" onClick={onRenew} variant='contained'>{buttonLabel}</Button>
                 <Button className="license-button" size="small" onClick={onClose} variant='contained'>Done</Button>
             </div>

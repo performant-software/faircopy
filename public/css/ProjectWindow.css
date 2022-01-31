@@ -101,6 +101,11 @@
     padding-top: 10px;
 }
 
+#ProjectWindow .license-info {
+    margin-left: 10px; 
+    margin-bottom: 5px;
+}
+
 #ProjectVersion .quit-button {
     float: right;
 }
