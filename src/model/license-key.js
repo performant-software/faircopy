@@ -99,6 +99,41 @@ export function simulateEAP() {
     return licenseData
 }
 
+export function updateLicenseStatus(devMode,license,onUpdate,onError) {
+    const currentLicenseData = JSON.parse(localStorage.getItem('licenseData'))
+    const { machineID } = currentLicenseData
+    const activationEndpoint = devMode ? devEndpoint : prodEndpoint
+    const endPointURL = `${activationEndpoint}/${license}?machine_uuid=${machineID}`
+    axios.get(endPointURL).then(
+        (resp) => {
+            const { expires_at, license_type, secure_id, subscription, activation_token } = resp.data
+            const licenseData = { 
+                licenseKey: license, 
+                machineID, 
+                activated: true, 
+                expiresAt: expires_at, 
+                licenseType: license_type, 
+                secureID: secure_id,
+                activationToken: activation_token, 
+                subscription 
+            }
+            localStorage.setItem('licenseData',JSON.stringify(licenseData))
+            onUpdate()
+        },
+        (error) => {
+            // problem with the license 
+            if( error && error.response ) {
+                if( error.response.status === 400 ) {
+                    const errorMessage = error.response.data.errors.base[0]
+                    onError(errorMessage)        
+                }
+            } else {
+                onError("Unable to connect to server.")
+            }
+        }
+    );
+}
+
 export function resetLicenseData() {
     const licenseData = {
         activated: false,

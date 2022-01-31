@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, setExpiration, oneDayMs } from '../../model/license-key'
+import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, setExpiration, oneDayMs, updateLicenseStatus } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -14,7 +14,8 @@ export default class ProjectWindow extends Component {
             mode: 'select', 
             projectName: '',
             description: '',
-            filePath: ''
+            filePath: '',
+            errorMessage: null 
         }
         this.state = this.initialState
     }
@@ -186,6 +187,19 @@ export default class ProjectWindow extends Component {
             fairCopy.services.ipcSend('openRenewalWebpage', secureID)
         }
 
+        const devMode = true
+
+        const onUpdateStatus = () => {
+            updateLicenseStatus(devMode,licenseKey,
+                () => {
+                    this.setState({...this.state, errorMessage: null })
+                },
+                (errorMessage) => {
+                    this.setState({...this.state, errorMessage })
+                }
+            )
+        }
+
         let buttonLabel, renewalBlurb
         if( subscription ) {
             buttonLabel = "Manage Subscription"
@@ -201,11 +215,16 @@ export default class ProjectWindow extends Component {
             }
         }
 
+        const { errorMessage } = this.state
+
         return (
             <div className="content">
                 <Typography className="license-info" >License Key: {licenseKey}</Typography>
                 <Typography className="license-info" >{renewalBlurb}</Typography>
-                <Button className="license-button" size="small" onClick={onRenew} variant='contained'>{buttonLabel}</Button>
+                <Typography className="license-info" >Please click "Update Status" after you renew your license on the website.</Typography>
+                { errorMessage && <Typography className="license-error" >{errorMessage}</Typography> }
+                <Button className="license-button" size="small" onClick={onRenew} variant='contained'>{buttonLabel}<i className="fas fa-external-link-alt link"></i></Button>
+                <Button className="license-button" size="small" onClick={onUpdateStatus} variant='contained'>Update Status</Button>
                 <Button className="license-button" size="small" onClick={onClose} variant='contained'>Done</Button>
             </div>
         )

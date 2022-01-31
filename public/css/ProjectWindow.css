@@ -106,6 +106,16 @@
     margin-bottom: 5px;
 }
 
+#ProjectWindow .license-error {
+    margin-left: 10px; 
+    margin-bottom: 5px;
+    color: red;
+}
+
+#ProjectWindow .link {
+    margin-left: 5px;
+}
+
 #ProjectVersion .quit-button {
     float: right;
 }
