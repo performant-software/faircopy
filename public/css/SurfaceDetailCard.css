@@ -17,6 +17,10 @@
     margin-bottom: 55px;    
 }
 
+#SurfaceDetailCard.full-card-with-bar {
+    margin-bottom: 105px;    
+}
+
 #SurfaceDetailCard .element-id-field {
     margin-bottom: 22px;
     margin-left: 10px;

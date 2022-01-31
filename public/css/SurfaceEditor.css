@@ -6,6 +6,10 @@
   height: calc( 100vh - 144px );
 }
 
+#SurfaceEditor .full-with-bar {
+  height: calc( 100vh - 194px );
+}
+
 #SurfaceEditor .windowed {
   height: calc( 100vh - 89px );
 }

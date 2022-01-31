@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card } from '@material-ui/core'
 import IDField from '../../main-window/tei-editor/attribute-fields/IDField'
+import { getLicenseType } from '../../../model/license-key'
 
 export default class SurfaceDetailCard extends Component {
 
@@ -43,7 +44,14 @@ export default class SurfaceDetailCard extends Component {
             }
         }
         const onChangeID = (value,error) => onChange('id',value,error)
-        const modeClass = isWindowed ? 'windowed-card' : 'full-card'
+        const licenseType = getLicenseType()
+        
+        let modeClass
+        if( licenseType === 'free' ) {
+            modeClass = isWindowed ? 'windowed-card' : 'full-card-with-bar'
+        } else {
+            modeClass = isWindowed ? 'windowed-card' : 'full-card'
+        }
 
         return (
             <Card id="SurfaceDetailCard" className={modeClass} >
