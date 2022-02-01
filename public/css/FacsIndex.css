@@ -8,6 +8,10 @@
     height: calc(100vh - 210px);
 }
 
+#FacsIndex .facs-index-container-with-bar .table-container {
+    height: calc(100vh - 260px);
+}
+
 #FacsIndex .row-selected {
     background: #FFF9DD;
 }

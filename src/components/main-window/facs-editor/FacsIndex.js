@@ -7,6 +7,7 @@ import { getLocalString } from '../../../model/iiif'
 import DragAndDropTable from '../../common/DragAndDropTable'
 import DraggableComponent from '../../common/DraggableComponent'
 import TitleBar from '../TitleBar'
+import { getLicenseType } from '../../../model/license-key'
 
 const rowsPerPage = 100
 
@@ -178,14 +179,18 @@ export default class FacsIndex extends Component {
     
     renderSurfaceIndex() {
         const surfaceRows = this.renderSurfaceRows()
+        const { isWindowed } = this.props
         const { currentPage } = this.state
 
         const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
         const start = rowsPerPage * currentPage
         const end = start + 100
 
+        const licenseType = getLicenseType()        
+        const modeClass = licenseType === 'free' && !isWindowed ? "facs-index-container-with-bar" : ""
+
         return (
-            <Paper >
+            <Paper className={modeClass}>
                 <DragAndDropTable
                     tableHead={this.renderTableHead()}
                     rows={surfaceRows.slice(start,end)}
