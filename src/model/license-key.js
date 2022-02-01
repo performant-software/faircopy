@@ -31,8 +31,12 @@ export function activateLicense(devMode,license,onActivate,onError) {
             // problem with the license 
             if( error && error.response ) {
                 if( error.response.status === 400 ) {
-                    const errorMessage = error.response.data.errors.base[0]
-                    onError(errorMessage)        
+                    let errorMessages = []
+                    for( const errorMessage of Object.values(error.response.data.errors) ) {
+                        errorMessages.push(errorMessage)
+                    }
+                    const errorString = errorMessages.join(', ')
+                    onError(errorString)        
                 }
             } else {
                 onError("Unable to connect to server.")
