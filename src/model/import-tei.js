@@ -152,12 +152,15 @@ function extractResourceEls(xmlDom) {
 
     let standOffEls = teiEl.getElementsByTagName('standOff') 
     if( standOffEls.length === 0 ) standOffEls = teiEl.getElementsByTagName('STANDOFF')
-    
+
+    let sourceDocEls = teiEl.getElementsByTagName('sourceDoc') 
+    if( sourceDocEls.length === 0 ) sourceDocEls = teiEl.getElementsByTagName('SOURCEDOC')
+
     let facsEls = teiEl.getElementsByTagName('facsimile') 
     if( facsEls.length === 0 ) facsEls = teiEl.getElementsByTagName('FACSIMILE')
 
-    if( textEls.length === 0 && facsEls.length === 0 && standOffEls.length === 0 ) {
-        throw new Error('<TEI> element must contain one more more <text>, <standOff> and/or <facsimile> elements.')
+    if( textEls.length === 0 && facsEls.length === 0 && standOffEls.length === 0 && sourceDocEls.length === 0 ) {
+        throw new Error('<TEI> element must contain one more more <text>, <standOff>, <sourceDoc>, or <facsimile> elements.')
     } 
 
     const resources = []
@@ -166,6 +169,9 @@ function extractResourceEls(xmlDom) {
     }
     for( let i=0; i < standOffEls.length; i++ ) {
         resources.push(standOffEls[i])
+    }
+    for( let i=0; i < sourceDocEls.length; i++ ) {
+        resources.push(sourceDocEls[i])
     }
     for( let i=0; i < facsEls.length; i++ ) {
         resources.push(facsEls[i])
@@ -188,7 +194,7 @@ function createTEIDoc(name,localID,idMap) {
 
 function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
     const resourceName = resourceEl.tagName.toLowerCase()
-    const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : (resourceName === 'standoff' ) ? 'standOff' : 'facs'
+    const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : (resourceName === 'standoff' ) ? 'standOff' : (resourceName === 'sourcedoc') ? 'sourceDoc' : 'facs'
     if( type === 'facs' ) {
         const facsResource = createFacs(resourceEl,name,localID,parentID,fairCopyProject)
         return facsResource  
