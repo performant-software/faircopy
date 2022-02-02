@@ -20,9 +20,16 @@ export default class ProjectWindow extends Component {
         this.state = this.initialState
     }
 
+    onPathSelected = (event, filePath) => this.onPathUpdated(filePath)
+
     componentDidMount() {
         const {services} = fairCopy
-        services.ipcRegisterCallback('pathSelected', (event, filePath) => this.onPathUpdated(filePath))
+        services.ipcRegisterCallback('pathSelected', this.onPathSelected )
+    }
+
+    componentWillUnmount() {
+        const {services} = fairCopy
+        services.ipcRemoveListener('pathSelected', this.onPathSelected )
     }
 
     onPathUpdated(filePath) {

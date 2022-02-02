@@ -15,16 +15,24 @@ export default class ImageView {
         this.facsDocument = new FacsDocument( this.resourceEntry.id, this, imageViewData.resource )
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
-        this.lastResourceEntryMessage = null
-        
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
-            const nextResourceEntry = JSON.parse(d.resourceEntry)
-            this.onResourceUpdated(nextResourceEntry)
-            // also listen for updates to parent
-            if( this.parentEntry && this.parentEntry.id === nextResourceEntry.id ) {
-                this.parentEntry = nextResourceEntry
-            }
-        })
+        this.lastResourceEntryMessage = null   
+    }
+
+    onResourceEntryUpdated = (e, d) => {
+        const nextResourceEntry = JSON.parse(d.resourceEntry)
+        this.onResourceUpdated(nextResourceEntry)
+        // also listen for updates to parent
+        if( this.parentEntry && this.parentEntry.id === nextResourceEntry.id ) {
+            this.parentEntry = nextResourceEntry
+        }
+    }
+
+    componentDidMount() {
+        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
+    }
+
+    componentWillUnmount() {
+        fairCopy.services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
     }
 
     // Called when resource entry is updated by a different window process

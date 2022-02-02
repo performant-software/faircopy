@@ -75,16 +75,20 @@ export default class MainWindow extends Component {
         }	
     }
 
+    onResourceOpened = (event, resourceData) => this.receiveResourceData(resourceData)
+    onRequestExitApp = () => this.requestExitApp()
+    onSearchSystemStatus = (event, status ) => { 
+        if( status !== this.state.searchEnabled ) {
+            this.setState({...this.state, searchEnabled: status })
+        }
+    }
+
     componentDidMount() {
         const { fairCopyProject } = this.props
         const {services} = fairCopy
-        services.ipcRegisterCallback('resourceOpened', (event, resourceData) => this.receiveResourceData(resourceData))
-        services.ipcRegisterCallback('requestExitApp', () => this.requestExitApp() ) 
-        services.ipcRegisterCallback('searchSystemStatus', (event, status ) => { 
-            if( status !== this.state.searchEnabled ) {
-                this.setState({...this.state, searchEnabled: status })
-            }
-        })
+        services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
+        services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
+        services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
 
         fairCopyProject.addUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
@@ -93,6 +97,12 @@ export default class MainWindow extends Component {
 
     componentWillUnmount() {
         const { fairCopyProject } = this.props
+        const {services} = fairCopy
+        
+        services.ipcRemoveListener('resourceOpened', this.onResourceOpened )
+        services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
+        services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
+
         fairCopyProject.removeUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.removeUpdateListener(this.receivedUpdate)
     }

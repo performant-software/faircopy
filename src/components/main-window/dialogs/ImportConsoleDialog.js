@@ -21,9 +21,15 @@ export default class ImportConsoleDialog extends Component {
         this.state = this.initialState
     }
 
+    onImportData = (event, importData) => this.receiveImportData(importData)
+
     componentDidMount() {
         const {services} = fairCopy
-        services.ipcRegisterCallback('importData', (event, importData) => this.receiveImportData(importData))
+        services.ipcRegisterCallback('importData', this.onImportData )
+    }
+
+    componentWillUnmount() {
+        fairCopy.services.ipcRemoveListener('importData', this.onImportData )
     }
 
     receiveImportData( importData ) {        

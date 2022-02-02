@@ -20,25 +20,37 @@ export default class MainWindowStatusBar extends Component {
         }
     }
 
+    onUpdateAvailable = (event) => {
+        this.setState({ ...this.state, softwareUpdateStatus: 'updateAvailable' })
+    }
+
+    onUpdateDownloading = (event,progress) => {
+        this.setState({ ...this.state, progress })
+    }
+
+    onUpdateDownloaded = (event) => {
+        this.setState({ ...this.state, softwareUpdateStatus: 'quitAndInstall' })
+    }
+
+    onErrorUpdating = (event, error) => {
+        this.setState({ ...this.state, softwareUpdateStatus: 'error' })
+    }
+
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('updateAvailable', (event) => {
-            this.setState({ ...this.state, softwareUpdateStatus: 'updateAvailable' })
-        })
-
-        fairCopy.services.ipcRegisterCallback('updateDownloading', (event,progress) => {
-            this.setState({ ...this.state, progress })
-        })
-
-        fairCopy.services.ipcRegisterCallback('updateDownloaded', (event) => {
-            this.setState({ ...this.state, softwareUpdateStatus: 'quitAndInstall' })
-        })
-
-        fairCopy.services.ipcRegisterCallback('errorUpdating', (event, error) => {
-            this.setState({ ...this.state, softwareUpdateStatus: 'error' })
-        })
+        fairCopy.services.ipcRegisterCallback('updateAvailable', this.onUpdateAvailable)
+        fairCopy.services.ipcRegisterCallback('updateDownloading', this.onUpdateDownloading)
+        fairCopy.services.ipcRegisterCallback('updateDownloaded', this.onUpdateDownloaded)
+        fairCopy.services.ipcRegisterCallback('errorUpdating', this.onErrorUpdating)
 
         const { licenseData } = this.state
         fairCopy.services.ipcSend( 'checkForUpdates', licenseData )
+    }
+
+    componentWillUnmount() {
+        fairCopy.services.ipcRemoveListener('updateAvailable', this.onUpdateAvailable)
+        fairCopy.services.ipcRemoveListener('updateDownloading', this.onUpdateDownloading)
+        fairCopy.services.ipcRemoveListener('updateDownloaded', this.onUpdateDownloaded)
+        fairCopy.services.ipcRemoveListener('errorUpdating', this.onErrorUpdating)
     }
 
     onStartUpdate = () => {

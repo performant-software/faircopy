@@ -33,13 +33,15 @@ export default class App extends Component {
     this.mainWindowRef = React.createRef()
   }
 
+  onAppConfig = (event, appConfig) => {
+    this.setState({ ...this.state, appConfig })
+  }
+
   componentDidMount() {
     if( fairCopy.rootComponent !== 'WorkerWindow' ) {
       const { licenseData } = this.state
 
-      fairCopy.services.ipcRegisterCallback('appConfig', (event, appConfig) => {
-        this.setState({ ...this.state, appConfig })
-      })
+      fairCopy.services.ipcRegisterCallback('appConfig', this.onAppConfig )
   
       // tell main process to check for updates 
       if( !licenseData.activated ) {
@@ -48,6 +50,12 @@ export default class App extends Component {
       }
   
       this.initRootComponent()        
+    }
+  }
+
+  componentWillUnmount() {
+    if( fairCopy.rootComponent !== 'WorkerWindow' ) {
+      fairCopy.services.ipcRemoveListener('appConfig', this.onAppConfig )
     }
   }
 

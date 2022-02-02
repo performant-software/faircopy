@@ -21,6 +21,10 @@ export default class SearchBar extends Component {
         fairCopy.services.ipcRegisterCallback('searchResults', this.onResults ) 
     }
 
+    componentWillUnmount() {
+        fairCopy.services.ipcRemoveListener('searchResults', this.onResults ) 
+    }
+
     renderStatusChip(hitCount) {        
         const hitCountLabel = ( hitCount > 999 ) ? "1k+" : hitCount
         return (
