@@ -19,10 +19,11 @@
     text-align:left;
 }
 
+/* prototype RTL
 tei-line {
     direction:rtl;
     text-align:right;
-}
+} */
 
 /* Phrase level markup styling is based on information layers */
 [phraselvl = "true"] {
