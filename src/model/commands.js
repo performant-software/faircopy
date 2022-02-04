@@ -186,7 +186,8 @@ export function deleteParentNode(pos, tr) {
     for( let i=0; i < grandParentNode.childCount; i++ ) {
         const child = grandParentNode.child(i)
         if( child === node ) {
-            if( !isBlank(node) ) {
+            // always have at least one child so we can have a textnode below it
+            if( grandParentNode.childCount === 1 || !isBlank(node) ) {
                 for( let i=0; i < node.childCount; i++ ) {
                     const grandChild = node.child(i)
                     greatNodes.push(grandChild)
