@@ -416,7 +416,7 @@ function joinTextNode(pos, before, after, beforeTextNode, afterTextNode, parentN
     } else if( beforeTextNode === null ) {
       // case 3: a textNode followed by a soft node
       if( parentNode.type.validContent( fragmentWithout(parentNode.content, after)) ) {
-        const joinPos = pos-beforeTextDepth
+        const joinPos = pos-beforeTextDepth-1
         if( after.textContent.length === 0 ) {
           dispatch( tr
             .delete(pos,pos+after.nodeSize)
@@ -424,7 +424,6 @@ function joinTextNode(pos, before, after, beforeTextNode, afterTextNode, parentN
         } else {
           // textNodes must be of the same type  
           const nextContent = replaceTextNodes( before.type, after.content )
-          debugger
           if( !nextContent ) {
             dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
             return true
@@ -432,7 +431,6 @@ function joinTextNode(pos, before, after, beforeTextNode, afterTextNode, parentN
           dispatch( tr
             .delete(pos,pos+after.nodeSize)
             .insert(joinPos, nextContent)
-            .join(joinPos)
             .scrollIntoView())
         }
       } else {
