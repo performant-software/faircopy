@@ -203,16 +203,10 @@ export function deleteParentNode(pos, tr) {
         tr.replaceWith(pos,pos+node.nodeSize,children) 
     } 
     else {
-        // if there's only one child node and it is empty, then delete
-        // for content expressions similar to: model_placeLike+
-        if( children.length === 1 && isBlank(children[0])) {
-            tr.replaceWith(pos,pos+node.nodeSize,Fragment.empty) 
+        if(isBlank(node)) {
+            tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
         } else {
-            if(isBlank(node)) {
-                tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
-            } else {
-                tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
-            }
+            tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
         }
     }
     return tr
