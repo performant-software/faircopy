@@ -206,7 +206,11 @@ export function deleteParentNode(pos, tr) {
         if(isBlank(node)) {
             tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
         } else {
-            tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
+            if( children.length === 1 && isBlank(children[0]) ) {
+                tr.delete(pos,pos+node.nodeSize+1)
+            } else {
+                tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
+            }
         }
     }
     return tr
