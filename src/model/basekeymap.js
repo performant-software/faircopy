@@ -422,17 +422,18 @@ function joinTextNode(pos, before, after, beforeTextNode, afterTextNode, parentN
             .delete(pos,pos+after.nodeSize)
             .scrollIntoView())  
         } else {
-        // textNodes must be of the same type  
-        const nextContent = replaceTextNodes( beforeTextNode.type, after.content )
-        if( !nextContent ) {
-          dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
-          return true
-        }
-        dispatch( tr
-          .delete(pos,pos+after.nodeSize)
-          .insert(joinPos, nextContent)
-          .join(joinPos)
-          .scrollIntoView())
+          // textNodes must be of the same type  
+          const nextContent = replaceTextNodes( before.type, after.content )
+          debugger
+          if( !nextContent ) {
+            dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
+            return true
+          }
+          dispatch( tr
+            .delete(pos,pos+after.nodeSize)
+            .insert(joinPos, nextContent)
+            .join(joinPos)
+            .scrollIntoView())
         }
       } else {
         dispatch( tr.setMeta('alertMessage', `Structure is not valid without ${after.type.name}.`) )
