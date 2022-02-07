@@ -281,7 +281,7 @@ function parseZones( surfaceEl ) {
         for( let i=0; i < zoneEls.length; i++ ) {
             const zoneEl = zoneEls[i]
             const id = zoneEl.getAttribute('xml:id')
-            const noteEls = surfaceEl.getElementsByTagName('note')
+            const noteEls = zoneEl.getElementsByTagName('note')
             const noteEl = (noteEls && noteEls.length > 0 ) ? noteEls[0] : null
             const note = noteEl ? noteEl.innerHTML : ""
             const points = zoneEl.getAttribute('points')
