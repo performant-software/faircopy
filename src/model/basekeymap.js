@@ -381,6 +381,70 @@ export function selectAll(state, dispatch) {
   return true
 }
 
+function joinTextNode(pos, before, after, beforeTextNode, afterTextNode, parentNode, beforeTextDepth, tr, dispatch) {
+  try {
+    // case 1: two adjacent text nodes
+    if( beforeTextNode === null && afterTextNode === null ) {
+      dispatch(tr
+        .clearIncompatible(pos, before.type, before.contentMatchAt(before.childCount))
+        .join(pos,1)
+        .scrollIntoView())        
+    } else if( afterTextNode === null ) {
+      // case 2: a soft node followed by a text node
+      if( parentNode.type.validContent( fragmentWithout(parentNode.content, after)) ) {
+        const joinPos = pos-beforeTextDepth
+        if( after.textContent.length === 0 ) {
+          dispatch( tr
+            .delete(pos,pos+after.nodeSize)
+            .scrollIntoView())  
+        } else {
+        // textNodes must be of the same type  
+        const nextContent = replaceTextNodes( beforeTextNode.type, after.content )
+        if( !nextContent ) {
+          dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
+          return true
+        }
+        dispatch( tr
+          .delete(pos,pos+after.nodeSize)
+          .insert(joinPos, nextContent)
+          .join(joinPos)
+          .scrollIntoView())
+        }
+      } else {
+        dispatch( tr.setMeta('alertMessage', `Structure is not valid without ${after.type.name}.`) )
+      }
+    } else if( beforeTextNode === null ) {
+      // case 3: a textNode followed by a soft node
+      if( parentNode.type.validContent( fragmentWithout(parentNode.content, after)) ) {
+        const joinPos = pos-beforeTextDepth
+        if( after.textContent.length === 0 ) {
+          dispatch( tr
+            .delete(pos,pos+after.nodeSize)
+            .scrollIntoView())  
+        } else {
+        // textNodes must be of the same type  
+        const nextContent = replaceTextNodes( beforeTextNode.type, after.content )
+        if( !nextContent ) {
+          dispatch( tr.setMeta('alertMessage', `Cannot delete ${after.type.name}, its content is not valid in ${before.type.name}.`) )
+          return true
+        }
+        dispatch( tr
+          .delete(pos,pos+after.nodeSize)
+          .insert(joinPos, nextContent)
+          .join(joinPos)
+          .scrollIntoView())
+        }
+      } else {
+        dispatch( tr.setMeta('alertMessage', `Structure is not valid without ${after.type.name}.`) )
+      }
+    }
+  } catch (e) {
+    console.log(e)
+    dispatch( tr.setMeta('alertMessage', `Unable to delete ${after.type.name}.`) )
+  }
+  return true 
+}
+
 function deleteBarrier(state, $cut, dispatch) {
   const { tr } = state
 
@@ -395,9 +459,9 @@ function deleteBarrier(state, $cut, dispatch) {
   const { node: beforeTextNode, depth: beforeTextDepth } = depthToLast(before,beforeTextNodeType)
   const { node: afterTextNode, depth: afterTextDepth }  = depthToLast(after,afterTextNodeType)
 
+  // dealing with textNodes, not TEI elements
   if( beforeTextNode === null || afterTextNode === null ) {
-    console.log('warning: soft node found without a textnode child.')
-    return true 
+    return joinTextNode($cut.pos, before, after, beforeTextNode, afterTextNode, $cut.parent, beforeTextDepth, tr, dispatch)
   }
 
   try {
