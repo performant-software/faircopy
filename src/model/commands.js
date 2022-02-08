@@ -207,7 +207,16 @@ export function deleteParentNode(pos, tr) {
             tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
         } else {
             if( children.length === 1 && isBlank(children[0]) ) {
-                tr.delete(pos,pos+node.nodeSize+1)
+                const greatNodesWithoutNode = []
+                for( let i=0; i < grandParentNode.childCount; i++ ) {
+                    const child = grandParentNode.child(i)
+                    if( child !== node ) greatNodesWithoutNode.push(child)
+                }
+                if( grandParentNode.type.validContent(Fragment.fromArray(greatNodesWithoutNode)) ) {
+                    tr.delete(pos,pos+node.nodeSize+1)
+                } else {
+                    tr.setMeta('alertMessage', "This element is required by its parent. You must delete the element's parent to remove it.")
+                }
             } else {
                 tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
             }
