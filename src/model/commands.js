@@ -199,27 +199,21 @@ export function deleteParentNode(pos, tr) {
         }
     }
 
+    // first, try to promote the children to replace the node
     if( grandParentNode.type.validContent(Fragment.fromArray(greatNodes)) ) {
         tr.replaceWith(pos,pos+node.nodeSize,children) 
     } 
     else {
-        if(isBlank(node)) {
-            tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
+        const greatNodesWithoutNode = []
+        for( let i=0; i < grandParentNode.childCount; i++ ) {
+            const child = grandParentNode.child(i)
+            if( child !== node ) greatNodesWithoutNode.push(child)
+        }
+        // delete the node if it is valid to do so, don't leave parent node empty
+        if( greatNodesWithoutNode.length > 0 && grandParentNode.type.validContent(Fragment.fromArray(greatNodesWithoutNode)) ) {
+            tr.delete(pos,pos+node.nodeSize)
         } else {
-            if( children.length === 1 && isBlank(children[0]) ) {
-                const greatNodesWithoutNode = []
-                for( let i=0; i < grandParentNode.childCount; i++ ) {
-                    const child = grandParentNode.child(i)
-                    if( child !== node ) greatNodesWithoutNode.push(child)
-                }
-                if( grandParentNode.type.validContent(Fragment.fromArray(greatNodesWithoutNode)) ) {
-                    tr.delete(pos,pos+node.nodeSize+1)
-                } else {
-                    tr.setMeta('alertMessage', "This element is required by its parent. You must delete the element's parent to remove it.")
-                }
-            } else {
-                tr.setMeta('alertMessage', "You must delete the element's content before removing it.")
-            }
+            tr.setMeta('alertMessage', "You must delete this element's parent to delete it.")
         }
     }
     return tr
