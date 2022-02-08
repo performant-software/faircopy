@@ -80,10 +80,7 @@ export function initLicenseData() {
         let licenseData = JSON.parse(licenseDataJSON) 
         // In EAP state, migrate to free trial
         if( licenseData.activated && !licenseData.expiresAt ) {
-            licenseData.licenseType = 'free'
-            licenseData.expiresAt = new Date( Date.now() + (oneDayMs*14) ).toString()
-            localStorage.setItem('licenseData',JSON.stringify(licenseData))
-            return licenseData
+            return resetLicenseData()
         } else {
             return licenseData
         }

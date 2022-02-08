@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, setExpiration, oneDayMs, updateLicenseStatus } from '../../model/license-key'
+import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, setExpiration, oneDayMs, updateLicenseStatus, simulateEAP } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -141,10 +141,10 @@ export default class ProjectWindow extends Component {
             fairCopy.services.ipcSend('exitApp')
         }
 
-        // const onEAPKey = () => {
-        //     simulateEAP()
-        //     fairCopy.services.ipcSend('exitApp')
-        // }
+        const onEAPKey = () => {
+            simulateEAP()
+            fairCopy.services.ipcSend('exitApp')
+        }
 
         const onExpired = () => {
             setExpiration(-oneDayMs)
@@ -161,8 +161,6 @@ export default class ProjectWindow extends Component {
             projectCards.push(this.renderProjectCard(project))
         }
 
-        //                     { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
-
         return (
             <div className="content select-project">
                 <div className="left-side">
@@ -172,6 +170,7 @@ export default class ProjectWindow extends Component {
                     { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
                     { allowKeyReset && <Button className="left-action" onClick={onExpired} variant='contained'>Simulate Expired</Button> }
                     { allowKeyReset && <Button className="left-action" onClick={on14Days} variant='contained'>Simulate 14 Days</Button> }
+                    { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
