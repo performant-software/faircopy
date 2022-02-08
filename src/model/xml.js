@@ -199,6 +199,7 @@ export function addTextNodes(state, dispatch=null) {
             const textNodeName = getTextNodeName(contentExp)
             const textNodeType = schema.nodes[textNodeName]
             const insertPos = tr.mapping.map(pos+1)
+            tr.setMeta('addToHistory',false)
             tr.insert( insertPos, textNodeType.create() )
         }
         return true
