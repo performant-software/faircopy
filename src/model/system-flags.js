@@ -1,15 +1,43 @@
 import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './attribute-validators'
 import { changeAttributes } from "./commands"
-import { systemAttributes } from './TEISchema'
+import { systemAttributes, rtlLanguages } from './TEISchema'
 
-// Ammends the document with run time only error flags
-export function scanForErrors(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
+// Ammends the document with run time only flags
+export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     let errorCount = 0
     tr.doc.descendants((node,pos) => {
         errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        markRTL(node,pos,tr)
         return true
     })
     return errorCount
+}
+
+function markRTL(node,pos,tr) {
+    const lang = node.attrs['xml:lang']
+    const rtl = node.attrs['__rtl__']
+    const ltr = node.attrs['__ltr__']
+    if( !lang ) {
+        if( rtl || ltr ) {
+            const nextAttrs = { ...node.attrs, '__rtl__': false, '__ltr__': false }
+            const $anchor = tr.doc.resolve(pos)
+            changeAttributes( node, nextAttrs, $anchor, tr )    
+        }
+    } else {
+        if( rtlLanguages.includes(lang) ) {
+            if( !rtl ) {
+                const $anchor = tr.doc.resolve(pos)
+                const nextAttrs = { ...node.attrs, '__rtl__': true, '__ltr__': false }
+                changeAttributes( node, nextAttrs, $anchor, tr )    
+            }
+        } else {
+            if( !ltr ) {
+                const $anchor = tr.doc.resolve(pos)
+                const nextAttrs = { ...node.attrs, '__rtl__': false, '__ltr__': true }
+                changeAttributes( node, nextAttrs, $anchor, tr )    
+            }
+        }    
+    }
 }
 
 // validate node and mark any errors.

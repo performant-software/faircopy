@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
-import {scanForErrors} from "./error-scan"
+import {applySystemFlags} from "./system-flags"
 
 const fairCopy = window.fairCopy
 
@@ -134,7 +134,7 @@ export default class TEIDocument {
         // scan for errors 
         // TODO put this on a timer, not every update
         const relativeParentID = this.getRelativeParentID()
-        const nextErrorCount = scanForErrors(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
+        const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
         if( this.errorCount !== nextErrorCount ) {
             this.errorCount = nextErrorCount
             onErrorCountChange()

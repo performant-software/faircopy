@@ -28,8 +28,34 @@ export const systemElements = [
 export const systemAttributes = [
     '__id__',
     '__error__',
-    '__border__' 
+    '__border__',
+    '__rtl__',
+    '__ltr__'
 ]
+
+export const rtlLanguages = [
+    'he'
+]
+
+/* render Arabic, Persian, Ottoman, Hebrew  as rtl */
+/* [lang = "ar"],
+[lang = "ota"],
+[lang = "fa"],
+[lang = "he"],
+[lang *="-Arab-AR"]{
+    direction:rtl;
+    text-align:right;
+} */
+/* display latin scripts as ltr  */
+/* [lang = "en"],
+[lang = "fr"],
+[lang = "de"],
+[lang = "it"],
+[lang *="ar-Latn-"],
+[lang *="ota-Latn-"]{
+    direction:ltr;
+    text-align:left;
+} */
 
 export default class TEISchema {
 
@@ -231,6 +257,8 @@ export default class TEISchema {
         }
         attrs['__error__'] = { default: false }
         attrs['__border__'] = { default: false }
+        attrs['__rtl__'] = { default: false }
+        attrs['__ltr__'] = { default: false }
         return attrs
     }
 
