@@ -34,7 +34,7 @@ export const systemAttributes = [
 ]
 
 export const rtlLanguages = [
-    'he'
+    'he', 'ota', 'fa', 'ar'
 ]
 
 /* render Arabic, Persian, Ottoman, Hebrew  as rtl */
@@ -45,16 +45,6 @@ export const rtlLanguages = [
 [lang *="-Arab-AR"]{
     direction:rtl;
     text-align:right;
-} */
-/* display latin scripts as ltr  */
-/* [lang = "en"],
-[lang = "fr"],
-[lang = "de"],
-[lang = "it"],
-[lang *="ar-Latn-"],
-[lang *="ota-Latn-"]{
-    direction:ltr;
-    text-align:left;
 } */
 
 export default class TEISchema {
