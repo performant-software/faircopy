@@ -316,6 +316,8 @@ class FairCopyApplication {
     const browserWindow = new BrowserWindow({
       width,
       height,
+      minWidth: 600,
+      minHeight: 400,
       webPreferences: {
           webSecurity,
           enableRemoteModule: false,
