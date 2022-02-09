@@ -3,14 +3,17 @@
 }
 
 #SurfaceEditor .full {
+  width: calc( 100vh );
   height: calc( 100vh - 144px );
 }
 
 #SurfaceEditor .full-with-bar {
+  width: calc( 100vh );
   height: calc( 100vh - 194px );
 }
 
 #SurfaceEditor .windowed {
+  width: calc( 100vh );
   height: calc( 100vh - 89px );
 }
 
