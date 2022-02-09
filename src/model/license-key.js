@@ -2,7 +2,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid'
 
 const devEndpoint = 'https://faircopy-activate-2-staging.herokuapp.com/api/public/user_licenses'
-const prodEndpoint = 'https://faircopyeditor.com/api/public/user_licenses'
+const prodEndpoint = 'https://faircopy-activate-2-production.herokuapp.com/api/public/user_licenses'
 
 export const oneDayMs = (1000 * 60 * 60 * 24)
 

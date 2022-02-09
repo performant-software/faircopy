@@ -2,7 +2,7 @@
     "keyGenAccountID": "8a8d3d6a-ab09-4f51-aea5-090bfd025dd8",
     "productionChannelID": "495ce69f-3f29-44aa-aae2-718ed4eeb0d5",
     "devChannelID": "b2bfc67b-26bf-4407-b3d9-d7ad94d7f225",
-    "devMode": true,
+    "devMode": false,
     "devURL": "https://faircopy-activate-2-staging.herokuapp.com",
-    "prodURL": "https://faircopyeditor.com"
+    "prodURL": "https://faircopy-activate-2-production.herokuapp.com"
 }
