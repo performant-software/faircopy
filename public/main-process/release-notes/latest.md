@@ -2,6 +2,18 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.0.0
+
+### Improvements
+
+* TEI Elements
+* Standoff resource type
+* sourceDoc resource type
+* search full text by el, by attr
+* batch import 
+* keyboard shortcuts
+
+
 ## Version 0.11.0
 
 ### Improvements

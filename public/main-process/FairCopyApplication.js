@@ -221,7 +221,7 @@ class FairCopyApplication {
   }  
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', true )
+    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff' )
     const {resourceID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
