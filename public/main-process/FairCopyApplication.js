@@ -118,6 +118,10 @@ class FairCopyApplication {
     ipcMain.on('openRenewalWebpage', (event, secureID ) => {
       shell.openExternal(`${this.config.websiteURL}/renew/${secureID}`);
     })  
+
+    ipcMain.on('openLandingPage', (event) => {
+      shell.openExternal(`${this.config.websiteURL}`);
+    })
     
     // Main window events //////
 

@@ -7,6 +7,11 @@
     margin-bottom: 20px;
 }
 
+#LicensePanel .key-required {
+    margin-left: 0px;
+    margin-bottom: 20px;
+}
+
 #LicensePanel .content {
     margin: 12px;
     background: #F8F5FF;

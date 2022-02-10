@@ -82,6 +82,10 @@ export default class LicensePanel extends Component {
         const onBuyNow = () => {
             fairCopy.services.ipcSend('openBuyNowWebpage')
         }
+
+        const onLandingPage = () => {
+            fairCopy.services.ipcSend('openLandingPage')
+        }
         const daysLeft = licenseDaysLeft()
         const s = daysLeft !== 1 ? "s" : ""
 
@@ -98,8 +102,10 @@ export default class LicensePanel extends Component {
                 )
             case 'activate':
                 return (
-                    <div>
-                        <Typography variant="h6" component="h1">Please enter your license key.</Typography>
+                    <div className='buy-pitch'>
+                        <Typography className="key-required" variant="h6" component="h1">License Key Required</Typography>
+                        <Typography>Please visit our website to obtain a license key. Then, copy and paste the license key in the form below.</Typography>
+                        <Button className="license-button" onClick={onLandingPage} variant='contained'>Visit FairCopy Website <i className="fas fa-external-link-alt link"></i></Button>
                     </div>                    
                 )
             default:
