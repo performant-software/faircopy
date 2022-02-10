@@ -27,7 +27,7 @@ FairCopy uses Election Builder to create installers for the Mac, Windows, and Li
 
 Once the installers are built, they are automatically deployed to the target product and channel on Keygen, using Keygen's integration with Electron Builder. The following ENV variable must be set (in the .env file) for all OSes:
 
-* KEYGEN_TOKEN=<keygen product token api>
+* KEYGEN_TOKEN=*keygen product token api*
 
 The product token API is minted using the Keygen dashboard. This block in the package.json file configures the Electron Builder Keygen integration:
 
