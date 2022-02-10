@@ -6,13 +6,20 @@ The release notes list the improvements and bug fixes included in each new versi
 
 ### Improvements
 
-* TEI Elements
-* Standoff resource type
-* sourceDoc resource type
-* search full text by el, by attr
-* batch import 
-* keyboard shortcuts
+* Over a dozen new TEI modules. FairCopy now has support for most of the elements in the TEI Guidelines. 
+* Support for standoff markup using the standOff resource type. Great for prosopographia and bibliography.
+* Better support for diplomatic transcription using the sourceDoc resource type.
+* Full text search in projects. Filter search by element name or by attribute name/value pairs. 
+* Batch import of resources. You can now batch import a directory of TEI/XML or UTF-8 encoded texts.
+* Keyboard shortcuts and accessibility. Software now Section 508 compliant. Support for keyboard users and screen readers.
+* *Experimental* Right-to-left (RTL) language editing. Using the xml:lang attribute, you can now edit texts in LTR or RTL. Support for mixed languages in the same resource.
 
+### Bug Fixes
+
+* Improvements to rendering of structural tree.
+* Enhanced placement of inline elements.
+* Improved deletion and backspace mechanics.
+* Improvements to cut and paste.
 
 ## Version 0.11.0
 
