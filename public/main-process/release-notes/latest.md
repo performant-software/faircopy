@@ -12,7 +12,7 @@ The release notes list the improvements and bug fixes included in each new versi
 * Full text search in projects. Filter search by element name or by attribute name/value pairs. 
 * Batch import of resources. You can now batch import a directory of TEI/XML or UTF-8 encoded texts.
 * Keyboard shortcuts and accessibility. Software now Section 508 compliant. Support for keyboard users and screen readers.
-* *Experimental* Right-to-left (RTL) language editing. Using the xml:lang attribute, you can now edit texts in LTR or RTL. Support for mixed languages in the same resource.
+* *Experimental* right-to-left (RTL) language editing. Using the xml:lang attribute, you can now edit texts in LTR or RTL. Support for mixed languages in the same resource.
 
 ### Bug Fixes
 
