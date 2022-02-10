@@ -27,9 +27,9 @@ FairCopy uses Election Builder to create installers for the Mac, Windows, and Li
 
 Once the installers are built, they are automatically deployed to the target product and channel on Keygen, using Keygen's integration with Electron Builder. The following ENV variable must be set (in the .env file) for all OSes:
 
-* KEYGEN_TOKEN=*keygen product token api*
+* KEYGEN_TOKEN=*keygen product token api key*
 
-The product token API is minted using the Keygen dashboard. This block in the package.json file configures the Electron Builder Keygen integration:
+The product token API key is minted using the Keygen dashboard. The following block in the package.json file configures the Electron Builder Keygen integration:
 
 ```
  "publish": {
@@ -40,7 +40,7 @@ The product token API is minted using the Keygen dashboard. This block in the pa
     }
 ```
 
-For staging, set channel to "dev" and product to the "FairCopy Activate DEV" product ID. For production, set channel to "stable" and production to the "FairCopy Activate" product ID. 
+For staging, set channel to "dev" and product to the "FairCopy Activate DEV" product ID. For production, set channel to "stable" and product to the "FairCopy Activate" product ID. 
 
 These ENV variables must be set for Mac builds:
 
@@ -63,6 +63,8 @@ Once all of this configuration is in place, use the follow command to build the 
 Use this command on Windows to build the Windows installers:
 
 `yarn dist-win`
+
+You will need to enter the password (same as `CSC_PASSWORD` above) for the USB key multiple times during this process.
 
 The installers will be created in the `dist` folder.
 
