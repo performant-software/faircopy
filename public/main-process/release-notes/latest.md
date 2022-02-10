@@ -7,7 +7,7 @@ The release notes list the improvements and bug fixes included in each new versi
 ### Improvements
 
 * Over a dozen new TEI modules. FairCopy now has support for most of the elements in the TEI Guidelines. 
-* Support for standoff markup using the standOff resource type. Great for prosopographia and bibliography.
+* Support for standoff markup using the standOff resource type. Great for prosopography and bibliography.
 * Better support for diplomatic transcription using the sourceDoc resource type.
 * Full text search in projects. Filter search by element name or by attribute name/value pairs. 
 * Batch import of resources. You can now batch import a directory of TEI/XML or UTF-8 encoded texts.
