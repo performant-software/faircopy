@@ -58,12 +58,57 @@ export default class MainWindowStatusBar extends Component {
         this.setState({ ...this.state, softwareUpdateStatus: 'downloading', progress: 0 })
     }
 
-    render() {
-        const { appConfig, onQuitAndInstall, onFeedback, onDisplayNotes, fairCopyProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
-        const { softwareUpdateStatus, progress } = this.state
+    renderStatusButton(demo) {
+        const { appConfig, onQuitAndInstall, onDisplayNotes } = this.props
+        let { softwareUpdateStatus, progress } = this.state
 
-        const appVersion = appConfig ? `v${appConfig.version}` : ''
-        const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
+        let appVersion, devModeTag
+        if( demo ) {
+            appVersion = '1.0.0'
+            devModeTag = ''
+            softwareUpdateStatus = 'demo'     
+        } else {
+            appVersion = appConfig ? `v${appConfig.version}` : ''
+            devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''    
+        }
+
+        if( softwareUpdateStatus === 'OK' || softwareUpdateStatus === 'demo' ) {
+            return (
+                <Button onClick={onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">
+                    { appVersion } {devModeTag }                       
+                </Button> 
+            )
+        } else if( softwareUpdateStatus === 'updateAvailable' ) {
+            return (
+                <Button onClick={ this.onStartUpdate } className="version-button" size="small" variant="outlined" color="inherit">
+                        <i className="fas fa-bell fa-lg"></i> Update Available                       
+                </Button> 
+            )
+        } else if(  softwareUpdateStatus === 'downloading' ) {
+            return (
+                <Button className="version-button" size="small" variant="outlined" color="inherit">
+                    Downloading... {progress}%            
+                </Button> 
+            )
+        } else if(  softwareUpdateStatus === 'quitAndInstall' ) {
+            return (
+                <Button onClick={onQuitAndInstall}className="version-button" size="small" variant="outlined" color="inherit">
+                    <i className="fas fa-sync fa-lg"></i> Restart to Update
+                </Button> 
+            )
+        } else if( softwareUpdateStatus === 'error' ) {
+            return (
+                <Button className="version-button" size="small" variant="outlined" color="inherit">
+                    <i className="fas fa-times fa-lg"></i> Error updating                 
+                </Button> 
+            )
+        } else {
+            return null
+        }
+    }
+
+    render() {
+        const { onFeedback, fairCopyProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
 
         return (
             <footer id="MainWindowStatusBar" className="bar">
@@ -79,34 +124,10 @@ export default class MainWindowStatusBar extends Component {
                         onSearchFilter={onSearchFilter}
                         searchFilterOptions={searchFilterOptions}
                     ></SearchBar>
-                    { softwareUpdateStatus === 'OK' && 
-                        <Button onClick={onDisplayNotes} className="version-button" size="small" variant="outlined" color="inherit">
-                                { appVersion } {devModeTag }                       
-                        </Button> 
-                    }
-                    { softwareUpdateStatus === 'updateAvailable' && 
-                        <Button onClick={this.onStartUpdate } className="version-button" size="small" variant="outlined" color="inherit">
-                                <i className="fas fa-bell fa-lg"></i> Update Available                       
-                        </Button> 
-                    }
-                    { softwareUpdateStatus === 'downloading' && 
-                        <Button className="version-button" size="small" variant="outlined" color="inherit">
-                                Downloading... {progress}%            
-                        </Button> 
-                    }
-                    { softwareUpdateStatus === 'quitAndInstall' && 
-                        <Button onClick={onQuitAndInstall}className="version-button" size="small" variant="outlined" color="inherit">
-                                <i className="fas fa-sync fa-lg"></i> Restart to Update
-                        </Button> 
-                    }
-                    { softwareUpdateStatus === 'error' && 
-                        <Button className="version-button" size="small" variant="outlined" color="inherit">
-                                <i className="fas fa-times fa-lg"></i> Error updating                 
-                        </Button> 
-                    }
-                        <Tooltip title="Send developer feedback">
-                            <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
-                        </Tooltip>
+                    { this.renderStatusButton() }
+                    <Tooltip title="Send developer feedback">
+                        <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
+                    </Tooltip>
             </footer>
         )
     }
