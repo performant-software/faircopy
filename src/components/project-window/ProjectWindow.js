@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
-import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, setExpiration, oneDayMs, updateLicenseStatus, simulateEAP } from '../../model/license-key'
+import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, updateLicenseStatus } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -40,11 +40,12 @@ export default class ProjectWindow extends Component {
 
     renderNewProject() {
         const onClickSave = () => {
-            const { projectName, description, filePath } = this.state
+            const { projectName, description, filePath, mode } = this.state
             const projectInfo = { 
                 name: projectName,
                 description,
-                filePath
+                filePath,
+                remote: mode === 'new-remote' 
             }
             fairCopy.services.ipcSend('requestNewProject', projectInfo )
         }
@@ -136,23 +137,12 @@ export default class ProjectWindow extends Component {
            this.setState({ ...this.state, mode: 'new' })
         }  
 
+        const onClickNewRemote = () => {
+            this.setState({ ...this.state, mode: 'new-remote' })
+        }  
+
         const onResetKey = () => {
             resetLicenseData()
-            fairCopy.services.ipcSend('exitApp')
-        }
-
-        const onEAPKey = () => {
-            simulateEAP()
-            fairCopy.services.ipcSend('exitApp')
-        }
-
-        const onExpired = () => {
-            setExpiration(-oneDayMs)
-            fairCopy.services.ipcSend('exitApp')
-        }
-
-        const on14Days = () => {
-            setExpiration(oneDayMs*14)
             fairCopy.services.ipcSend('exitApp')
         }
 
@@ -166,11 +156,9 @@ export default class ProjectWindow extends Component {
                 <div className="left-side">
                     <Typography variant="h6" component="h2">Select a Project</Typography>
                     <Button className="left-action" onClick={onClickNew} variant='contained'>New Project...</Button>
+                    <Button className="left-action" onClick={onClickNewRemote} variant='contained'>New Remote Project...</Button>
                     <Button className="left-action" onClick={onClickOpen} variant='contained'>Open Project...</Button>
                     { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
-                    { allowKeyReset && <Button className="left-action" onClick={onExpired} variant='contained'>Simulate Expired</Button> }
-                    { allowKeyReset && <Button className="left-action" onClick={on14Days} variant='contained'>Simulate 14 Days</Button> }
-                    { allowKeyReset && <Button className="left-action" onClick={onEAPKey} variant='contained'>Simulate EAP</Button> }
                 </div>
                 <div className="right-side">
                     <Typography variant="h6" component="h2">Recent Projects</Typography>
@@ -317,6 +305,7 @@ export default class ProjectWindow extends Component {
                 content = this.renderSelectProject(allowKeyReset)
                 break
             case 'new':
+            case 'new-remote':
                 content = this.renderNewProject()
                 break
             case 'manageLicense':

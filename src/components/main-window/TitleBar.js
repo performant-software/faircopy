@@ -16,7 +16,9 @@ export default class TitleBar extends Component {
         onResourceAction('open-teidoc',[teiDocID])        
     }
 
-    renderHomeButton() {             
+    renderHomeButton() {         
+        const { remoteProject } = this.props    
+        const homeIcon = remoteProject ? 'fa-cloud' : 'fa-home-alt'
         return (
             <Tooltip title="Home">
                 <span>            
@@ -24,7 +26,7 @@ export default class TitleBar extends Component {
                         onClick={this.onClickHome}
                         className="home-icon" 
                     >
-                        <i className={`fa fa-home-alt fa-sm`}></i>
+                        <i className={`fa ${homeIcon} fa-sm`}></i>
                     </IconButton> 
                 </span>
             </Tooltip>

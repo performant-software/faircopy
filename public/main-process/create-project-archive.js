@@ -3,13 +3,16 @@ const fs = require('fs')
 const { manifestEntryName, configSettingsEntryName, idMapEntryName } = require('./ProjectStore')
 
 const createProjectArchive = function createProjectArchive(projectInfo,baseDir,callback) {
-    const { name, description, filePath, appVersion } = projectInfo
+    const { name, description, filePath, remote, appVersion } = projectInfo
     const projectArchive = new JSZip()      
    
     const fairCopyManifest = {
         projectName: name,
         description: description,
         appVersion,
+        remote,
+        serverURL: remote ? 'https://faircopy.cloud' : null,
+        username: remote ? 'nick' : null,
         resources: {}
     }
 

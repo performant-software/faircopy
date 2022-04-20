@@ -514,6 +514,7 @@ export default class MainWindow extends Component {
         const { resourceBrowserOpen, parentResourceID } = this.state
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const resources = fairCopyProject.getResources(parentResource)
+        const remoteProject = fairCopyProject.remote
         
         return (
             <div>
@@ -526,6 +527,7 @@ export default class MainWindow extends Component {
                         onImportResource={this.onImportResource}
                         teiDoc={parentResource}
                         resources={resources}
+                        remoteProject={remoteProject}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
             </div>

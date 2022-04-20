@@ -131,10 +131,12 @@ class ProjectStore {
         // id map authority tracks ids across processes
         this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
 
-        // setup search index
-        this.searchIndex = new SearchIndex( teiSchema, this, (status) => {
-            this.fairCopyApplication.sendToMainWindow('searchSystemStatus', status )
-        })
+        // setup search index if local 
+        if( !this.manifestData.remote ) {
+            this.searchIndex = new SearchIndex( teiSchema, this, (status) => {
+                this.fairCopyApplication.sendToMainWindow('searchSystemStatus', status )
+            })    
+        }
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )

@@ -102,7 +102,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, resources } = this.props
+    const { onResourceAction, resources, remoteProject } = this.props
 
     const onOpen = (resourceID) => {
       const resource = resources[resourceID]
@@ -148,7 +148,6 @@ export default class ResourceBrowser extends Component {
     }
 
     const cellProps = {
-      padding: 'none',
       component: "td",
       scope: "row"
     }
@@ -160,6 +159,9 @@ export default class ResourceBrowser extends Component {
       if( !resource ) continue
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
+      const status = resource.remote ? resource.checkedOutBy ? `checked out by ${resource.checkedOutBy}` : 'available' : 'local' 
+      const lastModified = resource.remote ? resource.lastModified : ''
+      
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={resource.id} key={`resource-${resource.id}`}>
           <TableCell {...cellProps} >
@@ -174,6 +176,16 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             {resource.localID}
           </TableCell>
+          { remoteProject && 
+          <TableCell {...cellProps} >
+           { status }
+          </TableCell>
+          }
+          { remoteProject && 
+          <TableCell {...cellProps} >
+            { lastModified }
+          </TableCell>        
+          }
         </TableRow>
       )
     }
@@ -189,10 +201,12 @@ export default class ResourceBrowser extends Component {
                   <caption>This table lists the resources in this project.</caption>
                   <TableHead>
                       <TableRow>
-                          <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
-                          <TableCell padding="none">Type</TableCell>
-                          <TableCell padding="none">Name</TableCell>
-                          <TableCell padding="none">ID</TableCell>
+                          <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                          <TableCell>Type</TableCell>
+                          <TableCell>Name</TableCell>
+                          <TableCell>ID</TableCell>
+                          { remoteProject && <TableCell>Status</TableCell> }
+                          { remoteProject && <TableCell>Last Modified</TableCell> }
                       </TableRow>
                   </TableHead>
                   <TableBody>
@@ -213,11 +227,11 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDoc, onResourceAction } = this.props
+      const { width, teiDoc, onResourceAction, remoteProject } = this.props
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction}></TitleBar>
+          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction} remoteProject={remoteProject}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }

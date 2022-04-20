@@ -50,6 +50,7 @@ export default class FairCopyProject {
         const fairCopyManifest = JSON.parse(json)
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description
+        this.remote = fairCopyManifest.remote
         // filter out images, which are part of facs 
         this.resources = {}
         Object.values(fairCopyManifest.resources).forEach( entry => {

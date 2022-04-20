@@ -1,4 +1,5 @@
 import JSZip from 'jszip'
+import { v4 as uuidv4 } from 'uuid'
 
 const fairCopy = window.fairCopy
 
@@ -85,6 +86,25 @@ function saveArchive(startTime, zipPath, zip, callback) {
         });
 }
 
+async function loadRemoteData(project) {
+    // TODO get actual data from server
+    const fairCopyManifest = JSON.parse(project.fairCopyManifest)
+    if( fairCopyManifest.remote ) {
+        const mockResource = {
+            id: uuidv4(),
+            localID: 'mock1',
+            name: 'Mock Remote Resource',
+            type: 'text',
+            parentResource: null,
+            lastModified: '',
+            checkedOutBy: null,
+            remote: true
+        }
+        fairCopyManifest.resources[mockResource.id] = mockResource
+        project.fairCopyManifest = JSON.stringify(fairCopyManifest)
+    }
+}
+
 async function openArchive(postMessage,workerData) {
     const fs = fairCopy.services.getFs()
     const { projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName } = workerData
@@ -100,6 +120,7 @@ async function openArchive(postMessage,workerData) {
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
+    await loadRemoteData(project)
     postMessage({ messageType: 'project-data', project })
 
     const open = true
