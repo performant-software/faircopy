@@ -87,7 +87,7 @@ function saveArchive(startTime, zipPath, zip, callback) {
 }
 
 async function loadRemoteData(project) {
-    // TODO get actual data from server
+    // TODO get the index, config, and idmap from the server 
     const fairCopyManifest = JSON.parse(project.fairCopyManifest)
     if( fairCopyManifest.remote ) {
         const mockResource = {
@@ -96,11 +96,18 @@ async function loadRemoteData(project) {
             name: 'Mock Remote Resource',
             type: 'text',
             parentResource: null,
-            lastModified: '',
+            lastModified: '03/21/21',
             checkedOutBy: null,
+            downloading: true,
             remote: true
         }
         fairCopyManifest.resources[mockResource.id] = mockResource
+
+        // TODO identify files we need and ask for them
+        // save files we have so far in ZIP every 30 secs or so.. 
+        // state for files we know we need but don't yet have? spinner?
+        // if offline, spinner files get a download cloud "Reconnect to Download"
+
         project.fairCopyManifest = JSON.stringify(fairCopyManifest)
     }
 }

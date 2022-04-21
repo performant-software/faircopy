@@ -159,7 +159,7 @@ export default class ResourceBrowser extends Component {
       if( !resource ) continue
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
-      const status = resource.remote ? resource.checkedOutBy ? `checked out by ${resource.checkedOutBy}` : 'available' : 'local' 
+      const status = resource.remote ? resource.checkedOutBy ? `checked out by ${resource.checkedOutBy}` : <span>Reconnect to Download <i className="fa fa-cloud-download fa-lg"></i></span> : 'local' 
       const lastModified = resource.remote ? resource.lastModified : ''
       
       resourceRows.push(
@@ -167,6 +167,11 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
           </TableCell>
+          { remoteProject && 
+          <TableCell {...cellProps} >
+           <i className="fa fa-pen fa-lg"></i>
+          </TableCell>
+          }
           <TableCell {...cellProps} >
             <i aria-label={getResourceIconLabel(resource.type)} className={`${resourceIcon} fa-lg`}></i>
           </TableCell>
@@ -202,6 +207,7 @@ export default class ResourceBrowser extends Component {
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                          <TableCell><i className="fa fa-pen fa-lg"></i></TableCell>
                           <TableCell>Type</TableCell>
                           <TableCell>Name</TableCell>
                           <TableCell>ID</TableCell>
