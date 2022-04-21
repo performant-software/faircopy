@@ -196,7 +196,7 @@ class ProjectStore {
 
     close() {
         this.projectArchiveWorker.postMessage({ messageType: 'close' })
-        this.searchIndex.close()
+        if( this.searchIndex ) this.searchIndex.close()
     }
 
     onIDMapUpdated(msgID, idMapData) {
@@ -222,7 +222,7 @@ class ProjectStore {
             const idMap = this.idMapAuthority.commitResource(resourceID)
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID, data: resourceData })
-            this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
+            if( this.searchIndex ) this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
             this.save()
             return true
         }
@@ -244,7 +244,7 @@ class ProjectStore {
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
             if(!this.importInProgress) this.sendIDMapUpdate()
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: resourceEntry.id, data: resourceData })
-            this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
+            if( this.searchIndex ) this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
         }
 
         if(this.importInProgress) {
@@ -269,7 +269,7 @@ class ProjectStore {
             }
         } else {
             // remove associated search index
-            this.searchIndex.removeIndex(resourceID)
+            if( this.searchIndex ) this.searchIndex.removeIndex(resourceID)
         }
 
         if( resourceEntry.type !== 'image' ) {
