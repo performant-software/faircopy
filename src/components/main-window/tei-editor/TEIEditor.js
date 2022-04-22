@@ -84,6 +84,7 @@ export default class TEIEditor extends Component {
                 handleKeyDown: this.onEditorKeyDown,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema,teiDocument),
                 transformPasted: transformPastedHandler(teiSchema,teiDocument),
+                editable: () => { return !teiDocument.readOnly },
                 clipboardSerializer: this.clipboardSerializer
             }
         )
@@ -350,6 +351,7 @@ export default class TEIEditor extends Component {
                         noteID={noteID}
                         height={drawerHeight}
                         width={drawerWidthCSS}
+                        readOnly={teiDocument.readOnly}
                     /> }
                 </div>
                 { !hidden && <NotePopup

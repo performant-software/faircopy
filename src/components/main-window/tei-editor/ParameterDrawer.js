@@ -13,6 +13,7 @@ import TEIEnumeratedField from './attribute-fields/TEIEnumeratedField'
 import TEIDataPointerField from './attribute-fields/TEIDataPointerField'
 import TEIDataWordLikeField from './attribute-fields/TEIDataWordLikeField'
 import IDField from './attribute-fields/IDField'
+import ReadOnlyField from './attribute-fields/ReadOnlyField'
 
 import { changeAttributes } from "../../../model/commands"
 import { getHighlightColor } from "../../../model/highlighter"
@@ -125,7 +126,17 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeField(elementName,attrName,value,attrSpec,onChange) {
+        const { readOnly } = this.props
         const { dataType, minOccurs, maxOccurs, valListType } = attrSpec
+
+        if( readOnly ) {
+            return (
+                <ReadOnlyField
+                    attrName={attrName}
+                    value={value}                        
+                ></ReadOnlyField>
+            )
+        }
 
         if( dataType === 'token') {
             return (
@@ -332,7 +343,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement(element,count,key) {
-        const { teiDocument } = this.props
+        const { teiDocument, readOnly } = this.props
         const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
         const { elements } = teiSchema
         const configElements = fairCopyConfig.elements
@@ -368,10 +379,12 @@ export default class ParameterDrawer extends Component {
                     { this.renderAttributes(element,elementID,attrState) }
                     { inactiveElement && this.renderInactiveError(elementID) }
                 </CardContent>
-                <CardActions>
-                    <Button variant="outlined" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
-                    { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add element to schema</Button> }
-                </CardActions>
+                { !readOnly && 
+                    <CardActions>
+                        <Button variant="outlined" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
+                        { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add element to schema</Button> }
+                    </CardActions>
+                }
             </Card>
         )    
     }
