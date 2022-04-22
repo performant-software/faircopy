@@ -1,0 +1,19 @@
+#ReadOnlyToolbar {
+    border: 2px solid #EAEAEA;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+#ReadOnlyToolbar .leftgroup {
+    display: inline-block;
+}
+
+#ReadOnlyToolbar .rightgroup {
+    display: inline-block;
+}
+
+@media (min-width: 1050px) {
+    #ReadOnlyToolbar .rightgroup {
+        float: right;
+    }    
+}

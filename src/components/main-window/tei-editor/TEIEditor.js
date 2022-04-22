@@ -11,6 +11,7 @@ import StructurePalette from "./StructurePalette"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
+import ReadOnlyToolbar from './ReadOnlyToolbar'
 import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
@@ -288,7 +289,7 @@ export default class TEIEditor extends Component {
             }
         }
 
-        const { selectedElements } = teiDocument
+        const { selectedElements, readOnly } = teiDocument
         const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
         const editorHeight = selectedElements.length > 0 ? 530 : 180
@@ -321,17 +322,20 @@ export default class TEIEditor extends Component {
                         >                   
                         </TitleBar> 
                     }
-                    { !hidden && <EditorToolbar
-                        teiDocument={teiDocument}
-                        onSave={onSave}
-                        onTogglePalette={this.onTogglePalette}
-                        paletteActive={paletteWindowOpen}
-                        onProjectSettings={onProjectSettings}
-                        onEditResource={onEditResource}
-                        onOpenElementMenu={this.onOpenElementMenu}
-                        onCloseElementMenu={this.onCloseElementMenu}
-                        elementMenuOptions={elementMenuOptions}
-                    ></EditorToolbar> }
+                    { !hidden && readOnly ? <ReadOnlyToolbar>
+                        </ReadOnlyToolbar> :
+                        <EditorToolbar
+                            teiDocument={teiDocument}
+                            onSave={onSave}
+                            onTogglePalette={this.onTogglePalette}
+                            paletteActive={paletteWindowOpen}
+                            onProjectSettings={onProjectSettings}
+                            onEditResource={onEditResource}
+                            onOpenElementMenu={this.onOpenElementMenu}
+                            onCloseElementMenu={this.onCloseElementMenu}
+                            elementMenuOptions={elementMenuOptions}
+                        ></EditorToolbar>
+                    }
                     <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
                         { !hidden && <EditorGutter
                             treeID="main"
