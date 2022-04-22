@@ -312,7 +312,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderIDField(element) {
-        const { teiDocument } = this.props
+        const { teiDocument, readOnly } = this.props
         const onChange = this.changeAttributeHandler(element,'xml:id')
 
         let xmlID, preExistingCondition
@@ -332,6 +332,7 @@ export default class ParameterDrawer extends Component {
                 preExistingCondition={preExistingCondition}
                 value={xmlID}
                 onChangeCallback={onChange}
+                readOnly={readOnly}
             ></IDField>
         )
     }
