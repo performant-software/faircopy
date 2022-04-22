@@ -445,6 +445,7 @@ export default class MainWindow extends Component {
     renderEditors() {
         const { openResources, selectedResource, leftPaneWidth, expandedGutter, parentResourceID } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
+        const remoteProject = fairCopyProject.remote
 
         const editors = []
         for( const resource of Object.values(openResources) ) {
@@ -472,7 +473,6 @@ export default class MainWindow extends Component {
                             teiDocument={resource}
                             resourceEntry={resourceEntry}
                             parentResource={parentResource}
-                            fairCopyProject={fairCopyProject}
                             onOpenElementMenu={this.onOpenElementMenu}
                             onProjectSettings={onProjectSettings}
                             onDragElement={this.onDragElement}
@@ -483,6 +483,7 @@ export default class MainWindow extends Component {
                             onSave={onSave}
                             leftPaneWidth={leftPaneWidth}
                             expandedGutter={expandedGutter}
+                            remoteProject={remoteProject}
                         ></TEIEditor>
                     )        
                 } else {

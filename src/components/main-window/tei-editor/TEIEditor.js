@@ -263,7 +263,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter } = this.props
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter, remoteProject } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
 
         const onClickBody = () => {
@@ -316,7 +316,9 @@ export default class TEIEditor extends Component {
                         teiDocID={ parentResource ? parentResource.id : null } 
                         teiDocName={ parentResource ? parentResource.name : null } 
                         onResourceAction={onResourceAction} 
-                        resourceName={resourceEntry.name}>                            
+                        resourceName={resourceEntry.name}    
+                        remoteProject={remoteProject}     
+                        >                   
                         </TitleBar> 
                     }
                     { !hidden && <EditorToolbar
