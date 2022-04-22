@@ -151,6 +151,7 @@ export default class TEIEditor extends Component {
         
         const { teiDocument } = this.props
         const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
+        const { currentTreeNode, readOnly } = teiDocument
 
         if( asides.includes(node.type.name) ) {
             const { noteID } = this.state
@@ -164,6 +165,12 @@ export default class TEIEditor extends Component {
             }
         } else {
             this.closeNotePopup()
+        }
+
+        // if the document is read only, clicking on the body deselects the editor gutter
+        if( readOnly && currentTreeNode.editorGutterPos !== null ) {
+            teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
+            teiDocument.refreshView()
         }
     }
 
