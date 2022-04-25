@@ -36,12 +36,29 @@ export default class EditorDraggingElement extends DraggingElement {
     this.state = this.initialState
 }
 
+getHitEl(offsetX,offsetY) {
+  const el = document.elementFromPoint(offsetX,offsetY)
+  if( el ) {
+    const { teiDocument } = this.props
+    const activeViewType = teiDocument.getActiveViewType()
+    const bodyEl = el.parentNode?.parentNode?.parentNode
+    if( bodyEl ) {
+      if( activeViewType === "main" ) {
+        if( bodyEl.className === 'body' ) return el
+      } else {
+        if( bodyEl.className === 'note-body' ) return el
+      }  
+    }
+  }
+  return null
+}
+
 hitDetection(offsetX,offsetY) {
   const { nodePos: lastNodePos, actionType: lastActionType } = this.state
 
-  const el = document.elementFromPoint(offsetX,offsetY)
-
-  if( !el || !el.className ) {
+  const el = this.getHitEl(offsetX,offsetY)
+  
+  if( !el ) {
     return { nodePos: lastNodePos, actionType: lastActionType }
   }
 
