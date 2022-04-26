@@ -280,20 +280,22 @@ export default class TEIEditor extends Component {
             }
         }
 
+        // Offsets are dependent on the presence of free trial bar
+        const licenseType = getLicenseType()
+        const licenseBarOffset = licenseType === 'free' ? 50 : 0
+
         const { selectedElements } = teiDocument
-        const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
+        const drawerHeight = selectedElements.length > 0 ? 300 : 50 
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
-        const editorHeight = selectedElements.length > 0 ? 530 : 180
+        const editorHeight = (selectedElements.length > 0 ? 530 : 180) + licenseBarOffset
 
         const editorHeightCSS = `calc(100% - ${editorHeight}px)`
         const editorWidthCSS = `calc(100vw - 10px - ${leftPaneWidth}px)`
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
         const style = hidden ? { display: 'none' } : {}
 
-        // Offsets are dependent on the presence of free trial bar
-        const licenseType = getLicenseType()
-        const gutterTop = licenseType === 'free' ? 165 : 115
-        const marginTop = licenseType === 'free' ? 175 : 125
+        const gutterTop = 115 + licenseBarOffset
+        const marginTop = 125 + licenseBarOffset
         
         return (
             <main 
