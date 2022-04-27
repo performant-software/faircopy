@@ -9732,6 +9732,11 @@ openseadragon@^2.4.2:
   resolved "https://registry.yarnpkg.com/openseadragon/-/openseadragon-2.4.2.tgz#f25d833d0ab9941599d65a3e2b44bec546c9f15c"
   integrity sha512-398KbZwRtOYA6OmeWRY4Q0737NTacQ9Q6whmr9Lp1MNQO3p0eBz5LIASRne+4gwequcSM1vcHcjfy3dIndQziw==
 
+openseadragon@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/openseadragon/-/openseadragon-3.0.0.tgz#efaf47514eac24637e27482217d2e9fc3a3441de"
+  integrity sha512-IIl90uMZ8mi+W4IWJ0W6/xyz2SCcHeEMT6U5dcAN7UYJYAXWLYbmu3diWzoz4KE0JvMXbXC5wjRoACdTVrgaog==
+
 opn@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/opn/-/opn-5.5.0.tgz#fc7164fab56d235904c51c3b27da6758ca3b9bfc"
