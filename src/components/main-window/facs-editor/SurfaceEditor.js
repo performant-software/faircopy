@@ -10,7 +10,6 @@ import TitleBar from '../TitleBar'
 import { getSurfaceNames } from '../../../model/convert-facs'
 import { getLicenseType } from '../../../model/license-key'
 
-
 const fairCopy = window.fairCopy
 
 export default class SurfaceEditor extends Component {
@@ -99,6 +98,8 @@ export default class SurfaceEditor extends Component {
             }
             this.setState({...this.state, selectedZone, selectedDOMElement })
         })
+
+        this.viewer.element.style.width="100%"
     }
 
     initViewer = (el) => {
