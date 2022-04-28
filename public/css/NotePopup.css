@@ -4,8 +4,13 @@
 
 #NotePopup .note-body {
     display: flex;
+    overflow-y: scroll;
+    position: fixed;
+    width: 400px;
+    max-height: calc(50vh);
     margin: 5px;
     background: white;
+    border: 1px solid gray;
 }
 
 .note-body .ProseMirrorComponent {
