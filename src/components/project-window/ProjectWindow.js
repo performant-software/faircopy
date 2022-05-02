@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
-import { Button, Typography, Card, CardContent, TextField, CardActionArea} from '@material-ui/core'
+import { Button, Typography, Card, CardContent, CardActionArea} from '@material-ui/core'
 
 import LicensePanel from '../license-window/LicensePanel'
+import NewProjectPanel from './NewProjectPanel'
+import NewRemoteProjectPanel from './NewRemoteProjectPanel'
+import ManageLicensePanel from './ManageLicensePanel'
+
 import { resetLicenseData, licenseDaysLeft, activateLicense, getLicenseType, updateLicenseStatus } from '../../model/license-key'
 
 const fairCopy = window.fairCopy
@@ -14,96 +18,9 @@ export default class ProjectWindow extends Component {
             mode: 'select', 
             projectName: '',
             description: '',
-            filePath: '',
             errorMessage: null 
         }
         this.state = this.initialState
-    }
-
-    onPathSelected = (event, filePath) => this.onPathUpdated(filePath)
-
-    componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('pathSelected', this.onPathSelected )
-    }
-
-    componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('pathSelected', this.onPathSelected )
-    }
-
-    onPathUpdated(filePath) {
-        if( filePath ) {
-            this.setState({...this.state, filePath })
-        }
-    }
-
-    renderNewProject() {
-        const onClickSave = () => {
-            const { projectName, description, filePath, mode } = this.state
-            const projectInfo = { 
-                name: projectName,
-                description,
-                filePath,
-                remote: mode === 'new-remote' 
-            }
-            fairCopy.services.ipcSend('requestNewProject', projectInfo )
-        }
-        const onClickCancel = () => {
-            this.setState({ ...this.initialState })
-        }
-        const onClickBrowse = () => {
-            fairCopy.services.ipcSend('requestNewPath' )
-        }
-        const onChangeName = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, projectName: value })
-        }
-        const onChangeDescription = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, description: value })
-        }
-        const { projectName, description, filePath } = this.state
-        const saveAllowed = (projectName.length > 0 && filePath.length > 0 )
-        const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
-
-        return (
-            <div className="content new-project-form">
-                <Typography variant="h6" component="h2">Start a New Project</Typography>
-                <ul>
-                    <li>
-                        <TextField 
-                            className="new-project-field"
-                            value={projectName}
-                            onChange={onChangeName}
-                            label="Project Name" 
-                        />
-                    </li>
-                    <li>
-                        <TextField 
-                            className="new-project-field"
-                            label="Short Description" 
-                            onChange={onChangeDescription}
-                            value={description}
-                        />
-                    </li>
-                    <li>
-                        <TextField 
-                            className="new-project-field"
-                            label="Project File" 
-                            value={filePath}
-                            disabled
-                        />
-                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Choose Save File Path</Button>
-                    </li>
-                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> Give your project and name and a short description, then choose where you want the project file to be saved.</Typography></li>
-                </ul>
-                <div className='form-actions'>
-                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Save</Button>
-                    <Button className='action-button' onClick={onClickCancel} variant='contained'>Cancel</Button>
-                </div>
-            </div>
-        )
     }
 
     renderProjectCard(project) {
@@ -299,17 +216,23 @@ export default class ProjectWindow extends Component {
         const allowKeyReset = appConfig ? appConfig.devMode : false
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
+        const onClose = () => {
+            this.setState({...this.state, mode: 'select'})
+        }
+
         let content 
         switch(mode) {
             case 'select':
                 content = this.renderSelectProject(allowKeyReset)
                 break
-            case 'new':
             case 'new-remote':
-                content = this.renderNewProject()
+                content = <NewRemoteProjectPanel onClose={onClose}></NewRemoteProjectPanel>
+                break
+            case 'new':
+                content = <NewProjectPanel onClose={onClose}></NewProjectPanel>
                 break
             case 'manageLicense':
-                content = this.renderManageLicense()
+                content = <ManageLicensePanel onClose={onClose}></ManageLicensePanel>
                 break
             case 'licensePanel':
                 content = this.renderLicensePanel()
