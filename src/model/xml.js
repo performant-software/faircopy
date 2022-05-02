@@ -7,7 +7,7 @@ export function parseText(textEl, teiDocument, teiSchema, subDocName) {
     // make the TEIDocument visible to the node spec parser for access to sub docs
     teiSchema.teiDocuments.push(teiDocument)
     stripSpaces(textEl)
-    parseInterNodes(textEl,teiSchema)
+    parseInterNodes(textEl,teiSchema,teiDocument.xmlDom)
     const domParser = subDocName !== 'text' ? teiSchema.docNodeParsers[subDocName] : teiSchema.domParser
     const doc = domParser.parse(textEl)
     teiSchema.teiDocuments.pop()
@@ -58,7 +58,7 @@ export function proseMirrorToDOM( content, teiDocument, teiSchema, subDocName ) 
         removeNodes(domFragment, `globalNode${i}`)
     }
 
-    renameInterMarks(inter, domFragment)
+    renameInterMarks(inter, domFragment, teiDocument.xmlDom)
     teiSchema.teiDocuments.pop()
     return domFragment
 }
@@ -89,7 +89,7 @@ export function synthNameToElementName(nodeName) {
 
 // Internodes are a set of elements that can be processed as either nodes or marks, depending on their
 // location in the document structure. They have to be determined before parsing with ProseMirror.
-function parseInterNodes(textEl,teiSchema) {
+function parseInterNodes(textEl,teiSchema,xmlDom) {
     const { elements, elementGroups } = teiSchema
     const { hard, soft, inter, asides } = elementGroups
     const nodes = [...hard,...soft]
@@ -126,7 +126,8 @@ function parseInterNodes(textEl,teiSchema) {
             const markEl = markEls[i]
             // if this is a mark.. rename to interMark tag
             if( isMark(markEl) ) {
-                const interEl = document.createElement(`${markPrefix}${xmlTag}`)
+                const elName = `${markPrefix}${xmlTag}`
+                const interEl = xmlDom.createElement(elName)
                 interEl.innerHTML = markEl.innerHTML
                 cloneAttributes(interEl,markEl)
                 markEl.parentNode.replaceChild(interEl,markEl)
@@ -167,13 +168,13 @@ function removeNodes(documentFragment,nodeName) {
 }
 
 // convert all intermarks back to their XML node names
-function renameInterMarks(inter, documentFragment) {
+function renameInterMarks(inter, documentFragment, xmlDom) {
     for( const interMark of inter ) {
         const interMarkName = `mark${interMark}`
         const markEls = documentFragment.querySelectorAll(interMarkName)
         for( let i=0; i < markEls.length; i++ ) {
             const markEl = markEls[i]
-            const interEl = document.createElement(interMark)
+            const interEl = xmlDom.createElement(interMark)
             interEl.innerHTML = markEl.innerHTML
             cloneAttributes(interEl,markEl)
             markEl.parentNode.replaceChild(interEl,markEl)
