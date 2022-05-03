@@ -1,99 +1,68 @@
 import React, { Component } from 'react'
 import { Button, Typography, TextField } from '@material-ui/core'
 
-const fairCopy = window.fairCopy
+// const fairCopy = window.fairCopy
 
 export default class LoginPanel extends Component {
 
     constructor() {
         super()
         this.initialState = { 
-            projectName: '',
-            description: '',
-            filePath: '',
+            serverURL: 'http://localhost:3879',
+            email: '',
+            password: '',
             errorMessage: null 
         }
         this.state = this.initialState
     }
 
-    onPathSelected = (event, filePath) => this.onPathUpdated(filePath)
-
-    componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('pathSelected', this.onPathSelected )
-    }
-
-    componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('pathSelected', this.onPathSelected )
-    }
-
-    onPathUpdated(filePath) {
-        if( filePath ) {
-            this.setState({...this.state, filePath })
-        }
-    }
-
     render() {
         const { onClose } = this.props
         
-        const onClickSave = () => {
-            const { projectName, description, filePath } = this.state
-            const projectInfo = { 
-                name: projectName,
-                description,
-                filePath,
-                remote: true
-            }
-            fairCopy.services.ipcSend('requestNewProject', projectInfo )
+        const onLogin = () => {
+            // fairCopy.services.ipcSend('requestNewProject', projectInfo )
         }
-        const onClickCancel = () => {
-            onClose()
-        }
+
         const onChangeName = (e) => {
             const value = e.currentTarget.value
             this.setState({...this.state, projectName: value })
         }
-        const onChangeDescription = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, description: value })
-        }
-        const { projectName, description, filePath } = this.state
-        const saveAllowed = (projectName.length > 0 && filePath.length > 0 )
-        const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
+        const { serverURL, email, password } = this.state
+        const saveAllowed = ( serverURL.length > 0 && email.length > 0 && password.length > 0 )
+        const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
 
         return (
-            <div className="content new-project-form">
-                <Typography variant="h6" component="h2">Start a New Remote Project</Typography>
+            <div id="LoginPanel">
+                <Typography variant="h6" component="h2">Login to FairCopy Server</Typography>
                 <ul>
                     <li>
                         <TextField 
-                            className="new-project-field"
-                            value={projectName}
-                            onChange={onChangeName}
+                            className="login-field"
                             label="FairCopy Server" 
+                            onChange={onChangeName}
+                            value={serverURL}
                         />
                     </li>
                     <li>
                         <TextField 
-                            className="new-project-field"
+                            className="login-field"
                             label="Email" 
-                            onChange={onChangeDescription}
-                            value={description}
+                            onChange={onChangeName}
+                            value={email}
                         />
                     </li>
                     <li>
                         <TextField 
-                            className="new-project-field"
+                            className="login-field"
                             label="Password" 
-                            onChange={onChangeDescription}
-                            value={description}
+                            onChange={onChangeName}
+                            value={password}
                         />
                     </li>
                 </ul>
                 <div className='form-actions'>
-                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Login</Button>
-                    <Button className='action-button' onClick={onClickCancel} variant='contained'>Cancel</Button>
+                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onLogin} color='primary' variant='contained'>Login</Button>
+                    <Button className='action-button' onClick={onClose} variant='contained'>Cancel</Button>
                 </div>
             </div>
         )
