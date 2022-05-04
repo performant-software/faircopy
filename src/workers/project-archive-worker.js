@@ -85,7 +85,7 @@ function saveArchive(startTime, zipPath, zip, callback) {
         });
 }
 
-async function loadRemoteData(project) {
+/*async function updateFromRemote(project) {
     // TODO get the index, config, and idmap from the server 
     const fairCopyManifest = JSON.parse(project.fairCopyManifest)
     const mockID = 'MOCK-DATA'
@@ -97,7 +97,7 @@ async function loadRemoteData(project) {
             name: 'Mock Remote Resource',
             type: 'text',
             parentResource: null,
-            lastModified: '03/21/21',
+            gitHeadRevision: 'fdjskfdjslkfds',
             checkedOutBy: null,
             downloading: true,
             remote: true
@@ -111,7 +111,7 @@ async function loadRemoteData(project) {
 
         project.fairCopyManifest = JSON.stringify(fairCopyManifest)
     }
-}
+}*/
 
 async function openArchive(postMessage,workerData) {
     const fs = fairCopy.services.getFs()
@@ -128,7 +128,7 @@ async function openArchive(postMessage,workerData) {
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
-    await loadRemoteData(project)
+    // await loadRemoteData(project)
     postMessage({ messageType: 'project-data', project })
 
     const open = true

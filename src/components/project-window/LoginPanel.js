@@ -21,7 +21,7 @@ export default class LoginPanel extends Component {
         const onLogin = () => {
             const { serverURL, email, password } = this.state
             const onSuccess = (authToken) => {
-                onLoggedIn( serverURL, authToken )
+                onLoggedIn( serverURL, email, authToken )
             }
             const onFail = (error) => {
                 this.setState({...this.state, errorMessage: error, password: ''})

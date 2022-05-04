@@ -11,8 +11,8 @@ const createProjectArchive = function createProjectArchive(projectInfo,baseDir,c
         description: description,
         appVersion,
         remote,
-        serverURL: remote ? 'https://faircopy.cloud' : null,
-        username: remote ? 'nick' : null,
+        serverURL: projectInfo?.serverURL,
+        email: projectInfo?.email,
         resources: {}
     }
 
