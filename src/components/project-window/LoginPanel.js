@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Typography, TextField } from '@material-ui/core'
-import { login } from '../../model/auth'
+import { login } from '../../model/cloud-api/auth'
 
 export default class LoginPanel extends Component {
 
@@ -20,10 +20,13 @@ export default class LoginPanel extends Component {
         
         const onLogin = () => {
             const { serverURL, email, password } = this.state
+            const onSuccess = (authToken) => {
+                onLoggedIn( serverURL, authToken )
+            }
             const onFail = (error) => {
                 this.setState({...this.state, errorMessage: error, password: ''})
             }
-            login(serverURL, email, password, onLoggedIn, onFail )
+            login(serverURL, email, password, onSuccess, onFail )
         }
 
         const onChangeServerURL = (e) => {

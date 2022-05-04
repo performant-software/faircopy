@@ -1,16 +1,14 @@
 import axios from 'axios';
 
-var authToken = null
+import { authConfig } from './auth'
 
-export function login(serverURL, email, password, onSuccess, onFail) {
-    const authURL = `${serverURL}/api/auth/login`
-    const loginData = { email, password }
+export function getProjects(serverURL, authToken, onSuccess, onFail) {
+    const getProjectsURL = `${serverURL}/api/projects`
 
-    axios.post(authURL, loginData).then(
+    axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {
-            const { token } = okResponse.data
-            setAuthToken(token)
-            onSuccess()
+            const { projects } = okResponse.data
+            onSuccess(projects)
         },
         (errorResponse) => {
             // problem with the license 
@@ -24,12 +22,4 @@ export function login(serverURL, email, password, onSuccess, onFail) {
             }
         }
     )
-}
-
-function setAuthToken(token) {
-    authToken = token
-}
-
-export function getAuthToken() {
-    return authToken
 }

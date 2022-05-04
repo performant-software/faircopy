@@ -2,29 +2,59 @@ import React, { Component } from 'react'
 
 import LoginPanel from './LoginPanel'
 import SelectRemoteProjectPanel from './SelectRemoteProjectPanel'
+import ChooseLocalFilePanel from './ChooseLocalFilePanel'
+
+import { getProjects } from '../../model/cloud-api/projects'
+
+const fairCopy = window.fairCopy
 
 export default class NewRemoteProjectPanel extends Component {
 
     constructor() {
         super()
         this.initialState = { 
-            step: 0
+            step: 0,
+            projects: null,
+            project: null
         }
         this.state = this.initialState
     }
 
+    onOpenProject = (project) => {
+        this.setState({...this.state, project, step: 2})
+    }
+
+    onSave = (filePath) => {
+        const { project } = this.state
+        const { name, description } = project
+        const projectInfo = { 
+            name,
+            description,
+            filePath,
+            remote: true
+        }
+        fairCopy.services.ipcSend('requestNewProject', projectInfo )
+    }
+
     render() {
         const { onClose } = this.props
-        const { step } = this.state
+        const { step, projects, project } = this.state
 
-        const onLoggedIn = () => {
+        const onLoggedIn = (serverURL, authToken) => {
             this.setState({...this.state, step: 1})
+            getProjects( serverURL, authToken, (projects)=> {
+                this.setState({...this.state, projects})
+            }, (errorMessage) => {
+                // TODO
+            })
         }
 
         if( step === 0 ) {
             return <LoginPanel onClose={onClose} onLoggedIn={onLoggedIn}></LoginPanel>
-        } else {
-            return <SelectRemoteProjectPanel onClose={onClose}></SelectRemoteProjectPanel>
+        } else if( step === 1 ) {
+            return <SelectRemoteProjectPanel projects={projects} onClose={onClose} onOpenProject={this.onOpenProject}></SelectRemoteProjectPanel>
+        } else if( step === 2 ) {
+            return <ChooseLocalFilePanel project={project} onClose={onClose} onSave={this.onSave}></ChooseLocalFilePanel>
         }
     }
 }
