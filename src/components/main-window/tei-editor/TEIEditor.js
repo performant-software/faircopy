@@ -15,9 +15,8 @@ import ReadOnlyToolbar from './ReadOnlyToolbar'
 import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
-import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks } from '../../../model/editor-navigation'
+import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks, navigateFromEditorToTree } from '../../../model/editor-navigation'
 import { findNoteNode } from '../../../model/xml'
-import { getLicenseType } from '../../../model/license-key'
 
 const resizeRefreshRate = 100
 
@@ -190,6 +189,7 @@ export default class TEIEditor extends Component {
 
     onKeyDown = ( event ) => {
         const { teiDocument, altDown, ctrlDown } = this.props 
+        const shiftKey = !!event.shiftKey
 
         if( event.altKey && !altDown ) {
             this.setState({...this.state, altDown: true })
@@ -226,7 +226,20 @@ export default class TEIEditor extends Component {
             }
         }
  
-        return handleEditorHotKeys(event, teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer );
+        // Move from the editor to the tree w/ keyboard
+        if( event.key === 'Tab' && shiftKey ) {
+            const { editorView } = teiDocument
+            const { treeID } = teiDocument.currentTreeNode
+            const { editorGutterPos } = teiDocument.currentTreeNode
+    
+            if( editorGutterPos === null ) {
+                const { nextPos, nextPath } = navigateFromEditorToTree( editorView )
+                this.onChangePos(nextPos, nextPath, treeID)
+            }
+            return
+        } 
+
+        handleEditorHotKeys(event, teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer );
     }
 
     onKeyUp = ( event ) => {
@@ -299,10 +312,8 @@ export default class TEIEditor extends Component {
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
         const style = hidden ? { display: 'none' } : {}
 
-        // Offsets are dependent on the presence of free trial bar
-        const licenseType = getLicenseType()
-        const gutterTop = licenseType === 'free' ? 165 : 115
-        const marginTop = licenseType === 'free' ? 175 : 125
+        const gutterTop = 115
+        const marginTop = 125
         
         return (
             <main 

@@ -157,6 +157,7 @@ function transformInlineCopy(slice) {
     const fragment = slice.content
     const {schema} = fragment.firstChild.type
     const inlineNodes = []
+    const spaceNode = schema.text(' ')
 
     for( let i=0; i < fragment.childCount; i++ ) {
         const child = fragment.child(i)
@@ -167,9 +168,8 @@ function transformInlineCopy(slice) {
                 for( let j=0; j < node.childCount; j++ ) {
                     const inlineNode = node.child(j) 
                     inlineNodes.push(inlineNode)
-                    const spaceNode = schema.text(' ')
-                    inlineNodes.push(spaceNode)                    
                 }
+                inlineNodes.push(spaceNode)          
             }
             return true
         })
@@ -183,7 +183,10 @@ function transformInlineCopy(slice) {
             const txtNode = schema.text(child.textContent)
             inlineNodes.push(txtNode)
         }
-    }
-
-    return new Slice( Fragment.from(inlineNodes), 0, 0 )
+        return new Slice( Fragment.from(inlineNodes), 0, 0 )
+    } else {
+        // don't end in a space node
+        const nodesWithoutTrailingSpace = inlineNodes[inlineNodes.length-1] === spaceNode ? inlineNodes.slice(0,inlineNodes.length-1) : inlineNodes
+        return new Slice( Fragment.from(nodesWithoutTrailingSpace), 0, 0 )
+    }    
 }

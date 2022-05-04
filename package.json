@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.0.0-dev.1",
+  "version": "1.0.1-dev.3",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -44,7 +44,7 @@
     "flexsearch": "^0.7.21",
     "jimp": "^0.16.1",
     "jszip": "3.2.0",
-    "openseadragon": "^2.4.2",
+    "openseadragon": "^3.0.0",
     "prop-types": "^15.7.2",
     "prosemirror-commands": "^1.1.12",
     "prosemirror-dev-tools": "^3.1.0",

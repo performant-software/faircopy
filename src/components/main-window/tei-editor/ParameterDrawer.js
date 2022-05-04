@@ -350,7 +350,6 @@ export default class ParameterDrawer extends Component {
         const configElements = fairCopyConfig.elements
         const name = element.type.name
         const elementID = name.startsWith('mark') ? name.slice('mark'.length) : name.endsWith('X') ? name.slice(0,name.length-1) : name
-        // TODO: INTERMITTENT CRASH BUG HERE - configElements[elementID] 
         const {attrState} = configElements[elementID]
         const elementSpec = elements[elementID]
 

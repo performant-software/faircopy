@@ -731,7 +731,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
+        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex, resourceBrowserOpen } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -745,9 +745,9 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
-                    <LicenseBar
+                    { resourceBrowserOpen && <LicenseBar
                         onLicense={this.onLicense}
-                    ></LicenseBar>
+                    ></LicenseBar> }
                     <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                         { this.renderProjectSidebar() }
                         { this.renderContentPane() }

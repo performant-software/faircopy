@@ -31,6 +31,10 @@ export function createPhraseElement( elementID, attrs, teiDocument ) {
 
 // create hard and soft elements
 export function createStructureElement( elementID, nodePos, actionType, teiDocument, tr ) {
+
+    // clear current tree node since it may no longer be a valid position
+    teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: teiDocument.currentTreeNode.treeID }
+
     // perform appropriate editor action on node
     switch( actionType ) {
       case 'addAbove':

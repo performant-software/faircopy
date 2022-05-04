@@ -2,6 +2,18 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.0.1
+
+### Bug Fixes
+
+* Fix issue with placeMark (and other camel cased marks) not being recorded properly.
+* Added vertical scroll bar to popup editor for notes and other asides.
+* Fixed problem editor text being obscured by status bar during free trial on MacOS.
+* Fixed image cropping in facs editor at a fixed width.
+* Clicking structure elements could sometimes select wrong element, fixed.
+* Fixed crash bug related to adding elements.
+* Cut and paste no longer introduces extra space at end of pasted text.
+
 ## Version 1.0.0
 
 ### Improvements

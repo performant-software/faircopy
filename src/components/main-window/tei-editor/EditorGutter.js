@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { navigateTree, navigateFromEditorToTree } from '../../../model/editor-navigation'
+import { navigateTree } from '../../../model/editor-navigation'
 import { moveNode, eraseSelection } from '../../../model/editor-actions'
 import { synthNameToElementName } from '../../../model/xml'
 
@@ -238,16 +238,6 @@ export default class EditorGutter extends Component {
         }
     }
 
-    onFocus = () => {
-        const { editorView, teiDocument, onChangePos, treeID } = this.props
-        const { editorGutterPos } = teiDocument.currentTreeNode
-
-        if( editorGutterPos === null ) {
-            const { nextPos, nextPath } = navigateFromEditorToTree( editorView )
-            onChangePos(nextPos, nextPath, treeID)
-        }
-    }
-
     render() {   
         const { editorView, editorGutterPath } = this.props
 
@@ -267,7 +257,6 @@ export default class EditorGutter extends Component {
                     aria-live="polite" 
                     aria-roledescription="document structure tree" 
                     onKeyDown={this.onKeyDown}
-                    onFocus={this.onFocus}
                 >
                     { gutterMarkEls }
                 </div>
