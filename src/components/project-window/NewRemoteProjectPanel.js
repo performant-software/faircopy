@@ -17,12 +17,12 @@ export default class NewRemoteProjectPanel extends Component {
         const { onClose } = this.props
         const { step } = this.state
 
-        const onLogin = () => {
+        const onLoggedIn = () => {
             this.setState({...this.state, step: 1})
         }
 
         if( step === 0 ) {
-            return <LoginPanel onClose={onClose} onLogin={onLogin}></LoginPanel>
+            return <LoginPanel onClose={onClose} onLoggedIn={onLoggedIn}></LoginPanel>
         } else {
             return <SelectRemoteProjectPanel onClose={onClose}></SelectRemoteProjectPanel>
         }

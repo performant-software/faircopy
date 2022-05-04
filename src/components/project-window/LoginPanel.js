@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import { Button, Typography, TextField } from '@material-ui/core'
-
-// const fairCopy = window.fairCopy
+import { login } from '../../model/auth'
 
 export default class LoginPanel extends Component {
 
     constructor() {
         super()
         this.initialState = { 
-            serverURL: 'http://localhost:3879',
-            email: '',
+            serverURL: 'http://localhost:3789',
+            email: 'admin@performantsoftware.com',
             password: '',
             errorMessage: null 
         }
@@ -17,16 +16,29 @@ export default class LoginPanel extends Component {
     }
 
     render() {
-        const { onClose } = this.props
+        const { onClose, onLoggedIn } = this.props
         
         const onLogin = () => {
-            // fairCopy.services.ipcSend('requestNewProject', projectInfo )
+            const { serverURL, email, password } = this.state
+            const onFail = (error) => {
+                this.setState({...this.state, errorMessage: error, password: ''})
+            }
+            login(serverURL, email, password, onLoggedIn, onFail )
         }
 
-        const onChangeName = (e) => {
+        const onChangeServerURL = (e) => {
             const value = e.currentTarget.value
-            this.setState({...this.state, projectName: value })
+            this.setState({...this.state, serverURL: value })
         }
+        const onChangeEmail = (e) => {
+            const value = e.currentTarget.value
+            this.setState({...this.state, email: value })
+        }
+        const onChangePassword = (e) => {
+            const value = e.currentTarget.value
+            this.setState({...this.state, password: value })
+        }
+
         const { serverURL, email, password } = this.state
         const saveAllowed = ( serverURL.length > 0 && email.length > 0 && password.length > 0 )
         const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
@@ -39,7 +51,7 @@ export default class LoginPanel extends Component {
                         <TextField 
                             className="login-field"
                             label="FairCopy Server" 
-                            onChange={onChangeName}
+                            onChange={onChangeServerURL}
                             value={serverURL}
                         />
                     </li>
@@ -47,15 +59,16 @@ export default class LoginPanel extends Component {
                         <TextField 
                             className="login-field"
                             label="Email" 
-                            onChange={onChangeName}
+                            onChange={onChangeEmail}
                             value={email}
                         />
                     </li>
                     <li>
-                        <TextField 
+                    <TextField 
                             className="login-field"
                             label="Password" 
-                            onChange={onChangeName}
+                            type="password"
+                            onChange={onChangePassword}
                             value={password}
                         />
                     </li>
