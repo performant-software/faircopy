@@ -1,0 +1,34 @@
+#LoginDialog {
+    margin: 12px;
+    background: #F8F5FF;
+    padding: 5px;
+    padding-top: 15px;
+    border-radius: 10px;
+}
+
+#LoginDialog li {
+    list-style: none;
+}
+
+#LoginDialog h2 {
+    margin-left: 15px;
+}
+
+#LoginDialog .login-field {
+    width: 300px;
+    margin-bottom: 10px;
+}
+
+#LoginDialog .form-actions {
+    margin-left: 520px;
+    margin-bottom: 10px;
+}
+
+#LoginDialog .action-button {
+    margin-right: 10px;
+}
+
+#LoginDialog .login-button-active {
+    background: #1976d2;
+    margin-right: 10px;
+}

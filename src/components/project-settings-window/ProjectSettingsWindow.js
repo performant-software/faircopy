@@ -95,7 +95,8 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderDialogs() {    
-        const { loginMode } = this.state
+        const { loginMode, projectInfo } = this.state
+        const { email, serverURL } = projectInfo
 
         const onClose = () => { 
             this.setState({ ...this.state, loginMode: false })
@@ -109,7 +110,7 @@ export default class ProjectSettingsWindow extends Component {
         return (
             <div className="dialog-container">
                 { loginMode && 
-                    <LoginDialog onClose={onClose} onLoggedIn={onLoggedIn}></LoginDialog> 
+                    <LoginDialog onClose={onClose} email={email} serverURL={serverURL} onLoggedIn={onLoggedIn}></LoginDialog> 
                 }
             </div>
         )
