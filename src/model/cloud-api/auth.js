@@ -24,6 +24,10 @@ export function login(serverURL, email, password, onSuccess, onFail) {
     )
 }
 
+export function logout(email,serverURL) {
+    setAuthToken(email, serverURL, null)
+}
+
 function setAuthToken(email, serverURL, token) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
@@ -34,6 +38,10 @@ function setAuthToken(email, serverURL, token) {
     }
 
     localStorage.setItem('authTokens',JSON.stringify(authTokens))
+}
+
+export function isLoggedIn( email, serverURL ) {
+    return !!getAuthToken(email, serverURL)    
 }
 
 export function getAuthToken( email, serverURL ) {

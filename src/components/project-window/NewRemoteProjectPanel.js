@@ -27,8 +27,8 @@ export default class NewRemoteProjectPanel extends Component {
     }
 
     onSave = (filePath) => {
-        const { project } = this.state
-        const { name, description, email, serverURL } = project
+        const { project, email, serverURL } = this.state
+        const { name, description } = project
         const projectInfo = { 
             name,
             description,
