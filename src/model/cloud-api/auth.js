@@ -25,7 +25,10 @@ export function login(serverURL, email, password, onSuccess, onFail) {
 }
 
 export function logout(email,serverURL) {
-    setAuthToken(email, serverURL, null)
+    const authTokensJSON = localStorage.getItem('authTokens')
+    const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
+    authTokens[`${email} ${serverURL}`] = null
+    localStorage.setItem('authTokens',JSON.stringify(authTokens))
 }
 
 function setAuthToken(email, serverURL, token) {

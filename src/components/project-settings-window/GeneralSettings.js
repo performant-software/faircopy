@@ -16,16 +16,13 @@ export default class GeneralSettings extends Component {
     }
 
     renderRemoteSettings() {
-        const { projectInfo } = this.props
+        const { projectInfo, onLogin } = this.props
         const { serverURL, email, remote } = projectInfo
         const loggedIn = remote ? isLoggedIn(email, serverURL) : false
 
         const onLogout = () => {
             logout(email, serverURL)
-        }
-
-        const onLogin = () => {
-            // TODO
+            this.setState({...this.state})
         }
 
         const status = loggedIn ? `You are logged into ${serverURL} as ${email}` : `You are not logged in.`

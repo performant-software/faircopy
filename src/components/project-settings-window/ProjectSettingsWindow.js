@@ -3,6 +3,7 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
+import LoginDialog from './LoginDialog'
 
 export default class ProjectSettingsWindow extends Component {
 
@@ -13,7 +14,7 @@ export default class ProjectSettingsWindow extends Component {
         const { fairCopyProject } = props
         const { remote, email, serverURL } = fairCopyProject
         const fairCopyConfig = JSON.parse(JSON.stringify(fairCopyProject.fairCopyConfig))
-        debugger
+
         const projectInfo = { 
             name: fairCopyProject.projectName, 
             description: fairCopyProject.description, 
@@ -26,6 +27,7 @@ export default class ProjectSettingsWindow extends Component {
         this.state = {
             fairCopyConfig,
             projectInfo,
+            loginMode: false,
             selectedPage: 'general'
         }	
     }
@@ -66,6 +68,10 @@ export default class ProjectSettingsWindow extends Component {
             this.setState({...this.state,fairCopyConfig: nextConfig})     
         }
 
+        const onLogin = () => {
+            this.setState({...this.state, loginMode: true })
+        }
+
         return (
             <div className="content-area">
                 { selectedPage === 'general' && <GeneralSettings
@@ -73,6 +79,7 @@ export default class ProjectSettingsWindow extends Component {
                     fairCopyConfig={fairCopyConfig}
                     onUpdateProject={onUpdateProject}
                     onUpdateConfig={onUpdate}
+                    onLogin={onLogin}
                     onReset={onReset}
                 ></GeneralSettings> }
                 { selectedPage === 'elements' && <SchemaEditor
@@ -86,6 +93,27 @@ export default class ProjectSettingsWindow extends Component {
             </div>
         )
     }
+
+    renderDialogs() {    
+        const { loginMode } = this.state
+
+        const onClose = () => { 
+            this.setState({ ...this.state, loginMode: false })
+        }
+
+        const onLoggedIn = (serverURL, email, authToken) => {
+            // TODO snack alert?
+            onClose()
+        }
+
+        return (
+            <div className="dialog-container">
+                { loginMode && 
+                    <LoginDialog onClose={onClose} onLoggedIn={onLoggedIn}></LoginDialog> 
+                }
+            </div>
+        )
+    }5
 
     render() {
         const { onClose, onSave } = this.props
@@ -110,6 +138,7 @@ export default class ProjectSettingsWindow extends Component {
                         <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>
                     </div>
                 </div>
+                { this.renderDialogs() }
             </div>
         )
     }
