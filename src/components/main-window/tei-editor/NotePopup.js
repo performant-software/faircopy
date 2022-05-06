@@ -43,7 +43,7 @@ export default class NotePopup extends Component {
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema),
                 transformPasted: transformPastedHandler(teiSchema),
                 clipboardSerializer: this.clipboardSerializer,
-                editable: () => { return !teiDocument.readOnly },
+                editable: () => { return teiDocument.isEditable() },
             }
         )
         // if( process.env['NODE_ENV'] === 'development' ) applyDevTools(editorView)

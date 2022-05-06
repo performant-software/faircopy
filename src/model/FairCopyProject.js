@@ -14,6 +14,14 @@ import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
+// initial state of a new resource as it relates to cloud
+const cloudInitialConfig = {
+    local: true,
+    downloading: false,
+    gitHeadRevision: null,
+    lastAction: null
+}
+
 export default class FairCopyProject {
 
     constructor(projectData) {
@@ -113,7 +121,8 @@ export default class FairCopyProject {
                 name,
                 localID: uniqueID,
                 type: 'facs',
-                parentResource: parentResourceID
+                parentResource: parentResourceID,
+                ...cloudInitialConfig
             }
     
             const resourceMap = this.idMap.mapResource( 'facs', facs )
@@ -128,7 +137,8 @@ export default class FairCopyProject {
             localID,
             name, 
             type,
-            parentResource: parentResourceID
+            parentResource: parentResourceID,
+            ...cloudInitialConfig
         }
 
         if( type === 'teidoc' ) {
@@ -137,7 +147,9 @@ export default class FairCopyProject {
                 localID: 'header',
                 name: 'TEI Header', 
                 type: 'header',
-                parentResource: resourceEntry.id
+                remote: false,
+                parentResource: resourceEntry.id,
+                ...cloudInitialConfig
             }    
             this.addResource(resourceEntry, "", this.idMap.getBlankResourceMap(true))
             this.addResource(headerEntry, teiHeaderTemplate(name), this.idMap.getBlankResourceMap(false))
@@ -291,6 +303,13 @@ export default class FairCopyProject {
             return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
         }    
         return false
+    }
+
+    isEditable = ( resourceID ) => {
+        if( !this.remote ) return true
+        const resourceEntry = this.resources[resourceID]
+        // TODO base this on lastAction for remote resources
+        return resourceEntry.local
     }
 
     isLoggedIn = () => {

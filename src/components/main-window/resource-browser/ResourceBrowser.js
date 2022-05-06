@@ -102,7 +102,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, resources, remoteProject } = this.props
+    const { onResourceAction, resources, remoteProject, isEditable } = this.props
 
     const onOpen = (resourceID) => {
       const resource = resources[resourceID]
@@ -159,8 +159,9 @@ export default class ResourceBrowser extends Component {
       if( !resource ) continue
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
-      const status = resource.remote ? resource.checkedOutBy ? `checked out by ${resource.checkedOutBy}` : <span>Reconnect to Download <i className="fa fa-cloud-download fa-lg"></i></span> : 'local' 
-      const lastModified = resource.remote ? resource.lastModified : ''
+      const status = resource.remote ? 'online' : 'local' 
+      const editable = isEditable( resource.id )
+      const lastModified = ''
       
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={resource.id} key={`resource-${resource.id}`}>
@@ -169,7 +170,7 @@ export default class ResourceBrowser extends Component {
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-           <i className="fa fa-pen fa-lg"></i>
+           { editable && <i className="fa fa-pen fa-lg"></i> }
           </TableCell>
           }
           <TableCell {...cellProps} >

@@ -16,7 +16,7 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, resourceType, fairCopyProject, teiSchema=null, load=true, readOnly=true ) {
+    constructor( resourceID, resourceType, fairCopyProject, teiSchema=null, load=true ) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errorCount = 0
@@ -25,7 +25,6 @@ export default class TEIDocument {
         this.noteEditorView = null
         this.resourceID = resourceID
         this.resourceType = resourceType
-        this.readOnly = readOnly
         this.fairCopyProject = fairCopyProject
         this.teiSchema = teiSchema
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
@@ -44,6 +43,10 @@ export default class TEIDocument {
             this.initialState = this.editorInitialState()
         }
         this.changedSinceLastSave = false
+    }
+
+    isEditable() {
+        return this.fairCopyProject.isEditable( this.resourceID )
     }
 
     getTEISchema() {

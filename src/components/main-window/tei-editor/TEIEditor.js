@@ -84,7 +84,7 @@ export default class TEIEditor extends Component {
                 handleKeyDown: this.onEditorKeyDown,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema,teiDocument),
                 transformPasted: transformPastedHandler(teiSchema,teiDocument),
-                editable: () => { return !teiDocument.readOnly },
+                editable: () => { return teiDocument.isEditable() },
                 clipboardSerializer: this.clipboardSerializer
             }
         )
@@ -151,7 +151,7 @@ export default class TEIEditor extends Component {
         
         const { teiDocument } = this.props
         const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
-        const { currentTreeNode, readOnly } = teiDocument
+        const { currentTreeNode } = teiDocument
 
         if( asides.includes(node.type.name) ) {
             const { noteID } = this.state
@@ -168,7 +168,7 @@ export default class TEIEditor extends Component {
         }
 
         // if the document is read only, clicking on the body deselects the editor gutter
-        if( readOnly && currentTreeNode.editorGutterPos !== null ) {
+        if( !teiDocument.isEditable() && currentTreeNode.editorGutterPos !== null ) {
             teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
             teiDocument.refreshView()
         }
@@ -280,6 +280,9 @@ export default class TEIEditor extends Component {
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter, remoteProject } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
 
+        const { isLoggedIn } = teiDocument.fairCopyProject
+        const readOnly = !teiDocument.isEditable() 
+
         const onClickBody = () => {
             const { editorView, currentTreeNode } = teiDocument
             if( editorView && !editorView.hasFocus() && currentTreeNode.editorGutterPos === null ) {
@@ -302,7 +305,7 @@ export default class TEIEditor extends Component {
             }
         }
 
-        const { selectedElements, readOnly } = teiDocument
+        const { selectedElements } = teiDocument
         const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
         const editorHeight = selectedElements.length > 0 ? 530 : 180
@@ -330,6 +333,7 @@ export default class TEIEditor extends Component {
                         onResourceAction={onResourceAction} 
                         resourceName={resourceEntry.name}    
                         remoteProject={remoteProject}     
+                        isLoggedIn={isLoggedIn}
                         >                   
                         </TitleBar> 
                     }
@@ -375,7 +379,7 @@ export default class TEIEditor extends Component {
                         noteID={noteID}
                         height={drawerHeight}
                         width={drawerWidthCSS}
-                        readOnly={teiDocument.readOnly}
+                        readOnly={readOnly}
                     /> }
                 </div>
                 { !hidden && <NotePopup

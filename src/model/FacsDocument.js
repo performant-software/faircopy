@@ -26,6 +26,10 @@ export default class FacsDocument {
         })
     }
 
+    isEditable() {
+        return this.fairCopyProject.isEditable( this.resourceID )
+    }
+
     // Called when document is updated by a different window process
     onResourceUpdated(resourceData) {
         this.load(resourceData)

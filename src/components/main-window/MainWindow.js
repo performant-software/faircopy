@@ -515,7 +515,7 @@ export default class MainWindow extends Component {
         const { resourceBrowserOpen, parentResourceID } = this.state
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const resources = fairCopyProject.getResources(parentResource)
-        const { remote, isLoggedIn } = fairCopyProject
+        const { remote, isLoggedIn, isEditable } = fairCopyProject
         
         return (
             <div>
@@ -530,6 +530,7 @@ export default class MainWindow extends Component {
                         resources={resources}
                         remoteProject={remote}
                         isLoggedIn={isLoggedIn}
+                        isEditable={isEditable}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
             </div>
