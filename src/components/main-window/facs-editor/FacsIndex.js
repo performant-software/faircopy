@@ -264,7 +264,8 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { resourceEntry, parentResource, onResourceAction, isWindowed } = this.props
+        const { resourceEntry, parentResource, onResourceAction, isWindowed, facsDocument } = this.props
+        const {isLoggedIn} = facsDocument.fairCopyProject
 
         return (
             <div id="FacsIndex" >
@@ -275,6 +276,7 @@ export default class FacsIndex extends Component {
                         teiDocID={ parentResource ? parentResource.id : null } 
                         teiDocName={ parentResource ? parentResource.name : null }
                         isImageWindow={isWindowed}
+                        isLoggedIn={isLoggedIn}
                     >
                     </TitleBar>
                     { this.renderToolbar() }

@@ -10,6 +10,8 @@ import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
 
+import { isLoggedIn } from './cloud-api/auth'
+
 const fairCopy = window.fairCopy
 
 export default class FairCopyProject {
@@ -289,5 +291,10 @@ export default class FairCopyProject {
             return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
         }    
         return false
+    }
+
+    isLoggedIn = () => {
+        if( !this.remote ) return false
+        return isLoggedIn( this.email, this.serverURL )
     }
 }

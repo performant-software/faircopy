@@ -17,8 +17,8 @@ export default class TitleBar extends Component {
     }
 
     renderHomeButton() {         
-        const { remoteProject } = this.props    
-        const homeIcon = remoteProject ? 'fa-cloud' : 'fa-home-alt'
+        const { remoteProject, isLoggedIn } = this.props    
+        const homeIcon = remoteProject ? isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' : 'fa fa-home-alt'
         return (
             <Tooltip title="Home">
                 <span>            
@@ -26,7 +26,7 @@ export default class TitleBar extends Component {
                         onClick={this.onClickHome}
                         className="home-icon" 
                     >
-                        <i className={`fa ${homeIcon} fa-sm`}></i>
+                        <i className={`${homeIcon} fa-sm`}></i>
                     </IconButton> 
                 </span>
             </Tooltip>

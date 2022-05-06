@@ -233,11 +233,11 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDoc, onResourceAction, remoteProject } = this.props
+      const { width, teiDoc, onResourceAction, remoteProject, isLoggedIn } = this.props
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction} remoteProject={remoteProject}></TitleBar>
+          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }

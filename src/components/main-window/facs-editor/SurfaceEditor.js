@@ -192,6 +192,7 @@ export default class SurfaceEditor extends Component {
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
         const facsID = resourceEntry.localID
+        const {isLoggedIn} = facsDocument.fairCopyProject
 
         const onChangeZone = (name,value,error) => {
             if( !error ) {
@@ -228,6 +229,7 @@ export default class SurfaceEditor extends Component {
                         teiDocID={ parentResource ? parentResource.id : null } 
                         teiDocName={ parentResource ? parentResource.name : null } 
                         isImageWindow={isWindowed}
+                        isLoggedIn={isLoggedIn}
                         >
                         </TitleBar>
                     <SurfaceEditorToolbar 
