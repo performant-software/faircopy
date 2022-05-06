@@ -26,6 +26,16 @@ export default class ResourceBrowser extends Component {
         action: this.createResourceAction('open')
       },
       {
+        id: 'check-in',
+        label: 'Check In',
+        action: this.createResourceAction('check-in')
+      },
+      {
+        id: 'check-out',
+        label: 'Check Out',
+        action: this.createResourceAction('check-out')
+      },
+      {
         id: 'move',
         label: 'Move',
         action: this.createResourceAction('move')

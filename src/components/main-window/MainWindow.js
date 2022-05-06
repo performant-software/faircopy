@@ -330,6 +330,10 @@ export default class MainWindow extends Component {
         }
     }
 
+    checkInResources(resourceIDs) {
+        // TODO
+    }
+
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
         this.setState({...this.state, popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement })
     }
@@ -377,6 +381,12 @@ export default class MainWindow extends Component {
                 return false
             case 'open-search-result':
                 this.selectResources(resourceIDs, true)
+                return false
+            case 'check-in':
+                this.checkInResources(resourceIDs)
+                return false
+            case 'check-out':
+                // TODO
                 return false
             case 'close':
                 this.closeResources(resourceIDs)
