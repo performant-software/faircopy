@@ -136,6 +136,10 @@ class FairCopyApplication {
       this.projectStore.importEnd()
     })
 
+    ipcMain.on('checkIn', (event, email, serverURL, projectID, committedResources, message ) => { 
+      this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
+    })
+
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })    
     ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.projectStore.exportFairCopyConfig(exportPath,fairCopyConfig) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })

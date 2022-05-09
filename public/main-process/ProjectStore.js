@@ -71,6 +71,18 @@ class ProjectStore {
                         imageView.webContents.send('imageViewOpened', imageViewData )    
                     }
                     break
+                case 'check-in-results':
+                    {
+                        const { results } = msg
+                        this.fairCopyApplication.sendToMainWindow('checkInResults', { results } )            
+                    }
+                    break
+                case 'check-in-error':
+                    {
+                        const { error } = msg
+                        this.fairCopyApplication.sendToMainWindow('checkInError', { error } )            
+                    }
+                    break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from project archive: ${JSON.stringify(msg)}`)
             }
@@ -341,6 +353,10 @@ class ProjectStore {
         this.manifestData.projectName = name
         this.manifestData.description = description    
         this.saveManifest()
+    }
+
+    checkIn(email, serverURL, projectID, committedResources, message) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-in', email, serverURL, projectID, committedResources, message })
     }
 
     openImageResource(requestURL) {

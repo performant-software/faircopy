@@ -1,4 +1,6 @@
 import JSZip from 'jszip'
+import { getAuthToken } from '../model/cloud-api/auth'
+import { checkInResources } from '../model/cloud-api/resource-management'
 
 const fairCopy = window.fairCopy
 
@@ -28,6 +30,33 @@ function addFile( localFilePath, resourceID, zip ) {
     const fs = fairCopy.services.getFs()
     const buffer = fs.readFileSync(localFilePath)
     zip.file(resourceID, buffer)
+}
+
+function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
+    debugger
+    const authToken = getAuthToken( email, serverURL )
+
+    const onSuccess = (results) => {
+        postMessage({ messageType: 'check-in-results', results })
+    }
+
+    const onFail = (error) => {
+        postMessage({ messageType: 'check-in-error', error })
+    }
+
+    if( authToken ) {
+        // add the content for each resource being added or updated
+        committedResources.foreach( (committedResource) => {
+            if( committedResource.action !== 'destroy' ) {
+                // TODO handle tei docs and images
+                committedResource.content = readUTF8(committedResource.id, zip)
+            }
+        })
+      
+        checkInResources(serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
+    } else {
+        postMessage({ messageType: 'check-in-error', error: "User not logged in." })
+    }
 }
 
 async function prepareResourceExport( resourceEntry, zip ) {
@@ -85,34 +114,6 @@ function saveArchive(startTime, zipPath, zip, callback) {
         });
 }
 
-/*async function updateFromRemote(project) {
-    // TODO get the index, config, and idmap from the server 
-    const fairCopyManifest = JSON.parse(project.fairCopyManifest)
-    const mockID = 'MOCK-DATA'
-
-    if( fairCopyManifest.remote && !fairCopyManifest.resources[mockID] ) {
-        const mockResource = {
-            id: mockID,
-            localID: 'mock1',
-            name: 'Mock Remote Resource',
-            type: 'text',
-            parentResource: null,
-            gitHeadRevision: 'fdjskfdjslkfds',
-            checkedOutBy: null,
-            downloading: true,
-            remote: true
-        }
-        fairCopyManifest.resources[mockID] = mockResource
-
-        // TODO identify files we need and ask for them
-        // save files we have so far in ZIP every 30 secs or so.. 
-        // state for files we know we need but don't yet have? spinner?
-        // if offline, spinner files get a download cloud "Reconnect to Download"
-
-        project.fairCopyManifest = JSON.stringify(fairCopyManifest)
-    }
-}*/
-
 async function openArchive(postMessage,workerData) {
     const fs = fairCopy.services.getFs()
     const { projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName } = workerData
@@ -128,7 +129,6 @@ async function openArchive(postMessage,workerData) {
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
-    // await loadRemoteData(project)
     postMessage({ messageType: 'project-data', project })
 
     const open = true
@@ -265,7 +265,13 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 const { fileID } = msg
                 zip.remove(fileID)
             }
-            break                         
+            break                   
+        case 'check-in': 
+            {
+                const { email, serverURL, projectID, committedResources, message } = msg
+                checkIn( email, serverURL, projectID, JSON.parse(committedResources), message, zip, postMessage )
+            }    
+            break  
         case 'save':
             save()
             break
