@@ -24,9 +24,10 @@ import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults, isIndexable, scrollToSearchResult } from '../../model/search'
-import SearchDialog from './dialogs/SearchDialog';
-import LicenseBar from './LicenseBar';
-import LicenseDialog from './dialogs/LicenseDialog';
+import SearchDialog from './dialogs/SearchDialog'
+import LicenseBar from './LicenseBar'
+import LicenseDialog from './dialogs/LicenseDialog'
+import CheckInDialog from './dialogs/CheckInDialog'
 
 const fairCopy = window.fairCopy
 
@@ -54,6 +55,8 @@ export default class MainWindow extends Component {
             dragInfo: null,
             editSurfaceInfoMode: false,
             moveResourceMode: false,
+            checkInMode: false,
+            checkInResources: [],
             editTEIDocDialogMode: false,
             moveResourceIDs: null,
             surfaceInfo: null,
@@ -330,8 +333,8 @@ export default class MainWindow extends Component {
         }
     }
 
-    checkInResources(resourceIDs) {
-        // TODO
+    checkInResources(checkInResources) {
+        this.setState({...this.state, checkInMode: true, checkInResources})
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -568,7 +571,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
 
@@ -679,6 +682,11 @@ export default class MainWindow extends Component {
                     appConfig={appConfig}
                     onClose={()=>{ this.setState( {...this.state, licenseMode: false} )}}
                 ></LicenseDialog> }
+                { checkInMode && <CheckInDialog
+                    fairCopyProject={fairCopyProject}
+                    checkInResources={checkInResources}
+                    onClose={()=>{ this.setState( {...this.state, checkInMode: false} )}}
+                ></CheckInDialog> }
                 <SnackAlert
                     open={alertMessage !== null}
                     message={alertMessage}
