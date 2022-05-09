@@ -44,13 +44,15 @@ function setAuthToken(email, serverURL, token) {
 }
 
 export function isLoggedIn( email, serverURL ) {
-    return !!getAuthToken(email, serverURL)    
+    return !!getAuthToken(email, serverURL)
 }
 
 export function getAuthToken( email, serverURL ) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
-    return authTokens[`${email} ${serverURL}`]
+    const authToken = authTokens[`${email} ${serverURL}`]
+    // TODO check for expiry
+    return authToken?.token 
 }
 
 // Axios config object that uses authToken 

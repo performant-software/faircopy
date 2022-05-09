@@ -32,8 +32,7 @@ function addFile( localFilePath, resourceID, zip ) {
     zip.file(resourceID, buffer)
 }
 
-function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
-    debugger
+async function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
     const authToken = getAuthToken( email, serverURL )
 
     const onSuccess = (results) => {
@@ -46,12 +45,12 @@ function checkIn( email, serverURL, projectID, committedResources, message, zip,
 
     if( authToken ) {
         // add the content for each resource being added or updated
-        committedResources.foreach( (committedResource) => {
+        for( const committedResource of committedResources ) {
             if( committedResource.action !== 'destroy' ) {
                 // TODO handle tei docs and images
-                committedResource.content = readUTF8(committedResource.id, zip)
+                committedResource.content = await readUTF8(committedResource.id, zip)
             }
-        })
+        }
       
         checkInResources(serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
     } else {

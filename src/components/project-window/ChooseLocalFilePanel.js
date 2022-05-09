@@ -45,7 +45,7 @@ export default class ChooseLocalFilePanel extends Component {
         }
         const { name, description } = project
         const { filePath } = this.state
-        const saveAllowed = (name.length > 0 && filePath.length > 0 )
+        const saveAllowed = filePath.length > 0
         const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
 
         return (
@@ -55,7 +55,7 @@ export default class ChooseLocalFilePanel extends Component {
                     <li>
                         <TextField 
                             className="new-project-field"
-                            value={name}
+                            value={name["en"].translation}
                             label="Project Name" 
                             disabled
                         />
@@ -64,7 +64,7 @@ export default class ChooseLocalFilePanel extends Component {
                         <TextField 
                             className="new-project-field"
                             label="Short Description" 
-                            value={description}
+                            value={description["en"].translation}
                             disabled
                         />
                     </li>

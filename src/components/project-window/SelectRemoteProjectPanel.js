@@ -10,7 +10,7 @@ export default class SelectRemoteProjectPanel extends Component {
 
         return (
             <div id={`project-${project.id}`} onClick={onClick}>
-                <p>{ project.name }</p>
+                <p>{ project.name["en"].translation }</p>
             </div>
         )
     }

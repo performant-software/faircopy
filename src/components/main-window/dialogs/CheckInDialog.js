@@ -33,7 +33,7 @@ export default class CheckInDialog extends Component {
         services.ipcRemoveListener('checkInError', this.onCheckInError  ) 
     }
 
-    onCheckInResults(results) {
+    onCheckInResults = (results) => {
         const  { onClose } = this.props
         // check_in_results: {
         //     status: enum
@@ -53,7 +53,7 @@ export default class CheckInDialog extends Component {
         onClose()
     }
 
-    onCheckInError(error) {
+    onCheckInError = (error) => {
         console.log(error)
     }
 
@@ -106,14 +106,14 @@ export default class CheckInDialog extends Component {
 
         const committedResources = checkInResources.map( resourceID => {
             const resourceEntry = fairCopyProject.resources[resourceID]
-            const { id, localID, parentID, resourceType } = resourceEntry
+            const { id, localID, parentID, type } = resourceEntry
             const action = 'create'
             return {
                 id,
                 action,
                 localID,
                 parentID,
-                resourceType
+                resourceType: type
             }
         })
         

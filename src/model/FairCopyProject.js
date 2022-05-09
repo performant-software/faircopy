@@ -63,6 +63,7 @@ export default class FairCopyProject {
         this.remote = fairCopyManifest.remote
         this.serverURL = fairCopyManifest.serverURL
         this.email = fairCopyManifest.email
+        this.projectID = fairCopyManifest.projectID
         // filter out images, which are part of facs 
         this.resources = {}
         Object.values(fairCopyManifest.resources).forEach( entry => {

@@ -17,9 +17,11 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
     })
 
     const checkInObj = {
-        project_id: projectID,        
-        message,
-        resources: resourceObjs
+        check_in: {
+            project_id: projectID,        
+            message,
+            resources: resourceObjs    
+        }
     }
 
     const checkInURL = `${serverURL}/api/resource_management/check_in`
