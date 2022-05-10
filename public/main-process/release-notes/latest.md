@@ -2,6 +2,12 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.0.2
+
+### Bug Fixes
+
+* Fixes issue with Zones not drawing properly on MacOS.
+
 ## Version 1.0.1
 
 ### Bug Fixes
