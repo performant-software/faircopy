@@ -73,14 +73,14 @@ class ProjectStore {
                     break
                 case 'check-in-results':
                     {
-                        const { results } = msg
-                        this.fairCopyApplication.sendToMainWindow('checkInResults', { results } )            
+                        const { resourceState } = msg
+                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceState )            
                     }
                     break
                 case 'check-in-error':
                     {
                         const { error } = msg
-                        this.fairCopyApplication.sendToMainWindow('checkInError', { error } )            
+                        this.fairCopyApplication.sendToMainWindow('checkInError', error )
                     }
                     break
                 default:

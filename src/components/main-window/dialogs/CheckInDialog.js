@@ -23,17 +23,16 @@ export default class CheckInDialog extends Component {
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('checkInResults', this.onCheckInResults )
-        services.ipcRegisterCallback('checkInError', this.onCheckInError  ) 
+        services.ipcRegisterCallback('checkInError', this.onCheckInError ) 
     }
 
     componentWillUnmount() {
         const {services} = fairCopy
-
         services.ipcRemoveListener('checkInResults', this.onCheckInResults )
         services.ipcRemoveListener('checkInError', this.onCheckInError  ) 
     }
 
-    onCheckInResults = (results) => {
+    onCheckInResults = (event,resourceState) => {
         const  { onClose } = this.props
         // check_in_results: {
         //     status: enum
@@ -49,11 +48,12 @@ export default class CheckInDialog extends Component {
         //     The requested action on the resource
             
         //     }]}
-        console.log(results)
+        debugger
+        console.log(resourceState)
         onClose()
     }
 
-    onCheckInError = (error) => {
+    onCheckInError = (event,error) => {
         console.log(error)
     }
 
