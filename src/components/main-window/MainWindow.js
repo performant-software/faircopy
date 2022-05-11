@@ -527,8 +527,6 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, parentResourceID } = this.state
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
-        const resources = fairCopyProject.getResources(parentResource)
-        const { remote, isLoggedIn, isEditable } = fairCopyProject
         
         return (
             <div>
@@ -540,10 +538,7 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         teiDoc={parentResource}
-                        resources={resources}
-                        remoteProject={remote}
-                        isLoggedIn={isLoggedIn}
-                        isEditable={isEditable}
+                        fairCopyProject={fairCopyProject}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
             </div>

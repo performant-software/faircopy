@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
+import { checkForUpdates } from '../../../model/resource-index-view';
 
 const rowsPerPage = 100
 
@@ -15,6 +16,25 @@ export default class ResourceBrowser extends Component {
       checked: {}
     }
     this.state = this.initialState
+  }
+
+  componentDidMount() {
+    const { fairCopyProject, teiDoc } = this.props
+    const { currentPage } = this.state
+
+    // TODO start polling for changes to resource page
+    checkForUpdates( fairCopyProject, teiDoc, currentPage, rowsPerPage, this.refreshView, (error) => {
+      // TODO snack alert?
+      console.log(error)
+    } ) 
+  }
+
+  componentWillUnmount() {
+    // TODO stop update polling
+  }
+
+  refreshView = () => {
+    this.setState({...this.state})
   }
 
   onOpenActionMenu = (anchorEl) => {
@@ -112,10 +132,11 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, resources, remoteProject, isEditable } = this.props
+    const { onResourceAction, fairCopyProject } = this.props
+    const { resourceIndexView, remote: remoteProject, isEditable } = fairCopyProject
 
     const onOpen = (resourceID) => {
-      const resource = resources[resourceID]
+      const resource = resourceIndexView.find(resourceEntry => resourceEntry.id === resourceID )
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
         onResourceAction( 'open-teidoc', resourceID )         
@@ -139,11 +160,10 @@ export default class ResourceBrowser extends Component {
     }
 
     const toggleAll = () => {
-      const { resources } = this.props
       const { checked, allChecked } = this.state
       const nextAllChecked = !allChecked
       const nextChecked = { ...checked }
-      for( const resource of Object.values(resources) ) {
+      for( const resource of resourceIndexView ) {
         if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked
       }
       this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
@@ -165,7 +185,7 @@ export default class ResourceBrowser extends Component {
     const { checked, allChecked, currentPage } = this.state
     
     const resourceRows = []
-    for( const resource of Object.values(resources) ) {
+    for( const resource of resourceIndexView ) {
       if( !resource ) continue
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
@@ -206,9 +226,10 @@ export default class ResourceBrowser extends Component {
       )
     }
 
+    // TODO make this update view
     const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
-    const start = rowsPerPage * currentPage
-    const end = start + 100
+    // const start = rowsPerPage * currentPage
+    // const end = start + 100
   
     return (
       <Paper >
@@ -227,7 +248,7 @@ export default class ResourceBrowser extends Component {
                       </TableRow>
                   </TableHead>
                   <TableBody>
-                      { resourceRows.slice(start,end) }
+                      { resourceRows }
                   </TableBody>
               </Table>
           </TableContainer>
@@ -244,11 +265,12 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDoc, onResourceAction, remoteProject, isLoggedIn } = this.props
+      const { width, teiDoc, fairCopyProject, onResourceAction } = this.props
+      const { remote, isLoggedIn } = fairCopyProject
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject}></TitleBar>
+          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remote}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }

@@ -48,7 +48,6 @@ export default class CheckInDialog extends Component {
         //     The requested action on the resource
             
         //     }]}
-        debugger
         console.log(resourceState)
         onClose()
     }

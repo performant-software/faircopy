@@ -11,6 +11,7 @@ import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
 
 import { isLoggedIn } from './cloud-api/auth'
+import { createResourceIndexView } from './resource-index-view'
 
 const fairCopy = window.fairCopy
 
@@ -33,6 +34,7 @@ export default class FairCopyProject {
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.lastResourceEntryMessage = null 
+        this.resourceIndexView = createResourceIndexView(null,this.resources,[])
         
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
