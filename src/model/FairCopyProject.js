@@ -196,8 +196,7 @@ export default class FairCopyProject {
     }
 
     openResource( resourceID ) {
-        const resourceEntry = this.resources[resourceID]
-        if( !resourceEntry ) return null
+        const resourceEntry = this.getResourceEntry(resourceID)
 
         if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' || resourceEntry.type === 'sourceDoc' ) {
             return new TEIDocument( resourceID, resourceEntry.type, this )

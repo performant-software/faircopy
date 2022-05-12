@@ -48,3 +48,45 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
         }
     )
 }
+
+export function checkOutResources(serverURL, authToken, projectID, resourceIDs, onSuccess, onFail) {
+   
+    const resourceObjs = resourceIDs.map( (resourceID) => {
+        return {
+            resource_guid: resourceID,        
+            action: 'check_out'
+        }
+    })
+
+    const checkOutObj = {
+        check_in: {
+            project_id: projectID,        
+            message: '',
+            resources: resourceObjs    
+        }
+    }
+
+    const checkOutURL = `${serverURL}/api/resource_management/check_out`
+
+    axios.post(checkOutURL,checkOutObj,authConfig(authToken)).then(
+        (okResponse) => {
+            const { status, resource_state } = okResponse.data
+            if( status === 'success' ) {
+                onSuccess({ resourceState: resource_state })
+            } else {
+                onFail('Failed to commit resources.')
+            }
+        },
+        (errorResponse) => {
+            // problem with the license 
+            if( errorResponse && errorResponse.response ) {
+                if( errorResponse.response.status === 500 ) {
+                    const { error } = errorResponse.response.data
+                    onFail(error)        
+                }
+            } else {
+                onFail("Unable to connect to server.")
+            }
+        }
+    )
+}

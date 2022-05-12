@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid'
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
+import { getResource } from "./cloud-api/resources"
+import { getAuthToken } from "./cloud-api/auth"
 
 const fairCopy = window.fairCopy
 
@@ -215,8 +217,20 @@ export default class TEIDocument {
     }
 
     requestResource( resourceID ) {
-        fairCopy.services.ipcSend('requestResource', resourceID )
         this.loading = true
+        if( this.isEditable() ) {
+            fairCopy.services.ipcSend('requestResource', resourceID )
+        } else {
+            const { serverURL, email } = this.fairCopyProject
+            const authToken = getAuthToken(email, serverURL)
+            getResource(serverURL, authToken, resourceID, (resource) => {
+                const { resource_content } = resource
+                this.load(resource_content)
+            }, (error) => {
+                // TODO handle error
+                this.loading = false
+            })
+        }
     }
 
     getActiveView() {

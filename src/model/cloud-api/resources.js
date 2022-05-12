@@ -23,3 +23,25 @@ export function getResources(serverURL, authToken, projectID, currentPage, rowsP
         }
     )
 }
+
+export function getResource(serverURL, authToken, resourceID, onSuccess, onFail) {
+    const getResourceURL = `${serverURL}/api/resources/${resourceID}`
+
+    axios.get(getResourceURL,authConfig(authToken)).then(
+        (okResponse) => {
+            const { resource } = okResponse.data
+            onSuccess(resource)
+        },
+        (errorResponse) => {
+            // problem with the license 
+            if( errorResponse && errorResponse.response ) {
+                if( errorResponse.response.status === 401 ) {
+                    const { error } = errorResponse.response.data
+                    onFail(error)        
+                }
+            } else {
+                onFail("Unable to connect to server.")
+            }
+        }
+    )
+}
