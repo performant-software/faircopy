@@ -189,7 +189,7 @@ export default class ResourceBrowser extends Component {
       if( !resource ) continue
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
-      const status = resource.remote ? 'online' : 'local' 
+      const status = resource.local ? 'local' : 'online'
       const editable = isEditable( resource.id )
       const lastModified = ''
       

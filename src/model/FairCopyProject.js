@@ -104,7 +104,13 @@ export default class FairCopyProject {
     }
 
     getResourceEntry( resourceID ) {
-        return this.resources[resourceID]
+        let resourceEntry = this.resources[resourceID]
+        if( !resourceEntry ) {
+            resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === resourceID )
+        }
+        if( !resourceEntry ) throw new Error(`Cannot find resource with id: ${resourceID}.`)
+        
+        return resourceEntry
     }
 
     getParent = ( resourceEntry ) => {
@@ -310,9 +316,11 @@ export default class FairCopyProject {
 
     isEditable = ( resourceID ) => {
         if( !this.remote ) return true
-        const resourceEntry = this.resources[resourceID]
-        // TODO base this on lastAction for remote resources
-        return resourceEntry.local
+        const resourceEntry = this.getResourceEntry(resourceID)
+        if( resourceEntry.local ) return true
+        const { lastAction } = resourceEntry
+        // must be checked out by me
+        return lastAction.action_type === 'check_out'
     }
 
     isLoggedIn = () => {

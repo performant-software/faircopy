@@ -19,7 +19,9 @@ export function createResourceIndexView( teiDoc, localResources, remoteResources
         const { resource_guid: id, local_id: localID, parent_id: parentID, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction } = remoteResource
         if( !localResources[id] ) {
             nextView.push({
-                id, localID, parentID, type, gitHeadRevision, lastAction
+                id, localID, parentID, type, gitHeadRevision, lastAction,
+                local: false,
+                downloading: false
             })    
         }
     }
