@@ -105,10 +105,11 @@ export default class CheckInDialog extends Component {
 
         const committedResources = checkInResources.map( resourceID => {
             const resourceEntry = fairCopyProject.resources[resourceID]
-            const { id, localID, parentID, type } = resourceEntry
+            const { id, name, localID, parentID, type } = resourceEntry
             const action = 'create'
             return {
                 id,
+                name,
                 action,
                 localID,
                 parentID,

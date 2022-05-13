@@ -284,7 +284,8 @@ export default class FairCopyProject {
             this.updateResource( parent )    
         }
 
-        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), content, JSON.stringify(resourceMap) )
+        const resourceMapJSON = resourceMap ? JSON.stringify(resourceMap) : null
+        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), content, resourceMapJSON )
     }
 
     updateProjectInfo( projectInfo ) {
@@ -316,10 +317,13 @@ export default class FairCopyProject {
     isEditable = ( resourceID ) => {
         if( !this.remote ) return true
         const resourceEntry = this.getResourceEntry(resourceID)
+
         if( resourceEntry.local ) return true
         const { lastAction } = resourceEntry
-        // must be checked out by me
-        return lastAction.action_type === 'check_out'
+        const { action_type: actionType, user } = lastAction
+        const { email: actor } = user
+
+        return actionType === 'check_out' && actor === this.email
     }
 
     isLoggedIn = () => {

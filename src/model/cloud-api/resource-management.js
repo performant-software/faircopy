@@ -5,9 +5,10 @@ import { authConfig } from './auth'
 export function checkInResources(serverURL, authToken, projectID, resources, message, onSuccess, onFail) {
    
     const resourceObjs = resources.map( (resource) => {
-        const { id, action, localID, parentID, resourceType, content } = resource
+        const { id, name, action, localID, parentID, resourceType, content } = resource
         return {
-            resource_guid: id,        
+            resource_guid: id,
+            name,        
             action,
             local_id: localID,
             parent_id: parentID,
@@ -59,7 +60,7 @@ export function checkOutResources(serverURL, authToken, projectID, resourceIDs, 
     })
 
     const checkOutObj = {
-        check_in: {
+        check_out: {
             project_id: projectID,        
             message: '',
             resources: resourceObjs    
@@ -72,7 +73,7 @@ export function checkOutResources(serverURL, authToken, projectID, resourceIDs, 
         (okResponse) => {
             const { status, resource_state } = okResponse.data
             if( status === 'success' ) {
-                onSuccess({ resourceState: resource_state })
+                onSuccess(resource_state)
             } else {
                 onFail('Failed to commit resources.')
             }

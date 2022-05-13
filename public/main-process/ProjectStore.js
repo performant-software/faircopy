@@ -251,10 +251,12 @@ class ProjectStore {
         if( resourceEntry.type === 'image' )  {
             this.projectArchiveWorker.postMessage({ messageType: 'add-local-file', resourceID: resourceEntry.id, localFilePath: resourceData })
         } else {
-            const resourceMap = JSON.parse(resourceMapJSON)
-            const idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
-            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
-            if(!this.importInProgress) this.sendIDMapUpdate()
+            if( resourceMapJSON ) {
+                const resourceMap = JSON.parse(resourceMapJSON)
+                const idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
+                this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
+                if(!this.importInProgress) this.sendIDMapUpdate()    
+            }
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: resourceEntry.id, data: resourceData })
             if( this.searchIndex ) this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
         }

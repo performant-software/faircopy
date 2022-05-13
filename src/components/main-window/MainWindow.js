@@ -28,6 +28,7 @@ import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
+import { checkOut } from '../../model/resource-index-view';
 
 const fairCopy = window.fairCopy
 
@@ -329,6 +330,13 @@ export default class MainWindow extends Component {
         this.setState({...this.state, checkInMode: true, checkInResources})
     }
 
+    checkOutResources(resourceIDs) {
+        const { fairCopyProject } = this.props
+        checkOut( fairCopyProject, resourceIDs, (message) => { 
+            this.onAlertMessage(message)
+        } )
+    }
+
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
         this.setState({...this.state, popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement })
     }
@@ -381,7 +389,7 @@ export default class MainWindow extends Component {
                 this.checkInResources(resourceIDs)
                 return false
             case 'check-out':
-                // TODO
+                this.checkOutResources(resourceIDs)
                 return false
             case 'close':
                 this.closeResources(resourceIDs)
