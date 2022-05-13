@@ -129,6 +129,10 @@ class FairCopyApplication {
       this.projectStore.openResource(resourceID)
     })
 
+    ipcMain.on('requestRemoteResource', (event, resourceID, email, serverURL) => { 
+      this.projectStore.openRemoteResource(resourceID, email, serverURL)
+    })
+
     ipcMain.on('importContinue', (event) => { 
       this.projectStore.importContinue()
     })

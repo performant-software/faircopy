@@ -377,6 +377,10 @@ class ProjectStore {
             this.projectArchiveWorker.postMessage({ messageType: 'read-resource', resourceID })
         }
     }
+
+    openRemoteResource(resourceID, email, serverURL) {
+        this.projectArchiveWorker.postMessage({ messageType: 'read-remote-resource', resourceID, email, serverURL })
+    }
 }
 
 function getExtensionForMIMEType( mimeType ) {

@@ -77,7 +77,7 @@ export default class ProjectNavigator extends Component {
       const treeNodes = []
       for( const resource of Object.values(openResources) ) {
         const {resourceID} = resource
-        const {name, type} = fairCopyProject.resources[resourceID]
+        const {name, type} = fairCopyProject.getResourceEntry(resourceID)
         const treeID = `nav-node-${resourceID}`
         const resourceIcon = getResourceIcon(type,true)
         const errorCount = type !== 'facs' ? resource.errorCount : 0

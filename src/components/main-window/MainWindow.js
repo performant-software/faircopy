@@ -122,16 +122,17 @@ export default class MainWindow extends Component {
     }
     
     receivedUpdate = () => { 
-        const { openResources } = this.state
-        const { fairCopyProject } = this.props
+        // TODO need a different mechanism for closing deleted files
+        // const { openResources } = this.state
+        // const { fairCopyProject } = this.props
         // if any open resources no longer exist, close them
-        const doomedResources = []
-        for( const openResourceID of Object.keys(openResources) ) {
-            if( !fairCopyProject.resources[openResourceID]) {
-                doomedResources.push(openResourceID)
-            }
-        }        
-        if( doomedResources.length > 0 ) this.closeResources(doomedResources,false,false)
+        // const doomedResources = []
+        // for( const openResourceID of Object.keys(openResources) ) {
+        //     if( !fairCopyProject.resources[openResourceID]) {
+        //         doomedResources.push(openResourceID)
+        //     }
+        // }        
+        // if( doomedResources.length > 0 ) this.closeResources(doomedResources,false,false)
 
         // push forward state to update resource entries in components
         this.setState({...this.state})
@@ -163,15 +164,6 @@ export default class MainWindow extends Component {
 
     receiveResourceData( resourceData ) {
         const { resourceID, resource } = resourceData
-        const { fairCopyProject } = this.props
-        const { resources } = fairCopyProject
-        const resourceEntry = resources[resourceID]
-
-        if( !resourceEntry ) {
-            console.error(`Received data from unrecongnized resource ID: ${resourceID}`)
-            return
-        }
-
         const { openResources } = this.state
         const openResource = openResources[resourceID]
         if( openResource ) {
