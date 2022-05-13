@@ -315,14 +315,17 @@ export default class FairCopyProject {
     }
 
     isEditable = ( resourceID ) => {
+        // can always edit in a local project
         if( !this.remote ) return true
+        
+        // can always edit a local file
         const resourceEntry = this.getResourceEntry(resourceID)
-
         if( resourceEntry.local ) return true
+
+        // can only edit files checked out by me
         const { lastAction } = resourceEntry
         const { action_type: actionType, user } = lastAction
         const { email: actor } = user
-
         return actionType === 'check_out' && actor === this.email
     }
 
