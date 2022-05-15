@@ -37,11 +37,8 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
             }
         },
         (errorResponse) => {
-            if( errorResponse && errorResponse.response ) {
-                if( errorResponse.response.status === 500 ) {
-                    const { error } = errorResponse.response.data
-                    onFail(error)        
-                }
+            if( errorResponse && errorResponse.message ) {
+                onFail(errorResponse.message)        
             } else {
                 onFail("Unable to connect to server.")
             }
@@ -78,12 +75,8 @@ export function checkOutResources(serverURL, authToken, projectID, resourceIDs, 
             }
         },
         (errorResponse) => {
-            // problem with the license 
-            if( errorResponse && errorResponse.response ) {
-                if( errorResponse.response.status === 500 ) {
-                    const { error } = errorResponse.response.data
-                    onFail(error)        
-                }
+            if( errorResponse && errorResponse.message ) {
+                onFail(errorResponse.message)        
             } else {
                 onFail("Unable to connect to server.")
             }

@@ -390,7 +390,7 @@ class ProjectStore {
         for( const resourceID of resourceIDs ) {
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
             delete this.manifestData.resources[resourceID] 
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { messageID: uuidv4(), resourceEntry: { switchToRemote: true, resourceID} } )
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { switchToRemote: true, resourceID }  )
         }
         this.saveManifest()
     }

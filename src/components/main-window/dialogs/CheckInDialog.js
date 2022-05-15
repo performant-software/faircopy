@@ -95,8 +95,8 @@ export default class CheckInDialog extends Component {
 
         const committedResources = checkInResources.map( resourceID => {
             const resourceEntry = fairCopyProject.resources[resourceID]
-            const { id, name, localID, parentID, type } = resourceEntry
-            const action = 'create'
+            const { id, local, name, localID, parentID, type } = resourceEntry
+            const action = local ? 'create' : 'update'
             return {
                 id,
                 name,
@@ -115,7 +115,7 @@ export default class CheckInDialog extends Component {
         const { errorMessage } = this.state
         if( !errorMessage ) return null
         return (
-            <Typography>{errorMessage}</Typography>
+            <Typography class="error-message">{errorMessage}</Typography>
         )
     }
 
@@ -125,6 +125,7 @@ export default class CheckInDialog extends Component {
 
         return (
             <Dialog
+                id="CheckInDialog"
                 open={true}
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
