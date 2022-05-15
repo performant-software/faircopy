@@ -26,6 +26,7 @@ export default class ResourceBrowser extends Component {
 
   componentWillUnmount() {
     clearInterval( this.pollServer )
+    this.unmounted = true
   }
 
   pollServer = () => {
@@ -38,7 +39,7 @@ export default class ResourceBrowser extends Component {
   }
 
   refreshView = () => {
-    this.setState({...this.state})
+    if( !this.unmounted ) this.setState({...this.state})
   }
 
   onOpenActionMenu = (anchorEl) => {

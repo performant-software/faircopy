@@ -41,7 +41,6 @@ export default class FairCopyProject {
     }
 
     notifyListeners(d) {
-        debugger
         if( d.deleted ) {
             // TODO also remove resource from index view
             delete this.resources[d.resourceID]
