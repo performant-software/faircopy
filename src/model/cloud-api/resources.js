@@ -33,7 +33,6 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
             onSuccess(resource)
         },
         (errorResponse) => {
-            // problem with the license 
             if( errorResponse && errorResponse.response ) {
                 if( errorResponse.response.status === 401 ) {
                     const { error } = errorResponse.response.data

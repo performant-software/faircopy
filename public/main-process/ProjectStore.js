@@ -73,8 +73,9 @@ class ProjectStore {
                     break
                 case 'check-in-results':
                     {
-                        const { resourceState } = msg
-                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceState )            
+                        const { resourceIDs } = msg
+                        this.switchToRemote(resourceIDs)
+                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs )            
                     }
                     break
                 case 'check-in-error':
@@ -382,6 +383,16 @@ class ProjectStore {
 
     openRemoteResource(resourceID, email, serverURL) {
         this.projectArchiveWorker.postMessage({ messageType: 'read-remote-resource', resourceID, email, serverURL })
+    }
+
+    switchToRemote(resourceIDs) {
+        // remove remote resources from project file and manifest, update all windows 
+        for( const resourceID of resourceIDs ) {
+            this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
+            delete this.manifestData.resources[resourceID] 
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { messageID: uuidv4(), resourceEntry: { switchToRemote: true, resourceID} } )
+        }
+        this.saveManifest()
     }
 }
 

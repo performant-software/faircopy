@@ -29,15 +29,14 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
 
     axios.post(checkInURL,checkInObj,authConfig(authToken)).then(
         (okResponse) => {
-            const { status, resource_state } = okResponse.data
+            const { status, resource_state: resourceState } = okResponse.data
             if( status === 'success' ) {
-                onSuccess({ resourceState: resource_state })
+                onSuccess(resourceState)
             } else {
                 onFail('Failed to commit resources.')
             }
         },
         (errorResponse) => {
-            // problem with the license 
             if( errorResponse && errorResponse.response ) {
                 if( errorResponse.response.status === 500 ) {
                     const { error } = errorResponse.response.data

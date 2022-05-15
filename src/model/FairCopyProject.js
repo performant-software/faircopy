@@ -37,17 +37,27 @@ export default class FairCopyProject {
         this.resourceIndexView = createResourceIndexView(null,this.resources,[])
         
         // Listen for updates to resource entries.
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => {
-            if( d.deleted ) {
-                delete this.resources[d.resourceID]
-            } else {
-                const nextResourceEntry = JSON.parse(d.resourceEntry)
-                this.resources[ nextResourceEntry.id ] = nextResourceEntry
-            }
-            for( const listener of this.updateListeners ) {
-                listener()
-            }
-        })
+        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => { this.notifyListeners(d) })
+    }
+
+    notifyListeners(d) {
+        debugger
+        if( d.deleted ) {
+            // TODO also remove resource from index view
+            delete this.resources[d.resourceID]
+        } else if( d.switchToRemote ) {
+            // leave record in resource view as a placeholder until remote update arrives
+            delete this.resources[d.resourceID]
+            const resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === d.resourceID )
+            resourceEntry.placeholder = true
+        } else {
+            // update record in index view
+            const nextResourceEntry = JSON.parse(d.resourceEntry)
+            this.resources[ nextResourceEntry.id ] = nextResourceEntry
+        }
+        for( const listener of this.updateListeners ) {
+            listener()
+        }
     }
 
     addUpdateListener(listener) {
@@ -320,6 +330,7 @@ export default class FairCopyProject {
         
         // can always edit a local file
         const resourceEntry = this.getResourceEntry(resourceID)
+        if( resourceEntry.placeholder ) return false
         if( resourceEntry.local ) return true
 
         // can only edit files checked out by me

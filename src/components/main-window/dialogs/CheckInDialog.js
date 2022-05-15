@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 
 const cellProps = {
@@ -15,7 +15,10 @@ export default class CheckInDialog extends Component {
     constructor(props) {
         super()
         this.initialState = {
-            message: "test commit message"
+            message: "test commit message",
+            committedResources: [],
+            done: false,
+            errorMessage: null
         }
         this.state = this.initialState
     }
@@ -32,35 +35,22 @@ export default class CheckInDialog extends Component {
         services.ipcRemoveListener('checkInError', this.onCheckInError  ) 
     }
 
-    onCheckInResults = (event,resourceState) => {
-        const  { onClose } = this.props
-        // check_in_results: {
-        //     status: enum
-        //     Allowed: success failure
-        //     The status of the check out operation
-            
-        //     resource_state: [{
-        //     resource_guid: string
-        //     The FairCopy GUID of the resource
-            
-        //     state: enum
-        //     Allowed: create update destroy
-        //     The requested action on the resource
-            
-        //     }]}
-        console.log(resourceState)
-        onClose()
+    onCheckInResults = (event,resourceIDs) => {
+        this.setState({...this.state, committedResources: resourceIDs, errorMessage: null })
     }
 
     onCheckInError = (event,error) => {
-        console.log(error)
+        this.setState({...this.state, committedResources: [], done: false, errorMessage: error })
     }
 
     renderResourceTable() {
         const { checkInResources, fairCopyProject } = this.props
+        const { committedResources } = this.state
 
         const resourceRows = checkInResources.map( checkInResourceID => { 
-            const resource = fairCopyProject.resources[checkInResourceID]
+            const resource = fairCopyProject.getResourceEntry(checkInResourceID)
+            const checkedIn = committedResources.includes(checkInResourceID)
+            // TODO display checkedIn state, display correct action
             const action = 'C'
             return (
                 <TableRow key={`resource-${resource.id}`}>
@@ -118,10 +108,20 @@ export default class CheckInDialog extends Component {
         })
         
         fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, JSON.stringify(committedResources), message )
+        this.setState({...this.state, done: true})
+    }
+
+    renderErrorMessage() {
+        const { errorMessage } = this.state
+        if( !errorMessage ) return null
+        return (
+            <Typography>{errorMessage}</Typography>
+        )
     }
 
     render() {
         const { onClose } = this.props
+        const { done } = this.state
 
         return (
             <Dialog
@@ -132,10 +132,11 @@ export default class CheckInDialog extends Component {
                 <DialogTitle id="checkin-dialog-title">Check In</DialogTitle>
                 <DialogContent>
                    { this.renderResourceTable() }
+                   { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
-                    <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                    <Button disabled={done} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
+                    <Button variant="outlined" onClick={onClose}>Close</Button>
                 </DialogActions>
             </Dialog>
         )

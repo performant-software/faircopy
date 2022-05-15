@@ -36,15 +36,16 @@ function addFile( localFilePath, resourceID, zip ) {
 async function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
     const authToken = getAuthToken( email, serverURL )
 
-    const onSuccess = (results) => {
-        postMessage({ messageType: 'check-in-results', results })
-    }
-
-    const onFail = (error) => {
-        postMessage({ messageType: 'check-in-error', error })
-    }
-
     if( authToken ) {
+        const onSuccess = (results) => {
+            const resourceIDs = results.map( result => result.resource_guid )
+            postMessage({ messageType: 'check-in-results', resourceIDs })
+        }
+    
+        const onFail = (error) => {
+            postMessage({ messageType: 'check-in-error', error })
+        }
+    
         // add the content for each resource being added or updated
         for( const committedResource of committedResources ) {
             if( committedResource.action !== 'destroy' ) {

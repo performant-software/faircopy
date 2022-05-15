@@ -5,6 +5,7 @@ import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-i
 import { checkForUpdates } from '../../../model/resource-index-view';
 
 const rowsPerPage = 100
+const pollingInterval = 3000 // ms
 
 export default class ResourceBrowser extends Component {
 
@@ -19,18 +20,21 @@ export default class ResourceBrowser extends Component {
   }
 
   componentDidMount() {
-    const { fairCopyProject, teiDoc } = this.props
-    const { currentPage } = this.state
-
-    // TODO start polling for changes to resource page
-    checkForUpdates( fairCopyProject, teiDoc, currentPage, rowsPerPage, this.refreshView, (error) => {
-      // TODO snack alert?
-      console.log(error)
-    } ) 
+    this.pollServer()
+    setInterval( this.pollServer, pollingInterval )
   }
 
   componentWillUnmount() {
-    // TODO stop update polling
+    clearInterval( this.pollServer )
+  }
+
+  pollServer = () => {
+    const { fairCopyProject, teiDoc } = this.props
+    const { currentPage } = this.state
+
+    checkForUpdates( fairCopyProject, teiDoc, currentPage, rowsPerPage, this.refreshView, (error) => {
+      console.log(error)
+    } ) 
   }
 
   refreshView = () => {
