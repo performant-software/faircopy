@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { TextField, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
+import { getActionIcon } from '../../../model/resource-icon'
 
 const cellProps = {
     component: "td",
@@ -15,7 +16,7 @@ export default class CheckInDialog extends Component {
     constructor(props) {
         super()
         this.initialState = {
-            message: "test commit message",
+            message: "",
             committedResources: [],
             done: false,
             errorMessage: null
@@ -49,19 +50,21 @@ export default class CheckInDialog extends Component {
 
         const resourceRows = checkInResources.map( checkInResourceID => { 
             const resource = fairCopyProject.getResourceEntry(checkInResourceID)
+
+            const { local, deleted, localID, name } = resource
             const checkedIn = committedResources.includes(checkInResourceID)
-            // TODO display checkedIn state, display correct action
-            const action = 'C'
+            const { icon, label } = getActionIcon(checkedIn, deleted, local )
+
             return (
                 <TableRow key={`resource-${resource.id}`}>
                     <TableCell {...cellProps} >
-                        {action}
+                        <i aria-label={label} className={`fa ${icon} fa-lg`}></i>
                     </TableCell>
                     <TableCell {...cellProps} >
-                        {resource.localID}
+                        {localID}
                     </TableCell>
                     <TableCell {...cellProps} >
-                        {resource.name}
+                        {name}
                     </TableCell>
               </TableRow>
             )
@@ -111,6 +114,24 @@ export default class CheckInDialog extends Component {
         this.setState({...this.state, done: true})
     }
 
+    renderCommitField() {
+        const { message } = this.state
+
+        const onChangeMessage = (e) => {
+            const value = e.currentTarget.value
+            this.setState({...this.state, message: value })
+        }
+
+        return (
+            <TextField 
+                className="commit-message-field"
+                label="Commit Message" 
+                onChange={onChangeMessage}
+                value={message}
+            />
+        )
+    }
+
     renderErrorMessage() {
         const { errorMessage } = this.state
         if( !errorMessage ) return null
@@ -121,7 +142,9 @@ export default class CheckInDialog extends Component {
 
     render() {
         const { onClose } = this.props
-        const { done } = this.state
+        const { done, message } = this.state
+
+        const disabled = done || message.length === 0
 
         return (
             <Dialog
@@ -133,10 +156,11 @@ export default class CheckInDialog extends Component {
                 <DialogTitle id="checkin-dialog-title">Check In</DialogTitle>
                 <DialogContent>
                    { this.renderResourceTable() }
+                   { this.renderCommitField() }
                    { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={done} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
+                    <Button disabled={disabled} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
                     <Button variant="outlined" onClick={onClose}>Close</Button>
                 </DialogActions>
             </Dialog>

@@ -36,3 +36,23 @@ export function getResourceIcon(resourceType, open=false) {
         throw new Error('Unrecognized resource type.')
     }
   }
+
+  export function getActionIcon(checkedIn, deleted, local) {
+    if( checkedIn ) {
+        // Done
+        return { icon: 'fa-check', label: 'Checked In' }
+    } else {
+        if( deleted ) {
+            // Delete
+            return { icon: 'fa-trash-can-plus', label: 'Delete' }
+        } else {
+            if( local ) {
+                // Create
+                return { icon: 'fa-circle-plus', label: 'Create' }
+            } else {
+                // Update
+                return { icon: 'fa-pen', label: 'Update' }
+            }
+        }
+    }
+}
