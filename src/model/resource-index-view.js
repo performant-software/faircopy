@@ -22,7 +22,7 @@ export function createResourceIndexView( teiDoc, localResources, remoteResources
             nextView.push(createResourceEntry(remoteResource))    
         }
     }
-    return nextView
+    return nextView.sort((a,b) => a.name.localeCompare(b.name))
 }
 
 export function checkOut( fairCopyProject, resourceIDs, callback ) {
