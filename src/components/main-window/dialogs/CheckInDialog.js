@@ -53,7 +53,7 @@ export default class CheckInDialog extends Component {
 
             const { local, deleted, localID, name } = resource
             const checkedIn = committedResources.includes(checkInResourceID)
-            const { icon, label } = getActionIcon(checkedIn, deleted, local )
+            const { icon, label } = getActionIcon(checkedIn, deleted, local, true )
 
             return (
                 <TableRow key={`resource-${resource.id}`}>

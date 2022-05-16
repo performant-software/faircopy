@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 import TitleBar from '../TitleBar'
-import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
+import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { checkForUpdates } from '../../../model/resource-index-view';
 
 const rowsPerPage = 100
@@ -197,30 +197,31 @@ export default class ResourceBrowser extends Component {
     const resourceRows = []
     for( const resource of resourceIndexView ) {
       if( !resource ) continue
-      const check = checked[resource.id] === true
-      const resourceIcon = getResourceIcon(resource.type)
-      const status = resource.local ? 'local' : 'online'
-      const editable = resource.deleted ? <i className="fa fa-trash fa-lg"></i> : isEditable( resource.id ) ? <i className="fa fa-pen fa-lg"></i> : ''
+      const { id, name, localID, type, local, deleted } = resource 
+      const check = checked[id] === true
+      const resourceIcon = getResourceIcon(type)
+      const status = local ? 'local' : 'online'
+      const { label, icon } = getActionIcon( false, deleted, local, isEditable( id ))
       const lastModified = ''
       
       resourceRows.push(
-        <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={resource.id} key={`resource-${resource.id}`}>
+        <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
           <TableCell {...cellProps} >
-            <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
+            <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-           { editable }
+            { icon && <i aria-label={label} className={`fa ${icon} fa-lg`}></i> }
           </TableCell>
           }
           <TableCell {...cellProps} >
-            <i aria-label={getResourceIconLabel(resource.type)} className={`${resourceIcon} fa-lg`}></i>
+            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} fa-lg`}></i>
           </TableCell>
           <TableCell {...cellProps} >
-            {resource.name}
+            {name}
           </TableCell>
           <TableCell {...cellProps} >
-            {resource.localID}
+            {localID}
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
