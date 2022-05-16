@@ -349,10 +349,10 @@ export default class FairCopyProject {
         // can always edit in a local project
         if( !this.remote ) return true
         
-        // can always edit a local file
         const resourceEntry = this.getResourceEntry(resourceID)
         if( resourceEntry.placeholder ) return false
         if( resourceEntry.local ) return true
+        if( resourceEntry.deleted ) return false
 
         // can only edit files checked out by me
         const { lastAction } = resourceEntry
