@@ -18,6 +18,7 @@ const fairCopy = window.fairCopy
 // initial state of a new resource as it relates to cloud
 const cloudInitialConfig = {
     local: true,
+    deleted: false,
     downloading: false,
     gitHeadRevision: null,
     lastAction: null
@@ -42,13 +43,20 @@ export default class FairCopyProject {
 
     notifyListeners(d) {
         if( d.deleted ) {
-            // TODO also remove resource from index view
-            delete this.resources[d.resourceID]
+            const resourceEntry = this.getResourceEntry( d.resourceID )
+            if( resourceEntry.local ) {
+                delete this.resources[d.resourceID]
+            } else {
+                resourceEntry.deleted = true
+            }
         } else if( d.switchToRemote ) {
             // leave record in resource view as a placeholder until remote update arrives
             delete this.resources[d.resourceID]
             const resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === d.resourceID )
             resourceEntry.placeholder = true
+        } else if( d.recovered ) {
+            const resourceEntry = this.getResourceEntry( d.resourceID )
+            resourceEntry.deleted = false
         } else {
             // update record in index view
             const nextResourceEntry = JSON.parse(d.resourceEntry)
@@ -204,6 +212,13 @@ export default class FairCopyProject {
         }
     }
 
+    recoverResources(resourceIDs) {
+        // TODO account for TEI doc resources and facs
+        for( const resourceID of resourceIDs ) {
+            fairCopy.services.ipcSend('recoverResource', resourceID )
+        }
+    }  
+
     openResource( resourceID ) {
         const resourceEntry = this.getResourceEntry(resourceID)
 
@@ -321,6 +336,13 @@ export default class FairCopyProject {
             return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
         }    
         return false
+    }
+
+    areEditable = ( resourceIDs ) => {
+        for( const resourceID of resourceIDs ) {
+            if( !this.isEditable(resourceID) ) return false
+        }
+        return true
     }
 
     isEditable = ( resourceID ) => {

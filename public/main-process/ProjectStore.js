@@ -293,11 +293,26 @@ class ProjectStore {
             this.sendIDMapUpdate()    
         }
 
-        delete this.manifestData.resources[resourceID] 
-        this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })    
+        if( resourceEntry.local ) {
+            delete this.manifestData.resources[resourceID] 
+            this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })        
+        } else {
+            this.manifestData.resources[resourceID].deleted = true
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { deleted: true, resourceID }  )
+        }
 
         log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
+    }
+
+    recoverResource( resourceID ) {
+        const resourceEntry = this.manifestData.resources[resourceID] 
+
+        if( resourceEntry ) {
+            this.manifestData.resources[resourceID].deleted = false
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { recovered: true, resourceID }  )
+            this.saveManifest()
+        }
     }
 
     updateResource(resourceEntryJSON) {

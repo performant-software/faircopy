@@ -404,9 +404,22 @@ export default class MainWindow extends Component {
                 this.saveResources(resourceIDs)
                 return false
             case 'delete':
-                const alertOptions = { resourceIDs }
-                this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions })
+                {
+                    const { fairCopyProject } = this.props
+                    const alertOptions = { resourceIDs }
+                    if( fairCopyProject.areEditable( resourceIDs ) ) {
+                        this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions })    
+                    } else {
+                        this.onAlertMessage("To delete a resource, you must first check it out.")
+                    }
+                }
                 return true
+            case 'recover':
+                {
+                    const { fairCopyProject } = this.props
+                    fairCopyProject.recoverResources(resourceIDs)                    
+                }
+                return true                
             case 'export':
                 fairCopy.services.ipcSend('requestExport', resourceIDs)
                 return false

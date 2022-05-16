@@ -74,6 +74,11 @@ export default class ResourceBrowser extends Component {
         id: 'delete',
         label: 'Delete',
         action: this.createResourceAction('delete')
+      },
+      {
+        id: 'recover',
+        label: 'Recover',
+        action: this.createResourceAction('recover')
       }
     ]
     onOpenPopupMenu(menuOptions, anchorEl)
@@ -195,7 +200,7 @@ export default class ResourceBrowser extends Component {
       const check = checked[resource.id] === true
       const resourceIcon = getResourceIcon(resource.type)
       const status = resource.local ? 'local' : 'online'
-      const editable = isEditable( resource.id )
+      const editable = resource.deleted ? <i className="fa fa-trash fa-lg"></i> : isEditable( resource.id ) ? <i className="fa fa-pen fa-lg"></i> : ''
       const lastModified = ''
       
       resourceRows.push(
@@ -205,7 +210,7 @@ export default class ResourceBrowser extends Component {
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-           { editable && <i className="fa fa-pen fa-lg"></i> }
+           { editable }
           </TableCell>
           }
           <TableCell {...cellProps} >

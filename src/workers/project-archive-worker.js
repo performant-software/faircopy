@@ -51,6 +51,8 @@ async function checkIn( email, serverURL, projectID, committedResources, message
             if( committedResource.action !== 'destroy' ) {
                 // TODO handle tei docs and images
                 committedResource.content = await readUTF8(committedResource.id, zip)
+            } else {
+                committedResource.content = ''
             }
         }
       

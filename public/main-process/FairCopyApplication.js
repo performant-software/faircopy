@@ -78,6 +78,10 @@ class FairCopyApplication {
       delete this.imageViews[resourceID]
     })
 
+    ipcMain.on('recoverResource', (event, resourceID) => { 
+      this.projectStore.recoverResource(resourceID) 
+    })
+
     ipcMain.on('searchProject', (event, searchQuery) => { 
       this.projectStore.searchIndex.searchProject(searchQuery)  
     })
