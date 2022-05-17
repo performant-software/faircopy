@@ -9,7 +9,7 @@ export default class LoginPanel extends Component {
         this.initialState = { 
             serverURL: 'http://localhost:3789',
             email: 'admin@performantsoftware.com',
-            password: '',
+            password: 'password',
             errorMessage: null 
         }
         this.state = this.initialState
@@ -48,7 +48,7 @@ export default class LoginPanel extends Component {
 
         return (
             <div id="LoginPanel">
-                <Typography variant="h6" component="h2">Login to FairCopy Server</Typography>
+                <Typography variant="h6" component="h2">Login to a FairCopy Cloud Server</Typography>
                 <ul>
                     <li>
                         <TextField 

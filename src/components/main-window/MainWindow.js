@@ -98,6 +98,7 @@ export default class MainWindow extends Component {
         fairCopyProject.addUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
         this.checkReleaseNotes()
+        this.pollServer()
     }
 
     componentWillUnmount() {

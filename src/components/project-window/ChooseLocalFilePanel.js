@@ -77,7 +77,7 @@ export default class ChooseLocalFilePanel extends Component {
                         />
                         <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Choose Save File Path</Button>
                     </li>
-                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> Give your project and name and a short description, then choose where you want the project file to be saved.</Typography></li>
+                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> For remote projects, you only need to choose where to save the local project file.</Typography></li>
                 </ul>
                 <div className='form-actions'>
                     <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Save</Button>

@@ -1,17 +1,27 @@
 import React, { Component } from 'react'
+import { Card, CardContent, Typography } from '@material-ui/core'
 
 export default class SelectRemoteProjectPanel extends Component {
 
     renderProjectCard(project) {
+        const { id, name, description } = project
+
         const onClick = () => {
             const { onOpenProject } = this.props
             onOpenProject(project)
         }
 
         return (
-            <div id={`project-${project.id}`} onClick={onClick}>
-                <p>{ project.name["en"].translation }</p>
-            </div>
+            <Card className="project-card" id={`project-${id}`} onClick={onClick} >
+                <CardContent>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        { name["en"].translation }
+                    </Typography>
+                    <Typography variant="h5" component="div">
+                        { description["en"].translation }
+                    </Typography>
+                </CardContent>
+            </Card>
         )
     }
 
@@ -24,9 +34,11 @@ export default class SelectRemoteProjectPanel extends Component {
             return this.renderProjectCard(project)
         })
 
+        const s = projects.length > 1 ? 's' : ''
+
         return (
-            <div>
-                <p>Select Remote Project</p>
+            <div id="SelectRemoteProjectPanel">
+                <Typography>{projects.length} project{s} available on this server.</Typography>
                 { projectCards }
             </div>
         )
