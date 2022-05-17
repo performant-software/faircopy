@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
-import { checkForUpdates } from '../../../model/resource-index-view';
 
 const rowsPerPage = 100
-const pollingInterval = 3000 // ms
 
 export default class ResourceBrowser extends Component {
 
@@ -17,29 +15,6 @@ export default class ResourceBrowser extends Component {
       checked: {}
     }
     this.state = this.initialState
-  }
-
-  componentDidMount() {
-    this.pollServer()
-    setInterval( this.pollServer, pollingInterval )
-  }
-
-  componentWillUnmount() {
-    clearInterval( this.pollServer )
-    this.unmounted = true
-  }
-
-  pollServer = () => {
-    const { fairCopyProject, teiDoc } = this.props
-    const { currentPage } = this.state
-
-    checkForUpdates( fairCopyProject, teiDoc, currentPage, rowsPerPage, this.refreshView, (error) => {
-      console.log(error)
-    } ) 
-  }
-
-  refreshView = () => {
-    if( !this.unmounted ) this.setState({...this.state})
   }
 
   onOpenActionMenu = (anchorEl) => {
