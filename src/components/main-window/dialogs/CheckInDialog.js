@@ -53,7 +53,8 @@ export default class CheckInDialog extends Component {
 
             const { local, deleted, localID, name } = resource
             const checkedIn = committedResources.includes(checkInResourceID)
-            const { icon, label } = getActionIcon(checkedIn, deleted, local, true )
+            const editable = fairCopyProject.isEditable(checkInResourceID)
+            const { icon, label } = getActionIcon(checkedIn, deleted, local, editable )
 
             return (
                 <TableRow key={`resource-${resource.id}`}>
