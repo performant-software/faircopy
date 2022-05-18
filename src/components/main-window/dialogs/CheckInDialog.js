@@ -61,10 +61,10 @@ export default class CheckInDialog extends Component {
                         <i aria-label={label} className={`fa ${icon} fa-lg`}></i>
                     </TableCell>
                     <TableCell {...cellProps} >
-                        {localID}
+                        {name}
                     </TableCell>
                     <TableCell {...cellProps} >
-                        {name}
+                        {localID}
                     </TableCell>
               </TableRow>
             )
@@ -78,8 +78,8 @@ export default class CheckInDialog extends Component {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Action</TableCell>
-                                <TableCell>ID</TableCell>
                                 <TableCell>Name</TableCell>
+                                <TableCell>ID</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
