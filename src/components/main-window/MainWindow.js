@@ -129,7 +129,7 @@ export default class MainWindow extends Component {
         const { resourceBrowserOpen, parentResourceID } = this.state
 
         // Don't ask for updates if we aren't on the resource browser
-        if( fairCopyProject.remote && resourceBrowserOpen ) {
+        if( fairCopyProject.isLoggedIn() && resourceBrowserOpen ) {
             const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
             const currentPage = 0, rowsPerPage = 100
             
