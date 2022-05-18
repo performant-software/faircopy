@@ -16,7 +16,7 @@ import { createResourceIndexView } from './resource-index-view'
 const fairCopy = window.fairCopy
 
 // initial state of a new resource as it relates to cloud
-const cloudInitialConfig = {
+export const cloudInitialConfig = {
     local: true,
     deleted: false,
     downloading: false,

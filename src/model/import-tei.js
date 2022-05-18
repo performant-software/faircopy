@@ -6,6 +6,7 @@ import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
+import { cloudInitialConfig } from './FairCopyProject'
 
 const fairCopy = window.fairCopy
 
@@ -25,7 +26,7 @@ export function importResource(importData,existingParentID,fairCopyProject) {
         name = fairCopy.services.getBasename(path).trim()
     }
     const sanitizedID = sanitizeID(name)
-    const parentEntry = fairCopyProject.getResourceEntry(existingParentID)
+    const parentEntry = existingParentID ? fairCopyProject.getResourceEntry(existingParentID) : null
     const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
     const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
     
@@ -186,7 +187,8 @@ function createTEIDoc(name,localID,idMap) {
         localID,
         name,
         type: 'teidoc',
-        parentResource: null
+        parentResource: null,
+        ...cloudInitialConfig
     }
     const resourceMap = idMap.getBlankResourceMap(true)
     return {resourceEntry, content: "", resourceMap}
@@ -213,7 +215,8 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
         localID,
         name,
         type,
-        parentResource: parentResourceID
+        parentResource: parentResourceID,
+        ...cloudInitialConfig
     }
 
     // map existing IDs
@@ -236,7 +239,8 @@ function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
         localID,
         name,
         type: 'facs',
-        parentResource: parentResourceID
+        parentResource: parentResourceID,
+        ...cloudInitialConfig
     }
 
     // the XML of this facs el
