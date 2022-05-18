@@ -48,7 +48,7 @@ export function getResourceIcon(resourceType, open=false) {
         } else {
             if( local ) {
                 // Create
-                return { icon: 'fa-circle-plus', label: 'Create' }
+                return { icon: 'fa-plus-circle', label: 'Create' }
             } else {
                 // Update
                 if( editable ) { 

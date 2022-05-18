@@ -124,8 +124,10 @@ export default class CheckInDialog extends Component {
 
         return (
             <TextField 
+                autoFocus
                 className="commit-message-field"
                 label="Commit Message" 
+                helperText="Briefly describe these changes."
                 onChange={onChangeMessage}
                 value={message}
             />
@@ -153,10 +155,10 @@ export default class CheckInDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
             >
-                <DialogTitle id="checkin-dialog-title">Check In</DialogTitle>
-                <DialogContent>
-                   { this.renderResourceTable() }
+                <DialogTitle id="checkin-dialog-title">Check In Resources</DialogTitle>
+                <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
+                   { this.renderResourceTable() }
                    { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>

@@ -1,3 +1,13 @@
+#CheckInDialog .checkin-panel {    
+    min-width: 350px;
+    margin: 5px;
+}
+
+#CheckInDialog .commit-message-field {
+    min-width: 350px;
+    margin-bottom: 20px;
+}
+
 #CheckInDialog .error-message {
     color: red;
 }
