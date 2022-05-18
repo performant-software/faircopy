@@ -33,7 +33,7 @@ export default class ChooseLocalFilePanel extends Component {
     }
 
     render() {
-        const { onClose, project } = this.props
+        const { onClose } = this.props
         
         const onClickSave = () => {
             const { onSave } = this.props
