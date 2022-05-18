@@ -9,4 +9,5 @@
 #SelectRemoteProjectPanel .project-card {
     margin: 10px;
     max-width: 33%;
+    cursor: pointer;
 }

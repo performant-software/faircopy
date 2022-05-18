@@ -73,7 +73,7 @@ export default class ProjectWindow extends Component {
                 <div className="left-side">
                     <Typography variant="h6" component="h2">Select a Project</Typography>
                     <Button className="left-action" onClick={onClickNew} variant='contained'>New Project...</Button>
-                    <Button className="left-action" onClick={onClickNewRemote} variant='contained'>New Remote Project...</Button>
+                    <Button className="left-action" onClick={onClickNewRemote} variant='contained'>New Cloud Project...</Button>
                     <Button className="left-action" onClick={onClickOpen} variant='contained'>Open Project...</Button>
                     { allowKeyReset && <Button className="left-action" onClick={onResetKey} variant='contained'>Reset License Key</Button> }
                 </div>

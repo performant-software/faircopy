@@ -43,31 +43,15 @@ export default class ChooseLocalFilePanel extends Component {
         const onClickBrowse = () => {
             fairCopy.services.ipcSend('requestNewPath' )
         }
-        const { name, description } = project
         const { filePath } = this.state
         const saveAllowed = filePath.length > 0
         const saveButtonClass = saveAllowed ? "save-button-active" : "action-button"
 
         return (
-            <div className="content new-project-form">
-                <Typography variant="h6" component="h2">Choose Local File</Typography>
+            <div id="ChooseLocalFilePanel" className="content new-project-form">
+                <Typography variant="h6" component="h2">Choose Local Project File</Typography>
                 <ul>
-                    <li>
-                        <TextField 
-                            className="new-project-field"
-                            value={name["en"].translation}
-                            label="Project Name" 
-                            disabled
-                        />
-                    </li>
-                    <li>
-                        <TextField 
-                            className="new-project-field"
-                            label="Short Description" 
-                            value={description["en"].translation}
-                            disabled
-                        />
-                    </li>
+                   
                     <li>
                         <TextField 
                             className="new-project-field"
@@ -75,12 +59,12 @@ export default class ChooseLocalFilePanel extends Component {
                             value={filePath}
                             disabled
                         />
-                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Choose Save File Path</Button>
+                        <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Choose Project File Path</Button>
                     </li>
-                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> For remote projects, you only need to choose where to save the local project file.</Typography></li>
+                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> Choose a location for your new project file, which will store your work in progress.</Typography></li>
                 </ul>
                 <div className='form-actions'>
-                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Save</Button>
+                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Continue</Button>
                     <Button className='action-button' onClick={onClose} variant='contained'>Cancel</Button>
                 </div>
             </div>
