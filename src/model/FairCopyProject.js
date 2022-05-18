@@ -34,6 +34,7 @@ export default class FairCopyProject {
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
+        this.remoteResources = []
         this.lastResourceEntryMessage = null 
         this.resourceIndexView = createResourceIndexView(null,this.resources,[])
         
@@ -62,6 +63,8 @@ export default class FairCopyProject {
             const nextResourceEntry = JSON.parse(d.resourceEntry)
             this.resources[ nextResourceEntry.id ] = nextResourceEntry
         }
+        // update the view
+        this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
         for( const listener of this.updateListeners ) {
             listener()
         }

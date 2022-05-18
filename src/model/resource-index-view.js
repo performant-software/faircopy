@@ -6,6 +6,7 @@ export function checkForUpdates( fairCopyProject, teiDoc, currentPage, rowsPerPa
     const { serverURL, email, projectID, resources } = fairCopyProject
     const authToken = getAuthToken( email, serverURL )
     getResources( serverURL, authToken, projectID, currentPage, rowsPerPage, (remoteResources) => {
+        fairCopyProject.remoteResources = remoteResources
         fairCopyProject.resourceIndexView = createResourceIndexView( teiDoc, resources, remoteResources )
         onUpdate()
     }, 
