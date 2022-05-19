@@ -297,7 +297,8 @@ export default class FairCopyProject {
         const { id, parentResource } = resourceEntry
 
         this.resources[id] = resourceEntry
-
+        this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
+        
         if( parentResource ) {
             const parent = this.resources[parentResource]
             if( !parent.resources ) parent.resources = []

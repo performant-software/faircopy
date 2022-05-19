@@ -337,7 +337,7 @@ export default class TEIEditor extends Component {
                         >                   
                         </TitleBar> 
                     }
-                    { !hidden && readOnly ? <ReadOnlyToolbar onCheckedOut={ () => teiDocument.refreshView() } teiDocument={teiDocument}>
+                    { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } teiDocument={teiDocument}>
                         </ReadOnlyToolbar> :
                         <EditorToolbar
                             teiDocument={teiDocument}

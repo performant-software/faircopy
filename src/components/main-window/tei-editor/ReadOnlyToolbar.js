@@ -5,10 +5,10 @@ import { checkOut } from '../../../model/resource-index-view';
 export default class ReadOnlyToolbar extends Component {
 
     onCheckOut = () => {
-        const { teiDocument, onCheckedOut } = this.props
+        const { teiDocument, onAlertMessage } = this.props
         const { fairCopyProject } = teiDocument
         checkOut( fairCopyProject, [teiDocument.resourceID], (message) => { 
-            onCheckedOut()
+            onAlertMessage(message)
         } )
     }
 
