@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, CardContent, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, Typography } from '@material-ui/core'
 
 export default class SelectRemoteProjectPanel extends Component {
 
@@ -17,7 +17,7 @@ export default class SelectRemoteProjectPanel extends Component {
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                         { name["en"].translation }
                     </Typography>
-                    <Typography variant="h5" component="div">
+                    <Typography component="p">
                         { description["en"].translation }
                     </Typography>
                 </CardContent>
@@ -26,7 +26,7 @@ export default class SelectRemoteProjectPanel extends Component {
     }
 
     render() {
-        const { projects } = this.props
+        const { projects, onClose } = this.props
 
         if( !projects ) return null
 
@@ -38,8 +38,13 @@ export default class SelectRemoteProjectPanel extends Component {
 
         return (
             <div id="SelectRemoteProjectPanel">
-                <Typography>{projects.length} project{s} available on this server.</Typography>
-                { projectCards }
+                <Typography className="heading">There are {projects.length} project{s} available on this server.</Typography>
+                <div className="card-container">
+                    { projectCards }
+                </div>
+                <div className='form-actions'>
+                    <Button className='action-button' onClick={onClose} variant='contained'>Cancel</Button>
+                </div>
             </div>
         )
     }

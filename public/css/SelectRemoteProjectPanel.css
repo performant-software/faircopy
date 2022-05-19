@@ -6,8 +6,16 @@
     border-radius: 10px;
 }
 
+#SelectRemoteProjectPanel .heading {
+    margin: 10px;
+}
+
 #SelectRemoteProjectPanel .project-card {
     margin: 10px;
     max-width: 33%;
     cursor: pointer;
+}
+
+#SelectRemoteProjectPanel .card-container {
+    display: flex;
 }
