@@ -35,10 +35,8 @@ class IDMapAuthority {
         this.resourceIndex[resourceID] = { localID, parentID }
         
         if( parentID ) {
-            if( this.idMapNext[parentID][localID] ) return null;
             this.idMapNext[parentID][localID] = resourceMap
         } else {
-            if( this.idMapNext[localID] ) return null;
             this.idMapNext[localID] = resourceMap
         }
 
