@@ -18,13 +18,10 @@ export default class ResourceBrowser extends Component {
   }
 
   onOpenActionMenu = (anchorEl) => {
-    const { onOpenPopupMenu } = this.props
-    const menuOptions = [
-      {
-        id: 'open',
-        label: 'Open',
-        action: this.createResourceAction('open')
-      },
+    const { onOpenPopupMenu, fairCopyProject } = this.props
+    const { remote: remoteProject } = fairCopyProject
+
+    const remoteProjectOptions = !remoteProject ? [] : [
       {
         id: 'check-in',
         label: 'Check In',
@@ -35,6 +32,19 @@ export default class ResourceBrowser extends Component {
         label: 'Check Out',
         action: this.createResourceAction('check-out')
       },
+      {
+        id: 'recover',
+        label: 'Recover',
+        action: this.createResourceAction('recover')
+      }
+    ]
+    const menuOptions = [
+      {
+        id: 'open',
+        label: 'Open',
+        action: this.createResourceAction('open')
+      },
+      ...remoteProjectOptions,
       {
         id: 'move',
         label: 'Move',
@@ -49,11 +59,6 @@ export default class ResourceBrowser extends Component {
         id: 'delete',
         label: 'Delete',
         action: this.createResourceAction('delete')
-      },
-      {
-        id: 'recover',
-        label: 'Recover',
-        action: this.createResourceAction('recover')
       }
     ]
     onOpenPopupMenu(menuOptions, anchorEl)
@@ -225,7 +230,7 @@ export default class ResourceBrowser extends Component {
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
-                          <TableCell><i className="fa fa-pen fa-lg"></i></TableCell>
+                          { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
                           <TableCell>Type</TableCell>
                           <TableCell>Name</TableCell>
                           <TableCell>ID</TableCell>
