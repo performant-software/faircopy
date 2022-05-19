@@ -2,14 +2,22 @@ import React, { Component } from 'react'
 import { Button, Typography, TextField } from '@material-ui/core'
 import { login } from '../../model/cloud-api/auth'
 
+// used for testing on local server
+// const localHostDefaults = {
+//     serverURL: 'http://localhost:3789',
+//     email: 'admin@performantsoftware.com',
+//     password: 'password',
+// }
+
 export default class LoginPanel extends Component {
 
     constructor() {
         super()
         this.initialState = { 
-            serverURL: 'http://localhost:3789',
-            email: 'admin@performantsoftware.com',
-            password: 'password',
+            // ...localHostDefaults,
+            serverURL: 'http://sapientia-cloud.archivengine.com',
+            email: '',
+            password: '',
             errorMessage: null 
         }
         this.state = this.initialState
