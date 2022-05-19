@@ -27,7 +27,7 @@ export function createResourceIndexView( teiDoc, localResources, remoteResources
 }
 
 export function checkOut( fairCopyProject, resourceIDs, callback ) {
-    const { serverURL, email, projectID } = fairCopyProject
+    const { serverURL, email, projectID, idMap } = fairCopyProject
     const authToken = getAuthToken( email, serverURL )
     checkOutResources( serverURL, authToken, projectID, resourceIDs, (resourceStates) => {
         // get the contents for each resource and add them to the project 
@@ -39,7 +39,8 @@ export function checkOut( fairCopyProject, resourceIDs, callback ) {
                 getResource(serverURL, authToken, resourceID, (resource) => {
                     const { resource_content: content } = resource
                     const resourceEntry = createResourceEntry(resource)
-                    fairCopyProject.addResource( resourceEntry, content, null )
+                    const idMapEntry = idMap.getMapEntry(resourceEntry.localID)
+                    fairCopyProject.addResource( resourceEntry, content, idMapEntry )
                 })
                 n++
             }

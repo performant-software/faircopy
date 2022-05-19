@@ -84,6 +84,10 @@ export default class IDMap {
         return facsIDMap
     }
 
+    getMapEntry( localID ) {
+        return this.idMap[localID]
+    }
+
     get( uri, parent ) {
         try {
             let rootPath = parent ? parent : ''
