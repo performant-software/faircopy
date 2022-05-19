@@ -43,28 +43,26 @@ export default class FairCopyProject {
     }
 
     notifyListeners(d) {
+        const resourceEntry = this.getResourceEntry( d.resourceID )
         if( d.deleted ) {
-            const resourceEntry = this.getResourceEntry( d.resourceID )
             if( resourceEntry.local ) {
                 delete this.resources[d.resourceID]
+                this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
             } else {
                 resourceEntry.deleted = true
             }
         } else if( d.switchToRemote ) {
             // leave record in resource view as a placeholder until remote update arrives
-            delete this.resources[d.resourceID]
-            const resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === d.resourceID )
             resourceEntry.placeholder = true
+            delete this.resources[d.resourceID]
         } else if( d.recovered ) {
-            const resourceEntry = this.getResourceEntry( d.resourceID )
             resourceEntry.deleted = false
         } else {
             // update record in index view
             const nextResourceEntry = JSON.parse(d.resourceEntry)
             this.resources[ nextResourceEntry.id ] = nextResourceEntry
+            this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
         }
-        // update the view
-        this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
         for( const listener of this.updateListeners ) {
             listener()
         }
@@ -124,12 +122,8 @@ export default class FairCopyProject {
     }
 
     getResourceEntry( resourceID ) {
-        let resourceEntry = this.resources[resourceID]
-        if( !resourceEntry ) {
-            resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === resourceID )
-        }
+        const resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === resourceID )
         if( !resourceEntry ) throw new Error(`Cannot find resource with id: ${resourceID}.`)
-        
         return resourceEntry
     }
 
