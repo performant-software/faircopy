@@ -12,10 +12,12 @@
 
 #SelectRemoteProjectPanel .project-card {
     margin: 10px;
-    max-width: 33%;
+    min-width: 200px;
     cursor: pointer;
 }
 
 #SelectRemoteProjectPanel .card-container {
+    margin-bottom: 10px;
     display: flex;
+    flex-wrap: wrap;
 }

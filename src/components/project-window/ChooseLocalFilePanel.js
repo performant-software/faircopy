@@ -61,7 +61,7 @@ export default class ChooseLocalFilePanel extends Component {
                         />
                         <Button size='small' className='browse-button'onClick={onClickBrowse} variant='contained'>Choose Project File Path</Button>
                     </li>
-                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> Choose a location for your new project file, which will store your work in progress.</Typography></li>
+                    <li><Typography className="instructions"><i className="far fa-lightbulb-on fa-lg"></i> Choose a location for your project file, which will store work in progress.</Typography></li>
                 </ul>
                 <div className='form-actions'>
                     <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onClickSave} color='primary' variant='contained'>Continue</Button>

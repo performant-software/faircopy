@@ -34,11 +34,9 @@ export default class SelectRemoteProjectPanel extends Component {
             return this.renderProjectCard(project)
         })
 
-        const s = projects.length > 1 ? 's' : ''
-
         return (
             <div id="SelectRemoteProjectPanel">
-                <Typography className="heading">There are {projects.length} project{s} available on this server.</Typography>
+                <Typography className="heading">Select an existing project from this server.</Typography>
                 <div className="card-container">
                     { projectCards }
                 </div>
