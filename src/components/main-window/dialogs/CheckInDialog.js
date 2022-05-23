@@ -46,7 +46,7 @@ export default class CheckInDialog extends Component {
 
     renderResourceTable() {
         const { checkInResources, fairCopyProject } = this.props
-        const { committedResources } = this.state
+        const { committedResources, done } = this.state
 
         const resourceRows = checkInResources.map( checkInResourceID => { 
             const resource = fairCopyProject.getResourceEntry(checkInResourceID)
@@ -71,11 +71,13 @@ export default class CheckInDialog extends Component {
             )
         })
 
+        const caption = done ? 'These resources have been checked in.' : 'These resources are ready to be checked in.'
+
         return (
             <div>
                 <TableContainer className="table-container">
                     <Table stickyHeader size="small" >
-                        <caption>These resources are ready to be checked in.</caption>
+                        <caption>{caption}</caption>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Action</TableCell>
@@ -153,6 +155,7 @@ export default class CheckInDialog extends Component {
         const { done, message } = this.state
 
         const disabled = done || message.length === 0
+        const closeButtonProps = done ? {  variant: "contained", color: "primary", onClick: onClose } : {  variant: "outlined", color: "default", onClick: onClose }
 
         return (
             <Dialog
@@ -169,7 +172,7 @@ export default class CheckInDialog extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={disabled} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
-                    <Button variant="outlined" onClick={onClose}>Close</Button>
+                    <Button {...closeButtonProps} >Done</Button>
                 </DialogActions>
             </Dialog>
         )
