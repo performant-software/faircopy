@@ -404,7 +404,7 @@ export default class MainWindow extends Component {
                 return false
             case 'check-in':
                 this.checkInResources(resourceIDs)
-                return false
+                return true
             case 'check-out':
                 this.checkOutResources(resourceIDs)
                 return false

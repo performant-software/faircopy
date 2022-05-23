@@ -20,8 +20,9 @@ export default class ResourceBrowser extends Component {
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject } = this.props
     const { remote: remoteProject } = fairCopyProject
+    const loggedIn = fairCopyProject.isLoggedIn()
 
-    const remoteProjectOptions = !remoteProject ? [] : [
+    const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
       {
         id: 'check-in',
         label: 'Check In',
@@ -31,13 +32,9 @@ export default class ResourceBrowser extends Component {
         id: 'check-out',
         label: 'Check Out',
         action: this.createResourceAction('check-out')
-      },
-      {
-        id: 'recover',
-        label: 'Recover',
-        action: this.createResourceAction('recover')
       }
     ]
+    
     const menuOptions = [
       {
         id: 'open',
@@ -61,6 +58,16 @@ export default class ResourceBrowser extends Component {
         action: this.createResourceAction('delete')
       }
     ]
+
+    // you can recover deleted items when logged out
+    if( remoteProject ) {
+      menuOptions.push({
+        id: 'recover',
+        label: 'Recover',
+        action: this.createResourceAction('recover')
+      })
+    }
+    
     onOpenPopupMenu(menuOptions, anchorEl)
   }
 
