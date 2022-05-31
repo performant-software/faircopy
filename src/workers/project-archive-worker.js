@@ -1,7 +1,6 @@
 import JSZip from 'jszip'
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources } from '../model/cloud-api/resource-management'
-import { getResource } from "../model/cloud-api/resources"
 
 const fairCopy = window.fairCopy
 
@@ -208,16 +207,6 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 const { resourceID } = msg
                 readUTF8(resourceID, zip).then(resource => {
                     postMessage({ messageType: 'resource-data', resourceID, resource })
-                })
-            }
-            break
-        case 'read-remote-resource': 
-            {
-                const { resourceID, email, serverURL } = msg              
-                const authToken = getAuthToken(email, serverURL)
-                getResource(serverURL, authToken, resourceID, (resource) => {
-                    const { resource_content } = resource
-                    postMessage({ messageType: 'resource-data', resourceID, resource: resource_content })
                 })
             }
             break

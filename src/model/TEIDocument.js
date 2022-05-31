@@ -219,8 +219,7 @@ export default class TEIDocument {
         if( this.isEditable() ) {
             fairCopy.services.ipcSend('requestResource', resourceID )
         } else {
-            const { serverURL, email } = this.fairCopyProject
-            fairCopy.services.ipcSend('requestRemoteResource', resourceID, email, serverURL )
+            fairCopy.services.ipcSend('requestRemoteResource', resourceID )
         }
     }
 

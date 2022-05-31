@@ -396,10 +396,6 @@ class ProjectStore {
         }
     }
 
-    openRemoteResource(resourceID, email, serverURL) {
-        this.projectArchiveWorker.postMessage({ messageType: 'read-remote-resource', resourceID, email, serverURL })
-    }
-
     switchToRemote(resourceIDs) {
         // remove remote resources from project file and manifest, update all windows 
         for( const resourceID of resourceIDs ) {

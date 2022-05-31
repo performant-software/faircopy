@@ -6,6 +6,7 @@ const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
+const { RemoteProject } = require('./RemoteProject')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -133,8 +134,12 @@ class FairCopyApplication {
       this.projectStore.openResource(resourceID)
     })
 
-    ipcMain.on('requestRemoteResource', (event, resourceID, email, serverURL) => { 
-      this.projectStore.openRemoteResource(resourceID, email, serverURL)
+    ipcMain.on('openRemoteProject', (event, serverURL, email ) => { 
+      this.remoteProject.openRemoteProject(email, serverURL)
+    })
+
+    ipcMain.on('requestRemoteResource', (event, resourceID) => { 
+      this.remoteProject.openResource(resourceID)
     })
 
     ipcMain.on('importContinue', (event) => { 
@@ -210,6 +215,7 @@ class FairCopyApplication {
 
   async createMainWindow() {
     this.projectStore = new ProjectStore(this)
+    this.remoteProject = new RemoteProject(this)
 
     if( this.mainWindow ) {
       if( !this.mainWindow.isDestroyed() ) {
@@ -270,6 +276,7 @@ class FairCopyApplication {
       if( this.mainWindow ) {
         this.mainWindow.close()
         this.projectStore.close()
+        this.remoteProject.close()
       }
     }
   }
