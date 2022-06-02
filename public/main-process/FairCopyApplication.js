@@ -1,12 +1,11 @@
 const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
-const { ProjectStore } = require('./ProjectStore')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
-const { RemoteProject } = require('./RemoteProject')
+const { FairCopySession } = require('./FairCopySession')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -16,6 +15,7 @@ class FairCopyApplication {
 
   constructor() {
     this.mainWindow = null
+    this.fairCopySession = null
     this.imageViews = {}
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
@@ -44,7 +44,7 @@ class FairCopyApplication {
   // local file protocol for accessing image resources
   initLocalFileProtocol() {
     protocol.registerFileProtocol('local', (request, callback) => {
-      this.projectStore.openImageResource(request.url)
+      this.fairCopySession.openImageResource(request.url)
       this.localFileProtocolCallback = callback
     })
   }
@@ -65,10 +65,10 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
-    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.projectStore.addResource(resourceEntry,resourceData,resourceMap) })
+    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
 
     ipcMain.on('removeResource', (event, resourceID) => { 
-      this.projectStore.removeResource(resourceID) 
+      this.fairCopySession.removeResource(resourceID) 
       this.sendToMainWindow('resourceEntryUpdated', { deleted: true, resourceID } )
       
       // close any open image windows
@@ -80,27 +80,27 @@ class FairCopyApplication {
     })
 
     ipcMain.on('recoverResource', (event, resourceID) => { 
-      this.projectStore.recoverResource(resourceID) 
+      this.fairCopySession.recoverResource(resourceID) 
     })
 
     ipcMain.on('searchProject', (event, searchQuery) => { 
-      this.projectStore.searchIndex.searchProject(searchQuery)  
+      this.fairCopySession.searchProject(searchQuery)  
     })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
-      const ok = this.projectStore.saveResource(resourceID, resourceData) 
+      const ok = this.fairCopySession.saveResource(resourceID, resourceData) 
       if( ok ) {
         const update = { messageID: msgID, resourceID, resourceData }
         this.sendToAllWindows('resourceUpdated', update )
       }
     })
     ipcMain.on('updateIDMap', (event, msgID, idMap) => { 
-      this.projectStore.onIDMapUpdated(msgID, idMap)
+      this.fairCopySession.onIDMapUpdated(msgID, idMap)
     })
     ipcMain.on('abandonResourceMap', (event, resourceID) => { 
-      this.projectStore.abandonResourceMap(resourceID)
+      this.fairCopySession.abandonResourceMap(resourceID)
     })
     ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
-      const ok = this.projectStore.updateResource(resourceEntry) 
+      const ok = this.fairCopySession.updateResource(resourceEntry) 
       if( ok ) {
         this.sendToAllWindows('resourceEntryUpdated', { messageID: msgID, resourceEntry } )
       }
@@ -131,7 +131,7 @@ class FairCopyApplication {
     // Main window events //////
 
     ipcMain.on('requestResource', (event,resourceID) => { 
-      this.projectStore.openResource(resourceID)
+      this.fairCopySession.requestResource(resourceID)
     })
 
     ipcMain.on('openRemoteProject', (event, serverURL, email ) => { 
@@ -143,19 +143,19 @@ class FairCopyApplication {
     })
 
     ipcMain.on('importContinue', (event) => { 
-      this.projectStore.importContinue()
+      this.fairCopySession.importContinue()
     })
     ipcMain.on('importEnd', (event) => { 
-      this.projectStore.importEnd()
+      this.fairCopySession.importEnd()
     })
 
     ipcMain.on('checkIn', (event, email, serverURL, projectID, committedResources, message ) => { 
-      this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
+      this.fairCopySession.checkIn(email, serverURL, projectID, committedResources, message)
     })
 
-    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })    
-    ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.projectStore.exportFairCopyConfig(exportPath,fairCopyConfig) })
-    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
+    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig) })    
+    ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.fairCopySession.exportFairCopyConfig(exportPath,fairCopyConfig) })
+    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.fairCopySession.updateProjectInfo(projectInfo) })
     
     ipcMain.on('requestPaste', (event) => { 
       if( this.mainWindow ) {
@@ -166,7 +166,7 @@ class FairCopyApplication {
     ipcMain.on('requestImport', (event,options) => { 
       const paths = this.mainMenu.openImport()
       if( paths ) {
-        this.projectStore.importStart(paths,options)
+        this.fairCopySession.importStart(paths,options)
       }
     })
 
@@ -174,7 +174,7 @@ class FairCopyApplication {
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null
       if( path ) {
-        this.projectStore.requestExport(resourceIDs,path)
+        this.fairCopySession.requestExport(resourceIDs,path)
       }
     })
 
@@ -214,9 +214,6 @@ class FairCopyApplication {
   }
 
   async createMainWindow() {
-    this.projectStore = new ProjectStore(this)
-    this.remoteProject = new RemoteProject(this)
-
     if( this.mainWindow ) {
       if( !this.mainWindow.isDestroyed() ) {
         this.mainWindow.destroy()
@@ -252,7 +249,7 @@ class FairCopyApplication {
       delete this.imageViews[resourceID]
     })
 
-    this.projectStore.openImageView(imageViewInfo)
+    this.fairCopySession.openImageView(imageViewInfo)
   }
 
   exitApp() {
@@ -287,7 +284,7 @@ class FairCopyApplication {
         this.projectWindow.close()
         this.projectWindow = null  
       }
-      this.projectStore.openProject(targetFile)
+      this.fairCopySession = new FairCopySession(this, targetFile)
       log.info(`Opened project: ${targetFile}`)
     })
   }
@@ -296,6 +293,7 @@ class FairCopyApplication {
     if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
+      this.fairCopySession = null
     }
     if( this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()
