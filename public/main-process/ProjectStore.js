@@ -92,8 +92,9 @@ class ProjectStore {
         return this.projectArchiveWorker.start({ projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName })
     }
 
-    openProject(projectFilePath) {
+    openProject(projectFilePath, onProjectOpened) {
         const {baseDir} = this.fairCopyApplication
+        this.onProjectOpened = onProjectOpened
         const debug = this.fairCopyApplication.isDebugMode()
         this.initProjectArchiveWorker( baseDir, debug, projectFilePath ).then(() => {
             this.projectArchiveWorker.postMessage({ messageType: 'open' })
@@ -152,7 +153,7 @@ class ProjectStore {
         }
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
-        this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
+        this.onProjectOpened( projectData )
     }
 
     openImageView(imageViewInfo) {

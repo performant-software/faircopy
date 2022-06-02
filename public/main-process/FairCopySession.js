@@ -4,9 +4,15 @@ const { ProjectStore } = require('./ProjectStore')
 class FairCopySession {
 
     constructor( fairCopyApplication, targetFile ) {
+        this.fairCopyApplication = fairCopyApplication
         this.remoteProject = new RemoteProject(fairCopyApplication)
         this.projectStore = new ProjectStore(fairCopyApplication)
-        this.projectStore.openProject(targetFile)
+        this.projectStore.openProject(targetFile, this.onProjectOpened )
+    }
+
+    onProjectOpened = (projectData) => {
+        // this is also where we learn if this is a remote project
+        this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
     openImageResource(url) {
