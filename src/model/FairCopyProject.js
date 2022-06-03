@@ -89,9 +89,6 @@ export default class FairCopyProject {
         Object.values(fairCopyManifest.resources).forEach( entry => {
             if( entry.type !== 'image' ) this.resources[entry.id] = entry
         })
-        if( this.remote ) {
-            fairCopy.services.ipcSend('openRemoteProject', this.serverURL, this.email )
-        }
     }
 
     getResources(parentResource) {

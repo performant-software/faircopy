@@ -131,12 +131,8 @@ class FairCopyApplication {
       this.fairCopySession.requestResource(resourceID)
     })
 
-    ipcMain.on('openRemoteProject', (event, serverURL, email ) => { 
-      this.remoteProject.openRemoteProject(email, serverURL)
-    })
-
     ipcMain.on('requestRemoteResource', (event, resourceID) => { 
-      this.remoteProject.openResource(resourceID)
+      this.fairCopySession.requestRemoteResource(resourceID)
     })
 
     ipcMain.on('importContinue', (event) => { 

@@ -15,11 +15,13 @@ class FairCopySession {
         const { idMap } = projectData
         const { manifestData } = this.projectStore
 
-        // id map authority tracks ids across processes
+        // id map authority tracks ids across processes and server
         this.idMapAuthority = new IDMapAuthority(idMap, manifestData.resources, this.fairCopyApplication)
 
+        // init remote project if this is one
         if( manifestData.remote ) {
-            this.remoteProject = new RemoteProject(this.fairCopyApplication)
+            const { email, serverURL } = manifestData
+            this.remoteProject = new RemoteProject(this.fairCopyApplication, email, serverURL )
         }
 
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
@@ -103,6 +105,10 @@ class FairCopySession {
 
     requestResource(resourceID) {
         this.projectStore.openResource(resourceID)
+    }
+
+    requestRemoteResource(resourceID) {
+        this.remoteProject.openResource(resourceID)
     }
 
     importStart(paths,options) {

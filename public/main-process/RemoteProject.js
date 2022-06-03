@@ -3,8 +3,10 @@ const { WorkerWindow } = require('./WorkerWindow')
 
 class RemoteProject {
 
-    constructor(fairCopyApplication) {
+    constructor(fairCopyApplication, email, serverURL ) {
+        const {baseDir} = fairCopyApplication
         this.fairCopyApplication = fairCopyApplication
+        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), email, serverURL )
     }
 
     initRemoteProjectWorker( baseDir, debug, email, serverURL ) {
@@ -25,12 +27,6 @@ class RemoteProject {
         })
         
         return this.remoteProjectWorker.start({email, serverURL})
-    }
-
-    openRemoteProject(email, serverURL) {
-        const {baseDir} = this.fairCopyApplication
-        const debug = this.fairCopyApplication.isDebugMode()
-        this.initRemoteProjectWorker( baseDir, debug, email, serverURL )
     }
 
     close() {
