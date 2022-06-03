@@ -134,8 +134,8 @@ export default class FairCopyProject {
         return resourceEntry ? resourceEntry.parentResource ? this.resources[resourceEntry.parentResource] : null : null
     }
 
-    importIIIF( url, parentResourceID, onError, onSuccess ) {     
-        const parentEntry = this.getResourceEntry(parentResourceID)
+    importIIIF( url, parentResourceID, onError, onSuccess ) {    
+        const parentEntry = parentResourceID ? this.getResourceEntry(parentResourceID) : null
         const nextSurfaceID = parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0
 
         importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
