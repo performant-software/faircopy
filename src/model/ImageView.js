@@ -2,6 +2,7 @@ import FacsDocument from "./FacsDocument"
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import { v4 as uuidv4 } from 'uuid'
+import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -15,6 +16,9 @@ export default class ImageView {
         this.facsDocument = new FacsDocument( this.resourceEntry.id, this, imageViewData.resource )
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
+        this.remote = imageViewData.remote
+        this.email = imageViewData.email
+        this.serverURL = imageViewData.serverURL
         this.lastResourceEntryMessage = null   
     }
 
@@ -64,6 +68,11 @@ export default class ImageView {
 
     getParent() {
         return this.parentEntry
+    }
+
+    isLoggedIn = () => {
+        if( !this.remote ) return false
+        return isLoggedIn( this.email, this.serverURL )
     }
 
     updateResource( nextResourceEntry ) {     

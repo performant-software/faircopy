@@ -65,6 +65,13 @@ class ProjectStore {
                 case 'image-view-ready':
                     {
                         const { resourceID, imageViewData } = msg
+                        // mix in remote project data if needed
+                        if( this.manifestData.remote ) {
+                            const { email, serverURL } = this.manifestData
+                            imageViewData.email = email
+                            imageViewData.serverURL = serverURL
+                            imageViewData.remote = true
+                        }
                         const imageView = this.fairCopyApplication.imageViews[resourceID]
                         imageView.webContents.send('imageViewOpened', imageViewData )    
                     }

@@ -265,7 +265,7 @@ export default class FacsIndex extends Component {
     
     render() {
         const { resourceEntry, parentResource, onResourceAction, isWindowed, facsDocument } = this.props
-        const {isLoggedIn} = facsDocument.fairCopyProject
+        const {isLoggedIn} = facsDocument.imageViewContext
 
         return (
             <div id="FacsIndex" >

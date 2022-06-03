@@ -27,7 +27,7 @@ export default class FacsDocument {
     }
 
     isEditable() {
-        return this.fairCopyProject.isEditable( this.resourceID )
+        return this.imageViewContext.isEditable( this.resourceID )
     }
 
     // Called when document is updated by a different window process
@@ -62,7 +62,11 @@ export default class FacsDocument {
     }
 
     requestResource( resourceID ) {
-        fairCopy.services.ipcSend('requestResource', resourceID )
+        if( this.isEditable() ) {
+            fairCopy.services.ipcSend('requestResource', resourceID )
+        } else {
+            fairCopy.services.ipcSend('requestRemoteResource', resourceID )
+        }
         this.loading = true
     }
 

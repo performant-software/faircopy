@@ -192,7 +192,7 @@ export default class SurfaceEditor extends Component {
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
         const facsID = resourceEntry.localID
-        const {isLoggedIn} = facsDocument.fairCopyProject
+        const {isLoggedIn} = facsDocument.imageViewContext
 
         const onChangeZone = (name,value,error) => {
             if( !error ) {
