@@ -272,8 +272,7 @@ class FairCopyApplication {
 
       if( this.mainWindow ) {
         this.mainWindow.close()
-        this.projectStore.close()
-        this.remoteProject.close()
+        this.fairCopySession.closeProject()
       }
     }
   }
@@ -293,7 +292,6 @@ class FairCopyApplication {
     if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
-      this.fairCopySession = null
     }
     if( this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()

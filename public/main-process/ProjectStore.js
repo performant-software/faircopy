@@ -1,9 +1,7 @@
 const fs = require('fs')
 const log = require('electron-log')
-const { v4: uuidv4 } = require('uuid')
 const { readFile, stat } = require('fs/promises')
 
-const { IDMapAuthority } = require('./IDMapAuthority')
 const { compatibleProject, migrateConfig } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
@@ -142,9 +140,6 @@ class ProjectStore {
         this.migratedConfig = migrateConfig(this.manifestData.generatedWith,baseConfig,fairCopyConfig)
         fairCopyConfig = this.migratedConfig
 
-        // id map authority tracks ids across processes
-        this.idMapAuthority = new IDMapAuthority(idMap, this.manifestData.resources)
-
         // setup search index if local 
         if( !this.manifestData.remote ) {
             this.searchIndex = new SearchIndex( teiSchema, this, (status) => {
@@ -156,16 +151,15 @@ class ProjectStore {
         this.onProjectOpened( projectData )
     }
 
-    openImageView(imageViewInfo) {
+    openImageView(imageViewInfo, idMap) {
         const { resourceID, xmlID, parentID } = imageViewInfo
         const { baseDir } = this.fairCopyApplication
-        const { idMapNext } = this.idMapAuthority
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
 
         const resourceEntry = this.manifestData.resources[resourceID]
         const parentEntry = this.manifestData.resources[parentID]
         if( resourceEntry ) {
-            const imageViewData = { resourceEntry, parentEntry, xmlID, teiSchema, idMap: JSON.stringify(idMapNext) }
+            const imageViewData = { resourceEntry, parentEntry, xmlID, teiSchema, idMap }
             this.projectArchiveWorker.postMessage({ messageType: 'open-image-view', resourceID, imageViewData })
         }
     }
@@ -193,7 +187,6 @@ class ProjectStore {
 
     importEnd() {
         this.importRunning(false)
-        this.sendIDMapUpdate()
         this.saveManifest()
     }
 
@@ -213,51 +206,25 @@ class ProjectStore {
         if( this.searchIndex ) this.searchIndex.close()
     }
 
-    onIDMapUpdated(msgID, idMapData) {
-        this.idMapAuthority.update(idMapData)
-        this.sendIDMapUpdate(msgID)
-    }
-
-    sendIDMapUpdate(msgID) {
-        const messageID = msgID ? msgID : uuidv4()
-        const idMapData = JSON.stringify( this.idMapAuthority.idMapNext )
-        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
-    }
-
-    abandonResourceMap(resourceID) {
-        this.idMapAuthority.abandonResourceMap(resourceID)
-        this.sendIDMapUpdate()
-    }
-
-    saveResource(resourceID, resourceData) {
-        const { resources } = this.manifestData
-        const resourceEntry = resources[resourceID]
-        if( resourceEntry ) {
-            const idMap = this.idMapAuthority.commitResource(resourceID)
-            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
-            this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID, data: resourceData })
-            if( this.searchIndex ) this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
-            this.save()
-            return true
-        }
-        return false
+    saveResource(resourceEntry, resourceData, idMap) {
+        const { id, type } = resourceEntry
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
+        this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: id, data: resourceData })
+        if( this.searchIndex ) this.searchIndex.indexResource(id, type, resourceData )
+        this.save()
     }
 
     requestIndex( resourceID ) {
         this.projectArchiveWorker.postMessage({ messageType: 'request-index', resourceID })
     }
 
-    addResource( resourceEntryJSON, resourceData, resourceMapJSON ) {
-        const resourceEntry = JSON.parse(resourceEntryJSON)
+    addResource( resourceEntry, resourceData, idMap ) {
         this.manifestData.resources[resourceEntry.id] = resourceEntry
         if( resourceEntry.type === 'image' )  {
             this.projectArchiveWorker.postMessage({ messageType: 'add-local-file', resourceID: resourceEntry.id, localFilePath: resourceData })
         } else {
-            if( resourceMapJSON ) {
-                const resourceMap = JSON.parse(resourceMapJSON)
-                const idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
+            if( idMap ) {
                 this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
-                if(!this.importInProgress) this.sendIDMapUpdate()    
             }
             this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: resourceEntry.id, data: resourceData })
             if( this.searchIndex ) this.searchIndex.indexResource(resourceEntry.id, resourceEntry.type, resourceData )
@@ -270,9 +237,9 @@ class ProjectStore {
         }
     }
     
-    removeResource(resourceID) {
-        const resourceEntry = this.manifestData.resources[resourceID] 
-
+    removeResource(resourceEntry,idMap) {
+        const resourceID = resourceEntry.id
+        
         // go through the manifest entries, if there are local images associated with this facs, delete them too
         if( resourceEntry.type === 'facs' ) {
             for( const entry of Object.values(this.manifestData.resources) ) {
@@ -288,10 +255,8 @@ class ProjectStore {
             if( this.searchIndex ) this.searchIndex.removeIndex(resourceID)
         }
 
-        if( resourceEntry.type !== 'image' ) {
-            const idMap = this.idMapAuthority.removeResource(resourceID)
+        if( idMap ) {
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
-            this.sendIDMapUpdate()    
         }
 
         if( resourceEntry.local ) {
@@ -314,23 +279,6 @@ class ProjectStore {
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { recovered: true, resourceID }  )
             this.saveManifest()
         }
-    }
-
-    updateResource(resourceEntryJSON) {
-        const { resources } = this.manifestData
-        const resourceEntry = JSON.parse(resourceEntryJSON)
-        if( resources[resourceEntry.id] ) {
-            const currentLocalID = resources[resourceEntry.id].localID
-            this.manifestData.resources[resourceEntry.id] = resourceEntry
-            if( resourceEntry.localID !== currentLocalID ) {
-                this.idMapAuthority.changeID( resourceEntry.localID, resourceEntry.id ) 
-                this.sendIDMapUpdate()
-            }
-            this.saveManifest()
-            return true
-        }
-        log.info(`Error updating resource entry: ${resourceEntry.id}`)
-        return false
     }
 
     saveManifest() {

@@ -1,7 +1,9 @@
+const { v4: uuidv4 } = require('uuid')
 
 class IDMapAuthority {
 
-    constructor( idMapData, resources ) {
+    constructor( idMapData, resources, fairCopyApplication ) {
+        this.fairCopyApplication = fairCopyApplication
         this.idMap = JSON.parse(idMapData)
         this.idMapNext = JSON.parse(idMapData)
         this.resourceIndex = {}
@@ -91,6 +93,12 @@ class IDMapAuthority {
         }
 
         return JSON.stringify(this.idMap)
+    }
+
+    sendIDMapUpdate(msgID) {
+        const messageID = msgID ? msgID : uuidv4()
+        const idMapData = JSON.stringify( this.idMapNext )
+        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
     }
 }
 

@@ -1,30 +1,58 @@
+const log = require('electron-log')
 const { RemoteProject } = require('./RemoteProject')
 const { ProjectStore } = require('./ProjectStore')
+const { IDMapAuthority } = require('./IDMapAuthority')
 
 class FairCopySession {
 
     constructor( fairCopyApplication, targetFile ) {
         this.fairCopyApplication = fairCopyApplication
-        this.remoteProject = new RemoteProject(fairCopyApplication)
         this.projectStore = new ProjectStore(fairCopyApplication)
         this.projectStore.openProject(targetFile, this.onProjectOpened )
     }
 
     onProjectOpened = (projectData) => {
-        // this is also where we learn if this is a remote project
+        const { idMap } = projectData
+        const { manifestData } = this.projectStore
+
+        // id map authority tracks ids across processes
+        this.idMapAuthority = new IDMapAuthority(idMap, manifestData.resources, this.fairCopyApplication)
+
+        if( manifestData.remote ) {
+            this.remoteProject = new RemoteProject(this.fairCopyApplication)
+        }
+
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
+    }
+
+    closeProject() {
+        this.projectStore.close()
+        if( this.remoteProject ) this.remoteProject.close()
     }
 
     openImageResource(url) {
         this.projectStore.openImageResource(url)
     }
 
-    addResource(resourceEntry,resourceData,resourceMap) {
-        this.projectStore.addResource(resourceEntry,resourceData,resourceMap)
+    addResource(resourceEntryJSON,resourceData,resourceMapJSON) {
+        const resourceEntry = JSON.parse(resourceEntryJSON)
+        let idMap = null
+        if( resourceMapJSON ) {
+            const resourceMap = JSON.parse(resourceMapJSON)
+            idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
+            if(!this.projectStore.importInProgress) this.idMapAuthority.sendIDMapUpdate()    
+        }
+        this.projectStore.addResource(resourceEntry,resourceData,idMap)
     }
 
     removeResource(resourceID) {
-        this.projectStore.removeResource(resourceID)
+        const resourceEntry = this.projectStore.manifestData.resources[resourceID] 
+        let idMap = null
+        if( resourceEntry.type !== 'image' ) {
+            idMap = this.idMapAuthority.removeResource(resourceID)
+            this.idMapAuthority.sendIDMapUpdate()    
+        }
+        this.projectStore.removeResource(resourceEntry,idMap)
     }
 
     recoverResource(resourceID) {
@@ -36,19 +64,41 @@ class FairCopySession {
     }
 
     saveResource(resourceID, resourceData) {
-        return this.projectStore.saveResource(resourceID, resourceData)
+        const { resources } = this.projectStore.manifestData
+        const resourceEntry = resources[resourceID]
+        if( resourceEntry ) {
+            const idMap = this.idMapAuthority.commitResource(resourceID)
+            this.projectStore.saveResource(resourceEntry, resourceData, idMap)  
+            return true  
+        }
+        return false
     }
 
-    updateResource(resourceEntry) {
-        return this.projectStore.updateResource(resourceEntry) 
+    updateResource(resourceEntryJSON) {
+        const { resources } = this.projectStore.manifestData
+        const resourceEntry = JSON.parse(resourceEntryJSON)
+        if( resources[resourceEntry.id] ) {
+            const currentLocalID = resources[resourceEntry.id].localID
+            this.projectStore.manifestData.resources[resourceEntry.id] = resourceEntry
+            if( resourceEntry.localID !== currentLocalID ) {
+                this.idMapAuthority.changeID( resourceEntry.localID, resourceEntry.id ) 
+                this.idMapAuthority.sendIDMapUpdate()
+            }
+            this.projectStore.saveManifest() 
+            return true
+        }
+        log.info(`Error updating resource entry: ${resourceEntry.id}`)
+        return false
     }
 
-    onIDMapUpdated(msgID, idMap) {
-        this.projectStore.onIDMapUpdated(msgID, idMap)
+    onIDMapUpdated(msgID, idMapData) {
+        this.idMapAuthority.update(idMapData)
+        this.idMapAuthority.sendIDMapUpdate(msgID)
     }
 
     abandonResourceMap(resourceID) {
-        this.projectStore.abandonResourceMap(resourceID)
+        this.idMapAuthority.abandonResourceMap(resourceID)
+        this.idMapAuthority.sendIDMapUpdate()
     }
 
     requestResource(resourceID) {
@@ -65,6 +115,7 @@ class FairCopySession {
 
     importEnd() {
         this.projectStore.importEnd()
+        this.idMapAuthority.sendIDMapUpdate()
     }
 
     checkIn(email, serverURL, projectID, committedResources, message) {
@@ -88,7 +139,9 @@ class FairCopySession {
     }
 
     openImageView(imageViewInfo) {
-        this.projectStore.openImageView(imageViewInfo)
+        const { idMapNext } = this.idMapAuthority
+        const idMap = JSON.stringify(idMapNext)
+        this.projectStore.openImageView(imageViewInfo,idMap)
     }
 
 }
