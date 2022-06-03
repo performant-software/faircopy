@@ -74,21 +74,21 @@ class FairCopySession {
         return false
     }
 
-    updateResource(resourceEntryJSON) {
+    updateResource(msgID,resourceEntryJSON) {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = JSON.parse(resourceEntryJSON)
         if( resources[resourceEntry.id] ) {
             const currentLocalID = resources[resourceEntry.id].localID
-            this.projectStore.manifestData.resources[resourceEntry.id] = resourceEntry
+            resources[resourceEntry.id] = resourceEntry
             if( resourceEntry.localID !== currentLocalID ) {
                 this.idMapAuthority.changeID( resourceEntry.localID, resourceEntry.id ) 
                 this.idMapAuthority.sendIDMapUpdate()
             }
             this.projectStore.saveManifest() 
-            return true
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { messageID: msgID, resourceID: resourceEntry.id, resourceEntry } )        
+        } else {
+            log.info(`Error updating resource entry: ${resourceEntry.id}`)
         }
-        log.info(`Error updating resource entry: ${resourceEntry.id}`)
-        return false
     }
 
     onIDMapUpdated(msgID, idMapData) {

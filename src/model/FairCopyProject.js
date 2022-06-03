@@ -59,7 +59,7 @@ export default class FairCopyProject {
             resourceEntry.deleted = false
         } else {
             // update record in index view
-            const nextResourceEntry = JSON.parse(d.resourceEntry)
+            const nextResourceEntry = d.resourceEntry
             this.resources[ nextResourceEntry.id ] = nextResourceEntry
             this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
         }

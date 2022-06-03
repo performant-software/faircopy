@@ -100,10 +100,7 @@ class FairCopyApplication {
       this.fairCopySession.abandonResourceMap(resourceID)
     })
     ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
-      const ok = this.fairCopySession.updateResource(resourceEntry) 
-      if( ok ) {
-        this.sendToAllWindows('resourceEntryUpdated', { messageID: msgID, resourceEntry } )
-      }
+      this.fairCopySession.updateResource(msgID,resourceEntry) 
     })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
