@@ -20,8 +20,8 @@ class FairCopySession {
 
         // init remote project if this is one
         if( manifestData.remote ) {
-            const { email, serverURL } = manifestData
-            this.remoteProject = new RemoteProject(this.fairCopyApplication, email, serverURL )
+            const { email, serverURL, projectID } = manifestData
+            this.remoteProject = new RemoteProject(this.fairCopyApplication, this.idMapAuthority, email, serverURL, projectID )
         }
 
         this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )

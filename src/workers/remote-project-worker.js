@@ -1,18 +1,31 @@
 import { getResource } from "../model/cloud-api/resources"
 import { getAuthToken } from '../model/cloud-api/auth'
+import { getIDMap } from "../model/cloud-api/id-map"
 
 const pollingInterval = 3000 // ms
+
+function updateIDMap( serverURL, authToken, projectID, postMessage) {
+    getIDMap(serverURL, authToken, projectID, (idMapData) => {
+        postMessage({ messageType: 'id-map-update', idMapData })
+    }, (error) => {
+        throw new Error(error)
+    })
+}
+
+function updateConfig() {
+    // TODO
+}
 
 export function remoteProject( msg, workerMethods, workerData ) {
     const { messageType } = msg
     const { postMessage, close } = workerMethods
-    const { email, serverURL } = workerData
+    const { email, serverURL, projectID } = workerData
     const authToken = getAuthToken(email, serverURL)
 
     const pingResources = () => {
         postMessage({ messageType: 'resource-update' })
-        // postMessage({ messageType: 'id-map-update' })
-        // postMessage({ messageType: 'config-update' })
+        updateIDMap( serverURL, authToken, projectID, postMessage )
+        updateConfig()
     }    
     
     switch( messageType ) {

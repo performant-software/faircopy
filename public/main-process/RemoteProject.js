@@ -3,37 +3,48 @@ const { WorkerWindow } = require('./WorkerWindow')
 
 class RemoteProject {
 
-    constructor(fairCopyApplication, email, serverURL ) {
+    constructor( fairCopySession, email, serverURL, projectID ) {
+        const { fairCopyApplication } = fairCopySession
         const {baseDir} = fairCopyApplication
-        this.fairCopyApplication = fairCopyApplication
-        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), email, serverURL ).then(() => {
+        this.fairCopySession = fairCopySession
+        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), email, serverURL, projectID ).then(() => {
             this.remoteProjectWorker.postMessage({ messageType: 'open' })
         })
     }
 
-    initRemoteProjectWorker( baseDir, debug, email, serverURL ) {
+    initRemoteProjectWorker( baseDir, debug, email, serverURL, projectID ) {
         this.remoteProjectWorker = new WorkerWindow( baseDir, debug, 'remote-project', (msg) => {
             const { messageType } = msg
 
             switch( messageType ) {
                 case 'resource-data':
                     {
+                        const { fairCopyApplication } = this.fairCopySession
                         const { resourceID, resource } = msg
-                        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceID, resource } )        
+                        fairCopyApplication.sendToMainWindow('resourceOpened', { resourceID, resource } )        
                         log.info(`opened resourceID: ${resourceID}`)    
                     }
                     break
                 case 'resource-update':
-                    this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { remoteUpdate: true } )
-                    break
-                // case 'id-map-update':
+                    {
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { remoteUpdate: true } )
+                    }
+                    break    
+                case 'id-map-update': 
+                {
+                    const { idMapAuthority } = this.fairCopySession
+                    const { idMapData } = msg
+                    idMapAuthority.update(idMapData)
+                }
+                break
                 // case 'config-update':
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }
         })
         
-        return this.remoteProjectWorker.start({email, serverURL})
+        return this.remoteProjectWorker.start({email, serverURL, projectID})
     }
 
     close() {
