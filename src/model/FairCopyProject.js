@@ -43,8 +43,8 @@ export default class FairCopyProject {
     }
 
     notifyListeners(d) {
-        const resourceEntry = this.getResourceEntry( d.resourceID )
         if( d.deleted ) {
+            const resourceEntry = this.getResourceEntry( d.resourceID )
             if( resourceEntry.local ) {
                 delete this.resources[d.resourceID]
                 this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
@@ -53,11 +53,13 @@ export default class FairCopyProject {
             }
         } else if( d.switchToRemote ) {
             // leave record in resource view as a placeholder until remote update arrives
+            const resourceEntry = this.getResourceEntry( d.resourceID )
             resourceEntry.placeholder = true
             delete this.resources[d.resourceID]
         } else if( d.recovered ) {
+            const resourceEntry = this.getResourceEntry( d.resourceID )
             resourceEntry.deleted = false
-        } else {
+        } else if( d.resourceEntry ) {
             // update record in index view
             const nextResourceEntry = d.resourceEntry
             this.resources[ nextResourceEntry.id ] = nextResourceEntry

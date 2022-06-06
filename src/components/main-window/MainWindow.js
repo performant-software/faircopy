@@ -35,7 +35,6 @@ const fairCopy = window.fairCopy
 const initialLeftPaneWidth = 300
 const maxLeftPaneWidth = 630
 const resizeRefreshRate = 100
-const pollingInterval = 3000 // ms
 
 export default class MainWindow extends Component {
 
@@ -94,17 +93,14 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
         services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
-        setInterval( this.pollServer, pollingInterval )
         fairCopyProject.addUpdateListener(this.receivedUpdate)
         fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
         this.checkReleaseNotes()
-        this.pollServer()
     }
 
     componentWillUnmount() {
         const { fairCopyProject } = this.props
         const {services} = fairCopy
-        clearInterval( this.pollServer )
         services.ipcRemoveListener('resourceOpened', this.onResourceOpened )
         services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
@@ -124,22 +120,22 @@ export default class MainWindow extends Component {
         }
     }
 
-    pollServer = () => {
+    receivedUpdate = () => {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, parentResourceID } = this.state
+        const { parentResourceID } = this.state
 
         // Don't ask for updates if we aren't on the resource browser
-        if( fairCopyProject.isLoggedIn() && resourceBrowserOpen ) {
-            const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
-            const currentPage = 0, rowsPerPage = 100
-            
-            checkForUpdates( fairCopyProject, parentResource, currentPage, rowsPerPage, this.receivedUpdate, (error) => {
-              console.log(error)
-            } )     
-        }
+        const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
+        const currentPage = 0, rowsPerPage = 100
+
+        console.log('ping')
+        
+        checkForUpdates( fairCopyProject, parentResource, currentPage, rowsPerPage, this.updateView, (error) => {
+            console.log(error)
+        } )     
     }
     
-    receivedUpdate = () => { 
+    updateView = () => { 
         // TODO need a different mechanism for closing deleted files
         // const { openResources } = this.state
         // const { fairCopyProject } = this.props
