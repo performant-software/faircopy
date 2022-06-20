@@ -229,28 +229,32 @@ export default class FacsIndex extends Component {
         const actionsEnabled = Object.values(checked).find( c => c === true )
         const { surfaces } = facsDocument.facs
         const detailEnabled = surfaces.length > 0
+        const editable = facsDocument.isEditable()
+        const remote = facsDocument.isRemote()
 
         return (
-            <div className='top-bar' >
-                <Button
-                    onClick={onAddImages}
-                    {...textButtonProps}
-                >
-                    Add Images
-                </Button> 
-                <Button 
-                    disabled={!actionsEnabled}
-                    ref={(el)=> { this.actionButtonEl = el }}
-                    onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
-                    {...textButtonProps}
-                    >Actions<i className='down-caret fas fa-caret-down fa-lg'></i>
-                </Button> 
-                <Button
-                    onClick={onEditResource}
-                    {...iconButtonProps}
-                >
-                    <i className="far fa-edit fa-2x"></i>
-                </Button>                   
+            <div>
+                { editable && <span>
+                    { !remote && <Button
+                        onClick={onAddImages}
+                        {...textButtonProps}
+                    >
+                        Add Images
+                    </Button> }
+                    <Button 
+                        disabled={!actionsEnabled}
+                        ref={(el)=> { this.actionButtonEl = el }}
+                        onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
+                        {...textButtonProps}
+                        >Actions<i className='down-caret fas fa-caret-down fa-lg'></i>
+                    </Button> 
+                    <Button
+                        onClick={onEditResource}
+                        {...iconButtonProps}
+                    >
+                        <i className="far fa-edit fa-2x"></i>
+                    </Button>                   
+                </span> }
                 <FacsModeControl
                     selected={'index'}
                     detailEnabled={detailEnabled}

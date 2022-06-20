@@ -193,6 +193,7 @@ export default class SurfaceEditor extends Component {
         const surfaceNames = getSurfaceNames(surface)
         const facsID = resourceEntry.localID
         const {isLoggedIn} = facsDocument.imageViewContext
+        const editable = facsDocument.isEditable()
 
         const onChangeZone = (name,value,error) => {
             if( !error ) {
@@ -238,6 +239,7 @@ export default class SurfaceEditor extends Component {
                         onChangeTool={this.onChangeTool}
                         onChangeView={onChangeView} 
                         onEditSurfaceInfo={onEditInfo}
+                        editable={editable}
                         onWindow={onWindow}
                     ></SurfaceEditorToolbar>
                 </div>

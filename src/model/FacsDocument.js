@@ -30,6 +30,10 @@ export default class FacsDocument {
         return this.imageViewContext.isEditable( this.resourceID )
     }
 
+    isRemote() {
+        return this.imageViewContext.remote
+    }
+
     // Called when document is updated by a different window process
     onResourceUpdated(resourceData) {
         this.load(resourceData)
