@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
 import { getThumbnailURL } from './iiif'
 
 const fairCopy = window.fairCopy
@@ -12,25 +11,8 @@ export default class IDMap {
 
         // Listen for updates
         fairCopy.services.ipcRegisterCallback('IDMapUpdated', (e, d) => {
-            if( d.messageID !== this.lastMessageID ) 
-                this.onUpdate(d.idMapData)
+            this.loadIDMap(d.idMapData)
         })
-    }
-
-    // Called when ID Map is updated by a different window process
-    onUpdate(idMapData) {
-        this.loadIDMap(idMapData)
-        for( const listener of this.updateListeners ) {
-            listener()
-        }
-    }
-
-    addUpdateListener(listener) {
-        this.updateListeners.push(listener)
-    }
-
-    removeUpdateListener(listener) {
-        this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
     loadIDMap(idMapData) {

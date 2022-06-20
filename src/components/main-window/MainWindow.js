@@ -94,7 +94,6 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
         fairCopyProject.addUpdateListener(this.receivedUpdate)
-        fairCopyProject.idMap.addUpdateListener(this.receivedUpdate)
         this.checkReleaseNotes()
     }
 
@@ -106,7 +105,6 @@ export default class MainWindow extends Component {
         services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
 
         fairCopyProject.removeUpdateListener(this.receivedUpdate)
-        fairCopyProject.idMap.removeUpdateListener(this.receivedUpdate)
     }
 
     refreshWindow() {
@@ -124,7 +122,6 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { parentResourceID } = this.state
 
-        // Don't ask for updates if we aren't on the resource browser
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const currentPage = 0, rowsPerPage = 100
         

@@ -1,5 +1,3 @@
-const { v4: uuidv4 } = require('uuid')
-
 class IDMapAuthority {
 
     constructor( idMapData, resources, fairCopyApplication ) {
@@ -15,7 +13,7 @@ class IDMapAuthority {
     }
 
     setBaseMap(idMapData) {
-        // TODO
+        // TODO process id map from server
     }
 
     setCommitMap() {
@@ -29,8 +27,8 @@ class IDMapAuthority {
         } else {
             this.idMapNext[localID] = resourceMap
         }
-        // TODO broadcast the updated map
-        // sendIDMapUpdate()
+        // broadcast the updated map
+        this.sendIDMapUpdate()
     }
 
     // restore the specified resource to its previously saved state
@@ -109,10 +107,9 @@ class IDMapAuthority {
         return JSON.stringify(this.idMap)
     }
 
-    sendIDMapUpdate(msgID) {
-        const messageID = msgID ? msgID : uuidv4()
+    sendIDMapUpdate() {
         const idMapData = JSON.stringify( this.idMapNext )
-        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { messageID, idMapData } )
+        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { idMapData } )
     }
 }
 
