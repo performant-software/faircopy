@@ -127,8 +127,6 @@ export default class MainWindow extends Component {
         // Don't ask for updates if we aren't on the resource browser
         const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
         const currentPage = 0, rowsPerPage = 100
-
-        console.log('ping')
         
         checkForUpdates( fairCopyProject, parentResource, currentPage, rowsPerPage, this.updateView, (error) => {
             console.log(error)
