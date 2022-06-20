@@ -36,6 +36,10 @@ class FairCopySession {
         this.projectStore.openImageResource(url)
     }
 
+    setResourceMap(resourceMap, localID, parentID) {
+        this.idMapAuthority.setResourceMap( resourceMap, localID, parentID )
+    }
+
     addResource(resourceEntryJSON,resourceData,resourceMapJSON) {
         const resourceEntry = JSON.parse(resourceEntryJSON)
         let idMap = null
@@ -91,11 +95,6 @@ class FairCopySession {
         } else {
             log.info(`Error updating resource entry: ${resourceEntry.id}`)
         }
-    }
-
-    onIDMapUpdated(msgID, idMapData) {
-        this.idMapAuthority.update(idMapData)
-        this.idMapAuthority.sendIDMapUpdate(msgID)
     }
 
     abandonResourceMap(resourceID) {

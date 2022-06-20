@@ -132,8 +132,7 @@ export default class TEIDocument {
 
         // update the ID Map
         const resourceMap = idMap.mapResource( 'text', transaction.doc )
-        idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
-        idMap.update()
+        idMap.setResourceMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
         
         // scan for errors 
         // TODO put this on a timer, not every update

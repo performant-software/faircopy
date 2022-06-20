@@ -24,8 +24,8 @@ export function remoteProject( msg, workerMethods, workerData ) {
 
     const pingResources = () => {
         postMessage({ messageType: 'resource-update' })
-        updateIDMap( serverURL, authToken, projectID, postMessage )
-        updateConfig()
+        // updateIDMap( serverURL, authToken, projectID, postMessage )
+        // updateConfig()
     }    
     
     switch( messageType ) {

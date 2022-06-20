@@ -35,7 +35,7 @@ class RemoteProject {
                 {
                     const { idMapAuthority } = this.fairCopySession
                     const { idMapData } = msg
-                    idMapAuthority.update(idMapData)
+                    idMapAuthority.setBaseMap(idMapData)
                 }
                 break
                 // case 'config-update':

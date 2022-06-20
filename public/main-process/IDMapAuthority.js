@@ -14,9 +14,23 @@ class IDMapAuthority {
         }
     }
 
-    // update the resource map and broadcast the updated idMap, including any errors?
-    update( idMapData ) {       
-        this.idMapNext = JSON.parse(idMapData)
+    setBaseMap(idMapData) {
+        // TODO
+    }
+
+    setCommitMap() {
+        // TODO
+    }
+
+    // TODO this should effect the unsaved map
+    setResourceMap( resourceMap, localID, parentID ) {
+        if( parentID ) {
+            this.idMapNext[parentID][localID] = resourceMap
+        } else {
+            this.idMapNext[localID] = resourceMap
+        }
+        // TODO broadcast the updated map
+        // sendIDMapUpdate()
     }
 
     // restore the specified resource to its previously saved state

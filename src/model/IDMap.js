@@ -117,35 +117,8 @@ export default class IDMap {
         }
     }
     
-    set( value, xmlID, localID, parentID ) {
-        if( parentID ) {
-            this.idMap[parentID][localID][xmlID] = value
-        } else {
-            this.idMap[localID][xmlID] = value
-        }
-    }
-
-    unset( xmlID, localID, parentID ) {
-        if( parentID ) {
-            delete this.idMap[parentID][localID][xmlID]
-        } else {
-            delete this.idMap[localID][xmlID]
-        }
-    }
-
-    setMap( resourceMap, localID, parentID ) {
-        if( parentID ) {
-            this.idMap[parentID][localID] = resourceMap
-        } else {
-            this.idMap[localID] = resourceMap
-        }
-    }
-
-    update() {
-        const messageID = uuidv4()
-        fairCopy.services.ipcSend('updateIDMap', messageID, JSON.stringify(this.idMap))
-        this.lastMessageID = messageID
-        // console.log(JSON.stringify(this.idMap))
+    setResourceMap( resourceMap, localID, parentID ) {
+        fairCopy.services.ipcSend('setResourceMap', resourceMap, localID, parentID )
     }
 
     nextSurfaceID( localID ) {

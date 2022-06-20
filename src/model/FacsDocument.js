@@ -197,8 +197,7 @@ export default class FacsDocument {
         const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
         const parentEntry = this.imageViewContext.getParent(resourceEntry)
         const resourceMap = idMap.mapResource( 'facs', this.facs )
-        idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
-        idMap.update()
+        idMap.setResourceMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
 
         // save the facs
         const fileContents = facsimileToTEI(this.facs)

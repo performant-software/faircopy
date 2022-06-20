@@ -93,9 +93,6 @@ class FairCopyApplication {
         this.sendToAllWindows('resourceUpdated', update )
       }
     })
-    ipcMain.on('updateIDMap', (event, msgID, idMap) => { 
-      this.fairCopySession.onIDMapUpdated(msgID, idMap)
-    })
     ipcMain.on('abandonResourceMap', (event, resourceID) => { 
       this.fairCopySession.abandonResourceMap(resourceID)
     })
@@ -133,6 +130,10 @@ class FairCopyApplication {
 
     ipcMain.on('requestRemoteResource', (event, resourceID) => { 
       this.fairCopySession.requestRemoteResource(resourceID)
+    })
+
+    ipcMain.on('setResourceMap', (event, resourceMap, localID, parentID) => { 
+      this.fairCopySession.setResourceMap(resourceMap, localID, parentID)
     })
 
     ipcMain.on('importContinue', (event) => { 
