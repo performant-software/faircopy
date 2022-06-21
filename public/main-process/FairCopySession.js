@@ -16,7 +16,7 @@ class FairCopySession {
         const { manifestData } = this.projectStore
 
         // id map authority tracks ids across processes and server
-        this.idMapAuthority = new IDMapAuthority(idMap, manifestData.resources, this.fairCopyApplication)
+        this.idMapAuthority = new IDMapAuthority(idMap, manifestData.remote, this.fairCopyApplication)
 
         // init remote project if this is one
         if( manifestData.remote ) {
@@ -45,7 +45,8 @@ class FairCopySession {
         let idMap = null
         if( resourceMapJSON ) {
             const resourceMap = JSON.parse(resourceMapJSON)
-            idMap = this.idMapAuthority.addResource(resourceEntry,resourceMap)
+            const parentID = this.projectStore.getParentID(resourceEntry)
+            idMap = this.idMapAuthority.addResource(resourceEntry.localID,parentID,resourceMap)
             if(!this.projectStore.importInProgress) this.idMapAuthority.sendIDMapUpdate()    
         }
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
@@ -55,7 +56,8 @@ class FairCopySession {
         const resourceEntry = this.projectStore.manifestData.resources[resourceID] 
         let idMap = null
         if( resourceEntry.type !== 'image' ) {
-            idMap = this.idMapAuthority.removeResource(resourceID)
+            const ids = this.projectStore.getLocalIDs(resourceID)
+            idMap = this.idMapAuthority.removeResource(...ids)
             this.idMapAuthority.sendIDMapUpdate()    
         }
         this.projectStore.removeResource(resourceEntry,idMap)
@@ -73,7 +75,8 @@ class FairCopySession {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
-            const idMap = this.idMapAuthority.commitResource(resourceID)
+            const ids = this.projectStore.getLocalIDs(resourceID)
+            const idMap = this.idMapAuthority.commitResource(...ids)
             this.projectStore.saveResource(resourceEntry, resourceData, idMap)  
             return true  
         }
@@ -87,7 +90,8 @@ class FairCopySession {
             const currentLocalID = resources[resourceEntry.id].localID
             resources[resourceEntry.id] = resourceEntry
             if( resourceEntry.localID !== currentLocalID ) {
-                this.idMapAuthority.changeID( resourceEntry.localID, resourceEntry.id ) 
+                const parentID = this.projectStore.getParentID(resourceEntry)
+                this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, parentID ) 
                 this.idMapAuthority.sendIDMapUpdate()
             }
             this.projectStore.saveManifest() 
@@ -98,7 +102,8 @@ class FairCopySession {
     }
 
     abandonResourceMap(resourceID) {
-        this.idMapAuthority.abandonResourceMap(resourceID)
+        const ids = this.projectStore.getLocalIDs( resourceID )
+        this.idMapAuthority.abandonResourceMap(...ids)
         this.idMapAuthority.sendIDMapUpdate()
     }
 

@@ -1,14 +1,17 @@
 class IDMapAuthority {
 
-    constructor( idMapData, resources, fairCopyApplication ) {
+    constructor( idMapData, remote, fairCopyApplication ) {
         this.fairCopyApplication = fairCopyApplication
-        this.idMap = JSON.parse(idMapData)
-        this.idMapNext = JSON.parse(idMapData)
-        this.resourceIndex = {}
-        for( const resourceID of Object.keys(resources) ) {
-            const resourceEntry = resources[resourceID]
-            const parentEntry = resources[resourceEntry.parentResource]
-            this.resourceIndex[resourceID] = { localID: resourceEntry.localID, parentID: parentEntry?.localID }
+        this.remote = remote
+        this.initIDMap(idMapData)
+    }
+
+    initIDMap(idMapData) {
+        if( this.remote ) {
+            // TODO
+        } else {
+            this.idMap = JSON.parse(idMapData)
+            this.idMapNext = JSON.parse(idMapData)    
         }
     }
 
@@ -16,11 +19,6 @@ class IDMapAuthority {
         // TODO process id map from server
     }
 
-    setCommitMap() {
-        // TODO
-    }
-
-    // TODO this should effect the unsaved map
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
             this.idMapNext[parentID][localID] = resourceMap
@@ -32,9 +30,7 @@ class IDMapAuthority {
     }
 
     // restore the specified resource to its previously saved state
-    abandonResourceMap( resourceID ) {
-        const { localID, parentID } = this.resourceIndex[resourceID]
-
+    abandonResourceMap( localID, parentID ) {
         // discard draft resource map and restore authoritative version
         if( parentID ) {
             this.idMapNext[parentID][localID] = this.idMap[parentID][localID]
@@ -43,11 +39,7 @@ class IDMapAuthority {
         }
     }
 
-    addResource( resourceEntry, resourceMap ) {
-        const { id: resourceID, localID, parentResource } = resourceEntry
-        const parentID = this.resourceIndex[parentResource]?.localID
-        this.resourceIndex[resourceID] = { localID, parentID }
-        
+    addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
             this.idMapNext[parentID][localID] = resourceMap
         } else {
@@ -55,12 +47,10 @@ class IDMapAuthority {
         }
 
         // return updated map
-        return this.commitResource(resourceID)
+        return this.commitResource(localID, parentID)
     }
 
-    removeResource( resourceID ) {
-        const { localID, parentID } = this.resourceIndex[resourceID]
-
+    removeResource( localID, parentID ) {
         if( parentID ) {
             delete this.idMapNext[parentID][localID]
             delete this.idMap[parentID][localID]
@@ -72,31 +62,26 @@ class IDMapAuthority {
         return JSON.stringify(this.idMap)
     }
 
-    changeID( newID, resourceID ) {
-        const { localID, parentID } = this.resourceIndex[resourceID]
+    changeID( newID, oldID, parentID ) {
 
         if( parentID ) {
-            if( this.idMapNext[parentID][localID] && !this.idMapNext[parentID][newID] ) {
-                this.idMapNext[parentID][newID] = this.idMapNext[parentID][localID]
-                delete this.idMapNext[parentID][localID]
-                this.resourceIndex[resourceID] = { localID: newID, parentID }
-                return this.commitResource(resourceID)
+            if( this.idMapNext[parentID][oldID] && !this.idMapNext[parentID][newID] ) {
+                this.idMapNext[parentID][newID] = this.idMapNext[parentID][oldID]
+                delete this.idMapNext[parentID][oldID]
+                return this.commitResource(newID,parentID)
             }    
         } else {
-            if( this.idMapNext[localID] && !this.idMapNext[newID] ) {
-                this.idMapNext[newID] = this.idMapNext[localID]
-                delete this.idMapNext[localID]
-                this.resourceIndex[resourceID] = { localID: newID, parentID: null }
-                return this.commitResource(resourceID)
+            if( this.idMapNext[oldID] && !this.idMapNext[newID] ) {
+                this.idMapNext[newID] = this.idMapNext[oldID]
+                delete this.idMapNext[oldID]
+                return this.commitResource(newID,parentID)
             }    
         }
 
         return null
     }
 
-    commitResource( resourceID ) {
-        const { localID, parentID } = this.resourceIndex[resourceID]
-
+    commitResource( localID, parentID ) {
         // move resource map from draft form to authoritative
         if( parentID ) {
             this.idMap[parentID][localID] = this.idMapNext[parentID][localID]
