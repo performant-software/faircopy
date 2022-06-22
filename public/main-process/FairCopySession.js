@@ -1,7 +1,7 @@
 const log = require('electron-log')
 const { RemoteProject } = require('./RemoteProject')
 const { ProjectStore } = require('./ProjectStore')
-const { IDMapAuthority } = require('./IDMapAuthority')
+const { createIDMapAuthority } = require('./IDMapAuthority')
 
 class FairCopySession {
 
@@ -16,7 +16,7 @@ class FairCopySession {
         const { manifestData } = this.projectStore
 
         // id map authority tracks ids across processes and server
-        this.idMapAuthority = new IDMapAuthority(idMap, manifestData.remote, this.fairCopyApplication)
+        this.idMapAuthority = createIDMapAuthority(manifestData.remote, idMap, this.fairCopyApplication)
 
         // init remote project if this is one
         if( manifestData.remote ) {
