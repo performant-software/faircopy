@@ -1,11 +1,11 @@
 class IDMapLocal {
 
-    constructor( idMapData, fairCopyApplication ) {
-        this.fairCopyApplication = fairCopyApplication
-        // authoritative map, stored in project file
-        this.idMap = JSON.parse(idMapData)
+    constructor( idMapData, onUpdate ) {
+        this.onUpdate = onUpdate
+        // the base map is updated by server 
+        this.baseMapJSON = idMapData
         // this map is for unsaved changes made during editing 
-        this.idMapNext = JSON.parse(idMapData)
+        this.idMapNext = {}
     }
 
     setResourceMap( resourceMap, localID, parentID ) {
@@ -20,38 +20,41 @@ class IDMapLocal {
 
     // restore the specified resource to its previously saved state
     abandonResourceMap( localID, parentID ) {
-        // discard draft resource map and restore authoritative version
         if( parentID ) {
-            this.idMapNext[parentID][localID] = this.idMap[parentID][localID]
+            delete this.idMapNext[parentID][localID]
         } else {
-            this.idMapNext[localID] = this.idMap[localID]
+            delete this.idMapNext[localID]
         }    
     }
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = {}
             this.idMapNext[parentID][localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
         }
 
         // return updated map
-        return this.commitResource(localID, parentID)
+        return this.commitResource(localID, parentID)   
     }
 
     removeResource( localID, parentID ) {
+        const idMap = JSON.parse(this.baseMapJSON)
+
         if( parentID ) {
             delete this.idMapNext[parentID][localID]
-            delete this.idMap[parentID][localID]
+            delete idMap[parentID][localID]
         } else {
             delete this.idMapNext[localID]
-            delete this.idMap[localID]
+            delete idMap[localID]
         }
-
-        return JSON.stringify(this.idMap)
+        this.baseMapJSON = JSON.stringify(idMap)
+        return idMap
     }
-
+    
     changeID( newID, oldID, parentID ) {
+
         if( parentID ) {
             if( this.idMapNext[parentID][oldID] && !this.idMapNext[parentID][newID] ) {
                 this.idMapNext[parentID][newID] = this.idMapNext[parentID][oldID]
@@ -62,26 +65,43 @@ class IDMapLocal {
             if( this.idMapNext[oldID] && !this.idMapNext[newID] ) {
                 this.idMapNext[newID] = this.idMapNext[oldID]
                 delete this.idMapNext[oldID]
-                return this.commitResource(newID,null)
+                return this.commitResource(newID,parentID)
             }    
         }
 
-        return null
+        return JSON.parse(this.baseMapJSON)   
     }
 
     commitResource( localID, parentID ) {
-        // move resource map from draft form to authoritative
+        // move resource map from draft to base map
+        const idMap = JSON.parse(this.baseMapJSON)
         if( parentID ) {
-            this.idMap[parentID][localID] = this.idMapNext[parentID][localID]
+            idMap[parentID][localID] = this.idMapNext[parentID][localID]
+            delete this.idMapNext[parentID][localID] 
         } else {
-            this.idMap[localID] = this.idMapNext[localID]
-        }
-        return JSON.stringify(this.idMap)    
+            idMap[localID] = this.idMapNext[localID]
+            delete this.idMapNext[localID]
+        }    
+        this.baseMapJSON = JSON.stringify(idMap)
+        return idMap   
     }
 
     sendIDMapUpdate() {
-        const idMapData = JSON.stringify( this.idMapNext )
-        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { idMapData } )
+        const idMapData = JSON.parse( this.baseMapJSON )
+        addLayer( idMapData, this.idMapNext )
+        this.onUpdate(idMapData)
+    }
+}
+
+function addLayer( idMapData, idMapLayer ) {
+    for( const localID of Object.keys(idMapLayer) ) {
+        // if this is a resourceMap entry, copy it
+        if( idMapLayer[localID].type ) {
+            idMapData[localID] = idMapLayer[localID]
+        } else {
+            // otherwise, it is a parent map, add children 
+            addLayer( idMapData[localID], idMapLayer[localID] )
+        }
     }
 }
 

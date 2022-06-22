@@ -1,11 +1,11 @@
 const { IDMapLocal } = require('./IDMapLocal')
 const { IDMapRemote } = require('./IDMapRemote')
 
-const createIDMapAuthority = function createIDMapAuthority(remote,idMapData,fairCopyApplication) {
+const createIDMapAuthority = function createIDMapAuthority(remote,idMapData,onUpdate) {
     if( remote ) {
-        return new IDMapRemote(idMapData,fairCopyApplication)
+        return new IDMapRemote(idMapData,onUpdate)
     } else {
-        return new IDMapLocal(idMapData,fairCopyApplication)
+        return new IDMapLocal(idMapData,onUpdate)
     }
 }
 

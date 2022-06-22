@@ -16,7 +16,9 @@ class FairCopySession {
         const { manifestData } = this.projectStore
 
         // id map authority tracks ids across processes and server
-        this.idMapAuthority = createIDMapAuthority(manifestData.remote, idMap, this.fairCopyApplication)
+        this.idMapAuthority = createIDMapAuthority(manifestData.remote, idMap, (idMapData) => {
+            this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { idMapData } )
+        })
 
         // init remote project if this is one
         if( manifestData.remote ) {
@@ -65,6 +67,11 @@ class FairCopySession {
 
     recoverResource(resourceID) {
         this.projectStore.recoverResource(resourceID)
+        if( resourceEntry.type !== 'image' ) {
+            const ids = this.projectStore.getLocalIDs(resourceID)
+            idMap = this.idMapAuthority.recoverResource(...ids)
+            this.idMapAuthority.sendIDMapUpdate()    
+        }
     }
 
     searchProject(searchQuery) {
@@ -129,6 +136,7 @@ class FairCopySession {
     }
 
     checkIn(email, serverURL, projectID, committedResources, message) {
+        this.idMapAuthority.checkIn(committedResources)                
         this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
     }
 

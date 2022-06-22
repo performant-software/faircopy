@@ -1,7 +1,7 @@
 class IDMapRemote {
 
-    constructor( idMapData, fairCopyApplication ) {
-        this.fairCopyApplication = fairCopyApplication
+    constructor( idMapData, onUpdate ) {
+        this.onUpdate = onUpdate
         // the base map is updated by server 
         this.baseMapJSON = "{}"
         // the staged id map is stored in project file, 
@@ -28,11 +28,10 @@ class IDMapRemote {
 
     // restore the specified resource to its previously saved state
     abandonResourceMap( localID, parentID ) {
-        // discard draft resource map and restore authoritative version
         if( parentID ) {
-            this.idMapNext[parentID][localID] = this.idMap[parentID][localID]
+            delete this.idMapNext[parentID][localID]
         } else {
-            this.idMapNext[localID] = this.idMap[localID]
+            delete this.idMapNext[localID]
         }    
     }
 
@@ -57,7 +56,7 @@ class IDMapRemote {
             this.idMapStaged[localID].___deleted___ = true
         }
 
-        return this.combineMapLayers()
+        return this.idMapStaged
     }
     
     recoverResource( localID, parentID ) {
@@ -69,7 +68,7 @@ class IDMapRemote {
             delete this.idMapStaged[localID].___deleted___ 
         }
 
-        return this.combineMapLayers()
+        return this.idMapStaged
     }
 
     changeID( newID, oldID, parentID ) {
@@ -88,7 +87,19 @@ class IDMapRemote {
             }    
         }
 
-        return null
+        return this.idMapStaged
+    }
+
+    checkIn( resourcesJSON ) {
+        const resources = JSON.parse(resourcesJSON)
+        for( const resource of resources ) {
+            const { localID, parentID } = resource
+            if( parentID ) {
+                delete this.idMapStaged[parentID][localID] 
+            } else {
+                delete this.idMapStaged[localID] 
+            }
+        }
     }
 
     commitResource( localID, parentID ) {
@@ -101,19 +112,14 @@ class IDMapRemote {
             this.idMapStaged[localID] = this.idMapNext[localID]
             delete this.idMapNext[localID]
         }    
-        return this.combineMapLayers()     
-    }
-
-    combineMapLayers() {
-        const idMapData = JSON.parse( this.baseMapJSON )
-        addLayer( idMapData, this.idMapStaged )
-        addLayer( idMapData, this.idMapNext )
-        return idMapData
+        return this.idMapStaged   
     }
 
     sendIDMapUpdate() {
-        const idMapData = this.combineMapLayers()
-        this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { idMapData } )
+        const idMapData = JSON.parse( this.baseMapJSON )
+        addLayer( idMapData, this.idMapStaged )
+        addLayer( idMapData, this.idMapNext )
+        this.onUpdate(idMapData)
     }
 }
 
