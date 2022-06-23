@@ -58,7 +58,7 @@ class IDMapRemote {
             this.idMapStaged[localID].___deleted___ = true
         }
 
-        return this.idMapStaged
+        return JSON.stringify(this.idMapStaged)
     }
     
     recoverResource( localID, parentID ) {
@@ -70,7 +70,7 @@ class IDMapRemote {
             delete this.idMapStaged[localID].___deleted___ 
         }
 
-        return this.idMapStaged
+        return JSON.stringify(this.idMapStaged)
     }
 
     changeID( newID, oldID, parentID ) {
@@ -89,7 +89,7 @@ class IDMapRemote {
             }    
         }
 
-        return this.idMapStaged
+        return JSON.stringify(this.idMapStaged)
     }
 
     checkIn( resourcesJSON ) {
@@ -114,7 +114,7 @@ class IDMapRemote {
             this.idMapStaged[localID] = this.idMapNext[localID]
             delete this.idMapNext[localID]
         }    
-        return this.idMapStaged   
+        return JSON.stringify(this.idMapStaged)
     }
 
     sendIDMapUpdate() {

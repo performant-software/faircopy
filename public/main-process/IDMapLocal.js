@@ -50,7 +50,7 @@ class IDMapLocal {
             delete idMap[localID]
         }
         this.baseMapJSON = JSON.stringify(idMap)
-        return idMap
+        return this.baseMapJSON
     }
     
     changeID( newID, oldID, parentID ) {
@@ -69,7 +69,7 @@ class IDMapLocal {
             }    
         }
 
-        return JSON.parse(this.baseMapJSON)   
+        return this.baseMapJSON
     }
 
     commitResource( localID, parentID ) {
@@ -83,7 +83,7 @@ class IDMapLocal {
             delete this.idMapNext[localID]
         }    
         this.baseMapJSON = JSON.stringify(idMap)
-        return idMap   
+        return this.baseMapJSON   
     }
 
     sendIDMapUpdate() {
