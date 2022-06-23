@@ -2,7 +2,7 @@ class IDMapLocal {
 
     constructor( idMapData, onUpdate ) {
         this.onUpdate = onUpdate
-        // the base map is updated by server 
+        // the base map is stored in the project file
         this.baseMapJSON = idMapData
         // this map is for unsaved changes made during editing 
         this.idMapNext = {}

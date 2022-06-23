@@ -67,11 +67,9 @@ class FairCopySession {
 
     recoverResource(resourceID) {
         this.projectStore.recoverResource(resourceID)
-        if( resourceEntry.type !== 'image' ) {
-            const ids = this.projectStore.getLocalIDs(resourceID)
-            idMap = this.idMapAuthority.recoverResource(...ids)
-            this.idMapAuthority.sendIDMapUpdate()    
-        }
+        const ids = this.projectStore.getLocalIDs(resourceID)
+        this.idMapAuthority.recoverResource(...ids)
+        this.idMapAuthority.sendIDMapUpdate()    
     }
 
     searchProject(searchQuery) {
