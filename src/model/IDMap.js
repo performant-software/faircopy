@@ -16,7 +16,7 @@ export default class IDMap {
     }
 
     loadIDMap(idMapData) {
-        this.idMap = JSON.parse(idMapData)
+        this.idMap = idMapData
     }
 
     mapResource( resourceType, content ) {

@@ -1,3 +1,5 @@
+const log = require('electron-log')
+
 class IDMapRemote {
 
     constructor( idMapData, onUpdate ) {
@@ -124,15 +126,17 @@ class IDMapRemote {
 }
 
 function addLayer( idMapData, idMapLayer ) {
+    log.info("addLayer")
     for( const localID of Object.keys(idMapLayer) ) {
         if( idMapLayer[localID].___deleted___ ) {
-           delete idMapData[localID]
+           if( idMapData[localID] ) delete idMapData[localID]
         } else {
             // if this is a resourceMap entry, copy it
             if( idMapLayer[localID].type ) {
                 idMapData[localID] = idMapLayer[localID]
             } else {
                 // otherwise, it is a parent map, add children 
+                if( !idMapData[localID] ) idMapData[localID] = {}
                 addLayer( idMapData[localID], idMapLayer[localID] )
             }
         }

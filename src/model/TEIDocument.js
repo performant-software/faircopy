@@ -126,13 +126,16 @@ export default class TEIDocument {
     // called by dispatch transaction for every change to doc state
     onUpdate(transaction,onErrorCountChange) {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
-        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
-        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
 
-        // update the ID Map
-        const resourceMap = idMap.mapResource( 'text', transaction.doc )
-        idMap.setResourceMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
+        if( this.isEditable() ) {
+            const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
+            const parentEntry = this.fairCopyProject.getParent(resourceEntry)
+            const resourceMap = idMap.mapResource( 'text', transaction.doc )
+            // update the ID Map
+            idMap.setResourceMap(resourceMap,resourceEntry.localID, parentEntry?.localID)  
+            // note unsaved state
+            this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
+        }
         
         // scan for errors 
         // TODO put this on a timer, not every update
