@@ -1,30 +1,6 @@
-import { getResources, getResource } from "./cloud-api/resources"
+import { getResource } from "./cloud-api/resources"
 import { getAuthToken } from "./cloud-api/auth"
 import { checkOutResources } from "./cloud-api/resource-management"
-
-export function checkForUpdates( fairCopyProject, teiDoc, currentPage, rowsPerPage, onUpdate, onError ) {
-    const { serverURL, email, projectID, resources } = fairCopyProject
-    const authToken = getAuthToken( email, serverURL )
-    getResources( serverURL, authToken, projectID, currentPage, rowsPerPage, (remoteResources) => {
-        fairCopyProject.remoteResources = remoteResources
-        fairCopyProject.resourceIndexView = createResourceIndexView( teiDoc, resources, remoteResources )
-        onUpdate()
-    }, 
-    (error) => {
-        onError(error)
-    }) 
-}
-
-export function createResourceIndexView( teiDoc, localResources, remoteResources ) {
-    const nextView = [ ...Object.values(localResources) ]
-    for( const remoteResource of remoteResources ) {
-        const { resource_guid: id } = remoteResource
-        if( !localResources[id] ) {
-            nextView.push(createResourceEntry(remoteResource))    
-        }
-    }
-    return nextView.sort((a,b) => a.name.localeCompare(b.name))
-}
 
 export function checkOut( fairCopyProject, resourceIDs, callback ) {
     const { serverURL, email, projectID, idMap } = fairCopyProject
@@ -51,7 +27,7 @@ export function checkOut( fairCopyProject, resourceIDs, callback ) {
     }, callback)
 }
 
-function createResourceEntry(resourceData) { 
+export function createResourceEntry(resourceData) { 
     const { resource_guid: id, name, local_id: localID, parent_id: parentID, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction } = resourceData
     return {
         id, name, localID, parentID, type, gitHeadRevision, lastAction,

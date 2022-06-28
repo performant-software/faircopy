@@ -218,11 +218,7 @@ export default class TEIDocument {
 
     requestResource( resourceID ) {
         this.loading = true
-        if( this.isEditable() ) {
-            fairCopy.services.ipcSend('requestResource', resourceID )
-        } else {
-            fairCopy.services.ipcSend('requestRemoteResource', resourceID )
-        }
+        fairCopy.services.ipcSend('openResource', resourceID )
     }
 
     getActiveView() {

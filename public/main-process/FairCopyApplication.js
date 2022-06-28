@@ -83,6 +83,10 @@ class FairCopyApplication {
       this.fairCopySession.recoverResource(resourceID) 
     })
 
+    ipcMain.on('requestResourceView', (event, resourceView) => { 
+      this.fairCopySession.requestResourceView(resourceView) 
+    })
+    
     ipcMain.on('searchProject', (event, searchQuery) => { 
       this.fairCopySession.searchProject(searchQuery)  
     })
@@ -124,12 +128,8 @@ class FairCopyApplication {
     
     // Main window events //////
 
-    ipcMain.on('requestResource', (event,resourceID) => { 
-      this.fairCopySession.requestResource(resourceID)
-    })
-
-    ipcMain.on('requestRemoteResource', (event, resourceID) => { 
-      this.fairCopySession.requestRemoteResource(resourceID)
+    ipcMain.on('openResource', (event,resourceID) => { 
+      this.fairCopySession.openResource(resourceID)
     })
 
     ipcMain.on('setResourceMap', (event, resourceMap, localID, parentID) => { 

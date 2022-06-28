@@ -11,7 +11,6 @@ import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
 
 import { isLoggedIn } from './cloud-api/auth'
-import { createResourceIndexView } from './resource-index-view'
 
 const fairCopy = window.fairCopy
 
@@ -34,20 +33,18 @@ export default class FairCopyProject {
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
-        this.remoteResources = []
+        this.openResourceEntries = {}
         this.lastResourceEntryMessage = null 
-        this.resourceIndexView = createResourceIndexView(null,this.resources,[])
         
         // Listen for updates to resource entries.
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => { this.notifyListeners(d) })
+        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => this.notifyListeners(d) )
     }
 
     notifyListeners(d) {
         if( d.deleted ) {
             const resourceEntry = this.getResourceEntry( d.resourceID )
             if( resourceEntry.local ) {
-                delete this.resources[d.resourceID]
-                this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
+                delete this.openResourceEntries[d.resourceID]
             } else {
                 resourceEntry.deleted = true
             }
@@ -63,11 +60,19 @@ export default class FairCopyProject {
             // update record in index view
             const nextResourceEntry = d.resourceEntry
             this.resources[ nextResourceEntry.id ] = nextResourceEntry
-            this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
         }
         for( const listener of this.updateListeners ) {
             listener()
         }
+    }
+
+    onResourceOpened(resourceData) {
+        const { resourceEntry } = resourceData
+        this.openResourceEntries[resourceEntry.id] = resourceEntry
+    }
+
+    onResourceClosed(resourceID) {
+        // TODO
     }
 
     addUpdateListener(listener) {
@@ -86,11 +91,6 @@ export default class FairCopyProject {
         this.serverURL = fairCopyManifest.serverURL
         this.email = fairCopyManifest.email
         this.projectID = fairCopyManifest.projectID
-        // filter out images, which are part of facs 
-        this.resources = {}
-        Object.values(fairCopyManifest.resources).forEach( entry => {
-            if( entry.type !== 'image' ) this.resources[entry.id] = entry
-        })
     }
 
     getResources(parentResource) {
@@ -118,19 +118,20 @@ export default class FairCopyProject {
         }
     }
 
+    // TODO factor out
     getResourceID = ( localID ) => {
         const resource = Object.values(this.resources).find( r => r.localID === localID)
         return ( resource ) ? resource.id : null
     }
 
     getResourceEntry( resourceID ) {
-        const resourceEntry = this.resourceIndexView.find( resourceEntry => resourceEntry.id === resourceID )
+        const resourceEntry = this.openResourceEntries[resourceID]
         if( !resourceEntry ) throw new Error(`Cannot find resource with id: ${resourceID}.`)
         return resourceEntry
     }
 
     getParent = ( resourceEntry ) => {
-        return resourceEntry ? resourceEntry.parentResource ? this.resources[resourceEntry.parentResource] : null : null
+        return resourceEntry ? resourceEntry.parentResource ? this.getResourceEntry(resourceEntry.parentResource) : null : null
     }
 
     importIIIF( url, parentResourceID, onError, onSuccess ) {    
@@ -299,7 +300,6 @@ export default class FairCopyProject {
         const { id, parentResource } = resourceEntry
 
         this.resources[id] = resourceEntry
-        this.resourceIndexView = createResourceIndexView(null,this.resources,this.remoteResources)
         
         if( parentResource ) {
             const parent = this.resources[parentResource]

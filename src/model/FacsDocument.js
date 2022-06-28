@@ -66,11 +66,7 @@ export default class FacsDocument {
     }
 
     requestResource( resourceID ) {
-        if( this.isEditable() ) {
-            fairCopy.services.ipcSend('requestResource', resourceID )
-        } else {
-            fairCopy.services.ipcSend('requestRemoteResource', resourceID )
-        }
+        fairCopy.services.ipcSend('openResource', resourceID )
         this.loading = true
     }
 

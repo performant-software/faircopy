@@ -4,17 +4,33 @@ import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 
 const rowsPerPage = 100
+const fairCopy = window.fairCopy
 
 export default class ResourceBrowser extends Component {
 
   constructor() {
     super()
     this.initialState = {
+      resourceIndexView: [],
       allChecked: false,
       currentPage: 0,
       checked: {}
     }
     this.state = this.initialState
+  }
+
+  componentDidMount() {
+    const {services} = fairCopy
+    services.ipcRegisterCallback('resourceViewUpdate', (e,d) => this.onResourceViewUpdate(d) )
+  }
+
+  componentWillUnmount() {
+    const {services} = fairCopy
+    services.ipcRemoveListener('resourceViewUpdate', (e,d) => this.onResourceViewUpdate(d) )
+  }
+
+  onResourceViewUpdate(resourceIndexView) {
+    this.setState({...this.state, resourceIndexView})
   }
 
   onOpenActionMenu = (anchorEl) => {
@@ -129,8 +145,9 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
+    const { resourceIndexView } = this.state
     const { onResourceAction, fairCopyProject } = this.props
-    const { resourceIndexView, remote: remoteProject, isEditable } = fairCopyProject
+    const { remote: remoteProject, isEditable } = fairCopyProject
 
     const onOpen = (resourceID) => {
       const resource = resourceIndexView.find(resourceEntry => resourceEntry.id === resourceID )

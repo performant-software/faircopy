@@ -1,8 +1,7 @@
-import { getResource } from "../model/cloud-api/resources"
+import { getResource, getResources } from "../model/cloud-api/resources"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
-
-const pollingInterval = 3000 // ms
+import { createResourceEntry } from "../model/resource-index-view"
 
 function updateIDMap( serverURL, authToken, projectID, postMessage) {
     getIDMap(serverURL, authToken, projectID, (idMapData) => {
@@ -16,35 +15,49 @@ function updateConfig() {
     // TODO
 }
 
+function updateResourceView( serverURL, projectID, resourceView, authToken, postMessage ) {
+    if( authToken ) {
+        const { currentPage, rowsPerPage, indexParentID } = resourceView
+        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (remoteResources) => {
+            postMessage({ messageType: 'resource-view-update', remoteResources })
+        }, 
+        (error) => {
+            console.log(error)
+        })                 
+    } else {
+        throw new Error(`Recieved request-view message when user is not logged in.`)
+    }
+}
+
 export function remoteProject( msg, workerMethods, workerData ) {
     const { messageType } = msg
     const { postMessage, close } = workerMethods
     const { email, serverURL, projectID } = workerData
     const authToken = getAuthToken(email, serverURL)
-
-    const pingResources = () => {
-        postMessage({ messageType: 'resource-update' })
-        // updateIDMap( serverURL, authToken, projectID, postMessage )
-        // updateConfig()
-    }    
     
     switch( messageType ) {
         case 'open':
-            setInterval( pingResources, pollingInterval )
+            // updateIDMap( serverURL, authToken, projectID, postMessage )
+            // updateConfig()
+            updateResourceView( serverURL, projectID, null, authToken, postMessage )
             break
         case 'get-resource':
-                if( authToken ) {
-                    const { resourceID } = msg              
-                    getResource(serverURL, authToken, resourceID, (resource) => {
-                        const { resource_content } = resource
-                        postMessage({ messageType: 'resource-data', resourceID, resource: resource_content })
-                    })    
-                } else {
-                    throw new Error(`Recieved get-resource message when user is not logged in.`)
-                }
+            if( authToken ) {
+                const { resourceID } = msg              
+                getResource(serverURL, authToken, resourceID, (resourceData) => {
+                    const { resource_content: resource } = resourceData
+                    const resourceEntry = createResourceEntry(resourceData)
+                    postMessage({ messageType: 'resource-data', resourceEntry, resource })
+                })    
+            } else {
+                throw new Error(`Recieved get-resource message when user is not logged in.`)
+            }
+            break
+        case 'request-view':
+            const { resourceView } = msg     
+            updateResourceView( serverURL, projectID, resourceView, authToken, postMessage )
             break
         case 'close':
-            clearInterval( pingResources )
             close()
             break            
         default:

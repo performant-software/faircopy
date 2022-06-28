@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { authConfig } from './auth'
 
-export function getResources(serverURL, authToken, projectID, currentPage, rowsPerPage, onSuccess, onFail) {
+export function getResources(serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
     const getProjectsURL = `${serverURL}/api/resources/by_project/${projectID}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(

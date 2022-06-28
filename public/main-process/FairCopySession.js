@@ -9,19 +9,26 @@ class FairCopySession {
         this.fairCopyApplication = fairCopyApplication
         this.projectStore = new ProjectStore(fairCopyApplication)
         this.projectStore.openProject(targetFile, this.onProjectOpened )
+        this.remote = false
+        this.resourceView = { 
+            indexParentID: null,
+            currentPage: 0, 
+            rowsPerPage: 100
+        }
     }
 
     onProjectOpened = (projectData) => {
         const { idMap } = projectData
         const { manifestData } = this.projectStore
+        this.remote = manifestData.remote
 
         // id map authority tracks ids across processes and server
-        this.idMapAuthority = createIDMapAuthority(manifestData.remote, idMap, (idMapData) => {
+        this.idMapAuthority = createIDMapAuthority(this.remote, idMap, (idMapData) => {
             this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { idMapData } )
         })
 
         // init remote project if this is one
-        if( manifestData.remote ) {
+        if( this.remote ) {
             const { email, serverURL, projectID } = manifestData
             this.remoteProject = new RemoteProject(this, email, serverURL, projectID )
         }
@@ -72,6 +79,43 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()    
     }
 
+    requestResourceView(nextResourceView=null) {
+        if( nextResourceView ) this.resourceView = nextResourceView
+
+        // how does this work for local?
+        if( this.remote ) {
+            // request resource data from server
+            this.remoteProject.requestResourceView(this.resourceView)
+        } else {
+            // respond right away from project store
+            // this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { remoteResources } )
+        }
+    }
+
+    sendResourceViewUpdate(remoteResources) {
+        // mix in projectStore resources with data from server 
+        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { remoteResources } )
+
+    // export function createResourceIndexView( localResources, remoteResources, indexParentID ) {
+    //     const nextView = []
+
+    //     for( const localResource of Object.values(localResources) ) {
+    //         const { parent_id: parentID } = localResource
+    //         if( parentID === indexParentID ) {
+    //             nextView.push(localResource)   w
+    //         }
+    //     }
+
+    //     for( const remoteResource of remoteResources ) {
+    //         const { resource_guid: id, parent_id: parentID } = remoteResource
+    //         if( !localResources[id] && parentID === indexParentID ) {
+    //             nextView.push(createResourceEntry(remoteResource))    
+    //         }
+    //     }
+    //     return nextView.sort((a,b) => a.name.localeCompare(b.name))
+    // }
+    }
+    
     searchProject(searchQuery) {
         this.projectStore.searchIndex.searchProject(searchQuery) 
     }
@@ -112,12 +156,12 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()
     }
 
-    requestResource(resourceID) {
-        this.projectStore.openResource(resourceID)
-    }
-
-    requestRemoteResource(resourceID) {
-        this.remoteProject.openResource(resourceID)
+    openResource(resourceID) {
+        if( this.remote ) {
+            this.projectStore.openResource(resourceID)
+        } else {
+            this.remoteProject.openResource(resourceID)
+        }
     }
 
     importStart(paths,options) {

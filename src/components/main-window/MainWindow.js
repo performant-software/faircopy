@@ -28,7 +28,7 @@ import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
-import { checkOut, checkForUpdates } from '../../model/resource-index-view';
+import { checkOut } from '../../model/resource-index-view';
 
 const fairCopy = window.fairCopy
 
@@ -79,7 +79,19 @@ export default class MainWindow extends Component {
         }	
     }
 
-    onResourceOpened = (event, resourceData) => this.receiveResourceData(resourceData)
+    onResourceOpened = (event, resourceData) => {
+        const { fairCopyProject } = this.props
+        const { openResources } = this.state
+        const { resourceEntry, resource } = resourceData
+
+        const openResource = openResources[resourceEntry.id]
+        if( openResource ) {
+            openResource.load(resource)
+        }     
+        fairCopyProject.onResourceOpened(resourceEntry)
+        this.setState({...this.state})
+    }
+
     onRequestExitApp = () => this.requestExitApp()
     onSearchSystemStatus = (event, status ) => { 
         if( status !== this.state.searchEnabled ) {
@@ -88,23 +100,18 @@ export default class MainWindow extends Component {
     }
 
     componentDidMount() {
-        const { fairCopyProject } = this.props
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
         services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
-        fairCopyProject.addUpdateListener(this.receivedUpdate)
         this.checkReleaseNotes()
     }
 
     componentWillUnmount() {
-        const { fairCopyProject } = this.props
         const {services} = fairCopy
         services.ipcRemoveListener('resourceOpened', this.onResourceOpened )
         services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
-
-        fairCopyProject.removeUpdateListener(this.receivedUpdate)
     }
 
     refreshWindow() {
@@ -118,18 +125,6 @@ export default class MainWindow extends Component {
         }
     }
 
-    receivedUpdate = () => {
-        const { fairCopyProject } = this.props
-        const { parentResourceID } = this.state
-
-        const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
-        const currentPage = 0, rowsPerPage = 100
-        
-        checkForUpdates( fairCopyProject, parentResource, currentPage, rowsPerPage, this.updateView, (error) => {
-            console.log(error)
-        } )     
-    }
-    
     updateView = () => { 
         // TODO need a different mechanism for closing deleted files
         // const { openResources } = this.state
@@ -169,16 +164,6 @@ export default class MainWindow extends Component {
         if( !viewedReleaseNotes || viewedReleaseNotes !== version ) {
             this.setState({ ...this.state, releaseNotesMode: true })
         }
-    }
-
-    receiveResourceData( resourceData ) {
-        const { resourceID, resource } = resourceData
-        const { openResources } = this.state
-        const openResource = openResources[resourceID]
-        if( openResource ) {
-            openResource.load(resource)
-            this.setState({...this.state})
-        }     
     }
 
     selectResources(resourceIDs, openToSearchResult=false) {

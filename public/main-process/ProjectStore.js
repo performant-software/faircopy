@@ -34,7 +34,8 @@ class ProjectStore {
                 case 'resource-data':
                     {
                         const { resourceID, resource } = msg
-                        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceID, resource } )        
+                        const resourceEntry = this.manifestData.resources[resourceID]
+                        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, resource } )        
                         log.info(`opened resourceID: ${resourceID}`)    
                     }
                     break

@@ -20,15 +20,15 @@ class RemoteProject {
                 case 'resource-data':
                     {
                         const { fairCopyApplication } = this.fairCopySession
-                        const { resourceID, resource } = msg
-                        fairCopyApplication.sendToMainWindow('resourceOpened', { resourceID, resource } )        
-                        log.info(`opened resourceID: ${resourceID}`)    
+                        const { resourceEntry, resource } = msg
+                        fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, resource } )        
+                        log.info(`opened resourceID: ${resourceEntry.id}`)    
                     }
                     break
-                case 'resource-update':
+                case 'resource-view-update':
                     {
-                        const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { remoteUpdate: true } )
+                        const { remoteResources } = msg
+                        this.fairCopySession.sendResourceViewUpdate(remoteResources)
                     }
                     break    
                 case 'id-map-update': 
@@ -53,6 +53,10 @@ class RemoteProject {
 
     openResource(resourceID) {
         this.remoteProjectWorker.postMessage({ messageType: 'get-resource', resourceID })
+    }
+
+    requestResourceView(resourceView) {
+        this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView })
     }
 }
 
