@@ -65,6 +65,10 @@ export default class FacsDocument {
         return this.imageViewContext.getParent(resourceEntry)
     }
 
+    getActiveView() {
+        return null
+    }
+
     requestResource( resourceID ) {
         fairCopy.services.ipcSend('openResource', resourceID )
         this.loading = true

@@ -60,13 +60,13 @@ export default class FairCopyProject {
         let resource = null
         if( type === 'text' || type === 'header' || type === 'standOff' || type === 'sourceDoc' ) {
             resource = new TEIDocument( id, resourceEntry.type, this, null, false )
+            resource.load(resourceData)
         } else if( type === 'facs' ) {
-            resource = new FacsDocument( id, this, null, false )
+            resource = new FacsDocument( id, this, resourceData )
         } else {
             throw new Error("Tried to open unknown resource type.")
         }
 
-        resource.load(resourceData)
         return resource
     }
 
