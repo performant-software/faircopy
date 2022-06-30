@@ -18,7 +18,8 @@ function updateConfig() {
 function updateResourceView( serverURL, projectID, resourceView, authToken, postMessage ) {
     if( authToken ) {
         const { currentPage, rowsPerPage, indexParentID } = resourceView
-        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (remoteResources) => {
+        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceObjs) => {
+            const remoteResources = resourceObjs.map( resourceObj => createResourceEntry(resourceObj) )
             postMessage({ messageType: 'resource-view-update', remoteResources })
         }, 
         (error) => {

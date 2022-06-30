@@ -71,7 +71,7 @@ export default class FairCopyProject {
     }
 
     onResourceClosed(resourceID) {
-        if( this.openResourceEntries[resourceEntry.id] ) {
+        if( this.openResourceEntries[resourceID] ) {
             delete this.openResourceEntries[resourceID]
         }
     }

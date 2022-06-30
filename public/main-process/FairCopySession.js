@@ -61,7 +61,8 @@ class FairCopySession {
 
     removeResource(resourceID) {
         const { resources } = this.projectStore.manifestData
-        if( resources[resourceID] ) {
+        const resourceEntry = resources[resourceID]
+        if( resourceEntry ) {
             let idMap = null
             if( resourceEntry.type === 'teidoc') {
                 // TODO all children must be removed before you can remove teidoc, but only for remote?
@@ -98,27 +99,19 @@ class FairCopySession {
     }
 
     sendResourceViewUpdate(remoteResources) {
-        // mix in projectStore resources with data from server 
-        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { remoteResources } )
+        const nextView = []
 
-    // export function createResourceIndexView( localResources, remoteResources, indexParentID ) {
-    //     const nextView = []
-
-    //     for( const localResource of Object.values(localResources) ) {
-    //         const { parent_id: parentID } = localResource
-    //         if( parentID === indexParentID ) {
-    //             nextView.push(localResource)   w
-    //         }
-    //     }
-
-    //     for( const remoteResource of remoteResources ) {
-    //         const { resource_guid: id, parent_id: parentID } = remoteResource
-    //         if( !localResources[id] && parentID === indexParentID ) {
-    //             nextView.push(createResourceEntry(remoteResource))    
-    //         }
-    //     }
-    //     return nextView.sort((a,b) => a.name.localeCompare(b.name))
-    // }
+        const { resources } = this.projectStore.manifestData
+        for( const remoteResource of remoteResources ) {
+            const localResource = resources[remoteResource.id]
+            if( localResource ) {
+                nextView.push(localResource)    
+            } else {
+                nextView.push(remoteResource)
+            }
+        }
+        const sortedView = nextView.sort((a,b) => a.name.localeCompare(b.name))
+        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { remoteResources: sortedView } )
     }
     
     searchProject(searchQuery) {
