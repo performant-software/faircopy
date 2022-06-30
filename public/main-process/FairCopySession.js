@@ -49,11 +49,9 @@ class FairCopySession {
         this.idMapAuthority.setResourceMap( resourceMap, localID, parentID )
     }
 
-    addResource(resourceEntryJSON,resourceData,resourceMapJSON) {
-        const resourceEntry = JSON.parse(resourceEntryJSON)
+    addResource(resourceEntry,resourceData,resourceMap) {
         let idMap = null
-        if( resourceMapJSON ) {
-            const resourceMap = JSON.parse(resourceMapJSON)
+        if( resourceMap ) {
             const parentID = this.projectStore.getParentID(resourceEntry)
             idMap = this.idMapAuthority.addResource(resourceEntry.localID,parentID,resourceMap)
             if(!this.projectStore.importInProgress) this.idMapAuthority.sendIDMapUpdate()    
@@ -62,14 +60,21 @@ class FairCopySession {
     }
 
     removeResource(resourceID) {
-        const resourceEntry = this.projectStore.manifestData.resources[resourceID] 
-        let idMap = null
-        if( resourceEntry.type !== 'image' ) {
-            const ids = this.projectStore.getLocalIDs(resourceID)
-            idMap = this.idMapAuthority.removeResource(...ids)
-            this.idMapAuthority.sendIDMapUpdate()    
+        const { resources } = this.projectStore.manifestData
+        if( resources[resourceID] ) {
+            let idMap = null
+            if( resourceEntry.type === 'teidoc') {
+                // TODO all children must be removed before you can remove teidoc, but only for remote?
+            }
+            if( resourceEntry.type !== 'image' ) {
+                const ids = this.projectStore.getLocalIDs(resourceID)
+                idMap = this.idMapAuthority.removeResource(...ids)
+                this.idMapAuthority.sendIDMapUpdate()    
+            }
+            this.projectStore.removeResource(resourceID,idMap)    
+        } else {
+            log.info(`Error removing resource entry: ${resourceID}`)
         }
-        this.projectStore.removeResource(resourceEntry,idMap)
     }
 
     recoverResource(resourceID) {
@@ -132,9 +137,8 @@ class FairCopySession {
         return false
     }
 
-    updateResource(msgID,resourceEntryJSON) {
+    updateResource(resourceEntry) {
         const { resources } = this.projectStore.manifestData
-        const resourceEntry = JSON.parse(resourceEntryJSON)
         if( resources[resourceEntry.id] ) {
             const currentLocalID = resources[resourceEntry.id].localID
             resources[resourceEntry.id] = resourceEntry
@@ -144,7 +148,7 @@ class FairCopySession {
                 this.idMapAuthority.sendIDMapUpdate()
             }
             this.projectStore.saveManifest() 
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { messageID: msgID, resourceID: resourceEntry.id, resourceEntry } )        
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )        
         } else {
             log.info(`Error updating resource entry: ${resourceEntry.id}`)
         }

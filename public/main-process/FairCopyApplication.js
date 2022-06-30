@@ -69,7 +69,6 @@ class FairCopyApplication {
 
     ipcMain.on('removeResource', (event, resourceID) => { 
       this.fairCopySession.removeResource(resourceID) 
-      this.sendToMainWindow('resourceEntryUpdated', { deleted: true, resourceID } )
       
       // close any open image windows
       const imageView = this.imageViews[resourceID]
@@ -100,8 +99,8 @@ class FairCopyApplication {
     ipcMain.on('abandonResourceMap', (event, resourceID) => { 
       this.fairCopySession.abandonResourceMap(resourceID)
     })
-    ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
-      this.fairCopySession.updateResource(msgID,resourceEntry) 
+    ipcMain.on('updateResource', (event, resourceEntry) => { 
+      this.fairCopySession.updateResource(resourceEntry) 
     })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()

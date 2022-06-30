@@ -83,13 +83,15 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { openResources } = this.state
         const { resourceEntry, resource } = resourceData
-
-        const openResource = openResources[resourceEntry.id]
-        if( openResource ) {
-            openResource.load(resource)
-        }     
-        fairCopyProject.onResourceOpened(resourceEntry)
-        this.setState({...this.state})
+        const doc = fairCopyProject.onResourceOpened(resourceEntry, resource)
+        if( doc ) {
+            const nextOpenResources = { ...openResources }
+            nextOpenResources[resourceEntry.id] = doc
+            this.setState( {
+                ...this.state, 
+                openResources: nextOpenResources,
+            })    
+        }
     }
 
     onRequestExitApp = () => this.requestExitApp()
@@ -166,67 +168,31 @@ export default class MainWindow extends Component {
         }
     }
 
-    selectResources(resourceIDs, openToSearchResult=false) {
+    selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        const { openResources, selectedResource, searchQuery, searchResults } = this.state
+        const { openResources, selectedResource } = this.state
 
         let nextSelection = resourceIDs[0]
         let change = (selectedResource !== nextSelection)
-        let nextResources = { ...openResources }
-        let parentResourceID
+
         for( const resourceID of resourceIDs ) {
-            const resource = fairCopyProject.getResourceEntry(resourceID)
             if( !openResources[resourceID] ) {                
-                // can't select a tei doc this way, skip
-                if( resource.type !== 'teidoc' ) {
-                    nextResources[resourceID] = fairCopyProject.openResource(resourceID)
-                    change = true    
-                }
+                fairCopyProject.openResource(resourceID)
             }    
-            if( nextSelection === resourceID ) {
-                if( resource.type !== 'teidoc' ) {
-                    parentResourceID = resource.parentResource
-                } else {
-                    // handle case where a TEI doc was selected as the first resource
-                    // look inside and select first non-header resource. if it has none, open the header
-                    const { resources } = resource
-                    let header, first
-                    for( const childID of resources ) {
-                        const childResource = fairCopyProject.getResourceEntry(childID)
-                        if( childResource.type === 'header') {
-                            header = childID
-                        } else {
-                            first = childID
-                            break
-                        }
-                    }
-                    parentResourceID = nextSelection
-                    nextSelection = first ? first : header
-                    if( !openResources[nextSelection] ) {
-                        nextResources[nextSelection] = fairCopyProject.openResource(nextSelection)
-                        change = true      
-                    }
-                }
-            }
         }
 
         if( change ) {
-            this.setState( {
-                ...this.state, 
+            this.setState({
+                ...this.state,
                 selectedResource: nextSelection,
-                parentResourceID,
-                openResources: nextResources, 
                 resourceBrowserOpen: false, 
                 currentSubmenuID: 0,
                 searchSelectionIndex: 0,
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null,
                 popupMenuPlacement: null
-            })    
-            const nextResource = nextResources[nextSelection]
-            if( nextResource instanceof TEIDocument ) {
-                this.refreshWhenReady(searchQuery, searchResults, openToSearchResult)
-            }
+
+            })
         } else {
             this.setState( {
                 ...this.state, 
@@ -481,48 +447,44 @@ export default class MainWindow extends Component {
             // bump state to update sidebar
             const onErrorCountChange = () => { this.setState({...this.state})}
         
-            if( resource.loading ) {
-                editors.push(<div key={key}></div>)
+            if( resource instanceof TEIDocument ) {
+                editors.push(
+                    <TEIEditor 
+                        key={key}
+                        hidden={hidden}
+                        teiDocument={resource}
+                        resourceEntry={resourceEntry}
+                        parentResource={parentResource}
+                        onOpenElementMenu={this.onOpenElementMenu}
+                        onProjectSettings={onProjectSettings}
+                        onDragElement={this.onDragElement}
+                        onEditResource={this.onEditResource}
+                        onAlertMessage={this.onAlertMessage}
+                        onResourceAction={this.onResourceAction}
+                        onErrorCountChange={onErrorCountChange}
+                        onSave={onSave}
+                        leftPaneWidth={leftPaneWidth}
+                        expandedGutter={expandedGutter}
+                        remoteProject={remoteProject}
+                    ></TEIEditor>
+                )        
             } else {
-                if( resource instanceof TEIDocument ) {
-                    editors.push(
-                        <TEIEditor 
-                            key={key}
-                            hidden={hidden}
-                            teiDocument={resource}
-                            resourceEntry={resourceEntry}
-                            parentResource={parentResource}
-                            onOpenElementMenu={this.onOpenElementMenu}
-                            onProjectSettings={onProjectSettings}
-                            onDragElement={this.onDragElement}
-                            onEditResource={this.onEditResource}
-                            onAlertMessage={this.onAlertMessage}
-                            onResourceAction={this.onResourceAction}
-                            onErrorCountChange={onErrorCountChange}
-                            onSave={onSave}
-                            leftPaneWidth={leftPaneWidth}
-                            expandedGutter={expandedGutter}
-                            remoteProject={remoteProject}
-                        ></TEIEditor>
-                    )        
-                } else {
-                    editors.push(
-                        <FacsEditor
-                            key={key}
-                            hidden={hidden}
-                            facsDocument={resource}
-                            resourceEntry={resourceEntry}
-                            parentResource={parentResource}
-                            fairCopyProject={fairCopyProject}
-                            onEditResource={this.onEditResource}    
-                            onResourceAction={this.onResourceAction}
-                            onAddImages={this.onAddImages}
-                            onOpenPopupMenu={this.onOpenPopupMenu}
-                            onConfirmDeleteImages={onConfirmDeleteImages}
-                            onEditSurfaceInfo={this.onEditSurfaceInfo}
-                        ></FacsEditor>
-                    )                     
-                }
+                editors.push(
+                    <FacsEditor
+                        key={key}
+                        hidden={hidden}
+                        facsDocument={resource}
+                        resourceEntry={resourceEntry}
+                        parentResource={parentResource}
+                        fairCopyProject={fairCopyProject}
+                        onEditResource={this.onEditResource}    
+                        onResourceAction={this.onResourceAction}
+                        onAddImages={this.onAddImages}
+                        onOpenPopupMenu={this.onOpenPopupMenu}
+                        onConfirmDeleteImages={onConfirmDeleteImages}
+                        onEditSurfaceInfo={this.onEditSurfaceInfo}
+                    ></FacsEditor>
+                )                     
             }
         }
 

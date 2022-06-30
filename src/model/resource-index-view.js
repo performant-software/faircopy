@@ -32,7 +32,6 @@ export function createResourceEntry(resourceData) {
     return {
         id, name, localID, parentID, type, gitHeadRevision, lastAction,
         local: false,
-        downloading: false,
         deleted: false
     }   
 }

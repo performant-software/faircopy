@@ -18,7 +18,6 @@ const fairCopy = window.fairCopy
 export const cloudInitialConfig = {
     local: true,
     deleted: false,
-    downloading: false,
     gitHeadRevision: null,
     lastAction: null
 }
@@ -34,45 +33,47 @@ export default class FairCopyProject {
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
         this.openResourceEntries = {}
-        this.lastResourceEntryMessage = null 
         
         // Listen for updates to resource entries.
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, d) => this.notifyListeners(d) )
+        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, resourceEntry) => this.notifyListeners(resourceEntry) )
     }
 
-    notifyListeners(d) {
-        if( d.deleted ) {
-            const resourceEntry = this.getResourceEntry( d.resourceID )
-            if( resourceEntry.local ) {
-                delete this.openResourceEntries[d.resourceID]
-            } else {
-                resourceEntry.deleted = true
-            }
-        } else if( d.switchToRemote ) {
-            // leave record in resource view as a placeholder until remote update arrives
-            const resourceEntry = this.getResourceEntry( d.resourceID )
-            resourceEntry.placeholder = true
-            delete this.resources[d.resourceID]
-        } else if( d.recovered ) {
-            const resourceEntry = this.getResourceEntry( d.resourceID )
-            resourceEntry.deleted = false
-        } else if( d.resourceEntry ) {
-            // update record in index view
-            const nextResourceEntry = d.resourceEntry
-            this.resources[ nextResourceEntry.id ] = nextResourceEntry
-        }
+    notifyListeners(resourceEntry) {
+        if( this.openResourceEntries[resourceEntry.id] ) {
+            this.openResourceEntries[resourceEntry.id] = resourceEntry
+        }    
+
         for( const listener of this.updateListeners ) {
-            listener()
+            listener(resourceEntry)
         }
     }
 
-    onResourceOpened(resourceData) {
-        const { resourceEntry } = resourceData
-        this.openResourceEntries[resourceEntry.id] = resourceEntry
+    onResourceOpened(resourceEntry, resourceData) {
+        const{ id, type } = resourceEntry
+        this.openResourceEntries[id] = resourceEntry
+
+        // for teidocs, just record resource entry and return
+        if( type === 'teidoc' ) {
+            return null 
+        }
+        
+        let resource = null
+        if( type === 'text' || type === 'header' || type === 'standOff' || type === 'sourceDoc' ) {
+            resource = new TEIDocument( id, resourceEntry.type, this, null, false )
+        } else if( type === 'facs' ) {
+            resource = new FacsDocument( id, this, null, false )
+        } else {
+            throw new Error("Tried to open unknown resource type.")
+        }
+
+        resource.load(resourceData)
+        return resource
     }
 
     onResourceClosed(resourceID) {
-        // TODO
+        if( this.openResourceEntries[resourceEntry.id] ) {
+            delete this.openResourceEntries[resourceID]
+        }
     }
 
     addUpdateListener(listener) {
@@ -92,30 +93,9 @@ export default class FairCopyProject {
         this.email = fairCopyManifest.email
         this.projectID = fairCopyManifest.projectID
     }
-
-    getResources(parentResource) {
-        const selectedResources = {}
-        if( parentResource ) {
-            for( const resourceID of parentResource.resources ) {
-                const resource = this.resources[resourceID]
-                selectedResources[resource.id] = resource
-            }
-        } else {
-            for( const resource of Object.values(this.resources) ) {
-                if( !resource.parentResource ) selectedResources[resource.id] = resource
-            }
-        }
-        return selectedResources
-    }
     
     updateResource( resourceEntry ) {
-        if( this.resources[resourceEntry.id] ) {
-            const messageID = uuidv4()
-            fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(resourceEntry) )
-            this.lastResourceEntryMessage = messageID
-        } else {
-            console.log(`Unable to update resource: ${resourceEntry}`)
-        }
+        fairCopy.services.ipcSend('updateResource', resourceEntry )
     }
 
     // TODO factor out
@@ -126,8 +106,7 @@ export default class FairCopyProject {
 
     getResourceEntry( resourceID ) {
         const resourceEntry = this.openResourceEntries[resourceID]
-        if( !resourceEntry ) throw new Error(`Cannot find resource with id: ${resourceID}.`)
-        return resourceEntry
+        return !resourceEntry ? null : resourceEntry
     }
 
     getParent = ( resourceEntry ) => {
@@ -197,36 +176,19 @@ export default class FairCopyProject {
 
     removeResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
-            const {parentResource,resources} = this.resources[resourceID]
-
-            // if there are child resources, remove them too
-            if( resources ) this.removeResources( resources )
-
-            // if this is a child resource, remove it from parent
-            if( parentResource ) {
-                const parent = this.resources[parentResource]
-                parent.resources = parent.resources.filter(r => r !== resourceID)
-                this.updateResource( parent )        
-            } 
             fairCopy.services.ipcSend('removeResource', resourceID )
         }
     }
 
     recoverResources(resourceIDs) {
-        // TODO account for TEI doc resources and facs
         for( const resourceID of resourceIDs ) {
             fairCopy.services.ipcSend('recoverResource', resourceID )
         }
     }  
 
     openResource( resourceID ) {
-        const resourceEntry = this.getResourceEntry(resourceID)
-
-        if( resourceEntry.type === 'text' || resourceEntry.type === 'header' || resourceEntry.type === 'standOff' || resourceEntry.type === 'sourceDoc' ) {
-            return new TEIDocument( resourceID, resourceEntry.type, this )
-        } else if( resourceEntry.type === 'facs' ) {
-            return new FacsDocument( resourceID, this )
-        } 
+        fairCopy.services.ipcSend('openResource', resourceID )
+        return { resourceID, loading: true }
     }
 
     importResource(importData,parentResourceID) {
@@ -244,6 +206,7 @@ export default class FairCopyProject {
         }        
     }
 
+    // TODO REFACTOR
     // take the resources and move them into the parent ID
     moveResources( resourceIDs, targetParentID ) {
         const updatedResources = {}
@@ -297,19 +260,7 @@ export default class FairCopyProject {
     }
 
     addResource( resourceEntry, content, resourceMap ) {
-        const { id, parentResource } = resourceEntry
-
-        this.resources[id] = resourceEntry
-        
-        if( parentResource ) {
-            const parent = this.resources[parentResource]
-            if( !parent.resources ) parent.resources = []
-            parent.resources.push(id)
-            this.updateResource( parent )    
-        }
-
-        const resourceMapJSON = resourceMap ? JSON.stringify(resourceMap) : null
-        fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), content, resourceMapJSON )
+        fairCopy.services.ipcSend('addResource', resourceEntry, content, resourceMap )
     }
 
     updateProjectInfo( projectInfo ) {
@@ -329,6 +280,7 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
     }
 
+    // TODO REFACTOR
     siblingHasID(targetID, resourceID) {
         const resourceEntry = this.resources[resourceID]
         if( resourceEntry.parentResource ) {
@@ -350,7 +302,6 @@ export default class FairCopyProject {
         if( !this.remote ) return true
         
         const resourceEntry = this.getResourceEntry(resourceID)
-        if( resourceEntry.placeholder ) return false
         if( resourceEntry.local ) return true
         if( resourceEntry.deleted ) return false
 
