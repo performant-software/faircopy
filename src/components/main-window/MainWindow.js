@@ -23,7 +23,7 @@ import FeedbackDialog from './dialogs/FeedbackDialog'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
-import { highlightSearchResults, isIndexable, scrollToSearchResult } from '../../model/search'
+import { highlightSearchResults, scrollToSearchResult } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
@@ -43,7 +43,12 @@ export default class MainWindow extends Component {
         this.state = {
             selectedResource: null,
             openResources: {},
-            parentResourceID: null,
+            resourceView: { 
+                indexParentID: null,
+                currentPage: 0, 
+                rowsPerPage: 100
+            },
+            resourceIndex: [],
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -101,9 +106,15 @@ export default class MainWindow extends Component {
         }
     }
 
+    onResourceViewUpdate = (event, resourceData ) => {
+        const { resourceView, resourceIndex } = resourceData
+        this.setState({...this.state, resourceView, resourceIndex })
+    }
+
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
+        services.ipcRegisterCallback('resourceViewUpdate', this.onResourceViewUpdate )
         services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
         this.checkReleaseNotes()
@@ -112,6 +123,7 @@ export default class MainWindow extends Component {
     componentWillUnmount() {
         const {services} = fairCopy
         services.ipcRemoveListener('resourceOpened', this.onResourceOpened )
+        services.ipcRemoveListener('resourceViewUpdate', this.onResourceViewUpdate )
         services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
     }
@@ -336,7 +348,12 @@ export default class MainWindow extends Component {
     onResourceAction = (actionID, resourceIDs) => {
         switch(actionID) {
             case 'open-teidoc':
-                this.setState({...this.state, selectedResource: null, parentResourceID: resourceIDs, resourceBrowserOpen: true })
+                {
+                // send resourceIDs as new parent ID
+                const nextResourceView = { ...this.state.resourceView, indexParentID: resourceIDs, currentPage: 0 }
+                fairCopy.services.ipcSend('requestResourceView', nextResourceView )
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true })
+                }
                 return false
             case 'open':
                 this.selectResources(resourceIDs)
@@ -354,7 +371,11 @@ export default class MainWindow extends Component {
                 this.closeResources(resourceIDs)
                 return false
             case 'home':
-                this.setState( {...this.state, selectedResource: null, parentResourceID: null, resourceBrowserOpen: true })
+                {
+                const nextResourceView = { ...this.state.resourceView, indexParentID: null, currentPage: 0 }
+                fairCopy.services.ipcSend('requestResourceView', nextResourceView )
+                this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })    
+                }
                 return false
             case 'move':
                 this.setState( {...this.state, moveResourceMode: true, moveResourceIDs: resourceIDs} )
@@ -428,7 +449,8 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, parentResourceID } = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter, resourceView } = this.state
+        const { indexParentID } = resourceView
         const { fairCopyProject, onProjectSettings } = this.props
         const remoteProject = fairCopyProject.remote
 
@@ -437,7 +459,7 @@ export default class MainWindow extends Component {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
             const resourceEntry = fairCopyProject.getResourceEntry(resource.resourceID)
-            const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
+            const parentResource = indexParentID ? fairCopyProject.getResourceEntry(indexParentID) : null
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
@@ -493,8 +515,9 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, parentResourceID } = this.state
-        const parentResource = parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
+        const { resourceBrowserOpen, resourceView, resourceIndex } = this.state
+        const { indexParentID } = resourceView
+        const parentResource = indexParentID ? fairCopyProject.getResourceEntry(indexParentID) : null
         
         return (
             <div>
@@ -506,6 +529,8 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         teiDoc={parentResource}
+                        resourceView={resourceView}
+                        resourceIndex={resourceIndex}
                         fairCopyProject={fairCopyProject}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
@@ -534,13 +559,14 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, parentResourceID } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, resourceView } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
+        const { indexParentID } = resourceView
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
-        const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : parentResourceID ? fairCopyProject.getResourceEntry(parentResourceID) : null
+        const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : indexParentID ? fairCopyProject.getResourceEntry(indexParentID) : null
 
         const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } = this.state
@@ -549,7 +575,7 @@ export default class MainWindow extends Component {
             if( resourceEntry ) {
                 fairCopyProject.updateResource({ ...resourceEntry, name, localID, type })
             } else {
-                fairCopyProject.newResource( name, localID, type, parentResourceID )    
+                fairCopyProject.newResource( name, localID, type, indexParentID )    
             }
             this.setState( {...this.state, editDialogMode: false} )
         }
@@ -570,7 +596,7 @@ export default class MainWindow extends Component {
                 { this.renderAlertDialog() }
                 <ImportConsoleDialog
                     fairCopyProject={fairCopyProject}
-                    parentResourceID={parentResourceID}
+                    parentResourceID={indexParentID}
                 ></ImportConsoleDialog>
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
@@ -588,12 +614,12 @@ export default class MainWindow extends Component {
                 ></EditResourceDialog> }
                 { iiifDialogMode && <IIIFImportDialog
                     fairCopyProject={fairCopyProject}
-                    parentResourceID={parentResourceID}
+                    parentResourceID={indexParentID}
                     onClose={()=>{ this.setState( {...this.state, iiifDialogMode: false} )}}
                 ></IIIFImportDialog> }
                 { textImportDialogMode && < ImportTextsDialog
                     fairCopyProject={fairCopyProject}
-                    parentResourceID={parentResourceID}
+                    parentResourceID={indexParentID}
                     onClose={()=>{ this.setState( {...this.state, textImportDialogMode: false} )}}
                 ></ImportTextsDialog> }
                 { addImagesMode && <AddImageDialog
@@ -720,7 +746,8 @@ export default class MainWindow extends Component {
             this.setState({...this.state, leftPaneWidth: width })
         }, resizeRefreshRate)
 
-        const currentResource = ( selectedResource && isIndexable(openResources[selectedResource].resourceType) ) ? openResources[selectedResource] : null
+        // TODO fix for search ( selectedResource && isIndexable(openResources[selectedResource].resourceType) ) 
+        const currentResource = selectedResource ? openResources[selectedResource] : null
 
         // hide the interface (to suspend state)
         const style = hidden ? { display: 'none' } : {}

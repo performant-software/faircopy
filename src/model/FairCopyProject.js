@@ -182,7 +182,6 @@ export default class FairCopyProject {
 
     openResource( resourceID ) {
         fairCopy.services.ipcSend('openResource', resourceID )
-        return { resourceID, loading: true }
     }
 
     importResource(importData,parentResourceID) {

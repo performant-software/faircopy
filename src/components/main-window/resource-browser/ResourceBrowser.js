@@ -5,34 +5,15 @@ import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../m
 
 import { isEntryEditable } from '../../../model/FairCopyProject'
 
-const rowsPerPage = 100
-const fairCopy = window.fairCopy
-
 export default class ResourceBrowser extends Component {
 
   constructor() {
     super()
     this.initialState = {
-      resourceIndexView: [],
       allChecked: false,
-      currentPage: 0,
       checked: {}
     }
     this.state = this.initialState
-  }
-
-  componentDidMount() {
-    const {services} = fairCopy
-    services.ipcRegisterCallback('resourceViewUpdate', (e,d) => this.onResourceViewUpdate(d) )
-  }
-
-  componentWillUnmount() {
-    const {services} = fairCopy
-    services.ipcRemoveListener('resourceViewUpdate', (e,d) => this.onResourceViewUpdate(d) )
-  }
-
-  onResourceViewUpdate(resourceIndexView) {
-    this.setState({...this.state, resourceIndexView})
   }
 
   onOpenActionMenu = (anchorEl) => {
@@ -90,7 +71,6 @@ export default class ResourceBrowser extends Component {
   }
 
   createResourceAction(actionID) {    
-    // TODO filter out the tei doc resources
     return () => {
       const { onResourceAction } = this.props
       const { checked } = this.state
@@ -147,12 +127,12 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { resourceIndexView } = this.state
-    const { onResourceAction, fairCopyProject } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, resourceIndex } = this.props
     const { remote: remoteProject, email } = fairCopyProject
+    const { currentPage, rowsPerPage } = resourceView
 
     const onOpen = (resourceID) => {
-      const resource = resourceIndexView.find(resourceEntry => resourceEntry.id === resourceID )
+      const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
         onResourceAction( 'open-teidoc', resourceID )         
@@ -179,7 +159,7 @@ export default class ResourceBrowser extends Component {
       const { checked, allChecked } = this.state
       const nextAllChecked = !allChecked
       const nextChecked = { ...checked }
-      for( const resource of resourceIndexView ) {
+      for( const resource of resourceIndex ) {
         if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked
       }
       this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
@@ -198,10 +178,11 @@ export default class ResourceBrowser extends Component {
       scope: "row"
     }
 
-    const { checked, allChecked, currentPage } = this.state
+    const { checked, allChecked } = this.state
     
     const resourceRows = []
-    for( const resource of resourceIndexView ) {
+    
+    for( const resource of resourceIndex ) {
       if( !resource ) continue
       const { id, name, localID, type, local, deleted } = resource 
       const check = checked[id] === true

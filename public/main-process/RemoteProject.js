@@ -27,8 +27,8 @@ class RemoteProject {
                     break
                 case 'resource-view-update':
                     {
-                        const { remoteResources } = msg
-                        this.fairCopySession.sendResourceViewUpdate(remoteResources)
+                        const { resourceView, remoteResources } = msg
+                        this.fairCopySession.sendResourceViewUpdate(resourceView,remoteResources)
                     }
                     break    
                 case 'id-map-update': 

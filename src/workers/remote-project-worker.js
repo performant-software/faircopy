@@ -26,7 +26,7 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
         const { currentPage, rowsPerPage, indexParentID } = resourceView
         getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceObjs) => {
             const remoteResources = resourceObjs.map( resourceObj => createResourceEntry(resourceObj) )
-            postMessage({ messageType: 'resource-view-update', remoteResources })
+            postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
         }, 
         (error) => {
             console.log(error)

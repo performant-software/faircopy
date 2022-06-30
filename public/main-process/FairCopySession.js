@@ -27,13 +27,13 @@ class FairCopySession {
             this.fairCopyApplication.sendToAllWindows('IDMapUpdated', { idMapData } )
         })
 
+        this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
+
         // init remote project if this is one
         if( this.remote ) {
             const { email, serverURL, projectID } = manifestData
             this.remoteProject = new RemoteProject(this, email, serverURL, projectID )
         }
-
-        this.fairCopyApplication.sendToMainWindow('projectOpened', projectData )
     }
 
     closeProject() {
@@ -86,32 +86,30 @@ class FairCopySession {
     }
 
     requestResourceView(nextResourceView=null) {
-        if( nextResourceView ) this.resourceView = nextResourceView
-
-        // how does this work for local?
         if( this.remote ) {
             // request resource data from server
-            this.remoteProject.requestResourceView(this.resourceView)
+            const resourceView = nextResourceView ? nextResourceView : this.resourceView
+            this.remoteProject.requestResourceView(resourceView)
         } else {
-            // respond right away from project store
-            // this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { remoteResources } )
+            // TODO respond right away from project store
+            // this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', this.resourceView, resourceIndex )
         }
     }
 
-    sendResourceViewUpdate(remoteResources) {
-        const nextView = []
+    sendResourceViewUpdate(resourceView, remoteResources) {
+        const resourceIndex = []
 
         const { resources } = this.projectStore.manifestData
         for( const remoteResource of remoteResources ) {
             const localResource = resources[remoteResource.id]
             if( localResource ) {
-                nextView.push(localResource)    
+                resourceIndex.push(localResource)    
             } else {
-                nextView.push(remoteResource)
+                resourceIndex.push(remoteResource)
             }
         }
-        const sortedView = nextView.sort((a,b) => a.name.localeCompare(b.name))
-        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', sortedView )
+        this.resourceView = resourceView
+        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceView: this.resourceView, resourceIndex })
     }
     
     searchProject(searchQuery) {
@@ -154,10 +152,10 @@ class FairCopySession {
     }
 
     openResource(resourceID) {
-        if( this.remote ) {
-            this.projectStore.openResource(resourceID)
-        } else {
+        if( this.remote && !this.projectStore.manifestData.resources[resourceID] ) {
             this.remoteProject.openResource(resourceID)
+        } else {
+            this.projectStore.openResource(resourceID)
         }
     }
 
