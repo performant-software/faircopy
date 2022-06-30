@@ -22,13 +22,12 @@ export default class ImageView {
         this.lastResourceEntryMessage = null   
     }
 
-    onResourceEntryUpdated = (e, d) => {
-        const nextResourceEntry = JSON.parse(d.resourceEntry)
+    onResourceEntryUpdated = (e, nextResourceEntry) => {
         this.onResourceUpdated(nextResourceEntry)
         // also listen for updates to parent
         if( this.parentEntry && this.parentEntry.id === nextResourceEntry.id ) {
             this.parentEntry = nextResourceEntry
-        }
+        }    
     }
 
     componentDidMount() {

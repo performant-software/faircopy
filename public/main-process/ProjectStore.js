@@ -245,8 +245,8 @@ class ProjectStore {
         }
     }
     
-    removeResource(resourceEntry,idMap) {
-        const resourceID = resourceEntry.id
+    removeResource(resourceID,idMap) {
+        const resourceEntry = this.manifestData.resources[resourceID]
         
         // go through the manifest entries, if there are local images associated with this facs, delete them too
         if( resourceEntry.type === 'facs' ) {
@@ -271,8 +271,8 @@ class ProjectStore {
             delete this.manifestData.resources[resourceID] 
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })        
         } else {
-            this.manifestData.resources[resourceID].deleted = true
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { deleted: true, resourceID }  )
+            resourceEntry.deleted = true
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry  )
         }
 
         log.info(`Removed resource from project: ${resourceID}`)
@@ -283,8 +283,8 @@ class ProjectStore {
         const resourceEntry = this.manifestData.resources[resourceID] 
 
         if( resourceEntry ) {
-            this.manifestData.resources[resourceID].deleted = false
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { recovered: true, resourceID }  )
+            resourceEntry.deleted = false
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry  )
             this.saveManifest()
         }
     }
@@ -357,8 +357,10 @@ class ProjectStore {
         // remove remote resources from project file and manifest, update all windows 
         for( const resourceID of resourceIDs ) {
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
+            const resourceEntry = this.manifestData.resources[resourceID]
+            resourceEntry.local = false
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
             delete this.manifestData.resources[resourceID] 
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', { switchToRemote: true, resourceID }  )
         }
         this.saveManifest()
     }
