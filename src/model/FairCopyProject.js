@@ -98,12 +98,6 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateResource', resourceEntry )
     }
 
-    // TODO factor out
-    getResourceID = ( localID ) => {
-        const resource = Object.values(this.resources).find( r => r.localID === localID)
-        return ( resource ) ? resource.id : null
-    }
-
     getResourceEntry( resourceID ) {
         const resourceEntry = this.openResourceEntries[resourceID]
         return !resourceEntry ? null : resourceEntry
