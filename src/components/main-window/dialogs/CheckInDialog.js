@@ -4,6 +4,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 import { TextField, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { getActionIcon } from '../../../model/resource-icon'
 
+import { isEntryEditable } from '../../../model/FairCopyProject'
+
 const cellProps = {
     component: "td",
     scope: "row"
@@ -53,7 +55,7 @@ export default class CheckInDialog extends Component {
 
             const { local, deleted, localID, name } = resource
             const checkedIn = committedResources.includes(checkInResourceID)
-            const editable = fairCopyProject.isEditable(checkInResourceID)
+            const editable = isEntryEditable(resource, fairCopyProject.email)
             const { icon, label } = getActionIcon(checkedIn, deleted, local, editable )
 
             return (

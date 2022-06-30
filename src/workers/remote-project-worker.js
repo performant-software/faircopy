@@ -3,6 +3,12 @@ import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { createResourceEntry } from "../model/resource-index-view"
 
+const initResourceViewState = { 
+    indexParentID: null,
+    currentPage: 0, 
+    rowsPerPage: 100
+}
+
 function updateIDMap( serverURL, authToken, projectID, postMessage) {
     getIDMap(serverURL, authToken, projectID, (idMapData) => {
         postMessage({ messageType: 'id-map-update', idMapData })
@@ -40,7 +46,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
         case 'open':
             // updateIDMap( serverURL, authToken, projectID, postMessage )
             // updateConfig()
-            updateResourceView( serverURL, projectID, null, authToken, postMessage )
+            updateResourceView( serverURL, projectID, initResourceViewState, authToken, postMessage )
             break
         case 'get-resource':
             if( authToken ) {

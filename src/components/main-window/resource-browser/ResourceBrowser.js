@@ -3,6 +3,8 @@ import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBod
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 
+import { isEntryEditable } from '../../../model/FairCopyProject'
+
 const rowsPerPage = 100
 const fairCopy = window.fairCopy
 
@@ -147,7 +149,7 @@ export default class ResourceBrowser extends Component {
   renderResourceTable() {
     const { resourceIndexView } = this.state
     const { onResourceAction, fairCopyProject } = this.props
-    const { remote: remoteProject, isEditable } = fairCopyProject
+    const { remote: remoteProject, email } = fairCopyProject
 
     const onOpen = (resourceID) => {
       const resource = resourceIndexView.find(resourceEntry => resourceEntry.id === resourceID )
@@ -205,7 +207,7 @@ export default class ResourceBrowser extends Component {
       const check = checked[id] === true
       const resourceIcon = getResourceIcon(type)
       const status = local ? 'local' : 'online'
-      const { label, icon } = getActionIcon( false, deleted, local, isEditable( id ))
+      const { label, icon } = getActionIcon( false, deleted, local, isEntryEditable( resource, email ))
       const lastModified = ''
       
       resourceRows.push(

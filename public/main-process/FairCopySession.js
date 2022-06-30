@@ -111,7 +111,7 @@ class FairCopySession {
             }
         }
         const sortedView = nextView.sort((a,b) => a.name.localeCompare(b.name))
-        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { remoteResources: sortedView } )
+        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', sortedView )
     }
     
     searchProject(searchQuery) {
