@@ -92,8 +92,7 @@ class IDMapRemote {
         return JSON.stringify(this.idMapStaged)
     }
 
-    checkIn( resourcesJSON ) {
-        const resources = JSON.parse(resourcesJSON)
+    checkIn( resources ) {
         for( const resource of resources ) {
             const { localID, parentID } = resource
             if( parentID ) {

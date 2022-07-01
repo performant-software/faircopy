@@ -271,7 +271,7 @@ export function projectArchive( msg, workerMethods, workerData ) {
         case 'check-in': 
             {
                 const { email, serverURL, projectID, committedResources, message } = msg
-                checkIn( email, serverURL, projectID, JSON.parse(committedResources), message, zip, postMessage )
+                checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage )
             }    
             break  
         case 'save':

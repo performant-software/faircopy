@@ -99,28 +99,8 @@ export default class CheckInDialog extends Component {
     onCheckIn = () => {              
         const { fairCopyProject, checkInResources } = this.props
         const { email, serverURL, projectID } = fairCopyProject
-        const { message } = this.state
-
-        const committedResources = []
-        
-        for( const resourceID of checkInResources ) {
-            const resourceEntry = fairCopyProject.resources[resourceID]
-            // ignore resources that aren't in local manifest
-            if( resourceEntry ) {
-                const { id, local, deleted, name, localID, parentID, type } = resourceEntry
-                const action = deleted ? 'destroy' : local ? 'create' : 'update'
-                committedResources.push({
-                    id,
-                    name,
-                    action,
-                    localID,
-                    parentID,
-                    resourceType: type
-                })    
-            }
-        }
-        
-        fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, JSON.stringify(committedResources), message )
+        const { message } = this.state   
+        fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, checkInResources, message )
         this.setState({...this.state, done: true})
     }
 

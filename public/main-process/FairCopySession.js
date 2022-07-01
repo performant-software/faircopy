@@ -172,7 +172,26 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()
     }
 
-    checkIn(email, serverURL, projectID, committedResources, message) {
+    checkIn(email, serverURL, projectID, checkInResources, message) {
+        const committedResources = []
+        
+        for( const resourceID of checkInResources ) {
+            const resourceEntry = this.projectStore.manifestData[resourceID]
+            // ignore resources that aren't in local manifest
+            if( resourceEntry ) {
+                const { id, local, deleted, name, localID, parentID, type } = resourceEntry
+                const action = deleted ? 'destroy' : local ? 'create' : 'update'
+                committedResources.push({
+                    id,
+                    name,
+                    action,
+                    localID,
+                    parentID,
+                    resourceType: type
+                })    
+            }
+        }
+
         this.idMapAuthority.checkIn(committedResources)                
         this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
     }
