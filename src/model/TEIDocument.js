@@ -16,15 +16,17 @@ const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, resourceType, fairCopyProject, teiSchema=null, load=true ) {
+    constructor( resourceEntry, parentEntry, fairCopyProject, teiSchema=null ) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errorCount = 0
         this.editorView = null
         this.lastMessageID = null
         this.noteEditorView = null
-        this.resourceID = resourceID
-        this.resourceType = resourceType
+        this.resourceEntry = resourceEntry
+        this.parentEntry = parentEntry
+        this.resourceID = resourceEntry.id
+        this.resourceType = resourceEntry.type
         this.fairCopyProject = fairCopyProject
         this.teiSchema = teiSchema
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
@@ -37,12 +39,19 @@ export default class TEIDocument {
             highlighter(),
             searchHighlighter()
         ]
-        if( load ) {
-            this.requestResource( resourceID )
-        } else {
-            this.initialState = this.editorInitialState()
-        }
+        this.initialState = this.editorInitialState()
         this.changedSinceLastSave = false
+    }
+
+    onResourceUpdated = ( resourceEntry ) => {
+        if( resourceEntry.id === this.resourceEntry.id ) {
+            this.resourceEntry = resourceEntry
+            this.resourceID = resourceEntry.id
+            this.resourceType = resourceEntry.type    
+        }
+        if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
+            this.parentEntry = resourceEntry
+        }
     }
 
     isEditable() {
@@ -128,11 +137,9 @@ export default class TEIDocument {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
 
         if( this.isEditable() ) {
-            const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
-            const parentEntry = this.fairCopyProject.getParent(resourceEntry)
             const resourceMap = idMap.mapResource( 'text', transaction.doc )
             // update the ID Map
-            idMap.setResourceMap(resourceMap,resourceEntry.localID, parentEntry?.localID)  
+            idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)  
             // note unsaved state
             this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
         }
@@ -152,9 +159,7 @@ export default class TEIDocument {
     }
 
     getRelativeParentID() {
-        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
-        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        return parentEntry ? parentEntry.localID : resourceEntry.localID
+        return this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
     }
 
     finalizeEditorView(editorView) {
@@ -228,11 +233,6 @@ export default class TEIDocument {
 
     getActiveViewType() {
         return this.noteEditorView ? 'note' : 'main'
-    }
-
-    getParent() {
-        const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
-        return this.fairCopyProject.getParent(resourceEntry)
     }
 
     load( text ) {

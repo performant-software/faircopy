@@ -32,25 +32,19 @@ export default class FairCopyProject {
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
-        this.openResourceEntries = {}
         
         // Listen for updates to resource entries.
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, resourceEntry) => this.notifyListeners(resourceEntry) )
     }
 
     notifyListeners(resourceEntry) {
-        if( this.openResourceEntries[resourceEntry.id] ) {
-            this.openResourceEntries[resourceEntry.id] = resourceEntry
-        }    
-
         for( const listener of this.updateListeners ) {
             listener(resourceEntry)
         }
     }
 
-    onResourceOpened(resourceEntry, resourceData) {
+    onResourceOpened(resourceEntry, parentEntry, resourceData) {
         const{ id, type } = resourceEntry
-        this.openResourceEntries[id] = resourceEntry
 
         // for teidocs, just record resource entry and return
         if( type === 'teidoc' ) {
@@ -59,7 +53,8 @@ export default class FairCopyProject {
         
         let resource = null
         if( type === 'text' || type === 'header' || type === 'standOff' || type === 'sourceDoc' ) {
-            resource = new TEIDocument( id, resourceEntry.type, this, null, false )
+            resource = new TEIDocument( resourceEntry, parentEntry, this )
+            this.addUpdateListener(resource.onResourceUpdated)
             resource.load(resourceData)
         } else if( type === 'facs' ) {
             resource = new FacsDocument( id, this, resourceData )
@@ -70,10 +65,8 @@ export default class FairCopyProject {
         return resource
     }
 
-    onResourceClosed(resourceID) {
-        if( this.openResourceEntries[resourceID] ) {
-            delete this.openResourceEntries[resourceID]
-        }
+    onResourceClosed(resource) {
+        this.removeUpdateListener(resource.onResourceUpdated)
     }
 
     addUpdateListener(listener) {
@@ -96,15 +89,6 @@ export default class FairCopyProject {
     
     updateResource( resourceEntry ) {
         fairCopy.services.ipcSend('updateResource', resourceEntry )
-    }
-
-    getResourceEntry( resourceID ) {
-        const resourceEntry = this.openResourceEntries[resourceID]
-        return !resourceEntry ? null : resourceEntry
-    }
-
-    getParent = ( resourceEntry ) => {
-        return resourceEntry ? resourceEntry.parentResource ? this.getResourceEntry(resourceEntry.parentResource) : null : null
     }
 
     importIIIF( url, parentResourceID, onError, onSuccess ) {    

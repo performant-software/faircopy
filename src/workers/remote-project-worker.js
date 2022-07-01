@@ -54,7 +54,9 @@ export function remoteProject( msg, workerMethods, workerData ) {
                 getResource(serverURL, authToken, resourceID, (resourceData) => {
                     const { resource_content: resource } = resourceData
                     const resourceEntry = createResourceEntry(resourceData)
-                    postMessage({ messageType: 'resource-data', resourceEntry, resource })
+                    // TODO use data from server
+                    const parentEntry = resourceEntry.parentID ? { id: resourceEntry.parentID, name: 'PLACEHOLDER' } : null
+                    postMessage({ messageType: 'resource-data', resourceEntry, parentEntry, resource })
                 })    
             } else {
                 throw new Error(`Recieved get-resource message when user is not logged in.`)

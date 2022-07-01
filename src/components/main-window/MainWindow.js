@@ -87,8 +87,8 @@ export default class MainWindow extends Component {
     onResourceOpened = (event, resourceData) => {
         const { fairCopyProject } = this.props
         const { openResources } = this.state
-        const { resourceEntry, resource } = resourceData
-        const doc = fairCopyProject.onResourceOpened(resourceEntry, resource)
+        const { resourceEntry, parentEntry, resource } = resourceData
+        const doc = fairCopyProject.onResourceOpened(resourceEntry, parentEntry, resource)
         if( doc ) {
             const nextOpenResources = { ...openResources }
             nextOpenResources[resourceEntry.id] = doc
@@ -449,8 +449,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, resourceView } = this.state
-        const { indexParentID } = resourceView
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
         const remoteProject = fairCopyProject.remote
 
@@ -458,8 +457,7 @@ export default class MainWindow extends Component {
         for( const resource of Object.values(openResources) ) {
             const hidden = selectedResource !== resource.resourceID
             const key = `editor-${resource.resourceID}`
-            const resourceEntry = fairCopyProject.getResourceEntry(resource.resourceID)
-            const parentResource = indexParentID ? fairCopyProject.getResourceEntry(indexParentID) : null
+            const { resourceEntry, parentEntry } = resource
 
             const onSave = () => { this.onResourceAction('save',[resource.resourceID]) }
             const onConfirmDeleteImages = ( alertOptions ) => {
@@ -476,7 +474,7 @@ export default class MainWindow extends Component {
                         hidden={hidden}
                         teiDocument={resource}
                         resourceEntry={resourceEntry}
-                        parentResource={parentResource}
+                        parentResource={parentEntry}
                         onOpenElementMenu={this.onOpenElementMenu}
                         onProjectSettings={onProjectSettings}
                         onDragElement={this.onDragElement}
@@ -497,7 +495,7 @@ export default class MainWindow extends Component {
                         hidden={hidden}
                         facsDocument={resource}
                         resourceEntry={resourceEntry}
-                        parentResource={parentResource}
+                        parentResource={parentEntry}
                         fairCopyProject={fairCopyProject}
                         onEditResource={this.onEditResource}    
                         onResourceAction={this.onResourceAction}

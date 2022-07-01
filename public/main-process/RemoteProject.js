@@ -20,8 +20,8 @@ class RemoteProject {
                 case 'resource-data':
                     {
                         const { fairCopyApplication } = this.fairCopySession
-                        const { resourceEntry, resource } = msg
-                        fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, resource } )        
+                        const { resourceEntry, parentEntry, resource } = msg
+                        fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )        
                         log.info(`opened resourceID: ${resourceEntry.id}`)    
                     }
                     break

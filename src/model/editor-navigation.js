@@ -209,9 +209,8 @@ export function getSelectedElements( teiDocument, noteID ) {
 }
 
 export function broadcastZoneLinks( teiDocument ) {
-    const { selectedElements } = teiDocument
+    const { selectedElements, parentEntry } = teiDocument
     const {teiSchema, idMap} = teiDocument.fairCopyProject
-    const parentEntry = teiDocument.getParent()
 
     const selectedZones = []
     for( const element of selectedElements ) {
