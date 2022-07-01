@@ -19,6 +19,7 @@ export default class CheckInDialog extends Component {
         super()
         this.initialState = {
             message: "",
+            checkedOutResources: null,
             committedResources: [],
             done: false,
             errorMessage: null
@@ -28,14 +29,21 @@ export default class CheckInDialog extends Component {
 
     componentDidMount() {
         const {services} = fairCopy
+        services.ipcRegisterCallback('checkedOutResources', this.onCheckedOutResources )
         services.ipcRegisterCallback('checkInResults', this.onCheckInResults )
         services.ipcRegisterCallback('checkInError', this.onCheckInError ) 
+        services.ipcSend('requestCheckedOutResources')
     }
 
     componentWillUnmount() {
         const {services} = fairCopy
+        services.ipcRemoveListener('checkedOutResources', this.onCheckedOutResources )
         services.ipcRemoveListener('checkInResults', this.onCheckInResults )
         services.ipcRemoveListener('checkInError', this.onCheckInError  ) 
+    }
+
+    onCheckedOutResources = (event,checkedOutResources) => {
+        this.setState({...this.state, checkedOutResources })
     }
 
     onCheckInResults = (event,resourceIDs) => {
@@ -48,13 +56,14 @@ export default class CheckInDialog extends Component {
 
     renderResourceTable() {
         const { checkInResources, fairCopyProject } = this.props
-        const { committedResources, done } = this.state
+        const { committedResources, checkedOutResources, done } = this.state
 
-        const resourceRows = checkInResources.map( checkInResourceID => { 
-            const resource = fairCopyProject.getResourceEntry(checkInResourceID)
-
-            const { local, deleted, localID, name } = resource
-            const checkedIn = committedResources.includes(checkInResourceID)
+        let resources = checkedOutResources ? checkInResources.map( resourceID => checkedOutResources[resourceID] ) : []
+        resources = resources.sort((a, b) => a.name.localeCompare(b.name))
+        
+        const resourceRows = resources.map( resource => { 
+            const { id, local, deleted, localID, name } = resource
+            const checkedIn = committedResources.includes(id)
             const editable = isEntryEditable(resource, fairCopyProject.email)
             const { icon, label } = getActionIcon(checkedIn, deleted, local, editable )
 
@@ -69,7 +78,7 @@ export default class CheckInDialog extends Component {
                     <TableCell {...cellProps} >
                         {localID}
                     </TableCell>
-              </TableRow>
+            </TableRow>
             )
         })
 

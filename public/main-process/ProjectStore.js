@@ -376,6 +376,18 @@ class ProjectStore {
     getParentID( resourceEntry ) {
         return resourceEntry.parentResource ? this.manifestData.resources[resourceEntry.parentResource].localID : null
     }
+
+    getCheckedOutResources() {
+        const resourceEntries = Object.values( this.manifestData.resources )
+
+        const checkedOutResources = {}
+        for( const resourceEntry of resourceEntries ) {
+            if( resourceEntry.type !== 'image') {
+                checkedOutResources[resourceEntry.id] = resourceEntry
+            }
+        }
+        return checkedOutResources
+    }
 }
 
 function getExtensionForMIMEType( mimeType ) {
