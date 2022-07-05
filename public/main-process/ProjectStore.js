@@ -35,9 +35,8 @@ class ProjectStore {
                     {
                         const { resourceID, resource } = msg
                         const resourceEntry = this.manifestData.resources[resourceID]
-                        // TODO what to do about parentEntry?
-                        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )        
-                        log.info(`opened resourceID: ${resourceID}`)    
+                        const parentEntry = this.manifestData.resources[resourceEntry.parentID]
+                        this.fairCopyApplication.fairCopySession.resourceOpened( resourceEntry, parentEntry, resource )
                     }
                     break
                 case 'index-resource':
