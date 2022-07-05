@@ -11,7 +11,6 @@ export function checkOut( fairCopyProject, resourceIDs, callback ) {
         for( const resourceState of resourceStates ) {
             const { resource_guid: resourceID, state } = resourceState
             if( state === 'success') {
-                // TODO set state of these entries to downloading=true
                 getResource(serverURL, authToken, resourceID, (resource) => {
                     const { resource_content: content } = resource
                     const resourceEntry = createResourceEntry(resource)
