@@ -28,7 +28,6 @@ export default class FacsDocument {
         if( resourceEntry.id === this.resourceEntry.id ) {
             this.resourceEntry = resourceEntry
             this.resourceID = resourceEntry.id
-            this.resourceType = resourceEntry.type    
         }
         if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
             this.parentEntry = resourceEntry

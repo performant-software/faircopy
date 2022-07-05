@@ -3,7 +3,8 @@ import axios from 'axios';
 import { authConfig } from './auth'
 
 export function getResources(serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
-    const getProjectsURL = `${serverURL}/api/resources/by_project/${projectID}`
+    const parentQ = indexParentID ? `/${indexParentID}` : ''
+    const getProjectsURL = `${serverURL}/api/resources/by_project/${projectID}${parentQ}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {

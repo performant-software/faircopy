@@ -557,7 +557,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, resourceView } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, resourceView, resourceIndex } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
         const { indexParentID } = resourceView
@@ -565,6 +565,7 @@ export default class MainWindow extends Component {
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedDoc ? selectedDoc.resourceEntry : null
         const parentEntry = selectedDoc ? selectedDoc.parentEntry : null
+        const teiDocEntry = resourceIndex.length > 0 ? resourceIndex[0].parentEntry : null
 
         const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } = this.state
@@ -579,7 +580,7 @@ export default class MainWindow extends Component {
         }
 
         const onSaveTEIDoc = (name,localID,type) => {
-            fairCopyProject.updateResource({ ...parentEntry, name, localID, type })
+            fairCopyProject.updateResource({ ...teiDocEntry, name, localID, type })
             this.setState( {...this.state, editTEIDocDialogMode: false} )
         }        
 
@@ -605,7 +606,7 @@ export default class MainWindow extends Component {
                 ></EditResourceDialog> }
                 { editTEIDocDialogMode && <EditResourceDialog
                     idMap={idMap}
-                    resourceEntry={parentEntry}
+                    resourceEntry={teiDocEntry}
                     parentEntry={null}
                     onSave={onSaveTEIDoc}
                     onClose={()=>{ this.setState( {...this.state, editTEIDocDialogMode: false} )}}
