@@ -161,6 +161,7 @@ class FairCopySession {
     }
 
     openResource(resourceID) {
+        // TODO refactor to async load parents that aren't checked out
         if( this.remote && !this.projectStore.manifestData.resources[resourceID] ) {
             this.remoteProject.openResource(resourceID)
         } else {

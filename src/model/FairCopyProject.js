@@ -44,7 +44,7 @@ export default class FairCopyProject {
     }
 
     onResourceOpened(resourceEntry, parentEntry, resourceData) {
-        const{ id, type } = resourceEntry
+        const{ type } = resourceEntry
 
         // for teidocs, just record resource entry and return
         if( type === 'teidoc' ) {
@@ -57,7 +57,8 @@ export default class FairCopyProject {
             this.addUpdateListener(resource.onResourceUpdated)
             resource.load(resourceData)
         } else if( type === 'facs' ) {
-            resource = new FacsDocument( id, this, resourceData )
+            resource = new FacsDocument( resourceEntry, parentEntry, this, resourceData )
+            this.addUpdateListener(resource.onResourceUpdated)
         } else {
             throw new Error("Tried to open unknown resource type.")
         }

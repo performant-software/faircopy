@@ -13,7 +13,7 @@ export default class ImageView {
         this.idMap = new IDMap(imageViewData.idMap)
         this.resourceEntry = imageViewData.resourceEntry
         this.parentEntry = imageViewData.parentEntry
-        this.facsDocument = new FacsDocument( this.resourceEntry.id, this, imageViewData.resource )
+        this.facsDocument = new FacsDocument( this.resourceEntry, this.parentEntry, this, imageViewData.resource )
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
         this.remote = imageViewData.remote

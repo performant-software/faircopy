@@ -5,25 +5,34 @@ const fairCopy = window.fairCopy
 
 export default class FacsDocument {
 
-    constructor( resourceID, imageViewContext, resource=null ) {
+    constructor( resourceEntry, parentEntry, imageViewContext, resourceData ) {
         this.imageViewContext = imageViewContext
         this.changedSinceLastSave = false
         this.facs = null
-        this.resourceID = resourceID
+        this.resourceID = resourceEntry.id
+        this.resourceEntry = resourceEntry
+        this.parentEntry = parentEntry
         this.updateListeners = []
         this.lastMessageID = null
 
-        if( !resource ) {
-            this.requestResource( resourceID )    
-        } else {
-            this.load(resource)
-        }
+        this.load(resourceData)
 
         // Listen for updates to this resource.
         fairCopy.services.ipcRegisterCallback('resourceUpdated', (e, d) => {
-            if( d.resourceID === resourceID && d.messageID !== this.lastMessageID ) 
+            if( d.resourceID === this.resourceEntry.id && d.messageID !== this.lastMessageID ) 
                 this.onResourceUpdated(d.resourceData)
         })
+    }
+
+    onResourceUpdated = ( resourceEntry ) => {
+        if( resourceEntry.id === this.resourceEntry.id ) {
+            this.resourceEntry = resourceEntry
+            this.resourceID = resourceEntry.id
+            this.resourceType = resourceEntry.type    
+        }
+        if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
+            this.parentEntry = resourceEntry
+        }
     }
 
     isEditable() {

@@ -563,8 +563,8 @@ export default class MainWindow extends Component {
         const { indexParentID } = resourceView
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
-        const resourceEntry = selectedResource ? fairCopyProject.getResourceEntry(selectedResource) : null
-        const parentEntry = resourceEntry ? fairCopyProject.getParent(resourceEntry) : indexParentID ? fairCopyProject.getResourceEntry(indexParentID) : null
+        const resourceEntry = selectedDoc ? selectedDoc.resourceEntry : null
+        const parentEntry = selectedDoc ? selectedDoc.parentEntry : null
 
         const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } = this.state

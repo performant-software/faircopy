@@ -2,11 +2,11 @@ import {sanitizeID} from "./attribute-validators"
 import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
-import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
+import {teiToFacsimile} from './convert-facs'
 
 const fairCopy = window.fairCopy
 
@@ -248,8 +248,8 @@ function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
 
     // generate resource map
     const { idMap } = fairCopyProject
-    const facsDoc = new FacsDocument( null, fairCopyProject, content )
-    const resourceMap = idMap.mapResource( 'facs', facsDoc.facs )
+    const facs = teiToFacsimile(content)        
+    const resourceMap = idMap.mapResource( 'facs', facs )
 
     return { resourceEntry, content, resourceMap }
 }
