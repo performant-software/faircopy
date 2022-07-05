@@ -217,6 +217,7 @@ export default class MainWindow extends Component {
     }
 
     closeResources = (resourceIDs,exitOnClose=false,promptSave=true) => {
+        const { fairCopyProject } = this.props
         const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
         if( promptSave ) {
@@ -237,6 +238,9 @@ export default class MainWindow extends Component {
             if( !resourceIDs.find(id => id === openResourceID) ) {
                 // this id is not on the close list
                 nextResourceArr.push(openResources[openResourceID])    
+            } else {
+                // closing this resource
+                fairCopyProject.onResourceClosed(openResources[openResourceID])
             }
         }
 
