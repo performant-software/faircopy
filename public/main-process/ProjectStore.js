@@ -48,13 +48,8 @@ class ProjectStore {
                     break
                 case 'export-resource':
                     {
-                        const { resourceID, resourceData, path } = msg
-                        const resourceEntries = {}
-                        resourceEntries[resourceID] = this.manifestData.resources[resourceID]
-                        for( const childID of Object.keys(resourceData)) {
-                            resourceEntries[childID] = this.manifestData.resources[childID]
-                        }
-                        exportResource( resourceID, resourceEntries, resourceData, path)
+                        const { resourceData, path } = msg
+                        exportResource(resourceData, path)
                     }
                     break
                 case 'cache-file-name':
@@ -202,11 +197,12 @@ class ProjectStore {
         this.importInProgress = running
     }
 
-    requestExport(resourceIDs,path) {
-        for( const resourceID of resourceIDs ) {
-            const resourceEntry = this.manifestData.resources[resourceID]
-            this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, path })
-        }        
+    requestExport(resourceEntries,path) {
+        const { resources: localResources, remote, email, projectID } = this.projectStore.manifestData
+        const projectData = { localResources, remote, email, projectID }
+        for( const resourceEntry of resourceEntries ) {
+            this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, projectData, path })
+        }
     }
 
     close() {

@@ -167,11 +167,11 @@ class FairCopyApplication {
       }
     })
 
-    ipcMain.on('requestExport', (event, resourceIDs) => { 
+    ipcMain.on('requestExport', (event, resourceEntries) => { 
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null
       if( path ) {
-        this.fairCopySession.requestExport(resourceIDs,path)
+        this.fairCopySession.requestExport(resourceEntries,path)
       }
     })
 

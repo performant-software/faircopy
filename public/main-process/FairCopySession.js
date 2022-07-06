@@ -243,8 +243,8 @@ class FairCopySession {
         this.projectStore.updateProjectInfo(projectInfo)
     }
 
-    requestExport(resourceIDs,path) {
-        this.projectStore.requestExport(resourceIDs,path)
+    requestExport(resourceEntries,path) {
+        this.projectStore.requestExport(resourceEntries,path)
     }
 
     openImageView(imageViewInfo) {

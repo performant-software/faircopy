@@ -1,7 +1,6 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
-import { createResourceEntry } from "../model/resource-index-view"
 
 const initResourceViewState = { 
     indexParentID: null,
@@ -24,8 +23,7 @@ function updateConfig() {
 function updateResourceView( serverURL, projectID, resourceView, authToken, postMessage ) {
     if( authToken ) {
         const { currentPage, rowsPerPage, indexParentID } = resourceView
-        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceObjs) => {
-            const remoteResources = resourceObjs.map( resourceObj => createResourceEntry(resourceObj) )
+        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (remoteResources) => {
             postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
         }, 
         (error) => {
@@ -51,11 +49,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
         case 'get-resource':
             if( authToken ) {
                 const { resourceID } = msg              
-                getResource(serverURL, authToken, resourceID, (resourceData) => {
-                    const { resource_content: resource } = resourceData
-                    const resourceEntry = createResourceEntry(resourceData)
-                    // TODO use data from server
-                    const parentEntry = resourceEntry.parentID ? { id: resourceEntry.parentID, name: 'PLACEHOLDER' } : null
+                getResource(serverURL, authToken, resourceID, (resourceEntry, parentEntry, resource) => {
                     postMessage({ messageType: 'resource-data', resourceEntry, parentEntry, resource })
                 })    
             } else {

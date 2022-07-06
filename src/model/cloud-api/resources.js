@@ -9,10 +9,10 @@ export function getResources(serverURL, authToken, projectID, indexParentID, cur
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {
             const { resources } = okResponse.data
-            onSuccess(resources)
+            const remoteResources = resources.map( resourceObj => createResourceEntry(resourceObj) )
+            onSuccess(remoteResources)
         },
         (errorResponse) => {
-            // problem with the license 
             if( errorResponse && errorResponse.response ) {
                 if( errorResponse.response.status === 401 ) {
                     const { error } = errorResponse.response.data
@@ -31,7 +31,10 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
     axios.get(getResourceURL,authConfig(authToken)).then(
         (okResponse) => {
             const { resource } = okResponse.data
-            onSuccess(resource)
+            const { parent_entry, resource_content: content } = resource             
+            const resourceEntry = createResourceEntry(resource)
+            const parentEntry = createResourceEntry(parent_entry)
+            onSuccess(resourceEntry,parentEntry,content)
         },
         (errorResponse) => {
             if( errorResponse && errorResponse.response ) {
@@ -44,4 +47,13 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
             }
         }
     )
+}
+
+function createResourceEntry(resourceData) { 
+    const { resource_guid: id, name, local_id: localID, parent_id: parentID, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction } = resourceData
+    return {
+        id, name, localID, parentID, type, gitHeadRevision, lastAction,
+        local: false,
+        deleted: false
+    }   
 }

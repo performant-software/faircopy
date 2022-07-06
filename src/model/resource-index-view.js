@@ -11,9 +11,7 @@ export function checkOut( fairCopyProject, resourceIDs, callback ) {
         for( const resourceState of resourceStates ) {
             const { resource_guid: resourceID, state } = resourceState
             if( state === 'success') {
-                getResource(serverURL, authToken, resourceID, (resource) => {
-                    const { resource_content: content } = resource
-                    const resourceEntry = createResourceEntry(resource)
+                getResource(serverURL, authToken, resourceID, (resourceEntry,parentEntry,content) => {
                     const idMapEntry = idMap.getMapEntry(resourceEntry.localID)
                     fairCopyProject.addResource( resourceEntry, content, idMapEntry )
                 })
@@ -26,11 +24,3 @@ export function checkOut( fairCopyProject, resourceIDs, callback ) {
     }, callback)
 }
 
-export function createResourceEntry(resourceData) { 
-    const { resource_guid: id, name, local_id: localID, parent_id: parentID, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction } = resourceData
-    return {
-        id, name, localID, parentID, type, gitHeadRevision, lastAction,
-        local: false,
-        deleted: false
-    }   
-}

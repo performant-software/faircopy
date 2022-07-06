@@ -1,6 +1,7 @@
 import JSZip from 'jszip'
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources } from '../model/cloud-api/resource-management'
+import { getResources } from "../model/cloud-api/resources"
 
 const fairCopy = window.fairCopy
 
@@ -61,18 +62,32 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     }
 }
 
-async function prepareResourceExport( resourceEntry, zip ) {
-    const resourceData = {}
+async function prepareResourceExport( resourceEntry, projectData, zip ) {
+    const { remote, localEntries } = projectData
+    const childEntries = null, contents = {}
 
-    if( resourceEntry.type === 'teidoc' ) {
-        for( const resourceID of resourceEntry.resources ) {
-            resourceData[resourceID] = await readUTF8( resourceID, zip )
-        }    
+    if( remote ) {
+        const { serverURL, email, projectID } = projectData
+        const authToken = getAuthToken( email, serverURL )
+
+        if( resourceEntry.type === 'teidoc' ) {
+            getResources( serverURL, authToken, projectID, resourceEntry.id, 0, 9999, (remoteResources) => {
+                // put together list of child entries
+                // get the contents of checked in entries from server
+            })    
+        } else {
+            // just get this resource, same as above
+        }
     } else {
-        resourceData[resourceEntry.id] = await readUTF8( resourceEntry.id, zip )
+        if( resourceEntry.type === 'teidoc' ) {
+            // TODO assemble from local resources 
+            // filter localEntries for this parent
+        } else {
+            contents[resourceEntry.id] = await readUTF8( resourceEntry.id, zip )
+        }
     }
 
-    return resourceData
+    return { resourceEntry, childEntries, contents }
 }
 
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {
@@ -220,12 +235,12 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break
         case 'request-export':
             {
-                const { resourceEntry, path } = msg
-                prepareResourceExport(resourceEntry,zip).then( resourceData => {
-                    postMessage({ messageType: 'export-resource', resourceID: resourceEntry.id, resourceData, path })
+                const { resourceEntry, projectData, path } = msg
+                prepareResourceExport(resourceEntry,projectData,zip).then( resourceData => {
+                    postMessage({ messageType: 'export-resource', resourceData, path })
                 })
             }
-            break
+            break    
         case 'open-image-view':
             {
                 const { imageViewData, resourceID } = msg
