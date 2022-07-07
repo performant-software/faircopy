@@ -35,7 +35,7 @@ export default class FacsDocument {
     }
 
     isEditable() {
-        return this.imageViewContext.isEditable( this.resourceID )
+        return this.imageViewContext.isEditable( this.resourceEntry )
     }
 
     isRemote() {

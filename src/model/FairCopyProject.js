@@ -275,11 +275,9 @@ export default class FairCopyProject {
         return true
     }
 
-    isEditable = ( resourceID ) => {
+    isEditable = ( resourceEntry ) => {
         // can always edit in a local project
         if( !this.remote ) return true
-        
-        const resourceEntry = this.getResourceEntry(resourceID)
         return isEntryEditable(resourceEntry, this.email )
     }
 

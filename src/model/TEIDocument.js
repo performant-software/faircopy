@@ -55,7 +55,7 @@ export default class TEIDocument {
     }
 
     isEditable() {
-        return this.fairCopyProject.isEditable( this.resourceID )
+        return this.fairCopyProject.isEditable( this.resourceEntry )
     }
 
     getTEISchema() {

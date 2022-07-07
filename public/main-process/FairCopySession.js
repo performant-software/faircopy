@@ -173,7 +173,7 @@ class FairCopySession {
     }
 
     openResource(resourceID) {
-        if( this.remote || !this.projectStore.manifestData.resources[resourceID]) {
+        if( this.remote && !this.projectStore.manifestData.resources[resourceID]) {
             this.remoteProject.openResource(resourceID)
         } else {
             this.projectStore.openResource(resourceID)
