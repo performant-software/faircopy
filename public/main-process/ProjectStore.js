@@ -243,6 +243,7 @@ class ProjectStore {
             this.importContinue()
         } else {
             this.saveManifest()
+            this.fairCopyApplication.fairCopySession.requestResourceView()
         }
     }
     
@@ -278,6 +279,7 @@ class ProjectStore {
 
         log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
+        this.fairCopyApplication.fairCopySession.requestResourceView()
     }
 
     recoverResource( resourceID ) {
