@@ -120,14 +120,12 @@ class FairCopySession {
     }
 
     sendResourceViewUpdate(resourceView, remoteResources) {
-        const resourceIndex = []
+        const { resources: localResources } = this.projectStore.manifestData
+        const resourceIndex = [ ...Object.values(localResources) ]
 
-        const { resources } = this.projectStore.manifestData
         for( const remoteResource of remoteResources ) {
-            const localResource = resources[remoteResource.id]
-            if( localResource ) {
-                resourceIndex.push(localResource)    
-            } else {
+            // if we have a local entry, don't add remote entry
+            if( !localResources[remoteResource.id] ) {
                 resourceIndex.push(remoteResource)
             }
         }
