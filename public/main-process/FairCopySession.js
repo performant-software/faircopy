@@ -209,7 +209,7 @@ class FairCopySession {
         const committedResources = []
         
         for( const resourceID of checkInResources ) {
-            const resourceEntry = this.projectStore.manifestData[resourceID]
+            const resourceEntry = this.projectStore.manifestData.resources[resourceID]
             // ignore resources that aren't in local manifest
             if( resourceEntry ) {
                 const { id, local, deleted, name, localID, parentID, type } = resourceEntry

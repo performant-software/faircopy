@@ -80,7 +80,8 @@ class ProjectStore {
                     {
                         const { resourceIDs } = msg
                         this.switchToRemote(resourceIDs)
-                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs )            
+                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs ) 
+                        this.fairCopyApplication.fairCopySession.requestResourceView()           
                     }
                     break
                 case 'check-in-error':
