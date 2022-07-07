@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import { authConfig } from './auth'
 
+const maxResourcesPerPage = 9999
+
 export function getResources(serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
     const parentQ = indexParentID ? `/${indexParentID}` : ''
     const getProjectsURL = `${serverURL}/api/resources/by_project/${projectID}${parentQ}`
@@ -47,6 +49,26 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
             }
         }
     )
+}
+
+export async function getResourcesAsync(serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage ) {
+    return new Promise( ( resolve, reject ) => {
+        getResources( serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, (remoteResources) => {
+            resolve(remoteResources)
+        }, (errorMessage) => {
+            reject(new Error(errorMessage))
+        })    
+    })
+}
+
+export async function getResourceAsync(serverURL, authToken, resourceID) {
+    return new Promise( ( resolve, reject ) => {
+        getResource( serverURL, authToken, resourceID, (remoteResource) => {
+            resolve(remoteResource)
+        }, (errorMessage) => {
+            reject(new Error(errorMessage))
+        })    
+    })
 }
 
 function createResourceEntry(resourceData) { 

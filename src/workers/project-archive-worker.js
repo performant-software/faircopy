@@ -1,7 +1,7 @@
 import JSZip from 'jszip'
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources } from '../model/cloud-api/resource-management'
-import { getResources } from "../model/cloud-api/resources"
+import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 
 const fairCopy = window.fairCopy
 
@@ -67,27 +67,53 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
     const childEntries = null, contents = {}
 
     if( remote ) {
-        const { serverURL, email, projectID } = projectData
-        const authToken = getAuthToken( email, serverURL )
-
-        if( resourceEntry.type === 'teidoc' ) {
-            getResources( serverURL, authToken, projectID, resourceEntry.id, 0, 9999, (remoteResources) => {
-                // put together list of child entries
-                // get the contents of checked in entries from server
-            })    
-        } else {
-            // just get this resource, same as above
+        try {
+            const { serverURL, email, projectID } = projectData
+            const authToken = getAuthToken( email, serverURL )
+            if( !authToken ) {
+                return { error: "User not logged in." }
+            }
+    
+            if( resourceEntry.type === 'teidoc' ) {
+                const remoteEntries = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 0)
+                for( const remoteEntry of remoteEntries ) {
+                    const { id: resourceID } = remoteEntry
+                    const localEntry = localEntries[resourceID]
+                    if( localEntry ) {
+                        childEntries.push(localEntry)
+                        contents[resourceID] = await readUTF8( resourceID, zip )
+                    } else {
+                        childEntries.push(remoteEntry)
+                        contents[resourceID] = await getResourceAsync(serverURL,authToken,resourceID)
+                    }
+                }
+            } else {
+                const { id: resourceID } = resourceEntry
+                const localEntry = localEntries[resourceID]
+                if( localEntry ) {
+                    contents[resourceID] = await readUTF8( resourceID, zip )
+                } else {
+                    contents[resourceID] = await getResourceAsync(serverURL,authToken,resourceID)
+                }
+            }    
+        } catch(e) {
+            return { error: e.message }
         }
     } else {
         if( resourceEntry.type === 'teidoc' ) {
-            // TODO assemble from local resources 
-            // filter localEntries for this parent
+            for( const localEntry of Object.values(localEntries) ) {
+                if( localEntry.parentID === resourceEntry.id ) {
+                    childEntries.push(localEntry)
+                    contents[localEntry.id] = await readUTF8( localEntry.id, zip )
+                }
+            }
         } else {
-            contents[resourceEntry.id] = await readUTF8( resourceEntry.id, zip )
+            const { id: resourceID } = resourceEntry
+            contents[resourceID] = await readUTF8( resourceID, zip )
         }
     }
 
-    return { resourceEntry, childEntries, contents }
+    return { resourceEntry, childEntries, contents, error: false }
 }
 
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {

@@ -48,8 +48,12 @@ class ProjectStore {
                     break
                 case 'export-resource':
                     {
-                        const { resourceData, path } = msg
-                        exportResource(resourceData, path)
+                        const { resourceData, error, path } = msg
+                        if( error ) {
+                            // TODO send back error message
+                        } else {
+                            exportResource(resourceData, path)
+                        }
                     }
                     break
                 case 'cache-file-name':

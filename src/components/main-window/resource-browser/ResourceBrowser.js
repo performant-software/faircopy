@@ -74,11 +74,14 @@ export default class ResourceBrowser extends Component {
     return () => {
       const { onResourceAction } = this.props
       const { checked } = this.state
-      const resourceIDs = []
+      const resourceIDs = [], resourceEntries = []
       for( const resourceID of Object.keys(checked) ) {
-        if( checked[resourceID] ) resourceIDs.push(resourceID)
+        if( checked[resourceID] ) {
+          resourceIDs.push(resourceID)
+          resourceEntries.push(checked[resourceID])
+        }
       }
-      if( onResourceAction(actionID, resourceIDs) ) {
+      if( onResourceAction(actionID, resourceIDs, resourceEntries) ) {
         this.setState({ ...this.state, checked: {}, allChecked: false })
       }
     }
@@ -96,7 +99,7 @@ export default class ResourceBrowser extends Component {
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
-    const actionsEnabled = Object.values(checked).find( c => c === true )
+    const actionsEnabled = Object.values(checked).find( c => !!c )
 
     return (
       <div className="toolbar">
@@ -160,7 +163,7 @@ export default class ResourceBrowser extends Component {
       const nextAllChecked = !allChecked
       const nextChecked = { ...checked }
       for( const resource of resourceIndex ) {
-        if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked
+        if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked ? resource : null
       }
       this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
     }
@@ -169,7 +172,8 @@ export default class ResourceBrowser extends Component {
       const { checked } = this.state
       const nextChecked = { ...checked }
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
-      nextChecked[resourceID] = checked[resourceID] ? false : true
+      const resourceEntry = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
+      nextChecked[resourceID] = checked[resourceID] ? null : resourceEntry
       this.setState({ ...this.state, checked: nextChecked })
     }
 
@@ -185,7 +189,7 @@ export default class ResourceBrowser extends Component {
     for( const resource of resourceIndex ) {
       if( !resource ) continue
       const { id, name, localID, type, local, deleted } = resource 
-      const check = checked[id] === true
+      const check = !!checked[id] 
       const resourceIcon = getResourceIcon(type)
       const status = local ? 'local' : 'online'
       const { label, icon } = getActionIcon( false, deleted, local, isEntryEditable( resource, email ))

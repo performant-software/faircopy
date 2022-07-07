@@ -349,7 +349,7 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
-    onResourceAction = (actionID, resourceIDs) => {
+    onResourceAction = (actionID, resourceIDs, resourceEntries) => {
         switch(actionID) {
             case 'open-teidoc':
                 {
@@ -405,7 +405,7 @@ export default class MainWindow extends Component {
                 }
                 return true                
             case 'export':
-                fairCopy.services.ipcSend('requestExport', resourceIDs)
+                fairCopy.services.ipcSend('requestExport', resourceEntries)
                 return false
             default:
                 console.error(`Unrecognized resource action id: ${actionID}`)
