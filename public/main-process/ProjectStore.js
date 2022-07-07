@@ -357,11 +357,13 @@ class ProjectStore {
     }
 
     switchToRemote(resourceIDs) {
+        const { email } = this.manifestData
         // remove remote resources from project file and manifest, update all windows 
         for( const resourceID of resourceIDs ) {
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
             const resourceEntry = this.manifestData.resources[resourceID]
             resourceEntry.local = false
+            resourceEntry.lastAction = { action_type: 'check_in', actor: email }
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
             delete this.manifestData.resources[resourceID] 
         }
