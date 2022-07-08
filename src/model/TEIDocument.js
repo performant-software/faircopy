@@ -43,14 +43,23 @@ export default class TEIDocument {
         this.changedSinceLastSave = false
     }
 
-    onResourceUpdated = ( resourceEntry ) => {
-        if( resourceEntry.id === this.resourceEntry.id ) {
-            this.resourceEntry = resourceEntry
-            this.resourceID = resourceEntry.id
-            this.resourceType = resourceEntry.type    
+    onResourceUpdated = ( resource ) => {
+        if( resource.resourceEntry ) {
+            const { resourceEntry } = resource
+            if( resourceEntry.id === this.resourceEntry.id ) {
+                this.resourceEntry = resourceEntry
+                this.resourceID = resourceEntry.id
+                this.resourceType = resourceEntry.type    
+            }
+            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
+                this.parentEntry = resourceEntry
+            }    
         }
-        if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
-            this.parentEntry = resourceEntry
+        // load updated content if we are in read only mode
+        if( resource.resourceContent && !this.isEditable() ) {
+            // TODO make this work
+            const { resourceContent } = resource
+            this.load(resourceContent)
         }
     }
 

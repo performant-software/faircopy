@@ -34,12 +34,13 @@ export default class FairCopyProject {
         this.updateListeners = []
         
         // Listen for updates to resource entries.
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, resourceEntry) => this.notifyListeners(resourceEntry) )
+        fairCopy.services.ipcRegisterCallback('resourceUpdated', (e, resourceEntry) => this.notifyListeners({ resourceEntry }) )
+        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', (e, resourceContent) => this.notifyListeners({ resourceContent }) )
     }
 
-    notifyListeners(resourceEntry) {
+    notifyListeners(resource) {
         for( const listener of this.updateListeners ) {
-            listener(resourceEntry)
+            listener(resource)
         }
     }
 

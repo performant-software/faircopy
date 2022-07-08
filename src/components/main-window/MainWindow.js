@@ -110,12 +110,21 @@ export default class MainWindow extends Component {
         this.setState({...this.state, resourceView, resourceIndex })
     }
 
+    onCheckOutResults = (event, resourceIDs, error ) => {
+        const count = resourceIDs.length
+        const s = count === 1 ? '' : 's'
+        const countMessage = `${count} resource${s} checked out.`
+        const message = error ? `${error} ${countMessage}` : countMessage
+        this.onAlertMessage(message)
+    }
+
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
         services.ipcRegisterCallback('resourceViewUpdate', this.onResourceViewUpdate )
         services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
+        services.ipcRegisterCallback('checkOutResults', this.onCheckOutResults )
         this.checkReleaseNotes()
     }
 
@@ -125,6 +134,7 @@ export default class MainWindow extends Component {
         services.ipcRemoveListener('resourceViewUpdate', this.onResourceViewUpdate )
         services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
+        services.ipcRemoveListener('checkOutResults', this.onCheckOutResults )
     }
 
     refreshWindow() {

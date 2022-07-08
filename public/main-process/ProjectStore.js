@@ -86,9 +86,16 @@ class ProjectStore {
                     break
                 case 'check-out-results':
                     {
-                        const { resourceIDs, error } = msg
-                        this.manifestData.resources[resourceEntry.id] = resourceEntry
-                        this.fairCopyApplication.sendToMainWindow('checkOutResults', resourceIDs, error ) 
+                        const { resources, error } = msg
+                        this.fairCopyApplication.sendToMainWindow('checkOutResults', Object.keys(resources), error ) 
+                        for( const resource of Object.values(resources) ) {
+                            const { resourceEntry, parentEntry, content } = resource
+                            this.manifestData.resources[resourceEntry.id] = resourceEntry
+                            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
+                            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
+                            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', content ) 
+                            this.saveManifest()      
+                        }
                     }
                     break
                 default:

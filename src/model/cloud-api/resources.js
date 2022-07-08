@@ -36,7 +36,7 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
             const { parent_entry, resource_content: content } = resource             
             const resourceEntry = createResourceEntry(resource)
             const parentEntry = parent_entry ? createResourceEntry(parent_entry) : null
-            onSuccess(resourceEntry,parentEntry,content)
+            onSuccess({resourceEntry,parentEntry,content})
         },
         (errorResponse) => {
             if( errorResponse && errorResponse.response ) {

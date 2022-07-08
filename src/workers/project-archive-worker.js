@@ -48,11 +48,10 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     
         // add the content for each resource being added or updated
         for( const committedResource of committedResources ) {
-            if( committedResource.action !== 'destroy' ) {
-                // TODO handle tei docs and images
+            if( committedResource.action !== 'destroy' && committedResource.type !== 'teidoc' ) {
                 committedResource.content = await readUTF8(committedResource.id, zip)
             } else {
-                committedResource.content = ''
+                committedResource.content = null
             }
         }
       
@@ -64,33 +63,28 @@ async function checkIn( email, serverURL, projectID, committedResources, message
 
 async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage ) {
     const authToken = getAuthToken( email, serverURL )
+    const resources = {}
 
     if( authToken ) {
         try {
             const resourceStates = await checkOutResources( serverURL, authToken, projectID, resourceIDs )
-            const resources = []
             
             // get the contents for each resource and add them to the project 
-            let n=0
             for( const resourceState of resourceStates ) {
                 const { resource_guid: resourceID, state } = resourceState
                 if( state === 'success') {
-                    await getResourceAsync(serverURL, authToken, resourceID, async (resourceEntry,parentEntry,content) => {
-                        await this.writeUTF8( resourceEntry.id, content, zip )    
-                    })
-                    n++
+                    const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
+                    resources[resourceEntry.id] = { resourceEntry, parentEntry, content }
+                    await this.writeUTF8( resourceEntry.id, content, zip )    
                 }
             }
-            // const message = n > 0 ? `Checking out ${n} resources...` : 'Unable to checkout selected resources.'
+            postMessage({ messageType: 'check-out-results', resources, error: null })
 
-            // const resourceIDs = results.map( result => result.resource_guid )
-            postMessage({ messageType: 'check-out-results', resourceIDs, error: null })
-
-        } catch (error) {
-            postMessage({ messageType: 'check-out-results', resourceIDs: [], error })
+        } catch (e) {
+            postMessage({ messageType: 'check-out-results', resources, error: e.errorMessage })
         }          
     } else {
-        postMessage({ messageType: 'check-out-results', resourceIDs: [], error: "User not logged in." })
+        postMessage({ messageType: 'check-out-results', resources, error: "User not logged in." })
     }
 }
 
@@ -116,7 +110,8 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
                         contents[resourceID] = await readUTF8( resourceID, zip )
                     } else {
                         childEntries.push(remoteEntry)
-                        contents[resourceID] = await getResourceAsync(serverURL,authToken,resourceID)
+                        const remoteResource = await getResourceAsync(serverURL,authToken,resourceID)
+                        contents[resourceID] = remoteResource.content
                     }
                 }
             } else {
@@ -125,7 +120,8 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
                 if( localEntry ) {
                     contents[resourceID] = await readUTF8( resourceID, zip )
                 } else {
-                    contents[resourceID] = await getResourceAsync(serverURL,authToken,resourceID)
+                    const remoteResource = await getResourceAsync(serverURL,authToken,resourceID)
+                    contents[resourceID] = remoteResource.content
                 }
             }    
         } catch(e) {

@@ -30,12 +30,18 @@ export default class ImageView {
         }    
     }
 
+    onResourceContentUpdated = (e, nextResourceContent) => {
+        this.onResourceUpdated(nextResourceEntry)
+    }
+
     componentDidMount() {
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
     }
 
     componentWillUnmount() {
         fairCopy.services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
     }
 
     // Called when resource entry is updated by a different window process
