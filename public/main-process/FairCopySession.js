@@ -229,6 +229,10 @@ class FairCopySession {
         this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
     }
 
+    checkOut(email, serverURL, projectID, resourceIDs) {
+        this.projectStore.checkOut(email, serverURL, projectID, resourceIDs)
+    }
+
     saveFairCopyConfig(fairCopyConfig) {
         this.projectStore.saveFairCopyConfig(fairCopyConfig)
     }

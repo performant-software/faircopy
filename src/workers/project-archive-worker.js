@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 import { getAuthToken } from '../model/cloud-api/auth'
-import { checkInResources } from '../model/cloud-api/resource-management'
+import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 
 const fairCopy = window.fairCopy
@@ -39,11 +39,11 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     if( authToken ) {
         const onSuccess = (results) => {
             const resourceIDs = results.map( result => result.resource_guid )
-            postMessage({ messageType: 'check-in-results', resourceIDs })
+            postMessage({ messageType: 'check-in-results', resourceIDs, error: null })
         }
     
         const onFail = (error) => {
-            postMessage({ messageType: 'check-in-error', error })
+            postMessage({ messageType: 'check-in-results', resourceIDs: [], error })
         }
     
         // add the content for each resource being added or updated
@@ -58,7 +58,39 @@ async function checkIn( email, serverURL, projectID, committedResources, message
       
         checkInResources(serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
     } else {
-        postMessage({ messageType: 'check-in-error', error: "User not logged in." })
+        postMessage({ messageType: 'check-in-results', resourceIDs: [], error: "User not logged in." })
+    }
+}
+
+async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage ) {
+    const authToken = getAuthToken( email, serverURL )
+
+    if( authToken ) {
+        try {
+            const resourceStates = await checkOutResources( serverURL, authToken, projectID, resourceIDs )
+            const resources = []
+            
+            // get the contents for each resource and add them to the project 
+            let n=0
+            for( const resourceState of resourceStates ) {
+                const { resource_guid: resourceID, state } = resourceState
+                if( state === 'success') {
+                    await getResourceAsync(serverURL, authToken, resourceID, async (resourceEntry,parentEntry,content) => {
+                        await this.writeUTF8( resourceEntry.id, content, zip )    
+                    })
+                    n++
+                }
+            }
+            // const message = n > 0 ? `Checking out ${n} resources...` : 'Unable to checkout selected resources.'
+
+            // const resourceIDs = results.map( result => result.resource_guid )
+            postMessage({ messageType: 'check-out-results', resourceIDs, error: null })
+
+        } catch (error) {
+            postMessage({ messageType: 'check-out-results', resourceIDs: [], error })
+        }          
+    } else {
+        postMessage({ messageType: 'check-out-results', resourceIDs: [], error: "User not logged in." })
     }
 }
 
@@ -315,6 +347,12 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage )
             }    
             break  
+        case 'check-out': 
+            {
+                const { email, serverURL, projectID, resourceIDs } = msg
+                checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage )
+            }    
+            break              
         case 'save':
             save()
             break

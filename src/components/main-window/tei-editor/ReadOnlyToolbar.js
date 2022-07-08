@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import { Button } from '@material-ui/core';
-import { checkOut } from '../../../model/resource-index-view';
+
+const fairCopy = window.fairCopy
 
 export default class ReadOnlyToolbar extends Component {
 
     onCheckOut = () => {
-        const { teiDocument, onAlertMessage } = this.props
+        const { teiDocument } = this.props
         const { fairCopyProject } = teiDocument
-        checkOut( fairCopyProject, [teiDocument.resourceID], (message) => { 
-            onAlertMessage(message)
-        } )
+        const { email, serverURL, projectID } = fairCopyProject
+        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, [ teiDocument.resourceID ] )
     }
 
     render() {

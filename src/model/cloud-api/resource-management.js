@@ -46,7 +46,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
     )
 }
 
-export function checkOutResources(serverURL, authToken, projectID, resourceIDs, onSuccess, onFail) {
+export function checkOutResources(serverURL, authToken, projectID, resourceIDs) {
    
     const resourceObjs = resourceIDs.map( (resourceID) => {
         return {
@@ -65,21 +65,23 @@ export function checkOutResources(serverURL, authToken, projectID, resourceIDs, 
 
     const checkOutURL = `${serverURL}/api/resource_management/check_out`
 
-    axios.post(checkOutURL,checkOutObj,authConfig(authToken)).then(
-        (okResponse) => {
-            const { status, resource_state } = okResponse.data
-            if( status === 'success' ) {
-                onSuccess(resource_state)
-            } else {
-                onFail('Failed to commit resources.')
+    return new Promise( (resolve,reject) => {
+        axios.post(checkOutURL,checkOutObj,authConfig(authToken)).then(
+            (okResponse) => {
+                const { status, resource_state } = okResponse.data
+                if( status === 'success' ) {
+                    resolve(resource_state)
+                } else {
+                    reject('Failed to commit resources.')
+                }
+            },
+            (errorResponse) => {
+                if( errorResponse && errorResponse.message ) {
+                    reject(errorResponse.message)        
+                } else {
+                    reject("Unable to connect to server.")
+                }
             }
-        },
-        (errorResponse) => {
-            if( errorResponse && errorResponse.message ) {
-                onFail(errorResponse.message)        
-            } else {
-                onFail("Unable to connect to server.")
-            }
-        }
-    )
+        )
+    })
 }

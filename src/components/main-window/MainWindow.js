@@ -28,7 +28,6 @@ import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
-import { checkOut } from '../../model/resource-index-view';
 
 const fairCopy = window.fairCopy
 
@@ -307,9 +306,11 @@ export default class MainWindow extends Component {
 
     checkOutResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        checkOut( fairCopyProject, resourceIDs, (message) => { 
-            this.onAlertMessage(message)
-        } )
+        const { email, serverURL, projectID } = fairCopyProject
+        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
+
+        // TODO response
+        // this.onAlertMessage(message)
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {

@@ -78,16 +78,17 @@ class ProjectStore {
                     break
                 case 'check-in-results':
                     {
-                        const { resourceIDs } = msg
+                        const { resourceIDs, error } = msg
                         this.switchToRemote(resourceIDs)
-                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs ) 
-                        this.fairCopyApplication.fairCopySession.requestResourceView()           
+                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs, error ) 
+                        if( !error ) this.fairCopyApplication.fairCopySession.requestResourceView()           
                     }
                     break
-                case 'check-in-error':
+                case 'check-out-results':
                     {
-                        const { error } = msg
-                        this.fairCopyApplication.sendToMainWindow('checkInError', error )
+                        const { resourceIDs, error } = msg
+                        this.manifestData.resources[resourceEntry.id] = resourceEntry
+                        this.fairCopyApplication.sendToMainWindow('checkOutResults', resourceIDs, error ) 
                     }
                     break
                 default:
@@ -335,6 +336,10 @@ class ProjectStore {
 
     checkIn(email, serverURL, projectID, committedResources, message) {
         this.projectArchiveWorker.postMessage({ messageType: 'check-in', email, serverURL, projectID, committedResources, message })
+    }
+
+    checkOut(email, serverURL, projectID, resourceIDs ) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-out', email, serverURL, projectID, resourceIDs })
     }
 
     openImageResource(requestURL) {

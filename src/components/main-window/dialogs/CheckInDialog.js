@@ -31,7 +31,6 @@ export default class CheckInDialog extends Component {
         const {services} = fairCopy
         services.ipcRegisterCallback('checkedOutResources', this.onCheckedOutResources )
         services.ipcRegisterCallback('checkInResults', this.onCheckInResults )
-        services.ipcRegisterCallback('checkInError', this.onCheckInError ) 
         services.ipcSend('requestCheckedOutResources')
     }
 
@@ -39,19 +38,18 @@ export default class CheckInDialog extends Component {
         const {services} = fairCopy
         services.ipcRemoveListener('checkedOutResources', this.onCheckedOutResources )
         services.ipcRemoveListener('checkInResults', this.onCheckInResults )
-        services.ipcRemoveListener('checkInError', this.onCheckInError  ) 
     }
 
     onCheckedOutResources = (event,checkedOutResources) => {
         this.setState({...this.state, checkedOutResources })
     }
 
-    onCheckInResults = (event,resourceIDs) => {
-        this.setState({...this.state, committedResources: resourceIDs, errorMessage: null })
-    }
-
-    onCheckInError = (event,error) => {
-        this.setState({...this.state, committedResources: [], done: false, errorMessage: error })
+    onCheckInResults = (event,resourceIDs,error) => {
+        if( error ) {
+            this.setState({...this.state, committedResources: [], done: false, errorMessage: error })
+        } else {
+            this.setState({...this.state, committedResources: resourceIDs, errorMessage: null })
+        }
     }
 
     renderResourceTable() {
