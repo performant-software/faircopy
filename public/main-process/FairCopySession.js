@@ -42,10 +42,10 @@ class FairCopySession {
     initRemoteParents() {
         const localResources = this.projectStore.manifestData.resources
         for( const resource of Object.values(localResources) ) {
-            const { parentID } = resource
+            const { parentResource } = resource
             // if we don't have this entry, request it from server
-            if( !localResources[parentID] && !this.remoteParentEntries[parentID] ) {
-                this.openResource(parentID)          
+            if( !localResources[parentResource] && !this.remoteParentEntries[parentResource] ) {
+                this.openResource(parentResource)          
             }
         }
     }
@@ -121,7 +121,13 @@ class FairCopySession {
 
     sendResourceViewUpdate(resourceView, remoteResources) {
         const { resources: localResources } = this.projectStore.manifestData
-        const resourceIndex = [ ...Object.values(localResources) ]
+        const resourceIndex = []
+
+        for( const localResource of Object.values(localResources) ) {
+            if( localResource.parentResource === resourceView.indexParentID && localResource.type !== 'image' ) {
+                resourceIndex.push(localResource)
+            }
+        }
 
         for( const remoteResource of remoteResources ) {
             // if we have a local entry, don't add remote entry
@@ -186,7 +192,7 @@ class FairCopySession {
             this.remoteParentEntries[resourceEntry.id] = resourceEntry
         } else {
             // if there's no local parent entry, look for it in cache
-            const pEntry = !parentEntry && resourceEntry.parentID ? this.remoteParentEntries[resourceEntry.parentID] : parentEntry
+            const pEntry = !parentEntry && resourceEntry.parentResource ? this.remoteParentEntries[resourceEntry.parentResource] : parentEntry
             this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry: pEntry, resource } )
             log.info(`opened resourceID: ${resourceEntry.id}`)    
         }
@@ -212,7 +218,7 @@ class FairCopySession {
             const resourceEntry = this.projectStore.manifestData.resources[resourceID]
             // ignore resources that aren't in local manifest
             if( resourceEntry ) {
-                const { id, local, deleted, name, localID, parentID, type } = resourceEntry
+                const { id, local, deleted, name, localID, parentResource: parentID, type } = resourceEntry
                 const action = deleted ? 'destroy' : local ? 'create' : 'update'
                 committedResources.push({
                     id,

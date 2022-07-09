@@ -72,9 +72,9 @@ export async function getResourceAsync(serverURL, authToken, resourceID) {
 }
 
 function createResourceEntry(resourceData) { 
-    const { resource_guid: id, name, local_id: localID, parent_id: parentID, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction } = resourceData
+    const { resource_guid: id, name, local_id: localID, parent_guid: parentResource, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction } = resourceData
     return {
-        id, name, localID, parentID, type, gitHeadRevision, lastAction,
+        id, name, localID, parentResource, type, gitHeadRevision, lastAction,
         local: false,
         deleted: false
     }   

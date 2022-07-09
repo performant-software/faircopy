@@ -35,7 +35,7 @@ class ProjectStore {
                     {
                         const { resourceID, resource } = msg
                         const resourceEntry = this.manifestData.resources[resourceID]
-                        const parentEntry = this.manifestData.resources[resourceEntry.parentID]
+                        const parentEntry = this.manifestData.resources[resourceEntry.parentResource]
                         this.fairCopyApplication.fairCopySession.resourceOpened( resourceEntry, parentEntry, resource )
                     }
                     break
@@ -375,7 +375,7 @@ class ProjectStore {
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
             const resourceEntry = this.manifestData.resources[resourceID]
             resourceEntry.local = false
-            resourceEntry.lastAction = { action_type: 'check_in', actor: email }
+            resourceEntry.lastAction = { action_type: 'check_in', user: { email } }
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
             delete this.manifestData.resources[resourceID] 
         }
