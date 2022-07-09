@@ -16,12 +16,6 @@ export default class FacsDocument {
         this.lastMessageID = null
 
         this.load(resourceData)
-
-        // Listen for updates to this resource.
-        fairCopy.services.ipcRegisterCallback('resourceUpdated', (e, d) => {
-            if( d.resourceID === this.resourceEntry.id && d.messageID !== this.lastMessageID ) 
-                this.onResourceUpdated(d.resourceData)
-        })
     }
 
     onResourceUpdated = ( resource ) => {
@@ -36,11 +30,10 @@ export default class FacsDocument {
                 this.parentEntry = resourceEntry
             }    
         }
-        // load updated content if we are in read only mode
-        if( resource.resourceContent && !this.isEditable() ) {
-            // TODO make this work
+        // load updated content if it is from a different source
+        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && resource.messageID !== this.lastMessageID ) {
             const { resourceContent } = resource
-            this.load(resourceContent)            
+            this.load(resourceContent)
         }
     }
 

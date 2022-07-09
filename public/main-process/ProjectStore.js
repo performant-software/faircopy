@@ -93,7 +93,7 @@ class ProjectStore {
                             this.manifestData.resources[resourceEntry.id] = resourceEntry
                             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
                             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
-                            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', content ) 
+                            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
                             this.saveManifest()      
                         }
                     }

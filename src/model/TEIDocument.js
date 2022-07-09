@@ -56,10 +56,10 @@ export default class TEIDocument {
             }    
         }
         // load updated content if we are in read only mode
-        if( resource.resourceContent && !this.isEditable() ) {
+        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && !this.isEditable() ) {
             // TODO make this work
-            const { resourceContent } = resource
-            this.load(resourceContent)
+            // const { resourceContent } = resource
+            // this.load(resourceContent)
         }
     }
 

@@ -22,16 +22,16 @@ export default class ImageView {
         this.lastResourceEntryMessage = null   
     }
 
-    onResourceEntryUpdated = (e, nextResourceEntry) => {
-        this.onResourceUpdated(nextResourceEntry)
+    onResourceEntryUpdated = (e, resourceEntry ) => {
+        this.onResourceUpdated({resourceEntry})
         // also listen for updates to parent
-        if( this.parentEntry && this.parentEntry.id === nextResourceEntry.id ) {
-            this.parentEntry = nextResourceEntry
+        if( this.parentEntry && this.parentEntry.id === resourceEntry.id ) {
+            this.parentEntry = resourceEntry
         }    
     }
 
-    onResourceContentUpdated = (e, nextResourceContent) => {
-        this.onResourceUpdated(nextResourceEntry)
+    onResourceContentUpdated = (e, resourceID, messageID, resourceContent) => {
+        this.onResourceUpdated({resourceID, messageID, resourceContent})
     }
 
     componentDidMount() {
