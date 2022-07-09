@@ -1,4 +1,3 @@
-const log = require('electron-log')
 const { WorkerWindow } = require('./WorkerWindow')
 
 class RemoteProject {
@@ -19,10 +18,8 @@ class RemoteProject {
             switch( messageType ) {
                 case 'resource-data':
                     {
-                        const { fairCopyApplication } = this.fairCopySession
-                        const { resourceEntry, parentEntry, resource } = msg
-                        fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )        
-                        log.info(`opened resourceID: ${resourceEntry.id}`)    
+                        const { resourceEntry, parentEntry, content } = msg
+                        this.fairCopySession.resourceOpened( resourceEntry, parentEntry, content )   
                     }
                     break
                 case 'resource-view-update':
