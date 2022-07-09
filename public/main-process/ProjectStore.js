@@ -211,8 +211,8 @@ class ProjectStore {
     }
 
     requestExport(resourceEntries,path) {
-        const { resources: localResources, remote, email, projectID } = this.projectStore.manifestData
-        const projectData = { localResources, remote, email, projectID }
+        const { resources: localEntries, remote, email, serverURL, projectID } = this.manifestData
+        const projectData = { localEntries, remote, email, serverURL, projectID }
         for( const resourceEntry of resourceEntries ) {
             this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, projectData, path })
         }
