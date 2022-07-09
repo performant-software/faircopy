@@ -56,7 +56,14 @@ export default class CheckInDialog extends Component {
         const { checkInResources, fairCopyProject } = this.props
         const { committedResources, checkedOutResources, done } = this.state
 
-        let resources = checkedOutResources ? checkInResources.map( resourceID => checkedOutResources[resourceID] ) : []
+        let resources = []
+        if( checkedOutResources ) {
+            // ignore resources that aren't checked out
+            for( const resourceID of checkInResources ) {
+                const resource = checkedOutResources[resourceID]
+                if(resource) resources.push(resource)
+            }
+        } 
         resources = resources.sort((a, b) => a.name.localeCompare(b.name))
         
         const resourceRows = resources.map( resource => { 
