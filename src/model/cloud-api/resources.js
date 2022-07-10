@@ -6,7 +6,8 @@ const maxResourcesPerPage = 9999
 
 export function getResources(serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
     const parentQ = indexParentID ? `/${indexParentID}` : ''
-    const getProjectsURL = `${serverURL}/api/resources/by_project/${projectID}${parentQ}`
+    const parentRoute = indexParentID ? '_by_parent' : ''
+    const getProjectsURL = `${serverURL}/api/resources/by_project${parentRoute}/${projectID}${parentQ}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {
