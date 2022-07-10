@@ -93,20 +93,21 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateResource', resourceEntry )
     }
 
-    importIIIF( url, parentResourceID, onError, onSuccess ) {    
-        const parentEntry = parentResourceID ? this.getResourceEntry(parentResourceID) : null
+    importIIIF( url, parentEntry, onError, onSuccess ) {    
         const nextSurfaceID = parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0
 
         importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
             const { name, localID } = metadata
             const conflictingID = parentEntry ? this.idMap.idMap[parentEntry.localID][localID] : this.idMap.idMap[localID]
-            const uniqueID = !conflictingID ? localID : this.idMap.getUniqueID(localID)  
+            const uniqueID = !conflictingID ? localID : this.idMap.getUniqueID(localID) 
+            const existingParentID = parentEntry ? parentEntry.id : null
+ 
             const resourceEntry = {
                 id: uuidv4(),
                 name,
                 localID: uniqueID,
                 type: 'facs',
-                parentResource: parentResourceID,
+                parentResource: existingParentID,
                 ...cloudInitialConfig
             }
     

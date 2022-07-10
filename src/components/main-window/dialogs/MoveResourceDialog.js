@@ -103,7 +103,7 @@ export default class MoveResourceDialog extends Component {
 
     render() {      
         const { targetID } = this.state
-        const { onClose, resourceIDs, closeResources } = this.props
+        const { onClose, resourceEntries, closeResources } = this.props
         
         const onClickMove = () => {
             const { targetID } = this.state
@@ -111,10 +111,9 @@ export default class MoveResourceDialog extends Component {
 
             // ignore the tei docs
             const validIDs = []
-            for( const resourceID of resourceIDs ) {
-                const resourceEntry = fairCopyProject.getResourceEntry(resourceID)
+            for( const resourceEntry of resourceEntries ) {
                 if( resourceEntry.type !== 'teidoc' ) {
-                    validIDs.push(resourceID)
+                    validIDs.push(resourceEntry.id)
                 }
             }
 
@@ -134,7 +133,7 @@ export default class MoveResourceDialog extends Component {
                 aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="move-resource-dialog">Move Resources ({resourceIDs.length})</DialogTitle>
+                <DialogTitle id="move-resource-dialog">Move Resources ({resourceEntries.length})</DialogTitle>
                 <DialogContent>
                     <Typography>Select a destination for these resources: </Typography>
                     { this.renderTable() }

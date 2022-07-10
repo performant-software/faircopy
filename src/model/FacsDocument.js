@@ -71,11 +71,6 @@ export default class FacsDocument {
         return startIndex === -1 ? 0 : startIndex
     }
 
-    getParent() {
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        return this.imageViewContext.getParent(resourceEntry)
-    }
-
     getActiveView() {
         return null
     }
@@ -124,9 +119,7 @@ export default class FacsDocument {
 
     addLocalImages( imagesData ) {
         const { idMap } = this.imageViewContext
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        const parentEntry = this.imageViewContext.getParent(resourceEntry)
-        let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
+        let nextSurfaceID = this.parentEntry ? idMap.nextSurfaceID(this.parentEntry.localID) : idMap.nextSurfaceID(this.resourceEntry.localID)
 
         for( const imageData of imagesData ) {
             const { width, height, mimeType, path } = imageData
@@ -209,10 +202,8 @@ export default class FacsDocument {
     save() {
         // Update the ID Map 
         const { idMap } = this.imageViewContext
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        const parentEntry = this.imageViewContext.getParent(resourceEntry)
         const resourceMap = idMap.mapResource( 'facs', this.facs )
-        idMap.setResourceMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
+        idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)
 
         // save the facs
         const fileContents = facsimileToTEI(this.facs)

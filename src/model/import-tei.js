@@ -10,7 +10,7 @@ import {teiToFacsimile} from './convert-facs'
 
 const fairCopy = window.fairCopy
 
-export function importResource(importData,existingParentID,fairCopyProject) {
+export function importResource(importData,parentEntry,fairCopyProject) {
     const { path, data, options } = importData
     const { idMap } = fairCopyProject
 
@@ -26,10 +26,10 @@ export function importResource(importData,existingParentID,fairCopyProject) {
         name = fairCopy.services.getBasename(path).trim()
     }
     const sanitizedID = sanitizeID(name)
-    const parentEntry = existingParentID ? fairCopyProject.getResourceEntry(existingParentID) : null
     const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
     const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
-    
+    const existingParentID = parentEntry ? parentEntry.id : null
+
     // if this is an XML file, parse the dom
     const xmlDom = parseDOM(data)
 

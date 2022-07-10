@@ -17,7 +17,7 @@ export default class IIIFImportDialog extends Component {
     }
 
     importManifest(url) {
-        const { onClose, parentResourceID, fairCopyProject } = this.props
+        const { onClose, teiDocEntry, fairCopyProject } = this.props
 
         const onError = (errorMsg) => {
             const nextErrors = { url: errorMsg }            
@@ -29,7 +29,7 @@ export default class IIIFImportDialog extends Component {
             onClose()
         }
 
-        fairCopyProject.importIIIF(url, parentResourceID, onError, onSuccess)
+        fairCopyProject.importIIIF(url, teiDocEntry, onError, onSuccess)
     }
 
     render() {      

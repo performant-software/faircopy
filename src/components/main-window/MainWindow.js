@@ -63,7 +63,7 @@ export default class MainWindow extends Component {
             checkInMode: false,
             checkInResources: [],
             editTEIDocDialogMode: false,
-            moveResourceIDs: null,
+            moveResources: null,
             surfaceInfo: null,
             popupMenuOptions: null, 
             popupMenuAnchorEl: null,
@@ -393,7 +393,7 @@ export default class MainWindow extends Component {
                 }
                 return false
             case 'move':
-                this.setState( {...this.state, moveResourceMode: true, moveResourceIDs: resourceIDs} )
+                this.setState( {...this.state, moveResourceMode: true, moveResources: resourceEntries} )
                 return true
             case 'save':
                 this.saveResources(resourceIDs)
@@ -571,7 +571,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResourceIDs, openResources, selectedResource, resourceView, resourceIndex } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceView, resourceIndex } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
         const { indexParentID } = resourceView
@@ -627,7 +627,7 @@ export default class MainWindow extends Component {
                 ></EditResourceDialog> }
                 { iiifDialogMode && <IIIFImportDialog
                     fairCopyProject={fairCopyProject}
-                    parentResourceID={indexParentID}
+                    teiDocEntry={teiDocEntry}
                     onClose={()=>{ this.setState( {...this.state, iiifDialogMode: false} )}}
                 ></IIIFImportDialog> }
                 { textImportDialogMode && < ImportTextsDialog
@@ -651,10 +651,10 @@ export default class MainWindow extends Component {
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></EditorDraggingElement> }
                 { moveResourceMode && <MoveResourceDialog
-                    resourceIDs={moveResourceIDs}
+                    resourceEntries={moveResources}
                     fairCopyProject={fairCopyProject}
                     closeResources={this.closeResources}
-                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceIDs: null} )}}
+                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResources: null} )}}
                 ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}

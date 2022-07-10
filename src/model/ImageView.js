@@ -67,14 +67,6 @@ export default class ImageView {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
-    getResourceEntry() {
-        return this.resourceEntry
-    }
-
-    getParent() {
-        return this.parentEntry
-    }
-
     isLoggedIn = () => {
         if( !this.remote ) return false
         return isLoggedIn( this.email, this.serverURL )
