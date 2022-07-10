@@ -75,7 +75,7 @@ async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMess
                 if( state === 'success') {
                     const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
                     resources[resourceEntry.id] = { resourceEntry, parentEntry, content }
-                    await this.writeUTF8( resourceEntry.id, content, zip )    
+                    await writeUTF8( resourceEntry.id, content, zip )    
                 }
             }
             postMessage({ messageType: 'check-out-results', resources, error: null })
