@@ -14,6 +14,8 @@ class IDMapRemote {
     }
 
     setBaseMap(idMapData) {
+        // TODO scan for orphaned local resources and repair if necessary
+        // this can happen if parent is deleted by another user
         this.baseMapJSON = idMapData
         this.sendIDMapUpdate()
     }
