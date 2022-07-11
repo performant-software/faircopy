@@ -575,12 +575,11 @@ export default class MainWindow extends Component {
         const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceView, resourceIndex } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
-        const { indexParentID } = resourceView
+        const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedDoc ? selectedDoc.resourceEntry : null
         const parentEntry = selectedDoc ? selectedDoc.parentEntry : null
-        const teiDocEntry = resourceIndex.length > 0 ? resourceIndex[0].parentEntry : null
 
         const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } = this.state
