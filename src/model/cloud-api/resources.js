@@ -13,7 +13,8 @@ export function getResources(serverURL, authToken, projectID, indexParentID, cur
         (okResponse) => {
             const { resources } = okResponse.data
             const remoteResources = resources.map( resourceObj => createResourceEntry(resourceObj) )
-            onSuccess(remoteResources)
+            const parentEntry = indexParentID !== null && resources.length > 0 ? createResourceEntry( resources[0].parent_resource ) : null
+            onSuccess({ parentEntry, remoteResources })
         },
         (errorResponse) => {
             if( errorResponse && errorResponse.response ) {

@@ -101,7 +101,8 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
             }
     
             if( resourceEntry.type === 'teidoc' ) {
-                const remoteEntries = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 0)
+                const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 0)
+                const { remoteEntries } = resourceData
                 for( const remoteEntry of remoteEntries ) {
                     const { id: resourceID } = remoteEntry
                     const localEntry = localEntries[resourceID]

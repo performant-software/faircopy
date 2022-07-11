@@ -4,6 +4,7 @@ import { getIDMap } from "../model/cloud-api/id-map"
 
 const initResourceViewState = { 
     indexParentID: null,
+    parentEntry: null,
     currentPage: 0, 
     rowsPerPage: 100
 }
@@ -23,7 +24,9 @@ function updateConfig() {
 function updateResourceView( serverURL, projectID, resourceView, authToken, postMessage ) {
     if( authToken ) {
         const { currentPage, rowsPerPage, indexParentID } = resourceView
-        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (remoteResources) => {
+        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceData) => {
+            const { parentEntry, remoteResources } = resourceData
+            resourceView.parentEntry = parentEntry
             postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
         }, 
         (error) => {

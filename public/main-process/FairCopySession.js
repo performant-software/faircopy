@@ -13,6 +13,7 @@ class FairCopySession {
         this.remoteParentEntries = {}
         this.resourceView = { 
             indexParentID: null,
+            parentEntry: null,
             currentPage: 0, 
             rowsPerPage: 100
         }
@@ -122,9 +123,15 @@ class FairCopySession {
     sendResourceViewUpdate(resourceView, remoteResources) {
         const { resources: localResources } = this.projectStore.manifestData
         const resourceIndex = []
+        const { indexParentID } = resourceView
+
+        // if parent isn't in remote response, must be local parent
+        if( indexParentID !== null && !resourceView.parentEntry ) {
+            resourceView.parentEntry = localResources[indexParentID]
+        }
 
         for( const localResource of Object.values(localResources) ) {
-            if( localResource.parentResource === resourceView.indexParentID && localResource.type !== 'image' ) {
+            if( localResource.parentResource === indexParentID && localResource.type !== 'image' ) {
                 resourceIndex.push(localResource)
             }
         }

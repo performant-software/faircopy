@@ -44,6 +44,7 @@ export default class MainWindow extends Component {
             openResources: {},
             resourceView: { 
                 indexParentID: null,
+                parentEntry: null,
                 currentPage: 0, 
                 rowsPerPage: 100
             },
@@ -529,7 +530,7 @@ export default class MainWindow extends Component {
     renderContentPane() {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, resourceView, resourceIndex } = this.state
-        const teiDocEntry = resourceIndex.length > 0 ? resourceIndex[0].parentEntry : null
+        const { parentEntry } = resourceView 
         
         return (
             <div>
@@ -540,7 +541,7 @@ export default class MainWindow extends Component {
                         onEditResource={this.onEditResource}
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
-                        teiDoc={teiDocEntry}
+                        teiDoc={parentEntry}
                         resourceView={resourceView}
                         resourceIndex={resourceIndex}
                         fairCopyProject={fairCopyProject}
