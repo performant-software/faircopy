@@ -230,22 +230,33 @@ class FairCopySession {
     }
 
     checkIn(email, serverURL, projectID, checkInResources, message) {
+        const { resources } = this.projectStore.manifestData
         const committedResources = []
+
+        function createCommitEntry( resourceEntry ) {
+            const { id, local, deleted, name, localID, parentResource: parentID, type } = resourceEntry
+            const action = deleted ? 'destroy' : local ? 'create' : 'update'
+            return {
+                id,
+                name,
+                action,
+                localID,
+                parentID,
+                resourceType: type
+            }
+        }
         
         for( const resourceID of checkInResources ) {
-            const resourceEntry = this.projectStore.manifestData.resources[resourceID]
+            const resourceEntry = resources[resourceID]
             // ignore resources that aren't in local manifest
             if( resourceEntry ) {
-                const { id, local, deleted, name, localID, parentResource: parentID, type } = resourceEntry
-                const action = deleted ? 'destroy' : local ? 'create' : 'update'
-                committedResources.push({
-                    id,
-                    name,
-                    action,
-                    localID,
-                    parentID,
-                    resourceType: type
-                })    
+                committedResources.push(createCommitEntry(resourceEntry))
+
+                // automatically add header if teidoc  
+                if( resourceEntry.type === 'teidoc' ) {
+                    const headerEntry = Object.values(resources).find( r => (r.parentResource === resourceEntry.id && r.type === 'header') )
+                    committedResources.push(createCommitEntry(headerEntry))
+                }
             }
         }
 

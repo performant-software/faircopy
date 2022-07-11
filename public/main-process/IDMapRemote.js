@@ -94,12 +94,23 @@ class IDMapRemote {
     }
 
     checkIn( resources ) {
+        const teiDocIDs = []
         for( const resource of resources ) {
             const { localID, parentID } = resource
             if( parentID ) {
                 delete this.idMapStaged[parentID][localID] 
             } else {
-                delete this.idMapStaged[localID] 
+                if( this.idMapStaged[localID].__multiPart__ ) {
+                    teiDocIDs.push( localID )
+                } else {
+                    delete this.idMapStaged[localID]                     
+                }
+            }
+        }
+        // only remove teidoc if it has no children left in this map 
+        for( const teiDocID of teiDocIDs ) {
+            if( Object.keys(this.idMapStaged[teiDocID]).length === 1 ) {
+                delete this.idMapStaged[teiDocID]
             }
         }
     }
