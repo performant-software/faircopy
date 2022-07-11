@@ -10,6 +10,7 @@ class IDMapLocal {
 
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = {}
             this.idMapNext[parentID][localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap

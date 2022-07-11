@@ -106,8 +106,19 @@ class FairCopySession {
             const resourceView = nextResourceView ? nextResourceView : this.resourceView
             this.remoteProject.requestResourceView(resourceView)
         } else {
-            // TODO respond right away from project store
-            // this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', this.resourceView, resourceIndex )
+            // respond right away from project store
+            this.resourceView = nextResourceView ? nextResourceView : this.resourceView
+            const { resources: localResources } = this.projectStore.manifestData
+            const { indexParentID } = this.resourceView
+            const resourceIndex = []
+
+            for( const localResource of Object.values(localResources) ) {
+                if( localResource.parentResource === indexParentID && localResource.type !== 'image' ) {
+                    resourceIndex.push(localResource)
+                }
+            }
+            // TODO sort and only return current page
+            this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', this.resourceView, resourceIndex )
         }
     }
 
