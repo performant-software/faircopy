@@ -1,4 +1,3 @@
-const log = require('electron-log')
 
 class IDMapRemote {
 
@@ -22,8 +21,7 @@ class IDMapRemote {
 
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = {}
-            this.idMapNext[parentID][localID] = resourceMap
+            this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
         }
@@ -34,7 +32,7 @@ class IDMapRemote {
     // restore the specified resource to its previously saved state
     abandonResourceMap( localID, parentID ) {
         if( parentID ) {
-            delete this.idMapNext[parentID][localID]
+            delete this.idMapNext[parentID].ids[localID]
         } else {
             delete this.idMapNext[localID]
         }    
@@ -42,8 +40,7 @@ class IDMapRemote {
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = {}
-            this.idMapNext[parentID][localID] = resourceMap
+            this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
         }
@@ -54,11 +51,11 @@ class IDMapRemote {
 
     removeResource( localID, parentID ) {
         if( parentID ) {
-            delete this.idMapNext[parentID][localID]
-            this.idMapStaged[parentID][localID].___deleted___ = true
+            delete this.idMapNext[parentID].ids[localID]
+            this.idMapStaged[parentID].ids[localID].deleted = true
         } else {
             delete this.idMapNext[localID]
-            this.idMapStaged[localID].___deleted___ = true
+            this.idMapStaged[localID].deleted = true
         }
 
         return JSON.stringify(this.idMapStaged)
@@ -66,11 +63,11 @@ class IDMapRemote {
     
     recoverResource( localID, parentID ) {
         if( parentID ) {
-            this.idMapNext[parentID][localID] = this.idMapStaged[parentID][localID]
-            delete this.idMapStaged[parentID][localID].___deleted___ 
+            this.idMapNext[parentID].ids[localID] = this.idMapStaged[parentID].ids[localID]
+            delete this.idMapStaged[parentID].ids[localID].deleted 
         } else {
-            this.idMapNext[localID] = this.idMapStaged[parentID][localID]
-            delete this.idMapStaged[localID].___deleted___ 
+            this.idMapNext[localID] = this.idMapStaged[parentID].ids[localID]
+            delete this.idMapStaged[localID].deleted 
         }
 
         return JSON.stringify(this.idMapStaged)
@@ -79,9 +76,9 @@ class IDMapRemote {
     changeID( newID, oldID, parentID ) {
 
         if( parentID ) {
-            if( this.idMapNext[parentID][oldID] && !this.idMapNext[parentID][newID] ) {
-                this.idMapNext[parentID][newID] = this.idMapNext[parentID][oldID]
-                delete this.idMapNext[parentID][oldID]
+            if( this.idMapNext[parentID].ids[oldID] && !this.idMapNext[parentID].ids[newID] ) {
+                this.idMapNext[parentID].ids[newID] = this.idMapNext[parentID].ids[oldID]
+                delete this.idMapNext[parentID].ids[oldID]
                 return this.commitResource(newID,parentID)
             }    
         } else {
@@ -100,9 +97,9 @@ class IDMapRemote {
         for( const resource of resources ) {
             const { localID, parentID } = resource
             if( parentID ) {
-                delete this.idMapStaged[parentID][localID] 
+                delete this.idMapStaged[parentID].ids[localID] 
             } else {
-                if( this.idMapStaged[localID].__multiPart__ ) {
+                if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
                     teiDocIDs.push( localID )
                 } else {
                     delete this.idMapStaged[localID]                     
@@ -121,8 +118,8 @@ class IDMapRemote {
         // move resource map from draft form to authoritative
         if( parentID ) {
             if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = {}
-            this.idMapStaged[parentID][localID] = this.idMapNext[parentID][localID]
-            delete this.idMapNext[parentID][localID] 
+            this.idMapStaged[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
+            delete this.idMapNext[parentID].ids[localID] 
         } else {
             this.idMapStaged[localID] = this.idMapNext[localID]
             delete this.idMapNext[localID]
@@ -139,9 +136,8 @@ class IDMapRemote {
 }
 
 function addLayer( idMapData, idMapLayer ) {
-    log.info("addLayer")
     for( const localID of Object.keys(idMapLayer) ) {
-        if( idMapLayer[localID].___deleted___ ) {
+        if( idMapLayer[localID].deleted ) {
            if( idMapData[localID] ) delete idMapData[localID]
         } else {
             // if this is a resourceMap entry, copy it

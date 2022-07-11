@@ -7,6 +7,7 @@ import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
+import { getBlankResourceMap } from "./id-map"
 
 const fairCopy = window.fairCopy
 
@@ -190,7 +191,7 @@ function createTEIDoc(name,localID,idMap) {
         parentResource: null,
         ...cloudInitialConfig
     }
-    const resourceMap = idMap.getBlankResourceMap(true)
+    const resourceMap = getBlankResourceMap(true)
     return {resourceEntry, content: "", resourceMap}
 }
 
@@ -222,7 +223,7 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     // map existing IDs
     const tempDoc = new TEIDocument(resourceEntry,null,fairCopyProject)
     const doc = parseText(textEl,tempDoc,teiSchema,type)
-    const resourceMap = idMap.mapResource( type, doc )
+    const resourceMap = idMap.mapResource( resourceEntry, doc )
 
     // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)
@@ -249,7 +250,7 @@ function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
     // generate resource map
     const { idMap } = fairCopyProject
     const facs = teiToFacsimile(content)        
-    const resourceMap = idMap.mapResource( 'facs', facs )
+    const resourceMap = idMap.mapResource( resourceEntry, facs )
 
     return { resourceEntry, content, resourceMap }
 }

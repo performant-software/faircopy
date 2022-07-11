@@ -146,7 +146,7 @@ export default class TEIDocument {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
 
         if( this.isEditable() ) {
-            const resourceMap = idMap.mapResource( 'text', transaction.doc )
+            const resourceMap = idMap.mapResource( this.resourceEntry, transaction.doc )
             // update the ID Map
             idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)  
             // note unsaved state

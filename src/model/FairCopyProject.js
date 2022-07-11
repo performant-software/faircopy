@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-
+import { getBlankResourceMap } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -111,7 +111,7 @@ export default class FairCopyProject {
                 ...cloudInitialConfig
             }
     
-            const resourceMap = this.idMap.mapResource( 'facs', facs )
+            const resourceMap = this.idMap.mapResource( resourceEntry, facs )
             this.addResource(resourceEntry, xml, resourceMap)
             onSuccess()
         })    
@@ -137,19 +137,19 @@ export default class FairCopyProject {
                 parentResource: resourceEntry.id,
                 ...cloudInitialConfig
             }    
-            this.addResource(resourceEntry, "", this.idMap.getBlankResourceMap(true))
-            this.addResource(headerEntry, teiHeaderTemplate(name), this.idMap.getBlankResourceMap(false))
+            this.addResource(resourceEntry, "", getBlankResourceMap(true))
+            this.addResource(headerEntry, teiHeaderTemplate(name), getBlankResourceMap(false))
         } else if( type === 'text' ) {
-            this.addResource(resourceEntry, teiTextTemplate, this.idMap.getBlankResourceMap(false))
+            this.addResource(resourceEntry, teiTextTemplate, getBlankResourceMap(false))
         } else if( type === 'facs' ) {
             // add a blank facs 
             const facs = { surfaces: [] }
             const xml = facsTemplate(facs)
-            this.addResource(resourceEntry,xml,this.idMap.getBlankResourceMap(false))
+            this.addResource(resourceEntry,xml,getBlankResourceMap(false))
         } else if( type === 'standOff') {
-            this.addResource(resourceEntry, teiStandOffTemplate, this.idMap.getBlankResourceMap(false))
+            this.addResource(resourceEntry, teiStandOffTemplate, getBlankResourceMap(false))
         } else if( type === 'sourceDoc') {
-            this.addResource(resourceEntry, teiSourceDocTemplate, this.idMap.getBlankResourceMap(false)) 
+            this.addResource(resourceEntry, teiSourceDocTemplate, getBlankResourceMap(false)) 
         } else {
             throw new Error("Attempted to create unknown document type.")
         }

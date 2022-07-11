@@ -202,7 +202,7 @@ export default class FacsDocument {
     save() {
         // Update the ID Map 
         const { idMap } = this.imageViewContext
-        const resourceMap = idMap.mapResource( 'facs', this.facs )
+        const resourceMap = idMap.mapResource( this.resourceEntry, this.facs )
         idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)
 
         // save the facs
