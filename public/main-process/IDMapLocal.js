@@ -1,3 +1,5 @@
+const { resourceIDToLocalIDs } = require('../../src/model/id-map')
+
 class IDMapLocal {
 
     constructor( idMapData, onUpdate ) {
