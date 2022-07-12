@@ -138,15 +138,14 @@ class IDMapRemote {
 function addLayer( idMapData, idMapLayer ) {
     for( const localID of Object.keys(idMapLayer) ) {
         if( idMapLayer[localID].deleted ) {
-           if( idMapData[localID] ) delete idMapData[localID]
+            // don't include maps for entries marked for deletion
+            if( idMapData[localID] ) delete idMapData[localID]
         } else {
-            // if this is a resourceMap entry, copy it
-            if( idMapLayer[localID].type ) {
-                idMapData[localID] = idMapLayer[localID]
+            // if this is an existing teidoc, merge ids, otherwise just copy over the lower layer
+            if( idMapLayer[localID].resourceType === 'teidoc' && idMapData[localID] ) {
+                addLayer( idMapData[localID].ids, idMapLayer[localID].ids )
             } else {
-                // otherwise, it is a parent map, add children 
-                if( !idMapData[localID] ) idMapData[localID] = {}
-                addLayer( idMapData[localID], idMapLayer[localID] )
+                idMapData[localID] = idMapLayer[localID]
             }
         }
     }

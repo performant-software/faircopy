@@ -10,8 +10,7 @@ class IDMapLocal {
 
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = {}
-            this.idMapNext[parentID][localID] = resourceMap
+            this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
         }
@@ -22,7 +21,7 @@ class IDMapLocal {
     // restore the specified resource to its previously saved state
     abandonResourceMap( localID, parentID ) {
         if( parentID ) {
-            delete this.idMapNext[parentID][localID]
+            delete this.idMapNext[parentID].ids[localID]
         } else {
             delete this.idMapNext[localID]
         }    
@@ -30,8 +29,7 @@ class IDMapLocal {
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = {}
-            this.idMapNext[parentID][localID] = resourceMap
+            this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
         }
@@ -44,8 +42,8 @@ class IDMapLocal {
         const idMap = JSON.parse(this.baseMapJSON)
 
         if( parentID ) {
-            delete this.idMapNext[parentID][localID]
-            delete idMap[parentID][localID]
+            delete this.idMapNext[parentID].ids[localID]
+            delete idMap[parentID].ids[localID]
         } else {
             delete this.idMapNext[localID]
             delete idMap[localID]
@@ -57,9 +55,9 @@ class IDMapLocal {
     changeID( newID, oldID, parentID ) {
 
         if( parentID ) {
-            if( this.idMapNext[parentID][oldID] && !this.idMapNext[parentID][newID] ) {
-                this.idMapNext[parentID][newID] = this.idMapNext[parentID][oldID]
-                delete this.idMapNext[parentID][oldID]
+            if( this.idMapNext[parentID].ids[oldID] && !this.idMapNext[parentID].ids[newID] ) {
+                this.idMapNext[parentID].ids[newID] = this.idMapNext[parentID].ids[oldID]
+                delete this.idMapNext[parentID].ids[oldID]
                 return this.commitResource(newID,parentID)
             }    
         } else {
@@ -77,8 +75,8 @@ class IDMapLocal {
         // move resource map from draft to base map
         const idMap = JSON.parse(this.baseMapJSON)
         if( parentID ) {
-            idMap[parentID][localID] = this.idMapNext[parentID][localID]
-            delete this.idMapNext[parentID][localID] 
+            idMap[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
+            delete this.idMapNext[parentID].ids[localID] 
         } else {
             idMap[localID] = this.idMapNext[localID]
             delete this.idMapNext[localID]
@@ -96,12 +94,10 @@ class IDMapLocal {
 
 function addLayer( idMapData, idMapLayer ) {
     for( const localID of Object.keys(idMapLayer) ) {
-        // if this is a resourceMap entry, copy it
-        if( idMapLayer[localID].type ) {
-            idMapData[localID] = idMapLayer[localID]
+        if( idMapLayer[localID].resourceType === 'teidoc' && idMapData[localID] ) {
+            addLayer( idMapData[localID].ids, idMapLayer[localID].ids )
         } else {
-            // otherwise, it is a parent map, add children 
-            addLayer( idMapData[localID], idMapLayer[localID] )
+            idMapData[localID] = idMapLayer[localID]
         }
     }
 }
