@@ -191,7 +191,7 @@ function createTEIDoc(name,localID,idMap) {
         parentResource: null,
         ...cloudInitialConfig
     }
-    const resourceMap = getBlankResourceMap(true)
+    const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
     return {resourceEntry, content: "", resourceMap}
 }
 

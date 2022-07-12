@@ -2,10 +2,10 @@ export function mapResource( resourceEntry, content ) {
     return (resourceEntry.type === 'facs') ? mapFacsIDs(resourceEntry,content) : mapTextIDs(resourceEntry,content)
 }
 
-export function getBlankResourceMap(resourceEntry) {
+export function getBlankResourceMap(resourceID,resourceType) {
     return {
-        resourceID: resourceEntry.id,
-        resourceType: resourceEntry.type,
+        resourceID,
+        resourceType,
         ids: {}
     }
 }
@@ -27,7 +27,7 @@ function getTextEntry() {
 }
 
 function mapFacsIDs(resourceEntry,facs) {
-    const resourceMap = getBlankResourceMap(resourceEntry)
+    const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
     const { surfaces } = facs
 
     const facsIDMap = resourceMap.ids
@@ -44,7 +44,7 @@ function mapFacsIDs(resourceEntry,facs) {
 }
 
 function mapTextIDs(resourceEntry,doc) {        
-    const resourceMap = getBlankResourceMap(resourceEntry)
+    const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
     const xmlIDMap = resourceMap.ids
     
     // gather up all xml:ids and their nodes/marks

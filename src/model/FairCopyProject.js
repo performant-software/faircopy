@@ -137,19 +137,19 @@ export default class FairCopyProject {
                 parentResource: resourceEntry.id,
                 ...cloudInitialConfig
             }    
-            this.addResource(resourceEntry, "", getBlankResourceMap(true))
-            this.addResource(headerEntry, teiHeaderTemplate(name), getBlankResourceMap(false))
+            this.addResource(resourceEntry, "", getBlankResourceMap(resourceEntry.id, resourceEntry.type))
+            this.addResource(headerEntry, teiHeaderTemplate(name), getBlankResourceMap(headerEntry.id, headerEntry.type))
         } else if( type === 'text' ) {
-            this.addResource(resourceEntry, teiTextTemplate, getBlankResourceMap(false))
+            this.addResource(resourceEntry, teiTextTemplate, getBlankResourceMap(resourceEntry.id, resourceEntry.type))
         } else if( type === 'facs' ) {
             // add a blank facs 
             const facs = { surfaces: [] }
             const xml = facsTemplate(facs)
-            this.addResource(resourceEntry,xml,getBlankResourceMap(false))
+            this.addResource(resourceEntry,xml,getBlankResourceMap(resourceEntry.id, resourceEntry.type))
         } else if( type === 'standOff') {
-            this.addResource(resourceEntry, teiStandOffTemplate, getBlankResourceMap(false))
+            this.addResource(resourceEntry, teiStandOffTemplate, getBlankResourceMap(resourceEntry.id, resourceEntry.type))
         } else if( type === 'sourceDoc') {
-            this.addResource(resourceEntry, teiSourceDocTemplate, getBlankResourceMap(false)) 
+            this.addResource(resourceEntry, teiSourceDocTemplate, getBlankResourceMap(resourceEntry.id, resourceEntry.type)) 
         } else {
             throw new Error("Attempted to create unknown document type.")
         }

@@ -1,4 +1,4 @@
-const { resourceIDToLocalIDs } = require('../../src/model/id-map')
+const { resourceIDToLocalIDs, getBlankResourceMap } = require('../../src/model/id-map')
 
 class IDMapRemote {
 
@@ -24,6 +24,7 @@ class IDMapRemote {
 
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
             this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
@@ -35,14 +36,15 @@ class IDMapRemote {
     // restore the specified resource to its previously saved state
     abandonResourceMap( localID, parentID ) {
         if( parentID ) {
-            delete this.idMapNext[parentID].ids[localID]
+            if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
         } else {
-            delete this.idMapNext[localID]
+            if( this.idMapNext[localID] ) delete this.idMapNext[localID]
         }    
     }
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
             this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
@@ -54,10 +56,10 @@ class IDMapRemote {
 
     removeResource( localID, parentID ) {
         if( parentID ) {
-            delete this.idMapNext[parentID].ids[localID]
+            if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
             this.idMapStaged[parentID].ids[localID].deleted = true
         } else {
-            delete this.idMapNext[localID]
+            if( this.idMapNext[localID] ) delete this.idMapNext[localID]
             this.idMapStaged[localID].deleted = true
         }
 
@@ -66,10 +68,11 @@ class IDMapRemote {
     
     recoverResource( localID, parentID ) {
         if( parentID ) {
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
             this.idMapNext[parentID].ids[localID] = this.idMapStaged[parentID].ids[localID]
             delete this.idMapStaged[parentID].ids[localID].deleted 
         } else {
-            this.idMapNext[localID] = this.idMapStaged[parentID].ids[localID]
+            this.idMapNext[localID] = this.idMapStaged[localID]
             delete this.idMapStaged[localID].deleted 
         }
 
@@ -125,6 +128,7 @@ class IDMapRemote {
     commitResource( localID, parentID ) {
         // move resource map from draft form to authoritative
         if( parentID ) {
+            if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
             this.idMapStaged[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
             delete this.idMapNext[parentID].ids[localID] 
         } else {
@@ -132,6 +136,29 @@ class IDMapRemote {
             delete this.idMapNext[localID]
         }    
         return JSON.stringify(this.idMapStaged)
+    }
+
+    copyParent( localID, layerID ) {
+        if( layerID === 'idMapNext' ) {
+            if( this.idMapStaged[localID] ) {
+                const { resourceID, resourceType } = this.idMapStaged[localID]
+                return getBlankResourceMap(resourceID, resourceType)
+            } else if( this.idMapData[localID] ) {
+                const { resourceID, resourceType } = this.idMapData[localID]
+                return getBlankResourceMap(resourceID, resourceType)
+            }  else {
+                throw new Error(`Layer not found: ${localID}`)
+            }
+        } else if( layerID === 'idMapStaged' ) {
+            if( this.idMapData[localID] ) {
+                const { resourceID, resourceType } = this.idMapData[localID]
+                return getBlankResourceMap(resourceID, resourceType)
+            }  else {
+                throw new Error(`Layer not found: ${localID}`)
+            }
+        } else {
+            throw new Error("Invalid layer ID passed to copyParent()")
+        }
     }
 
     sendIDMapUpdate() {
