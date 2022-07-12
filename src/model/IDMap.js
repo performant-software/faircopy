@@ -1,3 +1,5 @@
+import { resourceIDToLocalIDs } from "./id-map"
+
 const fairCopy = window.fairCopy
 
 export default class IDMap {
@@ -94,6 +96,10 @@ export default class IDMap {
             }
         }
         return uris.sort()
+    }
+
+    getLocalIDs(resourceID) {
+        return resourceIDToLocalIDs(resourceID,this.idMap)
     }
 
     isUnique(testID,parentLocalID=null) {

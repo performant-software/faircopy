@@ -6,6 +6,8 @@ class IDMapLocal {
         this.baseMapJSON = idMapData
         // this map is for unsaved changes made during editing 
         this.idMapNext = {}
+        // this is the merged, read-only map
+        this.idMap = {}
     }
 
     setResourceMap( resourceMap, localID, parentID ) {
@@ -71,6 +73,10 @@ class IDMapLocal {
         return this.baseMapJSON
     }
 
+    getLocalIDs(resourceID) {
+        return resourceIDToLocalIDs(resourceID,this.idMap)
+    }
+
     commitResource( localID, parentID ) {
         // move resource map from draft to base map
         const idMap = JSON.parse(this.baseMapJSON)
@@ -88,7 +94,8 @@ class IDMapLocal {
     sendIDMapUpdate() {
         const idMapData = JSON.parse( this.baseMapJSON )
         addLayer( idMapData, this.idMapNext )
-        this.onUpdate(idMapData)
+        this.idMap = idMapData
+        this.onUpdate(this.idMap)
     }
 }
 

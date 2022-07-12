@@ -11,6 +11,8 @@ class IDMapRemote {
         this.idMapStaged = JSON.parse(idMapData)
         // this map is for unsaved changes made during editing 
         this.idMapNext = {}
+        // this is the merged, read-only map
+        this.idMap = {}
     }
 
     setBaseMap(idMapData) {
@@ -93,12 +95,16 @@ class IDMapRemote {
         return JSON.stringify(this.idMapStaged)
     }
 
+    getLocalIDs(resourceID) {
+        return resourceIDToLocalIDs(resourceID,this.idMap)
+    }
+
     checkIn( resources ) {
         const teiDocIDs = []
         for( const resource of resources ) {
             const { localID, parentID: parentResourceID } = resource
             if( parentResourceID ) {
-                const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
+                const { localID: parentLocalID } = this.getLocalIDs(parentResourceID)
                 delete this.idMapStaged[parentLocalID].ids[localID] 
             } else {
                 if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
@@ -119,7 +125,6 @@ class IDMapRemote {
     commitResource( localID, parentID ) {
         // move resource map from draft form to authoritative
         if( parentID ) {
-            if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = {}
             this.idMapStaged[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
             delete this.idMapNext[parentID].ids[localID] 
         } else {
@@ -133,7 +138,8 @@ class IDMapRemote {
         const idMapData = JSON.parse( this.baseMapJSON )
         addLayer( idMapData, this.idMapStaged )
         addLayer( idMapData, this.idMapNext )
-        this.onUpdate(idMapData)
+        this.idMap = idMapData
+        this.onUpdate(this.idMap)
     }
 }
 
