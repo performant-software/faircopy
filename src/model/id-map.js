@@ -10,13 +10,13 @@ export function getBlankResourceMap(resourceEntry) {
     }
 }
 
-export function resourceIDToLocalID( targetID, idMap, parentID=null ) {
+export function resourceIDToLocalIDs( targetID, idMap, parentID=null ) {
     for( const localID of Object.keys(idMap) ) {
         const resourceMap = idMap[localID]
         const { resourceID, resourceType, ids } = resourceMap
         if( resourceID === targetID ) return { parentID, localID } 
         if( resourceType === 'teidoc' ) {
-            return resourceIDToLocalID( targetID, ids, localID )
+            return resourceIDToLocalIDs( targetID, ids, localID )
         } 
     }
     return null

@@ -1,3 +1,4 @@
+const { resourceIDToLocalIDs } = require('../../src/model/id-map')
 
 class IDMapRemote {
 
@@ -95,9 +96,10 @@ class IDMapRemote {
     checkIn( resources ) {
         const teiDocIDs = []
         for( const resource of resources ) {
-            const { localID, parentID } = resource
-            if( parentID ) {
-                delete this.idMapStaged[parentID].ids[localID] 
+            const { localID, parentID: parentResourceID } = resource
+            if( parentResourceID ) {
+                const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
+                delete this.idMapStaged[parentLocalID].ids[localID] 
             } else {
                 if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
                     teiDocIDs.push( localID )
