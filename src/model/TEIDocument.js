@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid'
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
+import {mapResource} from "./id-map"
 
 const fairCopy = window.fairCopy
 
@@ -146,7 +147,7 @@ export default class TEIDocument {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
 
         if( this.isEditable() ) {
-            const resourceMap = idMap.mapResource( this.resourceEntry, transaction.doc )
+            const resourceMap = mapResource( this.resourceEntry, transaction.doc )
             // update the ID Map
             idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)  
             // note unsaved state

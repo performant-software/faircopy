@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { getBlankResourceMap } from './id-map'
+import { getBlankResourceMap, mapResource } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -111,7 +111,7 @@ export default class FairCopyProject {
                 ...cloudInitialConfig
             }
     
-            const resourceMap = this.idMap.mapResource( resourceEntry, facs )
+            const resourceMap = mapResource( resourceEntry, facs )
             this.addResource(resourceEntry, xml, resourceMap)
             onSuccess()
         })    

@@ -1,4 +1,4 @@
-const { resourceIDToLocalIDs, getBlankResourceMap } = require('../../src/model/id-map')
+const { resourceIDToLocalIDs, getBlankResourceMap } = require('./id-map-authority')
 
 class IDMapRemote {
 

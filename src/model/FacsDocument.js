@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import {teiToFacsimile, facsimileToTEI, generateOrdinalID, setSurfaceTitle} from './convert-facs'
+import { mapResource } from './id-map'
 
 const fairCopy = window.fairCopy
 
@@ -202,7 +203,7 @@ export default class FacsDocument {
     save() {
         // Update the ID Map 
         const { idMap } = this.imageViewContext
-        const resourceMap = idMap.mapResource( this.resourceEntry, this.facs )
+        const resourceMap = mapResource( this.resourceEntry, this.facs )
         idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)
 
         // save the facs

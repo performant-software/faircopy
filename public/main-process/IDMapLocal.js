@@ -1,4 +1,4 @@
-const { resourceIDToLocalIDs } = require('../../src/model/id-map')
+const { resourceIDToLocalIDs } = require('./id-map-authority')
 
 class IDMapLocal {
 
