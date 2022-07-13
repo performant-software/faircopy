@@ -76,8 +76,7 @@ export default class ThumbnailMargin extends Component {
         for( const uri of uris ) {
             const resource = idMap.get(uri, parentEntry?.localID)
             if( resource && resource.type === 'facs' ) {                
-                const resourceID = fairCopyProject.getResourceID( resource.localID )
-                thumbResources.push({ ...resource, resourceID })
+                thumbResources.push({ ...resource })
             }
         }
         return thumbResources.length > 0 ? thumbResources : null   

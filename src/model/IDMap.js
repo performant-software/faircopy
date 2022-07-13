@@ -29,15 +29,15 @@ export default class IDMap {
                 const xmlID = url.hash ? url.hash.slice(1) : null // slice off #
                 const resourceMap = this.idMap[localID]
                 if( resourceMap ) {
-                    const { resourceType, ids } = resourceMap
+                    const { resourceType, resourceID, ids } = resourceMap
                     if( resourceType === 'teidoc' ) {
                         for( const childID of Object.keys(ids)) {
                             if( ids[childID][xmlID] ) {
-                                return { localID: childID, xmlID, ...ids[childID][xmlID] }
+                                return { localID: childID, xmlID, resourceID, ...ids[childID][xmlID] }
                             }
                         }
                     } else {
-                        return { localID, xmlID, ...ids[xmlID] }
+                        return { localID, xmlID, resourceID, ...ids[xmlID] }
                     }
                 } 
             }   
