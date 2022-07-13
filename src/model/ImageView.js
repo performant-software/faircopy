@@ -52,11 +52,8 @@ export default class ImageView {
         }
     }
 
-    siblingHasID(targetID) {
-        if( this.parentEntry ) {
-            return this.idMap.siblingHasID(targetID,this.resourceEntry.localID,this.parentEntry.localID)
-        } 
-        return false
+    isUnique(targetID,localID, parentID) {
+        return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
     }
 
     addUpdateListener(listener) {

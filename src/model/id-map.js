@@ -40,7 +40,7 @@ function mapFacsIDs(resourceEntry,facs) {
         }
     }
 
-    return facsIDMap
+    return resourceMap
 }
 
 function mapTextIDs(resourceEntry,doc) {        
@@ -60,7 +60,7 @@ function mapTextIDs(resourceEntry,doc) {
         return true
     })
 
-    return xmlIDMap
+    return resourceMap
 }
 
 function getThumbnailURL( surface, width=120 ) {

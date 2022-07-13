@@ -133,7 +133,7 @@ export default class AlertDialog extends Component {
     }
 
     renderConfirmSave() {
-        const { alertOptions, closeResources, exitOnClose, fairCopyProject } = this.props
+        const { alertOptions, closeResources, exitOnClose } = this.props
 
         const onSave = () => {
             const { resource, resourceIDs } = alertOptions
@@ -148,7 +148,7 @@ export default class AlertDialog extends Component {
         }
 
         const { resource } = alertOptions
-        const resourceName = fairCopyProject.resources[resource.resourceID].name
+        const resourceName = resource.resourceEntry.name
         const title = "Confirm Close"
         const message = `Close "${resourceName}" without saving?`
         const actions = [

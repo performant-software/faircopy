@@ -260,14 +260,8 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
     }
 
-    // TODO REFACTOR
-    siblingHasID(targetID, resourceID) {
-        const resourceEntry = this.resources[resourceID]
-        if( resourceEntry.parentResource ) {
-            const parentEntry = this.resources[resourceEntry.parentResource]
-            return this.idMap.siblingHasID(targetID,resourceEntry.localID,parentEntry.localID)
-        }    
-        return false
+    isUnique(targetID,localID, parentID) {
+        return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
     }
 
     areEditable = ( resourceIDs ) => {

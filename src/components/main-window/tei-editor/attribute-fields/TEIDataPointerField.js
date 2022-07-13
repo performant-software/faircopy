@@ -125,9 +125,8 @@ export default class TEIDataPointerField extends Component {
         }
 
         const { teiDocument, value } = this.props
-        const { fairCopyProject, resourceEntry } = teiDocument
+        const { fairCopyProject, resourceEntry, parentEntry } = teiDocument
         const { idMap } = fairCopyProject
-        const parentEntry = fairCopyProject.getParent(resourceEntry)
         const options = this.valuesToOptions( idMap.getRelativeURIList(resourceEntry.localID, parentEntry?.localID) )
         const values = value.length > 0 ? value.split(' ') : []
         const selectedOptions = this.valuesToOptions( values )
