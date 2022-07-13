@@ -68,31 +68,31 @@ export default class IDMap {
         return highestID + 1
     }
 
-    getRelativeURIList( localResourceID, parentID ) {
+    getRelativeURIList( localID, parentID ) {
         const uris = []
 
-        const getURIs = (resourceID, ids, local) => {
+        const getURIs = (resourceMapID, ids, local) => {
             for( const xmlID of Object.keys(ids)) {
                 if( local ) {
                     uris.push(`#${xmlID}`)
                 } else {
-                    uris.push(`${resourceID}#${xmlID}`)
+                    uris.push(`${resourceMapID}#${xmlID}`)
                 }
             }   
             return uris
         }
 
-        for( const resourceID of Object.keys(this.idMap) ) {
-            const resourceMap = this.idMap[resourceID]
+        for( const resourceMapID of Object.keys(this.idMap) ) {
+            const resourceMap = this.idMap[resourceMapID]
             const { resourceType, ids } = resourceMap
             if( resourceType === 'teidoc' ) {
-                const local = ( resourceID === parentID )
+                const local = ( resourceMapID === parentID )
                 for( const childID of Object.keys(ids) ) {
-                    getURIs(resourceID, ids[childID], local)
+                    getURIs(resourceMapID, ids[childID].ids, local)
                 }
             } else {
-                const local = ( resourceID === localResourceID )
-                getURIs(resourceID, ids, local)           
+                const local = ( resourceMapID === localID )
+                getURIs(resourceMapID, ids, local)           
             }
         }
         return uris.sort()
@@ -102,13 +102,13 @@ export default class IDMap {
         return resourceIDToLocalIDs(resourceID,this.idMap)
     }
 
-    isUnique(localID,parentID,xmlID=null) {
+    getResourceMap(localID,parentID) {
+        return parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
+    }
+
+    getResourceEntry(localID,parentID,xmlID) {
         const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
-        if( resourceMap && xmlID ) {
-            return !!resourceMap.ids[xmlID]
-        } else {
-            return !!resourceMap
-        }
+        return resourceMap ? resourceMap.ids[xmlID] : null
     }
 
     getUniqueID(baseID) {

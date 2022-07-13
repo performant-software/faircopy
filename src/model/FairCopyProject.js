@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { getBlankResourceMap, mapResource, resourceIDToLocalIDs } from './id-map'
+import { getBlankResourceMap, mapResource } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -260,9 +260,8 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
     }
 
-    isUnique(targetID,resourceID) {
-        const { localID, parentID } = resourceIDToLocalIDs(resourceID, this.idMap.idMap)
-        return this.idMap.isUnique(localID,parentID,targetID)
+    isUnique(targetID,localID, parentID) {
+        return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
     }
 
     areEditable = ( resourceIDs ) => {

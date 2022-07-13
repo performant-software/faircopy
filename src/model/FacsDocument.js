@@ -106,7 +106,7 @@ export default class FacsDocument {
         const { surfaces } = this.facs
 
         // check to see if this ID exists in the parent resource
-        if( this.imageViewContext.isUnique(targetID, this.resourceID) ) return true 
+        if( this.imageViewContext.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
 
         for( const surface of surfaces ) {
             if(surface.id === targetID ) return true
