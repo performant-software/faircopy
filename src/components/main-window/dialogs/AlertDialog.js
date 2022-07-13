@@ -133,7 +133,7 @@ export default class AlertDialog extends Component {
     }
 
     renderConfirmSave() {
-        const { alertOptions, closeResources, exitOnClose, fairCopyProject } = this.props
+        const { alertOptions, closeResources, exitOnClose } = this.props
 
         const onSave = () => {
             const { resource, resourceIDs } = alertOptions
