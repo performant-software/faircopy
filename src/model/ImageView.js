@@ -3,6 +3,7 @@ import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import { v4 as uuidv4 } from 'uuid'
 import { isLoggedIn } from './cloud-api/auth'
+import { resourceIDToLocalIDs } from "./id-map"
 
 const fairCopy = window.fairCopy
 
@@ -52,11 +53,9 @@ export default class ImageView {
         }
     }
 
-    siblingHasID(targetID) {
-        if( this.parentEntry ) {
-            return this.idMap.siblingHasID(targetID,this.resourceEntry.localID,this.parentEntry.localID)
-        } 
-        return false
+    isUnique(targetID,resourceID) {
+        const { localID, parentID } = resourceIDToLocalIDs(resourceID, this.idMap.idMap)
+        return this.idMap.isUnique(localID,parentID,targetID)
     }
 
     addUpdateListener(listener) {

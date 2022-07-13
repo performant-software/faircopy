@@ -102,22 +102,13 @@ export default class IDMap {
         return resourceIDToLocalIDs(resourceID,this.idMap)
     }
 
-    isUnique(testID,parentLocalID=null) {
-        if( parentLocalID ) {
-            return !this.siblingHasID(testID,null,parentLocalID)
+    isUnique(localID,parentID,xmlID=null) {
+        const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
+        if( resourceMap && xmlID ) {
+            return !!resourceMap.ids[xmlID]
         } else {
-            return this.idMap[testID] === undefined
+            return !!resourceMap
         }
-    }
-
-    siblingHasID(testID,localID,parentLocalID) {
-        const parentIDMap = this.idMap[parentLocalID]
-        for( const siblingID of Object.keys(parentIDMap)) {
-            if( localID !== siblingID ) {
-                if( parentIDMap[testID] || parentIDMap[siblingID][testID] ) return true
-            }
-        }
-        return false
     }
 
     getUniqueID(baseID) {

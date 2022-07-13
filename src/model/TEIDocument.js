@@ -121,7 +121,7 @@ export default class TEIDocument {
         let found = false
 
         // check to see if this ID exists in the parent resource
-        if( this.fairCopyProject.siblingHasID(targetID, this.resourceID) ) return true 
+        if( this.fairCopyProject.isUnique(targetID, this.resourceID) ) return true 
     
         const findID = (element) => {
             const xmlID = element.attrs['xml:id']
