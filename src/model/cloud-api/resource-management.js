@@ -25,8 +25,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
             resources: resourceObjs    
         }
     }
-    debugger
-
+    
     const checkInURL = `${serverURL}/api/resource_management/check_in`
 
     axios.post(checkInURL,checkInObj,authConfig(authToken)).then(
