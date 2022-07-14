@@ -233,8 +233,9 @@ class FairCopySession {
         const { resources } = this.projectStore.manifestData
         const committedResources = []
 
-        function createCommitEntry( resourceEntry ) {
+        const createCommitEntry = ( resourceEntry ) => {
             const { id, local, deleted, name, localID, parentResource: parentID, type } = resourceEntry
+            const resourceMap = this.idMapAuthority.getResourceMap(id)
             const action = deleted ? 'destroy' : local ? 'create' : 'update'
             return {
                 id,
@@ -242,6 +243,7 @@ class FairCopySession {
                 action,
                 localID,
                 parentID,
+                resourceMap,
                 resourceType: type
             }
         }

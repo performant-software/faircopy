@@ -18,7 +18,7 @@ class IDMapRemote {
     setBaseMap(idMapData) {
         // TODO scan for orphaned local resources and repair if necessary
         // this can happen if parent is deleted by another user
-        this.baseMapJSON = idMapData
+        this.baseMapJSON = JSON.stringify(idMapData)
         this.sendIDMapUpdate()
     }
 
@@ -100,6 +100,15 @@ class IDMapRemote {
 
     getLocalIDs(resourceID) {
         return resourceIDToLocalIDs(resourceID,this.idMap)
+    }
+
+    getResourceMap(resourceID) {
+        const { localID, parentID } = this.getLocalIDs(resourceID)
+        if( parentID ) {
+            return this.idMap[parentID].ids[localID]
+        } else {
+            return this.idMap[localID]
+        }
     }
 
     checkIn( resources ) {

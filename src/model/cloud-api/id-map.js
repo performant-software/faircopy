@@ -3,7 +3,7 @@ import axios from 'axios';
 import { authConfig } from './auth'
 
 export function getIDMap(serverURL, authToken, projectID, onSuccess, onFail) {
-    const getIDMapURL = `${serverURL}/api/idmap/${projectID}`
+    const getIDMapURL = `${serverURL}/api/id_map/${projectID}`
 
     axios.get(getIDMapURL,authConfig(authToken)).then(
         (okResponse) => {

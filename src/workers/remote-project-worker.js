@@ -45,7 +45,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
     
     switch( messageType ) {
         case 'open':
-            // updateIDMap( serverURL, authToken, projectID, postMessage )
+            updateIDMap( serverURL, authToken, projectID, postMessage )
             // updateConfig()
             updateResourceView( serverURL, projectID, initResourceViewState, authToken, postMessage )
             break

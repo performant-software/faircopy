@@ -5,7 +5,7 @@ import { authConfig } from './auth'
 export function checkInResources(serverURL, authToken, projectID, resources, message, onSuccess, onFail) {
    
     const resourceObjs = resources.map( (resource) => {
-        const { id, name, action, localID, parentID, resourceType, content } = resource
+        const { id, name, action, localID, parentID, resourceType, resourceMap, content } = resource
         return {
             resource_guid: id,
             name,        
@@ -13,6 +13,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
             local_id: localID,
             parent_id: parentID,
             resource_type: resourceType,
+            id_map_entry: resourceMap,
             resource_content: content
         }
     })
@@ -24,6 +25,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
             resources: resourceObjs    
         }
     }
+    debugger
 
     const checkInURL = `${serverURL}/api/resource_management/check_in`
 
