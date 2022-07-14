@@ -267,6 +267,7 @@ class FairCopySession {
     }
 
     checkOut(email, serverURL, projectID, resourceIDs) {
+        this.idMapAuthority.checkOut(resourceIDs)                
         this.projectStore.checkOut(email, serverURL, projectID, resourceIDs)
     }
 
