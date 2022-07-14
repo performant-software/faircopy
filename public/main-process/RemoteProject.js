@@ -36,6 +36,9 @@ class RemoteProject {
                 }
                 break
                 // case 'config-update':
+                case 'resources-updated':
+                    this.fairCopySession.requestResourceView()
+                    break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }

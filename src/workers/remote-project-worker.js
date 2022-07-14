@@ -1,6 +1,7 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
+import { connectCable } from "../model/cloud-api/activity-cable"
 
 const initResourceViewState = { 
     indexParentID: null,
@@ -15,10 +16,6 @@ function updateIDMap( serverURL, authToken, projectID, postMessage) {
     }, (error) => {
         throw new Error(error)
     })
-}
-
-function updateConfig() {
-    // TODO
 }
 
 function updateResourceView( serverURL, projectID, resourceView, authToken, postMessage ) {
@@ -37,6 +34,25 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
     }
 }
 
+function updateConfig() {
+    // TODO
+}
+
+const onNotification = (notification, workerData, postMessage) => {
+    const { email, serverURL, projectID } = workerData
+    const authToken = getAuthToken(email, serverURL)
+
+    if( notification === "resources_checked_in"  ) {
+        updateIDMap( serverURL, authToken, projectID, postMessage )       
+        postMessage({ messageType: 'resources-updated' })
+    }
+    // other possible notifications:
+    // resources_checked_out
+    // config_created
+    // config_checked_out
+    // config_checked_in
+}
+
 export function remoteProject( msg, workerMethods, workerData ) {
     const { messageType } = msg
     const { postMessage, close } = workerMethods
@@ -45,9 +61,10 @@ export function remoteProject( msg, workerMethods, workerData ) {
     
     switch( messageType ) {
         case 'open':
+            updateConfig()
             updateIDMap( serverURL, authToken, projectID, postMessage )
-            // updateConfig()
             updateResourceView( serverURL, projectID, initResourceViewState, authToken, postMessage )
+            connectCable(projectID, serverURL, authToken, (notification) => onNotification( notification, workerData, postMessage ) )
             break
         case 'get-resource':
             if( authToken ) {

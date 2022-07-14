@@ -5,7 +5,7 @@ class IDMapRemote {
     constructor( idMapData, onUpdate ) {
         this.onUpdate = onUpdate
         // the base map is updated by server 
-        this.baseMap = {}
+        this.idMapBase = {}
         // the staged id map is stored in project file, 
         // it contains saved but not checked in resource maps 
         this.idMapStaged = JSON.parse(idMapData)
@@ -18,7 +18,7 @@ class IDMapRemote {
     setBaseMap(idMapData) {
         // TODO scan for orphaned local resources and repair if necessary
         // this can happen if parent is deleted by another user
-        this.baseMap = idMapData
+        this.idMapBase = idMapData
         this.sendIDMapUpdate()
     }
 
@@ -136,12 +136,12 @@ class IDMapRemote {
 
     checkOut( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
-            const { parentID, localID } = resourceIDToLocalIDs(resourceID, this.idBaseMap)
+            const { parentID, localID } = resourceIDToLocalIDs(resourceID, this.idMapBase)
             if( parentID ) {
                 if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
-                this.idMapStaged[parentID].ids[localID] = this.idBaseMap[parentID].ids[localID]
+                this.idMapStaged[parentID].ids[localID] = this.idMapBase[parentID].ids[localID]
             } else {
-                this.idMapStaged[localID] = this.idBaseMap[localID]
+                this.idMapStaged[localID] = this.idMapBase[localID]
             }
         }
     }
@@ -164,15 +164,15 @@ class IDMapRemote {
             if( this.idMapStaged[localID] ) {
                 const { resourceID, resourceType } = this.idMapStaged[localID]
                 return getBlankResourceMap(resourceID, resourceType)
-            } else if( this.baseMap[localID] ) {
-                const { resourceID, resourceType } = this.baseMap[localID]
+            } else if( this.idMapBase[localID] ) {
+                const { resourceID, resourceType } = this.idMapBase[localID]
                 return getBlankResourceMap(resourceID, resourceType)
             }  else {
                 throw new Error(`Layer not found: ${localID}`)
             }
         } else if( layerID === 'idMapStaged' ) {
-            if( this.baseMap[localID] ) {
-                const { resourceID, resourceType } = this.baseMap[localID]
+            if( this.idMapBase[localID] ) {
+                const { resourceID, resourceType } = this.idMapBase[localID]
                 return getBlankResourceMap(resourceID, resourceType)
             }  else {
                 throw new Error(`Layer not found: ${localID}`)
@@ -183,7 +183,7 @@ class IDMapRemote {
     }
 
     sendIDMapUpdate() {
-        this.idMap = JSON.parse(JSON.stringify(this.baseMap))
+        this.idMap = JSON.parse(JSON.stringify(this.idMapBase))
         addLayer( this.idMap, this.idMapStaged )
         addLayer( this.idMap, this.idMapNext )
         this.onUpdate(this.idMap)
