@@ -67,8 +67,8 @@ class FairCopySession {
     addResource(resourceEntry,resourceData,resourceMap) {
         let idMap = null
         if( resourceMap ) {
-            const parentID = this.projectStore.getParentID(resourceEntry)
-            idMap = this.idMapAuthority.addResource(resourceEntry.localID,parentID,resourceMap)
+            const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceEntry.id)
+            idMap = this.idMapAuthority.addResource(localID,parentID,resourceMap)
             if(!this.projectStore.importInProgress) this.idMapAuthority.sendIDMapUpdate()    
         }
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
@@ -83,8 +83,8 @@ class FairCopySession {
                 // TODO all children must be removed before you can remove teidoc, but only for remote?
             }
             if( resourceEntry.type !== 'image' ) {
-                const ids = this.projectStore.getLocalIDs(resourceID)
-                idMap = this.idMapAuthority.removeResource(...ids)
+                const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
+                idMap = this.idMapAuthority.removeResource(localID, parentID)
                 this.idMapAuthority.sendIDMapUpdate()    
             }
             this.projectStore.removeResource(resourceID,idMap)    
@@ -95,9 +95,9 @@ class FairCopySession {
 
     recoverResource(resourceID) {
         this.projectStore.recoverResource(resourceID)
-        const ids = this.projectStore.getLocalIDs(resourceID)
-        this.idMapAuthority.recoverResource(...ids)
-        this.idMapAuthority.sendIDMapUpdate()    
+        const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
+        this.idMapAuthority.recoverResource(localID,parentID)
+        this.idMapAuthority.sendIDMapUpdate()
     }
 
     requestResourceView(nextResourceView=null) {
@@ -165,8 +165,8 @@ class FairCopySession {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
-            const ids = this.projectStore.getLocalIDs(resourceID)
-            const idMap = this.idMapAuthority.commitResource(...ids)
+            const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
+            const idMap = this.idMapAuthority.commitResource(localID, parentID)
             this.projectStore.saveResource(resourceEntry, resourceData, idMap)  
             return true  
         }
@@ -191,8 +191,8 @@ class FairCopySession {
     }
 
     abandonResourceMap(resourceID) {
-        const ids = this.projectStore.getLocalIDs( resourceID )
-        this.idMapAuthority.abandonResourceMap(...ids)
+        const { localID, parentID } = this.idMapAuthority.getLocalIDs( resourceID )
+        this.idMapAuthority.abandonResourceMap(localID,parentID)
         this.idMapAuthority.sendIDMapUpdate()
     }
 

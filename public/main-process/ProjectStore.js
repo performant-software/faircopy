@@ -382,18 +382,6 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    getLocalIDs( resourceID ) {
-        const { resources } = this.manifestData
-        const resourceEntry = resources[resourceID]
-        const localID = resourceEntry.localID
-        const parentID = this.getParentID( resourceEntry )
-        return [ localID, parentID ]
-    }
-
-    getParentID( resourceEntry ) {
-        return resourceEntry.parentResource ? this.manifestData.resources[resourceEntry.parentResource].localID : null
-    }
-
     getCheckedOutResources() {
         const resourceEntries = Object.values( this.manifestData.resources )
 
