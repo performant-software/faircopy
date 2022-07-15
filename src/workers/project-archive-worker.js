@@ -40,10 +40,12 @@ async function checkIn( email, serverURL, projectID, committedResources, message
         const onSuccess = (results) => {
             const resourceIDs = results.map( result => result.resource_guid )
             postMessage({ messageType: 'check-in-results', resourceIDs, error: null })
+            console.log(`Check in successful.`)
         }
     
         const onFail = (error) => {
             postMessage({ messageType: 'check-in-results', resourceIDs: [], error })
+            console.log(`Check in failed: ${error}`)
         }
     
         // add the content for each resource being added or updated

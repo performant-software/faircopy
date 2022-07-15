@@ -241,7 +241,7 @@ class FairCopySession {
 
         const createCommitEntry = ( resourceEntry ) => {
             const { id, local, deleted, name, localID, parentResource: parentID, type } = resourceEntry
-            const resourceMap = this.idMapAuthority.getResourceMap(id)
+            const resourceMap = !deleted ? this.idMapAuthority.getResourceMap(id) : null
             const action = deleted ? 'destroy' : local ? 'create' : 'update'
             return {
                 id,

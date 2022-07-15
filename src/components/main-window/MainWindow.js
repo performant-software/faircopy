@@ -403,7 +403,7 @@ export default class MainWindow extends Component {
                 {
                     const { fairCopyProject } = this.props
                     const alertOptions = { resourceIDs }
-                    if( fairCopyProject.areEditable( resourceIDs ) ) {
+                    if( fairCopyProject.areEditable( resourceEntries ) ) {
                         this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions })    
                     } else {
                         this.onAlertMessage("To delete a resource, you must first check it out.")

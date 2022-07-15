@@ -264,9 +264,9 @@ export default class FairCopyProject {
         return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
     }
 
-    areEditable = ( resourceIDs ) => {
-        for( const resourceID of resourceIDs ) {
-            if( !this.isEditable(resourceID) ) return false
+    areEditable = ( resourceEntries ) => {
+        for( const resourceEntry of resourceEntries ) {
+            if( !this.isEditable(resourceEntry) ) return false
         }
         return true
     }
