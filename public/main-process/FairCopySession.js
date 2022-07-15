@@ -67,8 +67,14 @@ class FairCopySession {
     addResource(resourceEntry,resourceData,resourceMap) {
         let idMap = null
         if( resourceMap ) {
-            const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceEntry.id)
-            idMap = this.idMapAuthority.addResource(localID,parentID,resourceMap)
+            const { localID } = resourceEntry
+            if( resourceEntry.parentResource ) {
+                const { localID: parentID } = this.idMapAuthority.getLocalIDs(resourceEntry.parentResource)
+                idMap = this.idMapAuthority.addResource(localID,parentID,resourceMap)
+            } else {
+                idMap = this.idMapAuthority.addResource(localID,null,resourceMap)
+            }
+            
             if(!this.projectStore.importInProgress) this.idMapAuthority.sendIDMapUpdate()    
         }
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
