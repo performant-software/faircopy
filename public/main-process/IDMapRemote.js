@@ -80,18 +80,31 @@ class IDMapRemote {
     }
 
     changeID( newID, oldID, parentID ) {
+        // move the resource map on both editable layers to the new address
 
-        if( parentID ) {
-            if( this.idMapNext[parentID].ids[oldID] && !this.idMapNext[parentID].ids[newID] ) {
-                this.idMapNext[parentID].ids[newID] = this.idMapNext[parentID].ids[oldID]
-                delete this.idMapNext[parentID].ids[oldID]
-                return this.commitResource(newID,parentID)
+        // update the next map 
+        const nextResourceMap = parentID ? this.idMapNext[parentID].ids[oldID] : this.idMapNext[oldID]
+        if( nextResourceMap ) {
+            if( parentID ) {
+                if(  !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
+                this.idMapNext[parentID].ids[newID] = nextResourceMap
+                if( this.idMapNext[parentID].ids[oldID] ) delete this.idMapNext[parentID].ids[oldID]
+            } else {
+                this.idMapNext[newID] = nextResourceMap
+                if( this.idMapNext[oldID] ) delete this.idMapNext[oldID]
             }    
-        } else {
-            if( this.idMapNext[oldID] && !this.idMapNext[newID] ) {
-                this.idMapNext[newID] = this.idMapNext[oldID]
-                delete this.idMapNext[oldID]
-                return this.commitResource(newID,parentID)
+        }
+
+        // update the staged map
+        const stagedResourceMap = parentID ? this.idMapStaged[parentID].ids[oldID] : this.idMapStaged[oldID]
+        if( stagedResourceMap ) {
+            if( parentID ) {
+                if(  !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
+                this.idMapStaged[parentID].ids[newID] = stagedResourceMap
+                if( this.idMapStaged[parentID].ids[oldID] ) delete this.idMapStaged[parentID].ids[oldID]
+            } else {
+                this.idMapStaged[newID] = stagedResourceMap
+                if( this.idMapStaged[oldID] ) delete this.idMapStaged[oldID]
             }    
         }
 

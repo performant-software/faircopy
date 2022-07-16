@@ -184,9 +184,16 @@ class FairCopySession {
         if( resources[resourceEntry.id] ) {
             const currentLocalID = resources[resourceEntry.id].localID
             resources[resourceEntry.id] = resourceEntry
+            // change local ID
             if( resourceEntry.localID !== currentLocalID ) {
-                const parentID = this.projectStore.getParentID(resourceEntry)
-                this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, parentID ) 
+                let idMap = null
+                if( resourceEntry.parentResource ) {
+                    const { localID: parentID } = this.idMapAuthority.getLocalIDs(resourceEntry.parentResource)
+                    idMap = this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, parentID ) 
+                } else {
+                    idMap = this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, null )     
+                }
+                this.projectStore.saveIDMap(idMap)
                 this.idMapAuthority.sendIDMapUpdate()
             }
             this.projectStore.saveManifest() 

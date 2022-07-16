@@ -307,6 +307,10 @@ class ProjectStore {
         this.save()
     }
 
+    saveIDMap(idMap) {
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
+    }
+
     saveFairCopyConfig( fairCopyConfig ) {
         this.migratedConfig = null
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: fairCopyConfig })
