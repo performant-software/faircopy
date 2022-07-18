@@ -11,7 +11,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
             name,        
             action,
             local_id: localID,
-            parent_id: parentID,
+            parent_guid: parentID,
             resource_type: resourceType,
             id_map_entry: resourceMap,
             resource_content: content
