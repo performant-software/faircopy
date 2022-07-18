@@ -13,7 +13,8 @@ const resourceIDToLocalIDs = function resourceIDToLocalIDs( targetID, idMap, par
         const { resourceID, resourceType, ids } = resourceMap
         if( resourceID === targetID ) return { parentID, localID } 
         if( resourceType === 'teidoc' ) {
-            return resourceIDToLocalIDs( targetID, ids, localID )
+            const result = resourceIDToLocalIDs( targetID, ids, localID )
+            if( result ) return result
         } 
     }
     return null
