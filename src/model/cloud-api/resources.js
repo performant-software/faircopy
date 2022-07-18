@@ -34,9 +34,9 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
     axios.get(getResourceURL,authConfig(authToken)).then(
         (okResponse) => {
             const { resource } = okResponse.data
-            const { parent_entry, resource_content: content } = resource             
+            const { parent_resource, resource_content: content } = resource             
             const resourceEntry = createResourceEntry(resource)
-            const parentEntry = parent_entry ? createResourceEntry(parent_entry) : null
+            const parentEntry = parent_resource ? createResourceEntry(parent_resource) : null
             onSuccess({resourceEntry,parentEntry,content})
         },
         (errorResponse) => {
