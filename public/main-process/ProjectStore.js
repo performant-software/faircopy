@@ -204,6 +204,7 @@ class ProjectStore {
     importEnd() {
         this.importRunning(false)
         this.saveManifest()
+        this.fairCopyApplication.fairCopySession.requestResourceView()
     }
 
     importRunning(running) {

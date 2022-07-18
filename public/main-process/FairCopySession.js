@@ -75,7 +75,7 @@ class FairCopySession {
                 idMap = this.idMapAuthority.addResource(localID,null,resourceMap)
             }
             
-            if(!this.projectStore.importInProgress) this.idMapAuthority.sendIDMapUpdate()    
+            this.idMapAuthority.sendIDMapUpdate()    
         }
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
     }
