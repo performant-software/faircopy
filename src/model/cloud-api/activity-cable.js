@@ -9,7 +9,7 @@ export function connectCable(projectID, serverURL, authToken, onNotification ) {
         },
         {
           received(data) {
-            onNotification(data.notification_type)
+              onNotification(data)
           }
         }
     )

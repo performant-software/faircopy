@@ -37,8 +37,13 @@ class RemoteProject {
                 break
                 // case 'config-update':
                 case 'resources-updated':
+                {
+                    const { resources } = msg
+                    // TODO determine which resources need to be updated 
+                    // TODO what does this have to do with delete again?
                     this.fairCopySession.requestResourceView()
-                    break
+                }
+                break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }
