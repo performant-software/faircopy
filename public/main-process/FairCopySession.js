@@ -101,8 +101,7 @@ class FairCopySession {
 
     recoverResource(resourceID) {
         this.projectStore.recoverResource(resourceID)
-        const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
-        this.idMapAuthority.recoverResource(localID,parentID)
+        this.idMapAuthority.recoverResource(resourceID)
         this.idMapAuthority.sendIDMapUpdate()
     }
 
