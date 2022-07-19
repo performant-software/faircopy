@@ -609,7 +609,7 @@ export default class MainWindow extends Component {
                 { this.renderAlertDialog() }
                 <ImportConsoleDialog
                     fairCopyProject={fairCopyProject}
-                    parentResourceID={indexParentID}
+                    parentEntry={teiDocEntry}
                 ></ImportConsoleDialog>
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}

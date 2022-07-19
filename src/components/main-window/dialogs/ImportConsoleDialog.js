@@ -44,7 +44,7 @@ export default class ImportConsoleDialog extends Component {
             this.setState({...this.state, consoleLines: nextConsole, importList, open: true })            
         } 
         else if( command === 'next' ) {
-            const { fairCopyProject, parentResourceID } = this.props
+            const { fairCopyProject, parentEntry } = this.props
             const { successCount, subResourceCount, totalCount, importList } = this.state
 
             // One import resource can generate many resources, count through them before continuing with next import.
@@ -66,7 +66,7 @@ export default class ImportConsoleDialog extends Component {
                     }                    
                 } else {
                     nextConsole.push(`Importing file ${filename}...`)
-                    const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentResourceID)
+                    const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentEntry)
                     nextSubResourceCount = resourceCount
                     if( error ) {
                         nextConsole.push(errorMessage)
