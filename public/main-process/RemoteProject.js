@@ -22,6 +22,12 @@ class RemoteProject {
                         this.fairCopySession.resourceOpened( resourceEntry, parentEntry, content )   
                     }
                     break
+                case 'got-parent':
+                    { 
+                        const { resourceEntry, parentEntry, content } = msg
+                        this.fairCopySession.parentFound( resourceEntry, parentEntry, content )   
+                    }
+                    break
                 case 'resource-view-update':
                     {
                         const { resourceView, remoteResources } = msg
@@ -54,6 +60,10 @@ class RemoteProject {
 
     close() {
         this.remoteProjectWorker.postMessage({ messageType: 'close' })
+    }
+
+    getParentEntry(resourceEntry, content) {
+        this.remoteProjectWorker.postMessage({ messageType: 'get-parent', resourceEntry, content })
     }
 
     openResource(resourceID) {

@@ -10,7 +10,6 @@ class FairCopySession {
         this.projectStore = new ProjectStore(fairCopyApplication)
         this.projectStore.openProject(targetFile, this.onProjectOpened )
         this.remote = false
-        this.remoteParentEntries = {}
         this.resourceView = { 
             indexParentID: null,
             parentEntry: null,
@@ -35,19 +34,6 @@ class FairCopySession {
         if( this.remote ) {
             const { email, serverURL, projectID } = manifestData
             this.remoteProject = new RemoteProject(this, email, serverURL, projectID )
-            this.initRemoteParents()
-        }
-    }
-
-    // keep a cache of parent entries for local resources that have parents that aren't local
-    initRemoteParents() {
-        const localResources = this.projectStore.manifestData.resources
-        for( const resource of Object.values(localResources) ) {
-            const { parentResource } = resource
-            // if we don't have this entry, request it from server
-            if( !localResources[parentResource] && !this.remoteParentEntries[parentResource] ) {
-                this.openResource(parentResource)          
-            }
         }
     }
 
@@ -220,15 +206,20 @@ class FairCopySession {
     }
 
     resourceOpened(resourceEntry, parentEntry, resource) {
-        if( !resource && !resourceEntry.local ) {
-            // if this is a remote parent entry, update cache
-            this.remoteParentEntries[resourceEntry.id] = resourceEntry
+        if( this.remote && !parentEntry && resourceEntry.parentResource ) {
+            // parent is remote and resourceEntry is local or checked out
+            // go lookup the parent entry to complete this payload
+            this.remoteProject.getParentEntry(resourceEntry, resource)
         } else {
-            // if there's no local parent entry, look for it in cache
-            const pEntry = !parentEntry && resourceEntry.parentResource ? this.remoteParentEntries[resourceEntry.parentResource] : parentEntry
-            this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry: pEntry, resource } )
-            log.info(`opened resourceID: ${resourceEntry.id}`)    
+            this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
+            log.info(`opened resourceID: ${resourceEntry.id}`)        
         }
+    }
+
+    // parent found, send complete resourceOpened message
+    parentFound(resourceEntry, parentEntry, resource) {
+        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
+        log.info(`got parent, opened resourceID: ${resourceEntry.id}`)        
     }
 
     importStart(paths,options) {
