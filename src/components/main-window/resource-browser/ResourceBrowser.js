@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
-
 import { isEntryEditable } from '../../../model/FairCopyProject'
+
+const fairCopy = window.fairCopy
 
 export default class ResourceBrowser extends Component {
 
@@ -132,7 +133,7 @@ export default class ResourceBrowser extends Component {
   renderResourceTable() {
     const { onResourceAction, fairCopyProject, resourceView, resourceIndex } = this.props
     const { remote: remoteProject, email } = fairCopyProject
-    const { currentPage, rowsPerPage } = resourceView
+    const { currentPage, rowsPerPage, totalRows } = resourceView
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
@@ -228,10 +229,10 @@ export default class ResourceBrowser extends Component {
       )
     }
 
-    // TODO make this update view
-    const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
-    // const start = rowsPerPage * currentPage
-    // const end = start + 100
+    const onChangePage = (e,page) => { 
+      const nextResourceView = { ...resourceView, currentPage: page+1 }
+      fairCopy.services.ipcSend('requestResourceView', nextResourceView )
+    }
   
     return (
       <Paper >
@@ -257,9 +258,9 @@ export default class ResourceBrowser extends Component {
           <TablePagination
               component="div"
               rowsPerPageOptions={[rowsPerPage]}
-              count={resourceRows.length}
+              count={totalRows}
               rowsPerPage={rowsPerPage}
-              page={currentPage}
+              page={currentPage-1}
               onPageChange={onChangePage}
           />
       </Paper>

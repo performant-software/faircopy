@@ -6,8 +6,9 @@ import { connectCable } from "../model/cloud-api/activity-cable"
 const initResourceViewState = { 
     indexParentID: null,
     parentEntry: null,
-    currentPage: 0, 
-    rowsPerPage: 100
+    currentPage: 1, 
+    rowsPerPage: 100,
+    totalRows: null
 }
 
 function updateIDMap( serverURL, authToken, projectID, postMessage) {
@@ -22,8 +23,9 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
     if( authToken ) {
         const { currentPage, rowsPerPage, indexParentID } = resourceView
         getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceData) => {
-            const { parentEntry, remoteResources } = resourceData
+            const { parentEntry, remoteResources, totalRows } = resourceData
             resourceView.parentEntry = parentEntry
+            resourceView.totalRows = totalRows
             postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
         }, 
         (error) => {

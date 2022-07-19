@@ -45,8 +45,9 @@ export default class MainWindow extends Component {
             resourceView: { 
                 indexParentID: null,
                 parentEntry: null,
-                currentPage: 0, 
-                rowsPerPage: 100
+                currentPage: 1, 
+                rowsPerPage: 100,
+                totalRows: 0
             },
             resourceIndex: [],
             resourceBrowserOpen: true,
@@ -366,7 +367,7 @@ export default class MainWindow extends Component {
             case 'open-teidoc':
                 {
                 // send resourceIDs as new parent ID
-                const nextResourceView = { ...this.state.resourceView, indexParentID: resourceIDs, currentPage: 0 }
+                const nextResourceView = { ...this.state.resourceView, indexParentID: resourceIDs, currentPage: 1 }
                 fairCopy.services.ipcSend('requestResourceView', nextResourceView )
                 this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true })
                 }
@@ -388,7 +389,7 @@ export default class MainWindow extends Component {
                 return false
             case 'home':
                 {
-                const nextResourceView = { ...this.state.resourceView, indexParentID: null, currentPage: 0 }
+                const nextResourceView = { ...this.state.resourceView, indexParentID: null, currentPage: 1 }
                 fairCopy.services.ipcSend('requestResourceView', nextResourceView )
                 this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true })    
                 }
