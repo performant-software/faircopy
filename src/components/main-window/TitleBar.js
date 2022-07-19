@@ -13,7 +13,7 @@ export default class TitleBar extends Component {
 
     onClickTeiDoc = () => {
         const { onResourceAction, teiDocID } = this.props
-        onResourceAction('open-teidoc',[teiDocID])        
+        onResourceAction('open-teidoc',teiDocID)        
     }
 
     renderHomeButton() {         
