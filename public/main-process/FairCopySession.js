@@ -141,10 +141,15 @@ class FairCopySession {
         if( indexParentID !== null && !resourceView.parentEntry ) {
             resourceView.parentEntry = localResources[indexParentID]
         }
-
+        
+        let localCount = 0
         for( const localResource of Object.values(localResources) ) {
             if( localResource.parentResource === indexParentID && localResource.type !== 'image' ) {
-                resourceIndex.push(localResource)
+                // local resources only appear on 1st page.
+                if( currentPage === 1 ) {
+                    resourceIndex.push(localResource) 
+                } 
+                localCount++
             }
         }
 
@@ -152,13 +157,17 @@ class FairCopySession {
             // if we have a local entry, don't add remote entry
             if( !localResources[remoteResource.id] ) {
                 resourceIndex.push(remoteResource)
+            } else {
+                // don't count these twice
+                localCount--
             }
         }
         this.resourceView = resourceView
 
+        // the first page has all the local resources on it, so it might have more rows
         const start = rowsPerPage * (currentPage-1)
-        const end = start + rowsPerPage
-        this.resourceView.totalRows = resourceIndex.length
+        const end = currentPage > 1 ? start + rowsPerPage : rowsPerPage + localCount
+        this.resourceView.totalRows = this.resourceView.totalRows + localCount
         resourceIndex = resourceIndex.slice(start,end)
 
         this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceView: this.resourceView, resourceIndex })
