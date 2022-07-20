@@ -65,9 +65,11 @@ class ProjectStore {
                 case 'check-in-results':
                     {
                         const { resourceIDs, error } = msg
-                        this.switchToRemote(resourceIDs)
+                        if( !error ) {
+                            this.switchToRemote(resourceIDs)
+                            this.fairCopyApplication.fairCopySession.requestResourceView()               
+                        }
                         this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs, error ) 
-                        if( !error ) this.fairCopyApplication.fairCopySession.requestResourceView()           
                     }
                     break
                 case 'check-out-results':

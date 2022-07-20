@@ -166,7 +166,7 @@ class FairCopySession {
 
         // the first page has all the local resources on it, so it might have more rows
         const start = rowsPerPage * (currentPage-1)
-        const end = currentPage > 1 ? start + rowsPerPage : rowsPerPage + localCount
+        const end = currentPage !== 1 ? start + rowsPerPage : rowsPerPage + localCount
         this.resourceView.totalRows = this.resourceView.totalRows + localCount
         resourceIndex = resourceIndex.slice(start,end)
 
