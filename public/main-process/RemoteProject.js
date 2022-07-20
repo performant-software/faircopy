@@ -18,14 +18,14 @@ class RemoteProject {
             switch( messageType ) {
                 case 'resource-data':
                     {
-                        const { resourceEntry, parentEntry, content } = msg
-                        this.fairCopySession.resourceOpened( resourceEntry, parentEntry, content )   
+                        const { resourceEntry, parentEntry, content, xmlID } = msg
+                        this.fairCopySession.resourceOpened( resourceEntry, parentEntry, content, xmlID )   
                     }
                     break
                 case 'got-parent':
                     { 
-                        const { resourceEntry, parentEntry, content } = msg
-                        this.fairCopySession.parentFound( resourceEntry, parentEntry, content )   
+                        const { resourceEntry, parentEntry, content, xmlID } = msg
+                        this.fairCopySession.parentFound( resourceEntry, parentEntry, content, xmlID )   
                     }
                     break
                 case 'resource-view-update':
@@ -62,12 +62,12 @@ class RemoteProject {
         this.remoteProjectWorker.postMessage({ messageType: 'close' })
     }
 
-    getParentEntry(resourceEntry, content) {
-        this.remoteProjectWorker.postMessage({ messageType: 'get-parent', resourceEntry, content })
+    getParentEntry(resourceEntry, content, xmlID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'get-parent', resourceEntry, content, xmlID })
     }
 
-    openResource(resourceID) {
-        this.remoteProjectWorker.postMessage({ messageType: 'get-resource', resourceID })
+    openResource(resourceID, xmlID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'get-resource', resourceID, xmlID })
     }
 
     requestResourceView(resourceView) {

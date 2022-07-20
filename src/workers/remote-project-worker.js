@@ -72,10 +72,10 @@ export function remoteProject( msg, workerMethods, workerData ) {
             break
         case 'get-resource':
             if( authToken ) {
-                const { resourceID } = msg              
+                const { resourceID, xmlID } = msg              
                 getResource(serverURL, authToken, resourceID, (response) => {
                     const { resourceEntry, parentEntry, content } = response
-                    postMessage({ messageType: 'resource-data', resourceEntry, parentEntry, content })
+                    postMessage({ messageType: 'resource-data', resourceEntry, parentEntry, content, xmlID })
                 }, (errorMessage) => {
                     // TODO handle errors
                 })    
@@ -85,10 +85,10 @@ export function remoteProject( msg, workerMethods, workerData ) {
             break
         case 'get-parent':
             if( authToken ) {
-                const { resourceEntry, content } = msg 
+                const { resourceEntry, content, xmlID } = msg 
                 getResource(serverURL, authToken, resourceEntry.parentResource, (response) => {
                     const { resourceEntry: parentEntry } = response
-                    postMessage({ messageType: 'got-parent', resourceEntry, parentEntry, content })
+                    postMessage({ messageType: 'got-parent', resourceEntry, parentEntry, content, xmlID })
                 }, (errorMessage) => {
                     // TODO handle errors
                 })

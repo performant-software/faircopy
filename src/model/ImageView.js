@@ -1,6 +1,7 @@
 import FacsDocument from "./FacsDocument"
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
+import { isEntryEditable } from "./FairCopyProject"
 import { v4 as uuidv4 } from 'uuid'
 import { isLoggedIn } from './cloud-api/auth'
 
@@ -67,6 +68,12 @@ export default class ImageView {
     isLoggedIn = () => {
         if( !this.remote ) return false
         return isLoggedIn( this.email, this.serverURL )
+    }
+
+    isEditable = ( resourceEntry ) => {
+        // can always edit in a local project
+        if( !this.remote ) return true
+        return isEntryEditable(resourceEntry, this.email )
     }
 
     updateResource( nextResourceEntry ) {     

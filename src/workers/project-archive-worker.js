@@ -276,9 +276,9 @@ export function projectArchive( msg, workerMethods, workerData ) {
     switch( messageType ) {
         case 'read-resource':
             {
-                const { resourceID } = msg
+                const { resourceID, xmlID } = msg
                 readUTF8(resourceID, zip).then(resource => {
-                    postMessage({ messageType: 'resource-data', resourceID, resource })
+                    postMessage({ messageType: 'resource-data', resourceID, xmlID, resource })
                 })
             }
             break
@@ -298,15 +298,6 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 })
             }
             break    
-        case 'open-image-view':
-            {
-                const { imageViewData, resourceID } = msg
-                readUTF8(resourceID, zip).then( (resource) => {
-                    imageViewData.resource = resource
-                    postMessage({ messageType: 'image-view-ready', resourceID, imageViewData })
-                })
-            } 
-            break
         case 'write-resource':
             {
                 const { resourceID, data } = msg

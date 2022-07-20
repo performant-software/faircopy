@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 const log = require('electron-log')
 const { RemoteProject } = require('./RemoteProject')
 const { ProjectStore } = require('./ProjectStore')
@@ -208,29 +210,57 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()
     }
 
-    openResource(resourceID) {
+    openResource(resourceID, xmlID=null ) {
         if( this.remote && !this.projectStore.manifestData.resources[resourceID]) {
-            this.remoteProject.openResource(resourceID)
+            this.remoteProject.openResource(resourceID, xmlID)
         } else {
-            this.projectStore.openResource(resourceID)
+            this.projectStore.openResource(resourceID, xmlID)
         }
     }
 
-    resourceOpened(resourceEntry, parentEntry, resource) {
+    resourceOpened(resourceEntry, parentEntry, resource, xmlID) {
         if( this.remote && !parentEntry && resourceEntry.parentResource ) {
             // parent is remote and resourceEntry is local or checked out
             // go lookup the parent entry to complete this payload
-            this.remoteProject.getParentEntry(resourceEntry, resource)
+            this.remoteProject.getParentEntry(resourceEntry, resource, xmlID)
         } else {
-            this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
-            log.info(`opened resourceID: ${resourceEntry.id}`)        
+            if( xmlID ) {
+                // at the moment, only image views use xmlID
+                this.openImageView( { xmlID, resourceEntry, parentEntry, resource } )
+            } else {
+                this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
+                log.info(`opened resourceID: ${resourceEntry.id}`)            
+            }
         }
     }
 
     // parent found, send complete resourceOpened message
-    parentFound(resourceEntry, parentEntry, resource) {
-        this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
-        log.info(`got parent, opened resourceID: ${resourceEntry.id}`)        
+    parentFound(resourceEntry, parentEntry, resource, xmlID) {
+        if( xmlID ) {
+            this.openImageView( { xmlID, resourceEntry, parentEntry, resource } )
+        } else {
+            this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
+            log.info(`got parent, opened resourceID: ${resourceEntry.id}`)            
+        }
+    }
+
+    openImageView( resourceData ) {
+        const { resourceEntry } = resourceData
+        const imageViewData = { ...resourceData }
+
+        const { baseDir } = this.fairCopyApplication
+        imageViewData.teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
+        imageViewData.idMap = this.idMapAuthority.idMap
+
+         // mix in remote project data if needed
+         if( this.remote ) {
+            const { email, serverURL } = this.projectStore.manifestData
+            imageViewData.email = email
+            imageViewData.serverURL = serverURL
+            imageViewData.remote = true
+        }
+        const imageView = this.fairCopyApplication.imageViews[resourceEntry.id]
+        imageView.webContents.send('imageViewOpened', imageViewData )    
     }
 
     importStart(paths,options) {
@@ -303,13 +333,6 @@ class FairCopySession {
     requestExport(resourceEntries,path) {
         this.projectStore.requestExport(resourceEntries,path)
     }
-
-    openImageView(imageViewInfo) {
-        const { idMapNext } = this.idMapAuthority
-        const idMap = JSON.stringify(idMapNext)
-        this.projectStore.openImageView(imageViewInfo,idMap)
-    }
-
 }
 
 exports.FairCopySession = FairCopySession

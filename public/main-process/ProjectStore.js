@@ -33,10 +33,10 @@ class ProjectStore {
                     break
                 case 'resource-data':
                     {
-                        const { resourceID, resource } = msg
+                        const { resourceID, xmlID, resource } = msg
                         const resourceEntry = this.manifestData.resources[resourceID]
                         const parentEntry = this.manifestData.resources[resourceEntry.parentResource]
-                        this.fairCopyApplication.fairCopySession.resourceOpened( resourceEntry, parentEntry, resource )
+                        this.fairCopyApplication.fairCopySession.resourceOpened( resourceEntry, parentEntry, resource, xmlID )
                     }
                     break
                 case 'index-resource':
@@ -60,20 +60,6 @@ class ProjectStore {
                     {
                         const { cacheFile } = msg
                         if( cacheFile ) this.fairCopyApplication.localFileProtocolCallback(decodeURIComponent(cacheFile))
-                    }
-                    break
-                case 'image-view-ready':
-                    {
-                        const { resourceID, imageViewData } = msg
-                        // mix in remote project data if needed
-                        if( this.manifestData.remote ) {
-                            const { email, serverURL } = this.manifestData
-                            imageViewData.email = email
-                            imageViewData.serverURL = serverURL
-                            imageViewData.remote = true
-                        }
-                        const imageView = this.fairCopyApplication.imageViews[resourceID]
-                        imageView.webContents.send('imageViewOpened', imageViewData )    
                     }
                     break
                 case 'check-in-results':
@@ -165,19 +151,6 @@ class ProjectStore {
 
         const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
         this.onProjectOpened( projectData )
-    }
-
-    openImageView(imageViewInfo, idMap) {
-        const { resourceID, xmlID, parentID } = imageViewInfo
-        const { baseDir } = this.fairCopyApplication
-        const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-
-        const resourceEntry = this.manifestData.resources[resourceID]
-        const parentEntry = this.manifestData.resources[parentID]
-        if( resourceEntry ) {
-            const imageViewData = { resourceEntry, parentEntry, xmlID, teiSchema, idMap }
-            this.projectArchiveWorker.postMessage({ messageType: 'open-image-view', resourceID, imageViewData })
-        }
     }
 
     async importStart(paths,options) {
@@ -366,10 +339,10 @@ class ProjectStore {
         }    
     }
 
-    openResource(resourceID) {
+    openResource(resourceID,xmlID) {
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            this.projectArchiveWorker.postMessage({ messageType: 'read-resource', resourceID })
+            this.projectArchiveWorker.postMessage({ messageType: 'read-resource', resourceID, xmlID })
         }
     }
 
