@@ -109,10 +109,10 @@ export default class MainWindowStatusBar extends Component {
 
     render() {
         const { onFeedback, fairCopyProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
-
+        const { remote } = fairCopyProject
         return (
             <footer id="MainWindowStatusBar" className="bar">
-                    <SearchBar
+                    { !remote && <SearchBar
                         fairCopyProject={fairCopyProject}
                         searchEnabled={searchEnabled}
                         searchSelectionIndex={searchSelectionIndex}
@@ -123,7 +123,7 @@ export default class MainWindowStatusBar extends Component {
                         onSearchResults={onSearchResults}
                         onSearchFilter={onSearchFilter}
                         searchFilterOptions={searchFilterOptions}
-                    ></SearchBar>
+                    ></SearchBar> }
                     { this.renderStatusButton() }
                     <Tooltip title="Send developer feedback">
                         <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
