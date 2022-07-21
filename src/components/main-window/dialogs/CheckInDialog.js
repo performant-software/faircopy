@@ -80,7 +80,8 @@ export default class CheckInDialog extends Component {
         const resourceRows = resources.map( resource => { 
             const { local, deleted, localID, name } = resource
             const editable = isEntryEditable(resource, fairCopyProject.email)
-            const { icon, label } = getActionIcon(done, deleted, local, editable )
+            let { icon, label } = getActionIcon(done, local, editable )
+            if( deleted ) icon = 'fa-trash'
 
             return (
                 <TableRow key={`resource-${resource.id}`}>
@@ -88,10 +89,10 @@ export default class CheckInDialog extends Component {
                         <i aria-label={label} className={`fa ${icon} fa-lg`}></i>
                     </TableCell>
                     <TableCell {...cellProps} >
-                        {name}
+                        <Typography>{name}</Typography>
                     </TableCell>
                     <TableCell {...cellProps} >
-                        {localID}
+                        <Typography>{localID}</Typography>
                     </TableCell>
             </TableRow>
             )

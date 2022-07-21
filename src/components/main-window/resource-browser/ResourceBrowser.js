@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
+import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable } from '../../../model/FairCopyProject'
@@ -137,6 +137,7 @@ export default class ResourceBrowser extends Component {
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
+      if( resource.deleted ) return
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
         onResourceAction( 'open-teidoc', resourceID )         
@@ -193,8 +194,10 @@ export default class ResourceBrowser extends Component {
       const check = !!checked[id] 
       const resourceIcon = getResourceIcon(type)
       const editable = isEntryEditable( resource, email )
-      const { label, icon } = getActionIcon( false, deleted, local, editable )
+      const { label, icon } = getActionIcon( false, local, editable )
       const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
+      const textClass = deleted ? 'deleted-resource' : ''
+      const iconClass = deleted ? 'deleted-icon' : ''
       
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
@@ -203,21 +206,21 @@ export default class ResourceBrowser extends Component {
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-            { icon && <i aria-label={label} className={`fa ${icon} fa-lg`}></i> }
+            { icon && <i aria-label={label} className={`fa ${icon} ${iconClass} fa-lg`}></i> }
           </TableCell>
           }
           <TableCell {...cellProps} >
-            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} fa-lg`}></i>
+            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
           </TableCell>
           <TableCell {...cellProps} >
-            {name}
+            <Typography className={textClass}>{name}</Typography>
           </TableCell>
           <TableCell {...cellProps} >
-            {localID}
+            <Typography className={textClass}>{localID}</Typography>
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-            { lastModified }
+            <Typography className={textClass}>{lastModified}</Typography>
           </TableCell>        
           }
         </TableRow>
