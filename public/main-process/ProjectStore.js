@@ -85,6 +85,7 @@ class ProjectStore {
                             this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
                             this.saveManifest()      
                         }
+                        this.fairCopyApplication.fairCopySession.requestResourceView()     
                     }
                     break
                 default:

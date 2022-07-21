@@ -92,6 +92,7 @@ class FairCopySession {
         this.projectStore.recoverResource(resourceID)
         this.idMapAuthority.recoverResource(resourceID)
         this.idMapAuthority.sendIDMapUpdate()
+        this.requestResourceView()
     }
 
     requestResourceView(nextResourceView=null) {
