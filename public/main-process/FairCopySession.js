@@ -324,7 +324,6 @@ class FairCopySession {
 
     checkOut(email, serverURL, projectID, resourceIDs) {
         this.idMapAuthority.checkOut(resourceIDs)            
-        // TODO add header to checkout    
         this.projectStore.checkOut(email, serverURL, projectID, resourceIDs)
     }
 

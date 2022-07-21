@@ -320,9 +320,6 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { email, serverURL, projectID } = fairCopyProject
         fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
-
-        // TODO response
-        // this.onAlertMessage(message)
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {

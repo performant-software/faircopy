@@ -192,9 +192,9 @@ export default class ResourceBrowser extends Component {
       const { id, name, localID, type, local, deleted } = resource 
       const check = !!checked[id] 
       const resourceIcon = getResourceIcon(type)
-      const status = local ? 'local' : 'online'
-      const { label, icon } = getActionIcon( false, deleted, local, isEntryEditable( resource, email ))
-      const lastModified = ''
+      const editable = isEntryEditable( resource, email )
+      const { label, icon } = getActionIcon( false, deleted, local, editable )
+      const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
       
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
@@ -215,11 +215,6 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             {localID}
           </TableCell>
-          { remoteProject && 
-          <TableCell {...cellProps} >
-           { status }
-          </TableCell>
-          }
           { remoteProject && 
           <TableCell {...cellProps} >
             { lastModified }
@@ -246,7 +241,6 @@ export default class ResourceBrowser extends Component {
                           <TableCell>Type</TableCell>
                           <TableCell>Name</TableCell>
                           <TableCell>ID</TableCell>
-                          { remoteProject && <TableCell>Status</TableCell> }
                           { remoteProject && <TableCell>Last Modified</TableCell> }
                       </TableRow>
                   </TableHead>
