@@ -65,11 +65,12 @@ class ProjectStore {
                 case 'check-in-results':
                     {
                         const { resourceIDs, error } = msg
+                        let resourceEntries = []
                         if( !error ) {
-                            this.switchToRemote(resourceIDs)
+                            resourceEntries = this.switchToRemote(resourceIDs)
                             this.fairCopyApplication.fairCopySession.requestResourceView()               
                         }
-                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceIDs, error ) 
+                        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceEntries, error ) 
                     }
                     break
                 case 'check-out-results':
@@ -351,15 +352,18 @@ class ProjectStore {
     switchToRemote(resourceIDs) {
         const { email } = this.manifestData
         // remove remote resources from project file and manifest, update all windows 
+        const resourceEntries = []
         for( const resourceID of resourceIDs ) {
             this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
             const resourceEntry = this.manifestData.resources[resourceID]
             resourceEntry.local = false
             resourceEntry.lastAction = { action_type: 'check_in', user: { email } }
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
+            resourceEntries.push(resourceEntry)
             delete this.manifestData.resources[resourceID] 
         }
         this.saveManifest()
+        return resourceEntries
     }
 
     getCheckedOutResources() {

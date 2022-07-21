@@ -19,7 +19,7 @@ export default class CheckInDialog extends Component {
         super()
         this.initialState = {
             message: "",
-            checkedOutResources: null,
+            resourcesToCommit: [],
             committedResources: [],
             done: false,
             errorMessage: null
@@ -41,36 +41,46 @@ export default class CheckInDialog extends Component {
     }
 
     onCheckedOutResources = (event,checkedOutResources) => {
-        this.setState({...this.state, checkedOutResources })
+        const { checkInResources } = this.props
+        
+        let resourcesToCommit = []
+        for( const resourceID of checkInResources ) {
+            const resource = checkedOutResources[resourceID]
+            // ignore resources that aren't checked out
+            if( resource ) {
+                const { parentResource: parentID } = resource
+                if( parentID ) {
+                    const parentResource = checkedOutResources[parentID]
+                    // add local parent resources if they aren't on the list
+                    if( parentResource && parentResource.local && !resourcesToCommit.includes(parentResource) ) {
+                        resourcesToCommit.push(parentResource)    
+                    }
+                }
+                resourcesToCommit.push(resource)    
+            }
+        }
+        this.setState({...this.state, resourcesToCommit })
     }
 
-    onCheckInResults = (event,resourceIDs,error) => {
+    onCheckInResults = (event,resourceEntries,error) => {
         if( error ) {
             this.setState({...this.state, committedResources: [], done: false, errorMessage: error })
         } else {
-            this.setState({...this.state, committedResources: resourceIDs, errorMessage: null })
+            this.setState({...this.state, committedResources: resourceEntries, done: true, errorMessage: null })
         }
     }
 
     renderResourceTable() {
-        const { checkInResources, fairCopyProject } = this.props
-        const { committedResources, checkedOutResources, done } = this.state
+        const { fairCopyProject } = this.props
+        const { committedResources, resourcesToCommit, done } = this.state
 
-        let resources = []
-        if( checkedOutResources ) {
-            // ignore resources that aren't checked out
-            for( const resourceID of checkInResources ) {
-                const resource = checkedOutResources[resourceID]
-                if(resource) resources.push(resource)
-            }
-        } 
-        resources = resources.sort((a, b) => a.name.localeCompare(b.name))
+        const resourceList = done ? committedResources : resourcesToCommit
+        const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
         const resourceRows = resources.map( resource => { 
-            const { id, local, deleted, localID, name } = resource
-            const checkedIn = committedResources.includes(id)
+            const { local, deleted, localID, name } = resource
             const editable = isEntryEditable(resource, fairCopyProject.email)
-            const { icon, label } = getActionIcon(checkedIn, deleted, local, editable )
+            const { icon, label } = getActionIcon(done, deleted, local, editable )
 
             return (
                 <TableRow key={`resource-${resource.id}`}>
@@ -111,11 +121,11 @@ export default class CheckInDialog extends Component {
     }
 
     onCheckIn = () => {              
-        const { fairCopyProject, checkInResources } = this.props
+        const { fairCopyProject } = this.props
         const { email, serverURL, projectID } = fairCopyProject
-        const { message } = this.state   
-        fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, checkInResources, message )
-        this.setState({...this.state, done: true})
+        const { message, resourcesToCommit } = this.state   
+        const resourceIDs = resourcesToCommit.map( r => r.id )
+        fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )
     }
 
     renderCommitField() {
