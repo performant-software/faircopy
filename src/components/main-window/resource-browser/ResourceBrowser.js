@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
-import { isEntryEditable } from '../../../model/FairCopyProject'
+import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 
 const fairCopy = window.fairCopy
 
@@ -194,7 +194,8 @@ export default class ResourceBrowser extends Component {
       const check = !!checked[id] 
       const resourceIcon = getResourceIcon(type)
       const editable = isEntryEditable( resource, email )
-      const { label, icon } = getActionIcon( false, local, editable )
+      const checkedOutRemote = !editable ? isCheckedOutRemote( resource, email ) : false
+      const { label, icon } = getActionIcon( false, local, editable|deleted, checkedOutRemote )
       const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
       const textClass = deleted ? 'deleted-resource' : ''
       const iconClass = deleted ? 'deleted-icon' : ''
@@ -206,7 +207,7 @@ export default class ResourceBrowser extends Component {
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-            { icon && <i aria-label={label} className={`fa ${icon} ${iconClass} fa-lg`}></i> }
+            { icon && <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i> }
           </TableCell>
           }
           <TableCell {...cellProps} >

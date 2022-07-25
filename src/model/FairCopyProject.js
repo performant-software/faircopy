@@ -293,3 +293,14 @@ export function isEntryEditable( resourceEntry, email ) {
     const { email: actor } = user
     return actionType === 'check_out' && actor === email
 }
+
+export function isCheckedOutRemote( resourceEntry, email ) {
+    if( resourceEntry.local ) return true
+    if( resourceEntry.deleted ) return false
+
+    // can only edit files checked out by me
+    const { lastAction } = resourceEntry
+    const { action_type: actionType, user } = lastAction
+    const { email: actor } = user
+    return actionType === 'check_out' && actor !== email
+}

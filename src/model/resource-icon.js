@@ -37,18 +37,21 @@ export function getResourceIcon(resourceType, open=false) {
     }
   }
 
-  export function getActionIcon(checkedIn, local, editable) {
+  export function getActionIcon(checkedIn, local, editable, checkedOutRemote) {
     if( checkedIn ) {
       // Done
-      return { icon: 'fa-check', label: 'Checked In' }
+      return { icon: 'fa fa-check', label: 'Checked In' }
     } else {
+      if( checkedOutRemote ) {
+        return { icon: 'far fa-pen', label: 'Checked Out'}
+      }
       if( local ) {
           // Create
-          return { icon: 'fa-plus-circle', label: 'Create' }
+          return { icon: 'fa fa-plus-circle', label: 'Create' }
       } else {
           // Update
           if( editable ) { 
-            return { icon: 'fa-pen', label: 'Update' }
+            return { icon: 'fa fa-pen', label: 'Checked Out by You' }
           } else {
             // Not editable
             return { icon: null, label: null }

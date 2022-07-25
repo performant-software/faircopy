@@ -28,6 +28,7 @@ import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
+import { isEntryEditable, isCheckedOutRemote } from '../../model/FairCopyProject';
 
 const fairCopy = window.fairCopy
 
@@ -316,9 +317,23 @@ export default class MainWindow extends Component {
         this.setState({...this.state, checkInMode: true, checkInResources})
     }
 
-    checkOutResources(resourceIDs) {
+    checkOutResources(resourceEntries) {
         const { fairCopyProject } = this.props
         const { email, serverURL, projectID } = fairCopyProject
+
+        const resourceIDs = []
+        for( const resourceEntry of resourceEntries ) {
+            if( isEntryEditable(resourceEntry, email) ) {
+                this.onAlertMessage(`"${resourceEntry.name}" has already been checked out by you.`)
+                return
+            } else if( isCheckedOutRemote(resourceEntry, email) ) {
+                this.onAlertMessage(`"${resourceEntry.name}" is checked out by another user.`)
+                return 
+            } else {
+                resourceIDs.push(resourceEntry.id)
+            }
+        }
+
         fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
     }
 
@@ -379,7 +394,7 @@ export default class MainWindow extends Component {
                 this.checkInResources(resourceIDs)
                 return true
             case 'check-out':
-                this.checkOutResources(resourceIDs)
+                this.checkOutResources(resourceEntries)
                 return false
             case 'close':
                 this.closeResources(resourceIDs)
