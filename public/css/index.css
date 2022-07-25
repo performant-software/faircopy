@@ -1,7 +1,7 @@
 
 @import "root.css";
 @import "annotorious.min.css";
-@import "lds-ring-spinner.css";
+@import "ring-spinner.css";
 
 @import "EditorGutter.css";
 @import "TEIElementStyles.css";

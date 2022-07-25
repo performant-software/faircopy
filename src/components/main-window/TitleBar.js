@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
 import { IconButton, Tooltip } from '@material-ui/core'
-import { ldsRingSpinner } from '../common/lds-ring-spinner'
+import { inlineRingSpinner } from '../common/ring-spinner'
 
 const maxTitleLength = 120
 
@@ -56,7 +56,7 @@ export default class TitleBar extends Component {
         return (
             <div className="breadcrumbs">                
                 <Typography component="h2" variant="h6">
-                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && ldsRingSpinner() }
+                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && inlineRingSpinner() }
                 </Typography>
             </div>
         )

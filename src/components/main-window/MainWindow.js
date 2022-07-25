@@ -29,6 +29,7 @@ import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import { isEntryEditable, isCheckedOutRemote } from '../../model/FairCopyProject';
+import { bigRingSpinner } from '../common/ring-spinner'
 
 const fairCopy = window.fairCopy
 
@@ -484,8 +485,10 @@ export default class MainWindow extends Component {
         const remoteProject = fairCopyProject.remote
 
         const editors = []
+        let visible = false
         for( const resource of Object.values(openResources) ) {
             const hidden = selectedResource !== resource.resourceID
+            if( !hidden ) visible = true
             const key = `editor-${resource.resourceID}`
             const { resourceEntry, parentEntry } = resource
 
@@ -536,6 +539,11 @@ export default class MainWindow extends Component {
                     ></FacsEditor>
                 )                     
             }
+        }
+
+        // no visible editors have been added to the list, render a spinner
+        if( selectedResource && !visible ) {
+            editors.push(<div key="spinner">{bigRingSpinner()}</div>)
         }
 
         return editors 
