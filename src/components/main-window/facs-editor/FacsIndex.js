@@ -277,8 +277,7 @@ export default class FacsIndex extends Component {
                     <TitleBar 
                         resourceName={ resourceEntry.name } 
                         onResourceAction={onResourceAction} 
-                        teiDocID={ parentResource ? parentResource.id : null } 
-                        teiDocName={ parentResource ? parentResource.name : null }
+                        parentResource={ parentResource } 
                         isImageWindow={isWindowed}
                         isLoggedIn={isLoggedIn}
                     >

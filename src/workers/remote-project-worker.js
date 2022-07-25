@@ -8,7 +8,8 @@ const initResourceViewState = {
     parentEntry: null,
     currentPage: 1, 
     rowsPerPage: 100,
-    totalRows: null
+    totalRows: null,
+    loading: true
 }
 
 function updateIDMap( serverURL, authToken, projectID, postMessage) {
@@ -26,6 +27,7 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
             const { parentEntry, remoteResources, totalRows } = resourceData
             resourceView.parentEntry = parentEntry
             resourceView.totalRows = totalRows
+            resourceView.loading = false
             postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
         }, 
         (error) => {

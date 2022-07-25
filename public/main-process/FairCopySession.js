@@ -17,7 +17,8 @@ class FairCopySession {
             parentEntry: null,
             currentPage: 1, 
             rowsPerPage: 100,
-            totalRows: null
+            totalRows: null,
+            loading: true
         }
     }
 
@@ -119,6 +120,7 @@ class FairCopySession {
             const end = start + rowsPerPage
             this.resourceView.totalRows = resourceIndex.length
             resourceIndex = resourceIndex.slice(start,end)
+            this.resourceView.loading = false
 
             this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceView: this.resourceView, resourceIndex } )
         }

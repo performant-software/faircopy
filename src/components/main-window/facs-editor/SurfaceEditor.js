@@ -227,8 +227,7 @@ export default class SurfaceEditor extends Component {
                         resourceName={ resourceEntry.name } 
                         onClickResource={onClickResource} 
                         surfaceName={surfaceNames.title} onResourceAction={onResourceAction}
-                        teiDocID={ parentResource ? parentResource.id : null } 
-                        teiDocName={ parentResource ? parentResource.name : null } 
+                        parentResource={ parentResource } 
                         isImageWindow={isWindowed}
                         isLoggedIn={isLoggedIn}
                         >

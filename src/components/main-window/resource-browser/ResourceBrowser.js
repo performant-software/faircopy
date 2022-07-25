@@ -140,7 +140,7 @@ export default class ResourceBrowser extends Component {
       if( resource.deleted ) return
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
-        onResourceAction( 'open-teidoc', resourceID )         
+        onResourceAction( 'open-teidoc', resourceID, resource )         
       } else {
         onResourceAction( 'open', [resourceID] )         
       }
@@ -266,12 +266,13 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDoc, fairCopyProject, onResourceAction } = this.props
+      const { width, teiDoc, fairCopyProject, onResourceAction, resourceView } = this.props
+      const { loading } = resourceView
       const { remote, isLoggedIn } = fairCopyProject
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remote}></TitleBar>
+          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remote} loading={loading}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
