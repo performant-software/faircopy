@@ -302,7 +302,7 @@ class FairCopySession {
                 action,
                 localID,
                 parentID,
-                resourceMap,
+                resourceMap: resourceMap?.ids,
                 resourceType: type
             }
         }
