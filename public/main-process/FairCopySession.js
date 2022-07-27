@@ -316,6 +316,7 @@ class FairCopySession {
                 // automatically add header if teidoc  
                 if( resourceEntry.type === 'teidoc' ) {
                     const headerEntry = Object.values(resources).find( r => (r.parentResource === resourceEntry.id && r.type === 'header') )
+                    if( resourceEntry.deleted ) headerEntry.deleted = true
                     committedResources.push(createCommitEntry(headerEntry))
                 }
             }

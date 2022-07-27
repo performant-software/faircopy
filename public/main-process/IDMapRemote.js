@@ -126,8 +126,8 @@ class IDMapRemote {
     }
 
     checkIn( resources ) {
-        // We're doing two things here, first we're removing items that are no longer checked out from the idMapStaged. We are also 
-        // adding these updated items to idMapBase. This is just so that the data is immediately correct, the authoritative
+        // We're doing two things here. First, we're removing items that are no longer checked out from the idMapStaged. Second,
+        // we are adding these updated items to idMapBase. This is just so that the data is immediately correct, the authoritative
         // update will come from the server shortly.
         const teiDocIDs = []
         for( const resource of resources ) {
