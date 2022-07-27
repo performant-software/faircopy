@@ -15,11 +15,12 @@ export default class ReadOnlyToolbar extends Component {
     render() {
         const { teiDocument } = this.props
         const disabled = !teiDocument.fairCopyProject.isLoggedIn()
+        const header = teiDocument.resourceType === 'header'
 
         return (
             <div id="ReadOnlyToolbar">
                 <div className="leftgroup">
-                    <Button disabled={disabled} onClick={this.onCheckOut} variant="outlined" size='small'>Check Out</Button>
+                    { !header && <Button disabled={disabled} onClick={this.onCheckOut} variant="outlined" size='small'>Check Out</Button> }
                 </div>
                 <div className="rightgroup">
                 </div>
