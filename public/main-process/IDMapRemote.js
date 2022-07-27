@@ -134,22 +134,32 @@ class IDMapRemote {
             const { localID, parentID: parentResourceID } = resource
             if( parentResourceID ) {
                 const { localID: parentLocalID } = this.getLocalIDs(parentResourceID)
-                if( !this.idMapBase[parentLocalID] ) this.idMapBase[parentLocalID] = getBlankResourceMap(parentResourceID, 'teidoc')
-                this.idMapBase[parentLocalID].ids[localID] = this.idMapStaged[parentLocalID].ids[localID]
-                delete this.idMapStaged[parentLocalID].ids[localID] 
+                if( resource.deleted ) {
+                    delete this.idMapBase[parentLocalID].ids[localID]
+                } else {
+                    if( !this.idMapBase[parentLocalID] ) this.idMapBase[parentLocalID] = getBlankResourceMap(parentResourceID, 'teidoc')
+                    this.idMapBase[parentLocalID].ids[localID] = this.idMapStaged[parentLocalID].ids[localID]
+                }
+                delete this.idMapStaged[parentLocalID].ids[localID]
             } else {
                 this.idMapBase[localID] = this.idMapStaged[localID]
                 if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
                     teiDocIDs.push( localID )
                 } else {
+                    if( resource.deleted ) {
+                        delete this.idMapBase[localID]          
+                    } 
                     delete this.idMapStaged[localID]                     
-                }
+                }    
             }
         }
         // only remove teidoc if it has no children left in this map 
         for( const teiDocID of teiDocIDs ) {
             if( Object.keys(this.idMapStaged[teiDocID]).length === 1 ) {
                 delete this.idMapStaged[teiDocID]
+            }
+            if( Object.keys(this.idMapBase[teiDocID]).length === 1 ) {
+                delete this.idMapBase[teiDocID]
             }
         }
     }
