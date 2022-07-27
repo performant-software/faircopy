@@ -133,7 +133,7 @@ class IDMapRemote {
         for( const resource of resources ) {
             const { localID, parentID: parentResourceID } = resource
             if( parentResourceID ) {
-                const { localID: parentLocalID } = this.getLocalIDs(parentResourceID)
+                const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
                 if( resource.deleted ) {
                     delete this.idMapBase[parentLocalID].ids[localID]
                 } else {
