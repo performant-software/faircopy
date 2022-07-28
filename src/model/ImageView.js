@@ -1,7 +1,9 @@
 import FacsDocument from "./FacsDocument"
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
+import { isEntryEditable } from "./FairCopyProject"
 import { v4 as uuidv4 } from 'uuid'
+import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -12,27 +14,35 @@ export default class ImageView {
         this.idMap = new IDMap(imageViewData.idMap)
         this.resourceEntry = imageViewData.resourceEntry
         this.parentEntry = imageViewData.parentEntry
-        this.facsDocument = new FacsDocument( this.resourceEntry.id, this, imageViewData.resource )
+        this.facsDocument = new FacsDocument( this.resourceEntry, this.parentEntry, this, imageViewData.resource )
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
+        this.remote = imageViewData.remote
+        this.email = imageViewData.email
+        this.serverURL = imageViewData.serverURL
         this.lastResourceEntryMessage = null   
     }
 
-    onResourceEntryUpdated = (e, d) => {
-        const nextResourceEntry = JSON.parse(d.resourceEntry)
-        this.onResourceUpdated(nextResourceEntry)
+    onResourceEntryUpdated = (e, resourceEntry ) => {
+        this.onResourceUpdated({resourceEntry})
         // also listen for updates to parent
-        if( this.parentEntry && this.parentEntry.id === nextResourceEntry.id ) {
-            this.parentEntry = nextResourceEntry
-        }
+        if( this.parentEntry && this.parentEntry.id === resourceEntry.id ) {
+            this.parentEntry = resourceEntry
+        }    
+    }
+
+    onResourceContentUpdated = (e, resourceID, messageID, resourceContent) => {
+        this.onResourceUpdated({resourceID, messageID, resourceContent})
     }
 
     componentDidMount() {
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
     }
 
     componentWillUnmount() {
         fairCopy.services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
     }
 
     // Called when resource entry is updated by a different window process
@@ -43,11 +53,8 @@ export default class ImageView {
         }
     }
 
-    siblingHasID(targetID) {
-        if( this.parentEntry ) {
-            return this.idMap.siblingHasID(targetID,this.resourceEntry.localID,this.parentEntry.localID)
-        } 
-        return false
+    isUnique(targetID,localID, parentID) {
+        return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
     }
 
     addUpdateListener(listener) {
@@ -58,12 +65,15 @@ export default class ImageView {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
-    getResourceEntry() {
-        return this.resourceEntry
+    isLoggedIn = () => {
+        if( !this.remote ) return false
+        return isLoggedIn( this.email, this.serverURL )
     }
 
-    getParent() {
-        return this.parentEntry
+    isEditable = ( resourceEntry ) => {
+        // can always edit in a local project
+        if( !this.remote ) return true
+        return isEntryEditable(resourceEntry, this.email )
     }
 
     updateResource( nextResourceEntry ) {     

@@ -1,4 +1,7 @@
 import JSZip from 'jszip'
+import { getAuthToken } from '../model/cloud-api/auth'
+import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
+import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 
 const fairCopy = window.fairCopy
 
@@ -30,18 +33,118 @@ function addFile( localFilePath, resourceID, zip ) {
     zip.file(resourceID, buffer)
 }
 
-async function prepareResourceExport( resourceEntry, zip ) {
-    const resourceData = {}
+async function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
+    const authToken = getAuthToken( email, serverURL )
 
-    if( resourceEntry.type === 'teidoc' ) {
-        for( const resourceID of resourceEntry.resources ) {
-            resourceData[resourceID] = await readUTF8( resourceID, zip )
-        }    
+    if( authToken ) {
+        const onSuccess = (results) => {
+            const resourceIDs = results.map( result => result.resource_guid )
+            postMessage({ messageType: 'check-in-results', resourceIDs, error: null })
+            console.log(`Check in successful.`)
+        }
+    
+        const onFail = (error) => {
+            postMessage({ messageType: 'check-in-results', resourceIDs: [], error })
+            console.log(`Check in failed: ${error}`)
+        }
+    
+        // add the content for each resource being added or updated
+        for( const committedResource of committedResources ) {
+            if( committedResource.action !== 'destroy' && committedResource.type !== 'teidoc' ) {
+                committedResource.content = await readUTF8(committedResource.id, zip)
+            } else {
+                committedResource.content = null
+            }
+        }
+      
+        checkInResources(serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
     } else {
-        resourceData[resourceEntry.id] = await readUTF8( resourceEntry.id, zip )
+        postMessage({ messageType: 'check-in-results', resourceIDs: [], error: "User not logged in." })
+    }
+}
+
+async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage ) {
+    const authToken = getAuthToken( email, serverURL )
+    const resources = {}
+
+    if( authToken ) {
+        try {
+            const resourceStates = await checkOutResources( serverURL, authToken, projectID, resourceIDs )
+            
+            // get the contents for each resource and add them to the project 
+            for( const resourceState of resourceStates ) {
+                const { resource_guid: resourceID, state } = resourceState
+                if( state === 'success') {
+                    const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
+                    resources[resourceEntry.id] = { resourceEntry, parentEntry, content }
+                    await writeUTF8( resourceEntry.id, content, zip )    
+                }
+            }
+            postMessage({ messageType: 'check-out-results', resources, error: null })
+
+        } catch (e) {
+            postMessage({ messageType: 'check-out-results', resources, error: e.errorMessage })
+        }          
+    } else {
+        postMessage({ messageType: 'check-out-results', resources, error: "User not logged in." })
+    }
+}
+
+async function prepareResourceExport( resourceEntry, projectData, zip ) {
+    const { remote, localEntries } = projectData
+    const childEntries = null, contents = {}
+
+    if( remote ) {
+        try {
+            const { serverURL, email, projectID } = projectData
+            const authToken = getAuthToken( email, serverURL )
+            if( !authToken ) {
+                return { error: "User not logged in." }
+            }
+    
+            if( resourceEntry.type === 'teidoc' ) {
+                const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 0)
+                const { remoteEntries } = resourceData
+                for( const remoteEntry of remoteEntries ) {
+                    const { id: resourceID } = remoteEntry
+                    const localEntry = localEntries[resourceID]
+                    if( localEntry ) {
+                        childEntries.push(localEntry)
+                        contents[resourceID] = await readUTF8( resourceID, zip )
+                    } else {
+                        childEntries.push(remoteEntry)
+                        const remoteResource = await getResourceAsync(serverURL,authToken,resourceID)
+                        contents[resourceID] = remoteResource.content
+                    }
+                }
+            } else {
+                const { id: resourceID } = resourceEntry
+                const localEntry = localEntries[resourceID]
+                if( localEntry ) {
+                    contents[resourceID] = await readUTF8( resourceID, zip )
+                } else {
+                    const remoteResource = await getResourceAsync(serverURL,authToken,resourceID)
+                    contents[resourceID] = remoteResource.content
+                }
+            }    
+        } catch(e) {
+            return { error: e.message }
+        }
+    } else {
+        if( resourceEntry.type === 'teidoc' ) {
+            for( const localEntry of Object.values(localEntries) ) {
+                if( localEntry.parentID === resourceEntry.id ) {
+                    childEntries.push(localEntry)
+                    contents[localEntry.id] = await readUTF8( localEntry.id, zip )
+                }
+            }
+        } else {
+            const { id: resourceID } = resourceEntry
+            contents[resourceID] = await readUTF8( resourceID, zip )
+        }
     }
 
-    return resourceData
+    return { resourceEntry, childEntries, contents, error: false }
 }
 
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {
@@ -173,9 +276,9 @@ export function projectArchive( msg, workerMethods, workerData ) {
     switch( messageType ) {
         case 'read-resource':
             {
-                const { resourceID } = msg
+                const { resourceID, xmlID } = msg
                 readUTF8(resourceID, zip).then(resource => {
-                    postMessage({ messageType: 'resource-data', resourceID, resource })
+                    postMessage({ messageType: 'resource-data', resourceID, xmlID, resource })
                 })
             }
             break
@@ -189,21 +292,12 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break
         case 'request-export':
             {
-                const { resourceEntry, path } = msg
-                prepareResourceExport(resourceEntry,zip).then( resourceData => {
-                    postMessage({ messageType: 'export-resource', resourceID: resourceEntry.id, resourceData, path })
+                const { resourceEntry, projectData, path } = msg
+                prepareResourceExport(resourceEntry,projectData,zip).then( resourceData => {
+                    postMessage({ messageType: 'export-resource', resourceData, path })
                 })
             }
-            break
-        case 'open-image-view':
-            {
-                const { imageViewData, resourceID } = msg
-                readUTF8(resourceID, zip).then( (resource) => {
-                    imageViewData.resource = resource
-                    postMessage({ messageType: 'image-view-ready', resourceID, imageViewData })
-                })
-            } 
-            break
+            break    
         case 'write-resource':
             {
                 const { resourceID, data } = msg
@@ -236,7 +330,19 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 const { fileID } = msg
                 zip.remove(fileID)
             }
-            break                         
+            break                   
+        case 'check-in': 
+            {
+                const { email, serverURL, projectID, committedResources, message } = msg
+                checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage )
+            }    
+            break  
+        case 'check-out': 
+            {
+                const { email, serverURL, projectID, resourceIDs } = msg
+                checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage )
+            }    
+            break              
         case 'save':
             save()
             break

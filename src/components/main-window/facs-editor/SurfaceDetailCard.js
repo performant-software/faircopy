@@ -28,6 +28,7 @@ export default class SurfaceDetailCard extends Component {
         const surface = facsDocument.getSurface(surfaceIndex)
         const {surfaces} = facsDocument.facs
         // const names = getSurfaceNames(surface)
+        const readOnly = !facsDocument.isEditable()
 
         const enablePrev = surfaceIndex > 0
         const enableNext = surfaceIndex < surfaces.length-1
@@ -59,6 +60,7 @@ export default class SurfaceDetailCard extends Component {
                     hasID={facsDocument.hasID}
                     value={surface.id}
                     onChangeCallback={onChangeID}
+                    readOnly={readOnly}
                     idPrefix={facsID}
                 ></IDField>           
                 <Button size="small" disabled={!enablePrev} onClick={onPrev} className='prev-nav-button'><i className='fas fa-chevron-circle-left fa-2x'></i></Button>

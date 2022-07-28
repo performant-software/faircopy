@@ -22,7 +22,7 @@ export default class ThumbnailMargin extends Component {
                 const thumbResource = thumbResources[0]
                 if( thumbResource ) {
                     const { thumbnailURL, resourceID, xmlID } = thumbResource
-                    const parentEntry = teiDocument.getParent()
+                    const {parentEntry} = teiDocument
                     const imageViewData = { resourceID, xmlID, parentID: parentEntry?.id }
                     thumbnails.push(
                         <img 
@@ -44,9 +44,8 @@ export default class ThumbnailMargin extends Component {
     // return an array of image urls or null 
     findImageURLs(node) {
         const { teiDocument } = this.props
-        const { fairCopyProject } = teiDocument
+        const { fairCopyProject, parentEntry } = teiDocument
         const { teiSchema, idMap } = fairCopyProject
-        const parentEntry = teiDocument.getParent()
         
         const uris = []
         const scanAttributes = (node) => {
@@ -77,8 +76,7 @@ export default class ThumbnailMargin extends Component {
         for( const uri of uris ) {
             const resource = idMap.get(uri, parentEntry?.localID)
             if( resource && resource.type === 'facs' ) {                
-                const resourceID = fairCopyProject.getResourceID( resource.localID )
-                thumbResources.push({ ...resource, resourceID })
+                thumbResources.push({ ...resource })
             }
         }
         return thumbResources.length > 0 ? thumbResources : null   

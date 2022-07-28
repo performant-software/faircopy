@@ -72,12 +72,12 @@ export default class ProjectNavigator extends Component {
     }
 
     renderTree() {
-      const { openResources, fairCopyProject, panelWidth } = this.props
+      const { openResources, panelWidth } = this.props
 
       const treeNodes = []
       for( const resource of Object.values(openResources) ) {
-        const {resourceID} = resource
-        const {name, type} = fairCopyProject.resources[resourceID]
+        const {resourceEntry} = resource
+        const {id: resourceID, name, type} = resourceEntry
         const treeID = `nav-node-${resourceID}`
         const resourceIcon = getResourceIcon(type,true)
         const errorCount = type !== 'facs' ? resource.errorCount : 0

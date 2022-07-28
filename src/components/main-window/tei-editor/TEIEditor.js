@@ -11,6 +11,7 @@ import StructurePalette from "./StructurePalette"
 import ParameterDrawer from './ParameterDrawer'
 import EditorToolbar from './EditorToolbar'
 import ThumbnailMargin from './ThumbnailMargin'
+import ReadOnlyToolbar from './ReadOnlyToolbar'
 import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
@@ -83,6 +84,7 @@ export default class TEIEditor extends Component {
                 handleKeyDown: this.onEditorKeyDown,
                 transformPastedHTML: transformPastedHTMLHandler(teiSchema,teiDocument),
                 transformPasted: transformPastedHandler(teiSchema,teiDocument),
+                editable: () => { return teiDocument.isEditable() },
                 clipboardSerializer: this.clipboardSerializer
             }
         )
@@ -149,6 +151,7 @@ export default class TEIEditor extends Component {
         
         const { teiDocument } = this.props
         const { asides } = teiDocument.fairCopyProject.teiSchema.elementGroups
+        const { currentTreeNode } = teiDocument
 
         if( asides.includes(node.type.name) ) {
             const { noteID } = this.state
@@ -162,6 +165,12 @@ export default class TEIEditor extends Component {
             }
         } else {
             this.closeNotePopup()
+        }
+
+        // if the document is read only, clicking on the body deselects the editor gutter
+        if( !teiDocument.isEditable() && currentTreeNode.editorGutterPos !== null ) {
+            teiDocument.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
+            teiDocument.refreshView()
         }
     }
 
@@ -268,8 +277,11 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter } = this.props
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter, remoteProject } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
+
+        const { isLoggedIn } = teiDocument.fairCopyProject
+        const readOnly = !teiDocument.isEditable() 
 
         const onClickBody = () => {
             const { editorView, currentTreeNode } = teiDocument
@@ -294,7 +306,7 @@ export default class TEIEditor extends Component {
         }
 
         const { selectedElements } = teiDocument
-        const drawerHeight = selectedElements.length > 0 ? 300 : 50 
+        const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
         const editorHeight = selectedElements.length > 0 ? 530 : 180
 
@@ -316,23 +328,28 @@ export default class TEIEditor extends Component {
                     onKeyUp={this.onKeyUp}                 
                 >
                     { !hidden && <TitleBar 
-                        teiDocID={ parentResource ? parentResource.id : null } 
-                        teiDocName={ parentResource ? parentResource.name : null } 
+                        parentResource={parentResource} 
                         onResourceAction={onResourceAction} 
-                        resourceName={resourceEntry.name}>                            
+                        resourceName={resourceEntry.name}    
+                        remoteProject={remoteProject}     
+                        isLoggedIn={isLoggedIn}
+                        >                   
                         </TitleBar> 
                     }
-                    { !hidden && <EditorToolbar
-                        teiDocument={teiDocument}
-                        onSave={onSave}
-                        onTogglePalette={this.onTogglePalette}
-                        paletteActive={paletteWindowOpen}
-                        onProjectSettings={onProjectSettings}
-                        onEditResource={onEditResource}
-                        onOpenElementMenu={this.onOpenElementMenu}
-                        onCloseElementMenu={this.onCloseElementMenu}
-                        elementMenuOptions={elementMenuOptions}
-                    ></EditorToolbar> }
+                    { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } teiDocument={teiDocument}>
+                        </ReadOnlyToolbar> :
+                        <EditorToolbar
+                            teiDocument={teiDocument}
+                            onSave={onSave}
+                            onTogglePalette={this.onTogglePalette}
+                            paletteActive={paletteWindowOpen}
+                            onProjectSettings={onProjectSettings}
+                            onEditResource={onEditResource}
+                            onOpenElementMenu={this.onOpenElementMenu}
+                            onCloseElementMenu={this.onCloseElementMenu}
+                            elementMenuOptions={elementMenuOptions}
+                        ></EditorToolbar>
+                    }
                     <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
                         { !hidden && <EditorGutter
                             treeID="main"
@@ -361,6 +378,7 @@ export default class TEIEditor extends Component {
                         noteID={noteID}
                         height={drawerHeight}
                         width={drawerWidthCSS}
+                        readOnly={readOnly}
                     /> }
                 </div>
                 { !hidden && <NotePopup

@@ -192,6 +192,8 @@ export default class SurfaceEditor extends Component {
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
         const facsID = resourceEntry.localID
+        const {isLoggedIn} = facsDocument.imageViewContext
+        const editable = facsDocument.isEditable()
 
         const onChangeZone = (name,value,error) => {
             if( !error ) {
@@ -225,9 +227,9 @@ export default class SurfaceEditor extends Component {
                         resourceName={ resourceEntry.name } 
                         onClickResource={onClickResource} 
                         surfaceName={surfaceNames.title} onResourceAction={onResourceAction}
-                        teiDocID={ parentResource ? parentResource.id : null } 
-                        teiDocName={ parentResource ? parentResource.name : null } 
+                        parentResource={ parentResource } 
                         isImageWindow={isWindowed}
+                        isLoggedIn={isLoggedIn}
                         >
                         </TitleBar>
                     <SurfaceEditorToolbar 
@@ -236,6 +238,7 @@ export default class SurfaceEditor extends Component {
                         onChangeTool={this.onChangeTool}
                         onChangeView={onChangeView} 
                         onEditSurfaceInfo={onEditInfo}
+                        editable={editable}
                         onWindow={onWindow}
                     ></SurfaceEditorToolbar>
                 </div>

@@ -15,3 +15,12 @@
 #ResourceBrowser .table-container {
     height: calc(100vh - 215px);
 }
+
+#ResourceBrowser .deleted-resource {
+    color: red;
+    text-decoration: line-through;
+}
+
+#ResourceBrowser .deleted-icon {
+    color: red;
+}

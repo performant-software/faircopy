@@ -1,29 +1,49 @@
 import { v4 as uuidv4 } from 'uuid'
 import {teiToFacsimile, facsimileToTEI, generateOrdinalID, setSurfaceTitle} from './convert-facs'
+import { mapResource } from './id-map'
 
 const fairCopy = window.fairCopy
 
 export default class FacsDocument {
 
-    constructor( resourceID, imageViewContext, resource=null ) {
+    constructor( resourceEntry, parentEntry, imageViewContext, resourceData ) {
         this.imageViewContext = imageViewContext
         this.changedSinceLastSave = false
         this.facs = null
-        this.resourceID = resourceID
+        this.resourceID = resourceEntry.id
+        this.resourceEntry = resourceEntry
+        this.parentEntry = parentEntry
         this.updateListeners = []
         this.lastMessageID = null
 
-        if( !resource ) {
-            this.requestResource( resourceID )    
-        } else {
-            this.load(resource)
-        }
+        this.load(resourceData)
+    }
 
-        // Listen for updates to this resource.
-        fairCopy.services.ipcRegisterCallback('resourceUpdated', (e, d) => {
-            if( d.resourceID === resourceID && d.messageID !== this.lastMessageID ) 
-                this.onResourceUpdated(d.resourceData)
-        })
+    onResourceUpdated = ( resource ) => {
+        if( resource.resourceEntry ) {
+            const { resourceEntry } = resource
+            if( resourceEntry.id === this.resourceEntry.id ) {
+                this.resourceEntry = resourceEntry
+                this.resourceID = resourceEntry.id
+                this.resourceType = resourceEntry.type    
+            }
+            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
+                this.parentEntry = resourceEntry
+            }    
+        }
+        // load updated content if it is from a different source
+        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && resource.messageID !== this.lastMessageID ) {
+            const { resourceContent } = resource
+            this.load(resourceContent)
+        }
+    }
+
+    isEditable() {
+        return this.imageViewContext.isEditable( this.resourceEntry )
+    }
+
+    isRemote() {
+        return this.imageViewContext.remote
     }
 
     // Called when document is updated by a different window process
@@ -52,13 +72,12 @@ export default class FacsDocument {
         return startIndex === -1 ? 0 : startIndex
     }
 
-    getParent() {
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        return this.imageViewContext.getParent(resourceEntry)
+    getActiveView() {
+        return null
     }
 
     requestResource( resourceID ) {
-        fairCopy.services.ipcSend('requestResource', resourceID )
+        fairCopy.services.ipcSend('openResource', resourceID )
         this.loading = true
     }
 
@@ -87,7 +106,7 @@ export default class FacsDocument {
         const { surfaces } = this.facs
 
         // check to see if this ID exists in the parent resource
-        if( this.imageViewContext.siblingHasID(targetID, this.resourceID) ) return true 
+        if( this.imageViewContext.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
 
         for( const surface of surfaces ) {
             if(surface.id === targetID ) return true
@@ -101,9 +120,7 @@ export default class FacsDocument {
 
     addLocalImages( imagesData ) {
         const { idMap } = this.imageViewContext
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        const parentEntry = this.imageViewContext.getParent(resourceEntry)
-        let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
+        let nextSurfaceID = this.parentEntry ? idMap.nextSurfaceID(this.parentEntry.localID) : idMap.nextSurfaceID(this.resourceEntry.localID)
 
         for( const imageData of imagesData ) {
             const { width, height, mimeType, path } = imageData
@@ -186,11 +203,8 @@ export default class FacsDocument {
     save() {
         // Update the ID Map 
         const { idMap } = this.imageViewContext
-        const resourceEntry = this.imageViewContext.getResourceEntry(this.resourceID)
-        const parentEntry = this.imageViewContext.getParent(resourceEntry)
-        const resourceMap = idMap.mapResource( 'facs', this.facs )
-        idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
-        idMap.update()
+        const resourceMap = mapResource( this.resourceEntry, this.facs )
+        idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)
 
         // save the facs
         const fileContents = facsimileToTEI(this.facs)

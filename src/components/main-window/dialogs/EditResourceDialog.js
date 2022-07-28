@@ -102,7 +102,7 @@ export default class EditResourceDialog extends Component {
             if( trimmedID.length === 0 ) nextErrors['localID'] = "ID cannot be blank."
 
             if( !resourceEntry || trimmedID !== resourceEntry.localID ) {
-                if( !idMap.isUnique(trimmedID, parentEntry?.localID ) ) {
+                if( idMap.getResourceMap(trimmedID, parentEntry?.localID ) ) {
                     nextErrors['localID'] = parentEntry ? "ID is already in use in this TEI Document." : "ID is already in use in this project."
                 } else {
                     const idValid = idValidator(trimmedID)

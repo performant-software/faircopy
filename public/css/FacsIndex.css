@@ -1,11 +1,9 @@
 #FacsIndex .facs-index-list {
     margin-left: 5px;
-    margin-top: 60px;
 }
 
-
 #FacsIndex .table-container {
-    height: calc(100vh - 210px);
+    height: calc(100vh - 200px);
 }
 
 #FacsIndex .facs-index-container-with-bar .table-container {
