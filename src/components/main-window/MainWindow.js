@@ -637,7 +637,7 @@ export default class MainWindow extends Component {
                 { editDialogMode && <EditResourceDialog
                     idMap={idMap}
                     resourceEntry={resourceEntry}
-                    parentEntry={parentEntry}
+                    parentEntry={teiDocEntry}
                     onSave={onSaveResource}
                     onClose={()=>{ this.setState( {...this.state, editDialogMode: false} )}}
                 ></EditResourceDialog> }
