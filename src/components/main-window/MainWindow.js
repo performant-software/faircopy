@@ -316,7 +316,7 @@ export default class MainWindow extends Component {
     }
 
     checkInResources(checkInResources) {
-        this.setState({...this.state, checkInMode: true, checkInResources})
+        this.setState({...this.state, checkInMode: true, checkInResources, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })
     }
 
     checkOutResources(resourceEntries) {
@@ -337,6 +337,7 @@ export default class MainWindow extends Component {
         }
 
         fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
+        this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -397,7 +398,7 @@ export default class MainWindow extends Component {
                 return true
             case 'check-out':
                 this.checkOutResources(resourceEntries)
-                return false
+                return true
             case 'close':
                 this.closeResources(resourceIDs)
                 return false
