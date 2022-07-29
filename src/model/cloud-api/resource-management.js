@@ -34,7 +34,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
             if( status === 'success' ) {
                 onSuccess(resourceState)
             } else {
-                onFail('Failed to commit resources.')
+                onFail("Unable to check in resources.", resourceState)
             }
         },
         (errorResponse) => {

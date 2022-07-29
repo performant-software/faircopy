@@ -22,6 +22,7 @@ export default class CheckInDialog extends Component {
             resourcesToCommit: [],
             committedResources: [],
             done: false,
+            resourceStatus: null,
             errorMessage: null
         }
         this.state = this.initialState
@@ -62,23 +63,25 @@ export default class CheckInDialog extends Component {
         this.setState({...this.state, resourcesToCommit })
     }
 
-    onCheckInResults = (event,resourceEntries,error) => {
+    onCheckInResults = (event,resourceEntries,resourceStatus,error) => {
         if( error ) {
-            this.setState({...this.state, committedResources: [], done: false, errorMessage: error })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: false, errorMessage: error })
         } else {
-            this.setState({...this.state, committedResources: resourceEntries, done: true, errorMessage: null })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: true, errorMessage: null })
         }
     }
 
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourcesToCommit, done } = this.state
+        const { committedResources, resourcesToCommit, resourceStatus, error, done } = this.state
 
-        const resourceList = done ? committedResources : resourcesToCommit
+        const resourceList = done ? committedResources : error ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
         const resourceRows = resources.map( resource => { 
-            const { local, deleted, localID, name } = resource
+            const { id: resourceID, local, deleted, localID, name } = resource
+            debugger
+            const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : ''
             const editable = isEntryEditable(resource, fairCopyProject.email)
             let { icon, label } = getActionIcon(done, local, editable )
             if( deleted ) icon = 'fa-trash'
@@ -93,6 +96,9 @@ export default class CheckInDialog extends Component {
                     </TableCell>
                     <TableCell {...cellProps} >
                         <Typography>{localID}</Typography>
+                    </TableCell>
+                    <TableCell {...cellProps} >
+                        <Typography>{resourceStatusCode}</Typography>
                     </TableCell>
             </TableRow>
             )
@@ -110,6 +116,7 @@ export default class CheckInDialog extends Component {
                                 <TableCell>Action</TableCell>
                                 <TableCell>Name</TableCell>
                                 <TableCell>ID</TableCell>
+                                <TableCell>Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
