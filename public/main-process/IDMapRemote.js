@@ -44,14 +44,13 @@ class IDMapRemote {
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
-            this.idMapNext[parentID].ids[localID] = resourceMap
+            if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
+            this.idMapStaged[parentID].ids[localID] = resourceMap
         } else {
-            this.idMapNext[localID] = resourceMap
+            this.idMapStaged[localID] = resourceMap
         }
 
-        // return updated map
-        return this.commitResource(localID, parentID)
+        return JSON.stringify(this.idMapStaged)
     }
 
     removeResource( localID, parentID ) {
@@ -131,10 +130,10 @@ class IDMapRemote {
         // update will come from the server shortly.
         const teiDocIDs = []
         for( const resourceEntry of resourceEntries ) {
-            const { localID, parentID: parentResourceID, deleted } = resourceEntry
+            const { localID, parentResource: parentResourceID, deleted } = resourceEntry
             if( parentResourceID ) {
                 const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
-                if( resource.deleted ) {
+                if( deleted ) {
                     delete this.idMapBase[parentLocalID].ids[localID]
                 } else {
                     if( !this.idMapBase[parentLocalID] ) this.idMapBase[parentLocalID] = getBlankResourceMap(parentResourceID, 'teidoc')
