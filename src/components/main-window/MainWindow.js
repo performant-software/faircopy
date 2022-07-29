@@ -602,7 +602,6 @@ export default class MainWindow extends Component {
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null
         const resourceEntry = selectedDoc ? selectedDoc.resourceEntry : null
-        const parentEntry = selectedDoc ? selectedDoc.parentEntry : null
 
         const { alertMessage, editSurfaceInfoMode, iiifDialogMode, textImportDialogMode, surfaceInfo } = this.state
         const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } = this.state
