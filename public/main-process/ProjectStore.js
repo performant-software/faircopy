@@ -362,7 +362,8 @@ class ProjectStore {
         }
         if( !error ) {
             this.saveManifest()
-            this.fairCopyApplication.fairCopySession.requestResourceView()               
+            this.fairCopyApplication.fairCopySession.idMapAuthority.checkIn(resourceEntries)                
+            this.fairCopyApplication.fairCopySession.requestResourceView()
         }
         this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
     }

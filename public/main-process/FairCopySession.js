@@ -322,7 +322,6 @@ class FairCopySession {
             }
         }
 
-        this.idMapAuthority.checkIn(committedResources)                
         this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
     }
 

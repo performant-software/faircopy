@@ -125,13 +125,13 @@ class IDMapRemote {
         }
     }
 
-    checkIn( resources ) {
+    checkIn( resourceEntries ) {
         // We're doing two things here. First, we're removing items that are no longer checked out from the idMapStaged. Second,
         // we are adding these updated items to idMapBase. This is just so that the data is immediately correct, the authoritative
         // update will come from the server shortly.
         const teiDocIDs = []
-        for( const resource of resources ) {
-            const { localID, parentID: parentResourceID } = resource
+        for( const resourceEntry of resourceEntries ) {
+            const { localID, parentID: parentResourceID, deleted } = resourceEntry
             if( parentResourceID ) {
                 const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
                 if( resource.deleted ) {
@@ -146,7 +146,7 @@ class IDMapRemote {
                 if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
                     teiDocIDs.push( localID )
                 } else {
-                    if( resource.deleted ) {
+                    if( deleted ) {
                         delete this.idMapBase[localID]          
                     } 
                     delete this.idMapStaged[localID]                     
