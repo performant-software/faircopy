@@ -66,7 +66,7 @@ export default class CheckInDialog extends Component {
     onCheckInResults = (event, checkInResult) => {
         const { resourceEntries, resourceStatus, error } = checkInResult
         if( error ) {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: false, errorMessage: error })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: true, errorMessage: error })
         } else {
             this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: true, errorMessage: null })
         }
@@ -74,9 +74,9 @@ export default class CheckInDialog extends Component {
 
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourcesToCommit, resourceStatus, error, done } = this.state
+        const { committedResources, resourcesToCommit, resourceStatus, done } = this.state
 
-        const resourceList = done ? committedResources : error ? committedResources : resourcesToCommit
+        const resourceList = done ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
         const resourceRows = resources.map( resource => { 
@@ -105,7 +105,7 @@ export default class CheckInDialog extends Component {
             )
         })
 
-        const caption = done ? 'These resources have been checked in.' : 'These resources are ready to be checked in.'
+        const caption = done ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
 
         return (
             <div>
@@ -133,8 +133,12 @@ export default class CheckInDialog extends Component {
         const { fairCopyProject } = this.props
         const { email, serverURL, projectID } = fairCopyProject
         const { message, resourcesToCommit } = this.state   
-        const resourceIDs = resourcesToCommit.map( r => r.id )
-        fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )
+        if( message.length > 0 ) {
+            const resourceIDs = resourcesToCommit.map( r => r.id )
+            fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )    
+        } else {
+            this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
+        }
     }
 
     renderCommitField() {
@@ -167,9 +171,8 @@ export default class CheckInDialog extends Component {
 
     render() {
         const { onClose } = this.props
-        const { done, message } = this.state
+        const { done } = this.state
 
-        const disabled = done || message.length === 0
         const closeButtonProps = done ? {  variant: "contained", color: "primary", onClick: onClose } : {  variant: "outlined", color: "default", onClick: onClose }
 
         return (
@@ -186,7 +189,7 @@ export default class CheckInDialog extends Component {
                    { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={disabled} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
+                    <Button disabled={done} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
                     <Button {...closeButtonProps} >Done</Button>
                 </DialogActions>
             </Dialog>
