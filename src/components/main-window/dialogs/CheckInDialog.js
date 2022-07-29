@@ -63,7 +63,8 @@ export default class CheckInDialog extends Component {
         this.setState({...this.state, resourcesToCommit })
     }
 
-    onCheckInResults = (event,resourceEntries,resourceStatus,error) => {
+    onCheckInResults = (event, checkInResult) => {
+        const { resourceEntries, resourceStatus, error } = checkInResult
         if( error ) {
             this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: false, errorMessage: error })
         } else {
@@ -80,8 +81,8 @@ export default class CheckInDialog extends Component {
         
         const resourceRows = resources.map( resource => { 
             const { id: resourceID, local, deleted, localID, name } = resource
-            debugger
-            const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : ''
+            const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
+            const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
             const editable = isEntryEditable(resource, fairCopyProject.email)
             let { icon, label } = getActionIcon(done, local, editable )
             if( deleted ) icon = 'fa-trash'
@@ -98,7 +99,7 @@ export default class CheckInDialog extends Component {
                         <Typography>{localID}</Typography>
                     </TableCell>
                     <TableCell {...cellProps} >
-                        <Typography>{resourceStatusCode}</Typography>
+                        <Typography>{resourceStatusMessage}</Typography>
                     </TableCell>
             </TableRow>
             )
@@ -190,5 +191,24 @@ export default class CheckInDialog extends Component {
                 </DialogActions>
             </Dialog>
         )
+    }
+}
+
+function getResourceStatusMessage(resourceStatusCode) {
+    switch(resourceStatusCode) {
+        case 'ok':
+            return 'OK'
+        case 'not_authorized':
+            return 'Not Authorized'
+        case 'teidoc_deletion_with_children':
+            return 'Cannot delete w/children checked out.'
+        case 'not_checked_out':
+            return 'Not checked out.'
+        case 'not_found':
+            return 'Not found.'
+        case null:
+            return ''
+        default:
+            return 'unknown status code'
     }
 }

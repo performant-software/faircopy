@@ -364,7 +364,7 @@ class ProjectStore {
             this.saveManifest()
             this.fairCopyApplication.fairCopySession.requestResourceView()               
         }
-        this.fairCopyApplication.sendToMainWindow('checkInResults', resourceEntries, resourceStatus, error ) 
+        this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
     }
 
     getCheckedOutResources() {
