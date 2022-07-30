@@ -37,6 +37,8 @@ const initialLeftPaneWidth = 300
 const maxLeftPaneWidth = 630
 const resizeRefreshRate = 100
 
+const closePopUpState = { popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null }
+
 export default class MainWindow extends Component {
 
     constructor() {
@@ -316,7 +318,7 @@ export default class MainWindow extends Component {
     }
 
     checkInResources(checkInResources) {
-        this.setState({...this.state, checkInMode: true, checkInResources, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })
+        this.setState({...this.state, checkInMode: true, checkInResources, ...closePopUpState })
     }
 
     checkOutResources(resourceEntries) {
@@ -337,7 +339,7 @@ export default class MainWindow extends Component {
         }
 
         fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
-        this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })
+        this.setState({...this.state, ...closePopUpState })
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -345,7 +347,7 @@ export default class MainWindow extends Component {
     }
 
     onClosePopupMenu = () => {
-        this.setState({...this.state, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })
+        this.setState({...this.state, ...closePopUpState })
     }
 
     onEditResource = () => {
@@ -365,7 +367,7 @@ export default class MainWindow extends Component {
     }
 
     onAlertMessage = (message) => {
-        this.setState({...this.state, alertMessage: message })
+        this.setState({...this.state, alertMessage: message, ...closePopUpState })
     }
 
     onEditSurfaceInfo = (surfaceInfo) => {
@@ -420,7 +422,7 @@ export default class MainWindow extends Component {
                     const { fairCopyProject } = this.props
                     const alertOptions = { resourceIDs }
                     if( fairCopyProject.areEditable( resourceEntries ) ) {
-                        this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions })    
+                        this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions, ...closePopUpState })    
                     } else {
                         this.onAlertMessage("To delete a resource, you must first check it out.")
                     }
@@ -430,11 +432,13 @@ export default class MainWindow extends Component {
                 {
                     const { fairCopyProject } = this.props
                     fairCopyProject.recoverResources(resourceIDs)                    
+                    this.setState({...this.state, ...closePopUpState })
                 }
                 return true                
             case 'export':
                 fairCopy.services.ipcSend('requestExport', resourceEntries)
-                return false
+                this.setState({...this.state, ...closePopUpState })
+                return true
             default:
                 console.error(`Unrecognized resource action id: ${actionID}`)
                 return false
@@ -449,7 +453,7 @@ export default class MainWindow extends Component {
             this.updateSearchResults(resource, searchQuery, searchResults)
         }
         if( popupMenuOptions.length === 0 ) {
-            this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null })    
+            this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, ...closePopUpState })    
         } else {
             const popupMenuPlacement = { vertical: 'top', horizontal: 'left' }
             this.setState({...this.state, searchQuery, searchResults, searchSelectionIndex: 0, popupMenuOptions, popupMenuAnchorEl: searchBarEl, popupMenuPlacement })
