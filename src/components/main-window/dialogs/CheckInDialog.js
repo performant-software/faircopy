@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 import { TextField, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { getActionIcon } from '../../../model/resource-icon'
+import { inlineRingSpinner } from '../../common/ring-spinner'
 
 import { isEntryEditable } from '../../../model/FairCopyProject'
 
@@ -66,9 +67,9 @@ export default class CheckInDialog extends Component {
     onCheckInResults = (event, checkInResult) => {
         const { resourceEntries, resourceStatus, error } = checkInResult
         if( error ) {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: true, errorMessage: error })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, errorMessage: error })
         } else {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, done: true, errorMessage: null })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, errorMessage: null })
         }
     }
 
@@ -76,7 +77,8 @@ export default class CheckInDialog extends Component {
         const { fairCopyProject } = this.props
         const { committedResources, resourcesToCommit, resourceStatus, done } = this.state
 
-        const resourceList = done ? committedResources : resourcesToCommit
+        const responseReceived = !!resourceStatus
+        const resourceList = responseReceived ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
         const resourceRows = resources.map( resource => { 
@@ -84,7 +86,7 @@ export default class CheckInDialog extends Component {
             const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
             const editable = isEntryEditable(resource, fairCopyProject.email)
-            let { icon, label } = getActionIcon(done, local, editable )
+            let { icon, label } = getActionIcon(responseReceived, local, editable )
             if( deleted ) icon = 'fa-trash'
 
             return (
@@ -135,7 +137,8 @@ export default class CheckInDialog extends Component {
         const { message, resourcesToCommit } = this.state   
         if( message.length > 0 ) {
             const resourceIDs = resourcesToCommit.map( r => r.id )
-            fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )    
+            this.setState({ ...this.state, done: true }) 
+            fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )   
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
         }
@@ -171,7 +174,10 @@ export default class CheckInDialog extends Component {
 
     render() {
         const { onClose } = this.props
-        const { done } = this.state
+        const { done, resourceStatus } = this.state
+
+        const responseReceived = !!resourceStatus
+        const loading = done && !responseReceived
 
         const closeButtonProps = done ? {  variant: "contained", color: "primary", onClick: onClose } : {  variant: "outlined", color: "default", onClick: onClose }
 
@@ -182,7 +188,7 @@ export default class CheckInDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
             >
-                <DialogTitle id="checkin-dialog-title">Check In Resources</DialogTitle>
+                <DialogTitle id="checkin-dialog-title">Check In Resources { loading && inlineRingSpinner('dark') }</DialogTitle>
                 <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
                    { this.renderResourceTable() }
