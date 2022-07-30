@@ -221,6 +221,11 @@ export default class MainWindow extends Component {
                 popupMenuPlacement: null
 
             })
+            const nextResource = openResources[nextSelection]
+            if( nextResource instanceof TEIDocument ) {
+                const { searchQuery, searchResults } = this.state
+                this.refreshWhenReady(searchQuery, searchResults, false)
+            }
         } else {
             this.setState( {
                 ...this.state, 
