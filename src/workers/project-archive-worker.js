@@ -38,14 +38,21 @@ async function checkIn( email, serverURL, projectID, committedResources, message
 
     if( authToken ) {
         const onSuccess = (results) => {
-            const resourceIDs = results.map( result => result.resource_guid )
-            postMessage({ messageType: 'check-in-results', resourceIDs, error: null })
+            const resourceStatus = {}
+            for( const result of results ) {
+               resourceStatus[result.resource_guid] = 'ok' 
+            }
+            postMessage({ messageType: 'check-in-results', resourceStatus, error: null })
             console.log(`Check in successful.`)
         }
     
-        const onFail = (error) => {
-            postMessage({ messageType: 'check-in-results', resourceIDs: [], error })
-            console.log(`Check in failed: ${error}`)
+        const onFail = (error,results) => {
+            const resourceStatus = {}
+            for( const result of results ) {
+                resourceStatus[result.resource_guid] = result.error
+            }
+            postMessage({ messageType: 'check-in-results', resourceStatus, error })
+            console.log(error)
         }
     
         // add the content for each resource being added or updated

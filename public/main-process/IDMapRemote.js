@@ -44,14 +44,13 @@ class IDMapRemote {
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
-            this.idMapNext[parentID].ids[localID] = resourceMap
+            if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
+            this.idMapStaged[parentID].ids[localID] = resourceMap
         } else {
-            this.idMapNext[localID] = resourceMap
+            this.idMapStaged[localID] = resourceMap
         }
 
-        // return updated map
-        return this.commitResource(localID, parentID)
+        return JSON.stringify(this.idMapStaged)
     }
 
     removeResource( localID, parentID ) {
@@ -125,16 +124,16 @@ class IDMapRemote {
         }
     }
 
-    checkIn( resources ) {
+    checkIn( resourceEntries ) {
         // We're doing two things here. First, we're removing items that are no longer checked out from the idMapStaged. Second,
         // we are adding these updated items to idMapBase. This is just so that the data is immediately correct, the authoritative
         // update will come from the server shortly.
         const teiDocIDs = []
-        for( const resource of resources ) {
-            const { localID, parentID: parentResourceID } = resource
+        for( const resourceEntry of resourceEntries ) {
+            const { localID, parentResource: parentResourceID, deleted } = resourceEntry
             if( parentResourceID ) {
                 const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
-                if( resource.deleted ) {
+                if( deleted ) {
                     delete this.idMapBase[parentLocalID].ids[localID]
                 } else {
                     if( !this.idMapBase[parentLocalID] ) this.idMapBase[parentLocalID] = getBlankResourceMap(parentResourceID, 'teidoc')
@@ -146,7 +145,7 @@ class IDMapRemote {
                 if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
                     teiDocIDs.push( localID )
                 } else {
-                    if( resource.deleted ) {
+                    if( deleted ) {
                         delete this.idMapBase[localID]          
                     } 
                     delete this.idMapStaged[localID]                     

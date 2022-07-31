@@ -56,7 +56,7 @@ export default class TitleBar extends Component {
         return (
             <div className="breadcrumbs">                
                 <Typography component="h2" variant="h6">
-                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && inlineRingSpinner() }
+                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && inlineRingSpinner('light') }
                 </Typography>
             </div>
         )
