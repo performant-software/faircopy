@@ -1,7 +1,7 @@
 import { createConsumer } from '@rails/actioncable';
 
 export function connectCable(projectID, serverURL, authToken, onNotification ) {
-    const wsURL = serverURL.replace('http://','ws://')
+    const wsURL = getWebSocketURL(serverURL)
     const actionCable = createConsumer(`${wsURL}/api/cable?token=${authToken}`)
     actionCable.subscriptions.create(
         {
@@ -14,4 +14,14 @@ export function connectCable(projectID, serverURL, authToken, onNotification ) {
           }
         }
     )
+}
+
+function getWebSocketURL( serverURL ) {
+  if( serverURL.includes('http://') ) {
+    return serverURL.replace('http://','ws://')
+  } else if( serverURL.includes('https://') ) {
+    return serverURL.replace('https://','ws://')
+  } else {
+    return `ws://${serverURL}`
+  }
 }
