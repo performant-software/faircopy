@@ -11,10 +11,12 @@ export default class SelectRemoteProjectPanel extends Component {
             onOpenProject(project)
         }
 
+        const cardID = `project-${id}`
+
         return (
-            <Card className="project-card" id={`project-${id}`} onClick={onClick} >
+            <Card className="project-card" id={cardID} key={cardID} onClick={onClick} >
                 <CardContent>
-                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                    <Typography sx={{ fontSize: 14 }} color="textSecondary" gutterBottom>
                         { name["en"].translation }
                     </Typography>
                     <Typography component="p">
