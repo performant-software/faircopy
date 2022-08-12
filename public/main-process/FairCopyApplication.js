@@ -82,8 +82,8 @@ class FairCopyApplication {
       this.fairCopySession.recoverResource(resourceID) 
     })
 
-    ipcMain.on('requestResourceView', (event, resourceView) => { 
-      this.fairCopySession.requestResourceView(resourceView) 
+    ipcMain.on('requestResourceView', (event, resourceViewRequest) => { 
+      this.fairCopySession.requestResourceView(resourceViewRequest) 
     })
 
     ipcMain.on('requestCheckedOutResources', (event) => { 

@@ -46,13 +46,24 @@ export default class MainWindow extends Component {
         this.state = {
             selectedResource: null,
             openResources: {},
-            resourceView: { 
-                indexParentID: null,
-                parentEntry: null,
-                currentPage: 1, 
-                rowsPerPage: 100,
-                totalRows: 0,
-                loading: true
+            resourceViews: {
+                currentView: 'home',
+                remote: { 
+                    indexParentID: null,
+                    parentEntry: null,
+                    currentPage: 1, 
+                    rowsPerPage: 100,
+                    totalRows: null,
+                    loading: true
+                },
+                home: {
+                    indexParentID: null,
+                    parentEntry: null,
+                    currentPage: 1, 
+                    rowsPerPage: 100,
+                    totalRows: null,
+                    loading: true           
+                }
             },
             resourceIndex: [],
             resourceBrowserOpen: true,
@@ -113,8 +124,8 @@ export default class MainWindow extends Component {
     }
 
     onResourceViewUpdate = (event, resourceData ) => {
-        const { resourceView, resourceIndex } = resourceData
-        this.setState({...this.state, resourceView, resourceIndex })
+        const { resourceViews, resourceIndex } = resourceData
+        this.setState({...this.state, resourceViews, resourceIndex })
     }
 
     onCheckOutResults = (event, resourceIDs, error ) => {
@@ -388,10 +399,14 @@ export default class MainWindow extends Component {
         switch(actionID) {
             case 'open-teidoc':
                 {
-                // send resourceIDs as new parent ID
-                const nextResourceView = { ...this.state.resourceView, indexParentID: resourceIDs, parentEntry: resourceEntries, currentPage: 1, loading: true }
-                fairCopy.services.ipcSend('requestResourceView', nextResourceView )
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceView: nextResourceView, resourceIndex: [] })
+                const {resourceViews} = this.state 
+                const {currentView} = resourceViews 
+                const currentResourceView = resourceViews[currentView]
+                const resourceViewRequest = { currentView, indexParentID: resourceIDs, parentEntry: resourceEntries, currentPage: 1 }
+                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+                const nextResourceViews = { ...currentResourceView }
+                nextResourceViews[currentView] = { ...currentResourceView, ...resourceViewRequest, loading: true }
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })
                 }
                 return false
             case 'open':
@@ -409,11 +424,38 @@ export default class MainWindow extends Component {
             case 'close':
                 this.closeResources(resourceIDs)
                 return false
+            case 'remote':
+                {
+                const {resourceViews} = this.state 
+                const { indexParentID, parentEntry, currentPage } = resourceViews.remote
+                const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
+                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )       
+                const nextResourceViews = { ...resourceViews }
+                nextResourceViews.currentView = 'home'
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })            
+                }
+                return false
             case 'home':
                 {
-                const nextResourceView = { ...this.state.resourceView, indexParentID: null, parentEntry: null, currentPage: 1, loading: true }
-                fairCopy.services.ipcSend('requestResourceView', nextResourceView )
-                this.setState( {...this.state, selectedResource: null, resourceBrowserOpen: true, resourceView: nextResourceView, resourceIndex: [] })    
+                const {resourceViews} = this.state 
+                const { indexParentID, parentEntry, currentPage } = resourceViews.home
+                const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage } 
+                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
+                const nextResourceViews = { ...resourceViews }
+                nextResourceViews.currentView = 'home'
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })    
+                }
+                return false
+            case 'root':
+                {
+                const {resourceViews} = this.state 
+                const {currentView} = resourceViews 
+                const currentResourceView = resourceViews[currentView]
+                const resourceViewRequest = { currentView, indexParentID: null, parentEntry: null, currentPage: 1 }
+                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+                const nextResourceViews = { ...currentResourceView }
+                nextResourceViews[currentView] = { ...currentResourceView, ...resourceViewRequest, loading: true }
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })    
                 }
                 return false
             case 'move':
@@ -561,8 +603,9 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, resourceView, resourceIndex } = this.state
-        const { parentEntry } = resourceView 
+        const { resourceBrowserOpen, resourceViews, resourceIndex } = this.state
+        const resourceView = resourceViews[resourceViews.currentView]
+        const { parentEntry } = resourceView
         
         return (
             <div>
@@ -604,9 +647,10 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceView } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
         const { fairCopyProject, appConfig } = this.props
         const { idMap } = fairCopyProject
+        const resourceView = resourceViews[resourceViews.currentView]
         const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
         const selectedDoc = selectedResource ? openResources[selectedResource] : null

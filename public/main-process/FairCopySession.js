@@ -12,13 +12,24 @@ class FairCopySession {
         this.projectStore = new ProjectStore(fairCopyApplication)
         this.projectStore.openProject(targetFile, this.onProjectOpened )
         this.remote = false
-        this.resourceView = { 
-            indexParentID: null,
-            parentEntry: null,
-            currentPage: 1, 
-            rowsPerPage: 100,
-            totalRows: null,
-            loading: true
+        this.resourceViews = {
+            currentView: 'home',
+            remote: { 
+                indexParentID: null,
+                parentEntry: null,
+                currentPage: 1, 
+                rowsPerPage: 100,
+                totalRows: null,
+                loading: true
+            },
+            home: {
+                indexParentID: null,
+                parentEntry: null,
+                currentPage: 1, 
+                rowsPerPage: 100,
+                totalRows: null,
+                loading: true           
+            }
         }
     }
 
@@ -96,7 +107,7 @@ class FairCopySession {
         this.requestResourceView()
     }
 
-    requestResourceView(nextResourceView=null) {
+    requestResourceView(resourceViewRequest=null) {
         const resourceView = nextResourceView ? nextResourceView : this.resourceView
         const { indexParentID, currentPage, rowsPerPage } = resourceView
         const { resources: localResources } = this.projectStore.manifestData
@@ -122,7 +133,7 @@ class FairCopySession {
             resourceIndex = resourceIndex.slice(start,end)
             this.resourceView.loading = false
 
-            this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceView: this.resourceView, resourceIndex } )
+            this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex } )
         }
     }
 
