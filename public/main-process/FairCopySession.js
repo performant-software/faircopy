@@ -162,21 +162,16 @@ class FairCopySession {
         }
     }
 
-    sendResourceViewUpdate(resourceView, remoteResources) {
+    sendResourceViewUpdate(resourceView, resourceIndex) {
         const { resources: localResources } = this.projectStore.manifestData
-        const { indexParentID, rowsPerPage, currentPage } = resourceView
+        const { indexParentID } = resourceView
 
         // if parent isn't in remote response, must be local parent
         if( indexParentID !== null && !resourceView.parentEntry ) {
             resourceView.parentEntry = localResources[indexParentID]
         }
     
-        // the first page has all the local resources on it, so it might have more rows
-        const start = rowsPerPage * (currentPage-1)
-        const end = currentPage !== 1 ? start + rowsPerPage : rowsPerPage
-        const resourceIndex = remoteResources.slice(start,end)
         this.resourceViews.remote = resourceView
-
         this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex })
     }
     

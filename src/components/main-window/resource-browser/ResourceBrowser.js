@@ -254,8 +254,9 @@ export default class ResourceBrowser extends Component {
     }
 
     const onChangePage = (e,page) => { 
-      const nextResourceView = { ...resourceView, currentPage: page+1 }
-      fairCopy.services.ipcSend('requestResourceView', nextResourceView )
+      const { indexParentID, parentEntry } = resourceView
+      const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage: page+1 }
+      fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
