@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { inlineRingSpinner } from '../common/ring-spinner'
 
-const maxTitleLength = 120
+const maxTitleLength = 100
 
 export default class TitleBar extends Component {
     
