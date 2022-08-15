@@ -3,6 +3,7 @@ import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBod
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
+import { logout, isLoggedIn } from '../../../model/cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -88,8 +89,23 @@ export default class ResourceBrowser extends Component {
     }
   }
 
+  renderLoginButton(buttonProps) {
+    const { onLogin, fairCopyProject } = this.props
+    const { remote, email, serverURL } = fairCopyProject
+    const loggedIn = remote ? isLoggedIn(email, serverURL) : false
+
+    const onLogout = () => {
+      logout(email, serverURL)
+      this.setState({...this.state})
+    }
+
+    return loggedIn ? 
+        <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
+        <Button {...buttonProps} onClick={onLogin}>Log In</Button>
+  }
+
   renderToolbar() {
-    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc } = this.props
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView } = this.props
     const { checked } = this.state
 
     const buttonProps = {
@@ -104,9 +120,18 @@ export default class ResourceBrowser extends Component {
 
     return (
       <div className="toolbar">
-        <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-        <Button onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-        <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>    
+        { currentView === 'home' && 
+          <div className='inline-button-group'>
+            <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
+            <Button onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
+            <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
+          </div>  
+        }
+        { currentView === 'remote' &&
+          <div className='inline-button-group'>
+            { this.renderLoginButton(buttonProps) }
+          </div>        
+        }
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}
@@ -131,7 +156,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, resourceIndex } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView } = this.props
     const { remote: remoteProject, email } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows } = resourceView
 
@@ -232,12 +257,14 @@ export default class ResourceBrowser extends Component {
       const nextResourceView = { ...resourceView, currentPage: page+1 }
       fairCopy.services.ipcSend('requestResourceView', nextResourceView )
     }
+
+    const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
   
     return (
       <Paper >
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
-                  <caption>This table lists the resources in this project.</caption>
+                  <caption>{tableCaption}</caption>
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>

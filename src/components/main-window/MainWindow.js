@@ -11,6 +11,7 @@ import ResourceBrowser from './resource-browser/ResourceBrowser'
 import EditResourceDialog from './dialogs/EditResourceDialog'
 import IIIFImportDialog from './dialogs/IIIFImportDialog'
 import AddImageDialog from './dialogs/AddImageDialog'
+import LoginDialog from './dialogs/LoginDialog'
 import PopupMenu from '../common/PopupMenu'
 import TEIDocument from '../../model/TEIDocument'
 import FacsEditor from './facs-editor/FacsEditor'
@@ -74,6 +75,7 @@ export default class MainWindow extends Component {
             addImagesMode: false,
             releaseNotesMode: false,
             feedbackMode: false,
+            loginMode: false,
             draggingElementActive: false,
             dragInfo: null,
             editSurfaceInfoMode: false,
@@ -366,6 +368,10 @@ export default class MainWindow extends Component {
         this.setState({...this.state, ...closePopUpState })
     }
 
+    onLogin = () => {
+        this.setState({...this.state, loginMode: true })
+    }
+
     onEditResource = () => {
         this.setState({...this.state, editDialogMode: true })
     }
@@ -624,6 +630,7 @@ export default class MainWindow extends Component {
                         onEditResource={this.onEditResource}
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
+                        onLogin={this.onLogin}
                         teiDoc={parentEntry}
                         currentView={currentView}
                         resourceView={resourceView}
@@ -656,9 +663,9 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
         const { fairCopyProject, appConfig } = this.props
-        const { idMap } = fairCopyProject
+        const { idMap, email, serverURL } = fairCopyProject
         const resourceView = resourceViews[resourceViews.currentView]
         const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
@@ -773,6 +780,12 @@ export default class MainWindow extends Component {
                     checkInResources={checkInResources}
                     onClose={()=>{ this.setState( {...this.state, checkInMode: false} )}}
                 ></CheckInDialog> }
+                { loginMode && <LoginDialog 
+                    onClose={()=>{ this.setState( {...this.state, loginMode: false} )}}
+                    email={email} 
+                    serverURL={serverURL} 
+                    onLoggedIn={()=>{ this.setState( {...this.state, loginMode: false} )}}
+                ></LoginDialog> }
                 <SnackAlert
                     open={alertMessage !== null}
                     message={alertMessage}

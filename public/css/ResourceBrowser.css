@@ -24,3 +24,7 @@
 #ResourceBrowser .deleted-icon {
     color: red;
 }
+
+#ResourceBrowser .inline-button-group {
+    display: inline-block;
+}

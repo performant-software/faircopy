@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@material-ui/core'
 
-import { login } from '../../model/cloud-api/auth'
+import { login } from '../../../model/cloud-api/auth'
 
 export default class LoginDialog extends Component {
 

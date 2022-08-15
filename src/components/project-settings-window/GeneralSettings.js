@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 
 import { Typography, TextField, Button } from '@material-ui/core'
 
-import { logout, isLoggedIn } from '../../model/cloud-api/auth'
-
 export default class GeneralSettings extends Component {
     
     constructor(props) {
@@ -13,28 +11,6 @@ export default class GeneralSettings extends Component {
             validationErrors: {}
         }
         this.state = this.initialState
-    }
-
-    renderRemoteSettings() {
-        const { projectInfo, onLogin } = this.props
-        const { serverURL, email, remote } = projectInfo
-        const loggedIn = remote ? isLoggedIn(email, serverURL) : false
-
-        const onLogout = () => {
-            logout(email, serverURL)
-            this.setState({...this.state})
-        }
-
-        const status = loggedIn ? `You are logged into ${serverURL} as ${email}` : `You are not logged in.`
-        return (
-            <div>
-                <p>{ status } </p>
-                { loggedIn ? 
-                    <Button className="action" variant="contained" onClick={onLogout}>Log Out</Button> :
-                    <Button className="action" variant="contained" onClick={onLogin}>Log In</Button>
-                }
-            </div>
-        )
     }
 
     render() {        
@@ -94,7 +70,6 @@ export default class GeneralSettings extends Component {
                     label="Project Description" 
                     disabled={disabled}
                 /><br/>
-                { remote && this.renderRemoteSettings() }
                 <div className="actions">
                     <Button className="action" variant="contained" disabled={disabled} onClick={onReset}>Reset Config</Button>
                 </div>
