@@ -132,9 +132,15 @@ class FairCopySession {
 
             let resourceIndex = []
             for( const localResource of Object.values(localResources) ) {
-                if( localResource.parentResource === indexParentID && localResource.type !== 'image' ) {
-                    resourceIndex.push(localResource)
-                }
+                const { parentResource } = localResource
+                if( localResource.type !== 'image' ) {
+                    if( parentResource === indexParentID ||
+                        ( indexParentID === null && !Object.keys(localResources).includes(parentResource) )) {
+                        // if this resource is a child of current parent OR 
+                        // if the parent is not checked out, display it at top level
+                        resourceIndex.push(localResource)                    
+                    } 
+                }                    
             }
             const start = rowsPerPage * (currentPage-1)
             const end = start + rowsPerPage
