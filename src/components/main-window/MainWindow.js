@@ -538,9 +538,9 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter } = this.state
+        const { openResources, selectedResource, leftPaneWidth, expandedGutter, resourceViews } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
-        const remoteProject = fairCopyProject.remote
+        const {currentView} = resourceViews
 
         const editors = []
         let visible = false
@@ -576,7 +576,7 @@ export default class MainWindow extends Component {
                         onSave={onSave}
                         leftPaneWidth={leftPaneWidth}
                         expandedGutter={expandedGutter}
-                        remoteProject={remoteProject}
+                        currentView={currentView}
                     ></TEIEditor>
                 )        
             } else {
@@ -594,6 +594,7 @@ export default class MainWindow extends Component {
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onConfirmDeleteImages={onConfirmDeleteImages}
                         onEditSurfaceInfo={this.onEditSurfaceInfo}
+                        currentView={currentView}
                     ></FacsEditor>
                 )                     
             }
@@ -610,7 +611,8 @@ export default class MainWindow extends Component {
     renderContentPane() {
         const { fairCopyProject } = this.props
         const { resourceBrowserOpen, resourceViews, resourceIndex } = this.state
-        const resourceView = resourceViews[resourceViews.currentView]
+        const { currentView } = resourceViews
+        const resourceView = resourceViews[currentView]
         const { parentEntry } = resourceView
         
         return (
@@ -623,6 +625,7 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         teiDoc={parentEntry}
+                        currentView={currentView}
                         resourceView={resourceView}
                         resourceIndex={resourceIndex}
                         fairCopyProject={fairCopyProject}

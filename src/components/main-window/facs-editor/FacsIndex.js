@@ -268,7 +268,7 @@ export default class FacsIndex extends Component {
     }
     
     render() {
-        const { resourceEntry, parentResource, onResourceAction, isWindowed, facsDocument } = this.props
+        const { resourceEntry, parentResource, onResourceAction, isWindowed, facsDocument, currentView } = this.props
         const {isLoggedIn} = facsDocument.imageViewContext
 
         return (
@@ -280,6 +280,7 @@ export default class FacsIndex extends Component {
                         parentResource={ parentResource } 
                         isImageWindow={isWindowed}
                         isLoggedIn={isLoggedIn}
+                        currentView={currentView}
                     >
                     </TitleBar>
                     { this.renderToolbar() }

@@ -8,8 +8,9 @@ const maxTitleLength = 120
 export default class TitleBar extends Component {
     
     onClickView = () => {
-        // const { onResourceAction } = this.props
-        // onResourceAction('home')
+        const { currentView, onResourceAction } = this.props
+        const action = currentView === 'home' ? 'remote' : 'home'
+        onResourceAction(action)
     }
 
     onClickRoot = () => {
@@ -23,9 +24,8 @@ export default class TitleBar extends Component {
     }
 
     renderHomeButton() {         
-        // const { remoteProject, isLoggedIn } = this.props    
-        // const homeIcon = remoteProject ? isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' : 'fa fa-home-alt'
-        const homeIcon = 'fa fa-home-alt'
+        const { currentView, isLoggedIn } = this.props    
+        const viewIcon = currentView === 'home' ? 'fa fa-home-alt' : isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' 
         return (
             <Tooltip title="Home">
                 <span>            
@@ -33,7 +33,7 @@ export default class TitleBar extends Component {
                         onClick={this.onClickView}
                         className="home-icon" 
                     >
-                        <i className={`${homeIcon} fa-sm`}></i>
+                        <i className={`${viewIcon} fa-sm`}></i>
                     </IconButton> 
                 </span>
             </Tooltip>
@@ -41,7 +41,7 @@ export default class TitleBar extends Component {
     }
 
     renderTitle() {
-        const { parentResource, resourceName, surfaceName, isImageWindow, onClickResource, loading } = this.props
+        const { parentResource, resourceName, surfaceName, isImageWindow, onClickResource, loading, currentView } = this.props
 
         let titleCount = 0
         if( parentResource ) titleCount++
@@ -55,7 +55,8 @@ export default class TitleBar extends Component {
 
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
-        const rootEl = !isImageWindow ? <span onClick={this.onClickRoot} className="nav-link" >Home</span> : ""
+        const viewName = currentView === 'home' ? 'Home' : 'Remote'
+        const rootEl = !isImageWindow ? <span onClick={this.onClickRoot} className="nav-link" >{viewName}</span> : ""
         const surfaceNameEl = surfaceName && <span className="nav-link" ><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
         const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>
         const teiDocNameEl = parentResource && <span className="nav-link" onClick={this.onClickTeiDoc} ><i aria-label="/" className={chevClass}></i> {teiDocNameShort}</span>

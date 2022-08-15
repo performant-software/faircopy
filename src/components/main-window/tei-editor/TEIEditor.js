@@ -277,7 +277,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter, remoteProject } = this.props
+        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, expandedGutter, currentView } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
 
         const { isLoggedIn } = teiDocument.fairCopyProject
@@ -331,7 +331,7 @@ export default class TEIEditor extends Component {
                         parentResource={parentResource} 
                         onResourceAction={onResourceAction} 
                         resourceName={resourceEntry.name}    
-                        remoteProject={remoteProject}     
+                        currentView={currentView}     
                         isLoggedIn={isLoggedIn}
                         >                   
                         </TitleBar> 

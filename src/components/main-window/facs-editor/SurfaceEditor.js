@@ -187,7 +187,7 @@ export default class SurfaceEditor extends Component {
     }
 
     render() {
-        const { resourceEntry, parentResource, isWindowed, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo, onResourceAction } = this.props
+        const { resourceEntry, parentResource, isWindowed, facsDocument, surfaceIndex, onChangeView, onWindow, onEditSurfaceInfo, onResourceAction, currentView } = this.props
         const { selectedDOMElement, selectedZone, selectedTool } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
         const surfaceNames = getSurfaceNames(surface)
@@ -230,6 +230,7 @@ export default class SurfaceEditor extends Component {
                         parentResource={ parentResource } 
                         isImageWindow={isWindowed}
                         isLoggedIn={isLoggedIn}
+                        currentView={currentView}
                         >
                         </TitleBar>
                     <SurfaceEditorToolbar 
