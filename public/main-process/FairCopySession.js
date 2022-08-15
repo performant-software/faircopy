@@ -19,7 +19,7 @@ class FairCopySession {
                 parentEntry: null,
                 currentPage: 1, 
                 rowsPerPage: 100,
-                totalRows: null,
+                totalRows: 0,
                 loading: true
             },
             home: {
@@ -27,7 +27,7 @@ class FairCopySession {
                 parentEntry: null,
                 currentPage: 1, 
                 rowsPerPage: 100,
-                totalRows: null,
+                totalRows: 0,
                 loading: true           
             }
         }
