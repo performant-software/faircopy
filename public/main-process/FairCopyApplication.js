@@ -83,7 +83,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestResourceView', (event, resourceViewRequest) => { 
-      this.fairCopySession.requestResourceView(resourceViewRequest) 
+      this.fairCopySession.updateResourceView(resourceViewRequest) 
     })
 
     ipcMain.on('requestCheckedOutResources', (event) => { 

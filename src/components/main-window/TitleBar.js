@@ -7,9 +7,14 @@ const maxTitleLength = 120
 
 export default class TitleBar extends Component {
     
-    onClickHome = () => {
+    onClickView = () => {
+        // const { onResourceAction } = this.props
+        // onResourceAction('home')
+    }
+
+    onClickRoot = () => {
         const { onResourceAction } = this.props
-        onResourceAction('home')
+        onResourceAction('root')
     }
 
     onClickTeiDoc = () => {
@@ -18,13 +23,14 @@ export default class TitleBar extends Component {
     }
 
     renderHomeButton() {         
-        const { remoteProject, isLoggedIn } = this.props    
-        const homeIcon = remoteProject ? isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' : 'fa fa-home-alt'
+        // const { remoteProject, isLoggedIn } = this.props    
+        // const homeIcon = remoteProject ? isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' : 'fa fa-home-alt'
+        const homeIcon = 'fa fa-home-alt'
         return (
             <Tooltip title="Home">
                 <span>            
                     <IconButton
-                        onClick={this.onClickHome}
+                        onClick={this.onClickView}
                         className="home-icon" 
                     >
                         <i className={`${homeIcon} fa-sm`}></i>
@@ -49,14 +55,14 @@ export default class TitleBar extends Component {
 
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
-        const homeEl = !isImageWindow ? <span onClick={this.onClickHome} className="nav-link" >Home</span> : ""
+        const rootEl = !isImageWindow ? <span onClick={this.onClickRoot} className="nav-link" >Home</span> : ""
         const surfaceNameEl = surfaceName && <span className="nav-link" ><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
         const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>
         const teiDocNameEl = parentResource && <span className="nav-link" onClick={this.onClickTeiDoc} ><i aria-label="/" className={chevClass}></i> {teiDocNameShort}</span>
         return (
             <div className="breadcrumbs">                
                 <Typography component="h2" variant="h6">
-                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && inlineRingSpinner('light') }
+                    {rootEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && inlineRingSpinner('light') }
                 </Typography>
             </div>
         )

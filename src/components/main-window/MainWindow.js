@@ -53,7 +53,7 @@ export default class MainWindow extends Component {
                     parentEntry: null,
                     currentPage: 1, 
                     rowsPerPage: 100,
-                    totalRows: null,
+                    totalRows: 0,
                     loading: true
                 },
                 home: {
@@ -61,7 +61,7 @@ export default class MainWindow extends Component {
                     parentEntry: null,
                     currentPage: 1, 
                     rowsPerPage: 100,
-                    totalRows: null,
+                    totalRows: 0,
                     loading: true           
                 }
             },
@@ -399,14 +399,18 @@ export default class MainWindow extends Component {
         switch(actionID) {
             case 'open-teidoc':
                 {
-                const {resourceViews} = this.state 
+                const {resourceViews, resourceIndex} = this.state 
                 const {currentView} = resourceViews 
                 const currentResourceView = resourceViews[currentView]
-                const resourceViewRequest = { currentView, indexParentID: resourceIDs, parentEntry: resourceEntries, currentPage: 1 }
+                const indexParentID = resourceIDs
+                const parentEntry = resourceEntries
+                const currentPage = 1
+                const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+                const nextResourceIndex = currentView === 'home' ? resourceIndex : []
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
-                const nextResourceViews = { ...currentResourceView }
-                nextResourceViews[currentView] = { ...currentResourceView, ...resourceViewRequest, loading: true }
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })
+                const nextResourceViews = { ...resourceViews }
+                nextResourceViews[currentView] = { ...currentResourceView, indexParentID, parentEntry, currentPage, loading: true }
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
                 }
                 return false
             case 'open':
@@ -431,7 +435,7 @@ export default class MainWindow extends Component {
                 const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )       
                 const nextResourceViews = { ...resourceViews }
-                nextResourceViews.currentView = 'home'
+                nextResourceViews.currentView = 'remote'
                 this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })            
                 }
                 return false
@@ -443,19 +447,21 @@ export default class MainWindow extends Component {
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews.currentView = 'home'
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })    
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews })    
                 }
                 return false
             case 'root':
                 {
-                const {resourceViews} = this.state 
+                const {resourceViews, resourceIndex } = this.state 
                 const {currentView} = resourceViews 
                 const currentResourceView = resourceViews[currentView]
-                const resourceViewRequest = { currentView, indexParentID: null, parentEntry: null, currentPage: 1 }
+                const { currentPage } = currentResourceView
+                const resourceViewRequest = { currentView, indexParentID: null, parentEntry: null, currentPage }
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
-                const nextResourceViews = { ...currentResourceView }
-                nextResourceViews[currentView] = { ...currentResourceView, ...resourceViewRequest, loading: true }
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })    
+                const nextResourceViews = { ...resourceViews }
+                const nextResourceIndex = currentView === 'home' ? resourceIndex : []
+                nextResourceViews[currentView] = { ...currentResourceView, indexParentID: null, parentEntry: null, loading: true }
+                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })    
                 }
                 return false
             case 'move':

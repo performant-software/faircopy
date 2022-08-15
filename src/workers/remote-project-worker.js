@@ -69,7 +69,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
         case 'open':
             updateConfig()
             updateIDMap( serverURL, authToken, projectID, postMessage )
-            updateResourceView( serverURL, projectID, initResourceViewState, authToken, postMessage )
+            // updateResourceView( serverURL, projectID, initResourceViewState, authToken, postMessage )
             connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )
             break
         case 'get-resource':

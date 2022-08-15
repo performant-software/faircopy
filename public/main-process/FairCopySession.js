@@ -50,6 +50,8 @@ class FairCopySession {
             const { email, serverURL, projectID } = manifestData
             this.remoteProject = new RemoteProject(this, email, serverURL, projectID )
         }
+
+        this.requestResourceView()
     }
 
     closeProject() {
@@ -107,19 +109,26 @@ class FairCopySession {
         this.requestResourceView()
     }
 
-    requestResourceView(resourceViewRequest=null) {
-        const resourceView = nextResourceView ? nextResourceView : this.resourceView
+    updateResourceView(resourceViewRequest) {
+        const { currentView, indexParentID, parentEntry, currentPage }  = resourceViewRequest
+        const resourceView = this.resourceViews[currentView]
+        this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, currentPage }
+        this.resourceViews.currentView = currentView
+        this.requestResourceView()
+    }
+
+    requestResourceView() {
+        const {currentView} = this.resourceViews
+        const resourceView = this.resourceViews[currentView]
         const { indexParentID, currentPage, rowsPerPage } = resourceView
         const { resources: localResources } = this.projectStore.manifestData
-        const hasLocalParent = indexParentID && localResources[indexParentID]?.local
 
-        if( this.remote && !hasLocalParent ) {
+        if( currentView === 'remote' ) {
             // request resource data from server
             this.remoteProject.requestResourceView(resourceView)
         } else {
             // respond right away from project store
             resourceView.parentEntry = indexParentID ? localResources[indexParentID] : null
-            this.resourceView = resourceView           
 
             let resourceIndex = []
             for( const localResource of Object.values(localResources) ) {
@@ -129,9 +138,10 @@ class FairCopySession {
             }
             const start = rowsPerPage * (currentPage-1)
             const end = start + rowsPerPage
-            this.resourceView.totalRows = resourceIndex.length
+            resourceView.totalRows = resourceIndex.length
             resourceIndex = resourceIndex.slice(start,end)
-            this.resourceView.loading = false
+            resourceView.loading = false
+            this.resourceViews[currentView] = resourceView
 
             this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex } )
         }
