@@ -20,8 +20,8 @@ function getWebSocketURL( serverURL ) {
   if( serverURL.includes('http://') ) {
     return serverURL.replace('http://','ws://')
   } else if( serverURL.includes('https://') ) {
-    return serverURL.replace('https://','ws://')
+    return serverURL.replace('https://','wss://')
   } else {
-    return `ws://${serverURL}`
+    return `wss://${serverURL}`
   }
 }
