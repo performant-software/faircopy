@@ -46,6 +46,7 @@ export default class ResourceBrowser extends Component {
       {
         id: 'move',
         label: 'Move',
+        disabled: true,
         action: this.createResourceAction('move')
       },
       {

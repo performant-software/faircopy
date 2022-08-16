@@ -135,7 +135,7 @@ class FairCopySession {
                 const { parentResource } = localResource
                 if( localResource.type !== 'image' ) {
                     if( parentResource === indexParentID ||
-                        ( indexParentID === null && !Object.keys(localResources).includes(parentResource) )) {
+                        ( indexParentID === null && !localResources[parentResource] )) {
                         // if this resource is a child of current parent OR 
                         // if the parent is not checked out, display it at top level
                         resourceIndex.push(localResource)                    
@@ -162,7 +162,7 @@ class FairCopySession {
         }
     }
 
-    sendResourceViewUpdate(resourceView, resourceIndex) {
+    sendResourceViewUpdate(resourceView, remoteResources) {
         const { resources: localResources } = this.projectStore.manifestData
         const { indexParentID } = resourceView
 
@@ -170,6 +170,10 @@ class FairCopySession {
         if( indexParentID !== null && !resourceView.parentEntry ) {
             resourceView.parentEntry = localResources[indexParentID]
         }
+
+        const resourceIndex = remoteResources.map( resourceEntry => {
+            return localResources[resourceEntry.id] ? localResources[resourceEntry.id] : resourceEntry
+        })
     
         this.resourceViews.remote = resourceView
         this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex })
