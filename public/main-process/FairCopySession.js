@@ -96,17 +96,24 @@ class FairCopySession {
                 idMap = this.idMapAuthority.removeResource(localID, parentID)
                 this.idMapAuthority.sendIDMapUpdate()    
             }
-            this.projectStore.removeResource(resourceID,idMap)    
+            this.projectStore.removeResource(resourceID,idMap)   
+            this.requestResourceView()
         } else {
             log.info(`Error removing resource entry: ${resourceID}`)
         }
     }
 
     recoverResource(resourceID) {
-        this.projectStore.recoverResource(resourceID)
-        this.idMapAuthority.recoverResource(resourceID)
-        this.idMapAuthority.sendIDMapUpdate()
-        this.requestResourceView()
+        const { resources } = this.projectStore.manifestData
+        const resourceEntry = resources[resourceID]
+        if( resourceEntry && resourceEntry.deleted ) {
+            const idMap = this.idMapAuthority.recoverResource(resourceID)
+            this.idMapAuthority.sendIDMapUpdate()
+            this.projectStore.recoverResource(resourceID,idMap)
+            this.requestResourceView()
+        } else {
+            log.info(`Error recovering resource entry: ${resourceID}`)
+        }
     }
 
     updateResourceView(resourceViewRequest) {

@@ -260,14 +260,14 @@ class ProjectStore {
 
         log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
-        this.fairCopyApplication.fairCopySession.requestResourceView()
     }
 
-    recoverResource( resourceID ) {
+    recoverResource( resourceID, idMap ) {
         const resourceEntry = this.manifestData.resources[resourceID] 
 
         if( resourceEntry ) {
             resourceEntry.deleted = false
+            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry  )
             this.saveManifest()
         }
