@@ -112,16 +112,33 @@ class FairCopySession {
         this.requestResourceView()
     }
 
-    recoverResource(resourceID) {
+    recoverResources(resourceIDs) {
         const { resources } = this.projectStore.manifestData
-        const resourceEntry = resources[resourceID]
-        if( resourceEntry && resourceEntry.deleted ) {
-            const idMap = this.idMapAuthority.recoverResource(resourceID)
-            this.idMapAuthority.sendIDMapUpdate()
-            this.projectStore.recoverResource(resourceID,idMap)
-            this.requestResourceView()
-        } else {
-            log.info(`Error recovering resource entry: ${resourceID}`)
+        const recoveredIDMap = {}
+
+        for( const resourceID of resourceIDs ) {
+            const resourceEntry = resources[resourceID]
+            if( resourceEntry && resourceEntry.deleted ) {
+                // also recover any checked out children 
+                if( resourceEntry.type === 'teidoc') {
+                    for( const localResource of Object.values(resources) ) {
+                        const { parentResource } = localResource
+                        if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
+                            recoveredIDMap[localResource.id] = true                  
+                        }                    
+                    }
+                }
+                recoveredIDMap[resourceEntry.id] = true
+            } else {
+                log.info(`Error recovering resource entry: ${resourceID}`)
+            }    
+        }
+
+        const recoveredIDs = Object.keys(recoveredIDMap)
+        if( recoveredIDs.length > 0 ) {
+            const idMap = this.idMapAuthority.recoverResources(recoveredIDs)
+            this.projectStore.recoverResources(recoveredIDs,idMap)
+            this.requestResourceView()    
         }
     }
 
@@ -356,7 +373,6 @@ class FairCopySession {
     }
 
     checkOut(email, serverURL, projectID, resourceIDs) {
-        this.idMapAuthority.checkOut(resourceIDs)            
         this.projectStore.checkOut(email, serverURL, projectID, resourceIDs)
     }
 

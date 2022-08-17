@@ -71,16 +71,7 @@ class ProjectStore {
                 case 'check-out-results':
                     {
                         const { resources, error } = msg
-                        this.fairCopyApplication.sendToMainWindow('checkOutResults', Object.keys(resources), error ) 
-                        for( const resource of Object.values(resources) ) {
-                            const { resourceEntry, parentEntry, content } = resource
-                            this.manifestData.resources[resourceEntry.id] = resourceEntry
-                            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
-                            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
-                            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
-                            this.saveManifest()      
-                        }
-                        this.fairCopyApplication.fairCopySession.requestResourceView()     
+                        this.checkOutResults(resources,error)
                     }
                     break
                 default:
@@ -265,15 +256,17 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    recoverResource( resourceID, idMap ) {
-        const resourceEntry = this.manifestData.resources[resourceID] 
+    recoverResources( resourceIDs, idMap ) {
+        for( const resourceID of resourceIDs ) {
+            const resourceEntry = this.manifestData.resources[resourceID] 
 
-        if( resourceEntry ) {
-            resourceEntry.deleted = false
-            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry  )
-            this.saveManifest()
+            if( resourceEntry ) {
+                resourceEntry.deleted = false
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry  )
+            }    
         }
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
+        this.saveManifest()
     }
 
     saveManifest() {
@@ -346,6 +339,22 @@ class ProjectStore {
         if( resourceEntry ) {
             this.projectArchiveWorker.postMessage({ messageType: 'read-resource', resourceID, xmlID })
         }
+    }
+
+    checkOutResults(resources,error) {
+        this.fairCopyApplication.sendToMainWindow('checkOutResults', Object.keys(resources), error ) 
+        const resourceIDs = []
+        for( const resource of Object.values(resources) ) {
+            const { resourceEntry, parentEntry, content } = resource
+            this.manifestData.resources[resourceEntry.id] = resourceEntry
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
+            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
+            resourceIDs.push(resourceEntry.id)
+        }
+        this.saveManifest()      
+        this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resourceIDs)
+        this.fairCopyApplication.fairCopySession.requestResourceView()
     }
 
     checkInResults(resourceStatus, error) {

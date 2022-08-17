@@ -66,17 +66,19 @@ class IDMapRemote {
         return JSON.stringify(this.idMapStaged)
     }
     
-    recoverResource( resourceID ) {
-        const { localID, parentID } = resourceIDToLocalIDs(resourceID,this.idMapStaged)
-        if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
-            this.idMapNext[parentID].ids[localID] = this.idMapStaged[parentID].ids[localID]
-            delete this.idMapStaged[parentID].ids[localID].deleted 
-        } else {
-            this.idMapNext[localID] = this.idMapStaged[localID]
-            delete this.idMapStaged[localID].deleted 
-        }
-
+    recoverResources( resourceIDs ) {
+        for( const resourceID of resourceIDs ) {
+            const { localID, parentID } = resourceIDToLocalIDs(resourceID,this.idMapStaged)
+            if( parentID ) {
+                if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
+                this.idMapNext[parentID].ids[localID] = this.idMapStaged[parentID].ids[localID]
+                delete this.idMapStaged[parentID].ids[localID].deleted 
+            } else {
+                this.idMapNext[localID] = this.idMapStaged[localID]
+                delete this.idMapStaged[localID].deleted 
+            }    
+        } 
+        this.sendIDMapUpdate()
         return JSON.stringify(this.idMapStaged)
     }
 

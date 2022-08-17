@@ -160,9 +160,7 @@ export default class FairCopyProject {
     }
 
     recoverResources(resourceIDs) {
-        for( const resourceID of resourceIDs ) {
-            fairCopy.services.ipcSend('recoverResource', resourceID )
-        }
+        fairCopy.services.ipcSend('recoverResources', resourceIDs )
     }  
 
     openResource( resourceID ) {
