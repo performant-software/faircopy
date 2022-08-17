@@ -128,30 +128,32 @@ export default class ResourceBrowser extends Component {
             <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
           </div>  
         }
-        { currentView === 'remote' &&
-          <div className='inline-button-group'>
-            { this.renderLoginButton(buttonProps) }
-          </div>        
-        }
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}
           onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
           {...buttonProps}
         >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button> 
-        { teiDoc && <Tooltip title="Edit Document Properties">
-            <span>
-                <Button
-                    onClick={onEditTEIDoc}
-                    className='toolbar-button'
-                    disableRipple={true}
-                    disableFocusRipple={true}
-                    style={{float: 'right'}}
-                >
-                    <i className="far fa-edit fa-2x"></i>
-                </Button>                   
-            </span>
-        </Tooltip> }
+        { teiDoc && currentView === 'home' && 
+          <Tooltip title="Edit Document Properties">
+              <span>
+                  <Button
+                      onClick={onEditTEIDoc}
+                      className='toolbar-button'
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                      style={{float: 'right'}}
+                  >
+                      <i className="far fa-edit fa-2x"></i>
+                  </Button>                   
+              </span>
+          </Tooltip> 
+        }
+        { currentView === 'remote' &&
+         <div className='inline-button-group right-button'>
+          { this.renderLoginButton(buttonProps) }
+        </div>   
+        }
       </div>
     )
   }
