@@ -228,37 +228,40 @@ class ProjectStore {
         }
     }
     
-    removeResource(resourceID,idMap) {
-        const resourceEntry = this.manifestData.resources[resourceID]
+    removeResources(resourceIDs,idMap) {
+        for( const resourceID of resourceIDs ) {
+            const resourceEntry = this.manifestData.resources[resourceID]
         
-        // go through the manifest entries, if there are local images associated with this facs, delete them too
-        if( resourceEntry.type === 'facs' ) {
-            for( const entry of Object.values(this.manifestData.resources) ) {
-                const {id, type, localID} = entry
-                if( type === 'image' && localID.startsWith(resourceID) ) {
-                    delete this.manifestData.resources[id] 
-                    this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: id })    
-                    log.info(`Removed image resource from project: ${id}`)
+            // go through the manifest entries, if there are local images associated with this facs, delete them too
+            if( resourceEntry.type === 'facs' ) {
+                for( const entry of Object.values(this.manifestData.resources) ) {
+                    const {id, type, localID} = entry
+                    if( type === 'image' && localID.startsWith(resourceID) ) {
+                        delete this.manifestData.resources[id] 
+                        this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: id })    
+                        log.info(`Removed image resource from project: ${id}`)
+                    }
                 }
+            } else {
+                // remove associated search index
+                if( this.searchIndex ) this.searchIndex.removeIndex(resourceID)
             }
-        } else {
-            // remove associated search index
-            if( this.searchIndex ) this.searchIndex.removeIndex(resourceID)
+    
+            if( resourceEntry.local ) {
+                delete this.manifestData.resources[resourceID] 
+                if( resourceEntry.type !== 'teidoc' ) {
+                    this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
+                }
+            } else {
+                resourceEntry.deleted = true
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
+            }
+    
+            log.info(`Removed resource from project: ${resourceID}`)
         }
-
         if( idMap ) {
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })  
         }
-
-        if( resourceEntry.local ) {
-            delete this.manifestData.resources[resourceID] 
-            this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })        
-        } else {
-            resourceEntry.deleted = true
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry  )
-        }
-
-        log.info(`Removed resource from project: ${resourceID}`)
         this.saveManifest()
     }
 

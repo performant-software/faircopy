@@ -67,15 +67,17 @@ class FairCopyApplication {
     })
     ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
 
-    ipcMain.on('removeResource', (event, resourceID) => { 
-      this.fairCopySession.removeResource(resourceID) 
+    ipcMain.on('removeResources', (event, resourceIDs) => { 
+      this.fairCopySession.removeResources(resourceIDs) 
       
       // close any open image windows
-      const imageView = this.imageViews[resourceID]
-      if( imageView ) {
-        imageView.close()
+      for( const resourceID of resourceIDs ) {
+        const imageView = this.imageViews[resourceID]
+        if( imageView ) {
+          imageView.close()
+        }
+        delete this.imageViews[resourceID]  
       }
-      delete this.imageViews[resourceID]
     })
 
     ipcMain.on('recoverResource', (event, resourceID) => { 

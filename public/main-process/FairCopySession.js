@@ -83,24 +83,33 @@ class FairCopySession {
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
     }
 
-    removeResource(resourceID) {
+    removeResources(resourceIDs) {
         const { resources } = this.projectStore.manifestData
-        const resourceEntry = resources[resourceID]
-        if( resourceEntry ) {
-            let idMap = null
-            if( resourceEntry.type === 'teidoc') {
-                // TODO all children must be removed before you can remove teidoc, but only for remote?
+        // use this map to generate unique ID list
+        const doomedIDMap = {} 
+
+        for( const resourceID of resourceIDs ) {
+            const resourceEntry = resources[resourceID]
+            if( resourceEntry ) {
+                if( resourceEntry.type === 'teidoc') {
+                    // also delete any checked out children 
+                    for( const localResource of Object.values(resources) ) {
+                        const { parentResource } = localResource
+                        if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
+                            doomedIDMap[localResource.id] = true                  
+                        }                    
+                    }
+                }
+                doomedIDMap[resourceEntry.id] = true
+            } else {
+                log.info(`Error removing resource entry: ${resourceID}`)
             }
-            if( resourceEntry.type !== 'image' ) {
-                const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
-                idMap = this.idMapAuthority.removeResource(localID, parentID)
-                this.idMapAuthority.sendIDMapUpdate()    
-            }
-            this.projectStore.removeResource(resourceID,idMap)   
-            this.requestResourceView()
-        } else {
-            log.info(`Error removing resource entry: ${resourceID}`)
         }
+
+        const doomedIDs = Object.keys(doomedIDMap)
+        const idMap = this.idMapAuthority.removeResources(doomedIDs)
+        this.projectStore.removeResources(doomedIDs,idMap)   
+        this.requestResourceView()
     }
 
     recoverResource(resourceID) {
@@ -324,11 +333,17 @@ class FairCopySession {
             if( resourceEntry ) {
                 committedResources.push(createCommitEntry(resourceEntry))
 
-                // automatically add header if teidoc  
                 if( resourceEntry.type === 'teidoc' ) {
-                    const headerEntry = Object.values(resources).find( r => (r.parentResource === resourceEntry.id && r.type === 'header') )
-                    if( resourceEntry.deleted ) headerEntry.deleted = true
-                    committedResources.push(createCommitEntry(headerEntry))
+                    // also delete any checked out children 
+                    for( const localResource of Object.values(resources) ) {
+                        const { parentResource } = localResource
+                        if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
+                            // automatically add header and any children if teidoc is deleted
+                            if( localResource.type === 'header' || resourceEntry.deleted ) {
+                                committedResources.push(createCommitEntry(localResource))
+                            }
+                        }
+                    }                    
                 }
             }
             if( resourceID === homeParentID ) {

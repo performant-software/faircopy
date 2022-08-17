@@ -156,9 +156,7 @@ export default class FairCopyProject {
     }
 
     removeResources( resourceIDs ) {
-        for( const resourceID of resourceIDs ) {
-            fairCopy.services.ipcSend('removeResource', resourceID )
-        }
+        fairCopy.services.ipcSend('removeResources', resourceIDs )
     }
 
     recoverResources(resourceIDs) {
