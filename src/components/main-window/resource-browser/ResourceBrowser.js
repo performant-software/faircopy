@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography } from '@material-ui/core';
+import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
@@ -296,6 +296,19 @@ export default class ResourceBrowser extends Component {
   )
   }
 
+  renderEmptyListMessage() {
+    const { resourceIndex, currentView } = this.props
+    if( resourceIndex.length > 0 || currentView !== 'home' ) return null
+
+    return (
+      <Card raised={true} className='empty-list-card'>
+        <CardContent>
+          <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography>
+        </CardContent>
+      </Card>
+    )
+  }
+
   render() {
       const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView } = this.props
       const { loading } = resourceView
@@ -307,6 +320,7 @@ export default class ResourceBrowser extends Component {
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
+              { this.renderEmptyListMessage() }
           </main>
         </div>
       )
