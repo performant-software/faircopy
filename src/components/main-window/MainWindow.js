@@ -372,6 +372,16 @@ export default class MainWindow extends Component {
         this.setState({...this.state, loginMode: true })
     }
 
+    onLoggedIn = () => {
+        const { resourceViews } = this.state
+        const { currentView } = resourceViews
+        const resourceView = resourceViews[currentView]
+        const { indexParentID, parentEntry, currentPage } = resourceView
+        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+        this.setState( {...this.state, loginMode: false} )
+        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+    }
+
     onEditResource = () => {
         this.setState({...this.state, editDialogMode: true })
     }
@@ -784,7 +794,7 @@ export default class MainWindow extends Component {
                     onClose={()=>{ this.setState( {...this.state, loginMode: false} )}}
                     email={email} 
                     serverURL={serverURL} 
-                    onLoggedIn={()=>{ this.setState( {...this.state, loginMode: false} )}}
+                    onLoggedIn={this.onLoggedIn}
                 ></LoginDialog> }
                 <SnackAlert
                     open={alertMessage !== null}
