@@ -157,25 +157,29 @@ class IDMapRemote {
         }
         // only remove teidoc if it has no children left in this map 
         for( const teiDocID of teiDocIDs ) {
-            if( Object.keys(this.idMapStaged[teiDocID]).length === 1 ) {
+            if( Object.keys(this.idMapStaged[teiDocID].ids).length === 0 ) {
                 delete this.idMapStaged[teiDocID]
             }
-            if( Object.keys(this.idMapBase[teiDocID]).length === 1 ) {
+            if( Object.keys(this.idMapBase[teiDocID].ids).length === 0 ) {
                 delete this.idMapBase[teiDocID]
             }
         }
+
+        return JSON.stringify(this.idMapStaged)
     }
 
-    checkOut( resourceIDs ) {
-        for( const resourceID of resourceIDs ) {
-            const { parentID, localID } = resourceIDToLocalIDs(resourceID, this.idMapBase)
-            if( parentID ) {
-                if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
-                this.idMapStaged[parentID].ids[localID] = this.idMapBase[parentID].ids[localID]
+    checkOut( resourceEntries ) {
+        for( const resourceEntry of resourceEntries ) {
+            const { parentResource: parentResourceID, localID } = resourceEntry
+            if( parentResourceID ) {
+                const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapBase)
+                if( !this.idMapStaged[parentLocalID] ) this.idMapStaged[parentLocalID] = this.copyParent(parentLocalID,'idMapStaged') 
+                this.idMapStaged[parentLocalID].ids[localID] = this.idMapBase[parentLocalID].ids[localID]
             } else {
                 this.idMapStaged[localID] = this.idMapBase[localID]
             }
         }
+        return JSON.stringify(this.idMapStaged)
     }
 
     commitResource( localID, parentID ) {
