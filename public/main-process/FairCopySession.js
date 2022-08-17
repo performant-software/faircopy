@@ -317,6 +317,7 @@ class FairCopySession {
             }
         }
         
+        const homeParentID = this.resourceViews.home.indexParentID
         for( const resourceID of checkInResources ) {
             const resourceEntry = resources[resourceID]
             // ignore resources that aren't in local manifest
@@ -329,6 +330,10 @@ class FairCopySession {
                     if( resourceEntry.deleted ) headerEntry.deleted = true
                     committedResources.push(createCommitEntry(headerEntry))
                 }
+            }
+            if( resourceID === homeParentID ) {
+                // if this got checked in, move to root
+                this.resourceViews.home.indexParentID = null
             }
         }
 
