@@ -235,7 +235,11 @@ export default class ResourceBrowser extends Component {
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
-            { icon && <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i> }
+            { icon && 
+              <Tooltip title={label}>
+                <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+              </Tooltip>
+            }
           </TableCell>
           }
           <TableCell {...cellProps} >
