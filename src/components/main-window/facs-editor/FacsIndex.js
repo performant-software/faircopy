@@ -203,7 +203,7 @@ export default class FacsIndex extends Component {
                     count={surfaceRows.length}
                     rowsPerPage={rowsPerPage}
                     page={currentPage}
-                    onChangePage={onChangePage}
+                    onPageChange={onChangePage}
                 />
             </Paper>
         )
