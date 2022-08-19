@@ -5,18 +5,7 @@ import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../m
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { logout, isLoggedIn } from '../../../model/cloud-api/auth'
 
-const fairCopy = window.fairCopy
-
 export default class ResourceBrowser extends Component {
-
-  constructor() {
-    super()
-    this.initialState = {
-      allChecked: false,
-      checked: {}
-    }
-    this.state = this.initialState
-  }
 
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject } = this.props
@@ -75,18 +64,16 @@ export default class ResourceBrowser extends Component {
 
   createResourceAction(actionID) {    
     return () => {
-      const { onResourceAction } = this.props
-      const { checked } = this.state
+      const { onResourceAction, resourceCheckmarks } = this.props
       const resourceIDs = [], resourceEntries = []
-      for( const resourceID of Object.keys(checked) ) {
-        if( checked[resourceID] ) {
-          resourceIDs.push(resourceID)
-          resourceEntries.push(checked[resourceID])
+      for( const resourceID of Object.keys(resourceCheckmarks) ) {
+        const resourceEntry = resourceCheckmarks[resourceID]
+        if( resourceEntry ) {
+          resourceIDs.push(resourceEntry.id)
+          resourceEntries.push(resourceEntry)
         }
       }
-      if( onResourceAction(actionID, resourceIDs, resourceEntries) ) {
-        this.setState({ ...this.state, checked: {}, allChecked: false })
-      }
+      onResourceAction(actionID, resourceIDs, resourceEntries)
     }
   }
 
@@ -97,7 +84,6 @@ export default class ResourceBrowser extends Component {
 
     const onLogout = () => {
       logout(email, serverURL)
-      this.setState({...this.state})
     }
 
     return loggedIn ? 
@@ -106,8 +92,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderToolbar() {
-    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView } = this.props
-    const { checked } = this.state
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks } = this.props
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -117,7 +102,7 @@ export default class ResourceBrowser extends Component {
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
-    const actionsEnabled = Object.values(checked).find( c => !!c )
+    const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
 
     return (
       <div className="toolbar">
@@ -159,7 +144,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
     const { remote: remoteProject, email } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows } = resourceView
 
@@ -189,37 +174,28 @@ export default class ResourceBrowser extends Component {
     }
 
     const toggleAll = () => {
-      const { checked, allChecked } = this.state
-      const nextAllChecked = !allChecked
-      const nextChecked = { ...checked }
-      for( const resource of resourceIndex ) {
-        if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked ? resource : null
-      }
-      this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
+      const { setAllCheckmarks } = this.props
+      setAllCheckmarks(!allResourcesCheckmarked)
     }
 
     const onClickCheck = (e) => {
-      const { checked } = this.state
-      const nextChecked = { ...checked }
+      const { setResourceCheckmark } = this.props
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
       const resourceEntry = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
-      nextChecked[resourceID] = checked[resourceID] ? null : resourceEntry
-      this.setState({ ...this.state, checked: nextChecked })
+      setResourceCheckmark( resourceEntry, !!!resourceCheckmarks[resourceID] )
     }
 
     const cellProps = {
       component: "td",
       scope: "row"
     }
-
-    const { checked, allChecked } = this.state
     
     const resourceRows = []
     
     for( const resource of resourceIndex ) {
       if( !resource ) continue
       const { id, name, localID, type, local, deleted } = resource 
-      const check = !!checked[id] 
+      const check = !!resourceCheckmarks[id] 
       const resourceIcon = getResourceIcon(type)
       const editable = isEntryEditable( resource, email )
       const checkedOutRemote = !editable ? isCheckedOutRemote( resource, email ) : false
@@ -261,9 +237,8 @@ export default class ResourceBrowser extends Component {
     }
 
     const onChangePage = (e,page) => { 
-      const { indexParentID, parentEntry } = resourceView
-      const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage: page+1 }
-      fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+      // pages counted ordinally outside this control (because that is how server counts them)
+      this.props.onPageChange(page+1)
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
@@ -275,7 +250,7 @@ export default class ResourceBrowser extends Component {
                   <caption>{tableCaption}</caption>
                   <TableHead>
                       <TableRow>
-                          <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
+                          <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
                           { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
                           <TableCell>Type</TableCell>
                           <TableCell>Name</TableCell>

@@ -66,6 +66,8 @@ export default class MainWindow extends Component {
                     loading: true           
                 }
             },
+            allResourcesCheckmarked: false,
+            resourceCheckmarks: {},
             resourceIndex: [],
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
@@ -125,9 +127,41 @@ export default class MainWindow extends Component {
         }
     }
 
+    setResourceCheckmark = (resourceEntry, checked, stateUpdate=true) => {
+        const { resourceCheckmarks } = this.state
+        const nextCheckmarks = { ...resourceCheckmarks }
+        nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null
+        if(stateUpdate) this.setState({...this.state, resourceCheckmarks: nextCheckmarks })
+        return nextCheckmarks
+    }
+
+    setAllCheckmarks = ( checked, stateUpdate=true ) => {
+        const { resourceCheckmarks, resourceIndex } = this.state
+        const nextCheckmarks = { ...resourceCheckmarks }
+        for( const resourceEntry of resourceIndex ) {
+            if( resourceEntry.type !== 'header' ) {
+                nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null
+            }
+        }  
+        if(stateUpdate) this.setState({...this.state, resourceCheckmarks: nextCheckmarks, allResourcesCheckmarked: checked })
+        else return { resourceCheckmarks: nextCheckmarks, allResourcesCheckmarked: checked }
+    }
+
     onResourceViewUpdate = (event, resourceData ) => {
-        const { resourceViews, resourceIndex } = resourceData
-        this.setState({...this.state, resourceViews, resourceIndex })
+        const { resourceViews } = this.state
+        const { currentView } = resourceViews
+        const resourceView = resourceViews[currentView]
+        const { resourceViews: nextResourceViews, resourceIndex: nextResourceIndex } = resourceData
+        const { currentView: nextCurrentView } = nextResourceViews
+        const nextResourceView = nextResourceViews[nextCurrentView]
+
+        // if the indexParentID or the currentView changed, clear checkmarks
+        if( currentView !== nextCurrentView || resourceView.indexParentID !== nextResourceView.indexParentID ) {
+            const checkmarkState = this.setAllCheckmarks(false,false)
+            this.setState({...this.state, ...checkmarkState, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
+        } else {
+            this.setState({...this.state, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
+        }
     }
 
     onCheckOutResults = (event, resourceIDs, error ) => {
@@ -167,7 +201,7 @@ export default class MainWindow extends Component {
             }
         }
     }
-    
+
     requestExitApp = () => {
         const { openResources } = this.state
         const resourceIDs = Object.keys( openResources )
@@ -340,7 +374,6 @@ export default class MainWindow extends Component {
         }
 
         fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
-        this.setState({...this.state, ...closePopUpState })
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -394,7 +427,21 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
+    onPageChange = (currentPage) => { 
+        const { resourceViews } = this.state
+        const { currentView } = resourceViews
+        const resourceView = resourceViews[currentView]
+        const { indexParentID, parentEntry } = resourceView
+        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+        this.setAllCheckmarks(false)
+    }
+
     onResourceAction = (actionID, resourceIDs, resourceEntries) => {
+        // all actions that use nextState clear the checkmarks
+        const checkmarkState = this.setAllCheckmarks(false,false)
+        const nextState = { ...this.state, ...checkmarkState }
+
         switch(actionID) {
             case 'open-teidoc':
                 {
@@ -409,24 +456,25 @@ export default class MainWindow extends Component {
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews[currentView] = { ...currentResourceView, indexParentID, parentEntry, currentPage, loading: true }
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
+                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
                 }
-                return false
+                break
             case 'open':
                 this.selectResources(resourceIDs)
-                return false
+                break
             case 'open-search-result':
                 this.selectResources(resourceIDs, true)
-                return false
+                break
             case 'check-in':
-                this.checkInResources(resourceIDs)
-                return true
+                this.setState({...nextState, checkInMode: true, checkInResources: resourceIDs, ...closePopUpState })
+                break
             case 'check-out':
                 this.checkOutResources(resourceEntries)
-                return true
+                this.setState({...nextState, ...closePopUpState })
+                break
             case 'close':
                 this.closeResources(resourceIDs)
-                return false
+                break
             case 'remote':
                 {
                 const {resourceViews} = this.state 
@@ -435,9 +483,9 @@ export default class MainWindow extends Component {
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )       
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews.currentView = 'remote'
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })            
+                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })            
                 }
-                return false
+                break
             case 'home':
                 {
                 const {resourceViews} = this.state 
@@ -446,9 +494,9 @@ export default class MainWindow extends Component {
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews.currentView = 'home'
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews })    
+                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews })    
                 }
-                return false
+                break
             case 'root':
                 {
                 const {resourceViews, resourceIndex } = this.state 
@@ -460,40 +508,40 @@ export default class MainWindow extends Component {
                 const nextResourceViews = { ...resourceViews }
                 const nextResourceIndex = currentView === 'home' ? resourceIndex : []
                 nextResourceViews[currentView] = { ...currentResourceView, indexParentID: null, parentEntry: null, loading: true }
-                this.setState({...this.state, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })    
+                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })    
                 }
-                return false
+                break
             case 'move':
-                this.setState( {...this.state, moveResourceMode: true, moveResources: resourceEntries} )
-                return true
+                this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries} )
+                break
             case 'save':
                 this.saveResources(resourceIDs)
-                return false
+                break
             case 'delete':
                 {
                     const { fairCopyProject } = this.props
                     const alertOptions = { resourceIDs }
                     if( fairCopyProject.areEditable( resourceEntries ) ) {
-                        this.setState({ ...this.state, alertDialogMode: 'confirmDelete', alertOptions, ...closePopUpState })    
+                        this.setState({ ...nextState, alertDialogMode: 'confirmDelete', alertOptions, ...closePopUpState })    
                     } else {
                         this.onAlertMessage("To delete a resource, you must first check it out.")
                     }
                 }
-                return true
+                break
             case 'recover':
                 {
                     const { fairCopyProject } = this.props
                     fairCopyProject.recoverResources(resourceIDs)                    
-                    this.setState({...this.state, ...closePopUpState })
+                    this.setState({...nextState, ...closePopUpState })
                 }
-                return true                
+                break     
             case 'export':
                 fairCopy.services.ipcSend('requestExport', resourceEntries)
-                this.setState({...this.state, ...closePopUpState })
-                return true
+                this.setState({...nextState, ...closePopUpState })
+                break
             default:
                 console.error(`Unrecognized resource action id: ${actionID}`)
-                return false
+                break
         }
     }
 
@@ -609,7 +657,7 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, resourceViews, resourceIndex } = this.state
+        const { resourceBrowserOpen, resourceViews, resourceIndex, allResourcesCheckmarked, resourceCheckmarks } = this.state
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
         const { parentEntry } = resourceView
@@ -625,6 +673,11 @@ export default class MainWindow extends Component {
                         onImportResource={this.onImportResource}
                         onLogin={this.onLogin}
                         teiDoc={parentEntry}
+                        setResourceCheckmark={this.setResourceCheckmark}
+                        setAllCheckmarks={this.setAllCheckmarks}
+                        allResourcesCheckmarked={allResourcesCheckmarked}
+                        resourceCheckmarks={resourceCheckmarks}
+                        onPageChange={this.onPageChange}
                         currentView={currentView}
                         resourceView={resourceView}
                         resourceIndex={resourceIndex}
