@@ -351,16 +351,25 @@ class FairCopySession {
                 committedResources.push(createCommitEntry(resourceEntry))
 
                 if( resourceEntry.type === 'teidoc' ) {
+                    const doomedIDs = []
                     // also delete any checked out children 
                     for( const localResource of Object.values(resources) ) {
                         const { parentResource } = localResource
                         if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
                             // automatically add header and any children if teidoc is deleted
-                            if( localResource.type === 'header' || resourceEntry.deleted ) {
+                            if( resourceEntry.deleted ) {
+                                localResource.deleted = true
+                                committedResources.push(createCommitEntry(localResource))
+                                doomedIDs.push(localResource.id)
+                            } else if( localResource.type === 'header' ) {
                                 committedResources.push(createCommitEntry(localResource))
                             }
                         }
-                    }                    
+                    }
+                    if( doomedIDs.length > 0 ) {
+                        const idMap = this.idMapAuthority.removeResources(doomedIDs)
+                        this.projectStore.removeResources(doomedIDs,idMap)         
+                    }   
                 }
             }
             if( resourceID === homeParentID ) {
