@@ -31,8 +31,10 @@ export default class FacsEditor extends Component {
         const facsDocument = this.getFacsDocument() 
         const { surfaceIndex } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
-        const {parentEntry} = facsDocument
-        fairCopy.services.ipcSend('requestImageView', { resourceID: facsDocument.resourceID, parentID: parentEntry?.id, xmlID: surface.id }) 
+        if( surface ) {
+            const {parentEntry} = facsDocument
+            fairCopy.services.ipcSend('requestImageView', { resourceID: facsDocument.resourceID, parentID: parentEntry?.id, xmlID: surface.id })     
+        }
     }
 
     render() {
