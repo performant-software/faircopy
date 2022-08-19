@@ -291,15 +291,15 @@ export default class ResourceBrowser extends Component {
   render() {
       const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView } = this.props
       const { loading } = resourceView
-      const { isLoggedIn } = fairCopyProject
+      const { isLoggedIn, remote: remoteProject } = fairCopyProject
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} currentView={currentView} loading={loading}></TitleBar>
+          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
-              { this.renderEmptyListMessage() }
+              { remoteProject && this.renderEmptyListMessage() }
           </main>
         </div>
       )

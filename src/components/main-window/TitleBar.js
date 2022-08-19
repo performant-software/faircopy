@@ -8,9 +8,11 @@ const maxTitleLength = 100
 export default class TitleBar extends Component {
     
     onClickView = () => {
-        const { currentView, onResourceAction } = this.props
-        const action = currentView === 'home' ? 'remote' : 'home'
-        onResourceAction(action)
+        const { currentView, onResourceAction, remoteProject } = this.props
+        if( remoteProject ) {
+            const action = currentView === 'home' ? 'remote' : 'home'
+            onResourceAction(action)    
+        }
     }
 
     onClickRoot = () => {
