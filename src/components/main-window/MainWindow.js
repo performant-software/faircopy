@@ -167,24 +167,7 @@ export default class MainWindow extends Component {
             }
         }
     }
-
-    updateView = () => { 
-        // TODO need a different mechanism for closing deleted files
-        // const { openResources } = this.state
-        // const { fairCopyProject } = this.props
-        // if any open resources no longer exist, close them
-        // const doomedResources = []
-        // for( const openResourceID of Object.keys(openResources) ) {
-        //     if( !fairCopyProject.resources[openResourceID]) {
-        //         doomedResources.push(openResourceID)
-        //     }
-        // }        
-        // if( doomedResources.length > 0 ) this.closeResources(doomedResources,false,false)
-
-        // push forward state to update resource entries in components
-        this.setState({...this.state})
-    }
-
+    
     requestExitApp = () => {
         const { openResources } = this.state
         const resourceIDs = Object.keys( openResources )
