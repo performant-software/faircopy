@@ -29,7 +29,7 @@ export default class TitleBar extends Component {
         const { currentView, isLoggedIn } = this.props    
         const viewIcon = currentView === 'home' ? 'fa fa-home-alt' : isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' 
         return (
-            <Tooltip title="Home">
+            <Tooltip title="Local Resources">
                 <span>            
                     <IconButton
                         onClick={this.onClickView}
