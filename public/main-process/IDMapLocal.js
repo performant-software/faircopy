@@ -79,6 +79,15 @@ class IDMapLocal {
         return resourceIDToLocalIDs(resourceID,this.idMap)
     }
 
+    getResourceMap(resourceID) {
+        const { localID, parentID } = this.getLocalIDs(resourceID)
+        if( parentID ) {
+            return this.idMap[parentID].ids[localID]
+        } else {
+            return this.idMap[localID]
+        }
+    }
+
     commitResource( localID, parentID ) {
         // move resource map from draft to base map
         const idMap = JSON.parse(this.baseMapJSON)
