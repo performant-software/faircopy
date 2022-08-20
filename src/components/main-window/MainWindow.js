@@ -37,6 +37,7 @@ const fairCopy = window.fairCopy
 const initialLeftPaneWidth = 300
 const maxLeftPaneWidth = 630
 const resizeRefreshRate = 100
+const initialRowsPerPage = 50
 
 const closePopUpState = { popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null }
 
@@ -53,7 +54,7 @@ export default class MainWindow extends Component {
                     indexParentID: null,
                     parentEntry: null,
                     currentPage: 1, 
-                    rowsPerPage: 100,
+                    rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
                     loading: true
                 },
@@ -61,7 +62,7 @@ export default class MainWindow extends Component {
                     indexParentID: null,
                     parentEntry: null,
                     currentPage: 1, 
-                    rowsPerPage: 100,
+                    rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
                     loading: true           
                 }

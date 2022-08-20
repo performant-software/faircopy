@@ -5,6 +5,8 @@ const { RemoteProject } = require('./RemoteProject')
 const { ProjectStore } = require('./ProjectStore')
 const { createIDMapAuthority } = require('./IDMapAuthority')
 
+const initialRowsPerPage = 50
+
 class FairCopySession {
 
     constructor( fairCopyApplication, targetFile ) {
@@ -18,7 +20,7 @@ class FairCopySession {
                 indexParentID: null,
                 parentEntry: null,
                 currentPage: 1, 
-                rowsPerPage: 100,
+                rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
                 loading: true
             },
@@ -26,7 +28,7 @@ class FairCopySession {
                 indexParentID: null,
                 parentEntry: null,
                 currentPage: 1, 
-                rowsPerPage: 100,
+                rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
                 loading: true           
             }
@@ -175,12 +177,16 @@ class FairCopySession {
                     } 
                 }                    
             }
-            const start = rowsPerPage * (currentPage-1)
+            // don't let currentPage be > page count 
+            const pageCount = Math.ceil(resourceIndex.length/rowsPerPage)
+            const nextPage = currentPage > pageCount ? pageCount : currentPage
+            const start = rowsPerPage * (nextPage-1)
             const end = start + rowsPerPage
             resourceView.totalRows = resourceIndex.length
-            resourceIndex = resourceIndex.slice(start,end)
+            resourceView.currentPage = nextPage
             resourceView.loading = false
             this.resourceViews[currentView] = resourceView
+            resourceIndex = resourceIndex.slice(start,end)
 
             this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex } )
         }
@@ -197,7 +203,7 @@ class FairCopySession {
 
     sendResourceViewUpdate(resourceView, remoteResources) {
         const { resources: localResources } = this.projectStore.manifestData
-        const { indexParentID } = resourceView
+        const { indexParentID, rowsPerPage, currentPage, totalRows } = resourceView
 
         // if parent isn't in remote response, must be local parent
         if( indexParentID !== null && !resourceView.parentEntry ) {
@@ -207,7 +213,11 @@ class FairCopySession {
         const resourceIndex = remoteResources.map( resourceEntry => {
             return localResources[resourceEntry.id] ? localResources[resourceEntry.id] : resourceEntry
         })
-    
+
+        // don't let currentPage be > page count 
+        const pageCount = Math.ceil(totalRows/rowsPerPage)
+        resourceView.currentPage = currentPage > pageCount ? pageCount : currentPage
+        
         this.resourceViews.remote = resourceView
         this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex })
     }
