@@ -481,9 +481,10 @@ export default class MainWindow extends Component {
                 const {resourceViews} = this.state 
                 const { indexParentID, parentEntry, currentPage } = resourceViews.remote
                 const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
-                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )       
+                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )   
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews.currentView = 'remote'
+                nextResourceViews.remote.loading = true    
                 this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })            
                 }
                 break
@@ -495,6 +496,7 @@ export default class MainWindow extends Component {
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews.currentView = 'home'
+                nextResourceViews.home.loading = true    
                 this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews })    
                 }
                 break
