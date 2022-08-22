@@ -1,11 +1,11 @@
-const { resourceIDToLocalIDs } = require('./id-map-authority')
+const { resourceIDToLocalIDs, getBlankResourceMap } = require('./id-map-authority')
 
 class IDMapLocal {
 
     constructor( idMapData, onUpdate ) {
         this.onUpdate = onUpdate
         // the base map is stored in the project file
-        this.baseMapJSON = idMapData
+        this.idMapBase = JSON.parse(idMapData)
         // this map is for unsaved changes made during editing 
         this.idMapNext = {}
         // this is the merged, read-only map
@@ -14,6 +14,7 @@ class IDMapLocal {
 
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID) 
             this.idMapNext[parentID].ids[localID] = resourceMap
         } else {
             this.idMapNext[localID] = resourceMap
@@ -25,54 +26,68 @@ class IDMapLocal {
     // restore the specified resource to its previously saved state
     abandonResourceMap( localID, parentID ) {
         if( parentID ) {
-            delete this.idMapNext[parentID].ids[localID]
+            if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
         } else {
-            delete this.idMapNext[localID]
+            if( this.idMapNext[localID] ) delete this.idMapNext[localID]
         }    
     }
 
     addResource( localID, parentID, resourceMap ) {       
         if( parentID ) {
-            this.idMapNext[parentID].ids[localID] = resourceMap
+            if( !this.idMapBase[parentID] ) this.idMapBase[parentID] = this.copyParent( localID )
+            this.idMapBase[parentID].ids[localID] = resourceMap
         } else {
-            this.idMapNext[localID] = resourceMap
+            this.idMapBase[localID] = resourceMap
         }
 
-        // return updated map
-        return this.commitResource(localID, parentID)   
+        return JSON.stringify(this.idMapBase)
     }
 
-    removeResource( localID, parentID ) {
-        const idMap = JSON.parse(this.baseMapJSON)
-
-        if( parentID ) {
-            delete this.idMapNext[parentID].ids[localID]
-            delete idMap[parentID].ids[localID]
-        } else {
-            delete this.idMapNext[localID]
-            delete idMap[localID]
+    removeResources( resourceIDs ) {
+        for( const resourceID of resourceIDs ) {
+            const { localID, parentID } = resourceIDToLocalIDs(resourceID,this.idMapBase)
+            if( parentID ) {
+                if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
+                delete this.idMapBase[parentID].ids[localID]
+            } else {
+                if( this.idMapNext[localID] ) delete this.idMapNext[localID]
+                delete this.idMapStaged[localID]
+            }    
         }
-        this.baseMapJSON = JSON.stringify(idMap)
-        return this.baseMapJSON
+        this.sendIDMapUpdate()    
+        return JSON.stringify(this.idMapBase)
     }
-    
+
     changeID( newID, oldID, parentID ) {
+        // move the resource map on both editable layers to the new address
 
-        if( parentID ) {
-            if( this.idMapNext[parentID].ids[oldID] && !this.idMapNext[parentID].ids[newID] ) {
-                this.idMapNext[parentID].ids[newID] = this.idMapNext[parentID].ids[oldID]
-                delete this.idMapNext[parentID].ids[oldID]
-                return this.commitResource(newID,parentID)
-            }    
-        } else {
-            if( this.idMapNext[oldID] && !this.idMapNext[newID] ) {
-                this.idMapNext[newID] = this.idMapNext[oldID]
-                delete this.idMapNext[oldID]
-                return this.commitResource(newID,parentID)
+        // update the next map 
+        const nextResourceMap = parentID ? this.idMapNext[parentID].ids[oldID] : this.idMapNext[oldID]
+        if( nextResourceMap ) {
+            if( parentID ) {
+                if(  !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID) 
+                this.idMapNext[parentID].ids[newID] = nextResourceMap
+                if( this.idMapNext[parentID].ids[oldID] ) delete this.idMapNext[parentID].ids[oldID]
+            } else {
+                this.idMapNext[newID] = nextResourceMap
+                if( this.idMapNext[oldID] ) delete this.idMapNext[oldID]
             }    
         }
 
-        return this.baseMapJSON
+        // update the staged map
+        const baseResourceMap = parentID ? this.idMapBase[parentID].ids[oldID] : this.idMapBase[oldID]
+        if( baseResourceMap ) {
+            if( parentID ) {
+                if(  !this.idMapBase[parentID] ) this.idMapBase[parentID] = this.copyParent(parentID) 
+                this.idMapBase[parentID].ids[newID] = baseResourceMap
+                if( this.idMapBase[parentID].ids[oldID] ) delete this.idMapBase[parentID].ids[oldID]
+            } else {
+                this.idMapBase[newID] = baseResourceMap
+                if( this.idMapBase[oldID] ) delete this.idMapBase[oldID]
+            }    
+        }
+
+        return JSON.stringify(this.idMapBase)
     }
 
     getLocalIDs(resourceID) {
@@ -89,24 +104,31 @@ class IDMapLocal {
     }
 
     commitResource( localID, parentID ) {
-        // move resource map from draft to base map
-        const idMap = JSON.parse(this.baseMapJSON)
+        // move resource map from draft form to authoritative
         if( parentID ) {
-            idMap[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
+            if( !this.idMapBase[parentID] ) this.idMapBase[parentID] = this.copyParent(parentID) 
+            this.idMapBase[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
             delete this.idMapNext[parentID].ids[localID] 
         } else {
-            idMap[localID] = this.idMapNext[localID]
+            this.idMapBase[localID] = this.idMapNext[localID]
             delete this.idMapNext[localID]
         }    
-        this.baseMapJSON = JSON.stringify(idMap)
-        return this.baseMapJSON   
+        return JSON.stringify(this.idMapBase)
     }
 
     sendIDMapUpdate() {
-        const idMapData = JSON.parse( this.baseMapJSON )
-        addLayer( idMapData, this.idMapNext )
-        this.idMap = idMapData
+        this.idMap = JSON.parse(JSON.stringify(this.idMapBase))
+        addLayer( this.idMap, this.idMapNext )
         this.onUpdate(this.idMap)
+    }
+
+    copyParent( localID ) {
+        if( this.idMapBase[localID] ) {
+            const { resourceID, resourceType } = this.idMapBase[localID]
+            return getBlankResourceMap(resourceID, resourceType)
+        }  else {
+            throw new Error(`Layer not found: ${localID}`)
+        }
     }
 }
 
