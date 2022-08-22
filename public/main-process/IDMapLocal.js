@@ -51,7 +51,7 @@ class IDMapLocal {
                 delete this.idMapBase[parentID].ids[localID]
             } else {
                 if( this.idMapNext[localID] ) delete this.idMapNext[localID]
-                delete this.idMapStaged[localID]
+                delete this.idMapBase[localID]
             }    
         }
         this.sendIDMapUpdate()    
