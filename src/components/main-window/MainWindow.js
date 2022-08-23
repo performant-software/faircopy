@@ -435,7 +435,10 @@ export default class MainWindow extends Component {
         const { indexParentID, parentEntry } = resourceView
         const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
         fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
-        this.setAllCheckmarks(false)
+        const checkMarkState = this.setAllCheckmarks(false,false)
+        const nextResourceViews = { ...resourceViews }
+        nextResourceViews[currentView].loading = true
+        this.setState({...this.state, ...checkMarkState, resourceViews: nextResourceViews })
     }
 
     onResourceAction = (actionID, resourceIDs, resourceEntries) => {
