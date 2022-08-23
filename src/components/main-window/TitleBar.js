@@ -12,6 +12,8 @@ export default class TitleBar extends Component {
         if( remoteProject ) {
             const action = currentView === 'home' ? 'remote' : 'home'
             onResourceAction(action)    
+        } else {
+            this.onClickRoot()
         }
     }
 
