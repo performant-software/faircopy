@@ -60,7 +60,7 @@ class SearchIndex {
                 case 'search-results':
                     {
                         const { searchResults } = response
-                        this.projectStore.fairCopyApplication.sendToMainWindow('searchResults',searchResults)    
+                        this.sendSearchResults(searchResults)
                     }
                     break
                 default:
@@ -69,6 +69,19 @@ class SearchIndex {
         })
 
         return this.indexWorker.start({schemaJSON})
+    }
+
+    sendSearchResults( searchResults ) {
+        const { resources: localResources } = this.projectStore.manifestData
+        const { results } = searchResults
+
+        // add resource entries to search results
+        for( const resourceID of Object.keys(results) ) {
+            const resourceEntry = localResources[resourceID]
+            results[resourceID].resourceEntry = resourceEntry
+            results[resourceID].parentEntry = resourceEntry.parentResource ? localResources[resourceEntry.parentResource] : null
+        }
+        this.projectStore.fairCopyApplication.sendToMainWindow('searchResults',searchResults) 
     }
 
     isIndexable(resourceType) {

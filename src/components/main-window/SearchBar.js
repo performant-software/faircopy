@@ -49,15 +49,14 @@ export default class SearchBar extends Component {
     }
 
     renderSearchResults( projectSearchResults ) {
-        const { fairCopyProject, onResourceAction } = this.props
+        const { onResourceAction } = this.props
         const menuOptions = []
 
         for( const resourceID of Object.keys(projectSearchResults) ) {
             const searchResults = projectSearchResults[resourceID]
             const hitCount = searchResults.length
             if( hitCount > 0 ) {
-                const resourceEntry = fairCopyProject.resources[resourceID]
-                const parentEntry = fairCopyProject.getParent(resourceEntry)
+                const { resourceEntry, parentEntry } = searchResults
                 const parentName = parentEntry ?  parentEntry.name : null
                 const { name, type } = resourceEntry
                 const resultLabel = this.renderResultLabel( name, parentName, type )

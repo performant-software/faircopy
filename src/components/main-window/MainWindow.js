@@ -926,7 +926,7 @@ export default class MainWindow extends Component {
                     </SplitPane>
                     <MainWindowStatusBar
                         appConfig={appConfig}
-                        fairCopyProject={fairCopyProject}
+                        remoteProject={fairCopyProject.remote}
                         onSearchResults={this.onSearchResults}
                         onSearchFilter={this.onSearchFilter}
                         onAlertMessage={this.onAlertMessage}

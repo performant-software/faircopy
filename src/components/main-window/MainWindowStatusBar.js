@@ -108,12 +108,10 @@ export default class MainWindowStatusBar extends Component {
     }
 
     render() {
-        const { onFeedback, fairCopyProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
-        const { remote } = fairCopyProject
+        const { onFeedback, remoteProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
         return (
             <footer id="MainWindowStatusBar" className="bar">
-                    { !remote && <SearchBar
-                        fairCopyProject={fairCopyProject}
+                    { !remoteProject && <SearchBar
                         searchEnabled={searchEnabled}
                         searchSelectionIndex={searchSelectionIndex}
                         onUpdateSearchSelection={onUpdateSearchSelection}
