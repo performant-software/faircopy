@@ -178,7 +178,8 @@ class FairCopySession {
                 }                    
             }
             // don't let currentPage be > page count 
-            const pageCount = Math.ceil(resourceIndex.length/rowsPerPage)
+            let pageCount = Math.ceil(resourceIndex.length/rowsPerPage)
+            pageCount = pageCount === 0 ? 1 : pageCount
             const nextPage = currentPage > pageCount ? pageCount : currentPage
             const start = rowsPerPage * (nextPage-1)
             const end = start + rowsPerPage
