@@ -2,14 +2,18 @@ const semver = require('semver')
 const log = require('electron-log')
 const { getBlankResourceMap } = require('./id-map-authority')
 
+function getProjectVersion(generatedWith) {
+    return generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
+}
+
 // project files are backward compatible but not forward compatible
 const compatibleProject = function compatibleProject(manifestData, currentVersion) {
-    const projectVersion = manifestData.generatedWith ? manifestData.generatedWith : '0.9.4'  // this field was added in 0.9.5
+    const projectVersion = getProjectVersion(manifestData.generatedWith)
     return currentVersion === projectVersion || semver.gt(currentVersion, projectVersion)
 }
 
 const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, projectConfigJSON ) {
-    const projectVersion = generatedWith ? generatedWith : '0.9.4'
+    const projectVersion = getProjectVersion(generatedWith)
     const baseConfig = JSON.parse(baseConfigJSON)
     const projectConfig = JSON.parse(projectConfigJSON)
 
@@ -27,7 +31,7 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, pro
 }
 
 const migrateIDMap = function migrateIDMap( generatedWith, idMapJSON, localResources ) {
-    const projectVersion = generatedWith ? generatedWith : '0.9.4'
+    const projectVersion = getProjectVersion(generatedWith)
 
     if( semver.lt(projectVersion,'1.1.1') ) {
         log.info('applying IDMap migration for v1.1.1')
@@ -38,9 +42,21 @@ const migrateIDMap = function migrateIDMap( generatedWith, idMapJSON, localResou
     }
 }
 
+const migrateManifestData = function migrateManifestData( manifestData ) {
+    const projectVersion = getProjectVersion(manifestData.generatedWith)
+
+    if( semver.lt(projectVersion,'1.1.1') ) {
+        log.info('applying manifest data migration for v1.1.1')
+        return migrationRemoteManifestData( manifestData )
+    } else {
+        return manifestData
+    }
+}
+
 exports.compatibleProject = compatibleProject
 exports.migrateConfig = migrateConfig
 exports.migrateIDMap = migrateIDMap
+exports.migrateManifestData = migrateManifestData
 
 //// MIGRATIONS /////////////////////////////////////////////////
 
@@ -108,4 +124,22 @@ function migrationRemoteIDMaps(idMap,localResources) {
     }
         
     return nextIDMap
+}
+
+const cloudInitialConfig = {
+    local: true,
+    deleted: false,
+    gitHeadRevision: null,
+    lastAction: null
+}
+
+function migrationRemoteManifestData( manifestData ) {
+    // all project previous to v1.1.1 are not remote
+    manifestData.remote = false
+    for( const resourceID of Object.keys(manifestData.resources)) {
+        const resourceEntry = manifestData.resources[resourceID]
+        if( resourceEntry.resources ) delete resourceEntry.resources
+        manifestData.resources[resourceID] = { ...resourceEntry, ...cloudInitialConfig }
+    }
+    return manifestData
 }

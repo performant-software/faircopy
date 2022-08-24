@@ -2,7 +2,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const { readFile, stat } = require('fs/promises')
 
-const { compatibleProject, migrateConfig, migrateIDMap } = require('./data-migration')
+const { compatibleProject, migrateConfig, migrateIDMap, migrateManifestData } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
 const { exportResource } = require('./export-xml')
@@ -127,6 +127,9 @@ class ProjectStore {
             this.fairCopyApplication.sendToMainWindow('projectIncompatible', incompatInfo)
             return
         }
+
+        // migrate the manifestData to latest version 
+        this.manifestData = migrateManifestData(this.manifestData)
         
         // if elements changed in config, migrate project config
         this.migratedConfig = migrateConfig(this.manifestData.generatedWith,baseConfig,fairCopyConfig)
@@ -142,7 +145,7 @@ class ProjectStore {
             })    
         }
 
-        const projectData = { projectFilePath, fairCopyManifest, teiSchema, fairCopyConfig, baseConfig, idMap }
+        const projectData = { projectFilePath, fairCopyManifest: JSON.stringify(this.manifestData), teiSchema, fairCopyConfig, baseConfig, idMap }
         this.onProjectOpened( projectData )
     }
 
