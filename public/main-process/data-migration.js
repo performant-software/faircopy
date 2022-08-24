@@ -1,5 +1,6 @@
 const semver = require('semver')
 const log = require('electron-log')
+const { getBlankResourceMap } = require('./id-map-authority')
 
 // project files are backward compatible but not forward compatible
 const compatibleProject = function compatibleProject(manifestData, currentVersion) {
@@ -25,8 +26,21 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, pro
     return JSON.stringify(projectConfig)
 }
 
+const migrateIDMap = function migrateIDMap( generatedWith, idMapJSON, localResources ) {
+    const projectVersion = generatedWith ? generatedWith : '0.9.4'
+
+    if( semver.lt(projectVersion,'1.1.1') ) {
+        log.info('applying IDMap migration for v1.1.1')
+        const idMap = JSON.parse(idMapJSON)
+        return JSON.stringify( migrationRemoteIDMaps(idMap,localResources) )
+    } else {
+        return idMapJSON
+    }
+}
+
 exports.compatibleProject = compatibleProject
 exports.migrateConfig = migrateConfig
+exports.migrateIDMap = migrateIDMap
 
 //// MIGRATIONS /////////////////////////////////////////////////
 
@@ -65,4 +79,33 @@ function migrationRemoveElements(projectConfig,baseConfig) {
             delete projectElements[projectElement]
         }
     }
+}
+
+function migrationRemoteIDMaps(idMap,localResources) {
+    const nextIDMap = {}
+
+    const teiDocs = Object.values(localResources).filter( r => r.type === 'teidoc' )
+    for( const resourceEntry of teiDocs ) {
+        const { id, localID } = resourceEntry
+
+        nextIDMap[localID] = getBlankResourceMap( id, 'teidoc' )
+
+        // find all the children of this teidoc
+        const children = Object.values(localResources).filter( r => r.parentResource === id )
+        for( const child of children ) {
+            const childMap = getBlankResourceMap( child.id, child.type )
+            childMap.ids = idMap[localID][child.localID]
+            nextIDMap[localID].ids[child.localID] = childMap
+        }
+    }
+
+    const topResources = Object.values(localResources).filter( r => r.type !== 'teidoc' && !r.parentResource )
+
+    for( const resourceEntry of topResources ) {
+        const { id, localID, type } = resourceEntry
+        nextIDMap[localID] = getBlankResourceMap( id, type )
+        nextIDMap[localID].ids = idMap[localID]
+    }
+        
+    return nextIDMap
 }

@@ -2,7 +2,7 @@ const fs = require('fs')
 const log = require('electron-log')
 const { readFile, stat } = require('fs/promises')
 
-const { compatibleProject, migrateConfig } = require('./data-migration')
+const { compatibleProject, migrateConfig, migrateIDMap } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
 const { exportResource } = require('./export-xml')
@@ -131,6 +131,9 @@ class ProjectStore {
         // if elements changed in config, migrate project config
         this.migratedConfig = migrateConfig(this.manifestData.generatedWith,baseConfig,fairCopyConfig)
         fairCopyConfig = this.migratedConfig
+
+        // apply any migrations to ID Map data
+        idMap = migrateIDMap(this.manifestData.generatedWith,idMap,this.manifestData.resources)
 
         // setup search index if local 
         if( !this.manifestData.remote ) {
