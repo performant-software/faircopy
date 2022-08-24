@@ -26,6 +26,7 @@ class WorkerWindow {
             show: false,
             webPreferences: {
                 webSecurity: !this.debug,
+                nodeIntegration: true,
                 enableRemoteModule: false,
                 contextIsolation: false,
                 preload: `${this.baseDir}/worker-window-preload.js`

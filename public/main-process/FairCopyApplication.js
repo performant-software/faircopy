@@ -17,13 +17,13 @@ class FairCopyApplication {
     this.mainWindow = null
     this.fairCopySession = null
     this.imageViews = {}
-    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
-    this.config = this.getConfig()
-    this.mainMenu = new MainMenu(this)
     this.exiting = false
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
 
+    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
+    this.config = this.getConfig()
+    this.mainMenu = new MainMenu(this)
     this.initLocalFileProtocol()
     this.initIPC()
   }
@@ -343,6 +343,7 @@ class FairCopyApplication {
       webPreferences: {
           webSecurity,
           enableRemoteModule: false,
+          nodeIntegration: true,
           contextIsolation: false,
           preload: `${this.baseDir}/${preload}`,
           spellcheck: false
