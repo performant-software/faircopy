@@ -3,7 +3,9 @@ const log = require('electron-log')
 const { getBlankResourceMap } = require('./id-map-authority')
 
 function getProjectVersion(generatedWith) {
-    return generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
+    const ver = generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
+    // ignore any pre-release fields (e.g "1.1.1-dev.8")
+    return `${semver.major(ver)}.${semver.minor(ver)}.${semver.patch(ver)}`
 }
 
 // project files are backward compatible but not forward compatible
