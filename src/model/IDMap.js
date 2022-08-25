@@ -7,7 +7,7 @@ export default class IDMap {
     constructor(idMapData) {
         this.lastMessageID = null
         this.updateListeners = []
-        this.loadIDMap(idMapData)
+        this.loadIDMap(JSON.parse(idMapData))
 
         // Listen for updates
         fairCopy.services.ipcRegisterCallback('IDMapUpdated', (e, d) => {

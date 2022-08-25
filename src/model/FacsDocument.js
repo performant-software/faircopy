@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import {teiToFacsimile, facsimileToTEI, generateOrdinalID, setSurfaceTitle} from './convert-facs'
 import { mapResource } from './id-map'
+import { cloudInitialConfig } from './FairCopyProject'
 
 const fairCopy = window.fairCopy
 
@@ -149,7 +150,8 @@ export default class FacsDocument {
                 localID: `${this.resourceID}`,
                 name: label,
                 mimeType,
-                type: 'image'
+                type: 'image',
+                ...cloudInitialConfig
             }
 
             // send the entry plus path to project store
