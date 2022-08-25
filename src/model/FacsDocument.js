@@ -155,7 +155,7 @@ export default class FacsDocument {
             }
 
             // send the entry plus path to project store
-            fairCopy.services.ipcSend('addResource', JSON.stringify(resourceEntry), path )
+            fairCopy.services.ipcSend('addResource', resourceEntry, path )
         }
 
         // save changes to this document
