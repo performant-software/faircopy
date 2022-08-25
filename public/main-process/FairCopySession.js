@@ -309,7 +309,7 @@ class FairCopySession {
 
         const { baseDir } = this.fairCopyApplication
         imageViewData.teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-        imageViewData.idMap = this.idMapAuthority.idMap
+        imageViewData.idMap = JSON.stringify(this.idMapAuthority.idMap)
 
          // mix in remote project data if needed
          if( this.remote ) {
