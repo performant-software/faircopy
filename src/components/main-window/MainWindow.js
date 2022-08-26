@@ -173,6 +173,18 @@ export default class MainWindow extends Component {
         this.onAlertMessage(message)
     }
 
+    onResourceEntryUpdated = (e, resourceEntry) => {
+        const { fairCopyProject } = this.props
+        fairCopyProject.notifyListeners({ resourceEntry })
+        this.refreshWindow()
+    }
+
+    onResourceContentUpdated = (e, resourceID, messageID, resourceContent) => {
+        const { fairCopyProject } = this.props
+        fairCopyProject.notifyListeners({ resourceID, messageID, resourceContent })
+        this.refreshWindow()
+    }
+
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
@@ -180,6 +192,8 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
         services.ipcRegisterCallback('checkOutResults', this.onCheckOutResults )
+        services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
+        services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
         this.checkReleaseNotes()
     }
 
@@ -190,6 +204,8 @@ export default class MainWindow extends Component {
         services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
         services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
         services.ipcRemoveListener('checkOutResults', this.onCheckOutResults )
+        services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
+        services.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
     }
 
     refreshWindow() {

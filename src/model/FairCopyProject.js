@@ -32,10 +32,6 @@ export default class FairCopyProject {
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
         this.updateListeners = []
-        
-        // Listen for updates to resource entries.
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', (e, resourceEntry) => this.notifyListeners({ resourceEntry }) )
-        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', (e, resourceID, messageID, resourceContent) => this.notifyListeners({ resourceID, messageID, resourceContent }) )
     }
 
     notifyListeners(resource) {
