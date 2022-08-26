@@ -257,7 +257,8 @@ class FairCopySession {
                 this.idMapAuthority.sendIDMapUpdate()
             }
             this.projectStore.saveManifest() 
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )        
+            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )  
+            if( resourceEntry.type === 'teidoc' ) this.requestResourceView()      
         } else {
             log.info(`Error updating resource entry: ${resourceEntry.id}`)
         }
