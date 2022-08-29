@@ -216,7 +216,8 @@ class FairCopySession {
         })
 
         // don't let currentPage be > page count 
-        const pageCount = Math.ceil(totalRows/rowsPerPage)
+        let pageCount = Math.ceil(totalRows/rowsPerPage)
+        pageCount = pageCount === 0 ? 1 : pageCount
         resourceView.currentPage = currentPage > pageCount ? pageCount : currentPage
         
         this.resourceViews.remote = resourceView
