@@ -349,16 +349,14 @@ class ProjectStore {
 
     checkOutResults(resources,error) {
         this.fairCopyApplication.sendToMainWindow('checkOutResults', Object.keys(resources), error ) 
-        const resourceEntries = []
         for( const resource of Object.values(resources) ) {
             const { resourceEntry, parentEntry, content } = resource
             this.manifestData.resources[resourceEntry.id] = resourceEntry
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
             this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
-            resourceEntries.push(resourceEntry)
         }
-        const idMap = this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resourceEntries)
+        const idMap = this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resources)
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
         this.saveManifest()      
         this.fairCopyApplication.fairCopySession.requestResourceView()
