@@ -53,6 +53,7 @@ class IDMapRemote {
 
     removeResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
+            // TODO refactor to be insensitive to resource map update delay
             const { localID, parentID } = resourceIDToLocalIDs(resourceID,this.idMapStaged)
             if( parentID ) {
                 if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
@@ -168,16 +169,13 @@ class IDMapRemote {
         return JSON.stringify(this.idMapStaged)
     }
 
-    checkOut( resourceEntries ) {
-        for( const resourceEntry of resourceEntries ) {
-            const { parentResource: parentResourceID, localID } = resourceEntry
-            if( parentResourceID ) {
-                const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapBase)
-                if( !this.idMapStaged[parentLocalID] ) this.idMapStaged[parentLocalID] = this.copyParent(parentLocalID,'idMapStaged') 
-                this.idMapStaged[parentLocalID].ids[localID] = this.idMapBase[parentLocalID].ids[localID]
-            } else {
-                this.idMapStaged[localID] = this.idMapBase[localID]
-            }
+    checkOut( resources ) {
+        for( const resource of Object.values(resources) ) {
+            const { parentEntry } = resource
+            if( parentEntry ) {
+                const { id: parentResourceID, localID: parentLocalID, type: parentType } = parentEntry
+                if( !this.idMapStaged[parentLocalID] ) this.idMapStaged[parentLocalID] = getBlankResourceMap(parentResourceID, parentType)
+            } 
         }
         return JSON.stringify(this.idMapStaged)
     }
