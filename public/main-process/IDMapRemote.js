@@ -17,7 +17,6 @@ class IDMapRemote {
 
     setBaseMap(idMapData) {
         this.idMapBase = idMapData
-        console.log(idMapData)
         this.sendIDMapUpdate()
     }
 
