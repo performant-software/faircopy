@@ -22,8 +22,12 @@ class IDMapRemote {
 
     setResourceMap( resourceMap, localID, parentID ) {
         if( parentID ) {
-            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
-            this.idMapNext[parentID].ids[localID] = resourceMap
+            if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext')
+            if( this.idMapNext[parentID] ) {
+                this.idMapNext[parentID].ids[localID] = resourceMap
+            } else {
+                console.log(`Unable to set resource map for ${parentID} ${localID}`)
+            }
         } else {
             this.idMapNext[localID] = resourceMap
         }
@@ -53,15 +57,17 @@ class IDMapRemote {
 
     removeResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
-            // TODO refactor to be insensitive to resource map update delay
-            const { localID, parentID } = resourceIDToLocalIDs(resourceID,this.idMapStaged)
-            if( parentID ) {
-                if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
-                this.idMapStaged[parentID].ids[localID].deleted = true
-            } else {
-                if( this.idMapNext[localID] ) delete this.idMapNext[localID]
-                this.idMapStaged[localID].deleted = true
-            }    
+            const localIDs = resourceIDToLocalIDs(resourceID,this.idMapStaged)
+            if( localIDs ) {
+                const { localID, parentID } = localIDs
+                if( parentID ) {
+                    if( this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) delete this.idMapNext[parentID].ids[localID]
+                    this.idMapStaged[parentID].ids[localID].deleted = true
+                } else {
+                    if( this.idMapNext[localID] ) delete this.idMapNext[localID]
+                    this.idMapStaged[localID].deleted = true
+                }
+            }
         }
         this.sendIDMapUpdate()    
         return JSON.stringify(this.idMapStaged)
@@ -69,15 +75,18 @@ class IDMapRemote {
     
     recoverResources( resourceIDs ) {
         for( const resourceID of resourceIDs ) {
-            const { localID, parentID } = resourceIDToLocalIDs(resourceID,this.idMapStaged)
-            if( parentID ) {
-                if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
-                this.idMapNext[parentID].ids[localID] = this.idMapStaged[parentID].ids[localID]
-                delete this.idMapStaged[parentID].ids[localID].deleted 
-            } else {
-                this.idMapNext[localID] = this.idMapStaged[localID]
-                delete this.idMapStaged[localID].deleted 
-            }    
+            const localIDs = resourceIDToLocalIDs(resourceID,this.idMapStaged)
+            if( localIDs ) {
+                const { localID, parentID } = localIDs
+                if( parentID ) {
+                    if( !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
+                    this.idMapNext[parentID].ids[localID] = this.idMapStaged[parentID].ids[localID]
+                    delete this.idMapStaged[parentID].ids[localID].deleted 
+                } else {
+                    this.idMapNext[localID] = this.idMapStaged[localID]
+                    delete this.idMapStaged[localID].deleted 
+                }        
+            }
         } 
         this.sendIDMapUpdate()
         return JSON.stringify(this.idMapStaged)
@@ -87,7 +96,7 @@ class IDMapRemote {
         // move the resource map on both editable layers to the new address
 
         // update the next map 
-        const nextResourceMap = parentID ? this.idMapNext[parentID].ids[oldID] : this.idMapNext[oldID]
+        const nextResourceMap = parentID ? this.idMapNext[parentID]?.ids[oldID] : this.idMapNext[oldID]
         if( nextResourceMap ) {
             if( parentID ) {
                 if(  !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID,'idMapNext') 
@@ -100,7 +109,7 @@ class IDMapRemote {
         }
 
         // update the staged map
-        const stagedResourceMap = parentID ? this.idMapStaged[parentID].ids[oldID] : this.idMapStaged[oldID]
+        const stagedResourceMap = parentID ? this.idMapStaged[parentID]?.ids[oldID] : this.idMapStaged[oldID]
         if( stagedResourceMap ) {
             if( parentID ) {
                 if(  !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
@@ -120,11 +129,16 @@ class IDMapRemote {
     }
 
     getResourceMap(resourceID) {
-        const { localID, parentID } = this.getLocalIDs(resourceID)
-        if( parentID ) {
-            return this.idMap[parentID].ids[localID]
+        const localIDs = this.getLocalIDs(resourceID)
+        if( localIDs ) {
+            const { localID, parentID } = localIDs
+            if( parentID ) {
+                return this.idMap[parentID].ids[localID]
+            } else {
+                return this.idMap[localID]
+            }    
         } else {
-            return this.idMap[localID]
+            return null
         }
     }
 
@@ -136,24 +150,29 @@ class IDMapRemote {
         for( const resourceEntry of resourceEntries ) {
             const { localID, parentResource: parentResourceID, deleted } = resourceEntry
             if( parentResourceID ) {
-                const { localID: parentLocalID } = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
-                if( deleted ) {
-                    delete this.idMapBase[parentLocalID].ids[localID]
-                } else {
-                    if( !this.idMapBase[parentLocalID] ) this.idMapBase[parentLocalID] = getBlankResourceMap(parentResourceID, 'teidoc')
-                    this.idMapBase[parentLocalID].ids[localID] = this.idMapStaged[parentLocalID].ids[localID]
-                }
-                delete this.idMapStaged[parentLocalID].ids[localID]
-            } else {
-                this.idMapBase[localID] = this.idMapStaged[localID]
-                if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
-                    teiDocIDs.push( localID )
-                } else {
+                const localIDs = resourceIDToLocalIDs(parentResourceID,this.idMapStaged)
+                if( localIDs ) {
+                    const  { localID: parentLocalID } = localIDs
                     if( deleted ) {
-                        delete this.idMapBase[localID]          
-                    } 
-                    delete this.idMapStaged[localID]                     
-                }    
+                        delete this.idMapBase[parentLocalID].ids[localID]
+                    } else {
+                        if( !this.idMapBase[parentLocalID] ) this.idMapBase[parentLocalID] = getBlankResourceMap(parentResourceID, 'teidoc')
+                        this.idMapBase[parentLocalID].ids[localID] = this.idMapStaged[parentLocalID].ids[localID]
+                    }
+                    delete this.idMapStaged[parentLocalID].ids[localID]    
+                }
+            } else {
+                if( this.idMapStaged[localID] ) {
+                    this.idMapBase[localID] = this.idMapStaged[localID]
+                    if( this.idMapStaged[localID].resourceType === 'teidoc' ) {
+                        teiDocIDs.push( localID )
+                    } else {
+                        if( deleted ) {
+                            delete this.idMapBase[localID]          
+                        } 
+                        delete this.idMapStaged[localID]                     
+                    }        
+                }
             }
         }
         // only remove teidoc if it has no children left in this map 
@@ -184,11 +203,15 @@ class IDMapRemote {
         // move resource map from draft form to authoritative
         if( parentID ) {
             if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
-            this.idMapStaged[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
-            delete this.idMapNext[parentID].ids[localID] 
+            if( this.idMapStaged[parentID] && this.idMapNext[parentID] ) {
+                this.idMapStaged[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
+                delete this.idMapNext[parentID].ids[localID]     
+            }
         } else {
-            this.idMapStaged[localID] = this.idMapNext[localID]
-            delete this.idMapNext[localID]
+            if( this.idMapNext[localID] ) {
+                this.idMapStaged[localID] = this.idMapNext[localID]
+                delete this.idMapNext[localID]    
+            }
         }    
         return JSON.stringify(this.idMapStaged)
     }
@@ -202,18 +225,19 @@ class IDMapRemote {
                 const { resourceID, resourceType } = this.idMapBase[localID]
                 return getBlankResourceMap(resourceID, resourceType)
             }  else {
-                throw new Error(`Layer not found: ${localID}`)
+                console.log(`Layer not found: ${localID}`)
             }
         } else if( layerID === 'idMapStaged' ) {
             if( this.idMapBase[localID] ) {
                 const { resourceID, resourceType } = this.idMapBase[localID]
                 return getBlankResourceMap(resourceID, resourceType)
             }  else {
-                throw new Error(`Layer not found: ${localID}`)
+                console.log(`Layer not found: ${localID}`)
             }
         } else {
-            throw new Error("Invalid layer ID passed to copyParent()")
+            console.log("Invalid layer ID passed to copyParent()")
         }
+        return null
     }
 
     sendIDMapUpdate() {
