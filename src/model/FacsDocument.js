@@ -121,6 +121,8 @@ export default class FacsDocument {
 
     addLocalImages( imagesData ) {
         const { idMap } = this.imageViewContext
+        const isWin32 = fairCopy.services.getPlatform() === 'win32'
+        const seperatorChar = isWin32 ? "\\" : "/"
         let nextSurfaceID = this.parentEntry ? idMap.nextSurfaceID(this.parentEntry.localID) : idMap.nextSurfaceID(this.resourceEntry.localID)
 
         for( const imageData of imagesData ) {
@@ -128,7 +130,7 @@ export default class FacsDocument {
             const resourceEntryID = uuidv4()
             
             // get the label from the file path
-            const segments = path.split('/')
+            const segments = path.split(seperatorChar)
             const label = segments[segments.length-1]
 
             // create a surface and add it to the document in the right location
