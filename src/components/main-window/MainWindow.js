@@ -498,25 +498,29 @@ export default class MainWindow extends Component {
             case 'remote':
                 {
                 const {resourceViews} = this.state 
-                const { indexParentID, parentEntry, currentPage } = resourceViews.remote
-                const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
-                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )   
-                const nextResourceViews = { ...resourceViews }
-                nextResourceViews.currentView = 'remote'
-                nextResourceViews.remote.loading = true    
-                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })            
+                if( resourceViews.currentView === 'home' && !resourceViews.home.loading ) {
+                    const nextResourceViews = { ...resourceViews }
+                    nextResourceViews.currentView = 'remote'
+                    nextResourceViews.remote.loading = true    
+                    const { indexParentID, parentEntry, currentPage } = resourceViews.remote
+                    const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
+                    fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )   
+                    this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })                
+                }
                 }
                 break
             case 'home':
                 {
                 const {resourceViews} = this.state 
-                const { indexParentID, parentEntry, currentPage } = resourceViews.home
-                const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage } 
-                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
-                const nextResourceViews = { ...resourceViews }
-                nextResourceViews.currentView = 'home'
-                nextResourceViews.home.loading = true    
-                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews })    
+                if( resourceViews.currentView === 'remote' && !resourceViews.remote.loading ) {
+                    const { indexParentID, parentEntry, currentPage } = resourceViews.home
+                    const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage } 
+                    fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
+                    const nextResourceViews = { ...resourceViews }
+                    nextResourceViews.currentView = 'home'
+                    nextResourceViews.home.loading = true    
+                    this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews })        
+                }
                 }
                 break
             case 'root':
