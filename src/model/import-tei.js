@@ -22,7 +22,7 @@ export function importResource(importData,parentEntry,fairCopyProject) {
         xmlExt = true
     } else if( path.toLowerCase().endsWith('.txt') ){
         // trim off .txt if it is found 
-        name = fairCopy.services.getBasename(path,'txt').trim()
+        name = fairCopy.services.getBasename(path,'.txt').trim()
     } else {
         name = fairCopy.services.getBasename(path).trim()
     }
