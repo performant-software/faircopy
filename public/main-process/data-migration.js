@@ -11,7 +11,8 @@ function getProjectVersion(generatedWith) {
 // project files are backward compatible but not forward compatible
 const compatibleProject = function compatibleProject(manifestData, currentVersion) {
     const projectVersion = getProjectVersion(manifestData.generatedWith)
-    return currentVersion === projectVersion || semver.gt(currentVersion, projectVersion)
+    const simpleCurrentVersion = getProjectVersion(currentVersion)
+    return simpleCurrentVersion === projectVersion || semver.gt(simpleCurrentVersion, projectVersion)
 }
 
 const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, projectConfigJSON ) {
