@@ -77,7 +77,7 @@ export default class ImportConsoleDialog extends Component {
                 fairCopy.services.ipcSend('importContinue')
             } else {
                 done = true
-                const s = successCount !== 1 ? 's' : ''
+                const s = totalCount !== 1 ? 's' : ''
                 nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)
                 fairCopy.services.ipcSend('importEnd')
             }
