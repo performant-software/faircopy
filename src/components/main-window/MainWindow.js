@@ -486,7 +486,18 @@ export default class MainWindow extends Component {
                 this.selectResources(resourceIDs, true)
                 break
             case 'check-in':
-                this.setState({...nextState, checkInMode: true, checkInResources: resourceIDs, ...closePopUpState })
+                {
+                    // don't check in if there are unsaved files being committed
+                    const { openResources } = this.state
+                    for( const resourceID of resourceIDs ) {
+                        const openResource = openResources[resourceID]
+                        if( openResource && openResource.changedSinceLastSave ) {
+                            this.onAlertMessage("You must save all files that are being checked in.")
+                            return
+                        }
+                    }
+                    this.setState({...nextState, checkInMode: true, checkInResources: resourceIDs, ...closePopUpState })
+                }
                 break
             case 'check-out':
                 this.checkOutResources(resourceEntries)
