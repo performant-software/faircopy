@@ -3,20 +3,28 @@ import React, { Component } from 'react';
 const fairCopy = window.fairCopy
 
 export default class ThumbnailMargin extends Component {
+
+    findTop(editorView,pos) {
+        const startCoords = editorView.coordsAtPos(pos)
+        // if this is a structure node w/no height, walk back to find the bottom of a node with height
+        if( startCoords.height === 0 && pos > 0 ) return this.findTop(editorView,pos-1)
+        const { marginTop } = this.props
+        const top = pos === 0 ? marginTop : startCoords.top
+        const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
+        return top - marginTop + scrollTop
+    }
     
     renderThumbnails() {
-        const { teiDocument, marginTop } = this.props
+        const { teiDocument } = this.props
         const { editorView } = teiDocument
 
         const editorState = editorView.state
-        const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
 
         const thumbnails = []
         editorState.doc.descendants( (node,pos) => {
             const thumbResources = this.findImageURLs(node)
             if( thumbResources ) {
-                const startCoords = editorView.coordsAtPos(pos)
-                const top = startCoords.top - marginTop + scrollTop
+                const top = this.findTop(editorView,pos) 
                 const thumbStyle = { top }
                 const thumbKey = `facs-thumb-${thumbnails.length}`
                 const thumbResource = thumbResources[0]
