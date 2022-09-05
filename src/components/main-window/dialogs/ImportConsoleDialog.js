@@ -74,7 +74,6 @@ export default class ImportConsoleDialog extends Component {
                         success = true
                     }    
                 }
-                fairCopy.services.ipcSend('importContinue')
             } else {
                 done = true
                 const s = totalCount !== 1 ? 's' : ''
