@@ -393,7 +393,7 @@ export default class TEIEditor extends Component {
                     anchorEl={notePopupAnchorEl}
                     drawerRef={this.drawerRef}
                 ></NotePopup> }
-                { paletteWindowOpen && <StructurePalette
+                { paletteWindowOpen && !readOnly && <StructurePalette
                     onDragElement={onDragElement}
                     leftPaneWidth={leftPaneWidth}
                     teiDocument={teiDocument}
