@@ -141,7 +141,7 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
     } else {
         if( resourceEntry.type === 'teidoc' ) {
             for( const localEntry of Object.values(localEntries) ) {
-                if( localEntry.parentID === resourceEntry.id ) {
+                if( localEntry.parentResource === resourceEntry.id ) {
                     childEntries.push(localEntry)
                     contents[localEntry.id] = await readUTF8( localEntry.id, zip )
                 }
