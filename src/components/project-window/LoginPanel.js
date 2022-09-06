@@ -56,7 +56,7 @@ export default class LoginPanel extends Component {
 
         return (
             <div id="LoginPanel">
-                <Typography variant="h6" component="h2">Login to a FairCopy Cloud Server</Typography>
+                <Typography variant="h6" component="h2">Login to Remote Server</Typography>
                 <ul>
                     <li>
                         <TextField 

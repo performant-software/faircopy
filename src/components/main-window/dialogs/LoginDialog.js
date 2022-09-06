@@ -43,7 +43,7 @@ export default class LoginDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="login-title"
             >
-                <DialogTitle id="login-title">Login to FairCopy Server</DialogTitle>
+                <DialogTitle id="login-title">Login to Remote Server</DialogTitle>
                 <DialogContent>
                     <ul>
                         <li>
