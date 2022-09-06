@@ -99,7 +99,7 @@ async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMess
 
 async function prepareResourceExport( resourceEntry, projectData, zip ) {
     const { remote, localEntries } = projectData
-    const childEntries = null, contents = {}
+    const childEntries = [], contents = {}
 
     if( remote ) {
         try {
@@ -110,9 +110,10 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
             }
     
             if( resourceEntry.type === 'teidoc' ) {
-                const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 0)
-                const { remoteEntries } = resourceData
-                for( const remoteEntry of remoteEntries ) {
+                const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 1)
+                const { remoteResources } = resourceData
+
+                for( const remoteEntry of remoteResources ) {
                     const { id: resourceID } = remoteEntry
                     const localEntry = localEntries[resourceID]
                     if( localEntry ) {
