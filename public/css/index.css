@@ -1,6 +1,7 @@
 
 @import "root.css";
 @import "annotorious.min.css";
+@import "ring-spinner.css";
 
 @import "EditorGutter.css";
 @import "TEIElementStyles.css";
@@ -50,3 +51,9 @@
 @import "SearchDialog.css";
 @import "LicenseBar.css";
 @import "LicenseDialog.css";
+@import "ReadOnlyToolbar.css";
+@import "LoginPanel.css";
+@import "LoginDialog.css";
+@import "CheckInDialog.css";
+@import "SelectRemoteProjectPanel.css";
+@import "ChooseLocalFilePanel.css";

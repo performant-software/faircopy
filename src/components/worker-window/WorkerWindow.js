@@ -3,6 +3,7 @@ import { Component } from 'react'
 import { bigJSON } from '../../workers/big-json-worker'
 import { searchIndex } from '../../workers/search-index-worker'
 import { projectArchive } from '../../workers/project-archive-worker'
+import { remoteProject } from '../../workers/remote-project-worker'
 
 const fairCopy = window.fairCopy
 
@@ -15,7 +16,8 @@ export default class WorkerWindow extends Component {
             workers: { 
                 'big-json': bigJSON,
                 'search-index': searchIndex,
-                'project-archive': projectArchive
+                'project-archive': projectArchive,
+                'remote-project': remoteProject
             }
         }
     }

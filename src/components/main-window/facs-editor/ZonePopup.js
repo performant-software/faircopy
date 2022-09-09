@@ -31,7 +31,7 @@ export default class ZonePopup extends Component {
                         name="note"
                         onChange={onChangeText}
                         multiline
-                        rowsMax={4}
+                        maxRows={4}
                         placeholder="Add a note."
                         variant="outlined"
                         value={note}

@@ -1,5 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
-import { getThumbnailURL } from './iiif'
+import { resourceIDToLocalIDs } from "./id-map"
 
 const fairCopy = window.fairCopy
 
@@ -8,80 +7,16 @@ export default class IDMap {
     constructor(idMapData) {
         this.lastMessageID = null
         this.updateListeners = []
-        this.loadIDMap(idMapData)
+        this.loadIDMap(JSON.parse(idMapData))
 
         // Listen for updates
         fairCopy.services.ipcRegisterCallback('IDMapUpdated', (e, d) => {
-            if( d.messageID !== this.lastMessageID ) 
-                this.onUpdate(d.idMapData)
+            this.loadIDMap(d.idMapData)
         })
-    }
-
-    // Called when ID Map is updated by a different window process
-    onUpdate(idMapData) {
-        this.loadIDMap(idMapData)
-        for( const listener of this.updateListeners ) {
-            listener()
-        }
-    }
-
-    addUpdateListener(listener) {
-        this.updateListeners.push(listener)
-    }
-
-    removeUpdateListener(listener) {
-        this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
     loadIDMap(idMapData) {
-        this.idMap = JSON.parse(idMapData)
-    }
-
-    mapResource( resourceType, content ) {
-        return (resourceType === 'facs') ? this.mapFacsIDs(content) : this.mapTextIDs(content)
-    }
-
-    getTextEntry() {
-        return { type: 'text', useCount: 1 }
-    }
-    
-    getBlankResourceMap(multipart) {
-        return { __multiPart__: multipart }
-    }
-
-    mapTextIDs(doc) {        
-        const xmlIDMap = {}
-        
-        // gather up all xml:ids and their nodes/marks
-        doc.descendants((node) => {
-            const id = node.attrs['xml:id']
-            if( id ) {
-                if( xmlIDMap[id] && xmlIDMap[id].useCount ) {
-                    xmlIDMap[id].useCount++
-                } else {
-                    xmlIDMap[id] = this.getTextEntry()
-                }    
-            }
-            return true
-        })
-
-        return xmlIDMap
-    }
-
-    mapFacsIDs(facs) {
-        const { surfaces } = facs
-
-        const facsIDMap = {}
-        for( const surface of surfaces ) {
-            const thumbnailURL = surface.type === 'iiif' ? getThumbnailURL(surface) : `local://${surface.resourceEntryID}`
-            facsIDMap[surface.id] = { type: 'facs', thumbnailURL }
-
-            for( const zone of surface.zones ) {
-                facsIDMap[zone.id] = { type: 'zone' }
-            }
-        }
-
-        return facsIDMap
+        this.idMap = idMapData
     }
 
     get( uri, parent ) {
@@ -94,14 +29,15 @@ export default class IDMap {
                 const xmlID = url.hash ? url.hash.slice(1) : null // slice off #
                 const resourceMap = this.idMap[localID]
                 if( resourceMap ) {
-                    if( resourceMap.__multiPart__ ) {
-                        for( const childID of Object.keys(resourceMap)) {
-                            if( resourceMap[childID][xmlID] ) {
-                                return { localID: childID, xmlID, ...resourceMap[childID][xmlID] }
+                    const { resourceType, resourceID, ids } = resourceMap
+                    if( resourceType === 'teidoc' ) {
+                        for( const childID of Object.keys(ids)) {
+                            if( ids[childID][xmlID] ) {
+                                return { localID: childID, xmlID, resourceID, ...ids[childID][xmlID] }
                             }
                         }
                     } else {
-                        return { localID, xmlID, ...resourceMap[xmlID] }
+                        return { localID, xmlID, resourceID, ...ids[xmlID] }
                     }
                 } 
             }   
@@ -113,114 +49,81 @@ export default class IDMap {
         }
     }
     
-    set( value, xmlID, localID, parentID ) {
-        if( parentID ) {
-            this.idMap[parentID][localID][xmlID] = value
-        } else {
-            this.idMap[localID][xmlID] = value
-        }
-    }
-
-    unset( xmlID, localID, parentID ) {
-        if( parentID ) {
-            delete this.idMap[parentID][localID][xmlID]
-        } else {
-            delete this.idMap[localID][xmlID]
-        }
-    }
-
-    setMap( resourceMap, localID, parentID ) {
-        if( parentID ) {
-            this.idMap[parentID][localID] = resourceMap
-        } else {
-            this.idMap[localID] = resourceMap
-        }
-    }
-
-    update() {
-        const messageID = uuidv4()
-        fairCopy.services.ipcSend('updateIDMap', messageID, JSON.stringify(this.idMap))
-        this.lastMessageID = messageID
-        // console.log(JSON.stringify(this.idMap))
+    setResourceMap( resourceMap, localID, parentID ) {
+        fairCopy.services.ipcSend('setResourceMap', resourceMap, localID, parentID )
     }
 
     nextSurfaceID( localID ) {
         const resourceMap = this.idMap[localID]
-
+        const { resourceType, ids } = resourceMap
         let highestID = -1
-        if( resourceMap.__multiPart__ ) {
-            for( const key of Object.keys(resourceMap) ) {
-                if( key === '__multiPart__' ) continue
-                const childLastID = this.getHighestFacsID(resourceMap[key])
+        if( resourceType === 'teiDoc' ) {
+            for( const key of Object.keys(ids) ) {
+                const childLastID = this.getHighestFacsID(ids[key])
                 highestID = childLastID > highestID ? childLastID : highestID
             }
         } else {
-            highestID = this.getHighestFacsID(resourceMap)
+            highestID = getHighestFacsID(ids)
         }
         return highestID + 1
     }
 
-    getHighestFacsID( resourceMap ) {
-        let highestID = -1
-        for( const entryID of Object.keys(resourceMap) ) {
-            const entry = resourceMap[entryID]
-            if( entry.type === 'facs' ) {
-                const idNo = parseInt(entryID.slice(1))
-                if( idNo > highestID ) highestID = idNo    
-            }
-        }
-        return highestID
-    }
-
-    getRelativeURIList( localResourceID, parentID ) {
+    getRelativeURIList( localID, parentID ) {
         const uris = []
 
-        const getURIs = (resourceID, resourceMap, local) => {
-            for( const xmlID of Object.keys(resourceMap)) {
-                if( xmlID === '__multiPart__' ) continue
+        const getURIs = (resourceMapID, ids, local) => {
+            for( const xmlID of Object.keys(ids)) {
                 if( local ) {
                     uris.push(`#${xmlID}`)
                 } else {
-                    uris.push(`${resourceID}#${xmlID}`)
+                    uris.push(`${resourceMapID}#${xmlID}`)
                 }
             }   
             return uris
         }
 
-        for( const resourceID of Object.keys(this.idMap) ) {
-            const resourceMap = this.idMap[resourceID]
-            if( resourceMap.__multiPart__ ) {
-                const local = ( resourceID === parentID )
-                for( const childID of Object.keys(resourceMap) ) {
-                    getURIs(resourceID, resourceMap[childID], local)
+        for( const resourceMapID of Object.keys(this.idMap) ) {
+            const resourceMap = this.idMap[resourceMapID]
+            const { resourceType, ids } = resourceMap
+            if( resourceType === 'teidoc' ) {
+                const local = ( resourceMapID === parentID )
+                for( const childID of Object.keys(ids) ) {
+                    getURIs(resourceMapID, ids[childID].ids, local)
                 }
             } else {
-                const local = ( resourceID === localResourceID )
-                getURIs(resourceID, resourceMap, local)           
+                const local = ( resourceMapID === localID )
+                getURIs(resourceMapID, ids, local)           
             }
         }
         return uris.sort()
     }
 
-    isUnique(testID,parentLocalID=null) {
-        if( parentLocalID ) {
-            return !this.siblingHasID(testID,null,parentLocalID)
-        } else {
-            return this.idMap[testID] === undefined
-        }
+    getLocalIDs(resourceID) {
+        return resourceIDToLocalIDs(resourceID,this.idMap)
     }
 
-    siblingHasID(testID,localID,parentLocalID) {
-        const parentIDMap = this.idMap[parentLocalID]
-        for( const siblingID of Object.keys(parentIDMap)) {
-            if( localID !== siblingID ) {
-                if( parentIDMap[testID] || parentIDMap[siblingID][testID] ) return true
-            }
-        }
-        return false
+    getResourceMap(localID,parentID) {
+        return parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
+    }
+
+    getResourceEntry(localID,parentID,xmlID) {
+        const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
+        return resourceMap ? resourceMap.ids[xmlID] : null
     }
 
     getUniqueID(baseID) {
         return `${baseID}-${Date.now()}`
     }
+}
+
+function getHighestFacsID( ids ) {
+    let highestID = -1
+    for( const entryID of Object.keys(ids) ) {
+        const entry = ids[entryID]
+        if( entry.type === 'facs' ) {
+            const idNo = parseInt(entryID.slice(1))
+            if( idNo > highestID ) highestID = idNo    
+        }
+    }
+    return highestID
 }

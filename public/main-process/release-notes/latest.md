@@ -2,6 +2,15 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.1
+
+In FairCopy v1.1.1, we add functionality for Remote Projects. Remote Projects make it easy for teams to work together on a project. This feature is currently in closed beta, but if you would like to learn more, please contact us.
+
+### Bug Fixes
+
+* Fixed bug on import where it would incorrectly report the number of files imported.
+* Fixed bug on placing margin thumbnails for structure elements in the editor.
+
 ## Version 1.0.2
 
 ### Bug Fixes

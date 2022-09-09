@@ -1,30 +1,43 @@
 import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
 import { IconButton, Tooltip } from '@material-ui/core'
+import { inlineRingSpinner } from '../common/ring-spinner'
 
-const maxTitleLength = 120
+const maxTitleLength = 100
 
 export default class TitleBar extends Component {
     
-    onClickHome = () => {
+    onClickView = () => {
+        const { currentView, onResourceAction, remoteProject } = this.props
+        if( remoteProject ) {
+            const action = currentView === 'home' ? 'remote' : 'home'
+            onResourceAction(action)    
+        } else {
+            this.onClickRoot()
+        }
+    }
+
+    onClickRoot = () => {
         const { onResourceAction } = this.props
-        onResourceAction('home')
+        onResourceAction('root')
     }
 
     onClickTeiDoc = () => {
-        const { onResourceAction, teiDocID } = this.props
-        onResourceAction('open-teidoc',[teiDocID])        
+        const { onResourceAction, parentResource } = this.props
+        onResourceAction('open-teidoc',parentResource.id,parentResource)        
     }
 
-    renderHomeButton() {             
+    renderHomeButton() {         
+        const { currentView, isLoggedIn } = this.props    
+        const viewIcon = currentView === 'home' ? 'fa fa-home-alt' : isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' 
         return (
-            <Tooltip title="Home">
+            <Tooltip title="Local Resources">
                 <span>            
                     <IconButton
-                        onClick={this.onClickHome}
+                        onClick={this.onClickView}
                         className="home-icon" 
                     >
-                        <i className={`fa fa-home-alt fa-sm`}></i>
+                        <i className={`${viewIcon} fa-sm`}></i>
                     </IconButton> 
                 </span>
             </Tooltip>
@@ -32,28 +45,29 @@ export default class TitleBar extends Component {
     }
 
     renderTitle() {
-        const { teiDocName, resourceName, surfaceName, isImageWindow, onClickResource } = this.props
+        const { parentResource, resourceName, surfaceName, isImageWindow, onClickResource, loading, currentView } = this.props
 
         let titleCount = 0
-        if( teiDocName ) titleCount++
+        if( parentResource ) titleCount++
         if( resourceName ) titleCount++
         if( surfaceName ) titleCount++
         const titleLength = maxTitleLength/titleCount
 
-        const teiDocNameShort = teiDocName ? shorten( teiDocName, titleLength ) : ''
+        const teiDocNameShort = parentResource ? shorten( parentResource.name, titleLength ) : ''
         const resourceNameShort = resourceName ? shorten( resourceName, titleLength ) : ''
         const surfaceNameShort = surfaceName ? shorten( surfaceName, titleLength ) : ''
 
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
-        const homeEl = !isImageWindow ? <span onClick={this.onClickHome} className="nav-link" >Home</span> : ""
+        const viewName = currentView === 'home' ? 'Local' : 'Remote'
+        const rootEl = !isImageWindow ? <span onClick={this.onClickRoot} className="nav-link" >{viewName}</span> : ""
         const surfaceNameEl = surfaceName && <span className="nav-link" ><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
         const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>
-        const teiDocNameEl = teiDocName && <span className="nav-link" onClick={this.onClickTeiDoc} ><i aria-label="/" className={chevClass}></i> {teiDocNameShort}</span>
+        const teiDocNameEl = parentResource && <span className="nav-link" onClick={this.onClickTeiDoc} ><i aria-label="/" className={chevClass}></i> {teiDocNameShort}</span>
         return (
-            <div className="breadcrumbs">
+            <div className="breadcrumbs">                
                 <Typography component="h2" variant="h6">
-                    {homeEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl}
+                    {rootEl} {teiDocNameEl} {resourceNameEl} {surfaceNameEl} { loading && inlineRingSpinner('light') }
                 </Typography>
             </div>
         )

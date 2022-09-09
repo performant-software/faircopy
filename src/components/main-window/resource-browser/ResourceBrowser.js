@@ -1,33 +1,41 @@
 import React, { Component } from 'react';
-import { Button, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox } from '@material-ui/core';
+import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
-import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
-
-const rowsPerPage = 100
+import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
+import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
+import { logout, isLoggedIn } from '../../../model/cloud-api/auth'
 
 export default class ResourceBrowser extends Component {
 
-  constructor() {
-    super()
-    this.initialState = {
-      allChecked: false,
-      currentPage: 0,
-      checked: {}
-    }
-    this.state = this.initialState
-  }
-
   onOpenActionMenu = (anchorEl) => {
-    const { onOpenPopupMenu } = this.props
+    const { onOpenPopupMenu, fairCopyProject } = this.props
+    const { remote: remoteProject } = fairCopyProject
+    const loggedIn = fairCopyProject.isLoggedIn()
+
+    const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
+      {
+        id: 'check-in',
+        label: 'Check In',
+        action: this.createResourceAction('check-in')
+      },
+      {
+        id: 'check-out',
+        label: 'Check Out',
+        action: this.createResourceAction('check-out')
+      }
+    ]
+    
     const menuOptions = [
       {
         id: 'open',
         label: 'Open',
         action: this.createResourceAction('open')
       },
+      ...remoteProjectOptions,
       {
         id: 'move',
         label: 'Move',
+        disabled: true,
         action: this.createResourceAction('move')
       },
       {
@@ -41,27 +49,50 @@ export default class ResourceBrowser extends Component {
         action: this.createResourceAction('delete')
       }
     ]
+
+    // you can recover deleted items when logged out
+    if( remoteProject ) {
+      menuOptions.push({
+        id: 'recover',
+        label: 'Recover',
+        action: this.createResourceAction('recover')
+      })
+    }
+    
     onOpenPopupMenu(menuOptions, anchorEl)
   }
 
   createResourceAction(actionID) {    
-    // TODO filter out the tei doc resources
     return () => {
-      const { onResourceAction } = this.props
-      const { checked } = this.state
-      const resourceIDs = []
-      for( const resourceID of Object.keys(checked) ) {
-        if( checked[resourceID] ) resourceIDs.push(resourceID)
+      const { onResourceAction, resourceCheckmarks } = this.props
+      const resourceIDs = [], resourceEntries = []
+      for( const resourceID of Object.keys(resourceCheckmarks) ) {
+        const resourceEntry = resourceCheckmarks[resourceID]
+        if( resourceEntry ) {
+          resourceIDs.push(resourceEntry.id)
+          resourceEntries.push(resourceEntry)
+        }
       }
-      if( onResourceAction(actionID, resourceIDs) ) {
-        this.setState({ ...this.state, checked: {}, allChecked: false })
-      }
+      onResourceAction(actionID, resourceIDs, resourceEntries)
     }
   }
 
+  renderLoginButton(buttonProps) {
+    const { onLogin, fairCopyProject } = this.props
+    const { remote, email, serverURL } = fairCopyProject
+    const loggedIn = remote ? isLoggedIn(email, serverURL) : false
+
+    const onLogout = () => {
+      logout(email, serverURL)
+    }
+
+    return loggedIn ? 
+        <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
+        <Button {...buttonProps} onClick={onLogin}>Log In</Button>
+  }
+
   renderToolbar() {
-    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc } = this.props
-    const { checked } = this.state
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks } = this.props
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -71,44 +102,58 @@ export default class ResourceBrowser extends Component {
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
-    const actionsEnabled = Object.values(checked).find( c => c === true )
+    const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
 
     return (
       <div className="toolbar">
-        <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-        <Button onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-        <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>    
+        { currentView === 'home' && 
+          <div className='inline-button-group'>
+            <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
+            <Button onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
+            <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
+          </div>  
+        }
         <Button 
           disabled={!actionsEnabled}
           ref={(el)=> { this.actionButtonEl = el }}
           onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
           {...buttonProps}
         >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button> 
-        { teiDoc && <Tooltip title="Edit Document Properties">
-            <span>
-                <Button
-                    onClick={onEditTEIDoc}
-                    className='toolbar-button'
-                    disableRipple={true}
-                    disableFocusRipple={true}
-                    style={{float: 'right'}}
-                >
-                    <i className="far fa-edit fa-2x"></i>
-                </Button>                   
-            </span>
-        </Tooltip> }
+        { teiDoc && currentView === 'home' && 
+          <Tooltip title="Edit Document Properties">
+              <span>
+                  <Button
+                      onClick={onEditTEIDoc}
+                      className='toolbar-button'
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                      style={{float: 'right'}}
+                  >
+                      <i className="far fa-edit fa-2x"></i>
+                  </Button>                   
+              </span>
+          </Tooltip> 
+        }
+        { currentView === 'remote' &&
+         <div className='inline-button-group right-button'>
+          { this.renderLoginButton(buttonProps) }
+        </div>   
+        }
       </div>
     )
   }
 
   renderResourceTable() {
-    const { onResourceAction, resources } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
+    const { remote: remoteProject, email } = fairCopyProject
+    const { currentPage, rowsPerPage, totalRows } = resourceView
 
     const onOpen = (resourceID) => {
-      const resource = resources[resourceID]
+      const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
+      if( resource.deleted ) return
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
-        onResourceAction( 'open-teidoc', resourceID )         
+        onResourceAction( 'open-teidoc', resourceID, resource )         
       } else {
         onResourceAction( 'open', [resourceID] )         
       }
@@ -129,98 +174,132 @@ export default class ResourceBrowser extends Component {
     }
 
     const toggleAll = () => {
-      const { resources } = this.props
-      const { checked, allChecked } = this.state
-      const nextAllChecked = !allChecked
-      const nextChecked = { ...checked }
-      for( const resource of Object.values(resources) ) {
-        if( resource.type !== 'header' ) nextChecked[resource.id] = nextAllChecked
-      }
-      this.setState({ ...this.state, checked: nextChecked, allChecked: nextAllChecked })
+      const { setAllCheckmarks } = this.props
+      setAllCheckmarks(!allResourcesCheckmarked)
     }
 
     const onClickCheck = (e) => {
-      const { checked } = this.state
-      const nextChecked = { ...checked }
+      const { setResourceCheckmark } = this.props
       const resourceID = e.currentTarget.getAttribute('dataresourceid')
-      nextChecked[resourceID] = checked[resourceID] ? false : true
-      this.setState({ ...this.state, checked: nextChecked })
+      const resourceEntry = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
+      setResourceCheckmark( resourceEntry, !!!resourceCheckmarks[resourceID] )
     }
 
     const cellProps = {
-      padding: 'none',
       component: "td",
       scope: "row"
     }
-
-    const { checked, allChecked, currentPage } = this.state
     
     const resourceRows = []
-    for( const resource of Object.values(resources) ) {
+    
+    for( const resource of resourceIndex ) {
       if( !resource ) continue
-      const check = checked[resource.id] === true
-      const resourceIcon = getResourceIcon(resource.type)
+      const { id, name, localID, type, local, deleted } = resource 
+      const check = !!resourceCheckmarks[id] 
+      const resourceIcon = getResourceIcon(type)
+      const editable = isEntryEditable( resource, email )
+      const checkedOutRemote = !editable ? isCheckedOutRemote( resource, email ) : false
+      const { label, icon } = getActionIcon( false, local, editable|deleted, checkedOutRemote )
+      const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
+      const textClass = deleted ? 'deleted-resource' : ''
+      const iconClass = deleted ? 'deleted-icon' : ''
+      
       resourceRows.push(
-        <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={resource.id} key={`resource-${resource.id}`}>
+        <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
           <TableCell {...cellProps} >
-            <Checkbox onClick={onClickCheck} disabled={resource.type === 'header'} dataresourceid={resource.id} color="default" checked={check} />
+            <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
+          </TableCell>
+          { remoteProject && 
+          <TableCell {...cellProps} >
+            { icon && 
+              <Tooltip title={label}>
+                <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+              </Tooltip>
+            }
+          </TableCell>
+          }
+          <TableCell {...cellProps} >
+            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
           </TableCell>
           <TableCell {...cellProps} >
-            <i aria-label={getResourceIconLabel(resource.type)} className={`${resourceIcon} fa-lg`}></i>
+            <Typography className={textClass}>{name}</Typography>
           </TableCell>
           <TableCell {...cellProps} >
-            {resource.name}
+            <Typography className={textClass}>{localID}</Typography>
           </TableCell>
+          { remoteProject && 
           <TableCell {...cellProps} >
-            {resource.localID}
-          </TableCell>
+            <Typography className={textClass}>{lastModified}</Typography>
+          </TableCell>        
+          }
         </TableRow>
       )
     }
 
-    const onChangePage = (e,page) => { this.setState({...this.state, currentPage: page})}
-    const start = rowsPerPage * currentPage
-    const end = start + 100
+    const onChangePage = (e,page) => { 
+      // pages counted ordinally outside this control (because that is how server counts them)
+      this.props.onPageChange(page+1)
+    }
+
+    const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
   
     return (
       <Paper >
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
-                  <caption>This table lists the resources in this project.</caption>
+                  <caption>{tableCaption}</caption>
                   <TableHead>
                       <TableRow>
-                          <TableCell padding="none"><Checkbox onClick={toggleAll} color="default" checked={allChecked} /></TableCell>
-                          <TableCell padding="none">Type</TableCell>
-                          <TableCell padding="none">Name</TableCell>
-                          <TableCell padding="none">ID</TableCell>
+                          <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
+                          { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
+                          <TableCell>Type</TableCell>
+                          <TableCell>Name</TableCell>
+                          <TableCell>ID</TableCell>
+                          { remoteProject && <TableCell>Last Modified</TableCell> }
                       </TableRow>
                   </TableHead>
                   <TableBody>
-                      { resourceRows.slice(start,end) }
+                      { resourceRows }
                   </TableBody>
               </Table>
           </TableContainer>
           <TablePagination
               component="div"
               rowsPerPageOptions={[rowsPerPage]}
-              count={resourceRows.length}
+              count={totalRows}
               rowsPerPage={rowsPerPage}
-              page={currentPage}
+              page={currentPage-1}
               onPageChange={onChangePage}
           />
       </Paper>
   )
   }
 
+  renderEmptyListMessage() {
+    const { resourceIndex, currentView } = this.props
+    if( resourceIndex.length > 0 || currentView !== 'home' ) return null
+
+    return (
+      <Card raised={true} className='empty-list-card'>
+        <CardContent>
+          <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography>
+        </CardContent>
+      </Card>
+    )
+  }
+
   render() {
-      const { width, teiDoc, onResourceAction } = this.props
+      const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView } = this.props
+      const { loading } = resourceView
+      const { isLoggedIn, remote: remoteProject } = fairCopyProject
 
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar teiDocName={ teiDoc ? teiDoc.name : null } onResourceAction={onResourceAction}></TitleBar>
+          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
+              { remoteProject && this.renderEmptyListMessage() }
           </main>
         </div>
       )

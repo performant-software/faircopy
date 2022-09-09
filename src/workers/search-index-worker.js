@@ -105,7 +105,8 @@ function createIndexDocs(teiSchema, doc) {
 function indexResource( resourceID, resourceType, content ) {
     const { teiSchema } = searchIndexState
 
-    const indexDoc = new TEIDocument(resourceID, resourceType, null, teiSchema, false)
+    const resourceEntry = { id: resourceID, type: resourceType }
+    const indexDoc = new TEIDocument(resourceEntry, null, null, teiSchema)
     indexDoc.load(content)
     const indexPMDoc = addTextNodes( indexDoc.initialState )
 

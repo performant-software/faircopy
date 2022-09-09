@@ -23,12 +23,6 @@ export function getImageInfoURL( surface ) {
     return `${surface.imageAPIURL}${slash}info.json`
 }
 
-export function getThumbnailURL( surface, width=120 ) {
-    const { imageAPIURL } = surface
-    const slash = imageAPIURL.endsWith('/') ? '' : '/'
-    return `${imageAPIURL}${slash}full/${width},/0/default.jpg`
-}
-
 // For string value compliance with IIIF v3 (see: https://iiif.io/api/presentation/3.0/#44-language-of-property-values)
 export function getLocalString( values, lang ) {
     const langKeys = Object.keys(values)

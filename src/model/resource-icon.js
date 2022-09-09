@@ -36,3 +36,26 @@ export function getResourceIcon(resourceType, open=false) {
         throw new Error('Unrecognized resource type.')
     }
   }
+
+  export function getActionIcon(checkedIn, local, editable, checkedOutRemote) {
+    if( checkedIn ) {
+      // Done
+      return { icon: 'fa fa-check', label: 'Check in successful.' }
+    } else {
+      if( checkedOutRemote ) {
+        return { icon: 'far fa-pen', label: 'Checked out by another user.'}
+      }
+      if( local ) {
+          // Create
+          return { icon: 'fa fa-plus-circle', label: 'New resource' }
+      } else {
+          // Update
+          if( editable ) { 
+            return { icon: 'fa fa-pen', label: 'Checked out by you.' }
+          } else {
+            // Not editable
+            return { icon: null, label: null }
+          }
+      }
+    }
+}

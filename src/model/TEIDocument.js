@@ -11,20 +11,23 @@ import { v4 as uuidv4 } from 'uuid'
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
+import {mapResource} from "./id-map"
 
 const fairCopy = window.fairCopy
 
 export default class TEIDocument {
 
-    constructor( resourceID, resourceType, fairCopyProject, teiSchema=null, load=true ) {
+    constructor( resourceEntry, parentEntry, fairCopyProject, teiSchema=null ) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errorCount = 0
         this.editorView = null
         this.lastMessageID = null
         this.noteEditorView = null
-        this.resourceID = resourceID
-        this.resourceType = resourceType
+        this.resourceEntry = resourceEntry
+        this.parentEntry = parentEntry
+        this.resourceID = resourceEntry.id
+        this.resourceType = resourceEntry.type
         this.fairCopyProject = fairCopyProject
         this.teiSchema = teiSchema
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
@@ -37,12 +40,32 @@ export default class TEIDocument {
             highlighter(),
             searchHighlighter()
         ]
-        if( load ) {
-            this.requestResource( resourceID )
-        } else {
-            this.initialState = this.editorInitialState()
-        }
+        this.initialState = this.editorInitialState()
         this.changedSinceLastSave = false
+    }
+
+    onResourceUpdated = ( resource ) => {
+        if( resource.resourceEntry ) {
+            const { resourceEntry } = resource
+            if( resourceEntry.id === this.resourceEntry.id ) {
+                this.resourceEntry = resourceEntry
+                this.resourceID = resourceEntry.id
+                this.resourceType = resourceEntry.type    
+            }
+            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
+                this.parentEntry = resourceEntry
+            }    
+        }
+        // load updated content if we are in read only mode
+        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && !this.isEditable() ) {
+            // TODO make this work
+            // const { resourceContent } = resource
+            // this.load(resourceContent)
+        }
+    }
+
+    isEditable() {
+        return this.fairCopyProject.isEditable( this.resourceEntry )
     }
 
     getTEISchema() {
@@ -98,7 +121,7 @@ export default class TEIDocument {
         let found = false
 
         // check to see if this ID exists in the parent resource
-        if( this.fairCopyProject.siblingHasID(targetID, this.resourceID) ) return true 
+        if( this.fairCopyProject.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
     
         const findID = (element) => {
             const xmlID = element.attrs['xml:id']
@@ -122,14 +145,14 @@ export default class TEIDocument {
     // called by dispatch transaction for every change to doc state
     onUpdate(transaction,onErrorCountChange) {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
-        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
-        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
 
-        // update the ID Map
-        const resourceMap = idMap.mapResource( 'text', transaction.doc )
-        idMap.setMap(resourceMap,resourceEntry.localID, parentEntry?.localID)
-        idMap.update()
+        if( this.isEditable() ) {
+            const resourceMap = mapResource( this.resourceEntry, transaction.doc )
+            // update the ID Map
+            idMap.setResourceMap(resourceMap,this.resourceEntry.localID, this.parentEntry?.localID)  
+            // note unsaved state
+            this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
+        }
         
         // scan for errors 
         // TODO put this on a timer, not every update
@@ -146,9 +169,7 @@ export default class TEIDocument {
     }
 
     getRelativeParentID() {
-        const resourceEntry = this.fairCopyProject.getResourceEntry(this.resourceID)
-        const parentEntry = this.fairCopyProject.getParent(resourceEntry)
-        return parentEntry ? parentEntry.localID : resourceEntry.localID
+        return this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
     }
 
     finalizeEditorView(editorView) {
@@ -211,8 +232,8 @@ export default class TEIDocument {
     }
 
     requestResource( resourceID ) {
-        fairCopy.services.ipcSend('requestResource', resourceID )
         this.loading = true
+        fairCopy.services.ipcSend('openResource', resourceID )
     }
 
     getActiveView() {
@@ -222,11 +243,6 @@ export default class TEIDocument {
 
     getActiveViewType() {
         return this.noteEditorView ? 'note' : 'main'
-    }
-
-    getParent() {
-        const resourceEntry = this.fairCopyProject.getResourceEntry( this.resourceID )
-        return this.fairCopyProject.getParent(resourceEntry)
     }
 
     load( text ) {

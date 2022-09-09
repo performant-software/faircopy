@@ -31,12 +31,14 @@ export default class FacsEditor extends Component {
         const facsDocument = this.getFacsDocument() 
         const { surfaceIndex } = this.state
         const surface = facsDocument.getSurface(surfaceIndex)
-        const parentEntry = facsDocument.getParent()
-        fairCopy.services.ipcSend('requestImageView', { resourceID: facsDocument.resourceID, parentID: parentEntry?.id, xmlID: surface.id }) 
+        if( surface ) {
+            const {parentEntry} = facsDocument
+            fairCopy.services.ipcSend('requestImageView', { resourceID: facsDocument.resourceID, parentID: parentEntry?.id, xmlID: surface.id })     
+        }
     }
 
     render() {
-        const { hidden, resourceEntry, parentResource, onEditResource, onResourceAction, onAddImages, onOpenPopupMenu, onConfirmDeleteImages, onEditSurfaceInfo, windowed } = this.props
+        const { hidden, resourceEntry, parentResource, onEditResource, onResourceAction, onAddImages, onOpenPopupMenu, onConfirmDeleteImages, onEditSurfaceInfo, windowed, currentView } = this.props
         const { mode, surfaceIndex } = this.state
         const facsDocument = this.getFacsDocument()
 
@@ -58,6 +60,7 @@ export default class FacsEditor extends Component {
                         onEditSurfaceInfo={onEditSurfaceInfo}
                         onWindow={onWindowPopup}
                         isWindowed={windowed}
+                        currentView={currentView}
                     ></SurfaceEditor>                
                 : 
                     <FacsIndex
@@ -73,6 +76,7 @@ export default class FacsEditor extends Component {
                         onConfirmDeleteImages={onConfirmDeleteImages}  
                         onWindow={onWindowPopup}
                         isWindowed={windowed}
+                        currentView={currentView}
                     ></FacsIndex>
                 }
             </div>

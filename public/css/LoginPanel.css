@@ -1,0 +1,34 @@
+#LoginPanel {
+    margin: 12px;
+    background: #F8F5FF;
+    padding: 5px;
+    padding-top: 15px;
+    border-radius: 10px;
+}
+
+#LoginPanel li {
+    list-style: none;
+}
+
+#LoginPanel h2 {
+    margin-left: 15px;
+}
+
+#LoginPanel .login-field {
+    width: 300px;
+    margin-bottom: 10px;
+}
+
+#LoginPanel .form-actions {
+    margin-left: 520px;
+    margin-bottom: 10px;
+}
+
+#LoginPanel .action-button {
+    margin-right: 10px;
+}
+
+#LoginPanel .login-button-active {
+    background: #1976d2;
+    margin-right: 10px;
+}

@@ -1,11 +1,11 @@
 const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
-const { ProjectStore } = require('./ProjectStore')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
+const { FairCopySession } = require('./FairCopySession')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
@@ -15,14 +15,15 @@ class FairCopyApplication {
 
   constructor() {
     this.mainWindow = null
+    this.fairCopySession = null
     this.imageViews = {}
-    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
-    this.config = this.getConfig()
-    this.mainMenu = new MainMenu(this)
     this.exiting = false
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
 
+    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
+    this.config = this.getConfig()
+    this.mainMenu = new MainMenu(this)
     this.initLocalFileProtocol()
     this.initIPC()
   }
@@ -43,7 +44,7 @@ class FairCopyApplication {
   // local file protocol for accessing image resources
   initLocalFileProtocol() {
     protocol.registerFileProtocol('local', (request, callback) => {
-      this.projectStore.openImageResource(request.url)
+      this.fairCopySession.openImageResource(request.url)
       this.localFileProtocolCallback = callback
     })
   }
@@ -64,41 +65,48 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
-    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.projectStore.addResource(resourceEntry,resourceData,resourceMap) })
+    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
 
-    ipcMain.on('removeResource', (event, resourceID) => { 
-      this.projectStore.removeResource(resourceID) 
-      this.sendToMainWindow('resourceEntryUpdated', { deleted: true, resourceID } )
+    ipcMain.on('removeResources', (event, resourceIDs) => { 
+      this.fairCopySession.removeResources(resourceIDs) 
       
       // close any open image windows
-      const imageView = this.imageViews[resourceID]
-      if( imageView ) {
-        imageView.close()
+      for( const resourceID of resourceIDs ) {
+        const imageView = this.imageViews[resourceID]
+        if( imageView ) {
+          imageView.close()
+        }
+        delete this.imageViews[resourceID]  
       }
-      delete this.imageViews[resourceID]
     })
 
+    ipcMain.on('recoverResources', (event, resourceID) => { 
+      this.fairCopySession.recoverResources(resourceID) 
+    })
+
+    ipcMain.on('requestResourceView', (event, resourceViewRequest) => { 
+      this.fairCopySession.updateResourceView(resourceViewRequest) 
+    })
+
+    ipcMain.on('requestCheckedOutResources', (event) => { 
+      this.fairCopySession.requestCheckedOutResources() 
+    })
+    
     ipcMain.on('searchProject', (event, searchQuery) => { 
-      this.projectStore.searchIndex.searchProject(searchQuery)  
+      this.fairCopySession.searchProject(searchQuery)  
     })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
-      const ok = this.projectStore.saveResource(resourceID, resourceData) 
+      const ok = this.fairCopySession.saveResource(resourceID, resourceData) 
       if( ok ) {
         const update = { messageID: msgID, resourceID, resourceData }
-        this.sendToAllWindows('resourceUpdated', update )
+        this.sendToAllWindows('resourceContentUpdated', resourceID, msgID, update )
       }
-    })
-    ipcMain.on('updateIDMap', (event, msgID, idMap) => { 
-      this.projectStore.onIDMapUpdated(msgID, idMap)
     })
     ipcMain.on('abandonResourceMap', (event, resourceID) => { 
-      this.projectStore.abandonResourceMap(resourceID)
+      this.fairCopySession.abandonResourceMap(resourceID)
     })
-    ipcMain.on('updateResource', (event, msgID, resourceEntry) => { 
-      const ok = this.projectStore.updateResource(resourceEntry) 
-      if( ok ) {
-        this.sendToAllWindows('resourceEntryUpdated', { messageID: msgID, resourceEntry } )
-      }
+    ipcMain.on('updateResource', (event, resourceEntry) => { 
+      this.fairCopySession.updateResource(resourceEntry) 
     })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
@@ -125,20 +133,32 @@ class FairCopyApplication {
     
     // Main window events //////
 
-    ipcMain.on('requestResource', (event,resourceID) => { 
-      this.projectStore.openResource(resourceID)
+    ipcMain.on('openResource', (event,resourceID) => { 
+      this.fairCopySession.openResource(resourceID)
+    })
+
+    ipcMain.on('setResourceMap', (event, resourceMap, localID, parentID) => { 
+      this.fairCopySession.setResourceMap(resourceMap, localID, parentID)
     })
 
     ipcMain.on('importContinue', (event) => { 
-      this.projectStore.importContinue()
+      this.fairCopySession.importContinue()
     })
     ipcMain.on('importEnd', (event) => { 
-      this.projectStore.importEnd()
+      this.fairCopySession.importEnd()
     })
 
-    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.projectStore.saveFairCopyConfig(fairCopyConfig) })    
-    ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.projectStore.exportFairCopyConfig(exportPath,fairCopyConfig) })
-    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.projectStore.updateProjectInfo(projectInfo) })
+    ipcMain.on('checkIn', (event, email, serverURL, projectID, checkInResources, message ) => { 
+      this.fairCopySession.checkIn(email, serverURL, projectID, checkInResources, message)
+    })
+
+    ipcMain.on('checkOut', (event, email, serverURL, projectID, resourceIDs ) => { 
+      this.fairCopySession.checkOut(email, serverURL, projectID, resourceIDs)
+    })
+
+    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig) })    
+    ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.fairCopySession.exportFairCopyConfig(exportPath,fairCopyConfig) })
+    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.fairCopySession.updateProjectInfo(projectInfo) })
     
     ipcMain.on('requestPaste', (event) => { 
       if( this.mainWindow ) {
@@ -149,15 +169,15 @@ class FairCopyApplication {
     ipcMain.on('requestImport', (event,options) => { 
       const paths = this.mainMenu.openImport()
       if( paths ) {
-        this.projectStore.importStart(paths,options)
+        this.fairCopySession.importStart(paths,options)
       }
     })
 
-    ipcMain.on('requestExport', (event, resourceIDs) => { 
+    ipcMain.on('requestExport', (event, resourceEntries) => { 
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null
       if( path ) {
-        this.projectStore.requestExport(resourceIDs,path)
+        this.fairCopySession.requestExport(resourceEntries,path)
       }
     })
 
@@ -179,7 +199,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive({ ...projectInfo, appVersion: this.config.version}, this.baseDir, () => {
+      createProjectArchive({ ...projectInfo, generatedWith: this.config.version}, this.baseDir, () => {
         this.openProject(projectInfo.filePath)
       })
     })
@@ -197,8 +217,6 @@ class FairCopyApplication {
   }
 
   async createMainWindow() {
-    this.projectStore = new ProjectStore(this)
-
     if( this.mainWindow ) {
       if( !this.mainWindow.isDestroyed() ) {
         this.mainWindow.destroy()
@@ -226,7 +244,7 @@ class FairCopyApplication {
 
   async createImageWindow(imageViewInfo) {
     const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff' )
-    const {resourceID} = imageViewInfo
+    const {resourceID, xmlID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
 
@@ -234,7 +252,7 @@ class FairCopyApplication {
       delete this.imageViews[resourceID]
     })
 
-    this.projectStore.openImageView(imageViewInfo)
+    this.fairCopySession.openResource( resourceID, xmlID )
   }
 
   exitApp() {
@@ -257,7 +275,7 @@ class FairCopyApplication {
 
       if( this.mainWindow ) {
         this.mainWindow.close()
-        this.projectStore.close()
+        this.fairCopySession.closeProject()
       }
     }
   }
@@ -268,7 +286,7 @@ class FairCopyApplication {
         this.projectWindow.close()
         this.projectWindow = null  
       }
-      this.projectStore.openProject(targetFile)
+      this.fairCopySession = new FairCopySession(this, targetFile)
       log.info(`Opened project: ${targetFile}`)
     })
   }
@@ -325,6 +343,7 @@ class FairCopyApplication {
       webPreferences: {
           webSecurity,
           enableRemoteModule: false,
+          nodeIntegration: true,
           contextIsolation: false,
           preload: `${this.baseDir}/${preload}`,
           spellcheck: false

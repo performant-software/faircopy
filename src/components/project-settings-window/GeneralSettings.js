@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 
 import { Typography, TextField, Button } from '@material-ui/core'
 
-// import { exportConfig } from '../../model/faircopy-config'
-
 export default class GeneralSettings extends Component {
     
     constructor(props) {
@@ -46,7 +44,8 @@ export default class GeneralSettings extends Component {
 
         const { projectInfo, onReset } = this.props
         const { validationErrors } = this.state
-        const { name, description, projectFilePath } = projectInfo
+        const { name, description, projectFilePath, remote } = projectInfo
+        const disabled = remote
 
         return (
             <div id="GeneralSettings">
@@ -60,6 +59,7 @@ export default class GeneralSettings extends Component {
                     helperText={validationErrors['name']}
                     aria-label="Project Name"
                     label="Project Name" 
+                    disabled={disabled}
                 /><br/>
                 <TextField 
                     name="description"
@@ -68,9 +68,10 @@ export default class GeneralSettings extends Component {
                     onChange={onChange}
                     aria-label="Project Description"
                     label="Project Description" 
+                    disabled={disabled}
                 /><br/>
                 <div className="actions">
-                    <Button className="action" variant="contained" onClick={onReset}>Reset Config</Button>
+                    <Button className="action" variant="contained" disabled={disabled} onClick={onReset}>Reset Config</Button>
                 </div>
                 <div className="info">
                     <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>

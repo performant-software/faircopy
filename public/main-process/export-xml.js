@@ -5,25 +5,25 @@ const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const serialize = require("w3c-xmlserializer");
 
-const exportResource =  async function exportResource(resourceID, resourceEntries, resourceData, path) {
-    const resourceEntry = resourceEntries[resourceID]
+const exportResource =  async function exportResource(resourceData, path) {
+    const { resourceEntry, contents } = resourceData
     if( resourceEntry.type === 'teidoc') {
-        exportTEIDoc(resourceEntry,resourceEntries,resourceData,path)
+        const { childEntries } = resourceData
+        exportTEIDoc(resourceEntry,childEntries,contents,path)
     } else {
-        const resource = resourceData[resourceEntry.id]
-        exportXMLFile(path, resourceEntry.localID, resource)    
+        const content = contents[resourceEntry.id]
+        exportXMLFile(path, resourceEntry.localID, content)    
     }
     log.info(`Export resources to: ${path}`)
 }
 
-async function exportTEIDoc(resourceEntry,resourceEntries,resourceData,path) {
+async function exportTEIDoc(resourceEntry,childEntries,contents,path) {
     let header, resources = []
-    for( const resourceID of resourceEntry.resources ) {
-        const resourceEntry = resourceEntries[resourceID]
-        const resourceXML = resourceData[resourceID]
-        const elName = resourceEntry.type === 'header' ? 'teiHeader' : resourceEntry.type === 'text' ? 'text' : resourceEntry.type === 'standOff' ? 'standOff' : resourceEntry.type === 'sourceDoc' ? 'sourceDoc' : 'facsimile'
-        const resourceEl = getResourceEl( resourceXML, elName, resourceEntry.localID )
-        if( resourceEntry.type === 'header' ) {
+    for( const childEntry of childEntries ) {
+        const resourceXML = contents[childEntry.id]
+        const elName = childEntry.type === 'header' ? 'teiHeader' : childEntry.type === 'text' ? 'text' : childEntry.type === 'standOff' ? 'standOff' : childEntry.type === 'sourceDoc' ? 'sourceDoc' : 'facsimile'
+        const resourceEl = getResourceEl( resourceXML, elName, childEntry.localID )
+        if( childEntry.type === 'header' ) {
             header = resourceEl
         } else {
             resources.push(resourceEl)

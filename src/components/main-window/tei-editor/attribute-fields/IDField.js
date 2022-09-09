@@ -69,16 +69,19 @@ export default class IDField extends Component {
             fairCopy.services.copyToClipBoard(fullID)
         }
         const error = preExistingCondition ? 'error' : ''
+        const displayValue = value.length > 0 ? `#${value}` : ''
 
         return (
             <div className="element-id-field">
-                <Typography onClick={onClick} className={`element-id ${error}`} variant="h5">#{value}</Typography>                 
-                <IconButton
+                <Typography onClick={onClick} className={`element-id ${error}`} variant="h5">{displayValue}</Typography>        
+                { displayValue.length > 0 &&
+                    <IconButton
                     onClick={onCopy}
                     tooltip="Copy to clipboard."
-                >
-                    <i className="fa fa-sm fa-clone"></i>
-                </IconButton>
+                    >
+                        <i className="fa fa-sm fa-clone"></i>
+                    </IconButton>            
+                }         
             </div>    
         )
     }
@@ -132,10 +135,15 @@ export default class IDField extends Component {
     }
 
     render() {
+        const { readOnly } = this.props
         const { editMode } = this.state
         const value = this.getID()
 
-        if( editMode ) return this.renderEditMode()
-        return ( value && value.length > 0 ) ? this.renderDisplayMode() : this.renderButtonMode()
+        if( readOnly ) {
+            return this.renderDisplayMode()
+        } else {
+            if( editMode ) return this.renderEditMode()
+            return ( value && value.length > 0 ) ? this.renderDisplayMode() : this.renderButtonMode()    
+        }
     }
 }

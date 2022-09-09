@@ -1,0 +1,23 @@
+#SelectRemoteProjectPanel {
+    margin: 12px;
+    background: #F8F5FF;
+    padding: 5px;
+    padding-top: 15px;
+    border-radius: 10px;
+}
+
+#SelectRemoteProjectPanel .heading {
+    margin: 10px;
+}
+
+#SelectRemoteProjectPanel .project-card {
+    margin: 10px;
+    min-width: 200px;
+    cursor: pointer;
+}
+
+#SelectRemoteProjectPanel .card-container {
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}

@@ -2,14 +2,16 @@ import {sanitizeID} from "./attribute-validators"
 import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
-import FacsDocument from "./FacsDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
+import { cloudInitialConfig } from './FairCopyProject'
+import {teiToFacsimile} from './convert-facs'
+import { getBlankResourceMap, mapResource } from "./id-map"
 
 const fairCopy = window.fairCopy
 
-export function importResource(importData,existingParentID,fairCopyProject) {
+export function importResource(importData,parentEntry,fairCopyProject) {
     const { path, data, options } = importData
     const { idMap } = fairCopyProject
 
@@ -20,15 +22,15 @@ export function importResource(importData,existingParentID,fairCopyProject) {
         xmlExt = true
     } else if( path.toLowerCase().endsWith('.txt') ){
         // trim off .txt if it is found 
-        name = fairCopy.services.getBasename(path,'txt').trim()
+        name = fairCopy.services.getBasename(path,'.txt').trim()
     } else {
         name = fairCopy.services.getBasename(path).trim()
     }
     const sanitizedID = sanitizeID(name)
-    const parentEntry = fairCopyProject.getResourceEntry(existingParentID)
     const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
     const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
-    
+    const existingParentID = parentEntry ? parentEntry.id : null
+
     // if this is an XML file, parse the dom
     const xmlDom = parseDOM(data)
 
@@ -186,9 +188,10 @@ function createTEIDoc(name,localID,idMap) {
         localID,
         name,
         type: 'teidoc',
-        parentResource: null
+        parentResource: null,
+        ...cloudInitialConfig
     }
-    const resourceMap = idMap.getBlankResourceMap(true)
+    const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
     return {resourceEntry, content: "", resourceMap}
 }
 
@@ -196,7 +199,7 @@ function createResource(resourceEl, name, localID, parentID, fairCopyProject, fa
     const resourceName = resourceEl.tagName.toLowerCase()
     const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : (resourceName === 'standoff' ) ? 'standOff' : (resourceName === 'sourcedoc') ? 'sourceDoc' : 'facs'
     if( type === 'facs' ) {
-        const facsResource = createFacs(resourceEl,name,localID,parentID,fairCopyProject)
+        const facsResource = createFacs(resourceEl,name,localID,parentID)
         return facsResource  
     } else {
         const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig, learnStructure)
@@ -206,20 +209,21 @@ function createResource(resourceEl, name, localID, parentID, fairCopyProject, fa
 }
 
 function createText(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig, learnStructure) {
-    const { idMap, teiSchema } = fairCopyProject
+    const { teiSchema } = fairCopyProject
 
     const resourceEntry = {
         id: uuidv4(),
         localID,
         name,
         type,
-        parentResource: parentResourceID
+        parentResource: parentResourceID,
+        ...cloudInitialConfig
     }
 
     // map existing IDs
-    const tempDoc = new TEIDocument(resourceEntry.id,type,fairCopyProject,null,false)
+    const tempDoc = new TEIDocument(resourceEntry,null,fairCopyProject)
     const doc = parseText(textEl,tempDoc,teiSchema,type)
-    const resourceMap = idMap.mapResource( type, doc )
+    const resourceMap = mapResource( resourceEntry, doc )
 
     // extract normalize content
     const content = serializeText(doc, tempDoc, teiSchema)
@@ -230,22 +234,22 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
 }
 
-function createFacs(facsEl, name, localID, parentResourceID, fairCopyProject) {
+function createFacs(facsEl, name, localID, parentResourceID) {
     const resourceEntry = {
         id: uuidv4(),
         localID,
         name,
         type: 'facs',
-        parentResource: parentResourceID
+        parentResource: parentResourceID,
+        ...cloudInitialConfig
     }
 
     // the XML of this facs el
     const content = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0">${facsEl.outerHTML}</TEI>`
 
     // generate resource map
-    const { idMap } = fairCopyProject
-    const facsDoc = new FacsDocument( null, fairCopyProject, content )
-    const resourceMap = idMap.mapResource( 'facs', facsDoc.facs )
+    const facs = teiToFacsimile(content)        
+    const resourceMap = mapResource( resourceEntry, facs )
 
     return { resourceEntry, content, resourceMap }
 }

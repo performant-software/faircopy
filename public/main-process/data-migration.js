@@ -1,14 +1,22 @@
 const semver = require('semver')
 const log = require('electron-log')
+const { getBlankResourceMap } = require('./id-map-authority')
+
+function getProjectVersion(generatedWith) {
+    const ver = generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
+    // ignore any pre-release fields (e.g "1.1.1-dev.8")
+    return `${semver.major(ver)}.${semver.minor(ver)}.${semver.patch(ver)}`
+}
 
 // project files are backward compatible but not forward compatible
 const compatibleProject = function compatibleProject(manifestData, currentVersion) {
-    const projectVersion = manifestData.generatedWith ? manifestData.generatedWith : '0.9.4'  // this field was added in 0.9.5
-    return currentVersion === projectVersion || semver.gt(currentVersion, projectVersion)
+    const projectVersion = getProjectVersion(manifestData.generatedWith)
+    const simpleCurrentVersion = getProjectVersion(currentVersion)
+    return simpleCurrentVersion === projectVersion || semver.gt(simpleCurrentVersion, projectVersion)
 }
 
 const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, projectConfigJSON ) {
-    const projectVersion = generatedWith ? generatedWith : '0.9.4'
+    const projectVersion = getProjectVersion(generatedWith)
     const baseConfig = JSON.parse(baseConfigJSON)
     const projectConfig = JSON.parse(projectConfigJSON)
 
@@ -25,8 +33,33 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, pro
     return JSON.stringify(projectConfig)
 }
 
+const migrateIDMap = function migrateIDMap( generatedWith, idMapJSON, localResources ) {
+    const projectVersion = getProjectVersion(generatedWith)
+
+    if( semver.lt(projectVersion,'1.1.1') ) {
+        log.info('applying IDMap migration for v1.1.1')
+        const idMap = JSON.parse(idMapJSON)
+        return JSON.stringify( migrationRemoteIDMaps(idMap,localResources) )
+    } else {
+        return idMapJSON
+    }
+}
+
+const migrateManifestData = function migrateManifestData( manifestData ) {
+    const projectVersion = getProjectVersion(manifestData.generatedWith)
+
+    if( semver.lt(projectVersion,'1.1.1') ) {
+        log.info('applying manifest data migration for v1.1.1')
+        return migrationRemoteManifestData( manifestData )
+    } else {
+        return manifestData
+    }
+}
+
 exports.compatibleProject = compatibleProject
 exports.migrateConfig = migrateConfig
+exports.migrateIDMap = migrateIDMap
+exports.migrateManifestData = migrateManifestData
 
 //// MIGRATIONS /////////////////////////////////////////////////
 
@@ -65,4 +98,51 @@ function migrationRemoveElements(projectConfig,baseConfig) {
             delete projectElements[projectElement]
         }
     }
+}
+
+function migrationRemoteIDMaps(idMap,localResources) {
+    const nextIDMap = {}
+
+    const teiDocs = Object.values(localResources).filter( r => r.type === 'teidoc' )
+    for( const resourceEntry of teiDocs ) {
+        const { id, localID } = resourceEntry
+
+        nextIDMap[localID] = getBlankResourceMap( id, 'teidoc' )
+
+        // find all the children of this teidoc
+        const children = Object.values(localResources).filter( r => r.parentResource === id )
+        for( const child of children ) {
+            const childMap = getBlankResourceMap( child.id, child.type )
+            childMap.ids = idMap[localID][child.localID]
+            nextIDMap[localID].ids[child.localID] = childMap
+        }
+    }
+
+    const topResources = Object.values(localResources).filter( r => r.type !== 'teidoc' && !r.parentResource )
+
+    for( const resourceEntry of topResources ) {
+        const { id, localID, type } = resourceEntry
+        nextIDMap[localID] = getBlankResourceMap( id, type )
+        nextIDMap[localID].ids = idMap[localID]
+    }
+        
+    return nextIDMap
+}
+
+const cloudInitialConfig = {
+    local: true,
+    deleted: false,
+    gitHeadRevision: null,
+    lastAction: null
+}
+
+function migrationRemoteManifestData( manifestData ) {
+    // all project previous to v1.1.1 are not remote
+    manifestData.remote = false
+    for( const resourceID of Object.keys(manifestData.resources)) {
+        const resourceEntry = manifestData.resources[resourceID]
+        if( resourceEntry.resources ) delete resourceEntry.resources
+        manifestData.resources[resourceID] = { ...resourceEntry, ...cloudInitialConfig }
+    }
+    return manifestData
 }

@@ -35,22 +35,24 @@ export default class SurfaceEditorToolbar extends Component {
     }
 
     render() {
-        const { onChangeView, surfaceIndex, onWindow, onEditSurfaceInfo } = this.props
+        const { onChangeView, surfaceIndex, editable, onWindow, onEditSurfaceInfo } = this.props
         return (
             <div id='SurfaceEditorToolbar' >
-                { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
-                { this.renderActionButton("Draw Rectangle", "fa-draw-square", "rect" )}
-                { this.renderActionButton("Draw Polygon", "fa-draw-polygon", "polygon" )}
-                <Tooltip title="Edit Surface Properties">
-                    <span>
-                        <Button
-                            onClick={onEditSurfaceInfo}
-                            {...this.buttonProps}
-                        >
-                            <i className="far fa-edit fa-2x"></i>
-                        </Button>                   
-                    </span>
-                </Tooltip>
+                { editable && <span>
+                    { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
+                    { this.renderActionButton("Draw Rectangle", "fa-draw-square", "rect" )}
+                    { this.renderActionButton("Draw Polygon", "fa-draw-polygon", "polygon" )}
+                    <Tooltip title="Edit Surface Properties">
+                        <span>
+                            <Button
+                                onClick={onEditSurfaceInfo}
+                                {...this.buttonProps}
+                            >
+                                <i className="far fa-edit fa-2x"></i>
+                            </Button>                   
+                        </span>
+                    </Tooltip>
+                </span> }
                 <FacsModeControl
                     surfaceIndex={surfaceIndex}
                     selected={'detail'}
