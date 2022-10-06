@@ -18,14 +18,23 @@ export function navigateTree( direction, editorView, pos ) {
     if( direction === 'up' ) { 
         // move the selection to the previous sibling. 
         if( nodeIndex > 0 ) {
-            nextNode = parentNode.child(nodeIndex-1)
-            nextPos = $pos.pos - $pos.nodeBefore.nodeSize
+            const node = parentNode.child(nodeIndex-1)
+            const nodeType = node.type.name
+            // don't move into textNodes or globalNodes
+            if( !nodeType.includes('textNode') && !nodeType.includes('globalNode') ) {
+                nextNode = node
+                nextPos = $pos.pos - $pos.nodeBefore.nodeSize            
+            }
         }
     } else if( direction === 'down' ) {
         // select the next sibling
         if( nodeIndex < parentNode.childCount-1 ) {
-            nextNode = parentNode.child(nodeIndex+1)
-            nextPos = $pos.pos + $pos.nodeAfter.nodeSize
+            const node = parentNode.child(nodeIndex+1)
+            const nodeType = node.type.name
+            if( !nodeType.includes('textNode') && !nodeType.includes('globalNode') ) {
+                nextNode = node
+                nextPos = $pos.pos + $pos.nodeAfter.nodeSize
+            }
         }
     } else if( direction === 'left' ) {
         // select parent
