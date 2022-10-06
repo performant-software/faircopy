@@ -32,8 +32,8 @@ export default class IDMap {
                     const { resourceType, resourceID, ids } = resourceMap
                     if( resourceType === 'teidoc' ) {
                         for( const childID of Object.keys(ids)) {
-                            if( ids[childID][xmlID] ) {
-                                return { localID: childID, xmlID, resourceID, ...ids[childID][xmlID] }
+                            if( ids[childID].ids[xmlID] ) {
+                                return { localID: childID, xmlID, resourceID, ...ids[childID].ids[xmlID] }
                             }
                         }
                     } else {
