@@ -2,6 +2,15 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.2
+
+This version addresses a couple of bugs found in recent testing.
+
+### Bug Fixes
+
+* Fixed crash bug related to using arrow keys to navigate the structure tree near inline elements.
+* Fixed bug where thumbnails were not appearing for facs IDs in TEI Documents.
+
 ## Version 1.1.1
 
 In FairCopy v1.1.1, we add functionality for Remote Projects. Remote Projects make it easy for teams to work together on a project. This feature is currently in closed beta, but if you would like to learn more, please contact us.
