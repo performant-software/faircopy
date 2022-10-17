@@ -109,11 +109,7 @@ export default class IDMap {
     getResourceEntry(localID,parentID,xmlID) {
         const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
         return resourceMap ? resourceMap.ids[xmlID] : null
-    }
-
-    getUniqueID(baseID) {
-        return `${baseID}-${Date.now()}`
-    }
+    }    
 }
 
 function getHighestFacsID( ids ) {

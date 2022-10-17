@@ -1,4 +1,4 @@
-import {sanitizeID} from "./attribute-validators"
+
 import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
@@ -7,7 +7,7 @@ import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
-import { getBlankResourceMap, mapResource } from "./id-map"
+import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
 
 const fairCopy = window.fairCopy
 
@@ -26,9 +26,8 @@ export function importResource(importData,parentEntry,fairCopyProject) {
     } else {
         name = fairCopy.services.getBasename(path).trim()
     }
-    const sanitizedID = sanitizeID(name)
-    const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
-    const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
+    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+    const localID = getUniqueResourceID('resource', siblingIDs, name )
     const existingParentID = parentEntry ? parentEntry.id : null
 
     // if this is an XML file, parse the dom
@@ -84,33 +83,13 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
             childLocalIDs = Object.keys(idMap.idMap[parentEntry.localID].ids)
         }
 
-        // Generates a unique and meaningful local id for a child resource
-        const typeCounters = {}
-        function generateLocalID(type,xmlID) {
-            if( xmlID ) {
-                const sanitizedID = sanitizeID(xmlID)
-                if( sanitizedID && !childLocalIDs.includes(sanitizedID) ) {
-                    childLocalIDs.push(sanitizedID)
-                    return sanitizedID
-                } 
-            }
-            if( !typeCounters[type] ) typeCounters[type] = 1
-            else typeCounters[type] = typeCounters[type] + 1
-            const nextID = `${type}-${typeCounters[type]}` 
-            if(childLocalIDs.includes(nextID)) {
-                // id already in use, search for a free ID for this type
-                return generateLocalID(type)
-            } else {
-                childLocalIDs.push(nextID)
-                return nextID
-            }
-        }
-
         // create the resources
+        const typeCounters = {}
         for( const resourceEl of extractedResources.resources ) {
             const xmlID = resourceEl.getAttribute('xml:id')
             const childType = determineResourceType(resourceEl)
-            const childLocalID = generateLocalID(childType, xmlID)
+            const childLocalID = getUniqueResourceID(childType, childLocalIDs, xmlID, typeCounters)
+            childLocalIDs.push(childLocalID)
             const childName = `${parentName} - ${childLocalID}`
             const resource = createResource(resourceEl, childName, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)
             resources.push(resource)

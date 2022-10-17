@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { getBlankResourceMap, mapResource } from './id-map'
+import { getBlankResourceMap, mapResource, getUniqueResourceID } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -94,8 +94,8 @@ export default class FairCopyProject {
 
         importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
             const { name, localID } = metadata
-            const conflictingID = parentEntry ? this.idMap.idMap[parentEntry.localID][localID] : this.idMap.idMap[localID]
-            const uniqueID = !conflictingID ? localID : this.idMap.getUniqueID(localID) 
+            const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(this.idMap.idMap)
+            const uniqueID = getUniqueResourceID('facs', siblingIDs, localID )
             const existingParentID = parentEntry ? parentEntry.id : null
  
             const resourceEntry = {
