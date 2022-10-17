@@ -3,7 +3,7 @@ import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, Ta
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { logout, isLoggedIn } from '../../../model/cloud-api/auth'
+import { isLoggedIn } from '../../../model/cloud-api/auth'
 
 export default class ResourceBrowser extends Component {
 
@@ -78,13 +78,9 @@ export default class ResourceBrowser extends Component {
   }
 
   renderLoginButton(buttonProps) {
-    const { onLogin, fairCopyProject } = this.props
+    const { onLogin, fairCopyProject, onLogout } = this.props
     const { remote, email, serverURL } = fairCopyProject
     const loggedIn = remote ? isLoggedIn(email, serverURL) : false
-
-    const onLogout = () => {
-      logout(email, serverURL)
-    }
 
     return loggedIn ? 
         <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :

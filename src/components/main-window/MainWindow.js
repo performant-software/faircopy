@@ -31,6 +31,7 @@ import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import { isEntryEditable, isCheckedOutRemote } from '../../model/FairCopyProject';
 import { bigRingSpinner } from '../common/ring-spinner'
+import { logout } from '../../model/cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -415,6 +416,13 @@ export default class MainWindow extends Component {
         fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
     }
 
+    onLogOut = () => {
+        const { fairCopyProject } = this.props
+        const { email, serverURL } = fairCopyProject
+        logout(email, serverURL)
+        this.setState( {...this.state} )
+    }
+
     onEditResource = () => {
         this.setState({...this.state, editDialogMode: true })
     }
@@ -709,6 +717,7 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         onLogin={this.onLogin}
+                        onLogout={this.onLogOut}
                         teiDoc={parentEntry}
                         setResourceCheckmark={this.setResourceCheckmark}
                         setAllCheckmarks={this.setAllCheckmarks}
