@@ -361,20 +361,25 @@ class FairCopySession {
             const resourceEntry = resources[resourceID]
             // ignore resources that aren't in local manifest
             if( resourceEntry ) {
-                committedResources.push(createCommitEntry(resourceEntry))
+                const resourceCommitEntry = createCommitEntry(resourceEntry)
+                committedResources.push(resourceCommitEntry)
 
                 if( resourceEntry.type === 'teidoc' ) {
                     const doomedIDs = []
-                    // also delete any checked out children 
                     for( const localResource of Object.values(resources) ) {
                         const { parentResource } = localResource
                         if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
-                            // automatically add header and any children if teidoc is deleted
+                            // automatically delete any children
                             if( resourceEntry.deleted ) {
                                 localResource.deleted = true
                                 committedResources.push(createCommitEntry(localResource))
                                 doomedIDs.push(localResource.id)
-                            } else if( localResource.type === 'header' ) {
+                            } else if( resourceCommitEntry.action === 'create' ) {
+                                // if we are creating a new teidoc, automatically checkin its children
+                                committedResources.push(createCommitEntry(localResource))
+                            }                            
+                            else if( localResource.type === 'header' ) {
+                                // always commit the header with the tei doc
                                 committedResources.push(createCommitEntry(localResource))
                             }
                         }

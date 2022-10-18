@@ -1,3 +1,5 @@
+import {sanitizeID} from "./attribute-validators"
+
 export function mapResource( resourceEntry, content ) {
     return (resourceEntry.type === 'facs') ? mapFacsIDs(resourceEntry,content) : mapTextIDs(resourceEntry,content)
 }
@@ -20,6 +22,26 @@ export function resourceIDToLocalIDs( targetID, idMap, parentID=null ) {
         } 
     }
     return null
+}
+
+// generate a unique ID for a resource of a given type. If there's an existing XML ID, try to use that.
+// generated names reflect the type of the resource plus a counter.
+export function getUniqueResourceID(type,existingIDs,xmlID=null,typeCounters={} ) {
+    if( xmlID ) {
+        const sanitizedID = sanitizeID(xmlID)
+        if( sanitizedID && !existingIDs.includes(sanitizedID) ) {
+            return sanitizedID
+        } 
+    }
+    if( !typeCounters[type] ) typeCounters[type] = 1
+    else typeCounters[type] = typeCounters[type] + 1
+    const nextID = `${type}-${typeCounters[type]}` 
+    if(existingIDs.includes(nextID)) {
+        // id already in use, search for a free ID for this type
+        return getUniqueResourceID(type,existingIDs,null,typeCounters)
+    } else {
+        return nextID
+    }
 }
 
 function getTextEntry() {
