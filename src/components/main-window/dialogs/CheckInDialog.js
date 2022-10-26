@@ -22,7 +22,7 @@ export default class CheckInDialog extends Component {
             message: "",
             resourcesToCommit: [],
             committedResources: [],
-            done: false,
+            status: 'ready',
             resourceStatus: null,
             errorMessage: null
         }
@@ -67,17 +67,17 @@ export default class CheckInDialog extends Component {
     onCheckInResults = (event, checkInResult) => {
         const { resourceEntries, resourceStatus, error } = checkInResult
         if( error ) {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, errorMessage: error })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, status: 'done', errorMessage: error })
         } else {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, errorMessage: null })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, status: 'done', errorMessage: null })
         }
     }
 
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourcesToCommit, resourceStatus, done } = this.state
+        const { committedResources, resourcesToCommit, resourceStatus, status } = this.state
 
-        const responseReceived = !!resourceStatus
+        const responseReceived = status === 'done'
         const resourceList = responseReceived ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
@@ -107,7 +107,7 @@ export default class CheckInDialog extends Component {
             )
         })
 
-        const caption = done ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
+        const caption = status === 'done' ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
 
         return (
             <div>
@@ -137,7 +137,7 @@ export default class CheckInDialog extends Component {
         const { message, resourcesToCommit } = this.state   
         if( message.length > 0 ) {
             const resourceIDs = resourcesToCommit.map( r => r.id )
-            this.setState({ ...this.state, done: true }) 
+            this.setState({ ...this.state, status: 'loading' }) 
             fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )   
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
@@ -174,13 +174,14 @@ export default class CheckInDialog extends Component {
 
     render() {
         const { onClose } = this.props
-        const { done, resourceStatus } = this.state
+        const { status } = this.state
 
-        const responseReceived = !!resourceStatus
-        const loading = done && !responseReceived
-
-        const closeButtonProps = done ? {  variant: "contained", color: "primary", onClick: onClose } : {  variant: "outlined", color: "default", onClick: onClose }
-
+        const checkInButtonProps = status === 'ready' ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } : 
+            {  variant: "outlined", color: "default", enabled: 'false' } 
+        const closeButtonProps = status === 'done' ? {  variant: "contained", color: "primary", onClick: onClose } : 
+            status === 'loading' ?  {  variant: "outlined", color: "default", enabled: 'false' } : 
+                                    {  variant: "outlined", color: "default", onClick: onClose }
+        
         return (
             <Dialog
                 id="CheckInDialog"
@@ -188,15 +189,15 @@ export default class CheckInDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
             >
-                <DialogTitle id="checkin-dialog-title">Check In Resources { loading && inlineRingSpinner('dark') }</DialogTitle>
+                <DialogTitle id="checkin-dialog-title">Check In Resources { status === 'loading' && inlineRingSpinner('dark') }</DialogTitle>
                 <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
                    { this.renderResourceTable() }
                    { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={done} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
-                    <Button {...closeButtonProps} >Done</Button>
+                    <Button {...checkInButtonProps} >Check In</Button>
+                    <Button {...closeButtonProps} >{ status === 'ready' ? 'Cancel' : 'Done' }</Button>
                 </DialogActions>
             </Dialog>
         )
