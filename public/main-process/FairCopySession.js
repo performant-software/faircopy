@@ -365,7 +365,6 @@ class FairCopySession {
                 committedResources.push(resourceCommitEntry)
 
                 if( resourceEntry.type === 'teidoc' ) {
-                    const doomedIDs = []
                     for( const localResource of Object.values(resources) ) {
                         const { parentResource } = localResource
                         if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
@@ -373,7 +372,6 @@ class FairCopySession {
                             if( resourceEntry.deleted ) {
                                 localResource.deleted = true
                                 committedResources.push(createCommitEntry(localResource))
-                                doomedIDs.push(localResource.id)
                             } else if( resourceCommitEntry.action === 'create' ) {
                                 // if we are creating a new teidoc, automatically checkin its children
                                 committedResources.push(createCommitEntry(localResource))
@@ -384,10 +382,6 @@ class FairCopySession {
                             }
                         }
                     }
-                    if( doomedIDs.length > 0 ) {
-                        const idMap = this.idMapAuthority.removeResources(doomedIDs)
-                        this.projectStore.removeResources(doomedIDs,idMap)         
-                    }   
                 }
             }
             if( resourceID === homeParentID ) {
