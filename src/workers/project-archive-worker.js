@@ -70,9 +70,10 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     }
 }
 
-async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage ) {
+async function checkOut( email, serverURL, projectID, resourceEntries, zip, postMessage ) {
     const authToken = getAuthToken( email, serverURL )
     const resources = {}
+    const resourceIDs = resourceEntries.map( resourceEntry => resourceEntry.id )
 
     if( authToken ) {
         try {
@@ -81,10 +82,13 @@ async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMess
             // get the contents for each resource and add them to the project 
             for( const resourceState of resourceStates ) {
                 const { resource_guid: resourceID, state } = resourceState
+                const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
+
                 if( state === 'success') {
-                    const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
-                    resources[resourceEntry.id] = { resourceEntry, parentEntry, content }
-                    await writeUTF8( resourceEntry.id, content, zip )    
+                    resources[resourceEntry.id] = { state, resourceEntry, parentEntry, content }
+                    writeUTF8( resourceEntry.id, content, zip )    
+                } else {
+                    resources[resourceID] = { state, resourceEntry }
                 }
             }
             postMessage({ messageType: 'check-out-results', resources, error: null })
@@ -347,8 +351,8 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break  
         case 'check-out': 
             {
-                const { email, serverURL, projectID, resourceIDs } = msg
-                checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage )
+                const { email, serverURL, projectID, resourceEntries } = msg
+                checkOut( email, serverURL, projectID, resourceEntries, zip, postMessage )
             }    
             break              
         case 'save':

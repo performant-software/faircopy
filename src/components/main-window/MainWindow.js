@@ -29,7 +29,7 @@ import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
-import { isEntryEditable, isCheckedOutRemote } from '../../model/FairCopyProject';
+import CheckOutDialog from './dialogs/CheckOutDialog'
 import { bigRingSpinner } from '../common/ring-spinner'
 import { logout } from '../../model/cloud-api/auth'
 
@@ -96,6 +96,9 @@ export default class MainWindow extends Component {
             expandedGutter: true,
             iiifDialogMode: false,
             textImportDialogMode: false,
+            checkOutMode: false, 
+            checkOutStatus: null, 
+            checkOutError: null,
             searchQuery: null,
             searchResults: {},
             searchFilterOptions: { active: false, elementName: '', attrQs: []},
@@ -166,12 +169,8 @@ export default class MainWindow extends Component {
         }
     }
 
-    onCheckOutResults = (event, resourceIDs, error ) => {
-        const count = resourceIDs.length
-        const s = count === 1 ? '' : 's'
-        const countMessage = `${count} resource${s} checked out.`
-        const message = error ? `${error} ${countMessage}` : countMessage
-        this.onAlertMessage(message)
+    onCheckOutResults = (event, checkOutStatus, checkOutError ) => {
+        this.setState({ ...this.state, checkOutMode: true, checkOutStatus, checkOutError })
     }
 
     onResourceEntryUpdated = (e, resourceEntry) => {
@@ -377,21 +376,7 @@ export default class MainWindow extends Component {
     checkOutResources(resourceEntries) {
         const { fairCopyProject } = this.props
         const { email, serverURL, projectID } = fairCopyProject
-
-        const resourceIDs = []
-        for( const resourceEntry of resourceEntries ) {
-            if( isEntryEditable(resourceEntry, email) ) {
-                this.onAlertMessage(`"${resourceEntry.name}" has already been checked out by you.`)
-                return
-            } else if( isCheckedOutRemote(resourceEntry, email) ) {
-                this.onAlertMessage(`"${resourceEntry.name}" is checked out by another user.`)
-                return 
-            } else {
-                resourceIDs.push(resourceEntry.id)
-            }
-        }
-
-        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
+        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceEntries )
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -755,7 +740,8 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        
         const { fairCopyProject, appConfig } = this.props
         const { idMap, email, serverURL } = fairCopyProject
         const resourceView = resourceViews[resourceViews.currentView]
@@ -872,6 +858,11 @@ export default class MainWindow extends Component {
                     checkInResources={checkInResources}
                     onClose={()=>{ this.setState( {...this.state, checkInMode: false} )}}
                 ></CheckInDialog> }
+                { checkOutMode && <CheckOutDialog
+                    checkOutStatus={checkOutStatus}
+                    checkOutError={checkOutError}
+                    onClose={()=>{ this.setState( {...this.state, checkOutMode: false, checkOutStatus: null, checkOutError: null} )}}
+                ></CheckOutDialog> }
                 { loginMode && <LoginDialog 
                     onClose={()=>{ this.setState( {...this.state, loginMode: false} )}}
                     email={email} 
