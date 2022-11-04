@@ -14,13 +14,15 @@ export default class CheckOutDialog extends Component {
         const { checkOutStatus } = this.props
         
         let successCount = 0
-        const resourceRows = checkOutStatus.map( statusEntry => { 
+        const resourceRows = []
+        for( const statusEntry of checkOutStatus ) {
             const { state, resourceEntry } = statusEntry
-            const { id, name, localID } = resourceEntry
+            const { id, name, type, localID } = resourceEntry
+            if( type === 'header' ) continue
             const resourceStatusMessage = getResourceStatusMessage(state)
             if( state === 'success' ) successCount++
 
-            return (
+            resourceRows.push(
                 <TableRow key={`resource-${id}`}>
                     <TableCell {...cellProps} >
                         <Typography>{name}</Typography>
@@ -33,7 +35,7 @@ export default class CheckOutDialog extends Component {
                     </TableCell>
                 </TableRow>
             )
-        })
+        }
 
         const s = successCount === 1 ? '' : 's'
 

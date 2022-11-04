@@ -50,12 +50,19 @@ export default class CheckInDialog extends Component {
             const resource = checkedOutResources[resourceID]
             // ignore resources that aren't checked out
             if( resource ) {
-                const { parentResource: parentID } = resource
+                const { id: resourceID, type: resourceType, parentResource: parentID } = resource
                 if( parentID ) {
                     const parentResource = checkedOutResources[parentID]
                     // add local parent resources if they aren't on the list
                     if( parentResource && parentResource.local && !resourcesToCommit.includes(parentResource) ) {
                         resourcesToCommit.push(parentResource)    
+                    }
+                } else if( resourceType === 'teidoc' ) {
+                    // commit any checked out children
+                    for( const checkedOutResource of Object.values(checkedOutResources) ) {
+                        if( resourceID === checkedOutResource.parentResource ) {
+                            resourcesToCommit.push(checkedOutResource) 
+                        }
                     }
                 }
                 resourcesToCommit.push(resource)    
@@ -81,15 +88,18 @@ export default class CheckInDialog extends Component {
         const resourceList = responseReceived ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
-        const resourceRows = resources.map( resource => { 
-            const { id: resourceID, local, deleted, localID, name } = resource
+        const resourceRows = []
+        for( const resource of resources ) {
+            const { id: resourceID, type: resourceType, local, deleted, localID, name } = resource
+            // don't display header entries
+            if( resourceType === 'header' ) continue
             const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
             const editable = isEntryEditable(resource, fairCopyProject.email)
             let { icon, label } = getActionIcon(responseReceived, local, editable )
             if( deleted ) icon = 'fa-trash'
 
-            return (
+            resourceRows.push(
                 <TableRow key={`resource-${resource.id}`}>
                     <TableCell {...cellProps} >
                         <i aria-label={label} className={`fa ${icon} fa-lg`}></i>
@@ -103,9 +113,9 @@ export default class CheckInDialog extends Component {
                     <TableCell {...cellProps} >
                         <Typography>{resourceStatusMessage}</Typography>
                     </TableCell>
-            </TableRow>
-            )
-        })
+                </TableRow>
+            )            
+        }
 
         const caption = status === 'done' ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
 
