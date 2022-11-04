@@ -184,7 +184,10 @@ export default class TEIEditor extends Component {
     }
 
     closeNotePopup = () => {
-        this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+        const { noteID, notePopupAnchorEl } = this.state
+        if( noteID !== null || notePopupAnchorEl !== null ) {
+            this.setState({...this.state, noteID: null, notePopupAnchorEl: null })
+        }
     }
 
     onKeyDown = ( event ) => {

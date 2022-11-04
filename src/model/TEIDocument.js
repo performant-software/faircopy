@@ -155,7 +155,6 @@ export default class TEIDocument {
         }
         
         // scan for errors 
-        // TODO put this on a timer, not every update
         const relativeParentID = this.getRelativeParentID()
         const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
         if( this.errorCount !== nextErrorCount ) {

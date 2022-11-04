@@ -5,11 +5,13 @@ import { systemAttributes, rtlLanguages } from './TEISchema'
 // Ammends the document with run time only flags
 export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     let errorCount = 0
-    tr.doc.descendants((node,pos) => {
-        errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
-        markRTL(node,pos,tr)
-        return true
-    })
+    if( tr.steps.length > 0 ) {
+        tr.doc.descendants((node,pos) => {
+            errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+            markRTL(node,pos,tr)
+            return true
+        })    
+    }
     return errorCount
 }
 
