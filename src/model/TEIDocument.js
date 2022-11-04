@@ -12,6 +12,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
 import {mapResource} from "./id-map"
+import { generateGutterMarks } from './gutter-marks'
 
 const fairCopy = window.fairCopy
 
@@ -32,6 +33,7 @@ export default class TEIDocument {
         this.teiSchema = teiSchema
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
         this.selectedElements = []
+        this.gutterMarkCache = null
         this.plugins = [
             keymap(baseKeymap),
             dropCursor(),
@@ -70,6 +72,13 @@ export default class TEIDocument {
 
     getTEISchema() {
         return this.fairCopyProject ? this.fairCopyProject.teiSchema : this.teiSchema
+    }
+
+    getGutterMarks( gutterTop, expanded ) {
+        if( !this.gutterMarkCache ) {
+            this.gutterMarkCache = generateGutterMarks( this.editorView, gutterTop, this, expanded )
+        }
+        return this.gutterMarkCache
     }
 
     editorInitialState() {
@@ -154,6 +163,8 @@ export default class TEIDocument {
             this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
         }
         
+        // TODO determine whether we need to regenerate the editor gutter and/or applySystemFlags
+
         // scan for errors 
         const relativeParentID = this.getRelativeParentID()
         const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
