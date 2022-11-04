@@ -73,7 +73,19 @@ async function checkIn( email, serverURL, projectID, committedResources, message
 async function checkOut( email, serverURL, projectID, resourceEntries, zip, postMessage ) {
     const authToken = getAuthToken( email, serverURL )
     const resources = {}
-    const resourceIDs = resourceEntries.map( resourceEntry => resourceEntry.id )
+
+    // create a list of resource IDs include child resources
+    const resourceIDs = []
+    for( const resourceEntry of resourceEntries ) {
+        const { id: resourceID, type } = resourceEntry
+        if( type === 'teidoc' ) {
+            const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceID, 1)
+            for( const resource of resourceData.remoteResources ) {
+                if( resource.type !== 'header' ) resourceIDs.push(resource.id)
+            }
+        }
+        resourceIDs.push(resourceID)
+    }
 
     if( authToken ) {
         try {
