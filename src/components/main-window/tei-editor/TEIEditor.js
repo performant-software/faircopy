@@ -121,7 +121,7 @@ export default class TEIEditor extends Component {
  
             teiDocument.selectedElements = selectedElements
             broadcastZoneLinks(teiDocument)
-
+            console.log('tei editor state advanced')
             this.setState({...this.state, noteID: nextNoteID, notePopupAnchorEl: nextNotePopupAnchorEl })
         }
     }

@@ -74,13 +74,6 @@ export default class TEIDocument {
         return this.fairCopyProject ? this.fairCopyProject.teiSchema : this.teiSchema
     }
 
-    getGutterMarks( gutterTop, expanded ) {
-        if( !this.gutterMarkCache ) {
-            this.gutterMarkCache = generateGutterMarks( this.editorView, gutterTop, this, expanded )
-        }
-        return this.gutterMarkCache
-    }
-
     editorInitialState() {
         // load blank XML template 
         const parser = new DOMParser();
@@ -164,6 +157,11 @@ export default class TEIDocument {
         }
         
         // TODO determine whether we need to regenerate the editor gutter and/or applySystemFlags
+        // how to determine more acccurately whether the tree was be modified?
+        // how to tell whether we need to check for system flags?
+        if( !this.gutterMarkCache || transaction.steps.length > 0 ) {
+            this.gutterMarkCache = generateGutterMarks( this.editorView, 115, this, true ) 
+        }
 
         // scan for errors 
         const relativeParentID = this.getRelativeParentID()
