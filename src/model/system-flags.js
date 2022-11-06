@@ -1,3 +1,4 @@
+import { AttrStep } from "prosemirror-transform"
 import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './attribute-validators'
 import { changeAttributes } from "./commands"
 import { systemAttributes, rtlLanguages } from './TEISchema'
@@ -5,14 +6,20 @@ import { systemAttributes, rtlLanguages } from './TEISchema'
 // Ammends the document with run time only flags
 export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     let errorCount = 0
-    if( tr.steps.length > 0 ) {
-        tr.doc.descendants((node,pos) => {
-            errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
-            markRTL(node,pos,tr)
-            return true
-        })    
-    }
+    tr.doc.descendants((node,pos) => {
+        errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        markRTL(node,pos,tr)
+        return true
+    })    
     return errorCount
+}
+
+export function areSystemFlagsDirty( transaction ) {
+    const { steps } = transaction
+    for( const step of steps ) {
+        if( step instanceof AttrStep ) return true
+    }
+    return false
 }
 
 function markRTL(node,pos,tr) {
