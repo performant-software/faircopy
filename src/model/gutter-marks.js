@@ -1,3 +1,4 @@
+import { ReplaceStep, ReplaceAroundStep } from "prosemirror-transform"
 
 export function generateGutterMarks( editorView, gutterTop, teiDocument, expanded ) {
     const { doc } = editorView.state
@@ -118,4 +119,12 @@ export function generateGutterMarks( editorView, gutterTop, teiDocument, expande
     }
 
     return { gutterMarks, totalWidth, columnPositions }
+}
+
+export function isStructuralChange(transaction) {
+    const { steps } = transaction
+    for( const step of steps ) {
+        if( step instanceof ReplaceAroundStep || step instanceof ReplaceStep ) return true
+    }
+    return false
 }

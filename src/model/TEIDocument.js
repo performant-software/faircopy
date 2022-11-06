@@ -12,7 +12,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
 import {mapResource} from "./id-map"
-import { generateGutterMarks } from './gutter-marks'
+import { generateGutterMarks, isStructuralChange } from './gutter-marks'
 
 const fairCopy = window.fairCopy
 
@@ -34,6 +34,7 @@ export default class TEIDocument {
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
         this.selectedElements = []
         this.gutterMarkCache = null
+        this.gutterMarkCacheDirty = true
         this.plugins = [
             keymap(baseKeymap),
             dropCursor(),
@@ -156,11 +157,8 @@ export default class TEIDocument {
             this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
         }
         
-        // TODO determine whether we need to regenerate the editor gutter and/or applySystemFlags
-        // how to determine more acccurately whether the tree was be modified?
-        // how to tell whether we need to check for system flags?
-        if( !this.gutterMarkCache || transaction.steps.length > 0 ) {
-            this.gutterMarkCache = generateGutterMarks( this.editorView, 115, this, true ) 
+        if( !this.gutterMarkCacheDirty ) {
+            this.gutterMarkCacheDirty = isStructuralChange( transaction )
         }
 
         // scan for errors 
@@ -174,6 +172,15 @@ export default class TEIDocument {
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
         this.editorView.updateState(nextEditorState)
+    }
+
+    getGutterMarks() {
+        // regenerate gutter marks if the document structure has changed
+        if( this.gutterMarkCacheDirty ) {
+            this.gutterMarkCache = generateGutterMarks( this.editorView, 115, this, true ) 
+            this.gutterMarkCacheDirty = false
+        }
+        return this.gutterMarkCache
     }
 
     getRelativeParentID() {
