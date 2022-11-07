@@ -6,8 +6,8 @@ import { synthNameToElementName } from '../../../model/xml'
 export default class EditorGutter extends Component {
 
     renderName( nodeName ) {
-        const { expanded } = this.props
-        if( !expanded ) return ''
+        const { teiDocument } = this.props
+        if( !teiDocument.expandedGutter ) return ''
         return <div aria-hidden="true" className={`el-name`}>{ synthNameToElementName( nodeName )}</div>
     }
 

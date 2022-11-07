@@ -1,4 +1,3 @@
-import { AttrStep } from "prosemirror-transform"
 import { tokenValidator, teiDataWordValidator, uriValidator, checkID } from './attribute-validators'
 import { changeAttributes } from "./commands"
 import { systemAttributes, rtlLanguages } from './TEISchema'
@@ -12,14 +11,6 @@ export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID
         return true
     })    
     return errorCount
-}
-
-export function areSystemFlagsDirty( transaction ) {
-    const { steps } = transaction
-    for( const step of steps ) {
-        if( step instanceof AttrStep ) return true
-    }
-    return false
 }
 
 function markRTL(node,pos,tr) {

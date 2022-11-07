@@ -1,6 +1,9 @@
 import { ReplaceStep, ReplaceAroundStep } from "prosemirror-transform"
 
-export function generateGutterMarks( editorView, gutterTop, teiDocument, expanded ) {
+const gutterTop = 115
+
+export function generateGutterMarks( teiDocument ) {
+    const { expandedGutter, editorView } = teiDocument
     const { doc } = editorView.state
     const { docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
 
@@ -63,7 +66,7 @@ export function generateGutterMarks( editorView, gutterTop, teiDocument, expande
 
     // find the max width for each column
     function gatherColumnThickness(name, column) {
-        if( expanded ) {
+        if( expandedGutter ) {
             const displayName = (name === 'noteX') ? 'note' : name
             const thickness = getTextWidth(displayName)
             if( isNaN(columnThickness[column]) ) {

@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
-import {applySystemFlags, areSystemFlagsDirty} from "./system-flags"
+import {applySystemFlags} from "./system-flags"
 import {mapResource} from "./id-map"
 import { generateGutterMarks, isGutterDirty } from './gutter-marks'
 
@@ -35,6 +35,7 @@ export default class TEIDocument {
         this.selectedElements = []
         this.gutterMarkCache = null
         this.gutterMarkCacheDirty = true
+        this.expandedGutter = true
         this.plugins = [
             keymap(baseKeymap),
             dropCursor(),
@@ -146,8 +147,8 @@ export default class TEIDocument {
     }
 
     // called by dispatch transaction for every change to doc state
-    onUpdate(transaction,onErrorCountChange) {
-        const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
+    onUpdate(transaction) {
+        const { idMap } = this.fairCopyProject
 
         if( this.isEditable() ) {
             const resourceMap = mapResource( this.resourceEntry, transaction.doc )
@@ -162,28 +163,33 @@ export default class TEIDocument {
             this.gutterMarkCacheDirty = isGutterDirty( transaction )
         }
 
-        // scan for errors 
-        if( areSystemFlagsDirty( transaction ) ) {
-            const relativeParentID = this.getRelativeParentID()
-            const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
-            if( this.errorCount !== nextErrorCount ) {
-                this.errorCount = nextErrorCount
-                onErrorCountChange()
-            }    
-        }
-
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
         this.editorView.updateState(nextEditorState)
     }
 
+    setExpandedGutter(expanded) {
+        if( this.expandedGutter !== expanded ) this.gutterMarkCacheDirty = true
+        this.expandedGutter = expanded
+    }
+
     getGutterMarks() {
         // regenerate gutter marks if the document structure has changed
         if( this.gutterMarkCacheDirty ) {
-            this.gutterMarkCache = generateGutterMarks( this.editorView, 115, this, true ) 
+            this.gutterMarkCache = generateGutterMarks( this ) 
             this.gutterMarkCacheDirty = false
         }
         return this.gutterMarkCache
+    }
+
+    updateSystemFlags(transaction,onErrorCountChange) {
+        const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
+        const relativeParentID = this.getRelativeParentID()
+        const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
+        if( this.errorCount !== nextErrorCount ) {
+            this.errorCount = nextErrorCount
+            onErrorCountChange()
+        }    
     }
 
     getRelativeParentID() {
