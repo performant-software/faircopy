@@ -324,7 +324,6 @@ export default class TEIEditor extends Component {
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
         const style = hidden ? { display: 'none' } : {}
 
-        const gutterTop = 115
         const marginTop = 125
         
         return (
@@ -367,7 +366,6 @@ export default class TEIEditor extends Component {
                             editorView={teiDocument.editorView}
                             onJumpToDrawer={onJumpToDrawer}
                             onChangePos={this.onChangePos}
-                            gutterTop={gutterTop}
                         /> }     
                         <ProseMirrorComponent
                             createEditorView={this.createEditorView}
