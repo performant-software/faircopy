@@ -40,6 +40,8 @@ export default class TEIEditor extends Component {
         this.resizeListener = debounce(this.onResize,resizeRefreshRate)
         window.addEventListener("resize", this.resizeListener )
         window.onbeforeunload = this.onBeforeUnload
+        // bit of a hack to make the gutter settle into the right shape on initial load
+        setTimeout( this.onResize, 1000 )
     }
 
     componentWillUnmount() {
