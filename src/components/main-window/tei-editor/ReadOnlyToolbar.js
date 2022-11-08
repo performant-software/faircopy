@@ -9,7 +9,7 @@ export default class ReadOnlyToolbar extends Component {
         const { teiDocument } = this.props
         const { fairCopyProject } = teiDocument
         const { email, serverURL, projectID } = fairCopyProject
-        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, [ teiDocument.resourceID ] )
+        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, [ teiDocument.resourceEntry ] )
     }
 
     render() {
