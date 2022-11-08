@@ -48,8 +48,10 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     
         const onFail = (error,results) => {
             const resourceStatus = {}
-            for( const result of results ) {
-                resourceStatus[result.resource_guid] = result.error
+            if( results ) {
+                for( const result of results ) {
+                    resourceStatus[result.resource_guid] = result.error
+                }    
             }
             postMessage({ messageType: 'check-in-results', resourceStatus, error })
             console.log(error)
