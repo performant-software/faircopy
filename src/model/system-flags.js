@@ -9,7 +9,7 @@ export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID
         errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
         markRTL(node,pos,tr)
         return true
-    })
+    })    
     return errorCount
 }
 
