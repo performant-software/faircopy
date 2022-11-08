@@ -363,19 +363,6 @@ class FairCopySession {
             if( resourceEntry ) {
                 const resourceCommitEntry = createCommitEntry(resourceEntry)
                 committedResources.push(resourceCommitEntry)
-
-                if( resourceEntry.type === 'teidoc' ) {
-                    for( const localResource of Object.values(resources) ) {
-                        const { parentResource } = localResource
-                        if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
-                            // automatically delete any children
-                            if( resourceEntry.deleted ) {
-                                localResource.deleted = true
-                                committedResources.push(createCommitEntry(localResource))
-                            }
-                        }
-                    }
-                }
             }
             if( resourceID === homeParentID ) {
                 // if this got checked in, move to root

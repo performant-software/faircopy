@@ -49,17 +49,12 @@ export default class CheckInDialog extends Component {
             const resource = checkedOutResources[resourceID]
             // ignore resources that aren't checked out
             if( resource ) {
-                const { id: resourceID, type: resourceType, parentResource: parentID } = resource
-                if( parentID ) {
-                    const parentResource = checkedOutResources[parentID]
-                    // add local parent resources if they aren't on the list
-                    if( parentResource && parentResource.local && !resourcesToCommit.includes(parentResource) ) {
-                        resourcesToCommit.push(parentResource)    
-                    }
-                } else if( resourceType === 'teidoc' ) {
-                    // commit any checked out children
+                const { id: resourceID, type: resourceType, deleted } = resource                
+                if( resourceType === 'teidoc' ) {
+                    // commit any checked out children, delete if parent is deleted
                     for( const checkedOutResource of Object.values(checkedOutResources) ) {
                         if( resourceID === checkedOutResource.parentResource ) {
+                            if( deleted ) checkedOutResource.deleted = true
                             resourcesToCommit.push(checkedOutResource) 
                         }
                     }
