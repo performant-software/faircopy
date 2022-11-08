@@ -372,13 +372,6 @@ class FairCopySession {
                             if( resourceEntry.deleted ) {
                                 localResource.deleted = true
                                 committedResources.push(createCommitEntry(localResource))
-                            } else if( resourceCommitEntry.action === 'create' ) {
-                                // if we are creating a new teidoc, automatically checkin its children
-                                committedResources.push(createCommitEntry(localResource))
-                            }                            
-                            else if( localResource.type === 'header' ) {
-                                // always commit the header with the tei doc
-                                committedResources.push(createCommitEntry(localResource))
                             }
                         }
                     }

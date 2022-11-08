@@ -44,7 +44,6 @@ export default class CheckInDialog extends Component {
 
     onCheckedOutResources = (event,checkedOutResources) => {
         const { checkInResources } = this.props
-        
         let resourcesToCommit = []
         for( const resourceID of checkInResources ) {
             const resource = checkedOutResources[resourceID]
