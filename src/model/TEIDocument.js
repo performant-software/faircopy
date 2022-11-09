@@ -35,6 +35,8 @@ export default class TEIDocument {
         this.selectedElements = []
         this.gutterMarkCache = null
         this.gutterMarkCacheDirty = true
+        this.noteGutterMarkCache = null
+        this.noteGutterMarkCacheDirty = true
         this.expandedGutter = true
         this.plugins = [
             keymap(baseKeymap),
@@ -173,10 +175,21 @@ export default class TEIDocument {
         this.expandedGutter = expanded
     }
 
+    getNoteGutterMarks(gutterTop) {
+        // regenerate gutter marks if the document structure has changed
+        if( this.noteGutterMarkCacheDirty ) {
+            const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+            this.noteGutterMarkCache = generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes, gutterTop )
+            this.noteGutterMarkCacheDirty = false
+        }
+        return this.noteGutterMarkCache
+    }
+
     getGutterMarks() {
         // regenerate gutter marks if the document structure has changed
         if( this.gutterMarkCacheDirty ) {
-            this.gutterMarkCache = generateGutterMarks( this ) 
+            const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+            this.gutterMarkCache = generateGutterMarks( this.editorView, this.expandedGutter, docNodes )
             this.gutterMarkCacheDirty = false
         }
         return this.gutterMarkCache
