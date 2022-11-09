@@ -93,7 +93,6 @@ export default class MainWindow extends Component {
             popupMenuAnchorEl: null,
             popupMenuPlacement: null,
             alertMessage: null,
-            expandedGutter: true,
             iiifDialogMode: false,
             textImportDialogMode: false,
             checkOutMode: false, 
@@ -615,7 +614,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, resourceViews } = this.state
+        const { openResources, selectedResource, leftPaneWidth, resourceViews } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
         const {currentView} = resourceViews
 
@@ -652,7 +651,6 @@ export default class MainWindow extends Component {
                         onErrorCountChange={onErrorCountChange}
                         onSave={onSave}
                         leftPaneWidth={leftPaneWidth}
-                        expandedGutter={expandedGutter}
                         currentView={currentView}
                     ></TEIEditor>
                 )        
@@ -911,8 +909,15 @@ export default class MainWindow extends Component {
         if( ctrlDown || commandDown ) {
             switch(key) {
                 case '/':
-                    const {expandedGutter} = this.state
-                    this.setState({...this.state, expandedGutter: !expandedGutter })    
+                    {
+                        const { selectedResource, openResources } = this.state
+                        const currentResource = selectedResource ? openResources[selectedResource] : null
+                        if( currentResource instanceof TEIDocument ) {
+                            const {expandedGutter} = currentResource
+                            currentResource.setExpandedGutter(!expandedGutter)
+                            currentResource.refreshView()  
+                        }
+                    }
                     break
                 // TODO
                 // case ' ':

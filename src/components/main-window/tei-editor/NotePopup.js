@@ -124,7 +124,7 @@ export default class NotePopup extends Component {
     }
 
     renderEditor() {
-        const { teiDocument, expanded, onDragElement, drawerRef } = this.props
+        const { teiDocument, onDragElement, drawerRef } = this.props
         const { noteEditorView } = teiDocument
 
         const onFocus = () => {
@@ -154,7 +154,6 @@ export default class NotePopup extends Component {
                 <EditorGutter 
                     treeID="note"
                     gutterTop={gutterTop}
-                    expanded={expanded}
                     onJumpToDrawer={onJumpToDrawer}
                     onDragElement={onDragElement}
                     teiDocument={teiDocument}
