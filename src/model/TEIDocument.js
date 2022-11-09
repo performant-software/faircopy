@@ -175,11 +175,11 @@ export default class TEIDocument {
         this.expandedGutter = expanded
     }
 
-    getNoteGutterMarks() {
+    getNoteGutterMarks(gutterTop) {
         // regenerate gutter marks if the document structure has changed
         if( this.noteGutterMarkCacheDirty ) {
             const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
-            this.noteGutterMarkCache = generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes )
+            this.noteGutterMarkCache = generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes, gutterTop )
             this.noteGutterMarkCacheDirty = false
         }
         return this.noteGutterMarkCache

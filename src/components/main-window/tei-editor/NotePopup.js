@@ -67,6 +67,7 @@ export default class NotePopup extends Component {
         }
 
         if( noteEditorView ) {
+            teiDocument.noteGutterMarkCacheDirty = true
             const editorState = noteEditorView.state
             const nextEditorState = editorState.apply(transaction)
             noteEditorView.updateState(nextEditorState)
