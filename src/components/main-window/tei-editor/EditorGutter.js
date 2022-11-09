@@ -74,9 +74,9 @@ export default class EditorGutter extends Component {
     }
 
     renderGutterMarkers() {
-        const { teiDocument } = this.props
+        const { teiDocument, treeID } = this.props
         const { hard, docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
-        const { gutterMarks, totalWidth, columnPositions } = teiDocument.getGutterMarks()
+        const { gutterMarks, totalWidth, columnPositions } = treeID === 'note' ? teiDocument.getNoteGutterMarks() : teiDocument.getGutterMarks()
 
         // turn the list of gutter mark params into rendered gutter marks
         const gutterMarkEls = gutterMarks.map( (gutterMark,index) => {

@@ -2,11 +2,8 @@ import { ReplaceStep, ReplaceAroundStep } from "prosemirror-transform"
 
 const gutterTop = 115
 
-export function generateGutterMarks( teiDocument ) {
-    const { expandedGutter, editorView } = teiDocument
+export function generateGutterMarks( editorView, expandedGutter, docNodes ) {
     const { doc } = editorView.state
-    const { docNodes } = teiDocument.fairCopyProject.teiSchema.elementGroups
-
     const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
 
     // recursively build subtree of visible structure nodes from slice
