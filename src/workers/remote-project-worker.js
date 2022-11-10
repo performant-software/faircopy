@@ -1,4 +1,5 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
+import { getProject } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
@@ -27,6 +28,16 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
     } else {
         throw new Error(`Recieved request-view message when user is not logged in.`)
     }
+}
+
+function updateAuthorizations(serverURL, authToken, projectID) {
+
+    getProject(projectID, serverURL, authToken, (project) => {
+        
+    },
+    (error) => {
+        // TODO
+    })
 }
 
 function updateConfig() {
@@ -58,6 +69,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
     
     switch( messageType ) {
         case 'open':
+            updateAuthorizations(serverURL, authToken, projectID)
             updateConfig()
             updateIDMap( serverURL, authToken, projectID, postMessage )
             connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )
