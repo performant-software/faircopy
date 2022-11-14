@@ -324,8 +324,8 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'check-in', email, serverURL, projectID, committedResources, message })
     }
 
-    checkOut(email, serverURL, projectID, resourceIDs ) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-out', email, serverURL, projectID, resourceIDs })
+    checkOut(email, serverURL, projectID, resourceEntries ) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-out', email, serverURL, projectID, resourceEntries })
     }
 
     openImageResource(requestURL) {
@@ -347,18 +347,23 @@ class ProjectStore {
         }
     }
 
-    checkOutResults(resources,error) {
-        this.fairCopyApplication.sendToMainWindow('checkOutResults', Object.keys(resources), error ) 
+    checkOutResults(resources,error) {        
+        const checkOutStatus = []
         for( const resource of Object.values(resources) ) {
-            const { resourceEntry, parentEntry, content } = resource
-            this.manifestData.resources[resourceEntry.id] = resourceEntry
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
-            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
+            const { state, resourceEntry, parentEntry, content } = resource
+            if( state === 'success') {
+                this.manifestData.resources[resourceEntry.id] = resourceEntry
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
+                this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content )     
+            } 
+            checkOutStatus.push({ state, resourceEntry })
         }
         const idMap = this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resources)
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
         this.saveManifest()      
+
+        this.fairCopyApplication.sendToMainWindow('checkOutResults', checkOutStatus, error ) 
         this.fairCopyApplication.fairCopySession.requestResourceView()
     }
 

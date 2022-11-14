@@ -363,26 +363,6 @@ class FairCopySession {
             if( resourceEntry ) {
                 const resourceCommitEntry = createCommitEntry(resourceEntry)
                 committedResources.push(resourceCommitEntry)
-
-                if( resourceEntry.type === 'teidoc' ) {
-                    for( const localResource of Object.values(resources) ) {
-                        const { parentResource } = localResource
-                        if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
-                            // automatically delete any children
-                            if( resourceEntry.deleted ) {
-                                localResource.deleted = true
-                                committedResources.push(createCommitEntry(localResource))
-                            } else if( resourceCommitEntry.action === 'create' ) {
-                                // if we are creating a new teidoc, automatically checkin its children
-                                committedResources.push(createCommitEntry(localResource))
-                            }                            
-                            else if( localResource.type === 'header' ) {
-                                // always commit the header with the tei doc
-                                committedResources.push(createCommitEntry(localResource))
-                            }
-                        }
-                    }
-                }
             }
             if( resourceID === homeParentID ) {
                 // if this got checked in, move to root
@@ -393,8 +373,8 @@ class FairCopySession {
         this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
     }
 
-    checkOut(email, serverURL, projectID, resourceIDs) {
-        this.projectStore.checkOut(email, serverURL, projectID, resourceIDs)
+    checkOut(email, serverURL, projectID, resourceEntries) {
+        this.projectStore.checkOut(email, serverURL, projectID, resourceEntries)
     }
 
     saveFairCopyConfig(fairCopyConfig) {

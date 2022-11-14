@@ -190,8 +190,8 @@ class IDMapRemote {
 
     checkOut( resources ) {
         for( const resource of Object.values(resources) ) {
-            const { parentEntry } = resource
-            if( parentEntry ) {
+            const { state, parentEntry } = resource
+            if( state === 'success' && parentEntry ) {
                 const { id: parentResourceID, localID: parentLocalID, type: parentType } = parentEntry
                 if( !this.idMapStaged[parentLocalID] ) this.idMapStaged[parentLocalID] = getBlankResourceMap(parentResourceID, parentType)
             } 
