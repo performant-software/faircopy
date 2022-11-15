@@ -81,7 +81,7 @@ export default class FairCopyProject {
         this.description = fairCopyManifest.description
         this.remote = fairCopyManifest.remote
         this.serverURL = fairCopyManifest.serverURL
-        this.email = fairCopyManifest.email
+        this.userID = fairCopyManifest.userID
         this.projectID = fairCopyManifest.projectID
     }
     

@@ -14,7 +14,7 @@ export default class NewRemoteProjectPanel extends Component {
         super()
         this.initialState = { 
             step: 0,
-            email: null,
+            userID: null,
             serverURL: null,
             projects: null,
             project: null
@@ -27,13 +27,13 @@ export default class NewRemoteProjectPanel extends Component {
     }
 
     onSave = (filePath) => {
-        const { project, email, serverURL } = this.state
+        const { project, userID, serverURL } = this.state
         const { id, name, description } = project
         const projectInfo = { 
             projectID: id,
             name: name["en"].translation,
             description: description["en"].translation,
-            email,
+            userID,
             serverURL,
             filePath,
             remote: true
@@ -45,8 +45,8 @@ export default class NewRemoteProjectPanel extends Component {
         const { onClose } = this.props
         const { step, projects, project } = this.state
 
-        const onLoggedIn = (serverURL, email, authToken) => {
-            this.setState({...this.state, serverURL, email, step: 1})
+        const onLoggedIn = (userID, serverURL, authToken) => {
+            this.setState({...this.state, serverURL, userID, step: 1})
             getProjects( serverURL, authToken, (projects)=> {
                 this.setState({...this.state, projects})
             }, (errorMessage) => {

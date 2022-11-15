@@ -320,12 +320,12 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    checkIn(email, serverURL, projectID, committedResources, message) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-in', email, serverURL, projectID, committedResources, message })
+    checkIn(userID, serverURL, projectID, committedResources, message) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-in', userID, serverURL, projectID, committedResources, message })
     }
 
-    checkOut(email, serverURL, projectID, resourceEntries ) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-out', email, serverURL, projectID, resourceEntries })
+    checkOut(userID, serverURL, projectID, resourceEntries ) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-out', userID, serverURL, projectID, resourceEntries })
     }
 
     openImageResource(requestURL) {

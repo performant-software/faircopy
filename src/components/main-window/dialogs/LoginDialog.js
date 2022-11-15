@@ -20,8 +20,8 @@ export default class LoginDialog extends Component {
         
         const onLogin = () => {
             const { password } = this.state
-            const onSuccess = (authToken) => {
-                onLoggedIn( serverURL, email, authToken )
+            const onSuccess = (id, authToken) => {
+                onLoggedIn( id, serverURL, authToken )
             }
             const onFail = (error) => {
                 this.setState({...this.state, errorMessage: error, password: ''})

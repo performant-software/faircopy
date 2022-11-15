@@ -6,9 +6,9 @@ export function login(serverURL, email, password, onSuccess, onFail) {
 
     axios.post(authURL, loginData).then(
         (okResponse) => {
-            const { token } = okResponse.data
-            setAuthToken( email, serverURL, token )
-            onSuccess(token)
+            const { id, token } = okResponse.data
+            setAuthToken( id, serverURL, token )
+            onSuccess( id, token )
         },
         (errorResponse) => {
             // problem with the license 
@@ -31,11 +31,11 @@ export function logout(email,serverURL) {
     localStorage.setItem('authTokens',JSON.stringify(authTokens))
 }
 
-function setAuthToken(email, serverURL, token) {
+function setAuthToken(id, serverURL, token) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
 
-    authTokens[`${email} ${serverURL}`] = {
+    authTokens[`${id} ${serverURL}`] = {
         token, 
         createdAt: Date.now()
     }
@@ -43,14 +43,14 @@ function setAuthToken(email, serverURL, token) {
     localStorage.setItem('authTokens',JSON.stringify(authTokens))
 }
 
-export function isLoggedIn( email, serverURL ) {
-    return !!getAuthToken(email, serverURL)
+export function isLoggedIn( id, serverURL ) {
+    return !!getAuthToken(id, serverURL)
 }
 
-export function getAuthToken( email, serverURL ) {
+export function getAuthToken( id, serverURL ) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
-    const authToken = authTokens[`${email} ${serverURL}`]
+    const authToken = authTokens[`${id} ${serverURL}`]
     // TODO check for expiry
     return authToken?.token 
 }

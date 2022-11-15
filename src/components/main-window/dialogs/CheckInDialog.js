@@ -137,12 +137,12 @@ export default class CheckInDialog extends Component {
 
     onCheckIn = () => {              
         const { fairCopyProject } = this.props
-        const { email, serverURL, projectID } = fairCopyProject
+        const { userID, serverURL, projectID } = fairCopyProject
         const { message, resourcesToCommit } = this.state   
         if( message.length > 0 ) {
             const resourceIDs = resourcesToCommit.map( r => r.id )
             this.setState({ ...this.state, status: 'loading' }) 
-            fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )   
+            fairCopy.services.ipcSend('checkIn', userID, serverURL, projectID, resourceIDs, message )   
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
         }

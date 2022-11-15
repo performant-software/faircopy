@@ -390,7 +390,7 @@ export default class MainWindow extends Component {
         this.setState({...this.state, loginMode: true })
     }
 
-    onLoggedIn = () => {
+    onLoggedIn = (id, serverURL, email, authToken, permissions) => {
         const { resourceViews } = this.state
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
