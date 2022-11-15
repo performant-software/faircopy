@@ -266,33 +266,33 @@ export default class FairCopyProject {
     isEditable = ( resourceEntry ) => {
         // can always edit in a local project
         if( !this.remote ) return true
-        return isEntryEditable(resourceEntry, this.email )
+        return isEntryEditable(resourceEntry, this.userID )
     }
 
     isLoggedIn = () => {
         if( !this.remote ) return false
-        return isLoggedIn( this.email, this.serverURL )
+        return isLoggedIn( this.userID, this.serverURL )
     }
 }
 
-export function isEntryEditable( resourceEntry, email ) {        
+export function isEntryEditable( resourceEntry, userID ) {        
     if( resourceEntry.local ) return true
     if( resourceEntry.deleted ) return false
 
     // can only edit files checked out by me
     const { lastAction } = resourceEntry
     const { action_type: actionType, user } = lastAction
-    const { email: actor } = user
-    return actionType === 'check_out' && actor === email
+    const { userID: actor } = user
+    return actionType === 'check_out' && actor === userID
 }
 
-export function isCheckedOutRemote( resourceEntry, email ) {
+export function isCheckedOutRemote( resourceEntry, userID ) {
     if( resourceEntry.local ) return true
     if( resourceEntry.deleted ) return false
 
     // can only edit files checked out by me
     const { lastAction } = resourceEntry
     const { action_type: actionType, user } = lastAction
-    const { email: actor } = user
-    return actionType === 'check_out' && actor !== email
+    const { userID: actor } = user
+    return actionType === 'check_out' && actor !== userID
 }

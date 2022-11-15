@@ -121,8 +121,8 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
 
     if( remote ) {
         try {
-            const { serverURL, email, projectID } = projectData
-            const authToken = getAuthToken( email, serverURL )
+            const { serverURL, userID, projectID } = projectData
+            const authToken = getAuthToken( userID, serverURL )
             if( !authToken ) {
                 return { error: "User not logged in." }
             }

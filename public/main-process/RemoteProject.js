@@ -2,16 +2,16 @@ const { WorkerWindow } = require('./WorkerWindow')
 
 class RemoteProject {
 
-    constructor( fairCopySession, email, serverURL, projectID ) {
+    constructor( fairCopySession, userID, serverURL, projectID ) {
         const { fairCopyApplication } = fairCopySession
         const {baseDir} = fairCopyApplication
         this.fairCopySession = fairCopySession
-        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), email, serverURL, projectID ).then(() => {
+        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), userID, serverURL, projectID ).then(() => {
             this.remoteProjectWorker.postMessage({ messageType: 'open' })
         })
     }
 
-    initRemoteProjectWorker( baseDir, debug, email, serverURL, projectID ) {
+    initRemoteProjectWorker( baseDir, debug, userID, serverURL, projectID ) {
         this.remoteProjectWorker = new WorkerWindow( baseDir, debug, 'remote-project', (msg) => {
             const { messageType } = msg
 
@@ -55,7 +55,7 @@ class RemoteProject {
             }
         })
         
-        return this.remoteProjectWorker.start({email, serverURL, projectID})
+        return this.remoteProjectWorker.start({userID, serverURL, projectID})
     }
 
     close() {

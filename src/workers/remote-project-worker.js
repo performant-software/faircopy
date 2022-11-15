@@ -46,8 +46,8 @@ function updateConfig() {
 }
 
 const onNotification = (data, workerData, postMessage) => {
-    const { email, serverURL, projectID } = workerData
-    const authToken = getAuthToken(email, serverURL)
+    const { userID, serverURL, projectID } = workerData
+    const authToken = getAuthToken(userID, serverURL)
     const { notification_type: notification } = data
 
     if( notification === "resources_checked_in"  ) {
@@ -65,8 +65,8 @@ const onNotification = (data, workerData, postMessage) => {
 export function remoteProject( msg, workerMethods, workerData ) {
     const { messageType } = msg
     const { postMessage, close } = workerMethods
-    const { email, serverURL, projectID } = workerData
-    const authToken = getAuthToken(email, serverURL)
+    const { userID, serverURL, projectID } = workerData
+    const authToken = getAuthToken(userID, serverURL)
     
     switch( messageType ) {
         case 'open':

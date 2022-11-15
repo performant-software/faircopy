@@ -24,18 +24,18 @@ export function login(serverURL, email, password, onSuccess, onFail) {
     )
 }
 
-export function logout(email,serverURL) {
+export function logout(userID,serverURL) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
-    authTokens[`${email} ${serverURL}`] = null
+    authTokens[`${userID} ${serverURL}`] = null
     localStorage.setItem('authTokens',JSON.stringify(authTokens))
 }
 
-function setAuthToken(id, serverURL, token) {
+function setAuthToken(userID, serverURL, token) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
 
-    authTokens[`${id} ${serverURL}`] = {
+    authTokens[`${userID} ${serverURL}`] = {
         token, 
         createdAt: Date.now()
     }
@@ -47,10 +47,10 @@ export function isLoggedIn( id, serverURL ) {
     return !!getAuthToken(id, serverURL)
 }
 
-export function getAuthToken( id, serverURL ) {
+export function getAuthToken( userID, serverURL ) {
     const authTokensJSON = localStorage.getItem('authTokens')
     const authTokens = authTokensJSON ? JSON.parse(localStorage.getItem('authTokens')) : {}
-    const authToken = authTokens[`${id} ${serverURL}`]
+    const authToken = authTokens[`${userID} ${serverURL}`]
     // TODO check for expiry
     return authToken?.token 
 }

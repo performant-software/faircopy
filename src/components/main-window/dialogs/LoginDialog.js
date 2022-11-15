@@ -9,6 +9,7 @@ export default class LoginDialog extends Component {
         super(props)
 
         this.initialState = {
+            email: '',
             password: '',
             errorMessage: null
         }
@@ -16,10 +17,10 @@ export default class LoginDialog extends Component {
     }
 
     render() {      
-        const { onClose, onLoggedIn, serverURL, email } = this.props
+        const { onClose, onLoggedIn, serverURL } = this.props
         
         const onLogin = () => {
-            const { password } = this.state
+            const { email, password } = this.state
             const onSuccess = (id, authToken) => {
                 onLoggedIn( id, serverURL, authToken )
             }
@@ -32,9 +33,13 @@ export default class LoginDialog extends Component {
             const value = e.currentTarget.value
             this.setState({...this.state, password: value })
         }
+        const onChangeEmail = (e) => {
+            const value = e.currentTarget.value
+            this.setState({...this.state, email: value })
+        }
 
-        const { password } = this.state
-        const saveAllowed = ( password.length > 0 )
+        const { email, password } = this.state
+        const saveAllowed = ( password.length > 0 && email.length > 0 )
 
         return (
             <Dialog
@@ -59,7 +64,7 @@ export default class LoginDialog extends Component {
                                 className="login-field"
                                 label="Email" 
                                 value={email}
-                                disabled
+                                onChange={onChangeEmail}
                             />
                         </li>
                         <li>

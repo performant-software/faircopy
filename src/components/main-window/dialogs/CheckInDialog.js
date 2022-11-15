@@ -89,7 +89,7 @@ export default class CheckInDialog extends Component {
             if( resourceType === 'header' ) continue
             const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
-            const editable = isEntryEditable(resource, fairCopyProject.email)
+            const editable = isEntryEditable(resource, fairCopyProject.userID)
             let { icon, label } = getActionIcon(responseReceived, local, editable )
             if( deleted ) icon = 'fa-trash'
 

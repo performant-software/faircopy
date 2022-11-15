@@ -18,7 +18,7 @@ export default class ImageView {
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
         this.remote = imageViewData.remote
-        this.email = imageViewData.email
+        this.userID = imageViewData.userID
         this.serverURL = imageViewData.serverURL
         this.lastResourceEntryMessage = null   
     }
@@ -67,13 +67,13 @@ export default class ImageView {
 
     isLoggedIn = () => {
         if( !this.remote ) return false
-        return isLoggedIn( this.email, this.serverURL )
+        return isLoggedIn( this.userID, this.serverURL )
     }
 
     isEditable = ( resourceEntry ) => {
         // can always edit in a local project
         if( !this.remote ) return true
-        return isEntryEditable(resourceEntry, this.email )
+        return isEntryEditable(resourceEntry, this.userID )
     }
 
     updateResource( nextResourceEntry ) {     

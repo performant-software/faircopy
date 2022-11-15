@@ -181,8 +181,8 @@ class ProjectStore {
     }
 
     requestExport(resourceEntries,path) {
-        const { resources: localEntries, remote, email, serverURL, projectID } = this.manifestData
-        const projectData = { localEntries, remote, email, serverURL, projectID }
+        const { resources: localEntries, remote, userID, serverURL, projectID } = this.manifestData
+        const projectData = { localEntries, remote, userID, serverURL, projectID }
         for( const resourceEntry of resourceEntries ) {
             this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, projectData, path })
         }
@@ -368,7 +368,7 @@ class ProjectStore {
     }
 
     checkInResults(resourceStatus, error) {
-        const { email } = this.manifestData
+        const { userID } = this.manifestData
         const resourceEntries = []
         for( const resourceID of Object.keys(resourceStatus) ) {
             const resourceEntry = this.manifestData.resources[resourceID]
@@ -376,7 +376,7 @@ class ProjectStore {
                 // remove remote resources from project file and manifest, update all windows 
                 this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
                 resourceEntry.local = false
-                resourceEntry.lastAction = { action_type: 'check_in', user: { email } }
+                resourceEntry.lastAction = { action_type: 'check_in', user: { userID } }
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
                 delete this.manifestData.resources[resourceID]     
             }

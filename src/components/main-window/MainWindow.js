@@ -374,8 +374,8 @@ export default class MainWindow extends Component {
 
     checkOutResources(resourceEntries) {
         const { fairCopyProject } = this.props
-        const { email, serverURL, projectID } = fairCopyProject
-        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceEntries )
+        const { userID, serverURL, projectID } = fairCopyProject
+        fairCopy.services.ipcSend('checkOut', userID, serverURL, projectID, resourceEntries )
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -390,7 +390,7 @@ export default class MainWindow extends Component {
         this.setState({...this.state, loginMode: true })
     }
 
-    onLoggedIn = (id, serverURL, email, authToken, permissions) => {
+    onLoggedIn = () => {
         const { resourceViews } = this.state
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
@@ -402,8 +402,8 @@ export default class MainWindow extends Component {
 
     onLogOut = () => {
         const { fairCopyProject } = this.props
-        const { email, serverURL } = fairCopyProject
-        logout(email, serverURL)
+        const { userID, serverURL } = fairCopyProject
+        logout(userID, serverURL)
         this.setState( {...this.state} )
     }
 
@@ -741,7 +741,7 @@ export default class MainWindow extends Component {
         const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
-        const { idMap, email, serverURL } = fairCopyProject
+        const { idMap, serverURL } = fairCopyProject
         const resourceView = resourceViews[resourceViews.currentView]
         const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
@@ -863,7 +863,6 @@ export default class MainWindow extends Component {
                 ></CheckOutDialog> }
                 { loginMode && <LoginDialog 
                     onClose={()=>{ this.setState( {...this.state, loginMode: false} )}}
-                    email={email} 
                     serverURL={serverURL} 
                     onLoggedIn={this.onLoggedIn}
                 ></LoginDialog> }
