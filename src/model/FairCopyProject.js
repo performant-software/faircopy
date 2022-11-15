@@ -282,7 +282,7 @@ export function isEntryEditable( resourceEntry, userID ) {
     // can only edit files checked out by me
     const { lastAction } = resourceEntry
     const { action_type: actionType, user } = lastAction
-    const { userID: actor } = user
+    const { id: actor } = user
     return actionType === 'check_out' && actor === userID
 }
 
@@ -293,6 +293,6 @@ export function isCheckedOutRemote( resourceEntry, userID ) {
     // can only edit files checked out by me
     const { lastAction } = resourceEntry
     const { action_type: actionType, user } = lastAction
-    const { userID: actor } = user
+    const { id: actor } = user
     return actionType === 'check_out' && actor !== userID
 }

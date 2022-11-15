@@ -376,7 +376,7 @@ class ProjectStore {
                 // remove remote resources from project file and manifest, update all windows 
                 this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
                 resourceEntry.local = false
-                resourceEntry.lastAction = { action_type: 'check_in', user: { userID } }
+                resourceEntry.lastAction = { action_type: 'check_in', user: { id: userID } }
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
                 delete this.manifestData.resources[resourceID]     
             }
