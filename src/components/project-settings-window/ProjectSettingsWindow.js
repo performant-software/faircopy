@@ -11,17 +11,8 @@ export default class ProjectSettingsWindow extends Component {
 
         // make an editable copy of the config
         const { fairCopyProject } = props
-        const { remote, userID, serverURL } = fairCopyProject
         const fairCopyConfig = JSON.parse(JSON.stringify(fairCopyProject.fairCopyConfig))
-
-        const projectInfo = { 
-            name: fairCopyProject.projectName, 
-            description: fairCopyProject.description, 
-            projectFilePath: fairCopyProject.projectFilePath,
-            userID,
-            serverURL,
-            remote
-        } 
+        const projectInfo = fairCopyProject.getProjectInfo()
 
         this.state = {
             fairCopyConfig,

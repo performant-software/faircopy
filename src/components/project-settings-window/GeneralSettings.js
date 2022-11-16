@@ -13,6 +13,19 @@ export default class GeneralSettings extends Component {
         this.state = this.initialState
     }
 
+    renderPermissions( permissions ) {
+        const permissionList = permissions.map( permission => {
+            return <li><Typography key={`perm-${permission}`}>{permission}</Typography></li>
+        })
+        return (
+            <div>
+                <ul>
+                    { permissionList }
+                </ul>
+            </div>
+        )
+    }
+
     render() {        
         const onChange = (e) => {
             const { projectInfo, onUpdateProject } = this.props
@@ -44,7 +57,7 @@ export default class GeneralSettings extends Component {
 
         const { projectInfo, onReset } = this.props
         const { validationErrors } = this.state
-        const { name, description, projectFilePath, remote } = projectInfo
+        const { name, description, projectFilePath, remote, permissions } = projectInfo
         const disabled = remote
 
         return (
@@ -70,6 +83,7 @@ export default class GeneralSettings extends Component {
                     label="Project Description" 
                     disabled={disabled}
                 /><br/>
+                { this.renderPermissions(permissions) }
                 <div className="actions">
                     <Button className="action" variant="contained" disabled={disabled} onClick={onReset}>Reset Config</Button>
                 </div>

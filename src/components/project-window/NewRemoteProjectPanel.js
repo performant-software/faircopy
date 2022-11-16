@@ -28,14 +28,15 @@ export default class NewRemoteProjectPanel extends Component {
 
     onSave = (filePath) => {
         const { project, userID, serverURL } = this.state
-        const { id, name, description } = project
+        const { projectID, name, description, permissions } = project
         const projectInfo = { 
-            projectID: id,
-            name: name["en"].translation,
-            description: description["en"].translation,
+            projectID,
+            name,
+            description,
             userID,
             serverURL,
             filePath,
+            permissions,
             remote: true
         }
         fairCopy.services.ipcSend('requestNewProject', projectInfo )
@@ -47,7 +48,7 @@ export default class NewRemoteProjectPanel extends Component {
 
         const onLoggedIn = (userID, serverURL, authToken) => {
             this.setState({...this.state, serverURL, userID, step: 1})
-            getProjects( serverURL, authToken, (projects)=> {
+            getProjects( userID, serverURL, authToken, (projects)=> {
                 this.setState({...this.state, projects})
             }, (errorMessage) => {
                 // TODO

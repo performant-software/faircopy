@@ -17,10 +17,10 @@ export default class SelectRemoteProjectPanel extends Component {
             <Card className="project-card" id={cardID} key={cardID} onClick={onClick} >
                 <CardContent>
                     <Typography sx={{ fontSize: 14 }} color="textSecondary" gutterBottom>
-                        { name["en"].translation }
+                        { name }
                     </Typography>
                     <Typography component="p">
-                        { description["en"].translation }
+                        { description }
                     </Typography>
                 </CardContent>
             </Card>

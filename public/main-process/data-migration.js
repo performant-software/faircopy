@@ -1,6 +1,7 @@
 const semver = require('semver')
 const log = require('electron-log')
 const { getBlankResourceMap } = require('./id-map-authority')
+const { defaultPermissions } = require('./create-project-archive')
 
 function getProjectVersion(generatedWith) {
     const ver = generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
@@ -47,13 +48,19 @@ const migrateIDMap = function migrateIDMap( generatedWith, idMapJSON, localResou
 
 const migrateManifestData = function migrateManifestData( manifestData ) {
     const projectVersion = getProjectVersion(manifestData.generatedWith)
+    let nextManifestData = manifestData
 
     if( semver.lt(projectVersion,'1.1.1') ) {
         log.info('applying manifest data migration for v1.1.1')
-        return migrationRemoteManifestData( manifestData )
-    } else {
-        return manifestData
-    }
+        nextManifestData = migrationRemoteManifestData( nextManifestData )
+    } 
+
+    if( semver.lt(projectVersion,'1.1.3') ) {
+        log.info('applying manifest data migration for v1.1.3')
+        nextManifestData = migrationPermissions( nextManifestData )
+    } 
+    
+    return manifestData
 }
 
 exports.compatibleProject = compatibleProject
@@ -145,4 +152,10 @@ function migrationRemoteManifestData( manifestData ) {
         manifestData.resources[resourceID] = { ...resourceEntry, ...cloudInitialConfig }
     }
     return manifestData
+}
+
+function migrationPermissions( manifestData ) {
+    manifestData.permissions = defaultPermissions
+    manifestData.userID = null
+    return manifestData    
 }

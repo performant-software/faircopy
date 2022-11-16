@@ -312,11 +312,11 @@ class ProjectStore {
         }
     }
 
-    updateProjectInfo(projectInfoJSON) {
-        const projectInfo = JSON.parse(projectInfoJSON)
-        const { name, description } = projectInfo
+    updateProjectInfo(projectInfo) {
+        const { name, description, permissions } = projectInfo
         this.manifestData.projectName = name
         this.manifestData.description = description    
+        this.manifestData.permissions = permissions
         this.saveManifest()
     }
 
