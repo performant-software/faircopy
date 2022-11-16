@@ -49,8 +49,8 @@ class FairCopySession {
 
         // init remote project if this is one
         if( this.remote ) {
-            const { email, serverURL, projectID } = manifestData
-            this.remoteProject = new RemoteProject(this, email, serverURL, projectID )
+            const { userID, serverURL, projectID } = manifestData
+            this.remoteProject = new RemoteProject(this, userID, serverURL, projectID )
         }
 
         this.requestResourceView()
@@ -315,8 +315,8 @@ class FairCopySession {
 
          // mix in remote project data if needed
          if( this.remote ) {
-            const { email, serverURL } = this.projectStore.manifestData
-            imageViewData.email = email
+            const { userID, serverURL } = this.projectStore.manifestData
+            imageViewData.userID = userID
             imageViewData.serverURL = serverURL
             imageViewData.remote = true
         }
@@ -337,7 +337,7 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()
     }
 
-    checkIn(email, serverURL, projectID, checkInResources, message) {
+    checkIn(userID, serverURL, projectID, checkInResources, message) {
         const { resources } = this.projectStore.manifestData
         const committedResources = []
 
@@ -370,11 +370,11 @@ class FairCopySession {
             }
         }
 
-        this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
+        this.projectStore.checkIn(userID, serverURL, projectID, committedResources, message)
     }
 
-    checkOut(email, serverURL, projectID, resourceEntries) {
-        this.projectStore.checkOut(email, serverURL, projectID, resourceEntries)
+    checkOut(userID, serverURL, projectID, resourceEntries) {
+        this.projectStore.checkOut(userID, serverURL, projectID, resourceEntries)
     }
 
     saveFairCopyConfig(fairCopyConfig) {

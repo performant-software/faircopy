@@ -148,12 +148,12 @@ class FairCopyApplication {
       this.fairCopySession.importEnd()
     })
 
-    ipcMain.on('checkIn', (event, email, serverURL, projectID, checkInResources, message ) => { 
-      this.fairCopySession.checkIn(email, serverURL, projectID, checkInResources, message)
+    ipcMain.on('checkIn', (event, userID, serverURL, projectID, checkInResources, message ) => { 
+      this.fairCopySession.checkIn(userID, serverURL, projectID, checkInResources, message)
     })
 
-    ipcMain.on('checkOut', (event, email, serverURL, projectID, resourceEntries ) => { 
-      this.fairCopySession.checkOut(email, serverURL, projectID, resourceEntries )
+    ipcMain.on('checkOut', (event, userID, serverURL, projectID, resourceIDs ) => { 
+      this.fairCopySession.checkOut(userID, serverURL, projectID, resourceIDs)
     })
 
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig) })    

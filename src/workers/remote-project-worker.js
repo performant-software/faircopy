@@ -1,4 +1,5 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
+//import { getProject } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
@@ -29,13 +30,24 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
     }
 }
 
+// TODO
+// function updatePermissions(serverURL, authToken, projectID) {
+
+//     getProject(projectID, serverURL, authToken, (project) => {
+        
+//     },
+//     (error) => {
+//         // TODO
+//     })
+// }
+
 function updateConfig() {
     // TODO
 }
 
 const onNotification = (data, workerData, postMessage) => {
-    const { email, serverURL, projectID } = workerData
-    const authToken = getAuthToken(email, serverURL)
+    const { userID, serverURL, projectID } = workerData
+    const authToken = getAuthToken(userID, serverURL)
     const { notification_type: notification } = data
 
     if( notification === "resources_checked_in"  ) {
@@ -53,11 +65,12 @@ const onNotification = (data, workerData, postMessage) => {
 export function remoteProject( msg, workerMethods, workerData ) {
     const { messageType } = msg
     const { postMessage, close } = workerMethods
-    const { email, serverURL, projectID } = workerData
-    const authToken = getAuthToken(email, serverURL)
+    const { userID, serverURL, projectID } = workerData
+    const authToken = getAuthToken(userID, serverURL)
     
     switch( messageType ) {
         case 'open':
+           // updatePermissions(serverURL, authToken, projectID)
             updateConfig()
             updateIDMap( serverURL, authToken, projectID, postMessage )
             connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )

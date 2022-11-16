@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { authConfig } from './auth'
+import { standardErrorHandler } from './error-handler';
 
 export function getProjects(serverURL, authToken, onSuccess, onFail) {
     const getProjectsURL = `${serverURL}/api/projects`
@@ -10,16 +11,18 @@ export function getProjects(serverURL, authToken, onSuccess, onFail) {
             const { projects } = okResponse.data
             onSuccess(projects)
         },
-        (errorResponse) => {
-            // problem with the license 
-            if( errorResponse && errorResponse.response ) {
-                if( errorResponse.response.status === 401 ) {
-                    const { error } = errorResponse.response.data
-                    onFail(error)        
-                }
-            } else {
-                onFail("Unable to connect to server.")
-            }
-        }
+        standardErrorHandler(onFail)
+    )
+}
+
+export function getProject(projectID, serverURL, authToken, onSuccess, onFail) {
+    const getProjectURL = `${serverURL}/api/projects/${projectID}`
+
+    axios.get(getProjectURL,authConfig(authToken)).then(
+        (okResponse) => {
+            const { project } = okResponse.data
+            onSuccess(project)
+        }, 
+        standardErrorHandler(onFail)
     )
 }

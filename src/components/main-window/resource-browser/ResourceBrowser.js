@@ -79,8 +79,8 @@ export default class ResourceBrowser extends Component {
 
   renderLoginButton(buttonProps) {
     const { onLogin, fairCopyProject, onLogout } = this.props
-    const { remote, email, serverURL } = fairCopyProject
-    const loggedIn = remote ? isLoggedIn(email, serverURL) : false
+    const { remote, userID, serverURL } = fairCopyProject
+    const loggedIn = remote ? isLoggedIn(userID, serverURL) : false
 
     return loggedIn ? 
         <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
@@ -141,7 +141,7 @@ export default class ResourceBrowser extends Component {
 
   renderResourceTable() {
     const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
-    const { remote: remoteProject, email } = fairCopyProject
+    const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows } = resourceView
 
     const onOpen = (resourceID) => {
@@ -193,8 +193,8 @@ export default class ResourceBrowser extends Component {
       const { id, name, localID, type, local, deleted } = resource 
       const check = !!resourceCheckmarks[id] 
       const resourceIcon = getResourceIcon(type)
-      const editable = isEntryEditable( resource, email )
-      const checkedOutRemote = !editable ? isCheckedOutRemote( resource, email ) : false
+      const editable = isEntryEditable( resource, userID )
+      const checkedOutRemote = !editable ? isCheckedOutRemote( resource, userID ) : false
       const { label, icon } = getActionIcon( false, local, editable|deleted, checkedOutRemote )
       const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
       const textClass = deleted ? 'deleted-resource' : ''

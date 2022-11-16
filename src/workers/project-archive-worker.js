@@ -33,8 +33,8 @@ function addFile( localFilePath, resourceID, zip ) {
     zip.file(resourceID, buffer)
 }
 
-async function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
-    const authToken = getAuthToken( email, serverURL )
+async function checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage ) {
+    const authToken = getAuthToken( userID, serverURL )
 
     if( authToken ) {
         const onSuccess = (results) => {
@@ -72,8 +72,8 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     }
 }
 
-async function checkOut( email, serverURL, projectID, resourceEntries, zip, postMessage ) {
-    const authToken = getAuthToken( email, serverURL )
+async function checkOut( userID, serverURL, projectID, resourceEntries, zip, postMessage ) {
+    const authToken = getAuthToken( userID, serverURL )
     const resources = {}
 
     // create a list of resource IDs include child resources
@@ -121,8 +121,8 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
 
     if( remote ) {
         try {
-            const { serverURL, email, projectID } = projectData
-            const authToken = getAuthToken( email, serverURL )
+            const { serverURL, userID, projectID } = projectData
+            const authToken = getAuthToken( userID, serverURL )
             if( !authToken ) {
                 return { error: "User not logged in." }
             }
@@ -359,14 +359,14 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break                   
         case 'check-in': 
             {
-                const { email, serverURL, projectID, committedResources, message } = msg
-                checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage )
+                const { userID, serverURL, projectID, committedResources, message } = msg
+                checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage )
             }    
             break  
         case 'check-out': 
             {
-                const { email, serverURL, projectID, resourceEntries } = msg
-                checkOut( email, serverURL, projectID, resourceEntries, zip, postMessage )
+                const { userID, serverURL, projectID, resourceEntries } = msg
+                checkOut( userID, serverURL, projectID, resourceEntries, zip, postMessage )
             }    
             break              
         case 'save':
