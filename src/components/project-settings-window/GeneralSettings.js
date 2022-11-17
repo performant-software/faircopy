@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { Paper, Typography, TextField, Button } from '@material-ui/core'
-import { canCheckOut, canCreate, canDelete, canConfigAdmin } from '../../model/permissions'
+import { canCheckOut, canCreate, canDelete } from '../../model/permissions'
 
 export default class GeneralSettings extends Component {
     
@@ -18,7 +18,7 @@ export default class GeneralSettings extends Component {
         const checkout = yesOrNo(canCheckOut(permissions))
         const create = yesOrNo(canCreate(permissions))
         const del = yesOrNo(canDelete(permissions))
-        const config = yesOrNo(canConfigAdmin(permissions))
+        // const config = yesOrNo(canConfigAdmin(permissions))
 
         return (
             <Paper className="permissions-section" elevation={1}>
@@ -27,7 +27,7 @@ export default class GeneralSettings extends Component {
                    <li><Typography>Can Checkout: {checkout}</Typography></li>
                    <li><Typography>Can Create: {create}</Typography></li>
                    <li><Typography>Can Delete: {del}</Typography></li>
-                   <li><Typography>Can Edit Config: {config}</Typography></li>
+                   {/* <li><Typography>Can Edit Config: {config}</Typography></li> */}
                 </ul>
             </Paper>
         )
