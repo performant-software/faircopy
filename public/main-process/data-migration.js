@@ -1,7 +1,6 @@
 const semver = require('semver')
 const log = require('electron-log')
 const { getBlankResourceMap } = require('./id-map-authority')
-const { defaultPermissions } = require('./create-project-archive')
 
 function getProjectVersion(generatedWith) {
     const ver = generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
@@ -155,7 +154,7 @@ function migrationRemoteManifestData( manifestData ) {
 }
 
 function migrationPermissions( manifestData ) {
-    manifestData.permissions = defaultPermissions
+    manifestData.permissions = []
     manifestData.userID = null
     return manifestData    
 }

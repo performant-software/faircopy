@@ -90,7 +90,7 @@ export default class GeneralSettings extends Component {
                     label="Project Description" 
                     disabled={disabled}
                 /><br/>
-                { this.renderPermissions(permissions) }
+                { remote && this.renderPermissions(permissions) }
                 <div className="actions">
                     <Button className="action" variant="contained" disabled={disabled} onClick={onReset}>Reset Config</Button>
                 </div>

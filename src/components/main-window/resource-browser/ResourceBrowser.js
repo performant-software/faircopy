@@ -4,13 +4,16 @@ import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { isLoggedIn } from '../../../model/cloud-api/auth'
+import { canCheckOut, canDelete } from '../../../model/permissions'
 
 export default class ResourceBrowser extends Component {
 
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject } = this.props
-    const { remote: remoteProject } = fairCopyProject
+    const { remote: remoteProject, permissions } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
+    const checkout = remoteProject ? canCheckOut(permissions) : true
+    const del = remoteProject ? canDelete(permissions) : true
 
     const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
       {
@@ -21,7 +24,8 @@ export default class ResourceBrowser extends Component {
       {
         id: 'check-out',
         label: 'Check Out',
-        action: this.createResourceAction('check-out')
+        action: this.createResourceAction('check-out'),
+        disabled: !checkout
       }
     ]
     
@@ -46,7 +50,8 @@ export default class ResourceBrowser extends Component {
       {
         id: 'delete',
         label: 'Delete',
-        action: this.createResourceAction('delete')
+        action: this.createResourceAction('delete'),
+        disabled: !del
       }
     ]
 
