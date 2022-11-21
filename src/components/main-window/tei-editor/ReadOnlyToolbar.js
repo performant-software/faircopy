@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button } from '@material-ui/core';
+import { canCheckOut } from '../../../model/permissions'
 
 const fairCopy = window.fairCopy
 
@@ -14,7 +15,9 @@ export default class ReadOnlyToolbar extends Component {
 
     render() {
         const { teiDocument } = this.props
-        const disabled = !teiDocument.fairCopyProject.isLoggedIn()
+        const { fairCopyProject } = teiDocument
+        const { permissions } = fairCopyProject
+        const disabled = !fairCopyProject.isLoggedIn() || !canCheckOut(permissions)
         const header = teiDocument.resourceType === 'header'
 
         return (

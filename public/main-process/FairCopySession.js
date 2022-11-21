@@ -315,10 +315,11 @@ class FairCopySession {
 
          // mix in remote project data if needed
          if( this.remote ) {
-            const { userID, serverURL } = this.projectStore.manifestData
+            const { userID, serverURL, permissions } = this.projectStore.manifestData
             imageViewData.userID = userID
             imageViewData.serverURL = serverURL
             imageViewData.remote = true
+            imageViewData.permissions = permissions
         }
         const imageView = this.fairCopyApplication.imageViews[resourceEntry.id]
         imageView.webContents.send('imageViewOpened', imageViewData )    
@@ -387,6 +388,8 @@ class FairCopySession {
     
     updateProjectInfo(projectInfo) {
         this.projectStore.updateProjectInfo(projectInfo)
+        // TODO if this is a remote project, send the latest name and description to server
+        // permissions etc can only be set from server.
     }
 
     requestExport(resourceEntries,path) {

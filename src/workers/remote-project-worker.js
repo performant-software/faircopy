@@ -1,5 +1,5 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
-//import { getProject } from "../model/cloud-api/projects"
+import { getProject } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
@@ -30,16 +30,14 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
     }
 }
 
-// TODO
-// function updatePermissions(serverURL, authToken, projectID) {
-
-//     getProject(projectID, serverURL, authToken, (project) => {
-        
-//     },
-//     (error) => {
-//         // TODO
-//     })
-// }
+function updateProjectInfo( userID, serverURL, authToken, projectID, postMessage) {
+    getProject(userID, projectID, serverURL, authToken, (projectInfo) => {
+        postMessage({ messageType: 'project-info-update', projectInfo })
+    },
+    (error) => {
+       console.log(error)
+    })
+}
 
 function updateConfig() {
     // TODO
@@ -70,10 +68,13 @@ export function remoteProject( msg, workerMethods, workerData ) {
     
     switch( messageType ) {
         case 'open':
-           // updatePermissions(serverURL, authToken, projectID)
-            updateConfig()
-            updateIDMap( serverURL, authToken, projectID, postMessage )
-            connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )
+            // timeout is just for debugging
+            // setTimeout( () => {
+                updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
+                updateConfig()
+                updateIDMap( serverURL, authToken, projectID, postMessage )
+                connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )    
+            // }, 2000)
             break
         case 'get-resource':
             if( authToken ) {

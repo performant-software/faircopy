@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
-import { Typography, TextField, Button } from '@material-ui/core'
+import { Paper, Typography, TextField, Button } from '@material-ui/core'
+import { canCheckOut, canCreate, canDelete } from '../../model/permissions'
 
 export default class GeneralSettings extends Component {
     
@@ -11,6 +12,25 @@ export default class GeneralSettings extends Component {
             validationErrors: {}
         }
         this.state = this.initialState
+    }
+
+    renderPermissions( permissions ) {
+        const checkout = yesOrNo(canCheckOut(permissions))
+        const create = yesOrNo(canCreate(permissions))
+        const del = yesOrNo(canDelete(permissions))
+        // const config = yesOrNo(canConfigAdmin(permissions))
+
+        return (
+            <Paper className="permissions-section" elevation={1}>
+                <Typography variant="h5">User Permissions</Typography>
+                <ul>
+                   <li><Typography>Can Checkout: {checkout}</Typography></li>
+                   <li><Typography>Can Create: {create}</Typography></li>
+                   <li><Typography>Can Delete: {del}</Typography></li>
+                   {/* <li><Typography>Can Edit Config: {config}</Typography></li> */}
+                </ul>
+            </Paper>
+        )
     }
 
     render() {        
@@ -44,7 +64,7 @@ export default class GeneralSettings extends Component {
 
         const { projectInfo, onReset } = this.props
         const { validationErrors } = this.state
-        const { name, description, projectFilePath, remote } = projectInfo
+        const { name, description, projectFilePath, remote, permissions } = projectInfo
         const disabled = remote
 
         return (
@@ -70,6 +90,7 @@ export default class GeneralSettings extends Component {
                     label="Project Description" 
                     disabled={disabled}
                 /><br/>
+                { remote && this.renderPermissions(permissions) }
                 <div className="actions">
                     <Button className="action" variant="contained" disabled={disabled} onClick={onReset}>Reset Config</Button>
                 </div>
@@ -79,4 +100,8 @@ export default class GeneralSettings extends Component {
             </div>
         )
     }
+}
+
+function yesOrNo( bool ) {
+    return bool ? 'Y' : 'N'
 }

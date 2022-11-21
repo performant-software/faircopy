@@ -28,6 +28,13 @@ class RemoteProject {
                         this.fairCopySession.parentFound( resourceEntry, parentEntry, content, xmlID )   
                     }
                     break
+                case 'project-info-update':
+                    {
+                        const { projectInfo } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToAllWindows('updateProjectInfo', projectInfo )
+                    }
+                    break
                 case 'resource-view-update':
                     {
                         const { resourceView, remoteResources } = msg

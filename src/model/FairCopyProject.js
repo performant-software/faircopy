@@ -83,6 +83,7 @@ export default class FairCopyProject {
         this.serverURL = fairCopyManifest.serverURL
         this.userID = fairCopyManifest.userID
         this.projectID = fairCopyManifest.projectID
+        this.permissions = fairCopyManifest.permissions
     }
     
     updateResource( resourceEntry ) {
@@ -235,9 +236,22 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('addResource', resourceEntry, content, resourceMap )
     }
 
+    getProjectInfo() {
+        return { 
+            name: this.projectName, 
+            description: this.description, 
+            projectFilePath: this.projectFilePath,
+            userID: this.userID,
+            serverURL: this.serverURL,
+            remote: this.remote,
+            permissions: [ ...this.permissions ]
+        } 
+    }
+
     updateProjectInfo( projectInfo ) {
         this.projectName = projectInfo.name
         this.description = projectInfo.description
+        this.permissions = projectInfo.permissions
 
         // if this project is in the recent projects list, update its info in localStorage
         let projects = localStorage.getItem('recentProjects');
@@ -248,8 +262,7 @@ export default class FairCopyProject {
             recentProjectData.description = this.description
             localStorage.setItem('recentProjects', JSON.stringify(projects));
         }
-
-        fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
+        fairCopy.services.ipcSend('updateProjectInfo', projectInfo )
     }
 
     isUnique(targetID,localID, parentID) {

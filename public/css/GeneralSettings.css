@@ -1,5 +1,5 @@
 #GeneralSettings {
-    margin: 100px;
+    margin: 50px;
 }
 
 #GeneralSettings .actions {
@@ -17,4 +17,14 @@
 
 #GeneralSettings .info {
     margin-top: 20px;
+}
+
+#GeneralSettings .permissions-section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+#GeneralSettings .permissions-section ul {
+    list-style: none;
 }
