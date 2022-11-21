@@ -3,6 +3,7 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
+import { canConfigAdmin } from '../../model/permissions'
 
 export default class ProjectSettingsWindow extends Component {
 
@@ -40,8 +41,9 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderContentArea() {
-        const { teiSchema } = this.props.fairCopyProject
+        const { teiSchema, permissions } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
+        const readOnly = !canConfigAdmin(permissions)
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
@@ -69,6 +71,7 @@ export default class ProjectSettingsWindow extends Component {
                 { selectedPage === 'elements' && <SchemaEditor
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
+                    readOnly={readOnly}
                     onUpdateConfig={onUpdate}
                 ></SchemaEditor> }
                 { selectedPage === 'vocabs' && <div>
@@ -77,14 +80,34 @@ export default class ProjectSettingsWindow extends Component {
             </div>
         )
     }
-
-    render() {
-        const { onClose, onSave } = this.props
+    
+    renderActions() {
+        const { fairCopyProject, onClose, onSave } = this.props
+        const { permissions } = fairCopyProject
+        const canConfig = canConfigAdmin(permissions)
 
         const onSaveConfig = () => {
             const { fairCopyConfig, projectInfo } = this.state
             onSave(fairCopyConfig, projectInfo)
         }
+
+        if( canConfig ) {
+            return (
+                <div className="window-actions">
+                    <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
+                    <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
+                </div>
+            )
+        } else {
+            return (
+                <div className="window-actions">
+                    <Button className="action-button" variant="contained" onClick={onClose}>Close</Button>                        
+                </div>
+            )
+        }
+    }
+
+    render() {
 
         return (
             <div id="ProjectSettingsWindow">
@@ -96,10 +119,7 @@ export default class ProjectSettingsWindow extends Component {
                     { this.renderContentArea() }
                 </div>
                 <div className="footer">
-                    <div className="window-actions">
-                        <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
-                        <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>
-                    </div>
+                    { this.renderActions() }
                 </div>
             </div>
         )
