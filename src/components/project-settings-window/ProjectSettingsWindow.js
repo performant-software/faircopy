@@ -91,20 +91,26 @@ export default class ProjectSettingsWindow extends Component {
             onSave(fairCopyConfig, projectInfo)
         }
 
-        if( canConfig ) {
-            return (
-                <div className="window-actions">
-                    <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
-                    <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
+        // TODO
+        const onLock = () => {}
+
+        return (
+            <div>
+                <div className="window-actions-left">
+                    <Button className="action-button" variant="contained" onClick={onLock} ><i className="fas fa-lock fa-sm lock-icon"></i> Lock</Button>
                 </div>
-            )
-        } else {
-            return (
-                <div className="window-actions">
-                    <Button className="action-button" variant="contained" onClick={onClose}>Close</Button>                        
-                </div>
-            )
-        }
+                { canConfig ? 
+                    <div className="window-actions-right">
+                        <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
+                        <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
+                    </div>            
+                :
+                    <div className="window-actions-right">
+                        <Button className="action-button" variant="contained" onClick={onClose}>Close</Button>                        
+                    </div>                
+                }
+            </div>    
+        )
     }
 
     render() {
