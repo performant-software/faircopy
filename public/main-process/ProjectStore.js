@@ -99,9 +99,9 @@ class ProjectStore {
             return
         }
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-        const baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
+        this.baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
-        if( !teiSchema || !baseConfig ) {
+        if( !teiSchema || !this.baseConfig ) {
             log.info('Application data is missing or corrupted.')
             return
         }
@@ -132,7 +132,7 @@ class ProjectStore {
         this.manifestData = migrateManifestData(this.manifestData)
         
         // if elements changed in config, migrate project config
-        this.migratedConfig = migrateConfig(this.manifestData.generatedWith,baseConfig,fairCopyConfig)
+        this.migratedConfig = migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig)
         fairCopyConfig = this.migratedConfig
 
         // apply any migrations to ID Map data
@@ -145,7 +145,7 @@ class ProjectStore {
             })    
         }
 
-        const projectData = { projectFilePath, fairCopyManifest: JSON.stringify(this.manifestData), teiSchema, fairCopyConfig, baseConfig, idMap }
+        const projectData = { projectFilePath, fairCopyManifest: JSON.stringify(this.manifestData), teiSchema, fairCopyConfig, baseConfig: this.baseConfig, idMap }
         this.onProjectOpened( projectData )
     }
 
@@ -286,8 +286,11 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
     }
 
-    saveFairCopyConfig( fairCopyConfig ) {
+    saveFairCopyConfig( fairCopyConfig, lastAction=null ) {
         this.migratedConfig = null
+        if( lastAction ) {
+            this.manifestData.configLastAction = lastAction
+        }
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: fairCopyConfig })
         this.saveManifest()
     }

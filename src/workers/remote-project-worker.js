@@ -3,6 +3,7 @@ import { getProject } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
+import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
 
 function updateIDMap( serverURL, authToken, projectID, postMessage) {
     getIDMap(serverURL, authToken, projectID, (idMapData) => {
@@ -39,8 +40,41 @@ function updateProjectInfo( userID, serverURL, authToken, projectID, postMessage
     })
 }
 
-function updateConfig() {
-    // TODO
+function updateConfig( serverURL, authToken, projectID, postMessage ) {
+    getConfig(projectID, serverURL, authToken, (config, configLastAction) => {
+        postMessage({ messageType: 'config-update', config, configLastAction })
+    },
+    (error) => {
+       console.log(error)
+    })
+}
+
+function checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage ) {
+    const onSuccess = (config, configLastAction) => {
+        postMessage({ messageType: 'config-update', config, configLastAction })
+    }
+
+    const onFail = (error) => {
+        console.log(error)
+    }
+
+    if( firstAction ) {
+        initConfig( fairCopyConfig, projectID, serverURL, authToken, onSuccess, onFail )
+    } else {
+        checkInConfig( fairCopyConfig, projectID, serverURL, authToken, onSuccess, onFail ) 
+    }
+}
+
+function checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage ) {
+    const onSuccess = (config, configLastAction) => {
+        postMessage({ messageType: 'config-update', config, configLastAction })
+    }
+
+    const onFail = (error) => {
+        console.log(error)
+    }
+
+    checkOutConfig( projectID, serverURL, authToken, onSuccess, onFail ) 
 }
 
 const onNotification = (data, workerData, postMessage) => {
@@ -69,12 +103,12 @@ export function remoteProject( msg, workerMethods, workerData ) {
     switch( messageType ) {
         case 'open':
             // timeout is just for debugging
-            // setTimeout( () => {
+            setTimeout( () => {
                 updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
-                updateConfig()
+                updateConfig( serverURL, authToken, projectID, postMessage )
                 updateIDMap( serverURL, authToken, projectID, postMessage )
                 connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )    
-            // }, 2000)
+            }, 2000)
             break
         case 'get-resource':
             if( authToken ) {
@@ -101,6 +135,13 @@ export function remoteProject( msg, workerMethods, workerData ) {
             } else {
                 throw new Error(`Recieved get-parent message when user is not logged in.`)
             }
+            break
+        case 'checkin-config':
+            const { config:fairCopyConfig, firstAction } = msg 
+            checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage )
+            break
+        case 'checkout-config':
+            checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage )
             break
         case 'request-view':
             const { resourceView } = msg     

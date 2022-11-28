@@ -15,7 +15,8 @@ const createProjectArchive = function createProjectArchive(projectInfo,baseDir,c
         serverURL,
         userID,
         permissions,
-        resources: {}
+        resources: {},
+        configLastAction: null
     }
 
     // Load the initial config for the project

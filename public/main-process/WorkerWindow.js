@@ -23,7 +23,7 @@ class WorkerWindow {
         ipcMain.on('close-worker-window', this.closeMessageHandler)
 
         this.workerWindow = new BrowserWindow({
-            show: false,
+            show: true,
             webPreferences: {
                 webSecurity: !this.debug,
                 nodeIntegration: true,

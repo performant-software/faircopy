@@ -4,6 +4,7 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
 import { canConfigAdmin } from '../../model/permissions'
+import { getConfigStatus } from '../../model/faircopy-config'
 
 export default class ProjectSettingsWindow extends Component {
 
@@ -82,23 +83,36 @@ export default class ProjectSettingsWindow extends Component {
     }
     
     renderActions() {
-        const { fairCopyProject, onClose, onSave } = this.props
-        const { permissions } = fairCopyProject
+        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn } = this.props
+        const { permissions, configLastAction, userID } = fairCopyProject
         const canConfig = canConfigAdmin(permissions)
+        const lockStatus = getConfigStatus( configLastAction, userID )
 
         const onSaveConfig = () => {
             const { fairCopyConfig, projectInfo } = this.state
-            onSave(fairCopyConfig, projectInfo)
+            onSave(fairCopyConfig, projectInfo, false)
+        }
+        
+        const onLock = () => {
+            const { fairCopyConfig } = this.state
+            if( lockStatus === 'locked' ) {
+                onCheckOut(fairCopyConfig)
+            } else if( lockStatus === 'unlocked') {
+                // special flag for the initial commit of the config
+                const firstAction = !!configLastAction.firstAction
+                onCheckIn(fairCopyConfig, firstAction)
+            }
         }
 
-        // TODO
-        const onLock = () => {}
+        const lockIcon = getLockIcon(lockStatus)
+        const lockLabel = getLockLabel(lockStatus)
+        const lockDisabled = lockStatus === 'unlocked_by_another' 
 
         return (
             <div>
-                <div className="window-actions-left">
-                    <Button className="action-button" variant="contained" onClick={onLock} ><i className="fas fa-lock fa-sm lock-icon"></i> Lock</Button>
-                </div>
+                { canConfig && <div className="window-actions-left">
+                    <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel}</Button>
+                </div> }
                 { canConfig ? 
                     <div className="window-actions-right">
                         <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
@@ -130,4 +144,12 @@ export default class ProjectSettingsWindow extends Component {
             </div>
         )
     }
+}
+
+function getLockIcon(lockStatus) {
+    return lockStatus === 'locked' ? 'fas fa-lock' : lockStatus === 'unlocked' ? 'fas fa-unlock' : 'far fa-lock'
+}
+
+function getLockLabel(lockStatus) {
+    return lockStatus === 'locked' ? 'Unlock' : lockStatus === 'unlocked' ? 'Lock' : 'Locked'
 }

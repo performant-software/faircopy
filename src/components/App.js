@@ -10,7 +10,7 @@ import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWind
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
 import { initLicenseData, licenseLock } from '../model/license-key'
-import { saveConfig } from '../model/faircopy-config'
+import { checkInConfig, checkOutConfig } from '../model/faircopy-config'
 
 const fairCopy = window.fairCopy
 
@@ -161,11 +161,22 @@ export default class App extends Component {
 
     const onSave = ( fairCopyConfig, projectInfo ) => {
       const { fairCopyProject } = this.state
-      fairCopyProject.fairCopyConfig = fairCopyConfig
-      saveConfig(fairCopyConfig)
+      fairCopyProject.saveFairCopyConfig( fairCopyConfig )
       fairCopyProject.updateProjectInfo( projectInfo )
       this.setState( { ...this.state, projectSettingsActive: false } )
       this.refreshMainWindow()
+    }
+
+    const onCheckOut = (fairCopyConfig) => {
+      const { fairCopyProject } = this.state
+      const { configLastAction, userID } = fairCopyProject
+      fairCopyProject.configLastAction = checkOutConfig(fairCopyConfig, userID, configLastAction)
+      this.setState( { ...this.state } )
+    }
+
+    const onCheckIn = (fairCopyConfig, firstAction) => {
+      checkInConfig( fairCopyConfig, firstAction )
+      this.setState( { ...this.state } )
     }
 
     if( rootComponent === "MainWindow" && fairCopyProject ) {
@@ -174,6 +185,8 @@ export default class App extends Component {
           { projectSettingsActive && <ProjectSettingsWindow
             fairCopyProject={fairCopyProject}
             onSave={ onSave }
+            onCheckOut={ onCheckOut }
+            onCheckIn={ onCheckIn }
             onClose={ onClose }
           ></ProjectSettingsWindow> }
           <MainWindow

@@ -156,5 +156,6 @@ function migrationRemoteManifestData( manifestData ) {
 function migrationPermissions( manifestData ) {
     manifestData.permissions = []
     manifestData.userID = null
+    manifestData.configLastAction = null
     return manifestData    
 }

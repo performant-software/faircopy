@@ -84,6 +84,7 @@ export default class FairCopyProject {
         this.userID = fairCopyManifest.userID
         this.projectID = fairCopyManifest.projectID
         this.permissions = fairCopyManifest.permissions
+        this.configLastAction = fairCopyManifest.configLastAction
     }
     
     updateResource( resourceEntry ) {
@@ -171,12 +172,19 @@ export default class FairCopyProject {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
-            this.fairCopyConfig = fairCopyConfig
-            saveConfig(fairCopyConfig)
+            this.saveFairCopyConfig( fairCopyConfig )
             return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
             return { error: true, errorMessage: e.message, resourceCount: 0 }
         }        
+    }
+
+    saveFairCopyConfig( nextFairCopyConfig, lastAction=null ) {
+        this.fairCopyConfig = nextFairCopyConfig
+        if( lastAction ) {
+            this.configLastAction = lastAction
+        }
+        saveConfig(nextFairCopyConfig, lastAction)
     }
 
     // TODO REFACTOR
