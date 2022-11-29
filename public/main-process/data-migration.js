@@ -15,10 +15,8 @@ const compatibleProject = function compatibleProject(manifestData, currentVersio
     return simpleCurrentVersion === projectVersion || semver.gt(simpleCurrentVersion, projectVersion)
 }
 
-const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, projectConfigJSON ) {
+const migrateConfig = function migrateConfig( generatedWith, baseConfig, projectConfig ) {
     const projectVersion = getProjectVersion(generatedWith)
-    const baseConfig = JSON.parse(baseConfigJSON)
-    const projectConfig = JSON.parse(projectConfigJSON)
 
     // always keep projectConfig up to date with latest elements
     migrationRemoveElements(projectConfig,baseConfig)
@@ -29,8 +27,6 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfigJSON, pro
         migrationAddActiveState(projectConfig)
         log.info('applying migrations for v0.10.1')
     }
-
-    return JSON.stringify(projectConfig)
 }
 
 const migrateIDMap = function migrateIDMap( generatedWith, idMapJSON, localResources ) {

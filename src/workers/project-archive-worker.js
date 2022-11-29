@@ -223,9 +223,12 @@ async function openArchive(postMessage,workerData) {
     const zip = await JSZip.loadAsync(data)
     const { cacheFolder, zipPath } = setupTempFolder()
 
-    const fairCopyManifest = await readUTF8(manifestEntryName,zip)
-    let fairCopyConfig = await readUTF8(configSettingsEntryName,zip)
+    const fairCopyManifestJSON = await readUTF8(manifestEntryName,zip)
+    const fairCopyConfigJSON = await readUTF8(configSettingsEntryName,zip)
     const idMap = await readUTF8(idMapEntryName,zip)
+
+    const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
+    const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }

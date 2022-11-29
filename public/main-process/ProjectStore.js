@@ -99,12 +99,14 @@ class ProjectStore {
             return
         }
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-        this.baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
+        const baseConfigJSON = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
-        if( !teiSchema || !this.baseConfig ) {
+        if( !teiSchema || !baseConfigJSON ) {
             log.info('Application data is missing or corrupted.')
             return
         }
+
+        this.baseConfig = JSON.parse(baseConfigJSON)
 
         let { fairCopyManifest, fairCopyConfig, idMap, projectFilePath } = project
 
@@ -114,11 +116,7 @@ class ProjectStore {
         }
 
         // project store keeps a copy of the manifest data
-        this.manifestData = JSON.parse(fairCopyManifest)
-        if( !this.manifestData ) {
-            log.info('Error parsing project manifest.')
-            return
-        }
+        this.manifestData = fairCopyManifest
 
         const currentVersion = this.fairCopyApplication.config.version
         if( !this.fairCopyApplication.isDebugMode() && !compatibleProject(this.manifestData, currentVersion) ) {
@@ -132,8 +130,8 @@ class ProjectStore {
         this.manifestData = migrateManifestData(this.manifestData)
         
         // if elements changed in config, migrate project config
-        this.migratedConfig = migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig)
-        fairCopyConfig = this.migratedConfig
+        migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig)
+        this.migratedConfig = fairCopyConfig
 
         // apply any migrations to ID Map data
         idMap = migrateIDMap(this.manifestData.generatedWith,idMap,this.manifestData.resources)
@@ -145,7 +143,7 @@ class ProjectStore {
             })    
         }
 
-        const projectData = { projectFilePath, fairCopyManifest: JSON.stringify(this.manifestData), teiSchema, fairCopyConfig, baseConfig: this.baseConfig, idMap }
+        const projectData = { projectFilePath, fairCopyManifest: this.manifestData, teiSchema, fairCopyConfig, baseConfig: this.baseConfig, idMap }
         this.onProjectOpened( projectData )
     }
 
@@ -291,7 +289,7 @@ class ProjectStore {
         if( lastAction ) {
             this.manifestData.configLastAction = lastAction
         }
-        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: fairCopyConfig })
+        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: JSON.stringify(fairCopyConfig) })
         this.saveManifest()
     }
 

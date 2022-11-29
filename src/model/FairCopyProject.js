@@ -27,7 +27,7 @@ export default class FairCopyProject {
     constructor(projectData) {
         this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
-        this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
+        this.fairCopyConfig = projectData.fairCopyConfig
         this.baseConfigJSON = projectData.baseConfig
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
@@ -75,8 +75,7 @@ export default class FairCopyProject {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
-    loadManifest(json) {
-        const fairCopyManifest = JSON.parse(json)
+    loadManifest(fairCopyManifest) {
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description
         this.remote = fairCopyManifest.remote
