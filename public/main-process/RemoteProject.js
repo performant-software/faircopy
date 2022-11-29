@@ -57,7 +57,7 @@ class RemoteProject {
                     const { generatedWith } = projectStore.manifestData
                     // make sure that the incoming config is migrated to the latest schema                    
                     migrateConfig(generatedWith, baseConfig, config )
-                    fairCopyApplication.sendToAllWindows('updateFairCopyConfig', config, configLastAction )
+                    fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
                 }
                 break
                 case 'resources-updated':

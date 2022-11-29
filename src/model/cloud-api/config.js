@@ -43,7 +43,7 @@ export function checkInConfig(fairCopyConfig, projectID, serverURL, authToken, o
 
     const configObj = {
         configs: {
-            message: '',        
+            message: 'blank',        
             config_content: fairCopyConfig    
         }
     }
@@ -62,14 +62,14 @@ export function checkOutConfig(projectID, serverURL, authToken, onSuccess, onFai
 
     const configObj = {
         configs: {
-            message: ''
+            message: 'blank'
         }
     }
 
     axios.post(checkOutConfigURL,configObj,authConfig(authToken)).then(
         (okResponse) => {
-            const { config_content, last_action } = okResponse.data.config
-            onSuccess(config_content, last_action)
+            const { status } = okResponse.data.configs
+            onSuccess(status)
         }, 
         standardErrorHandler(onFail)
     )

@@ -289,8 +289,13 @@ class ProjectStore {
         if( lastAction ) {
             this.manifestData.configLastAction = lastAction
         }
-        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: JSON.stringify(fairCopyConfig) })
-        this.saveManifest()
+        const configData = JSON.stringify(fairCopyConfig)
+        if( configData && configData.length > 0 ) {
+            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: configData })
+            this.saveManifest()    
+        } else {
+            log.error(`Cannot save empty FairCopy Config.`)
+        }
     }
 
     save() {
@@ -356,7 +361,7 @@ class ProjectStore {
                 this.manifestData.resources[resourceEntry.id] = resourceEntry
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
-                this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content )     
+                this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID: resourceEntry.id, messageID: 'check-out-messsage', resourceContent: content })     
             } 
             checkOutStatus.push({ state, resourceEntry })
         }

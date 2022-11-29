@@ -98,8 +98,8 @@ class FairCopyApplication {
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
       const ok = this.fairCopySession.saveResource(resourceID, resourceData) 
       if( ok ) {
-        const update = { messageID: msgID, resourceID, resourceData }
-        this.sendToAllWindows('resourceContentUpdated', resourceID, msgID, update )
+        const update = { resourceID, messageID: msgID, resourceContent: resourceData }        
+        this.sendToAllWindows('resourceContentUpdated', update )
       }
     })
     ipcMain.on('abandonResourceMap', (event, resourceID) => { 

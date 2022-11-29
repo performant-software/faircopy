@@ -178,9 +178,9 @@ export default class MainWindow extends Component {
         this.refreshWindow()
     }
 
-    onResourceContentUpdated = (e, resourceID, messageID, resourceContent) => {
+    onResourceContentUpdated = (e, resourceUpdate) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners({ resourceID, messageID, resourceContent })
+        fairCopyProject.notifyListeners(resourceUpdate)
         this.refreshWindow()
     }
 
@@ -189,9 +189,10 @@ export default class MainWindow extends Component {
         fairCopyProject.updateProjectInfo( projectInfo )
     }
 
-    onUpdateFairCopyConfig = ( e, fairCopyConfig, lastAction ) => {
+    onUpdateFairCopyConfig = ( e, configUpdate ) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.saveFairCopyConfig( fairCopyConfig, lastAction )
+        const { config, configLastAction } = configUpdate
+        fairCopyProject.saveFairCopyConfig( config, configLastAction )
     }
 
     componentDidMount() {
