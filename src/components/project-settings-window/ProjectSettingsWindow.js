@@ -13,7 +13,6 @@ export default class ProjectSettingsWindow extends Component {
 
         // make an editable copy of the config
         const { fairCopyProject } = props
-        debugger
         const fairCopyConfig = JSON.parse(JSON.stringify(fairCopyProject.fairCopyConfig))
         const projectInfo = fairCopyProject.getProjectInfo()
 
