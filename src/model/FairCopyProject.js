@@ -186,6 +186,31 @@ export default class FairCopyProject {
         saveConfig(nextFairCopyConfig, lastAction)
     }
 
+    checkInConfig( nextFairCopyConfig ) {
+        this.fairCopyConfig = nextFairCopyConfig
+        const firstAction = !this.configLastAction
+        fairCopy.services.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
+    }
+
+    checkOutConfig() {
+        if( !this.configLastAction ) {
+            // if there's no last action, that means server doesn't have config, consider it checked out
+            const lastAction = { action_type: 'check_out', user: { id: this.userID }, firstAction: true }
+            saveConfig( this.fairCopyConfig, lastAction )
+            return true
+        } else {
+            // note: state is updated once we hear that the check out was a success    
+            fairCopy.services.ipcSend('checkOutConfig')    
+            return false
+        }
+    }
+    
+    configCheckedOut() {
+        // create a synthentic lastAction to keep until we get a real one from server. 
+        this.configLastAction = { action_type: 'check_out', user: { id: this.userID } }
+        saveConfig( this.fairCopyConfig, this.configLastAction )
+    }
+
     // TODO REFACTOR
     // take the resources and move them into the parent ID
     moveResources( resourceIDs, targetParentID ) {

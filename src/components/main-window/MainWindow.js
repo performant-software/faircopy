@@ -189,12 +189,6 @@ export default class MainWindow extends Component {
         fairCopyProject.updateProjectInfo( projectInfo )
     }
 
-    onUpdateFairCopyConfig = ( e, configUpdate ) => {
-        const { fairCopyProject } = this.props
-        const { config, configLastAction } = configUpdate
-        fairCopyProject.saveFairCopyConfig( config, configLastAction )
-    }
-
     componentDidMount() {
         const {services} = fairCopy
         services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
@@ -205,7 +199,6 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
         services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
         services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
-        services.ipcRegisterCallback('updateFairCopyConfig', this.onUpdateFairCopyConfig )
         this.checkReleaseNotes()
     }
 
@@ -219,7 +212,6 @@ export default class MainWindow extends Component {
         services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
         services.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
         services.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
-        services.ipcRemoveListener('updateFairCopyConfig', this.onUpdateFairCopyConfig )
     }
 
     refreshWindow() {

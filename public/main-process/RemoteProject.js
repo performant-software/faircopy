@@ -60,6 +60,11 @@ class RemoteProject {
                     fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
                 }
                 break
+                case 'config-check-out-result':
+                    const { status } = msg
+                    const { fairCopyApplication } = this.fairCopySession
+                    fairCopyApplication.sendToAllWindows('fairCopyConfigCheckedOut', {status} )
+                break
                 case 'resources-updated':
                 {
                     const { resources } = msg

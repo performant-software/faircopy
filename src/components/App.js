@@ -10,7 +10,7 @@ import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWind
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
 import { initLicenseData, licenseLock } from '../model/license-key'
-import { checkInConfig, checkOutConfig } from '../model/faircopy-config'
+import { checkInConfig } from '../model/faircopy-config'
 
 const fairCopy = window.fairCopy
 
@@ -27,6 +27,8 @@ export default class App extends Component {
       incompatInfo: null,
       imageView: null,
       appConfig: null,
+      checkingOut: false,
+      checkOutError: null,
       projectSettingsActive: false
     }
 
@@ -37,12 +39,35 @@ export default class App extends Component {
     this.setState({ ...this.state, appConfig })
   }
 
+  onFairCopyConfigCheckedOut = ( e, resp ) => {
+    const { fairCopyProject } = this.state
+    const { status } = resp
+
+    if( status === 'success' ) {
+      fairCopyProject.configCheckedOut()
+      this.setState( { ...this.state, checkOutError: null, checkingOut: false } )
+    } else {
+      //error reporting here
+      this.setState( { ...this.state, checkOutError: status, checkingOut: false } )
+    }
+  }
+
+  onUpdateFairCopyConfig = ( e, configUpdate ) => {
+    const { fairCopyProject } = this.state
+    const { config, configLastAction } = configUpdate
+    debugger
+    fairCopyProject.saveFairCopyConfig( config, configLastAction )
+    this.setState( { ...this.state } )
+  }
+
   componentDidMount() {
     if( fairCopy.rootComponent !== 'WorkerWindow' ) {
       const { licenseData } = this.state
 
       fairCopy.services.ipcRegisterCallback('appConfig', this.onAppConfig )
-  
+      fairCopy.services.ipcRegisterCallback('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
+      fairCopy.services.ipcRegisterCallback('updateFairCopyConfig', this.onUpdateFairCopyConfig )
+
       // tell main process to check for updates 
       if( !licenseData.activated ) {
         this.setTitle('Activate License')
@@ -56,6 +81,8 @@ export default class App extends Component {
   componentWillUnmount() {
     if( fairCopy.rootComponent !== 'WorkerWindow' ) {
       fairCopy.services.ipcRemoveListener('appConfig', this.onAppConfig )
+      fairCopy.services.ipcRemoveListener('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
+      fairCopy.services.ipcRemoveListener('updateFairCopyConfig', this.onUpdateFairCopyConfig )
     }
   }
 
@@ -133,7 +160,7 @@ export default class App extends Component {
   }
 
   render() {
-    const {fairCopyProject, imageView, appConfig, incompatInfo, projectSettingsActive } = this.state
+    const { fairCopyProject, imageView, appConfig, incompatInfo, projectSettingsActive, checkingOut, checkOutError } = this.state
     const {rootComponent} = window.fairCopy
     if( licenseLock() ) {
       return (
@@ -167,15 +194,14 @@ export default class App extends Component {
       this.refreshMainWindow()
     }
 
-    const onCheckOut = (fairCopyConfig) => {
+    const onCheckOut = () => {
       const { fairCopyProject } = this.state
-      const { configLastAction, userID } = fairCopyProject
-      fairCopyProject.configLastAction = checkOutConfig(fairCopyConfig, userID, configLastAction)
-      this.setState( { ...this.state } )
+      const done = fairCopyProject.checkOutConfig()
+      this.setState( { ...this.state, checkingOut: !done } )
     }
 
-    const onCheckIn = (fairCopyConfig, firstAction) => {
-      checkInConfig( fairCopyConfig, firstAction )
+    const onCheckIn = (fairCopyConfig) => {
+      fairCopyProject.checkInConfig( fairCopyConfig )
       this.setState( { ...this.state } )
     }
 
@@ -184,6 +210,8 @@ export default class App extends Component {
         <div lang="en">
           { projectSettingsActive && <ProjectSettingsWindow
             fairCopyProject={fairCopyProject}
+            checkingOut={checkingOut}
+            checkOutError={checkOutError}
             onSave={ onSave }
             onCheckOut={ onCheckOut }
             onCheckIn={ onCheckIn }

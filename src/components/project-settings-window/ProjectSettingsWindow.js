@@ -5,6 +5,7 @@ import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
 import { canConfigAdmin } from '../../model/permissions'
 import { getConfigStatus } from '../../model/faircopy-config'
+import { inlineRingSpinner } from '../common/ring-spinner'
 
 export default class ProjectSettingsWindow extends Component {
 
@@ -83,7 +84,7 @@ export default class ProjectSettingsWindow extends Component {
     }
     
     renderActions() {
-        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn } = this.props
+        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn, checkingOut } = this.props
         const { permissions, configLastAction, userID, remote } = fairCopyProject
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
@@ -94,26 +95,26 @@ export default class ProjectSettingsWindow extends Component {
         }
         
         const onLock = () => {
-            const { fairCopyConfig } = this.state
             if( lockStatus === 'locked' ) {
-                onCheckOut(fairCopyConfig)
+                onCheckOut()
             } else if( lockStatus === 'unlocked') {
                 // special flag for the initial commit of the config
-                const firstAction = !!configLastAction.firstAction
-                onCheckIn(fairCopyConfig, firstAction)
+                const { fairCopyConfig } = this.state
+                onCheckIn(fairCopyConfig)
             }
         }
 
         const lockIcon = getLockIcon(lockStatus)
-        const lockLabel = getLockLabel(lockStatus)
+        const lockLabel = !checkingOut ? getLockLabel(lockStatus) : "Checking Out..."
         const lockDisabled = lockStatus === 'unlocked_by_another' 
+        const spinner = checkingOut ? inlineRingSpinner('light') : null
 
         return (
             <div>
                 { remote && canConfig && <div className="window-actions-left">
-                    <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel}</Button>
+                    <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
                 </div> }
-                { !remote || canConfig ? 
+                { !remote || (canConfig && lockStatus === 'unlocked') ? 
                     <div className="window-actions-right">
                         <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
                         <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
@@ -128,6 +129,7 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     render() {
+        const { checkOutError } = this.props
 
         return (
             <div id="ProjectSettingsWindow">
@@ -137,6 +139,7 @@ export default class ProjectSettingsWindow extends Component {
                 <div>
                     { this.renderSidebar() }
                     { this.renderContentArea() }
+                    { checkOutError && <Typography>Error: {checkOutError}</Typography>}
                 </div>
                 <div className="footer">
                     { this.renderActions() }

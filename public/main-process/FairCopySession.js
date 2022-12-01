@@ -383,6 +383,7 @@ class FairCopySession {
     }
 
     checkInConfig(fairCopyConfig, firstAction) {
+        this.projectStore.saveFairCopyConfig(fairCopyConfig)
         this.remoteProject.checkInConfig(fairCopyConfig, firstAction)
     }
 

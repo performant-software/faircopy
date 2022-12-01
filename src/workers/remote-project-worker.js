@@ -55,6 +55,7 @@ function checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstActio
     }
 
     const onFail = (error) => {
+        postMessage({ messageType: 'config-check-out-result', status: error })
         console.log(error)
     }
 
@@ -65,12 +66,13 @@ function checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstActio
     }
 }
 
-function checkOutFairCopyConfig( serverURL, projectID, authToken ) {
+function checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage ) {
     const onSuccess = (status) => {
-        console.log(status)
+        postMessage({ messageType: 'config-check-out-result', status })
     }
 
     const onFail = (error) => {
+        postMessage({ messageType: 'config-check-out-result', status: error })
         console.log(error)
     }
 
@@ -141,7 +143,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
             checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage )
             break
         case 'checkout-config':
-            checkOutFairCopyConfig( serverURL, projectID, authToken )
+            checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage )
             break
         case 'request-view':
             const { resourceView } = msg     

@@ -184,22 +184,6 @@ export function saveConfig( fairCopyConfig, lastAction ) {
     fairCopy.services.ipcSend('requestSaveConfig', fairCopyConfig, lastAction)
 }
 
-export function checkInConfig( fairCopyConfig, firstAction ) {
-    fairCopy.services.ipcSend('checkInConfig', fairCopyConfig, firstAction)
-}
-
-export function checkOutConfig(fairCopyConfig, userID, configLastAction) {
-    if( !configLastAction ) {
-        // if there's no last action, that means server doesn't have config, consider it checked out
-        const lastAction = { action_type: 'check_out', user: { id: userID }, firstAction: true }
-        saveConfig( fairCopyConfig, lastAction )
-        return lastAction
-    } else {
-        fairCopy.services.ipcSend('checkOutConfig')        
-        return configLastAction
-    }
-}
-
 export function getConfigStatus( lastAction, userID ) {
     if( !lastAction ) return 'locked'
     const { action_type: actionType, user } = lastAction
