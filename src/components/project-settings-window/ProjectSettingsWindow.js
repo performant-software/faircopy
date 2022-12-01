@@ -42,9 +42,9 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderContentArea() {
-        const { teiSchema, permissions } = this.props.fairCopyProject
+        const { teiSchema, permissions, remote } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
-        const readOnly = !canConfigAdmin(permissions)
+        const readOnly = remote && !canConfigAdmin(permissions)
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
@@ -84,7 +84,7 @@ export default class ProjectSettingsWindow extends Component {
     
     renderActions() {
         const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn } = this.props
-        const { permissions, configLastAction, userID } = fairCopyProject
+        const { permissions, configLastAction, userID, remote } = fairCopyProject
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
 
@@ -110,10 +110,10 @@ export default class ProjectSettingsWindow extends Component {
 
         return (
             <div>
-                { canConfig && <div className="window-actions-left">
+                { remote && canConfig && <div className="window-actions-left">
                     <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel}</Button>
                 </div> }
-                { canConfig ? 
+                { !remote || canConfig ? 
                     <div className="window-actions-right">
                         <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
                         <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
