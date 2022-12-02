@@ -43,9 +43,11 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderContentArea() {
-        const { teiSchema, permissions, remote } = this.props.fairCopyProject
+        const { checkingOut } = this.props
+        const { teiSchema, remote, configLastAction, userID } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
-        const readOnly = remote && !canConfigAdmin(permissions)
+        const lockStatus = getConfigStatus( configLastAction, userID )
+        const canEdit = !remote || (!checkingOut && lockStatus === 'unlocked')
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
@@ -73,7 +75,7 @@ export default class ProjectSettingsWindow extends Component {
                 { selectedPage === 'elements' && <SchemaEditor
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
-                    readOnly={readOnly}
+                    readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></SchemaEditor> }
                 { selectedPage === 'vocabs' && <div>
@@ -84,7 +86,7 @@ export default class ProjectSettingsWindow extends Component {
     }
     
     renderActions() {
-        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn, checkingOut } = this.props
+        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn, checkingOut, checkOutError } = this.props
         const { permissions, configLastAction, userID, remote } = fairCopyProject
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
@@ -105,14 +107,15 @@ export default class ProjectSettingsWindow extends Component {
         }
 
         const lockIcon = getLockIcon(lockStatus)
-        const lockLabel = !checkingOut ? getLockLabel(lockStatus) : "Checking Out..."
+        const lockLabel = getLockLabel(lockStatus)
         const lockDisabled = lockStatus === 'unlocked_by_another' 
-        const spinner = checkingOut ? inlineRingSpinner('light') : null
+        const spinner = checkingOut ? inlineRingSpinner('dark') : null
 
         return (
             <div>
                 { remote && canConfig && <div className="window-actions-left">
                     <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
+                    { checkOutError && <Typography className="error-message" >Error: {checkOutError}</Typography>}
                 </div> }
                 { !remote || (canConfig && lockStatus === 'unlocked') ? 
                     <div className="window-actions-right">
@@ -129,8 +132,6 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     render() {
-        const { checkOutError } = this.props
-
         return (
             <div id="ProjectSettingsWindow">
                 <div className="title" >
@@ -139,7 +140,6 @@ export default class ProjectSettingsWindow extends Component {
                 <div>
                     { this.renderSidebar() }
                     { this.renderContentArea() }
-                    { checkOutError && <Typography>Error: {checkOutError}</Typography>}
                 </div>
                 <div className="footer">
                     { this.renderActions() }

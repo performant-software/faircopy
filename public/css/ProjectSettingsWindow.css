@@ -50,3 +50,8 @@
 #ProjectSettingsWindow .action-button {
     margin-left: 10px;
 }
+
+#ProjectSettingsWindow .error-message {
+    display:inline-block;
+    padding-left: 10px;
+}

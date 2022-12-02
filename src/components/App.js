@@ -10,7 +10,6 @@ import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWind
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
 import { initLicenseData, licenseLock } from '../model/license-key'
-import { checkInConfig } from '../model/faircopy-config'
 
 const fairCopy = window.fairCopy
 
@@ -55,7 +54,6 @@ export default class App extends Component {
   onUpdateFairCopyConfig = ( e, configUpdate ) => {
     const { fairCopyProject } = this.state
     const { config, configLastAction } = configUpdate
-    debugger
     fairCopyProject.saveFairCopyConfig( config, configLastAction )
     this.setState( { ...this.state } )
   }
