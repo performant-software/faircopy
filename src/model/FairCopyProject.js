@@ -188,7 +188,7 @@ export default class FairCopyProject {
 
     checkInConfig( nextFairCopyConfig ) {
         this.fairCopyConfig = nextFairCopyConfig
-        const firstAction = !this.configLastAction
+        const firstAction = !!this.configLastAction.firstAction
         fairCopy.services.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
     }
 
@@ -196,6 +196,7 @@ export default class FairCopyProject {
         if( !this.configLastAction ) {
             // if there's no last action, that means server doesn't have config, consider it checked out
             const lastAction = { action_type: 'check_out', user: { id: this.userID }, firstAction: true }
+            this.configLastAction = lastAction
             saveConfig( this.fairCopyConfig, lastAction )
             return true
         } else {
