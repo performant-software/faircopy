@@ -179,8 +179,9 @@ export default class TEIDocument {
         // regenerate gutter marks if the document structure has changed
         if( this.noteGutterMarkCacheDirty ) {
             const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+            const lastWidth = this.noteGutterMarkCache ? this.noteGutterMarkCache.totalWidth : null
             this.noteGutterMarkCache = generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes, gutterTop )
-            this.noteGutterMarkCacheDirty = false
+            this.noteGutterMarkCacheDirty = lastWidth !== this.noteGutterMarkCache.totalWidth
         }
         return this.noteGutterMarkCache
     }
@@ -189,8 +190,10 @@ export default class TEIDocument {
         // regenerate gutter marks if the document structure has changed
         if( this.gutterMarkCacheDirty ) {
             const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+            // if the width changes, keep gutter dirty for one more refresh as editor re-lineates
+            const lastWidth = this.gutterMarkCache ? this.gutterMarkCache.totalWidth : null
             this.gutterMarkCache = generateGutterMarks( this.editorView, this.expandedGutter, docNodes )
-            this.gutterMarkCacheDirty = false
+            this.gutterMarkCacheDirty = lastWidth !== this.gutterMarkCache.totalWidth
         }
         return this.gutterMarkCache
     }
