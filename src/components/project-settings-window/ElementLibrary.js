@@ -5,26 +5,34 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 export default class ElementLibrary extends Component {
 
     renderElement(elementID,index) {
-        const { teiSchema, selectedElement } = this.props
+        const { teiSchema, selectedElement, readOnly } = this.props
         const key = `element-${elementID}`
         const icon = teiSchema.getElementIcon(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         const selected = ( elementID === selectedElement ) ? "selected-item" : ""
 
+        const elementEl = (
+            <div key={key} className={`element-item library-element ${selected}`} >
+                <Typography>{elementIcon}{elementID}</Typography>
+            </div>                        
+        )
+
         return (
-            <Draggable key={key} draggableId={key} index={index}>
-                { (provided) => (
-                    <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                    >
-                        <div className={`element-item library-element ${selected}`} >
-                            <Typography>{elementIcon}{elementID}</Typography>
-                        </div>                        
-                    </div>
-                )}
-            </Draggable>
+            readOnly ? 
+                // can't drag in readonly mode
+                elementEl
+            :            
+                <Draggable key={`drag-${key}`} draggableId={key} index={index}>
+                    { (provided) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                        >
+                            { elementEl }
+                        </div>
+                    )}
+                </Draggable>
         )
     }
     

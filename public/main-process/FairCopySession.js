@@ -378,9 +378,18 @@ class FairCopySession {
         this.projectStore.checkOut(userID, serverURL, projectID, resourceEntries)
     }
 
-    saveFairCopyConfig(fairCopyConfig) {
-        this.projectStore.saveFairCopyConfig(fairCopyConfig)
+    saveFairCopyConfig(fairCopyConfig, lastAction) {
+        this.projectStore.saveFairCopyConfig(fairCopyConfig, lastAction)
     }
+
+    checkInConfig(fairCopyConfig, firstAction) {
+        this.projectStore.saveFairCopyConfig(fairCopyConfig)
+        this.remoteProject.checkInConfig(fairCopyConfig, firstAction)
+    }
+
+    checkOutConfig() {
+        this.remoteProject.checkOutConfig()
+    }    
 
     exportFairCopyConfig(exportPath,fairCopyConfig) {
         this.projectStore.exportFairCopyConfig(exportPath,fairCopyConfig)

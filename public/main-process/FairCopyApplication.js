@@ -98,8 +98,8 @@ class FairCopyApplication {
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
       const ok = this.fairCopySession.saveResource(resourceID, resourceData) 
       if( ok ) {
-        const update = { messageID: msgID, resourceID, resourceData }
-        this.sendToAllWindows('resourceContentUpdated', resourceID, msgID, update )
+        const update = { resourceID, messageID: msgID, resourceContent: resourceData }        
+        this.sendToAllWindows('resourceContentUpdated', update )
       }
     })
     ipcMain.on('abandonResourceMap', (event, resourceID) => { 
@@ -156,7 +156,9 @@ class FairCopyApplication {
       this.fairCopySession.checkOut(userID, serverURL, projectID, resourceIDs)
     })
 
-    ipcMain.on('requestSaveConfig', (event,fairCopyConfig) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig) })    
+    ipcMain.on('requestSaveConfig', (event,fairCopyConfig,lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig,lastAction) })    
+    ipcMain.on('checkInConfig', (event,fairCopyConfig,firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig,firstAction) })        
+    ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })        
     ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.fairCopySession.exportFairCopyConfig(exportPath,fairCopyConfig) })
     ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.fairCopySession.updateProjectInfo(projectInfo) })
     

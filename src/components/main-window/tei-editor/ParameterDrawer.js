@@ -18,7 +18,8 @@ import ReadOnlyField from './attribute-fields/ReadOnlyField'
 import { changeAttributes } from "../../../model/commands"
 import { getHighlightColor } from "../../../model/highlighter"
 import { checkID } from '../../../model/attribute-validators'
-import { saveConfig, addElementToSchema } from '../../../model/faircopy-config'
+import { saveConfig, addElementToSchema, getConfigStatus } from '../../../model/faircopy-config'
+import { canConfigAdmin } from '../../../model/permissions'
 import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability, teiDataTruthValue } from '../../../model/attribute-validators'
 import { findNoteNode } from '../../../model/xml';
 
@@ -345,7 +346,7 @@ export default class ParameterDrawer extends Component {
 
     renderElement(element,count,key) {
         const { teiDocument, readOnly } = this.props
-        const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
+        const { teiSchema, fairCopyConfig, permissions, remote, configLastAction, userID } = teiDocument.fairCopyProject
         const { elements } = teiSchema
         const configElements = fairCopyConfig.elements
         const name = element.type.name
@@ -366,6 +367,9 @@ export default class ParameterDrawer extends Component {
 
         const headerAction = (element instanceof Node) ? this.renderIDField(element) : null
         const inactiveElement = fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false
+        const canConfig = canConfigAdmin(permissions)
+        const lockStatus = getConfigStatus( configLastAction, userID )
+        const canEditConfig = !remote || (canConfig && lockStatus === 'unlocked')
 
         return (
             <Card variant="outlined" className="element" key={key} >
@@ -379,7 +383,7 @@ export default class ParameterDrawer extends Component {
                     { this.renderAttributes(element,elementID,attrState) }
                     { inactiveElement && this.renderInactiveError(elementID) }
                 </CardContent>
-                { !readOnly && 
+                { !readOnly && canEditConfig && 
                     <CardActions>
                         <Button variant="outlined" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
                         { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add element to schema</Button> }

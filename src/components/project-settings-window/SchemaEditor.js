@@ -26,7 +26,7 @@ export default class SchemaEditor extends Component {
     }
 
     render() {
-        const { fairCopyConfig, teiSchema, onUpdateConfig } = this.props
+        const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
         const { selectedElement, attributeDialogOpen, selectedGroup, selectedMenu, editGroupOpen, groupIndex, alertMessage } = this.state
 
         const onSelect = (elementID,groupID) => {
@@ -110,6 +110,7 @@ export default class SchemaEditor extends Component {
                                 selectedElement={ selectedGroup !== null ? selectedElement : null }
                                 selectedGroup={selectedGroup}
                                 selectedMenu={selectedMenu}
+                                readOnly={readOnly}
                                 onSelect={onSelect}
                                 onChangeMenu={onChangeMenu}
                                 onEditGroup={onEditGroup}
@@ -119,6 +120,7 @@ export default class SchemaEditor extends Component {
                         <div className="top-right">
                             <ElementLibrary
                                 teiSchema={teiSchema}
+                                readOnly={readOnly}
                                 selectedElement={ selectedGroup === null ? selectedElement : null}
                                 selectedMenu={selectedMenu}
                             ></ElementLibrary>

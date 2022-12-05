@@ -178,9 +178,9 @@ export default class MainWindow extends Component {
         this.refreshWindow()
     }
 
-    onResourceContentUpdated = (e, resourceID, messageID, resourceContent) => {
+    onResourceContentUpdated = (e, resourceUpdate) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners({ resourceID, messageID, resourceContent })
+        fairCopyProject.notifyListeners(resourceUpdate)
         this.refreshWindow()
     }
 

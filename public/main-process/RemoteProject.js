@@ -1,4 +1,5 @@
 const { WorkerWindow } = require('./WorkerWindow')
+const { migrateConfig } = require('./data-migration')
 
 class RemoteProject {
 
@@ -48,7 +49,22 @@ class RemoteProject {
                     idMapAuthority.setBaseMap(idMapData)
                 }
                 break
-                // case 'config-update':
+                case 'config-update':
+                {
+                    const { config, configLastAction } = msg
+                    const { fairCopyApplication, projectStore } = this.fairCopySession
+                    const { baseConfig } = projectStore
+                    const { generatedWith } = projectStore.manifestData
+                    // make sure that the incoming config is migrated to the latest schema                    
+                    migrateConfig(generatedWith, baseConfig, config )
+                    fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
+                }
+                break
+                case 'config-check-out-result':
+                    const { status } = msg
+                    const { fairCopyApplication } = this.fairCopySession
+                    fairCopyApplication.sendToAllWindows('fairCopyConfigCheckedOut', {status} )
+                break
                 case 'resources-updated':
                 {
                     const { resources } = msg
@@ -79,6 +95,14 @@ class RemoteProject {
 
     requestResourceView(resourceView) {
         this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView })
+    }
+
+    checkInConfig(config, firstAction) {
+        this.remoteProjectWorker.postMessage({ messageType: 'checkin-config', config, firstAction })
+    }
+
+    checkOutConfig() {
+        this.remoteProjectWorker.postMessage({ messageType: 'checkout-config' })
     }
 }
 

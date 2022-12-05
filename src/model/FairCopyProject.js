@@ -27,7 +27,7 @@ export default class FairCopyProject {
     constructor(projectData) {
         this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
-        this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
+        this.fairCopyConfig = projectData.fairCopyConfig
         this.baseConfigJSON = projectData.baseConfig
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
@@ -75,8 +75,7 @@ export default class FairCopyProject {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
-    loadManifest(json) {
-        const fairCopyManifest = JSON.parse(json)
+    loadManifest(fairCopyManifest) {
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description
         this.remote = fairCopyManifest.remote
@@ -84,6 +83,7 @@ export default class FairCopyProject {
         this.userID = fairCopyManifest.userID
         this.projectID = fairCopyManifest.projectID
         this.permissions = fairCopyManifest.permissions
+        this.configLastAction = fairCopyManifest.configLastAction
     }
     
     updateResource( resourceEntry ) {
@@ -171,12 +171,45 @@ export default class FairCopyProject {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
-            this.fairCopyConfig = fairCopyConfig
-            saveConfig(fairCopyConfig)
+            this.saveFairCopyConfig( fairCopyConfig )
             return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
             return { error: true, errorMessage: e.message, resourceCount: 0 }
         }        
+    }
+
+    saveFairCopyConfig( nextFairCopyConfig, lastAction=null ) {
+        this.fairCopyConfig = nextFairCopyConfig
+        if( lastAction ) {
+            this.configLastAction = lastAction
+        }
+        saveConfig(nextFairCopyConfig, lastAction)
+    }
+
+    checkInConfig( nextFairCopyConfig ) {
+        this.fairCopyConfig = nextFairCopyConfig
+        const firstAction = !!this.configLastAction.firstAction
+        fairCopy.services.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
+    }
+
+    checkOutConfig() {
+        if( !this.configLastAction ) {
+            // if there's no last action, that means server doesn't have config, consider it checked out
+            const lastAction = { action_type: 'check_out', user: { id: this.userID }, firstAction: true }
+            this.configLastAction = lastAction
+            saveConfig( this.fairCopyConfig, lastAction )
+            return true
+        } else {
+            // note: state is updated once we hear that the check out was a success    
+            fairCopy.services.ipcSend('checkOutConfig')    
+            return false
+        }
+    }
+    
+    configCheckedOut() {
+        // create a synthentic lastAction to keep until we get a real one from server. 
+        this.configLastAction = { action_type: 'check_out', user: { id: this.userID } }
+        saveConfig( this.fairCopyConfig, this.configLastAction )
     }
 
     // TODO REFACTOR
