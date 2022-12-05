@@ -24,7 +24,7 @@ export function initConfig( fairCopyConfig, projectID, serverURL, authToken, onS
         configs: {
             project_id: projectID,
             name: configFilename,
-            message: 'blank',        
+            message: 'create initial config',        
             config_content: fairCopyConfig    
         }
     }
@@ -43,7 +43,7 @@ export function checkInConfig(fairCopyConfig, projectID, serverURL, authToken, o
 
     const configObj = {
         configs: {
-            message: 'blank',        
+            message: 'checkin',        
             config_content: fairCopyConfig    
         }
     }
@@ -62,7 +62,7 @@ export function checkOutConfig(projectID, serverURL, authToken, onSuccess, onFai
 
     const configObj = {
         configs: {
-            message: 'blank'
+            message: 'checkout'
         }
     }
 
