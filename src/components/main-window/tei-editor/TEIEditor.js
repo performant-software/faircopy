@@ -345,7 +345,7 @@ export default class TEIEditor extends Component {
 
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
-        const canEditConfig = !remote || (canConfig && lockStatus === 'unlocked')
+        const canEditConfig = !remote || (canConfig && lockStatus === 'checked_out')
 
         const marginTop = 125
         
