@@ -18,8 +18,7 @@ import ReadOnlyField from './attribute-fields/ReadOnlyField'
 import { changeAttributes } from "../../../model/commands"
 import { getHighlightColor } from "../../../model/highlighter"
 import { checkID } from '../../../model/attribute-validators'
-import { saveConfig, addElementToSchema, getConfigStatus } from '../../../model/faircopy-config'
-import { canConfigAdmin } from '../../../model/permissions'
+import { saveConfig, addElementToSchema } from '../../../model/faircopy-config'
 import { teiDataWordValidator, teiDataCountValidator, teiDataNumericValidator, teiDataProbability, teiDataTruthValue } from '../../../model/attribute-validators'
 import { findNoteNode } from '../../../model/xml';
 
@@ -127,7 +126,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeField(elementName,attrName,value,attrSpec,onChange) {
-        const { readOnly } = this.props
+        const { readOnly, canEditConfig } = this.props
         const { dataType, minOccurs, maxOccurs, valListType } = attrSpec
 
         if( readOnly ) {
@@ -173,6 +172,7 @@ export default class ParameterDrawer extends Component {
                     value={value}                        
                     onChangeCallback={onChange}
                     vocabEditorCallback={this.openVocabEditor}
+                    canEditConfig={canEditConfig}
                 ></TEIEnumeratedField>
             )  
         }
@@ -345,8 +345,8 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement(element,count,key) {
-        const { teiDocument, readOnly } = this.props
-        const { teiSchema, fairCopyConfig, permissions, remote, configLastAction, userID } = teiDocument.fairCopyProject
+        const { teiDocument, readOnly, canEditConfig } = this.props
+        const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
         const { elements } = teiSchema
         const configElements = fairCopyConfig.elements
         const name = element.type.name
@@ -367,9 +367,6 @@ export default class ParameterDrawer extends Component {
 
         const headerAction = (element instanceof Node) ? this.renderIDField(element) : null
         const inactiveElement = fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false
-        const canConfig = canConfigAdmin(permissions)
-        const lockStatus = getConfigStatus( configLastAction, userID )
-        const canEditConfig = !remote || (canConfig && lockStatus === 'unlocked')
 
         return (
             <Card variant="outlined" className="element" key={key} >
