@@ -111,12 +111,12 @@ export default class TEIEnumeratedField extends Component {
     }
 
     render() {
-        const { maxOccurs } = this.props
+        const { maxOccurs, canEditConfig } = this.props
 
         return (
             <div style={{ display: 'flex' }}>
                 { ( maxOccurs ) ? this.renderMultiTermField() : this.renderSingleTermField() }
-                { this.renderVocabButton() } 
+                { canEditConfig && this.renderVocabButton() } 
             </div>
         )
     }

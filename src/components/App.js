@@ -10,6 +10,7 @@ import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWind
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
 import { initLicenseData, licenseLock } from '../model/license-key'
+import { getConfigStatus } from '../model/faircopy-config'
 
 const fairCopy = window.fairCopy
 
@@ -54,8 +55,11 @@ export default class App extends Component {
   onUpdateFairCopyConfig = ( e, configUpdate ) => {
     const { fairCopyProject } = this.state
     const { config, configLastAction } = configUpdate
-    fairCopyProject.saveFairCopyConfig( config, configLastAction )
-    this.setState( { ...this.state } )
+    const lockStatus = getConfigStatus( configLastAction, fairCopyProject.userID )
+    if( lockStatus !== 'unlocked' ) {
+      fairCopyProject.saveFairCopyConfig( config, configLastAction )
+      this.setState( { ...this.state } )
+    }
   }
 
   componentDidMount() {

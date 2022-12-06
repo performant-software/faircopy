@@ -17,6 +17,8 @@ import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks, navigateFromEditorToTree } from '../../../model/editor-navigation'
 import { findNoteNode } from '../../../model/xml'
+import { canConfigAdmin } from '../../../model/permissions'
+import { getConfigStatus } from '../../../model/faircopy-config'
 
 const resizeRefreshRate = 100
 
@@ -305,8 +307,8 @@ export default class TEIEditor extends Component {
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, currentView } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
-
-        const { isLoggedIn } = teiDocument.fairCopyProject
+        const { fairCopyProject } = teiDocument
+        const { isLoggedIn, configLastAction, userID, permissions, remote } = fairCopyProject
         const readOnly = !teiDocument.isEditable() 
 
         const onClickBody = () => {
@@ -340,6 +342,10 @@ export default class TEIEditor extends Component {
         const editorWidthCSS = `calc(100vw - 10px - ${leftPaneWidth}px)`
         const editorStyle = { minWidth: editorWidthCSS, maxHeight: editorHeightCSS }
         const style = hidden ? { display: 'none' } : {}
+
+        const canConfig = canConfigAdmin(permissions)
+        const lockStatus = getConfigStatus( configLastAction, userID )
+        const canEditConfig = !remote || (canConfig && lockStatus === 'unlocked')
 
         const marginTop = 125
         
@@ -402,6 +408,7 @@ export default class TEIEditor extends Component {
                         height={drawerHeight}
                         width={drawerWidthCSS}
                         readOnly={readOnly}
+                        canEditConfig={canEditConfig}
                     /> }
                 </div>
                 { !hidden && <NotePopup
