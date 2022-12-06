@@ -100,7 +100,6 @@ export default class ProjectSettingsWindow extends Component {
             if( lockStatus === 'locked' ) {
                 onCheckOut()
             } else if( lockStatus === 'unlocked') {
-                // special flag for the initial commit of the config
                 const { fairCopyConfig } = this.state
                 onCheckIn(fairCopyConfig)
             }
