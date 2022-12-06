@@ -55,7 +55,7 @@ export default class App extends Component {
   onUpdateFairCopyConfig = ( e, configUpdate ) => {
     const { fairCopyProject } = this.state
     const { config, configLastAction } = configUpdate
-    const lockStatus = getConfigStatus( fairCopyProject.configLastAction, fairCopyProject.userID )
+    const lockStatus = getConfigStatus( configLastAction, fairCopyProject.userID )
     if( lockStatus !== 'unlocked' ) {
       fairCopyProject.saveFairCopyConfig( config, configLastAction )
       this.setState( { ...this.state } )
