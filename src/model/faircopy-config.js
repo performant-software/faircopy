@@ -185,14 +185,14 @@ export function saveConfig( fairCopyConfig, lastAction ) {
 }
 
 export function getConfigStatus( lastAction, userID ) {
-    if( !lastAction ) return 'locked'
+    if( !lastAction ) return 'checked_in'
     const { action_type: actionType, user } = lastAction
     const { id: actor } = user
 
     if( actionType === 'check_out' ) {
-        return actor !== userID ? 'unlocked_by_another' : 'unlocked'
+        return actor !== userID ? 'checked_out_by_another' : 'checked_out'
     } else {
-        return 'locked'
+        return 'checked_in'
     }
 }
 

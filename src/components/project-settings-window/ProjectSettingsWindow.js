@@ -47,7 +47,7 @@ export default class ProjectSettingsWindow extends Component {
         const { teiSchema, remote, configLastAction, userID } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
         const lockStatus = getConfigStatus( configLastAction, userID )
-        const canEdit = !remote || (!checkingOut && lockStatus === 'unlocked')
+        const canEdit = !remote || (!checkingOut && lockStatus === 'checked_out')
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
@@ -97,9 +97,9 @@ export default class ProjectSettingsWindow extends Component {
         }
         
         const onLock = () => {
-            if( lockStatus === 'locked' ) {
+            if( lockStatus === 'checked_in' ) {
                 onCheckOut()
-            } else if( lockStatus === 'unlocked') {
+            } else if( lockStatus === 'checked_out') {
                 const { fairCopyConfig } = this.state
                 onCheckIn(fairCopyConfig)
             }
@@ -107,7 +107,7 @@ export default class ProjectSettingsWindow extends Component {
 
         const lockIcon = getLockIcon(lockStatus)
         const lockLabel = getLockLabel(lockStatus)
-        const lockDisabled = lockStatus === 'unlocked_by_another' 
+        const lockDisabled = lockStatus === 'checked_out_by_another' 
         const spinner = checkingOut ? inlineRingSpinner('dark') : null
 
         return (
@@ -116,7 +116,7 @@ export default class ProjectSettingsWindow extends Component {
                     <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
                     { checkOutError && <Typography className="error-message" >Error: {checkOutError}</Typography>}
                 </div> }
-                { !remote || (canConfig && lockStatus === 'unlocked') ? 
+                { !remote || (canConfig && lockStatus === 'checked_out') ? 
                     <div className="window-actions-right">
                         <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
                         <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
@@ -149,9 +149,9 @@ export default class ProjectSettingsWindow extends Component {
 }
 
 function getLockIcon(lockStatus) {
-    return lockStatus === 'locked' ? 'fas fa-lock' : lockStatus === 'unlocked' ? 'fas fa-unlock' : 'far fa-lock'
+    return lockStatus === 'checked_in' ? 'fas fa-inbox-out' : lockStatus === 'checked_out' ? 'fas fa-inbox-in' : 'far fa-inbox-in'
 }
 
 function getLockLabel(lockStatus) {
-    return lockStatus === 'locked' ? 'Unlock' : lockStatus === 'unlocked' ? 'Lock' : 'Locked'
+    return lockStatus === 'checked_in' ? 'Check Out' : lockStatus === 'checked_out' ? 'Check In' : 'Checked Out'
 }
