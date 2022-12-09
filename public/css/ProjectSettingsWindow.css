@@ -34,11 +34,24 @@
     padding: 10px; 
 }
 
-#ProjectSettingsWindow .window-actions {
+#ProjectSettingsWindow .window-actions-right {
     padding-right: 20px;
     float: right;
 }
 
+#ProjectSettingsWindow .window-actions-left {
+    float: left;
+}
+
+#ProjectSettingsWindow .lock-icon {
+    padding-right: 10px;
+}
+
 #ProjectSettingsWindow .action-button {
     margin-left: 10px;
+}
+
+#ProjectSettingsWindow .error-message {
+    display:inline-block;
+    padding-left: 10px;
 }

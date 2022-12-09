@@ -12,6 +12,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
 import {mapResource} from "./id-map"
+import { generateGutterMarks, isGutterDirty } from './gutter-marks'
 
 const fairCopy = window.fairCopy
 
@@ -32,6 +33,11 @@ export default class TEIDocument {
         this.teiSchema = teiSchema
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
         this.selectedElements = []
+        this.gutterMarkCache = null
+        this.gutterMarkCacheDirty = true
+        this.noteGutterMarkCache = null
+        this.noteGutterMarkCacheDirty = true
+        this.expandedGutter = true
         this.plugins = [
             keymap(baseKeymap),
             dropCursor(),
@@ -143,8 +149,8 @@ export default class TEIDocument {
     }
 
     // called by dispatch transaction for every change to doc state
-    onUpdate(transaction,onErrorCountChange) {
-        const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
+    onUpdate(transaction) {
+        const { idMap } = this.fairCopyProject
 
         if( this.isEditable() ) {
             const resourceMap = mapResource( this.resourceEntry, transaction.doc )
@@ -154,18 +160,52 @@ export default class TEIDocument {
             this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
         }
         
-        // scan for errors 
-        // TODO put this on a timer, not every update
-        const relativeParentID = this.getRelativeParentID()
-        const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
-        if( this.errorCount !== nextErrorCount ) {
-            this.errorCount = nextErrorCount
-            onErrorCountChange()
+        // check if gutter cache is dirty
+        if( !this.gutterMarkCacheDirty ) {
+            this.gutterMarkCacheDirty = isGutterDirty( transaction )
         }
 
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
         this.editorView.updateState(nextEditorState)
+    }
+
+    setExpandedGutter(expanded) {
+        if( this.expandedGutter !== expanded ) this.gutterMarkCacheDirty = true
+        this.expandedGutter = expanded
+    }
+
+    getNoteGutterMarks(gutterTop) {
+        // regenerate gutter marks if the document structure has changed
+        if( this.noteGutterMarkCacheDirty ) {
+            const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+            const lastWidth = this.noteGutterMarkCache ? this.noteGutterMarkCache.totalWidth : null
+            this.noteGutterMarkCache = generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes, gutterTop )
+            this.noteGutterMarkCacheDirty = lastWidth !== this.noteGutterMarkCache.totalWidth
+        }
+        return this.noteGutterMarkCache
+    }
+
+    getGutterMarks() {
+        // regenerate gutter marks if the document structure has changed
+        if( this.gutterMarkCacheDirty ) {
+            const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+            // if the width changes, keep gutter dirty for one more refresh as editor re-lineates
+            const lastWidth = this.gutterMarkCache ? this.gutterMarkCache.totalWidth : null
+            this.gutterMarkCache = generateGutterMarks( this.editorView, this.expandedGutter, docNodes )
+            this.gutterMarkCacheDirty = lastWidth !== this.gutterMarkCache.totalWidth
+        }
+        return this.gutterMarkCache
+    }
+
+    updateSystemFlags(transaction,onErrorCountChange) {
+        const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
+        const relativeParentID = this.getRelativeParentID()
+        const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
+        if( this.errorCount !== nextErrorCount ) {
+            this.errorCount = nextErrorCount
+            onErrorCountChange()
+        }    
     }
 
     getRelativeParentID() {

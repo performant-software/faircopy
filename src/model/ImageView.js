@@ -18,8 +18,9 @@ export default class ImageView {
         this.startingID = imageViewData.xmlID
         this.updateListeners = []
         this.remote = imageViewData.remote
-        this.email = imageViewData.email
+        this.userID = imageViewData.userID
         this.serverURL = imageViewData.serverURL
+        this.permissions = imageViewData.permissions
         this.lastResourceEntryMessage = null   
     }
 
@@ -35,14 +36,20 @@ export default class ImageView {
         this.onResourceUpdated({resourceID, messageID, resourceContent})
     }
 
+    onUpdateProjectInfo = ( projectInfo ) => {
+        this.permissions = projectInfo.permissions
+    }
+
     componentDidMount() {
         fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
         fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     componentWillUnmount() {
         fairCopy.services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
-        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.services.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.services.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     // Called when resource entry is updated by a different window process
@@ -67,13 +74,13 @@ export default class ImageView {
 
     isLoggedIn = () => {
         if( !this.remote ) return false
-        return isLoggedIn( this.email, this.serverURL )
+        return isLoggedIn( this.userID, this.serverURL )
     }
 
     isEditable = ( resourceEntry ) => {
         // can always edit in a local project
         if( !this.remote ) return true
-        return isEntryEditable(resourceEntry, this.email )
+        return isEntryEditable(resourceEntry, this.userID )
     }
 
     updateResource( nextResourceEntry ) {     

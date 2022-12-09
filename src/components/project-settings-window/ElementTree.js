@@ -55,7 +55,7 @@ export default class ElementTree extends Component {
     }
 
     renderElement(groupID,elementID,index) {
-        const { teiSchema, onSelect, selectedElement, selectedGroup } = this.props
+        const { teiSchema, onSelect, selectedElement, selectedGroup, readOnly } = this.props
         const icon = teiSchema.getElementIcon(elementID)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
@@ -65,24 +65,31 @@ export default class ElementTree extends Component {
         const setItemElRef = (el) => {
             this.itemEls[elementID] = el
         }
-        const onClick = () => { onSelect(elementID,groupID) }
+        const onClick = () => { if(!readOnly ) onSelect(elementID,groupID) }
         const onMouseOver = () => { this.setState({ ...this.state, elementInfoID: elementID })}
         const onMouseLeave = () => { this.setState({ ...this.state, elementInfoID: null })}
 
+        const elementEl = (
+            <div key={elementKey} ref={setItemElRef} onClick={onClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} className={`element-item ${elementType} ${selected}`} >
+                <Typography>{elementIcon}{elementID}</Typography>
+            </div>                        
+        )
+
         return (
-            <Draggable key={elementKey} draggableId={elementKey} index={index}>
-                { (provided) => (
-                    <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                    >
-                        <div ref={setItemElRef} onClick={onClick} onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} className={`element-item ${elementType} ${selected}`} >
-                            <Typography>{elementIcon}{elementID}</Typography>
-                        </div>                        
-                    </div>
-                )}
-            </Draggable>
+            readOnly ? 
+                elementEl                
+            :
+                <Draggable key={`drag-${elementKey}`} draggableId={elementKey} index={index}>
+                    { (provided) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                        >
+                            { elementEl }                     
+                        </div>
+                    )}
+                </Draggable>
         )
     }
 
@@ -114,7 +121,7 @@ export default class ElementTree extends Component {
     }
 
     renderGroup(elementGroup,groupIndex,oneLeft) {
-        const { onEditGroup, fairCopyConfig, selectedMenu, onUpdateConfig } = this.props
+        const { onEditGroup, fairCopyConfig, selectedMenu, onUpdateConfig, readOnly } = this.props
 
         const onEditName = () => { onEditGroup( groupIndex ) }
         const onDelete = () => {
@@ -133,7 +140,7 @@ export default class ElementTree extends Component {
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}                >
                     <Typography>
-                        <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip>
+                        { !readOnly && <Tooltip title="Grab a row to move it."><i className="grab-handle fa fa-sm fa-grip-horizontal"></i></Tooltip> }
                         {elementGroup.label}
                     </Typography>
                 </AccordionSummary>
@@ -153,16 +160,18 @@ export default class ElementTree extends Component {
                     }
                 </AccordionDetails>
                 <Divider />
-                <AccordionActions>
-                    <Tooltip title="Edit the name of this group."><IconButton onClick={onEditName}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
-                    <Tooltip title="Delete this group."><span><IconButton disabled={oneLeft} onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip>                    
-                </AccordionActions>
+                { !readOnly && 
+                    <AccordionActions>
+                        <Tooltip title="Edit the name of this group."><IconButton onClick={onEditName}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
+                        <Tooltip title="Delete this group."><span><IconButton disabled={oneLeft} onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip>                    
+                    </AccordionActions>        
+                }
             </Accordion>
         )
     }
 
     renderTree() {
-        const { fairCopyConfig, selectedMenu, onEditGroup } = this.props
+        const { fairCopyConfig, selectedMenu, onEditGroup, readOnly } = this.props
         const elementGroups = fairCopyConfig.menus[selectedMenu]
 
         const onAddGroup = () => {
@@ -182,31 +191,37 @@ export default class ElementTree extends Component {
                                 const groupID = `elementGroup-${i}`
                                 const onlyOne = elementGroups.length === 1
                                 return (
-                                    <Draggable key={groupID} draggableId={groupID} index={i}>
-                                        { (provided) => (
-                                            <div
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                            >
-                                                { this.renderGroup(elementGroup,i,onlyOne) }
-                                            </div>
-                                        )}
-                                    </Draggable>
+                                    readOnly ? 
+                                        // readOnly group is not draggable
+                                        this.renderGroup(elementGroup,i,onlyOne)                                                                            
+                                    :                                     
+                                        <Draggable key={groupID} draggableId={groupID} index={i}>
+                                            { (provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                >
+                                                    { this.renderGroup(elementGroup,i,onlyOne) }
+                                                </div>
+                                            )}
+                                        </Draggable>
                                 )
                             })}
                             {provided.placeholder}
                         </div>
                     )}
                 </Droppable>
-                <Button 
-                    onClick={onAddGroup} 
-                    className="add-group-button" 
-                    variant="outlined" 
-                    key="add-group-button"
-                >
-                    <i className="fas fa-plus fa-sm"></i> Add Group
-                </Button>
+                { !readOnly &&
+                    <Button 
+                        onClick={onAddGroup} 
+                        className="add-group-button" 
+                        variant="outlined" 
+                        key="add-group-button"
+                    >
+                        <i className="fas fa-plus fa-sm"></i> Add Group
+                    </Button>                
+                }
             </div>
         )
     }

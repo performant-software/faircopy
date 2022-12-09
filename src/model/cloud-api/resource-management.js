@@ -73,7 +73,7 @@ export function checkOutResources(serverURL, authToken, projectID, resourceIDs) 
                 if( status === 'success' ) {
                     resolve(resource_state)
                 } else {
-                    reject('Failed to commit resources.')
+                    reject('Failed to check out resources.')
                 }
             },
             (errorResponse) => {

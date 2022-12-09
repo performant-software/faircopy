@@ -33,8 +33,8 @@ function addFile( localFilePath, resourceID, zip ) {
     zip.file(resourceID, buffer)
 }
 
-async function checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage ) {
-    const authToken = getAuthToken( email, serverURL )
+async function checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage ) {
+    const authToken = getAuthToken( userID, serverURL )
 
     if( authToken ) {
         const onSuccess = (results) => {
@@ -48,8 +48,10 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     
         const onFail = (error,results) => {
             const resourceStatus = {}
-            for( const result of results ) {
-                resourceStatus[result.resource_guid] = result.error
+            if( results ) {
+                for( const result of results ) {
+                    resourceStatus[result.resource_guid] = result.error
+                }    
             }
             postMessage({ messageType: 'check-in-results', resourceStatus, error })
             console.log(error)
@@ -70,9 +72,22 @@ async function checkIn( email, serverURL, projectID, committedResources, message
     }
 }
 
-async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage ) {
-    const authToken = getAuthToken( email, serverURL )
+async function checkOut( userID, serverURL, projectID, resourceEntries, zip, postMessage ) {
+    const authToken = getAuthToken( userID, serverURL )
     const resources = {}
+
+    // create a list of resource IDs include child resources
+    const resourceIDs = []
+    for( const resourceEntry of resourceEntries ) {
+        const { id: resourceID, type } = resourceEntry
+        if( type === 'teidoc' ) {
+            const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceID, 1)
+            for( const resource of resourceData.remoteResources ) {
+                if( resource.type !== 'header' ) resourceIDs.push(resource.id)
+            }
+        }
+        resourceIDs.push(resourceID)
+    }
 
     if( authToken ) {
         try {
@@ -81,10 +96,13 @@ async function checkOut( email, serverURL, projectID, resourceIDs, zip, postMess
             // get the contents for each resource and add them to the project 
             for( const resourceState of resourceStates ) {
                 const { resource_guid: resourceID, state } = resourceState
+                const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
+
                 if( state === 'success') {
-                    const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
-                    resources[resourceEntry.id] = { resourceEntry, parentEntry, content }
-                    await writeUTF8( resourceEntry.id, content, zip )    
+                    resources[resourceEntry.id] = { state, resourceEntry, parentEntry, content }
+                    writeUTF8( resourceEntry.id, content, zip )    
+                } else {
+                    resources[resourceID] = { state, resourceEntry }
                 }
             }
             postMessage({ messageType: 'check-out-results', resources, error: null })
@@ -103,8 +121,8 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
 
     if( remote ) {
         try {
-            const { serverURL, email, projectID } = projectData
-            const authToken = getAuthToken( email, serverURL )
+            const { serverURL, userID, projectID } = projectData
+            const authToken = getAuthToken( userID, serverURL )
             if( !authToken ) {
                 return { error: "User not logged in." }
             }
@@ -205,9 +223,12 @@ async function openArchive(postMessage,workerData) {
     const zip = await JSZip.loadAsync(data)
     const { cacheFolder, zipPath } = setupTempFolder()
 
-    const fairCopyManifest = await readUTF8(manifestEntryName,zip)
-    let fairCopyConfig = await readUTF8(configSettingsEntryName,zip)
+    const fairCopyManifestJSON = await readUTF8(manifestEntryName,zip)
+    const fairCopyConfigJSON = await readUTF8(configSettingsEntryName,zip)
     const idMap = await readUTF8(idMapEntryName,zip)
+
+    const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
+    const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
@@ -341,14 +362,14 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break                   
         case 'check-in': 
             {
-                const { email, serverURL, projectID, committedResources, message } = msg
-                checkIn( email, serverURL, projectID, committedResources, message, zip, postMessage )
+                const { userID, serverURL, projectID, committedResources, message } = msg
+                checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage )
             }    
             break  
         case 'check-out': 
             {
-                const { email, serverURL, projectID, resourceIDs } = msg
-                checkOut( email, serverURL, projectID, resourceIDs, zip, postMessage )
+                const { userID, serverURL, projectID, resourceEntries } = msg
+                checkOut( userID, serverURL, projectID, resourceEntries, zip, postMessage )
             }    
             break              
         case 'save':

@@ -22,7 +22,7 @@ export default class CheckInDialog extends Component {
             message: "",
             resourcesToCommit: [],
             committedResources: [],
-            done: false,
+            status: 'ready',
             resourceStatus: null,
             errorMessage: null
         }
@@ -44,18 +44,19 @@ export default class CheckInDialog extends Component {
 
     onCheckedOutResources = (event,checkedOutResources) => {
         const { checkInResources } = this.props
-        
         let resourcesToCommit = []
         for( const resourceID of checkInResources ) {
             const resource = checkedOutResources[resourceID]
             // ignore resources that aren't checked out
             if( resource ) {
-                const { parentResource: parentID } = resource
-                if( parentID ) {
-                    const parentResource = checkedOutResources[parentID]
-                    // add local parent resources if they aren't on the list
-                    if( parentResource && parentResource.local && !resourcesToCommit.includes(parentResource) ) {
-                        resourcesToCommit.push(parentResource)    
+                const { id: resourceID, type: resourceType, deleted } = resource                
+                if( resourceType === 'teidoc' ) {
+                    // commit any checked out children, delete if parent is deleted
+                    for( const checkedOutResource of Object.values(checkedOutResources) ) {
+                        if( resourceID === checkedOutResource.parentResource ) {
+                            if( deleted ) checkedOutResource.deleted = true
+                            resourcesToCommit.push(checkedOutResource) 
+                        }
                     }
                 }
                 resourcesToCommit.push(resource)    
@@ -67,29 +68,32 @@ export default class CheckInDialog extends Component {
     onCheckInResults = (event, checkInResult) => {
         const { resourceEntries, resourceStatus, error } = checkInResult
         if( error ) {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, errorMessage: error })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, status: 'done', errorMessage: error })
         } else {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, errorMessage: null })
+            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, status: 'done', errorMessage: null })
         }
     }
 
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourcesToCommit, resourceStatus, done } = this.state
+        const { committedResources, resourcesToCommit, resourceStatus, status } = this.state
 
-        const responseReceived = !!resourceStatus
+        const responseReceived = status === 'done'
         const resourceList = responseReceived ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
         
-        const resourceRows = resources.map( resource => { 
-            const { id: resourceID, local, deleted, localID, name } = resource
+        const resourceRows = []
+        for( const resource of resources ) {
+            const { id: resourceID, type: resourceType, local, deleted, localID, name } = resource
+            // don't display header entries
+            if( resourceType === 'header' ) continue
             const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
-            const editable = isEntryEditable(resource, fairCopyProject.email)
+            const editable = isEntryEditable(resource, fairCopyProject.userID)
             let { icon, label } = getActionIcon(responseReceived, local, editable )
             if( deleted ) icon = 'fa-trash'
 
-            return (
+            resourceRows.push(
                 <TableRow key={`resource-${resource.id}`}>
                     <TableCell {...cellProps} >
                         <i aria-label={label} className={`fa ${icon} fa-lg`}></i>
@@ -103,11 +107,11 @@ export default class CheckInDialog extends Component {
                     <TableCell {...cellProps} >
                         <Typography>{resourceStatusMessage}</Typography>
                     </TableCell>
-            </TableRow>
-            )
-        })
+                </TableRow>
+            )            
+        }
 
-        const caption = done ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
+        const caption = status === 'done' ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
 
         return (
             <div>
@@ -133,12 +137,12 @@ export default class CheckInDialog extends Component {
 
     onCheckIn = () => {              
         const { fairCopyProject } = this.props
-        const { email, serverURL, projectID } = fairCopyProject
+        const { userID, serverURL, projectID } = fairCopyProject
         const { message, resourcesToCommit } = this.state   
         if( message.length > 0 ) {
             const resourceIDs = resourcesToCommit.map( r => r.id )
-            this.setState({ ...this.state, done: true }) 
-            fairCopy.services.ipcSend('checkIn', email, serverURL, projectID, resourceIDs, message )   
+            this.setState({ ...this.state, status: 'loading' }) 
+            fairCopy.services.ipcSend('checkIn', userID, serverURL, projectID, resourceIDs, message )   
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
         }
@@ -174,13 +178,14 @@ export default class CheckInDialog extends Component {
 
     render() {
         const { onClose } = this.props
-        const { done, resourceStatus } = this.state
+        const { status } = this.state
 
-        const responseReceived = !!resourceStatus
-        const loading = done && !responseReceived
-
-        const closeButtonProps = done ? {  variant: "contained", color: "primary", onClick: onClose } : {  variant: "outlined", color: "default", onClick: onClose }
-
+        const checkInButtonProps = status === 'ready' ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } : 
+            {  variant: "outlined", color: "default", enabled: 'false' } 
+        const closeButtonProps = status === 'done' ? {  variant: "contained", color: "primary", onClick: onClose } : 
+            status === 'loading' ?  {  variant: "outlined", color: "default", enabled: 'false' } : 
+                                    {  variant: "outlined", color: "default", onClick: onClose }
+        
         return (
             <Dialog
                 id="CheckInDialog"
@@ -188,15 +193,15 @@ export default class CheckInDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
             >
-                <DialogTitle id="checkin-dialog-title">Check In Resources { loading && inlineRingSpinner('dark') }</DialogTitle>
+                <DialogTitle id="checkin-dialog-title">Check In Resources { status === 'loading' && inlineRingSpinner('dark') }</DialogTitle>
                 <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
                    { this.renderResourceTable() }
                    { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={done} variant="contained" color="primary" onClick={this.onCheckIn}>Check In</Button>
-                    <Button {...closeButtonProps} >Done</Button>
+                    <Button {...checkInButtonProps} >Check In</Button>
+                    <Button {...closeButtonProps} >{ status === 'ready' ? 'Cancel' : 'Done' }</Button>
                 </DialogActions>
             </Dialog>
         )

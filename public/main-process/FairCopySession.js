@@ -49,8 +49,8 @@ class FairCopySession {
 
         // init remote project if this is one
         if( this.remote ) {
-            const { email, serverURL, projectID } = manifestData
-            this.remoteProject = new RemoteProject(this, email, serverURL, projectID )
+            const { userID, serverURL, projectID } = manifestData
+            this.remoteProject = new RemoteProject(this, userID, serverURL, projectID )
         }
 
         this.requestResourceView()
@@ -315,10 +315,11 @@ class FairCopySession {
 
          // mix in remote project data if needed
          if( this.remote ) {
-            const { email, serverURL } = this.projectStore.manifestData
-            imageViewData.email = email
+            const { userID, serverURL, permissions } = this.projectStore.manifestData
+            imageViewData.userID = userID
             imageViewData.serverURL = serverURL
             imageViewData.remote = true
+            imageViewData.permissions = permissions
         }
         const imageView = this.fairCopyApplication.imageViews[resourceEntry.id]
         imageView.webContents.send('imageViewOpened', imageViewData )    
@@ -337,7 +338,7 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()
     }
 
-    checkIn(email, serverURL, projectID, checkInResources, message) {
+    checkIn(userID, serverURL, projectID, checkInResources, message) {
         const { resources } = this.projectStore.manifestData
         const committedResources = []
 
@@ -361,29 +362,8 @@ class FairCopySession {
             const resourceEntry = resources[resourceID]
             // ignore resources that aren't in local manifest
             if( resourceEntry ) {
-                committedResources.push(createCommitEntry(resourceEntry))
-
-                if( resourceEntry.type === 'teidoc' ) {
-                    const doomedIDs = []
-                    // also delete any checked out children 
-                    for( const localResource of Object.values(resources) ) {
-                        const { parentResource } = localResource
-                        if( localResource.type !== 'image' && parentResource === resourceEntry.id ) {
-                            // automatically add header and any children if teidoc is deleted
-                            if( resourceEntry.deleted ) {
-                                localResource.deleted = true
-                                committedResources.push(createCommitEntry(localResource))
-                                doomedIDs.push(localResource.id)
-                            } else if( localResource.type === 'header' ) {
-                                committedResources.push(createCommitEntry(localResource))
-                            }
-                        }
-                    }
-                    if( doomedIDs.length > 0 ) {
-                        const idMap = this.idMapAuthority.removeResources(doomedIDs)
-                        this.projectStore.removeResources(doomedIDs,idMap)         
-                    }   
-                }
+                const resourceCommitEntry = createCommitEntry(resourceEntry)
+                committedResources.push(resourceCommitEntry)
             }
             if( resourceID === homeParentID ) {
                 // if this got checked in, move to root
@@ -391,16 +371,25 @@ class FairCopySession {
             }
         }
 
-        this.projectStore.checkIn(email, serverURL, projectID, committedResources, message)
+        this.projectStore.checkIn(userID, serverURL, projectID, committedResources, message)
     }
 
-    checkOut(email, serverURL, projectID, resourceIDs) {
-        this.projectStore.checkOut(email, serverURL, projectID, resourceIDs)
+    checkOut(userID, serverURL, projectID, resourceEntries) {
+        this.projectStore.checkOut(userID, serverURL, projectID, resourceEntries)
     }
 
-    saveFairCopyConfig(fairCopyConfig) {
+    saveFairCopyConfig(fairCopyConfig, lastAction) {
+        this.projectStore.saveFairCopyConfig(fairCopyConfig, lastAction)
+    }
+
+    checkInConfig(fairCopyConfig, firstAction) {
         this.projectStore.saveFairCopyConfig(fairCopyConfig)
+        this.remoteProject.checkInConfig(fairCopyConfig, firstAction)
     }
+
+    checkOutConfig() {
+        this.remoteProject.checkOutConfig()
+    }    
 
     exportFairCopyConfig(exportPath,fairCopyConfig) {
         this.projectStore.exportFairCopyConfig(exportPath,fairCopyConfig)
@@ -408,6 +397,8 @@ class FairCopySession {
     
     updateProjectInfo(projectInfo) {
         this.projectStore.updateProjectInfo(projectInfo)
+        // TODO if this is a remote project, send the latest name and description to server
+        // permissions etc can only be set from server.
     }
 
     requestExport(resourceEntries,path) {

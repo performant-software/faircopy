@@ -1,4 +1,4 @@
-import {sanitizeID} from "./attribute-validators"
+
 import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
@@ -7,7 +7,7 @@ import {parseText, serializeText} from "./xml"
 import {teiTextTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
-import { getBlankResourceMap, mapResource } from "./id-map"
+import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
 
 const fairCopy = window.fairCopy
 
@@ -26,9 +26,8 @@ export function importResource(importData,parentEntry,fairCopyProject) {
     } else {
         name = fairCopy.services.getBasename(path).trim()
     }
-    const sanitizedID = sanitizeID(name)
-    const conflictingID = parentEntry ? idMap.idMap[parentEntry.localID][sanitizedID] : idMap.idMap[sanitizedID]
-    const localID = !conflictingID ? sanitizedID : idMap.getUniqueID(sanitizedID)  
+    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+    const localID = getUniqueResourceID('resource', siblingIDs, name )
     const existingParentID = parentEntry ? parentEntry.id : null
 
     // if this is an XML file, parse the dom
@@ -60,7 +59,7 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
     const resources = []
 
     if( extractedResources.header ) {
-        let parentEntryID, childLocalIDs
+        let parentEntryID, childLocalIDs, parentName
 
         // if there isn't a parent, create a tei doc, otherwise add resources to current parent
         if( !parentEntry ) {
@@ -72,24 +71,28 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
             // add resources to teidoc
             parentEntryID = teiDocID
             childLocalIDs = []
+            parentName = name
 
             // create the header
             const resource = createResource(extractedResources.header, "TEI Header", "header", parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)      
             resources.push(resource)
         } else {
             // add resources to existing parent
+            parentName = parentEntry.name
             parentEntryID = parentEntry.id
-            childLocalIDs = Object.keys(idMap.idMap[parentEntry.localID])
+            childLocalIDs = Object.keys(idMap.idMap[parentEntry.localID].ids)
         }
 
         // create the resources
+        const typeCounters = {}
         for( const resourceEl of extractedResources.resources ) {
             const xmlID = resourceEl.getAttribute('xml:id')
-            const childSanitizedID = xmlID ? sanitizeID(xmlID) : idMap.getUniqueID('import')
-            const childLocalID = childLocalIDs.includes(childSanitizedID) ? idMap.getUniqueID(childSanitizedID) : childSanitizedID 
-            const resource = createResource(resourceEl, childLocalID, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)
-            resources.push(resource)
+            const childType = determineResourceType(resourceEl)
+            const childLocalID = getUniqueResourceID(childType, childLocalIDs, xmlID, typeCounters)
             childLocalIDs.push(childLocalID)
+            const childName = `${parentName} - ${childLocalID}`
+            const resource = createResource(resourceEl, childName, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)
+            resources.push(resource)
         }
     } else {
         // if there is no header only take the first resource, it gets the name and localID
@@ -196,8 +199,7 @@ function createTEIDoc(name,localID,idMap) {
 }
 
 function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
-    const resourceName = resourceEl.tagName.toLowerCase()
-    const type = ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : (resourceName === 'standoff' ) ? 'standOff' : (resourceName === 'sourcedoc') ? 'sourceDoc' : 'facs'
+    const type = determineResourceType(resourceEl)
     if( type === 'facs' ) {
         const facsResource = createFacs(resourceEl,name,localID,parentID)
         return facsResource  
@@ -206,6 +208,11 @@ function createResource(resourceEl, name, localID, parentID, fairCopyProject, fa
         fairCopyConfig = nextFairCopyConfig
         return {resourceEntry, content, resourceMap}
     }
+}
+
+function determineResourceType(resourceEl) {
+    const resourceName = resourceEl.tagName.toLowerCase()
+    return ( resourceName === 'text' ) ? 'text' :  ( resourceName === 'teiheader' ) ? 'header' : (resourceName === 'standoff' ) ? 'standOff' : (resourceName === 'sourcedoc') ? 'sourceDoc' : 'facs'
 }
 
 function createText(textEl, name, type, localID, parentResourceID, fairCopyProject, fairCopyConfig, learnStructure) {

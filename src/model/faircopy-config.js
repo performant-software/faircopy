@@ -180,8 +180,20 @@ function getDefaultVocabKey(elementName,attributeName) {
     return `${elementName}[${attributeName}]`
 }
 
-export function saveConfig( fairCopyConfig ) {
-    fairCopy.services.ipcSend('requestSaveConfig', JSON.stringify(fairCopyConfig))
+export function saveConfig( fairCopyConfig, lastAction ) {
+    fairCopy.services.ipcSend('requestSaveConfig', fairCopyConfig, lastAction)
+}
+
+export function getConfigStatus( lastAction, userID ) {
+    if( !lastAction ) return 'checked_in'
+    const { action_type: actionType, user } = lastAction
+    const { id: actor } = user
+
+    if( actionType === 'check_out' ) {
+        return actor !== userID ? 'checked_out_by_another' : 'checked_out'
+    } else {
+        return 'checked_in'
+    }
 }
 
 export function exportConfig( exportPath, fairCopyConfig ) {

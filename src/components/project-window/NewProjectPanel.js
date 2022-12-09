@@ -43,6 +43,8 @@ export default class NewProjectPanel extends Component {
                 name: projectName,
                 description,
                 filePath,
+                userID: null,
+                permissions: [],
                 remote: false
             }
             fairCopy.services.ipcSend('requestNewProject', projectInfo )

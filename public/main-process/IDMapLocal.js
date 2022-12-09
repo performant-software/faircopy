@@ -9,7 +9,7 @@ class IDMapLocal {
         // this map is for unsaved changes made during editing 
         this.idMapNext = {}
         // this is the merged, read-only map
-        this.idMap = {}
+        this.idMap = JSON.parse(idMapData)
     }
 
     setResourceMap( resourceMap, localID, parentID ) {

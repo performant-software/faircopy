@@ -9,7 +9,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { getBlankResourceMap, mapResource } from './id-map'
+import { getBlankResourceMap, mapResource, getUniqueResourceID } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -27,7 +27,7 @@ export default class FairCopyProject {
     constructor(projectData) {
         this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
-        this.fairCopyConfig = JSON.parse(projectData.fairCopyConfig)
+        this.fairCopyConfig = projectData.fairCopyConfig
         this.baseConfigJSON = projectData.baseConfig
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
@@ -75,14 +75,15 @@ export default class FairCopyProject {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
-    loadManifest(json) {
-        const fairCopyManifest = JSON.parse(json)
+    loadManifest(fairCopyManifest) {
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description
         this.remote = fairCopyManifest.remote
         this.serverURL = fairCopyManifest.serverURL
-        this.email = fairCopyManifest.email
+        this.userID = fairCopyManifest.userID
         this.projectID = fairCopyManifest.projectID
+        this.permissions = fairCopyManifest.permissions
+        this.configLastAction = fairCopyManifest.configLastAction
     }
     
     updateResource( resourceEntry ) {
@@ -94,8 +95,8 @@ export default class FairCopyProject {
 
         importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
             const { name, localID } = metadata
-            const conflictingID = parentEntry ? this.idMap.idMap[parentEntry.localID][localID] : this.idMap.idMap[localID]
-            const uniqueID = !conflictingID ? localID : this.idMap.getUniqueID(localID) 
+            const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(this.idMap.idMap)
+            const uniqueID = getUniqueResourceID('facs', siblingIDs, localID )
             const existingParentID = parentEntry ? parentEntry.id : null
  
             const resourceEntry = {
@@ -170,12 +171,45 @@ export default class FairCopyProject {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
-            this.fairCopyConfig = fairCopyConfig
-            saveConfig(fairCopyConfig)
+            this.saveFairCopyConfig( fairCopyConfig )
             return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
             return { error: true, errorMessage: e.message, resourceCount: 0 }
         }        
+    }
+
+    saveFairCopyConfig( nextFairCopyConfig, lastAction=null ) {
+        this.fairCopyConfig = nextFairCopyConfig
+        if( lastAction ) {
+            this.configLastAction = lastAction
+        }
+        saveConfig(nextFairCopyConfig, lastAction)
+    }
+
+    checkInConfig( nextFairCopyConfig ) {
+        this.fairCopyConfig = nextFairCopyConfig
+        const firstAction = !!this.configLastAction.firstAction
+        fairCopy.services.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
+    }
+
+    checkOutConfig() {
+        if( !this.configLastAction ) {
+            // if there's no last action, that means server doesn't have config, consider it checked out
+            const lastAction = { action_type: 'check_out', user: { id: this.userID }, firstAction: true }
+            this.configLastAction = lastAction
+            saveConfig( this.fairCopyConfig, lastAction )
+            return true
+        } else {
+            // note: state is updated once we hear that the check out was a success    
+            fairCopy.services.ipcSend('checkOutConfig')    
+            return false
+        }
+    }
+    
+    configCheckedOut() {
+        // create a synthentic lastAction to keep until we get a real one from server. 
+        this.configLastAction = { action_type: 'check_out', user: { id: this.userID } }
+        saveConfig( this.fairCopyConfig, this.configLastAction )
     }
 
     // TODO REFACTOR
@@ -235,9 +269,22 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('addResource', resourceEntry, content, resourceMap )
     }
 
+    getProjectInfo() {
+        return { 
+            name: this.projectName, 
+            description: this.description, 
+            projectFilePath: this.projectFilePath,
+            userID: this.userID,
+            serverURL: this.serverURL,
+            remote: this.remote,
+            permissions: [ ...this.permissions ]
+        } 
+    }
+
     updateProjectInfo( projectInfo ) {
         this.projectName = projectInfo.name
         this.description = projectInfo.description
+        this.permissions = projectInfo.permissions
 
         // if this project is in the recent projects list, update its info in localStorage
         let projects = localStorage.getItem('recentProjects');
@@ -248,8 +295,7 @@ export default class FairCopyProject {
             recentProjectData.description = this.description
             localStorage.setItem('recentProjects', JSON.stringify(projects));
         }
-
-        fairCopy.services.ipcSend('updateProjectInfo', JSON.stringify(projectInfo) )
+        fairCopy.services.ipcSend('updateProjectInfo', projectInfo )
     }
 
     isUnique(targetID,localID, parentID) {
@@ -266,33 +312,33 @@ export default class FairCopyProject {
     isEditable = ( resourceEntry ) => {
         // can always edit in a local project
         if( !this.remote ) return true
-        return isEntryEditable(resourceEntry, this.email )
+        return isEntryEditable(resourceEntry, this.userID )
     }
 
     isLoggedIn = () => {
         if( !this.remote ) return false
-        return isLoggedIn( this.email, this.serverURL )
+        return isLoggedIn( this.userID, this.serverURL )
     }
 }
 
-export function isEntryEditable( resourceEntry, email ) {        
+export function isEntryEditable( resourceEntry, userID ) {        
     if( resourceEntry.local ) return true
     if( resourceEntry.deleted ) return false
 
     // can only edit files checked out by me
     const { lastAction } = resourceEntry
     const { action_type: actionType, user } = lastAction
-    const { email: actor } = user
-    return actionType === 'check_out' && actor === email
+    const { id: actor } = user
+    return actionType === 'check_out' && actor === userID
 }
 
-export function isCheckedOutRemote( resourceEntry, email ) {
+export function isCheckedOutRemote( resourceEntry, userID ) {
     if( resourceEntry.local ) return true
     if( resourceEntry.deleted ) return false
 
     // can only edit files checked out by me
     const { lastAction } = resourceEntry
     const { action_type: actionType, user } = lastAction
-    const { email: actor } = user
-    return actionType === 'check_out' && actor !== email
+    const { id: actor } = user
+    return actionType === 'check_out' && actor !== userID
 }

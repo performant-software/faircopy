@@ -28,18 +28,22 @@ function iiifToFacsimile3( manifestData, nextSurfaceID ) {
         if( canvas.type !== "Canvas" ) throw new Error("Expected a Canvas item.")
         const canvasURI = canvas.id
         const annotationPage = canvas.items[0]
+        const {width: canvasWidth, height: canvasHeight} = canvas
         if( !annotationPage || annotationPage.type !== "AnnotationPage" ) throw new Error("Expected an Annotation Page item.")
         const annotations = annotationPage.items
         for( const annotation of annotations ) {
             if( annotation.type !== "Annotation" ) throw new Error("Expected an Annotation item.")
             if( annotation.motivation === "painting" && annotation.body && annotation.body.type === "Image" ) {
                 const {body} = annotation
-                const {width,height} = body
+                // width and height might be on Annotation or the Canvas
+                const width = isNaN(body.width) ? canvasWidth : body.width
+                const height = isNaN(body.height) ? canvasHeight : body.height
+
                 let imageAPIURL
                 if( body.service ) {
                     for( const serving of body.service ) {
                         const servingType = val('type', serving)
-                        if( servingType === "ImageService2") {
+                        if( servingType === "ImageService2" || servingType === "ImageService3") {
                             imageAPIURL = val('id', serving)
                             break
                         }

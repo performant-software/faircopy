@@ -28,8 +28,8 @@ export default class LoginPanel extends Component {
         
         const onLogin = () => {
             const { serverURL, email, password } = this.state
-            const onSuccess = (authToken) => {
-                onLoggedIn( serverURL, email, authToken )
+            const onSuccess = (id, authToken) => {
+                onLoggedIn( id, serverURL, authToken )
             }
             const onFail = (error) => {
                 this.setState({...this.state, errorMessage: error, password: ''})
@@ -49,13 +49,18 @@ export default class LoginPanel extends Component {
             const value = e.currentTarget.value
             this.setState({...this.state, password: value })
         }
+        const onKeyPress = (e) => {
+            if( e.key === 'Enter' ) {
+                onLogin()
+            }
+        }
 
         const { serverURL, email, password } = this.state
         const saveAllowed = ( serverURL.length > 0 && email.length > 0 && password.length > 0 )
         const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
 
         return (
-            <div id="LoginPanel">
+            <div id="LoginPanel" onKeyPress={onKeyPress} >
                 <Typography variant="h6" component="h2">Login to Remote Server</Typography>
                 <ul>
                     <li>

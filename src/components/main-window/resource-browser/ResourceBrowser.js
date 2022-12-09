@@ -3,14 +3,17 @@ import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, Ta
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { logout, isLoggedIn } from '../../../model/cloud-api/auth'
+import { isLoggedIn } from '../../../model/cloud-api/auth'
+import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
 
 export default class ResourceBrowser extends Component {
 
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject } = this.props
-    const { remote: remoteProject } = fairCopyProject
+    const { remote: remoteProject, permissions } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
+    const checkout = remoteProject ? canCheckOut(permissions) : true
+    const del = remoteProject ? canDelete(permissions) : true
 
     const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
       {
@@ -21,7 +24,8 @@ export default class ResourceBrowser extends Component {
       {
         id: 'check-out',
         label: 'Check Out',
-        action: this.createResourceAction('check-out')
+        action: this.createResourceAction('check-out'),
+        disabled: !checkout
       }
     ]
     
@@ -46,7 +50,8 @@ export default class ResourceBrowser extends Component {
       {
         id: 'delete',
         label: 'Delete',
-        action: this.createResourceAction('delete')
+        action: this.createResourceAction('delete'),
+        disabled: !del
       }
     ]
 
@@ -78,13 +83,9 @@ export default class ResourceBrowser extends Component {
   }
 
   renderLoginButton(buttonProps) {
-    const { onLogin, fairCopyProject } = this.props
-    const { remote, email, serverURL } = fairCopyProject
-    const loggedIn = remote ? isLoggedIn(email, serverURL) : false
-
-    const onLogout = () => {
-      logout(email, serverURL)
-    }
+    const { onLogin, fairCopyProject, onLogout } = this.props
+    const { remote, userID, serverURL } = fairCopyProject
+    const loggedIn = remote ? isLoggedIn(userID, serverURL) : false
 
     return loggedIn ? 
         <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
@@ -92,7 +93,9 @@ export default class ResourceBrowser extends Component {
   }
 
   renderToolbar() {
-    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks } = this.props
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
+    const { remote: remoteProject, permissions } = fairCopyProject
+    const createAllowed = remoteProject ? canCreate(permissions) : true
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -108,9 +111,9 @@ export default class ResourceBrowser extends Component {
       <div className="toolbar">
         { currentView === 'home' && 
           <div className='inline-button-group'>
-            <Button onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-            <Button onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-            <Button onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
+            <Button disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>New Resource</Button>    
+            <Button disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
+            <Button disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
           </div>  
         }
         <Button 
@@ -145,7 +148,7 @@ export default class ResourceBrowser extends Component {
 
   renderResourceTable() {
     const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
-    const { remote: remoteProject, email } = fairCopyProject
+    const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows } = resourceView
 
     const onOpen = (resourceID) => {
@@ -197,8 +200,8 @@ export default class ResourceBrowser extends Component {
       const { id, name, localID, type, local, deleted } = resource 
       const check = !!resourceCheckmarks[id] 
       const resourceIcon = getResourceIcon(type)
-      const editable = isEntryEditable( resource, email )
-      const checkedOutRemote = !editable ? isCheckedOutRemote( resource, email ) : false
+      const editable = isEntryEditable( resource, userID )
+      const checkedOutRemote = !editable ? isCheckedOutRemote( resource, userID ) : false
       const { label, icon } = getActionIcon( false, local, editable|deleted, checkedOutRemote )
       const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
       const textClass = deleted ? 'deleted-resource' : ''

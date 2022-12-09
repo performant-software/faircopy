@@ -1,17 +1,18 @@
 const { WorkerWindow } = require('./WorkerWindow')
+const { migrateConfig } = require('./data-migration')
 
 class RemoteProject {
 
-    constructor( fairCopySession, email, serverURL, projectID ) {
+    constructor( fairCopySession, userID, serverURL, projectID ) {
         const { fairCopyApplication } = fairCopySession
         const {baseDir} = fairCopyApplication
         this.fairCopySession = fairCopySession
-        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), email, serverURL, projectID ).then(() => {
+        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), userID, serverURL, projectID ).then(() => {
             this.remoteProjectWorker.postMessage({ messageType: 'open' })
         })
     }
 
-    initRemoteProjectWorker( baseDir, debug, email, serverURL, projectID ) {
+    initRemoteProjectWorker( baseDir, debug, userID, serverURL, projectID ) {
         this.remoteProjectWorker = new WorkerWindow( baseDir, debug, 'remote-project', (msg) => {
             const { messageType } = msg
 
@@ -28,6 +29,13 @@ class RemoteProject {
                         this.fairCopySession.parentFound( resourceEntry, parentEntry, content, xmlID )   
                     }
                     break
+                case 'project-info-update':
+                    {
+                        const { projectInfo } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToAllWindows('updateProjectInfo', projectInfo )
+                    }
+                    break
                 case 'resource-view-update':
                     {
                         const { resourceView, remoteResources } = msg
@@ -41,7 +49,22 @@ class RemoteProject {
                     idMapAuthority.setBaseMap(idMapData)
                 }
                 break
-                // case 'config-update':
+                case 'config-update':
+                {
+                    const { config, configLastAction } = msg
+                    const { fairCopyApplication, projectStore } = this.fairCopySession
+                    const { baseConfig } = projectStore
+                    const { generatedWith } = projectStore.manifestData
+                    // make sure that the incoming config is migrated to the latest schema                    
+                    migrateConfig(generatedWith, baseConfig, config )
+                    fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
+                }
+                break
+                case 'config-check-out-result':
+                    const { status } = msg
+                    const { fairCopyApplication } = this.fairCopySession
+                    fairCopyApplication.sendToAllWindows('fairCopyConfigCheckedOut', {status} )
+                break
                 case 'resources-updated':
                 {
                     const { resources } = msg
@@ -55,7 +78,7 @@ class RemoteProject {
             }
         })
         
-        return this.remoteProjectWorker.start({email, serverURL, projectID})
+        return this.remoteProjectWorker.start({userID, serverURL, projectID})
     }
 
     close() {
@@ -72,6 +95,14 @@ class RemoteProject {
 
     requestResourceView(resourceView) {
         this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView })
+    }
+
+    checkInConfig(config, firstAction) {
+        this.remoteProjectWorker.postMessage({ messageType: 'checkin-config', config, firstAction })
+    }
+
+    checkOutConfig() {
+        this.remoteProjectWorker.postMessage({ messageType: 'checkout-config' })
     }
 }
 

@@ -29,8 +29,9 @@ import SearchDialog from './dialogs/SearchDialog'
 import LicenseBar from './LicenseBar'
 import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
-import { isEntryEditable, isCheckedOutRemote } from '../../model/FairCopyProject';
+import CheckOutDialog from './dialogs/CheckOutDialog'
 import { bigRingSpinner } from '../common/ring-spinner'
+import { logout } from '../../model/cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -92,9 +93,11 @@ export default class MainWindow extends Component {
             popupMenuAnchorEl: null,
             popupMenuPlacement: null,
             alertMessage: null,
-            expandedGutter: true,
             iiifDialogMode: false,
             textImportDialogMode: false,
+            checkOutMode: false, 
+            checkOutStatus: null, 
+            checkOutError: null,
             searchQuery: null,
             searchResults: {},
             searchFilterOptions: { active: false, elementName: '', attrQs: []},
@@ -165,12 +168,8 @@ export default class MainWindow extends Component {
         }
     }
 
-    onCheckOutResults = (event, resourceIDs, error ) => {
-        const count = resourceIDs.length
-        const s = count === 1 ? '' : 's'
-        const countMessage = `${count} resource${s} checked out.`
-        const message = error ? `${error} ${countMessage}` : countMessage
-        this.onAlertMessage(message)
+    onCheckOutResults = (event, checkOutStatus, checkOutError ) => {
+        this.setState({ ...this.state, checkOutMode: true, checkOutStatus, checkOutError })
     }
 
     onResourceEntryUpdated = (e, resourceEntry) => {
@@ -179,10 +178,15 @@ export default class MainWindow extends Component {
         this.refreshWindow()
     }
 
-    onResourceContentUpdated = (e, resourceID, messageID, resourceContent) => {
+    onResourceContentUpdated = (e, resourceUpdate) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners({ resourceID, messageID, resourceContent })
+        fairCopyProject.notifyListeners(resourceUpdate)
         this.refreshWindow()
+    }
+
+    onUpdateProjectInfo = ( e, projectInfo ) => {
+        const { fairCopyProject } = this.props
+        fairCopyProject.updateProjectInfo( projectInfo )
     }
 
     componentDidMount() {
@@ -194,6 +198,7 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('checkOutResults', this.onCheckOutResults )
         services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
         services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
+        services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
         this.checkReleaseNotes()
     }
 
@@ -206,6 +211,7 @@ export default class MainWindow extends Component {
         services.ipcRemoveListener('checkOutResults', this.onCheckOutResults )
         services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
         services.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
+        services.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     refreshWindow() {
@@ -375,22 +381,8 @@ export default class MainWindow extends Component {
 
     checkOutResources(resourceEntries) {
         const { fairCopyProject } = this.props
-        const { email, serverURL, projectID } = fairCopyProject
-
-        const resourceIDs = []
-        for( const resourceEntry of resourceEntries ) {
-            if( isEntryEditable(resourceEntry, email) ) {
-                this.onAlertMessage(`"${resourceEntry.name}" has already been checked out by you.`)
-                return
-            } else if( isCheckedOutRemote(resourceEntry, email) ) {
-                this.onAlertMessage(`"${resourceEntry.name}" is checked out by another user.`)
-                return 
-            } else {
-                resourceIDs.push(resourceEntry.id)
-            }
-        }
-
-        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, resourceIDs )
+        const { userID, serverURL, projectID } = fairCopyProject
+        fairCopy.services.ipcSend('checkOut', userID, serverURL, projectID, resourceEntries )
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -413,6 +405,13 @@ export default class MainWindow extends Component {
         const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
         this.setState( {...this.state, loginMode: false} )
         fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+    }
+
+    onLogOut = () => {
+        const { fairCopyProject } = this.props
+        const { userID, serverURL } = fairCopyProject
+        logout(userID, serverURL)
+        this.setState( {...this.state} )
     }
 
     onEditResource = () => {
@@ -622,7 +621,7 @@ export default class MainWindow extends Component {
     }
 
     renderEditors() {
-        const { openResources, selectedResource, leftPaneWidth, expandedGutter, resourceViews } = this.state
+        const { openResources, selectedResource, leftPaneWidth, resourceViews } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
         const {currentView} = resourceViews
 
@@ -659,7 +658,6 @@ export default class MainWindow extends Component {
                         onErrorCountChange={onErrorCountChange}
                         onSave={onSave}
                         leftPaneWidth={leftPaneWidth}
-                        expandedGutter={expandedGutter}
                         currentView={currentView}
                     ></TEIEditor>
                 )        
@@ -709,6 +707,7 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         onLogin={this.onLogin}
+                        onLogout={this.onLogOut}
                         teiDoc={parentEntry}
                         setResourceCheckmark={this.setResourceCheckmark}
                         setAllCheckmarks={this.setAllCheckmarks}
@@ -746,9 +745,10 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        
         const { fairCopyProject, appConfig } = this.props
-        const { idMap, email, serverURL } = fairCopyProject
+        const { idMap, serverURL } = fairCopyProject
         const resourceView = resourceViews[resourceViews.currentView]
         const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
@@ -863,9 +863,13 @@ export default class MainWindow extends Component {
                     checkInResources={checkInResources}
                     onClose={()=>{ this.setState( {...this.state, checkInMode: false} )}}
                 ></CheckInDialog> }
+                { checkOutMode && <CheckOutDialog
+                    checkOutStatus={checkOutStatus}
+                    checkOutError={checkOutError}
+                    onClose={()=>{ this.setState( {...this.state, checkOutMode: false, checkOutStatus: null, checkOutError: null} )}}
+                ></CheckOutDialog> }
                 { loginMode && <LoginDialog 
                     onClose={()=>{ this.setState( {...this.state, loginMode: false} )}}
-                    email={email} 
                     serverURL={serverURL} 
                     onLoggedIn={this.onLoggedIn}
                 ></LoginDialog> }
@@ -911,8 +915,15 @@ export default class MainWindow extends Component {
         if( ctrlDown || commandDown ) {
             switch(key) {
                 case '/':
-                    const {expandedGutter} = this.state
-                    this.setState({...this.state, expandedGutter: !expandedGutter })    
+                    {
+                        const { selectedResource, openResources } = this.state
+                        const currentResource = selectedResource ? openResources[selectedResource] : null
+                        if( currentResource instanceof TEIDocument ) {
+                            const {expandedGutter} = currentResource
+                            currentResource.setExpandedGutter(!expandedGutter)
+                            currentResource.refreshView()  
+                        }
+                    }
                     break
                 // TODO
                 // case ' ':

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button } from '@material-ui/core';
+import { canCheckOut } from '../../../model/permissions'
 
 const fairCopy = window.fairCopy
 
@@ -8,13 +9,15 @@ export default class ReadOnlyToolbar extends Component {
     onCheckOut = () => {
         const { teiDocument } = this.props
         const { fairCopyProject } = teiDocument
-        const { email, serverURL, projectID } = fairCopyProject
-        fairCopy.services.ipcSend('checkOut', email, serverURL, projectID, [ teiDocument.resourceID ] )
+        const { userID, serverURL, projectID } = fairCopyProject
+        fairCopy.services.ipcSend('checkOut', userID, serverURL, projectID, [ teiDocument.resourceEntry ] )
     }
 
     render() {
         const { teiDocument } = this.props
-        const disabled = !teiDocument.fairCopyProject.isLoggedIn()
+        const { fairCopyProject } = teiDocument
+        const { permissions } = fairCopyProject
+        const disabled = !fairCopyProject.isLoggedIn() || !canCheckOut(permissions)
         const header = teiDocument.resourceType === 'header'
 
         return (

@@ -99,12 +99,14 @@ class ProjectStore {
             return
         }
         const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-        const baseConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
+        const baseConfigJSON = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
 
-        if( !teiSchema || !baseConfig ) {
+        if( !teiSchema || !baseConfigJSON ) {
             log.info('Application data is missing or corrupted.')
             return
         }
+
+        this.baseConfig = JSON.parse(baseConfigJSON)
 
         let { fairCopyManifest, fairCopyConfig, idMap, projectFilePath } = project
 
@@ -114,11 +116,7 @@ class ProjectStore {
         }
 
         // project store keeps a copy of the manifest data
-        this.manifestData = JSON.parse(fairCopyManifest)
-        if( !this.manifestData ) {
-            log.info('Error parsing project manifest.')
-            return
-        }
+        this.manifestData = fairCopyManifest
 
         const currentVersion = this.fairCopyApplication.config.version
         if( !this.fairCopyApplication.isDebugMode() && !compatibleProject(this.manifestData, currentVersion) ) {
@@ -132,8 +130,8 @@ class ProjectStore {
         this.manifestData = migrateManifestData(this.manifestData)
         
         // if elements changed in config, migrate project config
-        this.migratedConfig = migrateConfig(this.manifestData.generatedWith,baseConfig,fairCopyConfig)
-        fairCopyConfig = this.migratedConfig
+        migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig)
+        this.migratedConfig = fairCopyConfig
 
         // apply any migrations to ID Map data
         idMap = migrateIDMap(this.manifestData.generatedWith,idMap,this.manifestData.resources)
@@ -145,7 +143,7 @@ class ProjectStore {
             })    
         }
 
-        const projectData = { projectFilePath, fairCopyManifest: JSON.stringify(this.manifestData), teiSchema, fairCopyConfig, baseConfig, idMap }
+        const projectData = { projectFilePath, fairCopyManifest: this.manifestData, teiSchema, fairCopyConfig, baseConfig: this.baseConfig, idMap }
         this.onProjectOpened( projectData )
     }
 
@@ -181,8 +179,8 @@ class ProjectStore {
     }
 
     requestExport(resourceEntries,path) {
-        const { resources: localEntries, remote, email, serverURL, projectID } = this.manifestData
-        const projectData = { localEntries, remote, email, serverURL, projectID }
+        const { resources: localEntries, remote, userID, serverURL, projectID } = this.manifestData
+        const projectData = { localEntries, remote, userID, serverURL, projectID }
         for( const resourceEntry of resourceEntries ) {
             this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, projectData, path })
         }
@@ -286,10 +284,18 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
     }
 
-    saveFairCopyConfig( fairCopyConfig ) {
+    saveFairCopyConfig( fairCopyConfig, lastAction=null ) {
         this.migratedConfig = null
-        this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: fairCopyConfig })
-        this.saveManifest()
+        if( lastAction ) {
+            this.manifestData.configLastAction = lastAction
+        }
+        const configData = JSON.stringify(fairCopyConfig)
+        if( configData && configData.length > 0 ) {
+            this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: configData })
+            this.saveManifest()    
+        } else {
+            log.error(`Cannot save empty FairCopy Config.`)
+        }
     }
 
     save() {
@@ -312,20 +318,20 @@ class ProjectStore {
         }
     }
 
-    updateProjectInfo(projectInfoJSON) {
-        const projectInfo = JSON.parse(projectInfoJSON)
-        const { name, description } = projectInfo
+    updateProjectInfo(projectInfo) {
+        const { name, description, permissions } = projectInfo
         this.manifestData.projectName = name
         this.manifestData.description = description    
+        this.manifestData.permissions = permissions
         this.saveManifest()
     }
 
-    checkIn(email, serverURL, projectID, committedResources, message) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-in', email, serverURL, projectID, committedResources, message })
+    checkIn(userID, serverURL, projectID, committedResources, message) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-in', userID, serverURL, projectID, committedResources, message })
     }
 
-    checkOut(email, serverURL, projectID, resourceIDs ) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-out', email, serverURL, projectID, resourceIDs })
+    checkOut(userID, serverURL, projectID, resourceEntries ) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-out', userID, serverURL, projectID, resourceEntries })
     }
 
     openImageResource(requestURL) {
@@ -347,23 +353,28 @@ class ProjectStore {
         }
     }
 
-    checkOutResults(resources,error) {
-        this.fairCopyApplication.sendToMainWindow('checkOutResults', Object.keys(resources), error ) 
+    checkOutResults(resources,error) {        
+        const checkOutStatus = []
         for( const resource of Object.values(resources) ) {
-            const { resourceEntry, parentEntry, content } = resource
-            this.manifestData.resources[resourceEntry.id] = resourceEntry
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
-            this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
-            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', resourceEntry.id, 'check-out-messsage', content ) 
+            const { state, resourceEntry, parentEntry, content } = resource
+            if( state === 'success') {
+                this.manifestData.resources[resourceEntry.id] = resourceEntry
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
+                this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID: resourceEntry.id, messageID: 'check-out-messsage', resourceContent: content })     
+            } 
+            checkOutStatus.push({ state, resourceEntry })
         }
         const idMap = this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resources)
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
         this.saveManifest()      
+
+        this.fairCopyApplication.sendToMainWindow('checkOutResults', checkOutStatus, error ) 
         this.fairCopyApplication.fairCopySession.requestResourceView()
     }
 
     checkInResults(resourceStatus, error) {
-        const { email } = this.manifestData
+        const { userID } = this.manifestData
         const resourceEntries = []
         for( const resourceID of Object.keys(resourceStatus) ) {
             const resourceEntry = this.manifestData.resources[resourceID]
@@ -371,7 +382,7 @@ class ProjectStore {
                 // remove remote resources from project file and manifest, update all windows 
                 this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
                 resourceEntry.local = false
-                resourceEntry.lastAction = { action_type: 'check_in', user: { email } }
+                resourceEntry.lastAction = { action_type: 'check_in', user: { id: userID } }
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
                 delete this.manifestData.resources[resourceID]     
             }

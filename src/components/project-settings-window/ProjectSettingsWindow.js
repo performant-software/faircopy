@@ -3,6 +3,9 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
+import { canConfigAdmin } from '../../model/permissions'
+import { getConfigStatus } from '../../model/faircopy-config'
+import { inlineRingSpinner } from '../common/ring-spinner'
 
 export default class ProjectSettingsWindow extends Component {
 
@@ -11,17 +14,8 @@ export default class ProjectSettingsWindow extends Component {
 
         // make an editable copy of the config
         const { fairCopyProject } = props
-        const { remote, email, serverURL } = fairCopyProject
         const fairCopyConfig = JSON.parse(JSON.stringify(fairCopyProject.fairCopyConfig))
-
-        const projectInfo = { 
-            name: fairCopyProject.projectName, 
-            description: fairCopyProject.description, 
-            projectFilePath: fairCopyProject.projectFilePath,
-            email,
-            serverURL,
-            remote
-        } 
+        const projectInfo = fairCopyProject.getProjectInfo()
 
         this.state = {
             fairCopyConfig,
@@ -49,8 +43,11 @@ export default class ProjectSettingsWindow extends Component {
     }
 
     renderContentArea() {
-        const { teiSchema } = this.props.fairCopyProject
+        const { checkingOut } = this.props
+        const { teiSchema, remote, configLastAction, userID } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
+        const lockStatus = getConfigStatus( configLastAction, userID )
+        const canEdit = !remote || (!checkingOut && lockStatus === 'checked_out')
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
@@ -78,6 +75,7 @@ export default class ProjectSettingsWindow extends Component {
                 { selectedPage === 'elements' && <SchemaEditor
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
+                    readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></SchemaEditor> }
                 { selectedPage === 'vocabs' && <div>
@@ -86,15 +84,53 @@ export default class ProjectSettingsWindow extends Component {
             </div>
         )
     }
-
-    render() {
-        const { onClose, onSave } = this.props
+    
+    renderActions() {
+        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn, checkingOut, checkOutError } = this.props
+        const { permissions, configLastAction, userID, remote } = fairCopyProject
+        const canConfig = canConfigAdmin(permissions)
+        const lockStatus = getConfigStatus( configLastAction, userID )
 
         const onSaveConfig = () => {
             const { fairCopyConfig, projectInfo } = this.state
-            onSave(fairCopyConfig, projectInfo)
+            onSave(fairCopyConfig, projectInfo, false)
+        }
+        
+        const onLock = () => {
+            if( lockStatus === 'checked_in' ) {
+                onCheckOut()
+            } else if( lockStatus === 'checked_out') {
+                const { fairCopyConfig } = this.state
+                onCheckIn(fairCopyConfig)
+            }
         }
 
+        const lockIcon = getLockIcon(lockStatus)
+        const lockLabel = getLockLabel(lockStatus)
+        const lockDisabled = lockStatus === 'checked_out_by_another' 
+        const spinner = checkingOut ? inlineRingSpinner('dark') : null
+
+        return (
+            <div>
+                { remote && canConfig && <div className="window-actions-left">
+                    <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
+                    { checkOutError && <Typography className="error-message" >Error: {checkOutError}</Typography>}
+                </div> }
+                { !remote || (canConfig && lockStatus === 'checked_out') ? 
+                    <div className="window-actions-right">
+                        <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
+                        <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
+                    </div>            
+                :
+                    <div className="window-actions-right">
+                        <Button className="action-button" variant="contained" onClick={onClose}>Close</Button>                        
+                    </div>                
+                }
+            </div>    
+        )
+    }
+
+    render() {
         return (
             <div id="ProjectSettingsWindow">
                 <div className="title" >
@@ -105,12 +141,17 @@ export default class ProjectSettingsWindow extends Component {
                     { this.renderContentArea() }
                 </div>
                 <div className="footer">
-                    <div className="window-actions">
-                        <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
-                        <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>
-                    </div>
+                    { this.renderActions() }
                 </div>
             </div>
         )
     }
+}
+
+function getLockIcon(lockStatus) {
+    return lockStatus === 'checked_in' ? 'fas fa-inbox-out' : lockStatus === 'checked_out' ? 'fas fa-inbox-in' : 'far fa-inbox-in'
+}
+
+function getLockLabel(lockStatus) {
+    return lockStatus === 'checked_in' ? 'Check Out' : lockStatus === 'checked_out' ? 'Check In' : 'Checked Out'
 }

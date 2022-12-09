@@ -126,7 +126,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderAttributeField(elementName,attrName,value,attrSpec,onChange) {
-        const { readOnly } = this.props
+        const { readOnly, canEditConfig } = this.props
         const { dataType, minOccurs, maxOccurs, valListType } = attrSpec
 
         if( readOnly ) {
@@ -172,6 +172,7 @@ export default class ParameterDrawer extends Component {
                     value={value}                        
                     onChangeCallback={onChange}
                     vocabEditorCallback={this.openVocabEditor}
+                    canEditConfig={canEditConfig}
                 ></TEIEnumeratedField>
             )  
         }
@@ -344,7 +345,7 @@ export default class ParameterDrawer extends Component {
     }
 
     renderElement(element,count,key) {
-        const { teiDocument, readOnly } = this.props
+        const { teiDocument, readOnly, canEditConfig } = this.props
         const { teiSchema, fairCopyConfig } = teiDocument.fairCopyProject
         const { elements } = teiSchema
         const configElements = fairCopyConfig.elements
@@ -379,7 +380,7 @@ export default class ParameterDrawer extends Component {
                     { this.renderAttributes(element,elementID,attrState) }
                     { inactiveElement && this.renderInactiveError(elementID) }
                 </CardContent>
-                { !readOnly && 
+                { !readOnly && canEditConfig && 
                     <CardActions>
                         <Button variant="outlined" onClick={openAttributeDialog}>Add/Remove Attributes</Button>
                         { inactiveElement && <Button onClick={onAddToSchema} variant="outlined">Add element to schema</Button> }
