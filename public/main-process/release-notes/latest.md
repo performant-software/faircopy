@@ -2,6 +2,18 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.3
+
+In FairCopy v1.1.3, we add functionality for teams using ArchivEngine. ArchivEngine is our team collaboration server, currently in development at Performant. If you are interested in trying it out, please contact us. This version allows a project lead to configure the schema for the entire project. 
+
+### Improvements
+
+* Users with the appropriate permissions can now configure the schema for the project.
+* Performance improvements in the TEI editor on large text resources.
+* Improved auto-generated names and IDs for resources on import.
+* Simplify TEI Document check in/check out process.
+* Display user permissions on the settings page.
+
 ## Version 1.1.2
 
 This version addresses a couple of bugs found in recent testing.
