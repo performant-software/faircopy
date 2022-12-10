@@ -90,28 +90,27 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateResource', resourceEntry )
     }
 
-    importIIIF( url, parentEntry, onError, onSuccess ) {    
-        const nextSurfaceID = parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0
+    getNextSurfaceID(parentEntry) {
+        return parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0   
+    }
 
-        importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
-            const { name, localID } = metadata
-            const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(this.idMap.idMap)
-            const uniqueID = getUniqueResourceID('facs', siblingIDs, localID )
-            const existingParentID = parentEntry ? parentEntry.id : null
- 
-            const resourceEntry = {
-                id: uuidv4(),
-                name,
-                localID: uniqueID,
-                type: 'facs',
-                parentResource: existingParentID,
-                ...cloudInitialConfig
-            }
-    
-            const resourceMap = mapResource( resourceEntry, facs )
-            this.addResource(resourceEntry, xml, resourceMap)
-            onSuccess()
-        })    
+    importIIIF( name, requestedID, facsData, parentEntry ) {    
+        const xml = facsimileToTEI(facsData)
+        const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(this.idMap.idMap)
+        const uniqueID = getUniqueResourceID('facs', siblingIDs, requestedID )
+        const existingParentID = parentEntry ? parentEntry.id : null
+
+        const resourceEntry = {
+            id: uuidv4(),
+            name,
+            localID: uniqueID,
+            type: 'facs',
+            parentResource: existingParentID,
+            ...cloudInitialConfig
+        }
+
+        const resourceMap = mapResource( resourceEntry, facs )
+        this.addResource(resourceEntry, xml, resourceMap)
     }
 
     newResource( name, localID, type, parentResourceID ) {

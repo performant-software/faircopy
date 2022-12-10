@@ -1,13 +1,12 @@
 import axios from 'axios';
-import {iiifToFacsimile, facsimileToTEI} from './convert-facs'
+import { parsePresentation } from './iiif-presentation';
 
-export function importIIIFManifest( manifestURL, nextSurfaceID, onError, onSuccess ) {
+export function importPresentationEndpoint(manifestURL, nextSurfaceID, onSuccess, onError) {
     axios.get(manifestURL).then(
         (resp) => {
             try {
-                const { facsData, metadata } = iiifToFacsimile(resp.data,nextSurfaceID)
-                const facsXML = facsimileToTEI(facsData)
-                onSuccess(facsXML,facsData,metadata)
+                const iiifTree = parsePresentation(resp.data, nextSurfaceID)
+                onSuccess(iiifTree)
             } catch(error) {
                 onError(`Unable to parse IIIF manifest: '${error}`)      
             }

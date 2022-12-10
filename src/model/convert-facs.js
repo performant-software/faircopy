@@ -2,19 +2,7 @@ import {facsTemplate} from "./tei-template"
 import { getLocalString } from './iiif'
 import { sanitizeID } from './attribute-validators'
 
-// Supports IIIF v2 and v3
-export function iiifToFacsimile( manifestData, nextSurfaceID ) {
-    const context = manifestData["@context"]
-    if( context.includes("http://iiif.io/api/presentation/3/context.json") ) {
-        return iiifToFacsimile3( manifestData, nextSurfaceID )
-    }
-    if( context.includes("http://iiif.io/api/presentation/2/context.json") ) {
-        return iiifToFacsimile2( manifestData, nextSurfaceID )
-    }
-    throw new Error("Expected IIIF Presentation API context 2 or 3.")
-}
-
-function iiifToFacsimile3( manifestData, nextSurfaceID ) {
+export function manifestToFacsimile3( manifestData, nextSurfaceID ) {
     if( manifestData.type !== "Manifest" ) throw new Error("Expected a manifest as the root object.")
 
     const canvases = manifestData.items
@@ -83,7 +71,7 @@ function iiifToFacsimile3( manifestData, nextSurfaceID ) {
     }
 }
 
-function iiifToFacsimile2( manifestData, nextSurfaceID ) {
+export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
     const { sequences } = manifestData
     const manifestID = val('id', manifestData)
     const manifestLabel = str( manifestData.label )
