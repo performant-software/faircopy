@@ -1,5 +1,5 @@
 import {facsTemplate} from "./tei-template"
-import { getLocalString } from './iiif'
+import { getLocalString } from './iiif-util'
 import { sanitizeID } from './attribute-validators'
 
 export function manifestToFacsimile3( manifestData, nextSurfaceID ) {

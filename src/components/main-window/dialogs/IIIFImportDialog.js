@@ -5,7 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@m
 import IIIFTreeView from '../IIIFTreeView';
 
 import { validateURL } from '../../../model/attribute-validators'
-import { importPresentationEndpoint } from '../../../model/iiif'
+import { importPresentationEndpoint } from '../../../model/iiif-presentation'
 
 
 export default class IIIFImportDialog extends Component {

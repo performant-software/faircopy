@@ -6,13 +6,35 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 export default class IIIFTreeView extends Component {
 
-  renderTreeItems() {
-    const { iiifTree } = this.props
-    const { id, name, surfaces } = iiifTree
+  renderFacs(facsItem) {
+    const { id, name, surfaces } = facsItem
 
     return (
       <StyledTreeItem nodeId={id} label={`${name} (${surfaces.length})`} />
     )
+  }
+
+  renderCollection(collectionItem) {
+    const { id, name } = collectionItem
+
+    const children = []
+
+    return (
+      <StyledTreeItem nodeId={id} label={name}>
+        { children }
+      </StyledTreeItem>
+    )
+  }
+
+  renderTreeItem(treeItem) {
+    const { type } = treeItem
+    if( type === 'facs' ) {
+      return this.renderFacs(treeItem)
+    } else if( type === 'collection') {
+      return this.renderCollection(treeItem)
+    } else {
+      return null
+    }
   }
 
   render() {
@@ -26,7 +48,7 @@ export default class IIIFTreeView extends Component {
                 defaultExpandIcon={<PlusSquare />}
                 defaultEndIcon={<CloseSquare />}
             >
-               { this.renderTreeItems() }
+               { this.renderTreeItem(iiifTree) }
             </TreeView>
         </div>
     );
