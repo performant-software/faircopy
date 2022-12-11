@@ -6,33 +6,31 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 export default class IIIFTreeView extends Component {
 
-    render() {
-        return (
-            <div id='IIIFTreeView'>
-                <TreeView
-                    defaultExpanded={['1']}
-                    defaultCollapseIcon={<MinusSquare />}
-                    defaultExpandIcon={<PlusSquare />}
-                    defaultEndIcon={<CloseSquare />}
-                >
-                    <StyledTreeItem nodeId="1" label="Main">
-                    <StyledTreeItem nodeId="2" label="Hello" />
-                    <StyledTreeItem nodeId="3" label="Subtree with children">
-                        <StyledTreeItem nodeId="6" label="Hello" />
-                        <StyledTreeItem nodeId="7" label="Sub-subtree with children">
-                        <StyledTreeItem nodeId="9" label="Child 1" />
-                        <StyledTreeItem nodeId="10" label="Child 2" />
-                        <StyledTreeItem nodeId="11" label="Child 3" />
-                        </StyledTreeItem>
-                        <StyledTreeItem nodeId="8" label="Hello" />
-                    </StyledTreeItem>
-                    <StyledTreeItem nodeId="4" label="World" />
-                    <StyledTreeItem nodeId="5" label="Something something" />
-                    </StyledTreeItem>
-                </TreeView>
-            </div>
-        );
-    }
+  renderTreeItems() {
+    const { iiifTree } = this.props
+    const { id, name, surfaces } = iiifTree
+
+    return (
+      <StyledTreeItem nodeId={id} label={`${name} (${surfaces.length})`} />
+    )
+  }
+
+  render() {
+    const { iiifTree } = this.props
+
+    return (
+        <div id='IIIFTreeView'>
+            <TreeView
+                defaultExpanded={[ iiifTree.id ]}
+                defaultCollapseIcon={<MinusSquare />}
+                defaultExpandIcon={<PlusSquare />}
+                defaultEndIcon={<CloseSquare />}
+            >
+               { this.renderTreeItems() }
+            </TreeView>
+        </div>
+    );
+  }
 }
 
 

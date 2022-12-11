@@ -60,14 +60,14 @@ export function manifestToFacsimile3( manifestData, nextSurfaceID ) {
         } 
     }
 
-    const metadata = parseMetadata(manifestID,manifestLabel)
+    const { name, requestedID } = parseMetadata(manifestID,manifestLabel)
 
     return { 
-        facsData: {
-            manifestID,
-            surfaces    
-        },
-        metadata
+        id: requestedID,
+        name,
+        type: 'facs',
+        manifestID,
+        surfaces    
     }
 }
 
@@ -104,14 +104,14 @@ export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
             canvasURI
         })
     }
-    const metadata = parseMetadata(manifestID,manifestLabel)
+    const { name, requestedID } = parseMetadata(manifestID,manifestLabel)
 
     return { 
-        facsData: {
-            manifestID,
-            surfaces    
-        },
-        metadata
+        id: requestedID,
+        name,
+        type: 'facs',
+        manifestID,
+        surfaces    
     }
 }
 
@@ -199,11 +199,11 @@ function parseMetadata(manifestID,manifestLabel) {
     // take the pathname and convert it to a valid local ID
     const url = new URL(manifestID)
     const cleanID = sanitizeID(url.pathname)
-    const localID = cleanID ? cleanID : `import_${Date.now()}`
+    const requestedID = cleanID ? cleanID : `import_${Date.now()}`
 
     return {
         name,
-        localID
+        requestedID
     }
 }
 

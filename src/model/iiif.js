@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { parsePresentation } from './iiif-presentation';
+import { parseIIIFPresentation } from './iiif-presentation';
 
 export function importPresentationEndpoint(manifestURL, nextSurfaceID, onSuccess, onError) {
     axios.get(manifestURL).then(
         (resp) => {
             try {
-                const iiifTree = parsePresentation(resp.data, nextSurfaceID)
+                const iiifTree = parseIIIFPresentation(resp.data, nextSurfaceID)
                 onSuccess(iiifTree)
             } catch(error) {
                 onError(`Unable to parse IIIF manifest: '${error}`)      

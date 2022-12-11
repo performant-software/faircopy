@@ -16,6 +16,7 @@ export default class IIIFImportDialog extends Component {
             url: "",
             iiifTree: null,            
             loading: false,
+            selection: null,
             validationErrors: {}
         }
         this.state = this.initialState
@@ -39,7 +40,7 @@ export default class IIIFImportDialog extends Component {
             }
     
             const onSuccess = (iiifTree) => {
-                this.setState({ ...this.state, loading: false, validationErrors: null, iiifTree })
+                this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree })
             }
     
             const nextSurfaceID = fairCopyProject.getNextSurfaceID(teiDocEntry)
@@ -104,7 +105,7 @@ export default class IIIFImportDialog extends Component {
             onClose()
         }
 
-        const { loading, iiifTree } = this.state
+        const { selection, loading, iiifTree } = this.state
 
         return (
             <Dialog
@@ -122,7 +123,7 @@ export default class IIIFImportDialog extends Component {
                     ></IIIFTreeView> }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={loading} variant="contained" color="primary" onClick={this.onSaveResource}>Import</Button>
+                    <Button disabled={loading || !selection } variant="contained" color="primary" onClick={this.onSaveResource}>Import</Button>
                     <Button disabled={loading} variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

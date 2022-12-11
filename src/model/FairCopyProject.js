@@ -2,13 +2,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
-import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
+import { facsimileToTEI } from './convert-facs'
 import { getBlankResourceMap, mapResource, getUniqueResourceID } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
@@ -94,8 +94,7 @@ export default class FairCopyProject {
         return parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0   
     }
 
-    importIIIF( name, requestedID, facsData, parentEntry ) {    
-        const xml = facsimileToTEI(facsData)
+    importIIIF( name, requestedID, facs, parentEntry ) {    
         const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(this.idMap.idMap)
         const uniqueID = getUniqueResourceID('facs', siblingIDs, requestedID )
         const existingParentID = parentEntry ? parentEntry.id : null
@@ -110,6 +109,7 @@ export default class FairCopyProject {
         }
 
         const resourceMap = mapResource( resourceEntry, facs )
+        const xml = facsimileToTEI(facs)
         this.addResource(resourceEntry, xml, resourceMap)
     }
 

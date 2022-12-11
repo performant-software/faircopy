@@ -1,3 +1,4 @@
+import { manifestToFacsimile2 } from './convert-facs'
 
 export function parseIIIFPresentation( presentation, nextSurfaceID ) {
     const context = presentation["@context"]
@@ -11,6 +12,5 @@ function parsePresentation2( presentation, nextSurfaceID ) {
     // there may be collections or manifests here, 
     // or the top level object might be a single manifest
     // @type "sc:Collection"
-    const { facsData, metadata } = manifestToFacsimile2(presentation,nextSurfaceID)
-    // TODO what does a iiifTree look like with just one manifest in it?
+    return manifestToFacsimile2(presentation,nextSurfaceID)
 }
