@@ -74,10 +74,15 @@ function presentationToCollection2( collection, nextSurfaceID ) {
         }    
     }
 
-    return {
+    return members.length > 0 ? {
         id,
         name,
         type: 'collection',
         members
+    } :
+    {
+        id,
+        name,
+        type: 'collection-ref',
     }
 }

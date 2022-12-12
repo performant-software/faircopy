@@ -49,6 +49,12 @@ export default class IIIFImportDialog extends Component {
         }
     }
 
+    onClickItem = (itemID) => {
+        // TODO
+        // go get this item and then add it to the right spot on the tree
+        // importPresentationEndpoint(url, nextSurfaceID, onSuccess, onError)
+    }
+
     onSaveResource = () => {
         const { onClose } = this.props
         // TODO
@@ -120,6 +126,7 @@ export default class IIIFImportDialog extends Component {
                     { this.renderURLField() }
                     { iiifTree && <IIIFTreeView
                         iiifTree={iiifTree}
+                        onClickItem={this.onClickItem}
                     ></IIIFTreeView> }
                 </DialogContent>
                 <DialogActions>

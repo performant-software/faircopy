@@ -22,6 +22,19 @@ export default class IIIFTreeView extends Component {
     )
   }
 
+  renderCollectionRef(collectionItem) {
+    const { onClickItem } = this.props
+    const { id, name } = collectionItem
+
+    const onClick = () => {
+      onClickItem(id)
+    }
+
+    return (
+      <StyledTreeItem onClick={onClick} key={id} nodeId={id} label={name} />
+    )
+  }
+
   renderCollection(collectionItem) {
     const { id, name, members } = collectionItem
 
@@ -46,6 +59,8 @@ export default class IIIFTreeView extends Component {
       return this.renderFacsRef(treeItem)
     } else if( type === 'collection') {
       return this.renderCollection(treeItem)
+    } else if( type === 'collection-ref') {
+      return this.renderCollectionRef(treeItem)
     } else {
       return null
     }
