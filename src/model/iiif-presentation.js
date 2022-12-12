@@ -39,8 +39,21 @@ function presentationToCollection2( collection, nextSurfaceID ) {
     const members = []
 
     function parseMember(member) {
-        // TODO
-        members.push(parsePresentation2(member, nextSurfaceID))
+        if( member['@type'] === "sc:Manifest") {
+            if( member.sequences ) {
+                // parse embedded manifest
+                members.push(manifestToFacsimile2(member,nextSurfaceID))
+            } else {
+                // parse manifest reference
+                members.push({
+                    id: member['@id'],
+                    type: 'facs-ref',
+                    name: member.label
+                })
+            }
+        } else if( member['@type'] === "sc:Collection" ) {
+            members.push(presentationToCollection2(member,nextSurfaceID))
+        }
     }
 
     if( collection.collections ) {
@@ -64,6 +77,7 @@ function presentationToCollection2( collection, nextSurfaceID ) {
     return {
         id,
         name,
+        type: 'collection',
         members
     }
 }

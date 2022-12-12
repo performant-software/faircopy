@@ -10,17 +10,29 @@ export default class IIIFTreeView extends Component {
     const { id, name, surfaces } = facsItem
 
     return (
-      <StyledTreeItem nodeId={id} label={`${name} (${surfaces.length})`} />
+      <StyledTreeItem key={id} nodeId={id} label={`${name} (${surfaces.length})`} />
+    )
+  }
+
+  renderFacsRef(facsItem) {
+    const { id, name } = facsItem
+
+    return (
+      <StyledTreeItem key={id} nodeId={id} label={name} />
     )
   }
 
   renderCollection(collectionItem) {
-    const { id, name } = collectionItem
+    const { id, name, members } = collectionItem
 
     const children = []
+    for( const member of members ) {
+      const child = this.renderTreeItem(member)
+      if( child ) children.push(child)
+    }
 
     return (
-      <StyledTreeItem nodeId={id} label={name}>
+      <StyledTreeItem key={id} nodeId={id} label={name}>
         { children }
       </StyledTreeItem>
     )
@@ -30,6 +42,8 @@ export default class IIIFTreeView extends Component {
     const { type } = treeItem
     if( type === 'facs' ) {
       return this.renderFacs(treeItem)
+    } else if( type === 'facs-ref') {
+      return this.renderFacsRef(treeItem)
     } else if( type === 'collection') {
       return this.renderCollection(treeItem)
     } else {
