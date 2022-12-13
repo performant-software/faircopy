@@ -9,37 +9,40 @@ export default class IIIFTreeView extends Component {
   constructor() {
     super()
     this.state = {
-      openNodes: [],
+      expanded: [],
       selected: []
     }
-}
+  }
 
   renderFacs(facsItem) {
-    const { id, name, surfaces } = facsItem
+    const { manifestID, name, surfaces } = facsItem
 
     return (
-      <StyledTreeItem key={id} nodeId={id} label={`${name} (${surfaces.length})`} />
+      <StyledTreeItem key={manifestID} nodeId={manifestID} label={`${name} (${surfaces.length})`}>
+        <StyledTreeItem key={`${manifestID}-1`} nodeId={`${manifestID}-1`} label="Reading Text" />
+        <StyledTreeItem key={`${manifestID}-2`} nodeId={`${manifestID}-2`} label="Search Text" />
+      </StyledTreeItem>
     )
   }
 
   renderFacsRef(facsItem) {
-    const { id, name } = facsItem
+    const { manifestID, name } = facsItem
 
     return (
-      <StyledTreeItem key={id} nodeId={id} label={name} />
+      <StyledTreeItem key={manifestID} nodeId={manifestID} label={name} />
     )
   }
 
   renderCollectionRef(collectionItem) {
-    const { id, name } = collectionItem
+    const { manifestID, name } = collectionItem
 
     return (
-      <StyledTreeItem key={id} nodeId={id} label={name} />
+      <StyledTreeItem key={manifestID} nodeId={manifestID} label={name} />
     )
   }
 
   renderCollection(collectionItem) {
-    const { id, name, members } = collectionItem
+    const { manifestID, name, members } = collectionItem
 
     const children = []
     for( const member of members ) {
@@ -48,7 +51,7 @@ export default class IIIFTreeView extends Component {
     }
 
     return (
-      <StyledTreeItem key={id} nodeId={id} label={name}>
+      <StyledTreeItem key={manifestID} nodeId={manifestID} label={name}>
         { children }
       </StyledTreeItem>
     )
@@ -69,35 +72,27 @@ export default class IIIFTreeView extends Component {
     }
   }
 
-  onToggle = (e, nodeIDs) => {
-    this.setState({ ...this.state, openNodes: nodeIDs })
-  }
 
   onSelect = (e, selected) => {
-    //onRequestItem(selected)
-    this.setState({ ...this.state, selected })
+    const { onRequestItem } = this.props
+    onRequestItem(selected)
   }
 
   render() {
     const { iiifTree } = this.props
-    const { openNodes, selected } = this.state
-
-    debugger
+    
     return (
         <div id='IIIFTreeView'>
             <TreeView
                 defaultCollapseIcon={<MinusSquare />}
                 defaultExpandIcon={<PlusSquare />}
                 defaultEndIcon={<CloseSquare />}
-                expanded={openNodes}
-                selected={selected}
-                onNodeToggle={this.onToggle}
                 onNodeSelect={this.onSelect}
             >
                { this.renderTreeItem(iiifTree) }
             </TreeView>
         </div>
-    );
+    )
   }
 }
 

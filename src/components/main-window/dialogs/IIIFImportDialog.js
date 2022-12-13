@@ -5,7 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@m
 import IIIFTreeView from '../IIIFTreeView';
 
 import { validateURL } from '../../../model/attribute-validators'
-import { importPresentationEndpoint, ammendIIIFTree } from '../../../model/iiif-presentation'
+import { importPresentationEndpoint, searchTree } from '../../../model/iiif-presentation'
 
 
 export default class IIIFImportDialog extends Component {
@@ -51,22 +51,38 @@ export default class IIIFImportDialog extends Component {
 
     onRequestItem = (itemID) => {
         const { fairCopyProject, teiDocEntry } = this.props
+        const { iiifTree } = this.state
+        const { node: treeNode } = searchTree( itemID, iiifTree )
 
-        const onError = (errorMsg) => {
-            const nextErrors = { url: errorMsg }            
-            this.setState({ ...this.state, loading: false, validationErrors: nextErrors })
-        }
-
-        const onSuccess = (itemTree) => {
-            const { iiifTree } = this.state
-            const nextTree = ammendIIIFTree(itemTree, iiifTree)
-            if( nextTree ) {
-                this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree: nextTree })
+        // if this is a ref, then dereference it
+        if( treeNode.type === 'collection-ref' || treeNode.type === 'facs-ref' ) {
+            const onError = (errorMsg) => {
+                const nextErrors = { url: errorMsg }            
+                this.setState({ ...this.state, loading: false, validationErrors: nextErrors })
             }
-        }
+    
+            const onSuccess = (itemTree) => {
+                const { iiifTree } = this.state
 
-        const nextSurfaceID = fairCopyProject.getNextSurfaceID(teiDocEntry)
-        importPresentationEndpoint( itemID, nextSurfaceID, onSuccess, onError )
+                const result = searchTree( itemTree.manifestID, iiifTree )
+                let nextTree = null
+                if( result ) {
+                    const { parent, index } = result
+                    if( parent ) {
+                        parent.members[index] = itemTree
+                        nextTree = parent
+                    } else {
+                        nextTree = itemTree
+                    }    
+                }
+                if( nextTree ) {
+                    this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree: nextTree })
+                }
+            }
+    
+            const nextSurfaceID = fairCopyProject.getNextSurfaceID(teiDocEntry)
+            importPresentationEndpoint( itemID, nextSurfaceID, onSuccess, onError )    
+        }
     }
 
     onSaveResource = () => {

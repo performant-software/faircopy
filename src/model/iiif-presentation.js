@@ -17,29 +17,19 @@ export function importPresentationEndpoint(manifestURL, nextSurfaceID, onSuccess
     );
 }
 
-export function ammendIIIFTree( graft, tree ) {
-    function searchTree( targetID, node, parent, index ) {
-        if( node.id === targetID ) {
-            // replace this node with the graft
-            if( parent ) {
-                parent[index] = graft
-                return tree
-            } else {
-                return graft
+export function searchTree( targetID, node, parent=null, index=0 ) {
+    if( node.manifestID === targetID ) {
+        return { node, parent, index }
+    } else {
+        if( node.members ) {
+            for( let i=0; i < node.members.length; i++ ) {
+                const member = node.members[i]
+                const nextTree = searchTree( targetID, member, node, i )
+                if( nextTree ) return nextTree
             }
-        } else {
-            if( node.members ) {
-                for( let i=0; i < node.members.length; i++ ) {
-                    const member = node.members[i]
-                    const nextTree = searchTree( targetID, member, node, i )
-                    if( nextTree ) return nextTree
-                }
-            } 
-            return null
-        }
+        } 
+        return null
     }
-
-    return searchTree( graft.id, tree, null, 0)
 }
 
 function parseIIIFPresentation( presentation, nextSurfaceID ) {
@@ -59,7 +49,7 @@ function parsePresentation2( presentation, nextSurfaceID ) {
 }
 
 function presentationToCollection2( collection, nextSurfaceID ) {
-    const id = collection['@id']
+    const manifestID = collection['@id']
     const name = collection.label
     const members = []
 
@@ -71,7 +61,7 @@ function presentationToCollection2( collection, nextSurfaceID ) {
             } else {
                 // parse manifest reference
                 members.push({
-                    id: member['@id'],
+                    manifestID: member['@id'],
                     type: 'facs-ref',
                     name: member.label
                 })
@@ -100,13 +90,13 @@ function presentationToCollection2( collection, nextSurfaceID ) {
     }
 
     return members.length > 0 ? {
-        id,
+        manifestID,
         name,
         type: 'collection',
         members
     } :
     {
-        id,
+        manifestID,
         name,
         type: 'collection-ref',
     }
