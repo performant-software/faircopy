@@ -6,13 +6,12 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 export default class IIIFTreeView extends Component {
 
-  constructor(props) {
+  constructor() {
     super()
-    this.initialState = {
-      expanded: [],
+    this.state = {
+      openNodes: [],
       selected: []
     }
-    this.state = this.initialState
 }
 
   renderFacs(facsItem) {
@@ -70,32 +69,30 @@ export default class IIIFTreeView extends Component {
     }
   }
 
+  onToggle = (e, nodeIDs) => {
+    this.setState({ ...this.state, openNodes: nodeIDs })
+  }
+
+  onSelect = (e, selected) => {
+    //onRequestItem(selected)
+    this.setState({ ...this.state, selected })
+  }
+
   render() {
-    const { iiifTree, onRequestItem } = this.props
+    const { iiifTree } = this.props
+    const { openNodes, selected } = this.state
 
-    const onToggle = (e, expanded) => {
-      console.log('toggle: '+expanded)
-      this.setState({ ...this.state, expanded })
-    };
-  
-    const onSelect = (e, selected) => {
-      //onRequestItem(selected)
-      this.setState({ ...this.state, selected })
-    };
-
-    const { expanded, selected } = this.state
-
-    console.log('render: '+expanded)
+    debugger
     return (
         <div id='IIIFTreeView'>
             <TreeView
                 defaultCollapseIcon={<MinusSquare />}
                 defaultExpandIcon={<PlusSquare />}
                 defaultEndIcon={<CloseSquare />}
-                expanded={expanded}
+                expanded={openNodes}
                 selected={selected}
-                onNodeToggle={onToggle}
-                onNodeSelect={onSelect}
+                onNodeToggle={this.onToggle}
+                onNodeSelect={this.onSelect}
             >
                { this.renderTreeItem(iiifTree) }
             </TreeView>
