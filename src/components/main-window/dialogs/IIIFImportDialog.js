@@ -5,7 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@m
 import IIIFTreeView from '../IIIFTreeView';
 
 import { validateURL } from '../../../model/attribute-validators'
-import { importPresentationEndpoint } from '../../../model/iiif-presentation'
+import { importPresentationEndpoint, ammendIIIFTree } from '../../../model/iiif-presentation'
 
 
 export default class IIIFImportDialog extends Component {
@@ -49,10 +49,24 @@ export default class IIIFImportDialog extends Component {
         }
     }
 
-    onClickItem = (itemID) => {
-        // TODO
-        // go get this item and then add it to the right spot on the tree
-        // importPresentationEndpoint(url, nextSurfaceID, onSuccess, onError)
+    onRequestItem = (itemID) => {
+        const { fairCopyProject, teiDocEntry } = this.props
+
+        const onError = (errorMsg) => {
+            const nextErrors = { url: errorMsg }            
+            this.setState({ ...this.state, loading: false, validationErrors: nextErrors })
+        }
+
+        const onSuccess = (itemTree) => {
+            const { iiifTree } = this.state
+            const nextTree = ammendIIIFTree(itemTree, iiifTree)
+            if( nextTree ) {
+                this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree: nextTree })
+            }
+        }
+
+        const nextSurfaceID = fairCopyProject.getNextSurfaceID(teiDocEntry)
+        importPresentationEndpoint( itemID, nextSurfaceID, onSuccess, onError )
     }
 
     onSaveResource = () => {
@@ -126,7 +140,7 @@ export default class IIIFImportDialog extends Component {
                     { this.renderURLField() }
                     { iiifTree && <IIIFTreeView
                         iiifTree={iiifTree}
-                        onClickItem={this.onClickItem}
+                        onRequestItem={this.onRequestItem}
                     ></IIIFTreeView> }
                 </DialogContent>
                 <DialogActions>

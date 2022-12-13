@@ -6,6 +6,15 @@ import TreeItem from '@material-ui/lab/TreeItem';
 
 export default class IIIFTreeView extends Component {
 
+  constructor(props) {
+    super()
+    this.initialState = {
+      expanded: [],
+      selected: []
+    }
+    this.state = this.initialState
+}
+
   renderFacs(facsItem) {
     const { id, name, surfaces } = facsItem
 
@@ -23,15 +32,10 @@ export default class IIIFTreeView extends Component {
   }
 
   renderCollectionRef(collectionItem) {
-    const { onClickItem } = this.props
     const { id, name } = collectionItem
 
-    const onClick = () => {
-      onClickItem(id)
-    }
-
     return (
-      <StyledTreeItem onClick={onClick} key={id} nodeId={id} label={name} />
+      <StyledTreeItem key={id} nodeId={id} label={name} />
     )
   }
 
@@ -67,15 +71,31 @@ export default class IIIFTreeView extends Component {
   }
 
   render() {
-    const { iiifTree } = this.props
+    const { iiifTree, onRequestItem } = this.props
 
+    const onToggle = (e, expanded) => {
+      console.log('toggle: '+expanded)
+      this.setState({ ...this.state, expanded })
+    };
+  
+    const onSelect = (e, selected) => {
+      //onRequestItem(selected)
+      this.setState({ ...this.state, selected })
+    };
+
+    const { expanded, selected } = this.state
+
+    console.log('render: '+expanded)
     return (
         <div id='IIIFTreeView'>
             <TreeView
-                defaultExpanded={[ iiifTree.id ]}
                 defaultCollapseIcon={<MinusSquare />}
                 defaultExpandIcon={<PlusSquare />}
                 defaultEndIcon={<CloseSquare />}
+                expanded={expanded}
+                selected={selected}
+                onNodeToggle={onToggle}
+                onNodeSelect={onSelect}
             >
                { this.renderTreeItem(iiifTree) }
             </TreeView>

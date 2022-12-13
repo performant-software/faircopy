@@ -17,6 +17,31 @@ export function importPresentationEndpoint(manifestURL, nextSurfaceID, onSuccess
     );
 }
 
+export function ammendIIIFTree( graft, tree ) {
+    function searchTree( targetID, node, parent, index ) {
+        if( node.id === targetID ) {
+            // replace this node with the graft
+            if( parent ) {
+                parent[index] = graft
+                return tree
+            } else {
+                return graft
+            }
+        } else {
+            if( node.members ) {
+                for( let i=0; i < node.members.length; i++ ) {
+                    const member = node.members[i]
+                    const nextTree = searchTree( targetID, member, node, i )
+                    if( nextTree ) return nextTree
+                }
+            } 
+            return null
+        }
+    }
+
+    return searchTree( graft.id, tree, null, 0)
+}
+
 function parseIIIFPresentation( presentation, nextSurfaceID ) {
     const context = presentation["@context"]
     if( context.includes("http://iiif.io/api/presentation/2/context.json") ) {
