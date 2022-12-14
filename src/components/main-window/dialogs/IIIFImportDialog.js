@@ -68,7 +68,6 @@ export default class IIIFImportDialog extends Component {
             if( result ) {
                 const { parent, index } = result
                 if(parent) parent.members[index] = itemTree
-                itemTree.loading = false
                 const nextTree = parent ? iiifTree : itemTree 
                 this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree: nextTree })
             }

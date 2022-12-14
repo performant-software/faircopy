@@ -15,12 +15,21 @@ export default class IIIFTreeView extends Component {
   }
 
   renderFacs(facsItem) {
-    const { manifestID, name, surfaces } = facsItem
+    const { manifestID, name, surfaces, texts } = facsItem
+
+    const textEls = []
+    let i=0
+    for( const text of texts ) {
+      const { name } = text
+      const nodeId = `textnode-${manifestID}-${i++}`
+      textEls.push(
+        <StyledTreeItem key={nodeId} nodeId={nodeId} label={name} />
+      )
+    }
 
     return (
       <StyledTreeItem key={manifestID} nodeId={manifestID} label={`${name} (${surfaces.length})`}>
-        <StyledTreeItem key={`${manifestID}-1`} nodeId={`${manifestID}-1`} label="Reading Text" />
-        <StyledTreeItem key={`${manifestID}-2`} nodeId={`${manifestID}-2`} label="Search Text" />
+        { textEls }
       </StyledTreeItem>
     )
   }
@@ -75,7 +84,9 @@ export default class IIIFTreeView extends Component {
 
   onSelect = (e, selected) => {
     const { onRequestItem } = this.props
-    onRequestItem(selected)
+    if( !selected.startsWith('textnode-') ) {
+      onRequestItem(selected)
+    }
   }
 
   render() {

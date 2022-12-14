@@ -2,6 +2,8 @@ import {facsTemplate} from "./tei-template"
 import { getLocalString } from './iiif-util'
 import { sanitizeID } from './attribute-validators'
 
+const fromThePageTEIXML = 'https://github.com/benwbrum/fromthepage/wiki/FromThePage-Support-for-the-IIIF-Presentation-API-and-Web-Annotations#tei-xml'
+
 export function manifestToFacsimile3( manifestData, nextSurfaceID ) {
     if( manifestData.type !== "Manifest" ) throw new Error("Expected a manifest as the root object.")
 
@@ -79,6 +81,8 @@ export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
     const sequence = sequences[0]
     const { canvases } = sequence
 
+    const texts = sequence.rendering ? gatherRenderings2( sequence.rendering ) : []
+
     const surfaceIDs = []
     const surfaces = []
     let n=nextSurfaceID
@@ -111,6 +115,7 @@ export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
         name,
         type: 'facs',
         manifestID,
+        texts,
         surfaces    
     }
 }
@@ -193,6 +198,35 @@ export function setSurfaceTitle( surface, title, lang='en' ) {
     surface.localLabels[key] = [ title ]
 } 
 
+function gatherRenderings2( rendering ) {
+    const texts = []
+
+    // add texts that are in a recognized format to list of texts
+    function parseRendering( rend ) {
+        if( rend['@id'] && rend['label'] ) {
+            let format = parseFormat(rend)
+            if( format ) {
+                texts.push({
+                    manifestID: rend['@id'],
+                    name: rend['label'],
+                    format
+                })    
+            }
+        }
+    }
+
+    // gather up any tei or plain text renderings and return an array of text refs 
+    if( Array.isArray(rendering) ) {
+        for( const rend of rendering ) {
+            parseRendering(rend)
+        }
+    } else {
+        parseRendering(rendering)
+    }   
+
+    return texts
+}
+
 function parseMetadata(manifestID,manifestLabel) {
     const name = getLocalString( manifestLabel, 'en' ).join(' ')
 
@@ -263,6 +297,15 @@ function val( key, obj ) {
     } else {
         return obj[key]
     }
+}
+
+function parseFormat( rend ) {
+    let format = rend['format'] === 'text/plain' ? 'text' : rend['format'] === 'application/tei+xml' ? 'tei' : null
+
+    if( !format && rend['profile'] === fromThePageTEIXML ) {
+        format = 'tei'
+    }
+    return format
 }
 
 
