@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button, IconButton} from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core'
 
+import { inlineRingSpinner } from '../../common/ring-spinner'
 import IIIFTreeView from '../IIIFTreeView';
 
 import { validateURL } from '../../../model/attribute-validators'
@@ -50,39 +51,33 @@ export default class IIIFImportDialog extends Component {
     }
 
     onRequestItem = (itemID) => {
-        const { fairCopyProject, teiDocEntry } = this.props
         const { iiifTree } = this.state
+
+        // only request reference types
         const { node: treeNode } = searchTree( itemID, iiifTree )
+        if( treeNode.type !== 'collection-ref' && treeNode.type !== 'facs-ref' ) return  
 
-        // if this is a ref, then dereference it
-        if( treeNode.type === 'collection-ref' || treeNode.type === 'facs-ref' ) {
-            const onError = (errorMsg) => {
-                const nextErrors = { url: errorMsg }            
-                this.setState({ ...this.state, loading: false, validationErrors: nextErrors })
-            }
-    
-            const onSuccess = (itemTree) => {
-                const { iiifTree } = this.state
-
-                const result = searchTree( itemTree.manifestID, iiifTree )
-                let nextTree = null
-                if( result ) {
-                    const { parent, index } = result
-                    if( parent ) {
-                        parent.members[index] = itemTree
-                        nextTree = parent
-                    } else {
-                        nextTree = itemTree
-                    }    
-                }
-                if( nextTree ) {
-                    this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree: nextTree })
-                }
-            }
-    
-            const nextSurfaceID = fairCopyProject.getNextSurfaceID(teiDocEntry)
-            importPresentationEndpoint( itemID, nextSurfaceID, onSuccess, onError )    
+        const onError = (errorMsg) => {
+            const nextErrors = { url: errorMsg }            
+            this.setState({ ...this.state, loading: false, validationErrors: nextErrors })
         }
+
+        const onSuccess = (itemTree) => {
+            const { iiifTree } = this.state
+            const result = searchTree( itemTree.manifestID, iiifTree )
+            if( result ) {
+                const { parent, index } = result
+                if(parent) parent.members[index] = itemTree
+                itemTree.loading = false
+                const nextTree = parent ? iiifTree : itemTree 
+                this.setState({ ...this.state, loading: false, validationErrors: {}, iiifTree: nextTree })
+            }
+        }
+        
+        const { fairCopyProject, teiDocEntry } = this.props
+        const nextSurfaceID = fairCopyProject.getNextSurfaceID(teiDocEntry)
+        importPresentationEndpoint( itemID, nextSurfaceID, onSuccess, onError )    
+        this.setState({ ...this.state, loading: true })
     }
 
     onSaveResource = () => {
@@ -151,7 +146,7 @@ export default class IIIFImportDialog extends Component {
                 aria-labelledby="edit-resource-title"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="edit-resource-title">Import IIIF Manifest</DialogTitle>
+                <DialogTitle id="edit-resource-title">Import IIIF Manifest { loading && inlineRingSpinner('dark') }</DialogTitle>
                 <DialogContent>
                     { this.renderURLField() }
                     { iiifTree && <IIIFTreeView
