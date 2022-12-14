@@ -27,6 +27,25 @@ export default class IIIFTreeView extends Component {
       )
     }
 
+    // how many surfaces have texts and how many unique types?
+    const textTypes = {}
+    for( const surface of surfaces ) {
+      for( const text of surface.texts ) {
+        const { name } = text
+        if( !textTypes[name] ) textTypes[name] = 1
+        else textTypes[name]++
+      }
+    }
+
+    let j=0
+    for( const textType of Object.keys(textTypes) ) {
+      const count = textTypes[textType]
+      const nodeId = `textnode-${manifestID}-${j++}`
+      textEls.push(
+        <StyledTreeItem key={nodeId} nodeId={nodeId} label={`${textType} (${count})`} />
+      )
+    }
+
     return (
       <StyledTreeItem key={manifestID} nodeId={manifestID} label={`${name} (${surfaces.length})`}>
         { textEls }

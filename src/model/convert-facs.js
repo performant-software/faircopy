@@ -94,6 +94,7 @@ export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
         const imageAPIURL = resource.service ? val('id', resource.service) : val('id', resource)
         const localLabels = str( canvas.label )
         let id = generateOrdinalID('f',n)
+        const texts = canvas.seeAlso ? parseSeeAlso2(canvas.seeAlso) : []
         surfaceIDs.push(id)
         n++ // page count
 
@@ -105,6 +106,7 @@ export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
             height,
             imageAPIURL,
             zones: [],
+            texts,
             canvasURI
         })
     }
@@ -223,6 +225,26 @@ function gatherRenderings2( rendering ) {
     } else {
         parseRendering(rendering)
     }   
+
+    return texts
+}
+
+function parseSeeAlso2(seeAlso) {
+    if( !Array.isArray(seeAlso) ) return []
+    const texts = []
+
+    for( const rend of seeAlso ) {
+        if( rend['@id'] && rend['label'] ) {
+            const format = parseFormat(rend)
+            if( format ) {    
+                texts.push({
+                    manifestID: rend['@id'],
+                    name: rend['label'],
+                    format
+                })
+            }    
+        }
+    }
 
     return texts
 }
