@@ -17,7 +17,7 @@ export default class IIIFImportDialog extends Component {
             url: "",
             iiifTree: null,            
             loading: false,
-            selection: null,
+            selectedItems: [],
             validationErrors: {}
         }
         this.state = this.initialState
@@ -48,6 +48,19 @@ export default class IIIFImportDialog extends Component {
             importPresentationEndpoint(url, nextSurfaceID, onSuccess, onError)
             this.setState({ ...this.state, loading: true })
         }
+    }
+
+    onToggleItem = (itemID) => {
+        const { selectedItems } = this.state
+        const idx = selectedItems.indexOf(itemID)
+        let nextSelection
+        if( idx !== -1 ) {
+            nextSelection = [ ...selectedItems.slice(0,idx), ...selectedItems(idx+1,selectedItems.length) ]
+        } else {
+            nextSelection = [ ...selectedItems, itemID ]
+        }
+
+        this.setState({...this.state, selectedItems: nextSelection})
     }
 
     onRequestItem = (itemID) => {
@@ -135,7 +148,7 @@ export default class IIIFImportDialog extends Component {
             onClose()
         }
 
-        const { selection, loading, iiifTree } = this.state
+        const { selectedItems, loading, iiifTree } = this.state
 
         return (
             <Dialog
@@ -150,11 +163,13 @@ export default class IIIFImportDialog extends Component {
                     { this.renderURLField() }
                     { iiifTree && <IIIFTreeView
                         iiifTree={iiifTree}
+                        selectedItems={selectedItems}
+                        onToggleItem={this.onToggleItem}
                         onRequestItem={this.onRequestItem}
                     ></IIIFTreeView> }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={loading || !selection } variant="contained" color="primary" onClick={this.onSaveResource}>Import</Button>
+                    <Button disabled={loading || selectedItems.length === 0 } variant="contained" color="primary" onClick={this.onSaveResource}>Import</Button>
                     <Button disabled={loading} variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
