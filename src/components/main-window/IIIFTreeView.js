@@ -23,6 +23,14 @@ export default class IIIFTreeView extends Component {
     }
 
     const textEls = []
+
+    // there's always a facs import option 
+    const facsID = `${manifestID}:::facs`
+    const facsSelected = selectedItems.includes(facsID)
+    textEls.push(
+      <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(facsSelected,facsID)} key={facsID} nodeId={facsID} label={`Facsimile (${surfaces.length})`} />
+    )
+
     for( const text of texts ) {
       const { manifestID: textID, name } = text
       const nodeId = `${manifestID}:::${textID}`
@@ -52,7 +60,7 @@ export default class IIIFTreeView extends Component {
     }
 
     return (
-      <StyledTreeItem key={manifestID} nodeId={manifestID} label={`${name} (${surfaces.length})`}>
+      <StyledTreeItem key={manifestID} nodeId={manifestID} label={name}>
         { textEls }
       </StyledTreeItem>
     )
