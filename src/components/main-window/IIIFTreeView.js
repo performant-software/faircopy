@@ -17,18 +17,18 @@ export default class IIIFTreeView extends Component {
     const { onToggleItem, selectedItems } = this.props
     const { manifestID, name, surfaces, texts } = facsItem
 
-    const onIconClick = (e, target) => {
-      onToggleItem(target)
+    const onIconClick = (e) => {
+      const targetID = e?.currentTarget?.childNodes[0]?.id
+      onToggleItem(targetID)
     }
 
     const textEls = []
-    let i=0
     for( const text of texts ) {
-      const { manifestID, name } = text
-      const nodeId = `textnode-${manifestID}-${i++}`
-      const selected = selectedItems.includes(manifestID)
+      const { manifestID: textID, name } = text
+      const nodeId = `${manifestID}:::${textID}`
+      const selected = selectedItems.includes(nodeId)
       textEls.push(
-        <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected)} key={nodeId} nodeId={nodeId} label={name} />
+        <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected,nodeId)} key={nodeId} nodeId={nodeId} label={name} />
       )
     }
 
@@ -44,10 +44,10 @@ export default class IIIFTreeView extends Component {
 
     for( const textType of Object.keys(textTypes) ) {
       const count = textTypes[textType]
-      const nodeId = `textnode-${manifestID}-${i++}`
-      const selected = selectedItems.includes(manifestID)
+      const nodeId = `${manifestID}:::${textType}`
+      const selected = selectedItems.includes(nodeId)
       textEls.push(
-        <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected)} key={nodeId} nodeId={nodeId} label={`${textType} (${count})`} />
+        <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected, nodeId)} key={nodeId} nodeId={nodeId} label={`${textType} (${count})`} />
       )
     }
 
@@ -130,10 +130,10 @@ export default class IIIFTreeView extends Component {
   }
 }
 
-function renderCheckedSquare(checked) {
+function renderCheckedSquare(checked, nodeId) {
   const chk = checked ? 'check-' : ''
   return (
-    <i className={`far fa-${chk}square fa-sm`}></i>
+    <i id={nodeId} className={`far fa-${chk}square fa-sm`}></i>
   )
 }
   

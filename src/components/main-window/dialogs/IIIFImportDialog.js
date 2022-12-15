@@ -52,10 +52,14 @@ export default class IIIFImportDialog extends Component {
 
     onToggleItem = (itemID) => {
         const { selectedItems } = this.state
+
+        // only embedded items
+        if( !itemID.includes(':::') ) return 
+
         const idx = selectedItems.indexOf(itemID)
         let nextSelection
         if( idx !== -1 ) {
-            nextSelection = [ ...selectedItems.slice(0,idx), ...selectedItems(idx+1,selectedItems.length) ]
+            nextSelection = [ ...selectedItems.slice(0,idx), ...selectedItems.slice(idx+1,selectedItems.length) ]
         } else {
             nextSelection = [ ...selectedItems, itemID ]
         }
@@ -65,6 +69,9 @@ export default class IIIFImportDialog extends Component {
 
     onRequestItem = (itemID) => {
         const { iiifTree } = this.state
+
+        // ignore embedded items
+        if( itemID.includes(':::') ) return 
 
         // only request reference types
         const { node: treeNode } = searchTree( itemID, iiifTree )
