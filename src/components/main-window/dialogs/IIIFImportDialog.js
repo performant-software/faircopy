@@ -8,6 +8,7 @@ import IIIFTreeView from '../IIIFTreeView';
 import { validateURL } from '../../../model/attribute-validators'
 import { importPresentationEndpoint, searchTree } from '../../../model/iiif-presentation'
 
+const fairCopy = window.fairCopy
 
 export default class IIIFImportDialog extends Component {
  
@@ -99,9 +100,42 @@ export default class IIIFImportDialog extends Component {
         this.setState({ ...this.state, loading: true })
     }
 
-    onSaveResource = () => {
+    onImport = () => {
         const { onClose } = this.props
-        // TODO
+        const { selectedItems, iiifTree } = this.state
+
+        const importItems = {}
+        for( const selectedItem of selectedItems ) {
+            const data = selectedItem.split(':::')
+            const txtType = data[0]
+            const manifestID = data[1]
+            
+            let importItem
+            if( !importItems[manifestID] ) {
+                importItem = { manifestID, facs: null, sequenceTexts: [], canvasTexts: [] }
+                importItems[manifestID] = importItem
+            } else {
+                importItem = importItems[manifestID]
+            }
+
+            if( txtType === 'facs' ) {
+                const result = searchTree(manifestID, iiifTree)
+                if( result ) {
+                    const { node: facs } = result
+                    importItem.facs = facs
+                }
+            } else if( txtType === 'seqtxt' ) {
+                const textID = data[2]
+                importItem.sequenceTexts.push(textID)
+            } else if( txtType === 'canvastxt' ) {
+                const textType = data[2]
+                importItem.canvasTexts.push(textType)
+            }
+        }
+
+        const importList = Object.values(importItems)
+        fairCopy.services.ipcSend('requestIIIFImport', importList )
+
         onClose()
     }
 
@@ -176,7 +210,7 @@ export default class IIIFImportDialog extends Component {
                     ></IIIFTreeView> }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={loading || selectedItems.length === 0 } variant="contained" color="primary" onClick={this.onSaveResource}>Import</Button>
+                    <Button disabled={loading || selectedItems.length === 0 } variant="contained" color="primary" onClick={this.onImport}>Import</Button>
                     <Button disabled={loading} variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

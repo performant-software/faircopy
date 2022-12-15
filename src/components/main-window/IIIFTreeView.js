@@ -25,7 +25,7 @@ export default class IIIFTreeView extends Component {
     const textEls = []
 
     // there's always a facs import option 
-    const facsID = `${manifestID}:::facs`
+    const facsID = `facs:::${manifestID}`
     const facsSelected = selectedItems.includes(facsID)
     textEls.push(
       <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(facsSelected,facsID)} key={facsID} nodeId={facsID} label={`Facsimile (${surfaces.length})`} />
@@ -33,7 +33,7 @@ export default class IIIFTreeView extends Component {
 
     for( const text of texts ) {
       const { manifestID: textID, name } = text
-      const nodeId = `${manifestID}:::${textID}`
+      const nodeId = `seqtxt:::${manifestID}:::${textID}`
       const selected = selectedItems.includes(nodeId)
       textEls.push(
         <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected,nodeId)} key={nodeId} nodeId={nodeId} label={name} />
@@ -52,7 +52,7 @@ export default class IIIFTreeView extends Component {
 
     for( const textType of Object.keys(textTypes) ) {
       const count = textTypes[textType]
-      const nodeId = `${manifestID}:::${textType}`
+      const nodeId = `canvastxt:::${manifestID}:::${textType}`
       const selected = selectedItems.includes(nodeId)
       textEls.push(
         <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected, nodeId)} key={nodeId} nodeId={nodeId} label={`${textType} (${count})`} />

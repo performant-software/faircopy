@@ -8,10 +8,19 @@ import {teiTextTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
 import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
+import { facsimileToTEI } from './convert-facs'
 
 const fairCopy = window.fairCopy
 
 export function importResource(importData,parentEntry,fairCopyProject) {
+    if( importData.path ) {
+        return importFileResource(importData,parentEntry,fairCopyProject)
+    } else {
+        return importIIIFResource(importData,parentEntry,fairCopyProject)
+    }
+}
+
+function importFileResource(importData,parentEntry,fairCopyProject) {
     const { path, data, options } = importData
     const { idMap } = fairCopyProject
 
@@ -41,6 +50,35 @@ export function importResource(importData,parentEntry,fairCopyProject) {
     } else {
         return importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
     }
+}
+    
+function importIIIFResource( importData, parentEntry, fairCopyProject) {
+    const { facs } = importData //  sequenceTexts, canvasTexts
+    const { idMap, fairCopyConfig } = fairCopyProject
+    const resources = []
+
+    if( facs ) {
+        const { id: requestedID, name } = facs
+        const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+        const uniqueID = getUniqueResourceID('facs', siblingIDs, requestedID )
+        const existingParentID = parentEntry ? parentEntry.id : null
+    
+        const resourceEntry = {
+            id: uuidv4(),
+            name,
+            localID: uniqueID,
+            type: 'facs',
+            parentResource: existingParentID,
+            ...cloudInitialConfig
+        }    
+
+        const resourceMap = mapResource( resourceEntry, facs )
+        const content = facsimileToTEI(facs)   
+        resources.push({ resourceEntry, content, resourceMap })
+    }
+    
+    // this.addResource(resourceEntry, xml, resourceMap)
+    return { resources, fairCopyConfig }
 }
 
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 
