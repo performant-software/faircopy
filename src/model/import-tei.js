@@ -5,7 +5,7 @@ import axios from 'axios';
 import TEIDocument from "./TEIDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
-import {teiTextTemplate} from './tei-template'
+import {teiTextTemplate, teiSourceDocTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
 import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
@@ -181,8 +181,14 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
 
 function importTxtResource(data, name, localID, parentID, fairCopyProject, options) {
     const {fairCopyConfig} = fairCopyProject
-    const { lineBreakParsing, learnStructure } = options
+    const { lineBreakParsing, learnStructure, resourceType } = options
 
+    const resourceEl = resourceType === 'text' ? importTxtToTextResource(data, lineBreakParsing) : importTxtToSourceDocResource(data)
+    const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure)
+    return { resources: [ resource ], fairCopyConfig }
+}
+
+function importTxtToTextResource(data, lineBreakParsing) {
     const xmlDom = parseDOM(teiTextTemplate)
     const bodyEl = xmlDom.getElementsByTagName('body')[0]
 
@@ -204,9 +210,29 @@ function importTxtResource(data, name, localID, parentID, fairCopyProject, optio
 
     const teiEl = xmlDom.getElementsByTagName('TEI')[0]
     const resourceEl = teiEl.getElementsByTagName('text')[0]
+    return resourceEl
+}
 
-    const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure)
-    return [ resource ]
+function importTxtToSourceDocResource(data) {
+    const xmlDom = parseDOM(teiSourceDocTemplate)
+    const surfaceEl = xmlDom.getElementsByTagName('surface')[0]
+    const lines = data.split('\n')
+    
+    if( lines.length > 0 ) {
+        // remove blank line if there is content
+        const lineEl = xmlDom.getElementsByTagName('line')[0]
+        lineEl.parentNode.removeChild(lineEl)
+    }
+
+    for( const line of lines ) {
+        const lineEl = xmlDom.createElement('line')
+        lineEl.appendChild(document.createTextNode(line));
+        surfaceEl.appendChild(lineEl)
+    }
+
+    const teiEl = xmlDom.getElementsByTagName('TEI')[0]
+    const resourceEl = teiEl.getElementsByTagName('sourceDoc')[0]
+    return resourceEl
 }
 
 function parseDOM(data) {
