@@ -11,6 +11,7 @@ export default class ImportTextsDialog extends Component {
         this.initialState = {
             lineBreakParsing: 'all',
             learnStructure: true,
+            resourceType: 'text'
         }
         this.state = this.initialState
     }
@@ -26,33 +27,53 @@ export default class ImportTextsDialog extends Component {
         const {learnStructure} = this.state 
 
         return (
-            <Select
-                name="learnStructure"
-                value={learnStructure}
-                onChange={this.onChange}
-                aria-label="Select learn structure mode"
-                className='import-option'
-            >
-                <MenuItem value={true}>Add new elements to schema</MenuItem>
-                <MenuItem value={false}>Don't add elements to the schema</MenuItem>
-            </Select>
+            <div className="q-container">
+                <Typography className="q-phrase">For XML files, </Typography>
+                <Select
+                    name="learnStructure"
+                    value={learnStructure}
+                    onChange={this.onChange}
+                    aria-label="Select learn structure mode"
+                    className='import-option'
+                >
+                    <MenuItem value={true}>add new elements </MenuItem>
+                    <MenuItem value={false}>don't add new elements</MenuItem>
+                </Select>
+                <Typography className="q-phrase"> to the schema.</Typography>
+            </div>
         )
     }
 
     renderLineBreakOptions() {
-        const {lineBreakParsing} = this.state 
+        const {lineBreakParsing, resourceType} = this.state 
 
         return (
-            <Select
-                name="lineBreakParsing"
-                value={lineBreakParsing}
-                onChange={this.onChange}
-                aria-label="Select line break mode"
-                className='import-option'
-            >
-                <MenuItem value={'all'}>Preserve all line breaks</MenuItem>
-                <MenuItem value={'multi'}>Preserve only multiple line breaks</MenuItem>
-            </Select>
+            <div className="q-container">
+                <Typography className="q-phrase">For plain text files, generate a </Typography>
+                <Select
+                    name="resourceType"
+                    value={resourceType}
+                    onChange={this.onChange}
+                    aria-label="Select resource type"
+                    className='import-option'
+                >
+                    <MenuItem value={'text'}>text</MenuItem>
+                    <MenuItem value={'sourceDoc'}>source document</MenuItem>
+                </Select>
+                <Typography className="q-phrase"> resource.</Typography>
+                { resourceType === 'text' && <Typography className="q-phrase"> Preserve </Typography> }
+                { resourceType === 'text' && <Select
+                    name="lineBreakParsing"
+                    value={lineBreakParsing}
+                    onChange={this.onChange}
+                    aria-label="Select line break mode"
+                    className='import-option'
+                >
+                    <MenuItem value={'all'}>all</MenuItem>
+                    <MenuItem value={'multi'}>only multiple</MenuItem>
+                </Select> }
+                { resourceType === 'text' && <Typography className="q-phrase"> line breaks.</Typography> }
+            </div>
         )
     }
 
@@ -60,8 +81,8 @@ export default class ImportTextsDialog extends Component {
         const { onClose } = this.props
     
         const onClickSelect = () => {
-            const { lineBreakParsing, learnStructure } = this.state
-            fairCopy.services.ipcSend('requestImport', {lineBreakParsing,learnStructure})
+            const { lineBreakParsing, learnStructure, resourceType } = this.state
+            fairCopy.services.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType})
             this.setState(this.initialState)
             onClose()
         }
@@ -84,7 +105,7 @@ export default class ImportTextsDialog extends Component {
                     <Typography>You can select plain text files (UTF-8 encoded) or XML files to import.</Typography>
                     <Typography>XML files must contain one or more text or facsimile elements. XML elements that are not supported by FairCopy will be ignored, but their contents will be included.</Typography>
                     <Typography component='h2' variant='h6'>Import Options</Typography>
-                    { this.renderLineBreakOptions() }<br/>
+                    { this.renderLineBreakOptions() }
                     { this.renderLearnStructure() }
                 </DialogContent>
                 <DialogActions>
