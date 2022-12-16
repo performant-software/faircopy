@@ -92,7 +92,7 @@ export function removeGroupFromMenu( groupIndex, menuID, fairCopyConfig) {
 
 export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
     const { subDocs } = tempDoc
-    const { elements, vocabs, menus } = fairCopyConfig
+    const { elements, vocabs } = fairCopyConfig
 
     const addTerm = ( vocabID, term ) => {
         const vocabEntry = vocabs[vocabID]
@@ -172,8 +172,6 @@ export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
         const subDoc = teiSchema.schema.nodeFromJSON(noteJSON);
         scanNode(subDoc)
     }
-
-    return { elements, vocabs, menus }
 }
 
 function getDefaultVocabKey(elementName,attributeName) {

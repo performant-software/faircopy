@@ -157,12 +157,14 @@ export default class FairCopyProject {
         }        
     }
 
-    saveFairCopyConfig( nextFairCopyConfig, lastAction=null ) {
-        this.fairCopyConfig = nextFairCopyConfig
+    saveFairCopyConfig( nextFairCopyConfig=null, lastAction=null ) {
+        if( nextFairCopyConfig ) {
+            this.fairCopyConfig = nextFairCopyConfig
+        }
         if( lastAction ) {
             this.configLastAction = lastAction
         }
-        saveConfig(nextFairCopyConfig, lastAction)
+        saveConfig(this.fairCopyConfig, lastAction)
     }
 
     checkInConfig( nextFairCopyConfig ) {

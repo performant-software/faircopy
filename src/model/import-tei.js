@@ -107,12 +107,12 @@ function importRemoteText( textRef, parentEntry, fairCopyProject, options) {
                 const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
                 const localID = getUniqueResourceID('resource', siblingIDs, name )
             
-                let resource
+                let resources
                 if( format === 'tei' ) {
                     const xmlDom = parseDOM(data)
-                    resource = importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
+                    resources = importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
                 } else {
-                    resource = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
+                    resources = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
                 }
                 // TODO where to send resource?
             } catch(error) {
@@ -183,7 +183,7 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
     }
     
     // Things look OK, return these resources
-    return { resources, fairCopyConfig }
+    return resources
 }
 
 function importTxtResource(data, name, localID, parentID, fairCopyProject, options) {
@@ -213,7 +213,7 @@ function importTxtResource(data, name, localID, parentID, fairCopyProject, optio
     const resourceEl = teiEl.getElementsByTagName('text')[0]
 
     const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure)
-    return { resources: [ resource ], fairCopyConfig }
+    return [ resource ]
 }
 
 function parseDOM(data) {
@@ -283,12 +283,9 @@ function createTEIDoc(name,localID,idMap) {
 function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
     const type = determineResourceType(resourceEl)
     if( type === 'facs' ) {
-        const facsResource = createFacs(resourceEl,name,localID,parentID)
-        return facsResource  
+        return createFacs(resourceEl,name,localID,parentID)
     } else {
-        const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig, learnStructure)
-        fairCopyConfig = nextFairCopyConfig
-        return {resourceEntry, content, resourceMap}
+        return createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig, learnStructure)
     }
 }
 
@@ -318,9 +315,9 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const content = serializeText(doc, tempDoc, teiSchema)
 
     // learn the attributes and vocabs
-    const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
+    if( learnStructure ) learnDoc(fairCopyConfig, doc, teiSchema, tempDoc)
 
-    return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
+    return { resourceEntry, content, resourceMap }
 }
 
 function createFacs(facsEl, name, localID, parentResourceID) {
