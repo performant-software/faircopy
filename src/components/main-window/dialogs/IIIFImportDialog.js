@@ -112,18 +112,15 @@ export default class IIIFImportDialog extends Component {
             
             let importItem
             if( !importItems[manifestID] ) {
-                importItem = { manifestID, facs: null, sequenceTexts: [], canvasTexts: [] }
-                importItems[manifestID] = importItem
+                const { node: facs } = searchTree(manifestID, iiifTree)
+                importItem = { manifestID, facs, importFacs: false, sequenceTexts: [], canvasTexts: [] }
+                importItems[manifestID] = importItem    
             } else {
                 importItem = importItems[manifestID]
             }
 
             if( txtType === 'facs' ) {
-                const result = searchTree(manifestID, iiifTree)
-                if( result ) {
-                    const { node: facs } = result
-                    importItem.facs = facs
-                }
+                importItem.importFacs = true
             } else if( txtType === 'seqtxt' ) {
                 const textID = data[2]
                 importItem.sequenceTexts.push(textID)

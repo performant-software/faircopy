@@ -54,11 +54,11 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
 }
 
 function importIIIFResource( importData, parentEntry, fairCopyProject) {
-    const { facs, sequenceTexts, canvasTexts } = importData 
+    const { facs, importFacs, sequenceTexts, canvasTexts } = importData 
     const { idMap, fairCopyConfig } = fairCopyProject
     const resources = []
 
-    if( facs ) {
+    if( importFacs ) {
         const { id: requestedID, name } = facs
         const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
         const uniqueID = getUniqueResourceID('facs', siblingIDs, requestedID )
@@ -78,10 +78,14 @@ function importIIIFResource( importData, parentEntry, fairCopyProject) {
         resources.push({ resourceEntry, content, resourceMap })
     }
 
-    // for( const sequenceText of sequenceTexts ) {
-    //     const options = { lineBreakParsing: true, learnStructure: false }
-    //     importRemoteText(sequenceText, parentEntry, fairCopyProject, options)
-    // }
+    // for now, use these options for text import
+    const options = { lineBreakParsing: true, learnStructure: false }
+
+    // find the text with the matching URI and import it
+    for( const sequenceText of sequenceTexts ) {
+        const textRef = facs.texts.find( text => text.manifestID === sequenceText )
+        // importRemoteText(textRef, parentEntry, fairCopyProject, options)
+    }
 
     // for( const canvasText of canvasTexts ) {
     //     const options = { facs, lineBreakParsing: true, learnStructure: false }
@@ -91,8 +95,8 @@ function importIIIFResource( importData, parentEntry, fairCopyProject) {
     return { resources, fairCopyConfig }
 }
 
-function importRemoteText( sequenceText, parentEntry, fairCopyProject, options) {
-    const { manifestID, format, name } = sequenceText
+function importRemoteText( textRef, parentEntry, fairCopyProject, options) {
+    const { manifestID, format, name } = textRef
     const { idMap } = fairCopyProject
 
     axios.get(manifestID).then(
