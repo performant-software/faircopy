@@ -1,5 +1,6 @@
 
 import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios';
 
 import TEIDocument from "./TEIDocument"
 import {learnDoc} from "./faircopy-config"
@@ -51,9 +52,9 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
         return importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
     }
 }
-    
+
 function importIIIFResource( importData, parentEntry, fairCopyProject) {
-    const { facs } = importData //  sequenceTexts, canvasTexts
+    const { facs, sequenceTexts, canvasTexts } = importData 
     const { idMap, fairCopyConfig } = fairCopyProject
     const resources = []
 
@@ -76,11 +77,50 @@ function importIIIFResource( importData, parentEntry, fairCopyProject) {
         const content = facsimileToTEI(facs)   
         resources.push({ resourceEntry, content, resourceMap })
     }
+
+    // for( const sequenceText of sequenceTexts ) {
+    //     const options = { lineBreakParsing: true, learnStructure: false }
+    //     importRemoteText(sequenceText, parentEntry, fairCopyProject, options)
+    // }
+
+    // for( const canvasText of canvasTexts ) {
+    //     const options = { facs, lineBreakParsing: true, learnStructure: false }
+    //     importRemoteText(canvasText, parentEntry, fairCopyProject, options)
+    // }
     
-    // this.addResource(resourceEntry, xml, resourceMap)
     return { resources, fairCopyConfig }
 }
 
+function importRemoteText( sequenceText, parentEntry, fairCopyProject, options) {
+    const { manifestID, format, name } = sequenceText
+    const { idMap } = fairCopyProject
+
+    axios.get(manifestID).then(
+        (resp) => {
+            try {
+                const { data } = resp
+                const existingParentID = parentEntry ? parentEntry.id : null
+                const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+                const localID = getUniqueResourceID('resource', siblingIDs, name )
+            
+                let resource
+                if( format === 'tei' ) {
+                    const xmlDom = parseDOM(data)
+                    resource = importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
+                } else {
+                    resource = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
+                }
+                // TODO where to send resource?
+            } catch(error) {
+                // TODO where to send errors
+            }   
+        },
+        (error) => {
+            // TODO
+        }
+    )
+}
+    
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 
 // to keep things simple, we are going to support the most common document 
 // structure: a single tei element containing one header and one or more texts and/or facs.
