@@ -13,11 +13,11 @@ import { facsimileToTEI } from './convert-facs'
 
 const fairCopy = window.fairCopy
 
-export function importResource(importData,parentEntry,fairCopyProject) {
+export async function importResource(importData,parentEntry,fairCopyProject) {
     if( importData.path ) {
         return importFileResource(importData,parentEntry,fairCopyProject)
     } else {
-        return importIIIFResource(importData,parentEntry,fairCopyProject)
+        return await importIIIFResource(importData,parentEntry,fairCopyProject)
     }
 }
 
@@ -53,9 +53,9 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
     }
 }
 
-function importIIIFResource( importData, parentEntry, fairCopyProject) {
-    const { facs, importFacs, sequenceTexts, canvasTexts } = importData 
-    const { idMap, fairCopyConfig } = fairCopyProject
+async function importIIIFResource( importData, parentEntry, fairCopyProject) {
+    const { facs, importFacs, sequenceTexts } = importData 
+    const { idMap } = fairCopyProject
     const resources = []
 
     if( importFacs ) {
@@ -84,45 +84,38 @@ function importIIIFResource( importData, parentEntry, fairCopyProject) {
     // find the text with the matching URI and import it
     for( const sequenceText of sequenceTexts ) {
         const textRef = facs.texts.find( text => text.manifestID === sequenceText )
-        // importRemoteText(textRef, parentEntry, fairCopyProject, options)
+        const importedTexts = await importRemoteText(textRef, parentEntry, fairCopyProject, options)
+        for( const importedText of importedTexts ) {
+            resources.push(importedText)
+        }
     }
 
     // for( const canvasText of canvasTexts ) {
     //     const options = { facs, lineBreakParsing: true, learnStructure: false }
-    //     importRemoteText(canvasText, parentEntry, fairCopyProject, options)
+    //     await importRemoteText(canvasText, parentEntry, fairCopyProject, options)
     // }
     
-    return { resources, fairCopyConfig }
+    return resources
 }
 
-function importRemoteText( textRef, parentEntry, fairCopyProject, options) {
+async function importRemoteText( textRef, parentEntry, fairCopyProject, options) {
     const { manifestID, format, name } = textRef
     const { idMap } = fairCopyProject
+    
+    const resp = await axios.get(manifestID)
+    const { data } = resp
+    const existingParentID = parentEntry ? parentEntry.id : null
+    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+    const localID = getUniqueResourceID('resource', siblingIDs, name )
 
-    axios.get(manifestID).then(
-        (resp) => {
-            try {
-                const { data } = resp
-                const existingParentID = parentEntry ? parentEntry.id : null
-                const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
-                const localID = getUniqueResourceID('resource', siblingIDs, name )
-            
-                let resources
-                if( format === 'tei' ) {
-                    const xmlDom = parseDOM(data)
-                    resources = importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
-                } else {
-                    resources = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
-                }
-                // TODO where to send resource?
-            } catch(error) {
-                // TODO where to send errors
-            }   
-        },
-        (error) => {
-            // TODO
-        }
-    )
+    let resources
+    if( format === 'tei' ) {
+        const xmlDom = parseDOM(data)
+        resources = importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
+    } else {
+        resources = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
+    }
+    return resources
 }
     
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 

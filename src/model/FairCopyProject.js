@@ -143,14 +143,13 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('openResource', resourceID )
     }
 
-    importResource(importData,parentEntry) {
+    async importResource(importData,parentEntry) {
         try {
-            const { resources, fairCopyConfig } = importResource(importData,parentEntry,this)
+            const resources = await importResource(importData,parentEntry,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
-            this.saveFairCopyConfig( fairCopyConfig )
             return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
             return { error: true, errorMessage: e.message, resourceCount: 0 }
