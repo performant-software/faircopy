@@ -54,9 +54,11 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
 }
 
 async function importIIIFResource( importData, parentEntry, fairCopyProject) {
-    const { facs, importFacs, sequenceTexts } = importData 
+    const { facs, importFacs, sequenceTexts, canvasTexts } = importData 
     const { idMap } = fairCopyProject
     const resources = []
+
+    // TODO how do we determine whether to create a TEIDoc for this resource?
 
     if( importFacs ) {
         const { id: requestedID, name } = facs
@@ -79,21 +81,22 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     }
 
     // for now, use these options for text import
-    const options = { lineBreakParsing: true, learnStructure: false }
+    const seqOptions = { resourceType: 'sourceDoc', lineBreakParsing: true, learnStructure: false }
 
     // find the text with the matching URI and import it
     for( const sequenceText of sequenceTexts ) {
         const textRef = facs.texts.find( text => text.manifestID === sequenceText )
-        const importedTexts = await importRemoteText(textRef, parentEntry, fairCopyProject, options)
+        const importedTexts = await importRemoteText(textRef, parentEntry, fairCopyProject, seqOptions)
         for( const importedText of importedTexts ) {
             resources.push(importedText)
         }
     }
 
-    // for( const canvasText of canvasTexts ) {
-    //     const options = { facs, lineBreakParsing: true, learnStructure: false }
-    //     await importRemoteText(canvasText, parentEntry, fairCopyProject, options)
-    // }
+    // import all the texts of a given type as a single text resource
+    for( const canvasText of canvasTexts ) {
+        const importedText = await importCanvasText(facs, canvasText, parentEntry, fairCopyProject)       
+        resources.push(importedText)
+    }
     
     return resources
 }
@@ -116,6 +119,32 @@ async function importRemoteText( textRef, parentEntry, fairCopyProject, options)
         resources = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
     }
     return resources
+}
+
+async function importCanvasText( facs, textTypeName, parentEntry, fairCopyProject ) {    
+
+    // assemble the list of pages associated with these surfaces
+    const pages = []
+    for( const surface of facs.surfaces ) {
+        for( const textRef of surface.texts ) {
+            const { manifestID, name } = textRef
+            if( name === textTypeName ) {
+                const { data: text } = await axios.get(manifestID)
+                pages.push({
+                    surfaceID: surface.id,
+                    text
+                })
+            }
+        }
+    }
+
+    const { idMap } = fairCopyProject
+    const existingParentID = parentEntry ? parentEntry.id : null
+    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+    const localID = getUniqueResourceID('resource', siblingIDs, textTypeName )
+
+    const options = { paginated: true }
+    return importTxtResource(pages, textTypeName, localID, existingParentID, fairCopyProject, options)
 }
     
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 
@@ -181,11 +210,19 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
 
 function importTxtResource(data, name, localID, parentID, fairCopyProject, options) {
     const {fairCopyConfig} = fairCopyProject
-    const { lineBreakParsing, learnStructure, resourceType } = options
+    const { lineBreakParsing, learnStructure, resourceType, paginated } = options
 
-    const resourceEl = resourceType === 'text' ? importTxtToTextResource(data, lineBreakParsing) : importTxtToSourceDocResource(data)
+    let resourceEl
+    if( paginated ) {
+        resourceEl = importPaginatedTxtToSourceDocResource(data)
+    } else if(resourceType === 'text') {
+        resourceEl = importTxtToTextResource(data, lineBreakParsing)
+    } else {
+        resourceEl = importTxtToSourceDocResource(data)
+    }
+
     const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure)
-    return { resources: [ resource ], fairCopyConfig }
+    return [ resource ]    
 }
 
 function importTxtToTextResource(data, lineBreakParsing) {
@@ -232,6 +269,37 @@ function importTxtToSourceDocResource(data) {
 
     const teiEl = xmlDom.getElementsByTagName('TEI')[0]
     const resourceEl = teiEl.getElementsByTagName('sourceDoc')[0]
+    return resourceEl
+}
+
+function importPaginatedTxtToSourceDocResource(pages) {
+    const xmlDom = parseDOM(teiSourceDocTemplate)
+    const teiEl = xmlDom.getElementsByTagName('TEI')[0]
+    const resourceEl = teiEl.getElementsByTagName('sourceDoc')[0]
+
+    for( let i=0; i < pages.length; i++ ) {
+        const page = pages[i]        
+        const { surfaceID, text } = page
+    
+        let surfaceEl
+        if( i === 0 ) {
+            surfaceEl = xmlDom.getElementsByTagName('surface')[0]
+            const lineEl = xmlDom.getElementsByTagName('line')[0]
+            lineEl.parentNode.removeChild(lineEl)            
+        } else {
+            surfaceEl = xmlDom.createElement('surface')
+            resourceEl.appendChild(surfaceEl)
+        }
+        surfaceEl.setAttribute('facs',surfaceID)
+
+        const lines = text.split('\n')    
+        for( const line of lines ) {
+            const lineEl = xmlDom.createElement('line')
+            lineEl.appendChild(document.createTextNode(line));
+            surfaceEl.appendChild(lineEl)
+        }
+    }
+
     return resourceEl
 }
 
