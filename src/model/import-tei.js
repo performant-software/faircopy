@@ -62,7 +62,7 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
 
     if( importFacs ) {
         const { id: requestedID, name } = facs
-        const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+        const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
         const uniqueID = getUniqueResourceID('facs', siblingIDs, requestedID )
         const existingParentID = parentEntry ? parentEntry.id : null
     
@@ -87,15 +87,13 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     for( const sequenceText of sequenceTexts ) {
         const textRef = facs.texts.find( text => text.manifestID === sequenceText )
         const importedTexts = await importRemoteText(textRef, parentEntry, fairCopyProject, seqOptions)
-        for( const importedText of importedTexts ) {
-            resources.push(importedText)
-        }
+        resources.push(...importedTexts)
     }
 
     // import all the texts of a given type as a single text resource
     for( const canvasText of canvasTexts ) {
-        const importedText = await importCanvasText(facs, canvasText, parentEntry, fairCopyProject)       
-        resources.push(importedText)
+        const importedTexts = await importCanvasText(facs, canvasText, parentEntry, fairCopyProject)       
+        resources.push(...importedTexts)
     }
     
     return resources
@@ -290,13 +288,15 @@ function importPaginatedTxtToSourceDocResource(pages) {
             surfaceEl = xmlDom.createElement('surface')
             resourceEl.appendChild(surfaceEl)
         }
-        surfaceEl.setAttribute('facs',surfaceID)
+        surfaceEl.setAttribute('facs',`#${surfaceID}`)
 
         const lines = text.split('\n')    
         for( const line of lines ) {
-            const lineEl = xmlDom.createElement('line')
-            lineEl.appendChild(document.createTextNode(line));
-            surfaceEl.appendChild(lineEl)
+            if( line.length > 0 ) {
+                const lineEl = xmlDom.createElement('line')
+                lineEl.appendChild(document.createTextNode(line));
+                surfaceEl.appendChild(lineEl)    
+            }
         }
     }
 
