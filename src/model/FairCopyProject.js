@@ -2,14 +2,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import TEIDocument from "./TEIDocument"
 import FacsDocument from "./FacsDocument"
-import {importIIIFManifest} from './iiif'
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { getBlankResourceMap, mapResource, getUniqueResourceID } from './id-map'
+import { getBlankResourceMap } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -90,30 +89,10 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateResource', resourceEntry )
     }
 
-    importIIIF( url, parentEntry, onError, onSuccess ) {    
-        const nextSurfaceID = parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0
-
-        importIIIFManifest(url, nextSurfaceID, onError, (xml,facs,metadata) => {
-            const { name, localID } = metadata
-            const siblingIDs = parentEntry ? Object.keys(this.idMap.idMap[parentEntry.localID].ids) : Object.keys(this.idMap.idMap)
-            const uniqueID = getUniqueResourceID('facs', siblingIDs, localID )
-            const existingParentID = parentEntry ? parentEntry.id : null
- 
-            const resourceEntry = {
-                id: uuidv4(),
-                name,
-                localID: uniqueID,
-                type: 'facs',
-                parentResource: existingParentID,
-                ...cloudInitialConfig
-            }
-    
-            const resourceMap = mapResource( resourceEntry, facs )
-            this.addResource(resourceEntry, xml, resourceMap)
-            onSuccess()
-        })    
+    getNextSurfaceID(parentEntry) {
+        return parentEntry ? this.idMap.nextSurfaceID(parentEntry.localID) : 0   
     }
-
+    
     newResource( name, localID, type, parentResourceID ) {
         const resourceEntry = {
             id: uuidv4(),
@@ -164,26 +143,27 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('openResource', resourceID )
     }
 
-    importResource(importData,parentEntry) {
+    async importResource(importData,parentEntry) {
         try {
-            const { resources, fairCopyConfig } = importResource(importData,parentEntry,this)
+            const resources = await importResource(importData,parentEntry,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
-            this.saveFairCopyConfig( fairCopyConfig )
             return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
             return { error: true, errorMessage: e.message, resourceCount: 0 }
         }        
     }
 
-    saveFairCopyConfig( nextFairCopyConfig, lastAction=null ) {
-        this.fairCopyConfig = nextFairCopyConfig
+    saveFairCopyConfig( nextFairCopyConfig=null, lastAction=null ) {
+        if( nextFairCopyConfig ) {
+            this.fairCopyConfig = nextFairCopyConfig
+        }
         if( lastAction ) {
             this.configLastAction = lastAction
         }
-        saveConfig(nextFairCopyConfig, lastAction)
+        saveConfig(this.fairCopyConfig, lastAction)
     }
 
     checkInConfig( nextFairCopyConfig ) {

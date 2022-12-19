@@ -3,7 +3,7 @@ import FacsModeControl from './FacsModeControl'
 import { Button, Tooltip } from '@material-ui/core'
 import { TablePagination, TableHead, TableRow, TableCell, Paper, Checkbox } from '@material-ui/core'
 
-import { getLocalString } from '../../../model/iiif'
+import { getLocalString } from '../../../model/iiif-util'
 import DragAndDropTable from '../../common/DragAndDropTable'
 import DraggableComponent from '../../common/DraggableComponent'
 import TitleBar from '../TitleBar'

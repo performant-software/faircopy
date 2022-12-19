@@ -175,6 +175,10 @@ class FairCopyApplication {
       }
     })
 
+    ipcMain.on('requestIIIFImport', (event, importList) => { 
+        this.fairCopySession.importIIIFStart(importList)
+    })
+
     ipcMain.on('requestExport', (event, resourceEntries) => { 
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null

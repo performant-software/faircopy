@@ -32,7 +32,7 @@ export default class ImportConsoleDialog extends Component {
         fairCopy.services.ipcRemoveListener('importData', this.onImportData )
     }
 
-    receiveImportData( importData ) {        
+    async receiveImportData( importData ) {        
         const { command } = importData
         const { consoleLines } = this.state
         const nextConsole = [ ...consoleLines ]
@@ -57,16 +57,16 @@ export default class ImportConsoleDialog extends Component {
         
             const importItem = importList.pop()
             if( importItem ) {
-                const filename = fairCopy.services.getBasename(importItem.path).trim()
+                const resourceName = importItem.path ? fairCopy.services.getBasename(importItem.path).trim() : importItem.manifestID
                 if( importItem.error ) {
                     if( importItem.error === 'too-big' ) {
-                        nextConsole.push(`File is too large, 3MB max size: ${filename}`)
+                        nextConsole.push(`File is too large, 3MB max size: ${resourceName}`)
                     } else {
-                        nextConsole.push(`Unable to read file: ${filename}`)
+                        nextConsole.push(`Unable to read file: ${resourceName}`)
                     }                    
                 } else {
-                    nextConsole.push(`Importing file ${filename}...`)
-                    const { error, errorMessage, resourceCount } = fairCopyProject.importResource(importItem,parentEntry)
+                    nextConsole.push(`Importing file ${resourceName}...`)
+                    const { error, errorMessage, resourceCount } = await fairCopyProject.importResource(importItem,parentEntry)
                     nextSubResourceCount = resourceCount
                     if( error ) {
                         nextConsole.push(errorMessage)
@@ -75,6 +75,11 @@ export default class ImportConsoleDialog extends Component {
                     }    
                 }
             } else {
+                // update config in case it was changed by learning structure
+                // of imported xmls
+                const { fairCopyProject } = this.props
+                fairCopyProject.saveFairCopyConfig()
+
                 done = true
                 const s = totalCount !== 1 ? 's' : ''
                 nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)

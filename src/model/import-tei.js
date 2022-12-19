@@ -1,17 +1,27 @@
 
 import { v4 as uuidv4 } from 'uuid'
+import axios from 'axios';
 
 import TEIDocument from "./TEIDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
-import {teiTextTemplate, teiSourceDocTemplate} from './tei-template'
+import {teiTextTemplate, teiSourceDocTemplate, teiHeaderTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
 import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
+import { facsimileToTEI } from './convert-facs'
 
 const fairCopy = window.fairCopy
 
-export function importResource(importData,parentEntry,fairCopyProject) {
+export async function importResource(importData,parentEntry,fairCopyProject) {
+    if( importData.path ) {
+        return importFileResource(importData,parentEntry,fairCopyProject)
+    } else {
+        return await importIIIFResource(importData,parentEntry,fairCopyProject)
+    }
+}
+
+function importFileResource(importData,parentEntry,fairCopyProject) {
     const { path, data, options } = importData
     const { idMap } = fairCopyProject
 
@@ -43,6 +53,127 @@ export function importResource(importData,parentEntry,fairCopyProject) {
     }
 }
 
+async function importIIIFResource( importData, parentEntry, fairCopyProject) {
+    const { facs, importFacs, sequenceTexts, canvasTexts } = importData 
+    const { idMap } = fairCopyProject
+    const resources = []
+
+    // import can create multiple resources at once with local ids based
+    // on external resources. keep track of sibling IDs to prevent collisions
+    let siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : []
+    let uncleIDs = Object.keys(idMap.idMap)
+    let actualParentEntry = parentEntry
+
+    if( importFacs ) {
+        const { name } = facs
+        // if the facs is being added to an existing TEI doc, it will get requested ID, otherwise the generated TEI Doc will get it
+        const facsLocalID = actualParentEntry ? getUniqueResourceID('facs', siblingIDs, name ) : getUniqueResourceID('facs', siblingIDs)
+        
+        // create a TEI doc if there isn't one
+        if( !actualParentEntry ) {
+            // create the tei doc 
+            const uniqueID = getUniqueResourceID('resource', uncleIDs, name )
+            const teiDoc = createTEIDoc(name,uniqueID)
+            actualParentEntry = teiDoc.resourceEntry
+            resources.push(teiDoc)
+            uncleIDs.push(uniqueID)
+
+            const headerResource = createHeader(name,actualParentEntry.id)
+            resources.push(headerResource)
+            siblingIDs.push(headerResource.localID)
+        } 
+    
+        const resourceEntry = {
+            id: uuidv4(),
+            name,
+            localID: facsLocalID,
+            type: 'facs',
+            parentResource: actualParentEntry.id,
+            ...cloudInitialConfig
+        }    
+
+        const resourceMap = mapResource( resourceEntry, facs )
+        const content = facsimileToTEI(facs)   
+        resources.push({ resourceEntry, content, resourceMap })
+        siblingIDs.push(resourceEntry.localID)
+    }
+
+    // for now, use these options for text import
+    const seqOptions = { resourceType: 'text', lineBreakParsing: 'multi', learnStructure: false }
+
+    // find the text with the matching URI and import it
+    for( const sequenceText of sequenceTexts ) {
+        const textRef = facs.texts.find( text => text.manifestID === sequenceText )
+        let importedTexts
+        if( textRef.format === 'tei' ) {
+            importedTexts = await importRemoteXML( facs.name, textRef, uncleIDs, fairCopyProject, seqOptions)
+        } else {
+            const ids = parentEntry ? siblingIDs : uncleIDs
+            importedTexts = await importRemoteText( facs.name, textRef, parentEntry, ids, fairCopyProject, seqOptions)
+        }
+        resources.push(...importedTexts)
+    }
+
+    // import all the texts of a given type as a single text resource
+    for( const canvasText of canvasTexts ) {
+        const importedTexts = await importCanvasText(facs, canvasText, actualParentEntry, siblingIDs, fairCopyProject)       
+        resources.push(...importedTexts)
+    }
+    
+    return resources
+}
+
+async function importRemoteXML( name, textRef, uncleIDs, fairCopyProject, options) {
+    const { manifestID } = textRef
+    const { idMap } = fairCopyProject
+    
+    const resp = await axios.get(manifestID)
+    const { data } = resp
+
+    const xmlDom = parseDOM(data)
+    const localID = getUniqueResourceID('resource', uncleIDs, name )
+    uncleIDs.push(localID)
+
+    return importXMLResource(xmlDom, name, localID, idMap, null, null, fairCopyProject, options)
+}
+
+async function importRemoteText( name, textRef, parentEntry, siblingIDs, fairCopyProject, options) {
+    const { manifestID } = textRef
+    
+    const resp = await axios.get(manifestID)
+    const { data } = resp
+    const localID = getUniqueResourceID('resource', siblingIDs, name )
+    siblingIDs.push(localID)
+    const existingParentID = parentEntry ? parentEntry.id : null
+
+    return importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
+}
+
+async function importCanvasText( facs, textTypeName, parentEntry, siblingIDs, fairCopyProject ) {    
+
+    // assemble the list of pages associated with these surfaces
+    const pages = []
+    for( const surface of facs.surfaces ) {
+        for( const textRef of surface.texts ) {
+            const { manifestID, name } = textRef
+            if( name === textTypeName ) {
+                const { data: text } = await axios.get(manifestID)
+                pages.push({
+                    surfaceID: surface.id,
+                    text
+                })
+            }
+        }
+    }
+
+    const localID = getUniqueResourceID('resource', siblingIDs, textTypeName )
+    siblingIDs.push(localID)
+    const existingParentID = parentEntry ? parentEntry.id : null
+
+    const options = { paginated: true }
+    return importTxtResource(pages, textTypeName, localID, existingParentID, fairCopyProject, options)
+}
+    
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 
 // to keep things simple, we are going to support the most common document 
 // structure: a single tei element containing one header and one or more texts and/or facs.
@@ -64,7 +195,7 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
         // if there isn't a parent, create a tei doc, otherwise add resources to current parent
         if( !parentEntry ) {
             // create the tei doc 
-            const teiDoc = createTEIDoc(name,localID,idMap)
+            const teiDoc = createTEIDoc(name,localID)
             const teiDocID = teiDoc.resourceEntry.id
             resources.push(teiDoc)
 
@@ -101,16 +232,24 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
     }
     
     // Things look OK, return these resources
-    return { resources, fairCopyConfig }
+    return resources
 }
 
 function importTxtResource(data, name, localID, parentID, fairCopyProject, options) {
     const {fairCopyConfig} = fairCopyProject
-    const { lineBreakParsing, learnStructure, resourceType } = options
+    const { lineBreakParsing, learnStructure, resourceType, paginated } = options
 
-    const resourceEl = resourceType === 'text' ? importTxtToTextResource(data, lineBreakParsing) : importTxtToSourceDocResource(data)
+    let resourceEl
+    if( paginated ) {
+        resourceEl = importPaginatedTxtToSourceDocResource(data)
+    } else if(resourceType === 'text') {
+        resourceEl = importTxtToTextResource(data, lineBreakParsing)
+    } else {
+        resourceEl = importTxtToSourceDocResource(data)
+    }
+
     const resource = createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure)
-    return { resources: [ resource ], fairCopyConfig }
+    return [ resource ]    
 }
 
 function importTxtToTextResource(data, lineBreakParsing) {
@@ -157,6 +296,39 @@ function importTxtToSourceDocResource(data) {
 
     const teiEl = xmlDom.getElementsByTagName('TEI')[0]
     const resourceEl = teiEl.getElementsByTagName('sourceDoc')[0]
+    return resourceEl
+}
+
+function importPaginatedTxtToSourceDocResource(pages) {
+    const xmlDom = parseDOM(teiSourceDocTemplate)
+    const teiEl = xmlDom.getElementsByTagName('TEI')[0]
+    const resourceEl = teiEl.getElementsByTagName('sourceDoc')[0]
+
+    for( let i=0; i < pages.length; i++ ) {
+        const page = pages[i]        
+        const { surfaceID, text } = page
+    
+        let surfaceEl
+        if( i === 0 ) {
+            surfaceEl = xmlDom.getElementsByTagName('surface')[0]
+            const lineEl = xmlDom.getElementsByTagName('line')[0]
+            lineEl.parentNode.removeChild(lineEl)            
+        } else {
+            surfaceEl = xmlDom.createElement('surface')
+            resourceEl.appendChild(surfaceEl)
+        }
+        surfaceEl.setAttribute('facs',`#${surfaceID}`)
+
+        const lines = text.split('\n')    
+        for( const line of lines ) {
+            if( line.length > 0 ) {
+                const lineEl = xmlDom.createElement('line')
+                lineEl.appendChild(document.createTextNode(line));
+                surfaceEl.appendChild(lineEl)    
+            }
+        }
+    }
+
     return resourceEl
 }
 
@@ -211,7 +383,7 @@ function extractResourceEls(xmlDom) {
     return { header: teiHeaderEl, resources }
 }
 
-function createTEIDoc(name,localID,idMap) {
+function createTEIDoc(name,localID) {
     const resourceEntry = {
         id: uuidv4(),
         localID,
@@ -224,15 +396,26 @@ function createTEIDoc(name,localID,idMap) {
     return {resourceEntry, content: "", resourceMap}
 }
 
+function createHeader(name,parentID) {
+    const resourceEntry = {
+        id: uuidv4(),
+        localID: 'header',
+        name: 'TEI Header', 
+        type: 'header',
+        remote: false,
+        parentResource: parentID,
+        ...cloudInitialConfig
+    }    
+    const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
+    return { resourceEntry, content: teiHeaderTemplate(name), resourceMap }
+}
+
 function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
     const type = determineResourceType(resourceEl)
     if( type === 'facs' ) {
-        const facsResource = createFacs(resourceEl,name,localID,parentID)
-        return facsResource  
+        return createFacs(resourceEl,name,localID,parentID)
     } else {
-        const { fairCopyConfig: nextFairCopyConfig, resourceEntry, content, resourceMap } = createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig, learnStructure)
-        fairCopyConfig = nextFairCopyConfig
-        return {resourceEntry, content, resourceMap}
+        return createText(resourceEl,name,type,localID,parentID,fairCopyProject,fairCopyConfig, learnStructure)
     }
 }
 
@@ -262,9 +445,9 @@ function createText(textEl, name, type, localID, parentResourceID, fairCopyProje
     const content = serializeText(doc, tempDoc, teiSchema)
 
     // learn the attributes and vocabs
-    const nextFairCopyConfig = learnStructure ? learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) : fairCopyConfig
+    if( learnStructure ) learnDoc(fairCopyConfig, doc, teiSchema, tempDoc)
 
-    return { resourceEntry, content, resourceMap, fairCopyConfig: nextFairCopyConfig }
+    return { resourceEntry, content, resourceMap }
 }
 
 function createFacs(facsEl, name, localID, parentResourceID) {

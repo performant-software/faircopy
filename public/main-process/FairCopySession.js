@@ -329,6 +329,10 @@ class FairCopySession {
         this.projectStore.importStart(paths,options)
     }
 
+    importIIIFStart(importList) {
+        this.projectStore.importIIIFStart(importList)
+    }
+
     importContinue() {
         this.projectStore.importContinue()
     }

@@ -1,20 +1,10 @@
 import {facsTemplate} from "./tei-template"
-import { getLocalString } from './iiif'
+import { getLocalString } from './iiif-util'
 import { sanitizeID } from './attribute-validators'
 
-// Supports IIIF v2 and v3
-export function iiifToFacsimile( manifestData, nextSurfaceID ) {
-    const context = manifestData["@context"]
-    if( context.includes("http://iiif.io/api/presentation/3/context.json") ) {
-        return iiifToFacsimile3( manifestData, nextSurfaceID )
-    }
-    if( context.includes("http://iiif.io/api/presentation/2/context.json") ) {
-        return iiifToFacsimile2( manifestData, nextSurfaceID )
-    }
-    throw new Error("Expected IIIF Presentation API context 2 or 3.")
-}
+const fromThePageTEIXML = 'https://github.com/benwbrum/fromthepage/wiki/FromThePage-Support-for-the-IIIF-Presentation-API-and-Web-Annotations#tei-xml'
 
-function iiifToFacsimile3( manifestData, nextSurfaceID ) {
+export function manifestToFacsimile3( manifestData, nextSurfaceID ) {
     if( manifestData.type !== "Manifest" ) throw new Error("Expected a manifest as the root object.")
 
     const canvases = manifestData.items
@@ -65,6 +55,7 @@ function iiifToFacsimile3( manifestData, nextSurfaceID ) {
                     height,
                     imageAPIURL,
                     zones: [],
+                    texts: [],
                     canvasURI
                 })  
                 break // one surface per canvas      
@@ -72,24 +63,27 @@ function iiifToFacsimile3( manifestData, nextSurfaceID ) {
         } 
     }
 
-    const metadata = parseMetadata(manifestID,manifestLabel)
+    const { name, requestedID } = parseMetadata(manifestID,manifestLabel)
 
     return { 
-        facsData: {
-            manifestID,
-            surfaces    
-        },
-        metadata
+        id: requestedID,
+        name,
+        type: 'facs',
+        manifestID,
+        texts: [],
+        surfaces
     }
 }
 
-function iiifToFacsimile2( manifestData, nextSurfaceID ) {
+export function manifestToFacsimile2( manifestData, nextSurfaceID ) {
     const { sequences } = manifestData
     const manifestID = val('id', manifestData)
     const manifestLabel = str( manifestData.label )
 
     const sequence = sequences[0]
     const { canvases } = sequence
+
+    const texts = sequence.rendering ? gatherRenderings2( sequence.rendering ) : []
 
     const surfaceIDs = []
     const surfaces = []
@@ -102,6 +96,7 @@ function iiifToFacsimile2( manifestData, nextSurfaceID ) {
         const imageAPIURL = resource.service ? val('id', resource.service) : val('id', resource)
         const localLabels = str( canvas.label )
         let id = generateOrdinalID('f',n)
+        const texts = canvas.seeAlso ? parseSeeAlso2(canvas.seeAlso) : []
         surfaceIDs.push(id)
         n++ // page count
 
@@ -113,17 +108,19 @@ function iiifToFacsimile2( manifestData, nextSurfaceID ) {
             height,
             imageAPIURL,
             zones: [],
+            texts,
             canvasURI
         })
     }
-    const metadata = parseMetadata(manifestID,manifestLabel)
+    const { name, requestedID } = parseMetadata(manifestID,manifestLabel)
 
     return { 
-        facsData: {
-            manifestID,
-            surfaces    
-        },
-        metadata
+        id: requestedID,
+        name,
+        type: 'facs',
+        manifestID,
+        texts,
+        surfaces    
     }
 }
 
@@ -205,17 +202,66 @@ export function setSurfaceTitle( surface, title, lang='en' ) {
     surface.localLabels[key] = [ title ]
 } 
 
+function gatherRenderings2( rendering ) {
+    const texts = []
+
+    // add texts that are in a recognized format to list of texts
+    function parseRendering( rend ) {
+        if( rend['@id'] && rend['label'] ) {
+            let format = parseFormat(rend)
+            if( format ) {
+                texts.push({
+                    manifestID: rend['@id'],
+                    name: rend['label'],
+                    format
+                })    
+            }
+        }
+    }
+
+    // gather up any tei or plain text renderings and return an array of text refs 
+    if( Array.isArray(rendering) ) {
+        for( const rend of rendering ) {
+            parseRendering(rend)
+        }
+    } else {
+        parseRendering(rendering)
+    }   
+
+    return texts
+}
+
+function parseSeeAlso2(seeAlso) {
+    if( !Array.isArray(seeAlso) ) return []
+    const texts = []
+
+    for( const rend of seeAlso ) {
+        if( rend['@id'] && rend['label'] ) {
+            const format = parseFormat(rend)
+            if( format ) {    
+                texts.push({
+                    manifestID: rend['@id'],
+                    name: rend['label'],
+                    format
+                })
+            }    
+        }
+    }
+
+    return texts
+}
+
 function parseMetadata(manifestID,manifestLabel) {
     const name = getLocalString( manifestLabel, 'en' ).join(' ')
 
     // take the pathname and convert it to a valid local ID
     const url = new URL(manifestID)
     const cleanID = sanitizeID(url.pathname)
-    const localID = cleanID ? cleanID : `import_${Date.now()}`
+    const requestedID = cleanID ? cleanID : `import_${Date.now()}`
 
     return {
         name,
-        localID
+        requestedID
     }
 }
 
@@ -275,6 +321,15 @@ function val( key, obj ) {
     } else {
         return obj[key]
     }
+}
+
+function parseFormat( rend ) {
+    let format = rend['format'] === 'text/plain' ? 'text' : rend['format'] === 'application/tei+xml' ? 'tei' : null
+
+    if( !format && rend['profile'] === fromThePageTEIXML ) {
+        format = 'tei'
+    }
+    return format
 }
 
 
