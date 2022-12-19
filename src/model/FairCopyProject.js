@@ -144,16 +144,16 @@ export default class FairCopyProject {
     }
 
     async importResource(importData,parentEntry) {
-        // try {
+        try {
             const resources = await importResource(importData,parentEntry,this)
             for( const resource of resources ) {
                 const { resourceEntry, content, resourceMap } = resource
                 this.addResource( resourceEntry, content, resourceMap )
             }
             return { error: false, errorMessage: null, resourceCount: resources.length }
-        // } catch(e) {
-        //     return { error: true, errorMessage: e.message, resourceCount: 0 }
-        // }        
+        } catch(e) {
+            return { error: true, errorMessage: e.message, resourceCount: 0 }
+        }        
     }
 
     saveFairCopyConfig( nextFairCopyConfig=null, lastAction=null ) {

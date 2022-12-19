@@ -5,7 +5,7 @@ import axios from 'axios';
 import TEIDocument from "./TEIDocument"
 import {learnDoc} from "./faircopy-config"
 import {parseText, serializeText} from "./xml"
-import {teiTextTemplate, teiSourceDocTemplate} from './tei-template'
+import {teiTextTemplate, teiSourceDocTemplate, teiHeaderTemplate} from './tei-template'
 import { cloudInitialConfig } from './FairCopyProject'
 import {teiToFacsimile} from './convert-facs'
 import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
@@ -58,26 +58,44 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     const { idMap } = fairCopyProject
     const resources = []
 
-    // TODO how do we determine whether to create a TEIDoc for this resource?
+    // import can create multiple resources at once with local ids based
+    // on external resources. keep track of sibling IDs to prevent collisions
+    let siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : []
+    let uncleIDs = Object.keys(idMap.idMap)
+    let actualParentEntry = parentEntry
 
     if( importFacs ) {
-        const { id: requestedID, name } = facs
-        const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
-        const uniqueID = getUniqueResourceID('facs', siblingIDs, requestedID )
-        const existingParentID = parentEntry ? parentEntry.id : null
+        const { name } = facs
+        // if the facs is being added to an existing TEI doc, it will get requested ID, otherwise the generated TEI Doc will get it
+        const facsLocalID = actualParentEntry ? getUniqueResourceID('facs', siblingIDs, name ) : getUniqueResourceID('facs', siblingIDs)
+        
+        // create a TEI doc if there isn't one
+        if( !actualParentEntry ) {
+            // create the tei doc 
+            const uniqueID = getUniqueResourceID('resource', uncleIDs, name )
+            const teiDoc = createTEIDoc(name,uniqueID)
+            actualParentEntry = teiDoc.resourceEntry
+            resources.push(teiDoc)
+            uncleIDs.push(uniqueID)
+
+            const headerResource = createHeader(name,actualParentEntry.id)
+            resources.push(headerResource)
+            siblingIDs.push(headerResource.localID)
+        } 
     
         const resourceEntry = {
             id: uuidv4(),
             name,
-            localID: uniqueID,
+            localID: facsLocalID,
             type: 'facs',
-            parentResource: existingParentID,
+            parentResource: actualParentEntry.id,
             ...cloudInitialConfig
         }    
 
         const resourceMap = mapResource( resourceEntry, facs )
         const content = facsimileToTEI(facs)   
         resources.push({ resourceEntry, content, resourceMap })
+        siblingIDs.push(resourceEntry.localID)
     }
 
     // for now, use these options for text import
@@ -86,40 +104,42 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     // find the text with the matching URI and import it
     for( const sequenceText of sequenceTexts ) {
         const textRef = facs.texts.find( text => text.manifestID === sequenceText )
-        const importedTexts = await importRemoteText(textRef, parentEntry, fairCopyProject, seqOptions)
+        const importedTexts = await importRemoteText(textRef, actualParentEntry, siblingIDs, uncleIDs, fairCopyProject, seqOptions)
         resources.push(...importedTexts)
     }
 
     // import all the texts of a given type as a single text resource
     for( const canvasText of canvasTexts ) {
-        const importedTexts = await importCanvasText(facs, canvasText, parentEntry, fairCopyProject)       
+        const importedTexts = await importCanvasText(facs, canvasText, actualParentEntry, siblingIDs, fairCopyProject)       
         resources.push(...importedTexts)
     }
     
     return resources
 }
 
-async function importRemoteText( textRef, parentEntry, fairCopyProject, options) {
+async function importRemoteText( textRef, parentEntry, siblingIDs, uncleIDs, fairCopyProject, options) {
     const { manifestID, format, name } = textRef
     const { idMap } = fairCopyProject
     
     const resp = await axios.get(manifestID)
     const { data } = resp
-    const existingParentID = parentEntry ? parentEntry.id : null
-    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
-    const localID = getUniqueResourceID('resource', siblingIDs, name )
 
     let resources
     if( format === 'tei' ) {
         const xmlDom = parseDOM(data)
-        resources = importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingParentID, fairCopyProject, options)
+        const localID = getUniqueResourceID('resource', uncleIDs, name )
+        resources = importXMLResource(xmlDom, name, localID, idMap, null, null, fairCopyProject, options)
+        uncleIDs.push(localID)
     } else {
-        resources = importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
+        const localID = getUniqueResourceID('resource', siblingIDs, name )
+        resources = importTxtResource(data, name, localID, parentEntry.id, fairCopyProject, options)
+        siblingIDs.push(localID)
     }
+    
     return resources
 }
 
-async function importCanvasText( facs, textTypeName, parentEntry, fairCopyProject ) {    
+async function importCanvasText( facs, textTypeName, parentEntry, siblingIDs, fairCopyProject ) {    
 
     // assemble the list of pages associated with these surfaces
     const pages = []
@@ -136,13 +156,11 @@ async function importCanvasText( facs, textTypeName, parentEntry, fairCopyProjec
         }
     }
 
-    const { idMap } = fairCopyProject
-    const existingParentID = parentEntry ? parentEntry.id : null
-    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
     const localID = getUniqueResourceID('resource', siblingIDs, textTypeName )
+    siblingIDs.push(localID)
 
     const options = { paginated: true }
-    return importTxtResource(pages, textTypeName, localID, existingParentID, fairCopyProject, options)
+    return importTxtResource(pages, textTypeName, localID, parentEntry.id, fairCopyProject, options)
 }
     
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 
@@ -166,7 +184,7 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
         // if there isn't a parent, create a tei doc, otherwise add resources to current parent
         if( !parentEntry ) {
             // create the tei doc 
-            const teiDoc = createTEIDoc(name,localID,idMap)
+            const teiDoc = createTEIDoc(name,localID)
             const teiDocID = teiDoc.resourceEntry.id
             resources.push(teiDoc)
 
@@ -354,7 +372,7 @@ function extractResourceEls(xmlDom) {
     return { header: teiHeaderEl, resources }
 }
 
-function createTEIDoc(name,localID,idMap) {
+function createTEIDoc(name,localID) {
     const resourceEntry = {
         id: uuidv4(),
         localID,
@@ -365,6 +383,20 @@ function createTEIDoc(name,localID,idMap) {
     }
     const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
     return {resourceEntry, content: "", resourceMap}
+}
+
+function createHeader(name,parentID) {
+    const resourceEntry = {
+        id: uuidv4(),
+        localID: 'header',
+        name: 'TEI Header', 
+        type: 'header',
+        remote: false,
+        parentResource: parentID,
+        ...cloudInitialConfig
+    }    
+    const resourceMap = getBlankResourceMap(resourceEntry.id, resourceEntry.type)
+    return { resourceEntry, content: teiHeaderTemplate(name), resourceMap }
 }
 
 function createResource(resourceEl, name, localID, parentID, fairCopyProject, fairCopyConfig, learnStructure ) {
