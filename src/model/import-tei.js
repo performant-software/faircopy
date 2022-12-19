@@ -99,7 +99,7 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     }
 
     // for now, use these options for text import
-    const seqOptions = { resourceType: 'sourceDoc', lineBreakParsing: true, learnStructure: false }
+    const seqOptions = { resourceType: 'text', lineBreakParsing: 'multi', learnStructure: false }
 
     // find the text with the matching URI and import it
     for( const sequenceText of sequenceTexts ) {
@@ -108,7 +108,7 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
         if( textRef.format === 'tei' ) {
             importedTexts = await importRemoteXML( facs.name, textRef, uncleIDs, fairCopyProject, seqOptions)
         } else {
-            importedTexts = await importRemoteText(textRef, actualParentEntry, siblingIDs, fairCopyProject, seqOptions)
+            importedTexts = await importRemoteText( facs.name, textRef, actualParentEntry, siblingIDs, fairCopyProject, seqOptions)
         }
         resources.push(...importedTexts)
     }
@@ -136,15 +136,16 @@ async function importRemoteXML( name, textRef, uncleIDs, fairCopyProject, option
     return importXMLResource(xmlDom, name, localID, idMap, null, null, fairCopyProject, options)
 }
 
-async function importRemoteText( textRef, parentEntry, siblingIDs, fairCopyProject, options) {
-    const { manifestID, name } = textRef
+async function importRemoteText( name, textRef, parentEntry, siblingIDs, fairCopyProject, options) {
+    const { manifestID } = textRef
     
     const resp = await axios.get(manifestID)
     const { data } = resp
     const localID = getUniqueResourceID('resource', siblingIDs, name )
     siblingIDs.push(localID)
+    const existingParentID = parentEntry ? parentEntry.id : null
 
-    return importTxtResource(data, name, localID, parentEntry.id, fairCopyProject, options)
+    return importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
 }
 
 async function importCanvasText( facs, textTypeName, parentEntry, siblingIDs, fairCopyProject ) {    
@@ -166,9 +167,10 @@ async function importCanvasText( facs, textTypeName, parentEntry, siblingIDs, fa
 
     const localID = getUniqueResourceID('resource', siblingIDs, textTypeName )
     siblingIDs.push(localID)
+    const existingParentID = parentEntry ? parentEntry.id : null
 
     const options = { paginated: true }
-    return importTxtResource(pages, textTypeName, localID, parentEntry.id, fairCopyProject, options)
+    return importTxtResource(pages, textTypeName, localID, existingParentID, fairCopyProject, options)
 }
     
 // There are a wide number of valid configurations for TEI elements in the guidelines, but 
