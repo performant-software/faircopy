@@ -148,7 +148,7 @@ export default class IIIFImportDialog extends Component {
             this.setState(nextState)
         }
 
-        const onKeyPress = (e) => {
+        const onKeyUp = (e) => {
             if( e.keyCode === 13 ) this.onOpen()
         }
 
@@ -166,7 +166,7 @@ export default class IIIFImportDialog extends Component {
                     helperText={validationErrors['url']}
                     aria-label="IIIF Manifest URL" 
                     label="IIIF Manifest URL" 
-                    onKeyPress={onKeyPress}
+                    onKeyUp={onKeyUp}
                 />
                 <IconButton 
                     onClick={this.onOpen} 
