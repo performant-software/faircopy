@@ -104,7 +104,12 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     // find the text with the matching URI and import it
     for( const sequenceText of sequenceTexts ) {
         const textRef = facs.texts.find( text => text.manifestID === sequenceText )
-        const importedTexts = await importRemoteText(textRef, actualParentEntry, siblingIDs, uncleIDs, fairCopyProject, seqOptions)
+        let importedTexts
+        if( textRef.format === 'tei' ) {
+            importedTexts = await importRemoteXML( facs.name, textRef, uncleIDs, fairCopyProject, seqOptions)
+        } else {
+            importedTexts = await importRemoteText(textRef, actualParentEntry, siblingIDs, fairCopyProject, seqOptions)
+        }
         resources.push(...importedTexts)
     }
 
@@ -117,26 +122,29 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
     return resources
 }
 
-async function importRemoteText( textRef, parentEntry, siblingIDs, uncleIDs, fairCopyProject, options) {
-    const { manifestID, format, name } = textRef
+async function importRemoteXML( name, textRef, uncleIDs, fairCopyProject, options) {
+    const { manifestID } = textRef
     const { idMap } = fairCopyProject
     
     const resp = await axios.get(manifestID)
     const { data } = resp
 
-    let resources
-    if( format === 'tei' ) {
-        const xmlDom = parseDOM(data)
-        const localID = getUniqueResourceID('resource', uncleIDs, name )
-        resources = importXMLResource(xmlDom, name, localID, idMap, null, null, fairCopyProject, options)
-        uncleIDs.push(localID)
-    } else {
-        const localID = getUniqueResourceID('resource', siblingIDs, name )
-        resources = importTxtResource(data, name, localID, parentEntry.id, fairCopyProject, options)
-        siblingIDs.push(localID)
-    }
+    const xmlDom = parseDOM(data)
+    const localID = getUniqueResourceID('resource', uncleIDs, name )
+    uncleIDs.push(localID)
+
+    return importXMLResource(xmlDom, name, localID, idMap, null, null, fairCopyProject, options)
+}
+
+async function importRemoteText( textRef, parentEntry, siblingIDs, fairCopyProject, options) {
+    const { manifestID, name } = textRef
     
-    return resources
+    const resp = await axios.get(manifestID)
+    const { data } = resp
+    const localID = getUniqueResourceID('resource', siblingIDs, name )
+    siblingIDs.push(localID)
+
+    return importTxtResource(data, name, localID, parentEntry.id, fairCopyProject, options)
 }
 
 async function importCanvasText( facs, textTypeName, parentEntry, siblingIDs, fairCopyProject ) {    
