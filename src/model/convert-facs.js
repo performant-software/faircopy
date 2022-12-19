@@ -55,6 +55,7 @@ export function manifestToFacsimile3( manifestData, nextSurfaceID ) {
                     height,
                     imageAPIURL,
                     zones: [],
+                    texts: [],
                     canvasURI
                 })  
                 break // one surface per canvas      
@@ -69,7 +70,8 @@ export function manifestToFacsimile3( manifestData, nextSurfaceID ) {
         name,
         type: 'facs',
         manifestID,
-        surfaces    
+        texts: [],
+        surfaces
     }
 }
 

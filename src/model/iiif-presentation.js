@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { manifestToFacsimile2 } from './convert-facs'
+import { manifestToFacsimile2, manifestToFacsimile3 } from './convert-facs'
 
 export function importPresentationEndpoint(manifestURL, nextSurfaceID, onSuccess, onError) {
     axios.get(manifestURL).then(
@@ -36,6 +36,8 @@ function parseIIIFPresentation( presentation, nextSurfaceID ) {
     const context = presentation["@context"]
     if( context.includes("http://iiif.io/api/presentation/2/context.json") ) {
         return parsePresentation2( presentation, nextSurfaceID )
+    } else if( context.includes("http://iiif.io/api/presentation/3/context.json") ) {
+        return parsePresentation3( presentation, nextSurfaceID )
     }
     throw new Error("Expected IIIF Presentation API context 2.")
 }
@@ -45,6 +47,14 @@ function parsePresentation2( presentation, nextSurfaceID ) {
         return manifestToFacsimile2(presentation,nextSurfaceID)
     } else if( presentation['@type'] === "sc:Collection" ) {
         return presentationToCollection2(presentation,nextSurfaceID)
+    }    
+}
+
+function parsePresentation3( presentation, nextSurfaceID ) {
+    if( presentation.type === "Manifest") {
+        return manifestToFacsimile3(presentation,nextSurfaceID)
+    } else {
+        throw new Error("Only Manifests are supported for Presentation API v3")
     }    
 }
 
