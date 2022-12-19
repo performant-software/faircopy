@@ -14,13 +14,8 @@ export default class IIIFTreeView extends Component {
   }
 
   renderFacs(facsItem) {
-    const { onToggleItem, selectedItems } = this.props
+    const { selectedItems } = this.props
     const { manifestID, name, surfaces, texts } = facsItem
-
-    const onIconClick = (e) => {
-      const targetID = e?.currentTarget?.childNodes[0]?.id
-      onToggleItem(targetID)
-    }
 
     const textEls = []
 
@@ -28,7 +23,7 @@ export default class IIIFTreeView extends Component {
     const facsID = `facs:::${manifestID}`
     const facsSelected = selectedItems.includes(facsID)
     textEls.push(
-      <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(facsSelected,facsID)} key={facsID} nodeId={facsID} label={`Facsimile (${surfaces.length})`} />
+      <StyledTreeItem endIcon={renderCheckedSquare(facsSelected,facsID)} key={facsID} nodeId={facsID} label={`Facsimile (${surfaces.length})`} />
     )
 
     for( const text of texts ) {
@@ -36,7 +31,7 @@ export default class IIIFTreeView extends Component {
       const nodeId = `seqtxt:::${manifestID}:::${textID}`
       const selected = selectedItems.includes(nodeId)
       textEls.push(
-        <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected,nodeId)} key={nodeId} nodeId={nodeId} label={name} />
+        <StyledTreeItem endIcon={renderCheckedSquare(selected,nodeId)} key={nodeId} nodeId={nodeId} label={name} />
       )
     }
 
@@ -55,7 +50,7 @@ export default class IIIFTreeView extends Component {
       const nodeId = `canvastxt:::${manifestID}:::${textType}`
       const selected = selectedItems.includes(nodeId)
       textEls.push(
-        <StyledTreeItem onIconClick={onIconClick} endIcon={renderCheckedSquare(selected, nodeId)} key={nodeId} nodeId={nodeId} label={`${textType} (${count})`} />
+        <StyledTreeItem endIcon={renderCheckedSquare(selected, nodeId)} key={nodeId} nodeId={nodeId} label={`${textType} (${count})`} />
       )
     }
 
@@ -115,8 +110,11 @@ export default class IIIFTreeView extends Component {
 
 
   onSelect = (e, selected) => {
-    const { onRequestItem } = this.props
-    if( !selected.startsWith('textnode-') ) {
+    const { onRequestItem, onToggleItem } = this.props
+
+    if( selected.includes(':::') ) {
+      onToggleItem(selected)
+    } else {
       onRequestItem(selected)
     }
   }
