@@ -108,7 +108,8 @@ async function importIIIFResource( importData, parentEntry, fairCopyProject) {
         if( textRef.format === 'tei' ) {
             importedTexts = await importRemoteXML( facs.name, textRef, uncleIDs, fairCopyProject, seqOptions)
         } else {
-            importedTexts = await importRemoteText( facs.name, textRef, actualParentEntry, siblingIDs, fairCopyProject, seqOptions)
+            const ids = parentEntry ? siblingIDs : uncleIDs
+            importedTexts = await importRemoteText( facs.name, textRef, parentEntry, ids, fairCopyProject, seqOptions)
         }
         resources.push(...importedTexts)
     }
