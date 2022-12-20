@@ -15,7 +15,7 @@ export default class LoginPanel extends Component {
         super()
         this.initialState = { 
             // ...localHostDefaults,
-            serverURL: 'https://demo.archivengine.com',
+            serverURL: 'https://app.archivengine.com',
             email: '',
             password: '',
             errorMessage: null 
