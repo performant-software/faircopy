@@ -7,3 +7,6 @@
     margin-bottom: 5px;
 }
 
+#ImportTextsDialog .q-phrase {
+    display: inline;
+}

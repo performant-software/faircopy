@@ -4,14 +4,12 @@ const fairCopy = window.fairCopy
 
 export default class ThumbnailMargin extends Component {
 
-    findTop(editorView,pos) {
+    findTop(editorView,pos,attempt=0) {
         const startCoords = editorView.coordsAtPos(pos)
         // if this is a structure node w/no height, walk back to find the bottom of a node with height
-        if( startCoords.height === 0 && pos > 0 ) return this.findTop(editorView,pos-1)
-        const { marginTop } = this.props
-        const top = pos === 0 ? marginTop : startCoords.top
-        const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
-        return top - marginTop + scrollTop
+        // give up after 3 attempts
+        if( !startCoords.height && pos > 0 && attempt < 3) return this.findTop(editorView,pos-1,attempt+1)
+        return pos === 0 ? 20 : startCoords.top - 85 + editorView.dom.parentNode.parentNode.scrollTop
     }
     
     renderThumbnails() {

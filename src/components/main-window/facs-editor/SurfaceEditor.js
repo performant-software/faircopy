@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import OpenSeadragon from 'openseadragon'
 import * as ZoneLayer from 'annotorious-openseadragon'
-import { getImageInfoURL } from '../../../model/iiif'
+import { getImageInfoURL } from '../../../model/iiif-util'
 import SurfaceEditorToolbar from './SurfaceEditorToolbar'
 import SurfaceDetailCard from './SurfaceDetailCard'
 import ZonePopup from './ZonePopup'

@@ -2,6 +2,13 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.4
+
+### Improvements
+
+* The IIIF Import Dialog now supports IIIF Presentation API v2 Collection endpoints. The user can navigate a tree of collections to select the correct manifest to import. You can also now import texts that are attached to Sequence and Canvas objects that are plain/text or TEI/XML.
+* The Import Text Dialog now allows the user to select between importing a plain text file as a text resource or a source document resource.
+
 ## Version 1.1.3
 
 In FairCopy v1.1.3, we add functionality for teams using ArchivEngine. ArchivEngine is our team collaboration server, currently in development at Performant. If you are interested in trying it out, please contact us. This version allows a project lead to configure the schema for the entire project. 

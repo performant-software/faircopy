@@ -1,22 +1,4 @@
-import axios from 'axios';
-import {iiifToFacsimile, facsimileToTEI} from './convert-facs'
 
-export function importIIIFManifest( manifestURL, nextSurfaceID, onError, onSuccess ) {
-    axios.get(manifestURL).then(
-        (resp) => {
-            try {
-                const { facsData, metadata } = iiifToFacsimile(resp.data,nextSurfaceID)
-                const facsXML = facsimileToTEI(facsData)
-                onSuccess(facsXML,facsData,metadata)
-            } catch(error) {
-                onError(`Unable to parse IIIF manifest: '${error}`)      
-            }
-        },
-        (error) => {
-            onError(`Unable to load IIIF manifest.`)
-        }
-    );
-}
 
 export function getImageInfoURL( surface ) {
     const slash = surface.imageAPIURL.endsWith('/') ? '' : '/'

@@ -164,6 +164,13 @@ class ProjectStore {
         this.importContinue()
     }
 
+    importIIIFStart( importList ) {
+        this.importRunning(true)
+        const importData = { command: 'start', importList }
+        this.fairCopyApplication.sendToMainWindow('importData', importData )  
+        this.importContinue()
+    }
+
     importContinue() {
         this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
     }

@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { inlineRingSpinner } from '../common/ring-spinner'
 
-const maxTitleLength = 100
+const maxTitleLength = 50
 
 export default class TitleBar extends Component {
     
@@ -47,15 +47,14 @@ export default class TitleBar extends Component {
     renderTitle() {
         const { parentResource, resourceName, surfaceName, isImageWindow, onClickResource, loading, currentView } = this.props
 
-        let titleCount = 0
-        if( parentResource ) titleCount++
-        if( resourceName ) titleCount++
-        if( surfaceName ) titleCount++
-        const titleLength = maxTitleLength/titleCount
+        // calculate shortened lengths
+        const surfaceNameLength = surfaceName ? surfaceName.length > maxTitleLength ? maxTitleLength : surfaceName.length : 0
+        const resourceNameLength = resourceName ? resourceName.length > (maxTitleLength - surfaceNameLength) ? (maxTitleLength - surfaceNameLength) : resourceName.length : 0
+        const teiDocNameLength = parentResource ? parentResource.name.length > (maxTitleLength - surfaceNameLength - resourceNameLength) ? (maxTitleLength - surfaceNameLength  - resourceNameLength) : parentResource.name.length : 0
 
-        const teiDocNameShort = parentResource ? shorten( parentResource.name, titleLength ) : ''
-        const resourceNameShort = resourceName ? shorten( resourceName, titleLength ) : ''
-        const surfaceNameShort = surfaceName ? shorten( surfaceName, titleLength ) : ''
+        const teiDocNameShort = parentResource ? shorten( parentResource.name, teiDocNameLength ) : ''
+        const resourceNameShort = resourceName ? shorten( resourceName, resourceNameLength ) : ''
+        const surfaceNameShort = surfaceName ? shorten( surfaceName, surfaceNameLength ) : ''
 
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
