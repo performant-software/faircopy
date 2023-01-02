@@ -70,10 +70,19 @@ export default class AlertDialog extends Component {
     renderConfirmDelete() {
         const { alertOptions, onCloseAlert, closeResources, fairCopyProject } = this.props
 
-        const { resourceIDs } = alertOptions
+        const { resourceIDs, openResources } = alertOptions
 
         const onDelete = () => {
-            closeResources(resourceIDs, false, false )    
+            const closingResourceIDs = [ ...resourceIDs ]
+
+            // we need to see if any of the open resources have a doomed resource as a parent and add them to close list
+            for( const openResource of Object.values(openResources) ) {
+                if( resourceIDs.includes( openResource.parentEntry.id ) ) {
+                    closingResourceIDs.push( openResource.resourceID )
+                }
+            }
+
+            closeResources(closingResourceIDs, false, false )    
             fairCopyProject.removeResources(resourceIDs)
         }
 

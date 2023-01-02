@@ -556,7 +556,8 @@ export default class MainWindow extends Component {
             case 'delete':
                 {
                     const { fairCopyProject } = this.props
-                    const alertOptions = { resourceIDs }
+                    const { openResources } = this.state
+                    const alertOptions = { resourceIDs, openResources }
                     if( fairCopyProject.areEditable( resourceEntries ) ) {
                         this.setState({ ...nextState, alertDialogMode: 'confirmDelete', alertOptions, ...closePopUpState })    
                     } else {
