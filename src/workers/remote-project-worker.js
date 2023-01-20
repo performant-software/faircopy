@@ -105,12 +105,12 @@ export function remoteProject( msg, workerMethods, workerData ) {
     switch( messageType ) {
         case 'open':
             // timeout is just for debugging
-            setTimeout( () => {
+            // setTimeout( () => {
                 updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
                 updateConfig( serverURL, authToken, projectID, postMessage )
                 updateIDMap( serverURL, authToken, projectID, postMessage )
                 connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )    
-            }, 2000)
+            // }, 2000)
             break
         case 'get-resource':
             if( authToken ) {

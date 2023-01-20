@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { authConfig } from './auth'
+import { standardErrorHandler } from './error-handler';
 
 export function checkInResources(serverURL, authToken, projectID, resources, message, onSuccess, onFail) {
    
@@ -37,13 +38,7 @@ export function checkInResources(serverURL, authToken, projectID, resources, mes
                 onFail("Unable to check in resources.", resourceState)
             }
         },
-        (errorResponse) => {
-            if( errorResponse && errorResponse.message ) {
-                onFail(errorResponse.message)        
-            } else {
-                onFail("Unable to connect to server.")
-            }
-        }
+        standardErrorHandler(onFail)
     )
 }
 

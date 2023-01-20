@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { authConfig } from './auth'
+import { standardErrorHandler } from './error-handler';
 
 const maxResourcesPerPage = 9999
 
@@ -16,16 +17,7 @@ export function getResources(serverURL, authToken, projectID, indexParentID, cur
             const parentEntry = indexParentID !== null && resources.length > 0 ? createResourceEntry( resources[0].parent_resource ) : null
             onSuccess({ parentEntry, totalRows, remoteResources })
         },
-        (errorResponse) => {
-            if( errorResponse && errorResponse.response ) {
-                if( errorResponse.response.status === 401 ) {
-                    const { error } = errorResponse.response.data
-                    onFail(error)        
-                }
-            } else {
-                onFail("Unable to connect to server.")
-            }
-        }
+        standardErrorHandler(onFail)
     )
 }
 
@@ -40,16 +32,7 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
             const parentEntry = parent_resource ? createResourceEntry(parent_resource) : null
             onSuccess({resourceEntry,parentEntry,content})
         },
-        (errorResponse) => {
-            if( errorResponse && errorResponse.response ) {
-                if( errorResponse.response.status === 401 ) {
-                    const { error } = errorResponse.response.data
-                    onFail(error)        
-                }
-            } else {
-                onFail("Unable to connect to server.")
-            }
-        }
+        standardErrorHandler(onFail)
     )
 }
 
