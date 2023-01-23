@@ -27,7 +27,15 @@ function updateResourceView( serverURL, projectID, resourceView, authToken, post
             console.log(error)
         })                 
     } else {
-        throw new Error(`Recieved request-view message when user is not logged in.`)
+        // user is not logged in, remote list is empty
+        const emptyView = { indexParentID: null,
+            parentEntry: null,
+            currentPage: 1, 
+            rowsPerPage: resourceView.rowsPerPage,
+            totalRows: 0,
+            loading: false 
+        } 
+        postMessage({ messageType: 'resource-view-update', resourceView: emptyView, remoteResources: [] })
     }
 }
 
