@@ -37,6 +37,11 @@ export default class LoginDialog extends Component {
             const value = e.currentTarget.value
             this.setState({...this.state, email: value })
         }
+        const onKeyPress = (e) => {
+            if( e.key === 'Enter' ) {
+                onLogin()
+            }
+        }
 
         const { email, password } = this.state
         const saveAllowed = ( password.length > 0 && email.length > 0 )
@@ -49,7 +54,7 @@ export default class LoginDialog extends Component {
                 aria-labelledby="login-title"
             >
                 <DialogTitle id="login-title">Login to Remote Server</DialogTitle>
-                <DialogContent>
+                <DialogContent onKeyPress={onKeyPress}>
                     <ul>
                         <li>
                             <TextField 
