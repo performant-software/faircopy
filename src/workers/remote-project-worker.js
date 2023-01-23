@@ -9,7 +9,7 @@ function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
     getIDMap( userID, serverURL, authToken, projectID, (idMapData) => {
         postMessage({ messageType: 'id-map-update', idMapData })
     }, (error) => {
-        throw new Error(error)
+        console.log(error)
     })
 }
 
@@ -87,6 +87,27 @@ function checkOutFairCopyConfig( userID, serverURL, projectID, authToken, postMe
     checkOutConfig( projectID, userID, serverURL, authToken, onSuccess, onFail ) 
 }
 
+function getParentResource( userID, serverURL, authToken, resourceEntry, content, xmlID, postMessage) {
+    getResource( userID, serverURL, authToken, resourceEntry.parentResource, (response) => {
+        const { resourceEntry: parentEntry } = response
+        postMessage({ messageType: 'got-parent', resourceEntry, parentEntry, content, xmlID })
+    }, (errorMessage) => {
+        const parentEntry = {
+            id: resourceEntry.parentResource,
+            localID: '___offline___',
+            name: '*OFFLINE*', 
+            type: 'teidoc',
+            remote: true,
+            parentResource: null,
+            deleted: false,
+            gitHeadRevision: null,
+            lastAction: null
+        }       
+        postMessage({ messageType: 'got-parent', resourceEntry, parentEntry, content, xmlID })
+        console.log(errorMessage)
+    })
+}
+
 const onNotification = (data, workerData, postMessage) => {
     const { userID, serverURL, projectID } = workerData
     const authToken = getAuthToken(userID, serverURL)
@@ -118,29 +139,20 @@ export function remoteProject( msg, workerMethods, workerData ) {
             connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )    
             break
         case 'get-resource':
-            if( authToken ) {
+            {
                 const { resourceID, xmlID } = msg              
                 getResource( userID, serverURL, authToken, resourceID, (response) => {
                     const { resourceEntry, parentEntry, content } = response
                     postMessage({ messageType: 'resource-data', resourceEntry, parentEntry, content, xmlID })
                 }, (errorMessage) => {
-                    // TODO handle errors
-                })    
-            } else {
-                throw new Error(`Recieved get-resource message when user is not logged in.`)
-            }
-            break
-        case 'get-parent':
-            if( authToken ) {
-                const { resourceEntry, content, xmlID } = msg 
-                getResource( userID, serverURL, authToken, resourceEntry.parentResource, (response) => {
-                    const { resourceEntry: parentEntry } = response
-                    postMessage({ messageType: 'got-parent', resourceEntry, parentEntry, content, xmlID })
-                }, (errorMessage) => {
-                    // TODO handle errors
+                    console.log(errorMessage)
                 })
-            } else {
-                throw new Error(`Recieved get-parent message when user is not logged in.`)
+            }    
+            break
+        case 'get-parent': 
+            {
+                const { resourceEntry, content, xmlID } = msg
+                getParentResource( userID, serverURL, authToken, resourceEntry, content, xmlID, postMessage)                    
             }
             break
         case 'checkin-config':
