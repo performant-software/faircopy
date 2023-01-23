@@ -5,18 +5,18 @@ import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
 import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
 
-function updateIDMap( serverURL, authToken, projectID, postMessage) {
-    getIDMap(serverURL, authToken, projectID, (idMapData) => {
+function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
+    getIDMap( userID, serverURL, authToken, projectID, (idMapData) => {
         postMessage({ messageType: 'id-map-update', idMapData })
     }, (error) => {
         throw new Error(error)
     })
 }
 
-function updateResourceView( serverURL, projectID, resourceView, authToken, postMessage ) {
+function updateResourceView( userID, serverURL, projectID, resourceView, authToken, postMessage ) {
     if( authToken ) {
         const { currentPage, rowsPerPage, indexParentID } = resourceView
-        getResources( serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceData) => {
+        getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceData) => {
             const { parentEntry, remoteResources, totalRows } = resourceData
             resourceView.parentEntry = parentEntry
             resourceView.totalRows = totalRows
@@ -48,8 +48,8 @@ function updateProjectInfo( userID, serverURL, authToken, projectID, postMessage
     })
 }
 
-function updateConfig( serverURL, authToken, projectID, postMessage ) {
-    getConfig(projectID, serverURL, authToken, (config, configLastAction) => {
+function updateConfig( userID, serverURL, authToken, projectID, postMessage ) {
+    getConfig(userID, projectID, serverURL, authToken, (config, configLastAction) => {
         postMessage({ messageType: 'config-update', config, configLastAction })
     },
     (error) => {
@@ -57,7 +57,7 @@ function updateConfig( serverURL, authToken, projectID, postMessage ) {
     })
 }
 
-function checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage ) {
+function checkInFairCopyConfig( userID, serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage ) {
     const onSuccess = (config, configLastAction) => {
         postMessage({ messageType: 'config-update', config, configLastAction })
     }
@@ -68,13 +68,13 @@ function checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstActio
     }
 
     if( firstAction ) {
-        initConfig( fairCopyConfig, projectID, serverURL, authToken, onSuccess, onFail )
+        initConfig( fairCopyConfig, userID, projectID, serverURL, authToken, onSuccess, onFail )
     } else {
-        checkInConfig( fairCopyConfig, projectID, serverURL, authToken, onSuccess, onFail ) 
+        checkInConfig( fairCopyConfig, userID, projectID, serverURL, authToken, onSuccess, onFail ) 
     }
 }
 
-function checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage ) {
+function checkOutFairCopyConfig( userID, serverURL, projectID, authToken, postMessage ) {
     const onSuccess = (status) => {
         postMessage({ messageType: 'config-check-out-result', status })
     }
@@ -84,7 +84,7 @@ function checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage ) 
         console.log(error)
     }
 
-    checkOutConfig( projectID, serverURL, authToken, onSuccess, onFail ) 
+    checkOutConfig( projectID, userID, serverURL, authToken, onSuccess, onFail ) 
 }
 
 const onNotification = (data, workerData, postMessage) => {
@@ -94,7 +94,7 @@ const onNotification = (data, workerData, postMessage) => {
 
     if( notification === "resources_checked_in"  ) {
         const { resources } = data
-        updateIDMap( serverURL, authToken, projectID, postMessage )       
+        updateIDMap( userID, serverURL, authToken, projectID, postMessage )       
         postMessage({ messageType: 'resources-updated', resources })
     }
     // other possible notifications:
@@ -112,18 +112,15 @@ export function remoteProject( msg, workerMethods, workerData ) {
     
     switch( messageType ) {
         case 'open':
-            // timeout is just for debugging
-            // setTimeout( () => {
-                updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
-                updateConfig( serverURL, authToken, projectID, postMessage )
-                updateIDMap( serverURL, authToken, projectID, postMessage )
-                connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )    
-            // }, 2000)
+            updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
+            updateConfig( userID, serverURL, authToken, projectID, postMessage )
+            updateIDMap( userID, serverURL, authToken, projectID, postMessage )
+            connectCable(projectID, serverURL, authToken, (data) => onNotification( data, workerData, postMessage ) )    
             break
         case 'get-resource':
             if( authToken ) {
                 const { resourceID, xmlID } = msg              
-                getResource(serverURL, authToken, resourceID, (response) => {
+                getResource( userID, serverURL, authToken, resourceID, (response) => {
                     const { resourceEntry, parentEntry, content } = response
                     postMessage({ messageType: 'resource-data', resourceEntry, parentEntry, content, xmlID })
                 }, (errorMessage) => {
@@ -136,7 +133,7 @@ export function remoteProject( msg, workerMethods, workerData ) {
         case 'get-parent':
             if( authToken ) {
                 const { resourceEntry, content, xmlID } = msg 
-                getResource(serverURL, authToken, resourceEntry.parentResource, (response) => {
+                getResource( userID, serverURL, authToken, resourceEntry.parentResource, (response) => {
                     const { resourceEntry: parentEntry } = response
                     postMessage({ messageType: 'got-parent', resourceEntry, parentEntry, content, xmlID })
                 }, (errorMessage) => {
@@ -148,14 +145,14 @@ export function remoteProject( msg, workerMethods, workerData ) {
             break
         case 'checkin-config':
             const { config:fairCopyConfig, firstAction } = msg 
-            checkInFairCopyConfig( serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage )
+            checkInFairCopyConfig( userID, serverURL, projectID, fairCopyConfig, firstAction, authToken, postMessage )
             break
         case 'checkout-config':
-            checkOutFairCopyConfig( serverURL, projectID, authToken, postMessage )
+            checkOutFairCopyConfig( userID, serverURL, projectID, authToken, postMessage )
             break
         case 'request-view':
             const { resourceView } = msg     
-            updateResourceView( serverURL, projectID, resourceView, authToken, postMessage )
+            updateResourceView( userID, serverURL, projectID, resourceView, authToken, postMessage )
             break
         case 'close':
             close()

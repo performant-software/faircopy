@@ -5,7 +5,7 @@ import { standardErrorHandler } from './error-handler';
 
 const maxResourcesPerPage = 9999
 
-export function getResources(serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
+export function getResources(userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
     const parentQ = indexParentID ? `/${indexParentID}` : '/null'
     const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?per_page=${rowsPerPage}&page=${currentPage}`
 
@@ -17,11 +17,11 @@ export function getResources(serverURL, authToken, projectID, indexParentID, cur
             const parentEntry = indexParentID !== null && resources.length > 0 ? createResourceEntry( resources[0].parent_resource ) : null
             onSuccess({ parentEntry, totalRows, remoteResources })
         },
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
-export function getResource(serverURL, authToken, resourceID, onSuccess, onFail) {
+export function getResource( userID, serverURL, authToken, resourceID, onSuccess, onFail) {
     const getResourceURL = `${serverURL}/api/resources/${resourceID}`
 
     axios.get(getResourceURL,authConfig(authToken)).then(
@@ -32,13 +32,13 @@ export function getResource(serverURL, authToken, resourceID, onSuccess, onFail)
             const parentEntry = parent_resource ? createResourceEntry(parent_resource) : null
             onSuccess({resourceEntry,parentEntry,content})
         },
-        standardErrorHandler(onFail)
+        standardErrorHandler( userID, serverURL, onFail)
     )
 }
 
-export async function getResourcesAsync(serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage ) {
+export async function getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage ) {
     return new Promise( ( resolve, reject ) => {
-        getResources( serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, (remoteResources) => {
+        getResources( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, (remoteResources) => {
             resolve(remoteResources)
         }, (errorMessage) => {
             reject(new Error(errorMessage))
@@ -46,9 +46,9 @@ export async function getResourcesAsync(serverURL, authToken, projectID, resourc
     })
 }
 
-export async function getResourceAsync(serverURL, authToken, resourceID) {
+export async function getResourceAsync( userID, serverURL, authToken, resourceID) {
     return new Promise( ( resolve, reject ) => {
-        getResource( serverURL, authToken, resourceID, (remoteResource) => {
+        getResource( userID, serverURL, authToken, resourceID, (remoteResource) => {
             resolve(remoteResource)
         }, (errorMessage) => {
             reject(new Error(errorMessage))

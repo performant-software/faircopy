@@ -16,7 +16,7 @@ export function getProjects( userID, serverURL, authToken, onSuccess, onFail) {
             }
             onSuccess(projectInfos)
         },
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
@@ -29,7 +29,7 @@ export function getProject( userID, projectID, serverURL, authToken, onSuccess, 
             const projectInfo = createProjectInfo(userID, project)
             onSuccess(projectInfo)
         }, 
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
