@@ -398,13 +398,8 @@ export default class MainWindow extends Component {
     }
 
     onLoggedIn = () => {
-        const { resourceViews } = this.state
-        const { currentView } = resourceViews
-        const resourceView = resourceViews[currentView]
-        const { indexParentID, parentEntry, currentPage } = resourceView
-        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
         this.setState( {...this.state, loginMode: false} )
-        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+        fairCopy.services.ipcSend('reopenProject')
     }
 
     onLogOut = () => {

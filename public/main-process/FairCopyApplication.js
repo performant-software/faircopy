@@ -65,6 +65,11 @@ class FairCopyApplication {
         this.exitApp() 
       }
     })
+
+    ipcMain.on('reopenProject', (event) => {
+      this.fairCopySession.reopenProject() 
+    })
+    
     ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
 
     ipcMain.on('removeResources', (event, resourceIDs) => { 
