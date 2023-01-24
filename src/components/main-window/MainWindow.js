@@ -398,20 +398,21 @@ export default class MainWindow extends Component {
     }
 
     onLoggedIn = () => {
+        this.setState( {...this.state, loginMode: false} )
+        fairCopy.services.ipcSend('reopenProject')
+    }
+
+    onLogOut = () => {
         const { resourceViews } = this.state
+        const { fairCopyProject } = this.props
+        const { userID, serverURL } = fairCopyProject
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
         const { indexParentID, parentEntry, currentPage } = resourceView
         const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
-        this.setState( {...this.state, loginMode: false} )
-        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
-    }
-
-    onLogOut = () => {
-        const { fairCopyProject } = this.props
-        const { userID, serverURL } = fairCopyProject
         logout(userID, serverURL)
         this.setState( {...this.state} )
+        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
     }
 
     onEditResource = () => {

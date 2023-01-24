@@ -90,6 +90,7 @@ export default class ProjectSettingsWindow extends Component {
         const { permissions, configLastAction, userID, remote } = fairCopyProject
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
+        const loggedIn = fairCopyProject.isLoggedIn()
 
         const onSaveConfig = () => {
             const { fairCopyConfig, projectInfo } = this.state
@@ -112,7 +113,7 @@ export default class ProjectSettingsWindow extends Component {
 
         return (
             <div>
-                { remote && canConfig && <div className="window-actions-left">
+                { remote && loggedIn && canConfig && <div className="window-actions-left">
                     <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
                     { checkOutError && <Typography className="error-message" >Error: {checkOutError}</Typography>}
                 </div> }

@@ -8,7 +8,7 @@ class RemoteProject {
         const {baseDir} = fairCopyApplication
         this.fairCopySession = fairCopySession
         this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), userID, serverURL, projectID ).then(() => {
-            this.remoteProjectWorker.postMessage({ messageType: 'open' })
+            this.open()
         })
     }
 
@@ -79,6 +79,10 @@ class RemoteProject {
         })
         
         return this.remoteProjectWorker.start({userID, serverURL, projectID})
+    }
+
+    open() {
+        this.remoteProjectWorker.postMessage({ messageType: 'open' })
     }
 
     close() {

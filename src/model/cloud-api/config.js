@@ -5,7 +5,7 @@ import { standardErrorHandler } from './error-handler';
 
 const configFilename = 'config-settings.json'
 
-export function getConfig( projectID, serverURL, authToken, onSuccess, onFail) {
+export function getConfig( userID, projectID, serverURL, authToken, onSuccess, onFail) {
     const getConfigURL = `${serverURL}/api/configs/${projectID}`
 
     axios.get(getConfigURL,authConfig(authToken)).then(
@@ -13,11 +13,11 @@ export function getConfig( projectID, serverURL, authToken, onSuccess, onFail) {
             const { config_content, last_action } = okResponse.data.config
             onSuccess(config_content, last_action)
         }, 
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
-export function initConfig( fairCopyConfig, projectID, serverURL, authToken, onSuccess, onFail) {
+export function initConfig( fairCopyConfig, userID, projectID, serverURL, authToken, onSuccess, onFail) {
     const initConfigURL = `${serverURL}/api/configs`
 
     const configObj = {
@@ -34,11 +34,11 @@ export function initConfig( fairCopyConfig, projectID, serverURL, authToken, onS
             const { config_content, last_action } = okResponse.data.config
             onSuccess(config_content, last_action)
         }, 
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
-export function checkInConfig(fairCopyConfig, projectID, serverURL, authToken, onSuccess, onFail) {
+export function checkInConfig(fairCopyConfig, userID, projectID, serverURL, authToken, onSuccess, onFail) {
     const checkInConfigURL = `${serverURL}/api/configs/${projectID}`
 
     const configObj = {
@@ -53,11 +53,11 @@ export function checkInConfig(fairCopyConfig, projectID, serverURL, authToken, o
             const { config_content, last_action } = okResponse.data.config
             onSuccess(config_content, last_action)
         }, 
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
-export function checkOutConfig(projectID, serverURL, authToken, onSuccess, onFail) {
+export function checkOutConfig(projectID, userID, serverURL, authToken, onSuccess, onFail) {
     const checkOutConfigURL = `${serverURL}/api/configs/check_out/${projectID}`
 
     const configObj = {
@@ -71,6 +71,6 @@ export function checkOutConfig(projectID, serverURL, authToken, onSuccess, onFai
             const { status } = okResponse.data.configs
             onSuccess(status)
         }, 
-        standardErrorHandler(onFail)
+        standardErrorHandler(userID, serverURL, onFail)
     )
 }
