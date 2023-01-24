@@ -1,0 +1,11 @@
+#KeyBindingsTable {
+    margin: 20px;
+}
+
+#KeyBindingsTable h4 {
+    margin-bottom: 50px;
+}
+
+#KeyBindingsTable th {
+    font-weight: bold;
+}
