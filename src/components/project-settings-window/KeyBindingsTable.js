@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, Typography } from '@material-ui/core'
-import { Tooltip, IconButton } from '@material-ui/core'
+import { Tooltip, IconButton, Button } from '@material-ui/core'
+
+import KeyBindingDialog from './KeyBindingDialog'
 
 export default class KeyBindingsTable extends Component {
 
@@ -8,29 +10,34 @@ export default class KeyBindingsTable extends Component {
         super(props)
 
         this.state = {
+            selectedKeybinding: null,
+            keybindingDialog: false
         }
     }
 
     render() {
         const { fairCopyConfig, onUpdateConfig, readOnly } = this.props
+        const { selectedKeybinding, keybindingDialog } = this.state
 
-        const keybindings = {
-            'alt+space': {
-                elementType: 'mark',
-                elementName: "persName"
-            }
+        // TODO remove shim
+        const keybindings = fairCopyConfig.keybindings ? fairCopyConfig.keybindings : {}
+
+        const onAddKeybinding = () => {
+            this.setState({ ...this.state, keybindingDialog: true })
         }
 
         const keyRows = []
         for( const chord of Object.keys(keybindings) ) {
-            const { elementType, elementName } = keybindings[chord]
+            const keybinding = keybindings[chord]
+            const { elementType, elementName } = keybinding
 
             const onEdit = () => {
-                // ... 
+                this.setState({ ...this.state, selectedKeybinding: keybinding, keybindingDialog: true })
             }
     
             const onDelete = () => {
                 // TODO clear the value of this key binding
+                // onUpdateConfig()
             }
             
             keyRows.push(
@@ -47,18 +54,27 @@ export default class KeyBindingsTable extends Component {
                         <Typography>{elementName}</Typography>
                     </TableCell>
                     <TableCell>
-                        <Tooltip title="Edit this hot key."><IconButton onClick={onEdit}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip>
-                        <Tooltip title="Remove this hot key."><span><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip>                    
+                        { !readOnly && <Tooltip title="Edit this hot key."><IconButton onClick={onEdit}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip> }
+                        { !readOnly && <Tooltip title="Remove this hot key."><span><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip> }
                     </TableCell>
                 </TableRow>
             )
+        }
+        
+        const onClose = () => {
+            this.setState({ ...this.state, keybindingDialog: false })
+        }
+
+        const onSave = (chord, elementType, elementName) => {
+            // TODO replace or add this to the config and pass it up the chain
+            // onUpdateConfig
         }
 
         return (
             <div id="KeyBindingsTable">
                 <Typography variant="h4">Keybindings</Typography>
                 <TableContainer component={Paper}>
-                    <Table size="small" aria-label="a table of keybindings for mark and inline elements">
+                    <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
                         <TableHead>
                         <TableRow>
                             <TableCell>Keystroke</TableCell>
@@ -72,6 +88,13 @@ export default class KeyBindingsTable extends Component {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Button variant='contained' onClick={onAddKeybinding}>Add Keybinding</Button>
+                { keybindingDialog && <KeyBindingDialog
+                    fairCopyConfig={fairCopyConfig}
+                    selectedKeybinding={selectedKeybinding}
+                    onSave={onSave}
+                    onClose={onClose}
+                ></KeyBindingDialog>}
             </div>
         )
     }
