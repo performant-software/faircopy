@@ -3,8 +3,7 @@ import { Menu, MenuItem, Typography } from '@material-ui/core'
 
 import ElementInfoPopup from './ElementInfoPopup'
 import EmptyGroup from './EmptyGroup';
-import { createPhraseElement } from "../../../model/editor-actions"
-import { validAction } from '../../../model/element-validators'
+import { getElementIcon } from '../../../model/TEISchema';
 
 export default class ElementMenu extends Component {
 
@@ -19,20 +18,18 @@ export default class ElementMenu extends Component {
     }
 
     getMenuGroups() {
-        const { teiDocument, menuGroup } = this.props
-        if( !teiDocument || !menuGroup ) return []
-        const {menus} = teiDocument.fairCopyProject.fairCopyConfig
+        const { menus, menuGroup } = this.props
+        if( !menuGroup ) return []
         return menus[menuGroup]
     }
 
     renderElementInfo() {
-        const { teiDocument } = this.props
+        const { elements } = this.props
         const { elementInfoID } = this.state
         const anchorEl = this.itemEls[elementInfoID]
 
         if( elementInfoID === null || !anchorEl ) return null
 
-        const { elements } = teiDocument.fairCopyProject.teiSchema
         const elementSpec = elements[elementInfoID]
 
         const onAnchorEl = () => {
@@ -50,21 +47,9 @@ export default class ElementMenu extends Component {
         )
     }
 
-    createMenuAction(selection,member) {
-        return () => {
-            const { teiDocument, onClose } = this.props
-
-            if( selection && !selection.node ) {
-                createPhraseElement(member, {}, teiDocument) 
-            }
-            onClose()
-        }
-    }
-
     renderSubMenu() {
         const { subMenuID } = this.state
-        const { teiDocument, open } = this.props
-        const { teiSchema } = teiDocument.fairCopyProject
+        const { selection, open, createMenuAction, elements, validAction } = this.props
         const menuGroups = this.getMenuGroups()
         const anchorOrigin = { vertical: 'top', horizontal: 'right' }
 
@@ -96,21 +81,19 @@ export default class ElementMenu extends Component {
         }
 
         for( const member of members ) {
-            const editorView = teiDocument.getActiveView()
-            const selection = (editorView) ? editorView.state.selection : null 
 
             const setItemElRef = (el) => {
                 this.itemEls[member] = el
             }
 
-            const valid = validAction( member, teiDocument )
+            const valid = validAction( member )
             const onShowInfo = () => { this.setState({ ...this.state, elementInfoID: member })}
             const onHideInfo = () => { this.setState({ ...this.state, elementInfoID: null })}
             const onKeyUp = (e) => { 
                 // left arrow
                 if( e.keyCode === 37 ) onClose()
             }
-            const icon = teiSchema.getElementIcon(member)
+            const icon = getElementIcon(member, elements)
             const nameEl = icon ? <span><i className={`${icon} fa-sm`}></i><span className="element-menu-name">{member}</span></span> : <span>{member}</span>
 
             menuItems.push(
@@ -123,7 +106,7 @@ export default class ElementMenu extends Component {
                     onBlur={onHideInfo}
                     onMouseOver={onShowInfo}
                     onMouseLeave={onHideInfo}
-                    onClick={this.createMenuAction(selection, member)}
+                    onClick={createMenuAction(selection, member)}
                     onKeyUp={onKeyUp}
                 >
                     {nameEl}
@@ -181,16 +164,9 @@ export default class ElementMenu extends Component {
     }
 
     render() {  
-        const { elementMenuAnchors, menuGroup, onClose, open } = this.props
+        const { elementMenuAnchors, menuGroup, onClose, onExited, open } = this.props
         const anchorEl = elementMenuAnchors[menuGroup]
         const anchorOrigin = { vertical: 'bottom', horizontal: 'left' }
-
-        // return focus to active editor after menu closes
-        const onExited = () => {
-            const { teiDocument } = this.props
-            const editorView = teiDocument.getActiveView()
-            editorView.focus()
-        }
 
         const onCloseMenu = () => {
             this.setState({...this.state, subMenuID: null})
