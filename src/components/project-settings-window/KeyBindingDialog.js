@@ -5,30 +5,60 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
 
+const disallowedKeys = [ 'SHIFT', 'ALT', 'CTRL', 'ENTER' ]
+
 export default class KeyBindingDialog extends Component {
 
     constructor(props) {
         super(props)
 
         const { selectedKeybinding } = this.props
+        const elementType = selectedKeybinding ? selectedKeybinding.elementType : 'mark'
+        const elementName = selectedKeybinding ? selectedKeybinding.elementName : null
+        const title = selectedKeybinding ? "Edit Keybinding" : "New Keybinding"
+
         this.state = {
-            title: selectedKeybinding ? "Edit Keybinding" : "New Keybinding",
+            title,
             chord: selectedKeybinding?.chord,
-            elementType: selectedKeybinding?.elementType,
-            elementName: selectedKeybinding?.elementName,
+            recordingChord: false,
+            elementType,
+            elementName,
             elementMenuOptions: null
         }
         this.elementMenuAnchors = {}
     }
 
     renderChordField() {
-        const { chord } = this.state
-        const onKeyDown = () => {
-            // TODO
+        const { chord, recordingChord } = this.state
+
+        const onClick = () => {
+            this.setState({...this.state, recordingChord: true })
+        }
+        
+        const onKeyUp = (event) => {
+            if( recordingChord ) {
+                const shiftKey = event.shiftKey ? 'SHIFT+' : ''
+                const altKey = event.altKey ?  'ALT+' : ''
+                const ctrlKey = event.ctrlKey ? 'CTRL+' : ''
+                const key = event.key.toUpperCase()
+                //if( (altKey||ctrlKey) && !disallowedKeys.includes(key) ) {
+                    const nextChord = `${shiftKey}${altKey}${ctrlKey}${key}`
+                    console.log(nextChord)
+                    this.setState({...this.state, chord: nextChord, recordingChord: false })    
+                //}
+            }
         }
 
+        const chordLabel = chord ? chord : 'Choose Key'
+
         return (
-            <div>{ chord }</div>
+            <Button
+                variant={recordingChord ? 'contained' : 'outlined'}
+                onClick={onClick}
+                onKeyUp={onKeyUp}
+            >
+                { chordLabel }                
+            </Button>
         )
     }
 
@@ -39,13 +69,15 @@ export default class KeyBindingDialog extends Component {
             this.setState({...this.state, elementMenuOptions: { menuGroup: 'mark' } })
         }
 
-        //<i className={`${icon} fa-sm`}></i>
+        const icon = elementType === 'mark' ? <i className="fas fa-marker"></i> : <i className="fas fa-stamp"></i>
+        const elementButtonLabel = elementName ? <span>{ icon } { elementName }</span> : <span>Choose Element</span>
+
         return (
             <Button
                 onClick={onClick}
                 ref = { (el)=> { this.elementMenuAnchors.mark = el } }
             >
-                { `${elementType} ${elementName}` }
+                { elementButtonLabel }                
             </Button>
         )
     }
@@ -99,8 +131,8 @@ export default class KeyBindingDialog extends Component {
             >
                 <DialogTitle id="keybinding-title">{ title }</DialogTitle>
                 <DialogContent>
-                    { this.renderChordField() }
                     { this.renderElementField() }
+                    { this.renderChordField() }
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={ !chord || !elementName } variant="contained" color="primary" onClick={onClickSave}>Save</Button>
