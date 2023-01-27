@@ -16,7 +16,7 @@ export default class KeyBindingsTable extends Component {
     }
 
     render() {
-        const { fairCopyConfig, onUpdateConfig, readOnly } = this.props
+        const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
         const { selectedKeybinding, keybindingDialog } = this.state
 
         // TODO remove shim
@@ -91,6 +91,7 @@ export default class KeyBindingsTable extends Component {
                 <Button variant='contained' onClick={onAddKeybinding}>Add Keybinding</Button>
                 { keybindingDialog && <KeyBindingDialog
                     fairCopyConfig={fairCopyConfig}
+                    teiSchema={teiSchema}
                     selectedKeybinding={selectedKeybinding}
                     onSave={onSave}
                     onClose={onClose}

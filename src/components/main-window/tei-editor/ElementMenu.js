@@ -49,7 +49,7 @@ export default class ElementMenu extends Component {
 
     renderSubMenu() {
         const { subMenuID } = this.state
-        const { selection, open, createMenuAction, elements, validAction } = this.props
+        const { onAction, onClose: onCloseMenu, elements, validAction } = this.props
         const menuGroups = this.getMenuGroups()
         const anchorOrigin = { vertical: 'top', horizontal: 'right' }
 
@@ -106,7 +106,7 @@ export default class ElementMenu extends Component {
                     onBlur={onHideInfo}
                     onMouseOver={onShowInfo}
                     onMouseLeave={onHideInfo}
-                    onClick={createMenuAction(selection, member)}
+                    onClick={() => { onAction(member); onCloseMenu() }}
                     onKeyUp={onKeyUp}
                 >
                     {nameEl}
@@ -116,7 +116,7 @@ export default class ElementMenu extends Component {
 
         return (
             <Menu
-                open={open}
+                open={true}
                 onClose={onClose}
                 anchorEl={groupEl}
                 anchorOrigin={anchorOrigin}
@@ -164,20 +164,15 @@ export default class ElementMenu extends Component {
     }
 
     render() {  
-        const { elementMenuAnchors, menuGroup, onClose, onExited, open } = this.props
+        const { elementMenuAnchors, menuGroup, onExited, onClose } = this.props
         const anchorEl = elementMenuAnchors[menuGroup]
         const anchorOrigin = { vertical: 'bottom', horizontal: 'left' }
-
-        const onCloseMenu = () => {
-            this.setState({...this.state, subMenuID: null})
-            onClose()
-        }
 
         return (
             <div id="ElementMenu">
                 <Menu
-                    open={open}
-                    onClose={onCloseMenu}
+                    open={true}
+                    onClose={onClose}
                     anchorEl={anchorEl}
                     anchorOrigin={anchorOrigin}
                     getContentAnchorEl={null}

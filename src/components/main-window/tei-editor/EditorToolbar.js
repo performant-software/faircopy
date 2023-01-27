@@ -109,18 +109,6 @@ export default class EditorToolbar extends Component {
         }
     }
     
-    createMenuAction = (selection,member) => {
-        return () => {
-            const { teiDocument, onCloseElementMenu } = this.props
-
-            if( selection && !selection.node ) {
-                createPhraseElement(member, {}, teiDocument) 
-            }
-            onCloseElementMenu()
-        }
-    }
-    
-
     render() {
         const { onEditResource, onSave, teiDocument, onProjectSettings, onCloseElementMenu, elementMenuOptions } = this.props
         const { changedSinceLastSave, fairCopyProject } = teiDocument
@@ -133,9 +121,15 @@ export default class EditorToolbar extends Component {
         const onRef = ()=> { this.createMark('ref',{})}
 
         const editorView = teiDocument.getActiveView()
-        const selection = (editorView) ? editorView.state.selection : null 
         const { menus } = fairCopyProject.fairCopyConfig
         const { elements } = fairCopyProject.teiSchema
+
+        const onAction = (member) => {
+            const selection = (editorView) ? editorView.state.selection : null 
+            if( selection && !selection.node ) {
+                createPhraseElement(member, {}, teiDocument) 
+            }
+        }
 
          return (
             <div id="EditorToolbar">
@@ -155,27 +149,25 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
                 </div>
-                <ElementMenu
-                    open={elementMenuOptions !== null}
-                    menus={menus}
-                    selection={selection}
-                    elements={elements}
-                    onClose={onCloseElementMenu}
-                    elementMenuAnchors={this.elementMenuAnchors}
-                    createMenuAction={this.createMenuAction}
-                    validAction={(elementID) => {
-                        return validAction( elementID, teiDocument )
-                    }}
-                    onProjectSettings={() => { 
-                        onProjectSettings()
-                        this.setState({...this.state, elementMenuOptions: null }) }
-                    }
-                    onExited={() => {
-                        // return focus to active editor after menu closes
-                        editorView.focus()
-                    }}
-                    {...elementMenuOptions}
-                ></ElementMenu>
+                { elementMenuOptions && <ElementMenu
+                        menus={menus}
+                        elements={elements}
+                        onClose={onCloseElementMenu}
+                        elementMenuAnchors={this.elementMenuAnchors}
+                        onAction={onAction}
+                        validAction={(elementID) => {
+                            return validAction( elementID, teiDocument )
+                        }}
+                        onProjectSettings={() => { 
+                            onProjectSettings()
+                            this.setState({...this.state, elementMenuOptions: null }) }
+                        }
+                        onExited={() => {
+                            // return focus to active editor after menu closes
+                            editorView.focus()
+                        }}
+                        {...elementMenuOptions}
+                    ></ElementMenu> }
             </div>
         )
     }

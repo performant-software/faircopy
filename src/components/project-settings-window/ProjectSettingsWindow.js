@@ -81,6 +81,7 @@ export default class ProjectSettingsWindow extends Component {
                 ></SchemaEditor> }
                 { selectedPage === 'keybindings' && <KeyBindingsTable
                     fairCopyConfig={fairCopyConfig}
+                    teiSchema={teiSchema}
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></KeyBindingsTable> }

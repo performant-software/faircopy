@@ -43,25 +43,54 @@ export default class KeyBindingDialog extends Component {
         return (
             <Button
                 onClick={onClick}
-                onRef = { (el)=> { this.elementMenuAnchors.mark = el } }
+                ref = { (el)=> { this.elementMenuAnchors.mark = el } }
             >
                 { `${elementType} ${elementName}` }
             </Button>
         )
     }
 
+    onCloseElementMenu = () => {
+        this.setState({...this.state, elementMenuOptions: null })
+    }
+
+    renderElementMenu() {
+        const { fairCopyConfig, teiSchema } = this.props
+        const { elementMenuOptions } = this.state
+
+        if(!elementMenuOptions) return null
+
+        const { menus } = fairCopyConfig
+        const { elements } = teiSchema
+        
+        const onAction = (member) => {
+            console.log(member)
+        }
+
+        return (
+            <ElementMenu
+                menus={menus}
+                elements={elements}
+                onClose={ () => {
+                    this.setState({...this.state, elementMenuOptions: null })
+                } }
+                elementMenuAnchors={this.elementMenuAnchors}
+                onAction={onAction}
+                validAction={() => { return true }}
+                onExited={() => {}}
+                {...elementMenuOptions}
+            ></ElementMenu>
+        )
+    }
+
     render() {      
         const { onClose, onSave } = this.props
-        const { title, chord, elementType, elementName, elementMenuOptions } = this.state
+        const { title, chord, elementType, elementName } = this.state
 
         const onClickSave = () => {
             onSave(chord, elementType, elementName)
         }
 
-        const onCloseElementMenu = () => {
-            this.setState({...this.state, elementMenuOptions: null })
-        }
-            
         return (
             <Dialog
                 id="KeyBindingDialog"
@@ -77,14 +106,7 @@ export default class KeyBindingDialog extends Component {
                     <Button disabled={ !chord || !elementName } variant="contained" color="primary" onClick={onClickSave}>Save</Button>
                     <Button variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
-                <ElementMenu
-                    open={elementMenuOptions !== null}
-                    // teiDocument={teiDocument}
-                    onClose={onCloseElementMenu}
-                    elementMenuAnchors={this.elementMenuAnchors}
-                    onProjectSettings={null}
-                    {...elementMenuOptions}
-                ></ElementMenu>
+                { this.renderElementMenu() }
             </Dialog>
         )
     }
