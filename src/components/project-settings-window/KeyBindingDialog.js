@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 
 import { Button } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import {recordKeyCombination} from 'react-hotkeys';
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
-
-const disallowedKeys = [ 'SHIFT', 'ALT', 'CTRL', 'ENTER' ]
 
 export default class KeyBindingDialog extends Component {
 
@@ -32,30 +31,18 @@ export default class KeyBindingDialog extends Component {
         const { chord, recordingChord } = this.state
 
         const onClick = () => {
-            this.setState({...this.state, recordingChord: true })
+            recordKeyCombination( (e) => {
+                const {id: chord} = e
+                this.setState({...this.state, chord })
+            })
         }
+
+        const chordLabel = chord ? chord : "Choose Key"
         
-        const onKeyUp = (event) => {
-            if( recordingChord ) {
-                const shiftKey = event.shiftKey ? 'SHIFT+' : ''
-                const altKey = event.altKey ?  'ALT+' : ''
-                const ctrlKey = event.ctrlKey ? 'CTRL+' : ''
-                const key = event.key.toUpperCase()
-                //if( (altKey||ctrlKey) && !disallowedKeys.includes(key) ) {
-                    const nextChord = `${shiftKey}${altKey}${ctrlKey}${key}`
-                    console.log(nextChord)
-                    this.setState({...this.state, chord: nextChord, recordingChord: false })    
-                //}
-            }
-        }
-
-        const chordLabel = chord ? chord : 'Choose Key'
-
         return (
             <Button
                 variant={recordingChord ? 'contained' : 'outlined'}
                 onClick={onClick}
-                onKeyUp={onKeyUp}
             >
                 { chordLabel }                
             </Button>
