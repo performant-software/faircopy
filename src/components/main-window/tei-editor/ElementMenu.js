@@ -106,7 +106,7 @@ export default class ElementMenu extends Component {
                     onBlur={onHideInfo}
                     onMouseOver={onShowInfo}
                     onMouseLeave={onHideInfo}
-                    onClick={() => { onAction(member); onCloseMenu() }}
+                    onClick={() => { onAction(member) }}
                     onKeyUp={onKeyUp}
                 >
                     {nameEl}

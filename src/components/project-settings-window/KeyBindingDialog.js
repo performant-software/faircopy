@@ -63,8 +63,8 @@ export default class KeyBindingDialog extends Component {
         const { menus } = fairCopyConfig
         const { elements } = teiSchema
         
-        const onAction = (member) => {
-            console.log(member)
+        const onAction = (elementID) => {
+            this.setState({ ...this.state, elementName: elementID, elementMenuOptions: null })
         }
 
         return (

@@ -129,6 +129,7 @@ export default class EditorToolbar extends Component {
             if( selection && !selection.node ) {
                 createPhraseElement(member, {}, teiDocument) 
             }
+            onCloseElementMenu()
         }
 
          return (
