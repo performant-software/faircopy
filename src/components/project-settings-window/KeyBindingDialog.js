@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { Button } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
-import {recordKeyCombination} from 'react-hotkeys';
+import {recordKeyCombination} from 'react-hotkeys'
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
 

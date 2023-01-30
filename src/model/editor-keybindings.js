@@ -1,0 +1,29 @@
+
+export const teiEditorKeyMap = {
+    onTogglePalette: '1+meta',
+    onOpenMarkMenu: '2+meta',
+    onOpenInineMenu: '3+meta',
+    eraseSelection: '4+meta',
+    undo: 'meta+z',
+    redo: 'meta+shift+z',
+    cutSelectedNode: 'meta+x',
+    copySelectedNode: 'meta+v'
+}
+
+export function getHotKeyConfig( teiEditorHandlers ) {
+    const projectKeyMap = [], projectHanders = []
+
+    // TODO popuplate project keymap and handlers
+
+    const keyMap = {
+        ...teiEditorKeyMap,
+        ...projectKeyMap
+    }
+      
+    const handlers = {
+        ...teiEditorHandlers,
+        ...projectHanders
+    }
+    
+    return { keyMap, handlers }
+}

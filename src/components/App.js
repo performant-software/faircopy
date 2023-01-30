@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { configure } from 'react-hotkeys'
+
 import MainWindow from './main-window/MainWindow'
 import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
@@ -11,6 +13,7 @@ import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
 import { initLicenseData, licenseLock } from '../model/license-key'
 import { getConfigStatus } from '../model/faircopy-config'
+
 
 const fairCopy = window.fairCopy
 
@@ -99,6 +102,9 @@ export default class App extends Component {
     if( rootComponent === 'MainWindow' ) {
       services.ipcRegisterCallback('projectOpened', (event, projectData) => this.openProject(projectData))
       services.ipcRegisterCallback('projectIncompatible', (event, incompatInfo) => this.setState({ ...this.state, incompatInfo }) )
+
+      // configure hot keys to accept input from all element types
+      configure({ ignoreEventsCondition: () => false })      
     } else if( rootComponent === 'ImageWindow' ) {
       services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
     }

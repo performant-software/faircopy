@@ -1,9 +1,11 @@
-import { cutSelectedNode, copySelectedNode } from "./cut-and-paste"
-import { eraseSelection } from "./editor-actions"
-import {undo, redo} from "prosemirror-history"
+
 import {TextSelection} from "prosemirror-state"
 import { getHighlightRanges } from "./highlighter"
 import { synthNameToElementName, findNoteNode } from "./xml"
+import {undo, redo} from "prosemirror-history"
+import { cutSelectedNode, copySelectedNode } from "./cut-and-paste"
+import { eraseSelection } from "./editor-actions"
+
 
 const fairCopy = window.fairCopy
 
@@ -130,45 +132,56 @@ export function getEnabledMenus(teiDocument) {
     }
 }
 
-export function handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) {
+export function arrowNavToNote( openNotePopup, teiDocument, direction ) {
+    const { editorView } = teiDocument
+    const { selection } = editorView.state
+    
+    if( selection && selection.node ) {
+        const { node } = selection
+        const nodeName = node.type.name
+        const {teiSchema} = teiDocument.fairCopyProject
+    
+        if( teiSchema.elementGroups.asides.includes(nodeName) ) {
+            const noteID = node.attrs['__id__']
+            const { $anchor } = selection
+            const anchorEl = editorView.nodeDOM($anchor.pos)
+            openNotePopup(noteID, anchorEl)
+        } 
+        else {
+            const {tr, selection} = editorView.state
+            const {$anchor} = selection
+            tr.setSelection(TextSelection.create(tr.doc, $anchor.pos + direction))
+            editorView.dispatch(tr)
+        }    
+    }
+}
+
+export function getEditorCommands( teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) {
     const editorView = teiDocument.getActiveView()
-    const metaKey = ( event.ctrlKey || event.metaKey )
-
-    const key = event.key.toLowerCase()
-
-    if( metaKey && key === 'x' ) {
-        cutSelectedNode( teiDocument, clipboardSerializer )
-    }
-
-    if( metaKey && key === 'c' ) {
-        copySelectedNode( teiDocument, clipboardSerializer )
-    }
-
     const enabledMenus = getEnabledMenus(teiDocument)
-
-    if( metaKey && key === '1' ) {
-        onTogglePalette()
+    
+    return {
+        onTogglePalette: (e) => { 
+            // for some reason, just hitting meta key will activate this handler after it 
+            // has been activated once.. check that we also hit the 1 key.
+            if( e.key === '1' ) {
+                onTogglePalette()     
+            }
+        }, 
+        onOpenMarkMenu: () => { 
+            if(enabledMenus.marks) onOpenElementMenu({ menuGroup: 'mark' }) 
+        }, 
+        onOpenInineMenu: () => { 
+            if(enabledMenus.inline) onOpenElementMenu({ menuGroup: 'inline' }) 
+        }, 
+        eraseSelection: () => { 
+            if(enabledMenus.eraser) eraseSelection(teiDocument) 
+        },
+        undo: () => { undo(editorView.state,editorView.dispatch) },
+        redo: () => { redo(editorView.state,editorView.dispatch) },
+        cutSelectedNode: () => { cutSelectedNode( teiDocument, clipboardSerializer ) },
+        copySelectedNode: () => { copySelectedNode( teiDocument, clipboardSerializer ) }
     }
-
-    if( enabledMenus.marks && metaKey && key === '2' ) {
-        onOpenElementMenu({ menuGroup: 'mark' })
-    }
-
-    if( enabledMenus.inline && metaKey && key === '3' ) {
-        onOpenElementMenu({ menuGroup: 'inline' })
-    }
-
-    if( enabledMenus.eraser && metaKey && key === '4' ) {
-        eraseSelection(teiDocument)
-    }
-
-    // handle undo and redo here so they are available even when focus is not in PM itself
-    if( metaKey && key === 'z' ) {
-        undo(editorView.state,editorView.dispatch)
-    } 
-    if( metaKey && ((event.shiftKey && key === 'z') || key === 'y' )) {
-        redo(editorView.state,editorView.dispatch)
-    } 
 }
 
 export function getSelectedElements( teiDocument, noteID ) {
