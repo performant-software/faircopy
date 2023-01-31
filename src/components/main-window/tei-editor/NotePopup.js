@@ -111,7 +111,7 @@ export default class NotePopup extends Component {
         const { teiDocument, onTogglePalette, onOpenElementMenu, onClose, clipboardSerializer } = this.props
 
         // get the base hotkey config
-        const { keyMap, handlers } = getHotKeyConfig( getEditorCommands( teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) )
+        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) )
 
         // add ESC hotkey
         keyMap.closeNote = 'escape'

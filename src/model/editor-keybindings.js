@@ -1,3 +1,4 @@
+import { createPhraseElement } from "./editor-actions"
 
 export const teiEditorKeyMap = {
     onTogglePalette: '1+meta',
@@ -10,10 +11,13 @@ export const teiEditorKeyMap = {
     copySelectedNode: 'meta+v'
 }
 
-export function getHotKeyConfig( teiEditorHandlers ) {
+export function getHotKeyConfig( teiDocument, teiEditorHandlers ) {
     const projectKeyMap = [], projectHanders = []
 
-    // TODO popuplate project keymap and handlers
+    projectKeyMap.testMark = 'meta+p'
+    projectHanders.testMark = () => {
+        createPhraseElement( 'persName', {}, teiDocument )
+    }
 
     const keyMap = {
         ...teiEditorKeyMap,
