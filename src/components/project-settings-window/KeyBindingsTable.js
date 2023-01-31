@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, Typography } from '@material-ui/core'
 import { Tooltip, IconButton, Button } from '@material-ui/core'
+import { getElementTypeIcon } from '../../model/TEISchema'
 
 import KeyBindingDialog from './KeyBindingDialog'
 
@@ -18,9 +19,7 @@ export default class KeyBindingsTable extends Component {
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
         const { selectedKeybinding, keybindingDialog } = this.state
-
-        // TODO remove shim
-        const keybindings = fairCopyConfig.keybindings ? fairCopyConfig.keybindings : {}
+        const { keybindings } = fairCopyConfig
 
         const onAddKeybinding = () => {
             this.setState({ ...this.state, keybindingDialog: true })
@@ -36,8 +35,8 @@ export default class KeyBindingsTable extends Component {
             }
     
             const onDelete = () => {
-                // TODO clear the value of this key binding
-                // onUpdateConfig()
+                delete fairCopyConfig.keybindings[chord]
+                onUpdateConfig(fairCopyConfig)
             }
             
             keyRows.push(
@@ -48,14 +47,11 @@ export default class KeyBindingsTable extends Component {
                         <Typography>{chord}</Typography>
                     </TableCell>
                     <TableCell>
-                        { getElementTypeIcon(elementType) }
+                        <Typography>Add a <i className={getElementTypeIcon(elementType)}></i> {elementName} element.</Typography>
                     </TableCell>
                     <TableCell>
-                        <Typography>{elementName}</Typography>
-                    </TableCell>
-                    <TableCell>
-                        { !readOnly && <Tooltip title="Edit this hot key."><IconButton onClick={onEdit}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip> }
-                        { !readOnly && <Tooltip title="Remove this hot key."><span><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip> }
+                        { !readOnly && <Tooltip title="Edit this keybinding."><IconButton onClick={onEdit}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip> }
+                        { !readOnly && <Tooltip title="Remove this keybinding."><span><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip> }
                     </TableCell>
                 </TableRow>
             )
@@ -66,8 +62,9 @@ export default class KeyBindingsTable extends Component {
         }
 
         const onSave = (chord, elementType, elementName) => {
-            // TODO replace or add this to the config and pass it up the chain
-            // onUpdateConfig
+            keybindings[chord] = { elementType, elementName }
+            onUpdateConfig(fairCopyConfig)
+            onClose()
         }
 
         return (
@@ -78,8 +75,7 @@ export default class KeyBindingsTable extends Component {
                         <TableHead>
                         <TableRow>
                             <TableCell>Keystroke</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Element</TableCell>
+                            <TableCell>Description</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                         </TableHead>
@@ -88,7 +84,7 @@ export default class KeyBindingsTable extends Component {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Button variant='contained' onClick={onAddKeybinding}>Add Keybinding</Button>
+                { !readOnly && <Button variant='contained' onClick={onAddKeybinding}>Add Keybinding</Button> }
                 { keybindingDialog && <KeyBindingDialog
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
@@ -98,13 +94,5 @@ export default class KeyBindingsTable extends Component {
                 ></KeyBindingDialog>}
             </div>
         )
-    }
-}
-
-function getElementTypeIcon( elementType ) {
-    if( elementType === 'mark' ) {
-        return <i className="fas fa-marker"></i>
-    } else {
-        return <i className="fas fa-stamp"></i> 
     }
 }

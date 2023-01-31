@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import {recordKeyCombination} from 'react-hotkeys'
 
@@ -28,23 +28,23 @@ export default class KeyBindingDialog extends Component {
     }
 
     renderChordField() {
-        const { chord, recordingChord } = this.state
+        const { recordingChord } = this.state
 
         const onClick = () => {
             recordKeyCombination( (e) => {
                 const {id: chord} = e
-                this.setState({...this.state, chord })
+                this.setState({...this.state, chord, recordingChord: false })
             })
+            this.setState({...this.state, recordingChord: true })
         }
-
-        const chordLabel = chord ? chord : "Choose Key"
         
         return (
             <Button
                 variant={recordingChord ? 'contained' : 'outlined'}
+                className="keystroke-record-button"
                 onClick={onClick}
             >
-                { chordLabel }                
+                <i className="fas fa-square"></i> Record Keystroke   
             </Button>
         )
     }
@@ -61,6 +61,9 @@ export default class KeyBindingDialog extends Component {
 
         return (
             <Button
+                className="element-field"
+                size="small"
+                variant="contained"
                 onClick={onClick}
                 ref = { (el)=> { this.elementMenuAnchors.mark = el } }
             >
@@ -110,6 +113,8 @@ export default class KeyBindingDialog extends Component {
             onSave(chord, elementType, elementName)
         }
 
+        // TODO: add a place for "keystroke already assigned message"
+
         return (
             <Dialog
                 id="KeyBindingDialog"
@@ -118,7 +123,7 @@ export default class KeyBindingDialog extends Component {
             >
                 <DialogTitle id="keybinding-title">{ title }</DialogTitle>
                 <DialogContent>
-                    { this.renderElementField() }
+                    <Typography>Add a {this.renderElementField()} element.</Typography>
                     { this.renderChordField() }
                 </DialogContent>
                 <DialogActions>

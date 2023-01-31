@@ -301,3 +301,11 @@ export function getElementIcon(elementID, elements) {
     const elementSpec = elements[elementID]
     return elementSpec ? `far ${elementSpec.icon}` : null
 }
+
+export function getElementTypeIcon( elementType ) {
+    if( elementType === 'mark' ) {
+        return "fas fa-marker"
+    } else {
+        return "fas fa-stamp"
+    }
+}

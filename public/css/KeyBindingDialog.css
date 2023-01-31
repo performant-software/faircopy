@@ -1,0 +1,7 @@
+#KeyBindingDialog .element-field {
+    display: inline-block;
+}
+
+#KeyBindingDialog .keystroke-record-button {
+    margin: 20px;
+}

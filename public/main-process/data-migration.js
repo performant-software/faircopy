@@ -22,6 +22,11 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
     migrationRemoveElements(projectConfig,baseConfig)
     migrationAddNewElements(baseConfig,projectConfig)
 
+    if( semver.lt(projectVersion,'1.1.5') ) {
+        migrationAddKeybindings(projectConfig)
+        log.info('applying migrations for v1.1.5')
+    }
+
     if( semver.lt(projectVersion,'0.10.1') ) {
         migrationAddMenus(projectConfig,baseConfig)
         migrationAddActiveState(projectConfig)
@@ -64,6 +69,10 @@ exports.migrateIDMap = migrateIDMap
 exports.migrateManifestData = migrateManifestData
 
 //// MIGRATIONS /////////////////////////////////////////////////
+
+function migrationAddKeybindings(projectConfig) {
+    projectConfig.keybindings = {}
+}
 
 function migrationAddNewElements(baseConfig,projectConfig) {
     const baseElements = Object.keys(baseConfig.elements)
