@@ -12,12 +12,7 @@ export const teiEditorKeyMap = {
 }
 
 export function getHotKeyConfig( teiDocument, teiEditorHandlers ) {
-    const projectKeyMap = [], projectHanders = []
-
-    projectKeyMap.testMark = 'meta+p'
-    projectHanders.testMark = () => {
-        createPhraseElement( 'persName', {}, teiDocument )
-    }
+    const { projectKeyMap, projectHanders } = getProjectHotKeys( teiDocument )
 
     const keyMap = {
         ...teiEditorKeyMap,
@@ -30,4 +25,24 @@ export function getHotKeyConfig( teiDocument, teiEditorHandlers ) {
     }
     
     return { keyMap, handlers }
+}
+
+function getProjectHotKeys( teiDocument ) {
+    const { keybindings } = teiDocument.fairCopyProject.fairCopyConfig
+
+    const projectKeyMap = {}, projectHanders = {}
+
+    let n = 0
+    for( const chord of Object.keys(keybindings) ) {
+        const actionName = `userDefined_${n++}`
+        const keybinding = keybindings[chord]
+        const { elementName } = keybinding
+
+        projectKeyMap[actionName] = chord
+        projectHanders[actionName] = () => {
+            createPhraseElement( elementName, {}, teiDocument )
+        }
+    }
+
+    return { projectKeyMap, projectHanders }
 }

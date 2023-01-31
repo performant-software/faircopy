@@ -49,7 +49,7 @@ export default class ElementMenu extends Component {
 
     renderSubMenu() {
         const { subMenuID } = this.state
-        const { onAction, onClose: onCloseMenu, elements, validAction } = this.props
+        const { onAction, elements, validAction } = this.props
         const menuGroups = this.getMenuGroups()
         const anchorOrigin = { vertical: 'top', horizontal: 'right' }
 
