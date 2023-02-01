@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { Table, TableContainer, TableBody, TableCell, TableRow, TableHead, Paper } from '@material-ui/core'
 import {recordKeyCombination} from 'react-hotkeys'
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
@@ -44,7 +45,7 @@ export default class KeyBindingDialog extends Component {
                 className="keystroke-record-button"
                 onClick={onClick}
             >
-                <i className="fas fa-square"></i> Record Keystroke   
+                <i className="record-icon fas fa-square"></i> Record Keystroke   
             </Button>
         )
     }
@@ -114,6 +115,7 @@ export default class KeyBindingDialog extends Component {
         }
 
         // TODO: add a place for "keystroke already assigned message"
+        const chordLabel = chord ? chord.toUpperCase() : 'Unassigned'
 
         return (
             <Dialog
@@ -123,7 +125,22 @@ export default class KeyBindingDialog extends Component {
             >
                 <DialogTitle id="keybinding-title">{ title }</DialogTitle>
                 <DialogContent>
-                    <Typography>Add a {this.renderElementField()} element.</Typography>
+                    <TableContainer component={Paper}>
+                        <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Keystroke</TableCell>
+                                    <TableCell>Description</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow> 
+                                    <TableCell>{ chordLabel }</TableCell>
+                                    <TableCell><Typography>Add a {this.renderElementField()} element.</Typography></TableCell>
+                                </TableRow>                            
+                            </TableBody>
+                        </Table>
+                    </TableContainer>                    
                     { this.renderChordField() }
                 </DialogContent>
                 <DialogActions>

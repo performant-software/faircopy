@@ -9,3 +9,7 @@
 #KeyBindingsTable th {
     font-weight: bold;
 }
+
+#KeyBindingsTable .add-keybinding-button {
+    margin-top: 10px;
+}

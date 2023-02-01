@@ -39,12 +39,14 @@ export default class KeyBindingsTable extends Component {
                 onUpdateConfig(fairCopyConfig)
             }
             
+            const chordLabel = chord ? chord.toUpperCase() : 'Unassigned'
+
             keyRows.push(
                 <TableRow
                     key={chord}
                 >
                     <TableCell component="th" scope="row">
-                        <Typography>{chord}</Typography>
+                        <Typography>{chordLabel}</Typography>
                     </TableCell>
                     <TableCell>
                         <Typography>Add a <i className={getElementTypeIcon(elementType)}></i> {elementName} element.</Typography>
@@ -69,7 +71,7 @@ export default class KeyBindingsTable extends Component {
 
         return (
             <div id="KeyBindingsTable">
-                <Typography variant="h4">Keybindings</Typography>
+                <Typography variant="h4">Hot Keys</Typography>
                 <TableContainer component={Paper}>
                     <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
                         <TableHead>
@@ -84,7 +86,7 @@ export default class KeyBindingsTable extends Component {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                { !readOnly && <Button variant='contained' onClick={onAddKeybinding}>Add Keybinding</Button> }
+                { !readOnly && <Button variant='contained' className='add-keybinding-button' onClick={onAddKeybinding}>Add Hotkey</Button> }
                 { keybindingDialog && <KeyBindingDialog
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}

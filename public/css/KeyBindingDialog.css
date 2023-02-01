@@ -3,5 +3,10 @@
 }
 
 #KeyBindingDialog .keystroke-record-button {
-    margin: 20px;
+    margin-top: 20px;
+}
+
+#KeyBindingDialog .record-icon {
+    margin-right: 5px;
+    color: red;
 }
