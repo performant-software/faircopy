@@ -82,7 +82,7 @@ export default class KeyBindingsTable extends Component {
                         <TableRow>
                             <TableCell>Keystroke</TableCell>
                             <TableCell>Description</TableCell>
-                            <TableCell>Actions</TableCell>
+                            { !readOnly && <TableCell>Actions</TableCell> }
                         </TableRow>
                         </TableHead>
                         <TableBody>
