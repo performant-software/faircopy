@@ -21,6 +21,7 @@ export default class KeyBindingsTable extends Component {
         const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
         const { selectedAction, selectedKey, keybindingDialog } = this.state
         const { keybindings } = fairCopyConfig
+        const assignedKeys = Object.keys(keybindings).filter( key => key !== selectedKey )
 
         const onAddKeybinding = () => {
             this.setState({ ...this.state, selectedAction: null, selectedKey: null, keybindingDialog: true })
@@ -73,7 +74,7 @@ export default class KeyBindingsTable extends Component {
         return (
             <div id="KeyBindingsTable">
                 <Typography variant="h4">Hot Keys</Typography>
-                <Typography>Explanation of this screen goes here.</Typography>
+                <Typography className="explanation">Assign hotkeys and review assigned keys.</Typography>
                 <TableContainer component={Paper}>
                     <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
                         <TableHead>
@@ -92,6 +93,7 @@ export default class KeyBindingsTable extends Component {
                 { keybindingDialog && <KeyBindingDialog
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
+                    assignedKeys={assignedKeys}
                     selectedAction={selectedAction}
                     selectedKey={selectedKey}
                     onSave={onSave}

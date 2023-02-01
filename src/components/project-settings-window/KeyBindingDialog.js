@@ -23,18 +23,25 @@ export default class KeyBindingDialog extends Component {
             recordingChord: false,
             elementType,
             elementName,
-            elementMenuOptions: null
+            elementMenuOptions: null,
+            errorMessage: null
         }
         this.elementMenuAnchors = {}
     }
 
     renderChordField() {
+        const { assignedKeys } = this.props
         const { recordingChord } = this.state
 
         const onClick = () => {
             recordKeyCombination( (e) => {
                 const {id: chord} = e
-                this.setState({...this.state, chord, recordingChord: false })
+                if( !assignedKeys.includes(chord) ) {
+                    this.setState({...this.state, chord, recordingChord: false, errorMessage: null }) 
+                } else {
+                    const errorMessage = `${chord.toUpperCase()} key is already assigned to another function.`
+                    this.setState({...this.state, errorMessage, recordingChord: false })
+                }
             })
             this.setState({...this.state, recordingChord: true })
         }
@@ -108,7 +115,7 @@ export default class KeyBindingDialog extends Component {
 
     render() {      
         const { onClose, onSave } = this.props
-        const { title, chord, elementType, elementName } = this.state
+        const { title, chord, elementType, elementName, errorMessage } = this.state
 
         const onClickSave = () => {
             onSave(chord, elementType, elementName)
@@ -140,7 +147,8 @@ export default class KeyBindingDialog extends Component {
                                 </TableRow>                            
                             </TableBody>
                         </Table>
-                    </TableContainer>                    
+                    </TableContainer>    
+                    { errorMessage && <Typography className='error-message'>{ errorMessage }</Typography> }           
                     { this.renderChordField() }
                 </DialogContent>
                 <DialogActions>
