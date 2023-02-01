@@ -1,14 +1,14 @@
 import { createPhraseElement } from "./editor-actions"
 
 export const teiEditorKeyMap = {
-    onTogglePalette: '1+meta',
-    onOpenMarkMenu: '2+meta',
-    onOpenInineMenu: '3+meta',
-    eraseSelection: '4+meta',
-    undo: 'meta+z',
-    redo: 'meta+shift+z',
-    cutSelectedNode: 'meta+x',
-    copySelectedNode: 'meta+v'
+    onTogglePalette: '1+Meta',
+    onOpenMarkMenu: '2+Meta',
+    onOpenInineMenu: '3+Meta',
+    eraseSelection: '4+Meta',
+    undo: 'Meta+z',
+    redo: 'Meta+Shift+z',
+    cutSelectedNode: 'Meta+x',
+    copySelectedNode: 'Meta+v'
 }
 
 export function getHotKeyConfig( teiDocument, teiEditorHandlers ) {

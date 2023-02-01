@@ -7,6 +7,8 @@ import {recordKeyCombination} from 'react-hotkeys'
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
 
+const modifierKeys = [ 'Meta', 'Alt', 'Control' ]
+
 export default class KeyBindingDialog extends Component {
 
     constructor(props) {
@@ -36,8 +38,14 @@ export default class KeyBindingDialog extends Component {
         const onClick = () => {
             recordKeyCombination( (e) => {
                 const {id: chord} = e
+                console.log(chord)
                 if( !assignedKeys.includes(chord) ) {
-                    this.setState({...this.state, chord, recordingChord: false, errorMessage: null }) 
+                    if( includesModifierKey(chord) ) {
+                        this.setState({...this.state, chord, recordingChord: false, errorMessage: null }) 
+                    } else {
+                        const errorMessage = `Keystroke must include ALT, CONTROL, or META keys.`
+                        this.setState({...this.state, errorMessage, recordingChord: false })    
+                    }
                 } else {
                     const errorMessage = `${chord.toUpperCase()} key is already assigned to another function.`
                     this.setState({...this.state, errorMessage, recordingChord: false })
@@ -160,4 +168,12 @@ export default class KeyBindingDialog extends Component {
         )
     }
 
+}
+
+function includesModifierKey(chord) {
+    const parts = chord.split('+')
+    for( const part of parts ) {
+        if( modifierKeys.includes(part) ) return true
+    }
+    return false
 }

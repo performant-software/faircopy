@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, Typography } from '@material-ui/core'
 import { Tooltip, IconButton, Button } from '@material-ui/core'
 import { getElementTypeIcon } from '../../model/TEISchema'
+import { teiEditorKeyMap } from '../../model/editor-keybindings'
 
 import KeyBindingDialog from './KeyBindingDialog'
 
@@ -21,7 +22,7 @@ export default class KeyBindingsTable extends Component {
         const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
         const { selectedAction, selectedKey, keybindingDialog } = this.state
         const { keybindings } = fairCopyConfig
-        const assignedKeys = Object.keys(keybindings).filter( key => key !== selectedKey )
+        const assignedKeys = [ ...Object.keys(keybindings).filter( key => key !== selectedKey ), ...Object.values(teiEditorKeyMap) ]
 
         const onAddKeybinding = () => {
             this.setState({ ...this.state, selectedAction: null, selectedKey: null, keybindingDialog: true })
