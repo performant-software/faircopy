@@ -12,14 +12,14 @@ export default class KeyBindingDialog extends Component {
     constructor(props) {
         super(props)
 
-        const { selectedKeybinding } = this.props
-        const elementType = selectedKeybinding ? selectedKeybinding.elementType : 'mark'
-        const elementName = selectedKeybinding ? selectedKeybinding.elementName : null
-        const title = selectedKeybinding ? "Edit Keybinding" : "New Keybinding"
+        const { selectedKey, selectedAction } = this.props
+        const elementType = selectedAction ? selectedAction.elementType : 'mark'
+        const elementName = selectedAction ? selectedAction.elementName : null
+        const title = selectedKey ? "Edit Keybinding" : "New Keybinding"
 
         this.state = {
             title,
-            chord: selectedKeybinding?.chord,
+            chord: selectedKey,
             recordingChord: false,
             elementType,
             elementName,

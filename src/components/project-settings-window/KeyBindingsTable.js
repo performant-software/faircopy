@@ -11,18 +11,19 @@ export default class KeyBindingsTable extends Component {
         super(props)
 
         this.state = {
-            selectedKeybinding: null,
+            selectedAction: null,
+            selectedKey: null,
             keybindingDialog: false
         }
     }
 
     render() {
         const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
-        const { selectedKeybinding, keybindingDialog } = this.state
+        const { selectedAction, selectedKey, keybindingDialog } = this.state
         const { keybindings } = fairCopyConfig
 
         const onAddKeybinding = () => {
-            this.setState({ ...this.state, keybindingDialog: true })
+            this.setState({ ...this.state, selectedAction: null, selectedKey: null, keybindingDialog: true })
         }
 
         const keyRows = []
@@ -31,7 +32,7 @@ export default class KeyBindingsTable extends Component {
             const { elementType, elementName } = keybinding
 
             const onEdit = () => {
-                this.setState({ ...this.state, selectedKeybinding: keybinding, keybindingDialog: true })
+                this.setState({ ...this.state, selectedKey: chord, selectedAction: keybinding, keybindingDialog: true })
             }
     
             const onDelete = () => {
@@ -72,6 +73,7 @@ export default class KeyBindingsTable extends Component {
         return (
             <div id="KeyBindingsTable">
                 <Typography variant="h4">Hot Keys</Typography>
+                <Typography>Explanation of this screen goes here.</Typography>
                 <TableContainer component={Paper}>
                     <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
                         <TableHead>
@@ -90,7 +92,8 @@ export default class KeyBindingsTable extends Component {
                 { keybindingDialog && <KeyBindingDialog
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
-                    selectedKeybinding={selectedKeybinding}
+                    selectedAction={selectedAction}
+                    selectedKey={selectedKey}
                     onSave={onSave}
                     onClose={onClose}
                 ></KeyBindingDialog>}
