@@ -40,7 +40,7 @@
             "windows": {
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
             },
-            "env": { "FAIRCOPY_DEBUG_MODE": "true", "FAIRCOPY_DEV_VERSION": "1.1.5" },
+            "env": { "FAIRCOPY_DEBUG_MODE": "true", "FAIRCOPY_DEV_VERSION": "1.1.6" },
             "program": "${workspaceRoot}/public/electron.js",
             "protocol": "inspector",
         }

@@ -22,9 +22,9 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
     migrationRemoveElements(projectConfig,baseConfig)
     migrationAddNewElements(baseConfig,projectConfig)
 
-    if( semver.lt(projectVersion,'1.1.5') ) {
+    if( semver.lt(projectVersion,'1.1.6') ) {
         migrationAddKeybindings(projectConfig)
-        log.info('applying migrations for v1.1.5')
+        log.info('applying migrations for v1.1.6')
     }
 
     if( semver.lt(projectVersion,'0.10.1') ) {
