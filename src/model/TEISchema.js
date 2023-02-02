@@ -294,11 +294,18 @@ export default class TEISchema {
         const pmTypes = elementTypeToPmTypes[elementType]
         const menus = pmTypes.map( pmType => pmTypeToMenu[pmType] ).flat()
         return menus.includes(elementMenu)
-    }
+    }    
+}
 
-    getElementIcon(elementID) {
-        const elementSpec = this.elements[elementID]
-        return elementSpec ? `far ${elementSpec.icon}` : null
+export function getElementIcon(elementID, elements) {
+    const elementSpec = elements[elementID]
+    return elementSpec ? `far ${elementSpec.icon}` : null
+}
+
+export function getElementTypeIcon( elementType ) {
+    if( elementType === 'mark' ) {
+        return "fas fa-marker"
+    } else {
+        return "fas fa-stamp"
     }
-    
 }

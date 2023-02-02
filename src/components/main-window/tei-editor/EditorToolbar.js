@@ -5,6 +5,7 @@ import { IconButton, Tooltip } from '@material-ui/core'
 import {undo, redo} from "prosemirror-history"
 import { createPhraseElement, eraseSelection } from "../../../model/editor-actions"
 import { getEnabledMenus } from '../../../model/editor-navigation'
+import { validAction } from '../../../model/element-validators'
 import ElementMenu from "./ElementMenu"
 
 export default class EditorToolbar extends Component {
@@ -107,17 +108,29 @@ export default class EditorToolbar extends Component {
             }
         }
     }
-
+    
     render() {
         const { onEditResource, onSave, teiDocument, onProjectSettings, onCloseElementMenu, elementMenuOptions } = this.props
-        const { changedSinceLastSave } = teiDocument
+        const { changedSinceLastSave, fairCopyProject } = teiDocument
 
-         const seperator = <div className="seperator"><div className="line"></div></div>
+        const seperator = <div className="seperator"><div className="line"></div></div>
 
-         const onBold = ()=> { this.createMark('hi', {rend: 'bold'})}
-         const onItalic = ()=> { this.createMark('hi', {rend: 'italic'})}
-         const onUnderline = ()=> { this.createMark('hi',{rend:'underline'})}
-         const onRef = ()=> { this.createMark('ref',{})}
+        const onBold = ()=> { this.createMark('hi', {rend: 'bold'})}
+        const onItalic = ()=> { this.createMark('hi', {rend: 'italic'})}
+        const onUnderline = ()=> { this.createMark('hi',{rend:'underline'})}
+        const onRef = ()=> { this.createMark('ref',{})}
+
+        const editorView = teiDocument.getActiveView()
+        const { menus } = fairCopyProject.fairCopyConfig
+        const { elements } = fairCopyProject.teiSchema
+
+        const onAction = (member) => {
+            const selection = (editorView) ? editorView.state.selection : null 
+            if( selection && !selection.node ) {
+                createPhraseElement(member, {}, teiDocument) 
+            }
+            onCloseElementMenu()
+        }
 
          return (
             <div id="EditorToolbar">
@@ -137,17 +150,25 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
                 </div>
-                <ElementMenu
-                    open={elementMenuOptions !== null}
-                    teiDocument={teiDocument}
-                    onClose={onCloseElementMenu}
-                    elementMenuAnchors={this.elementMenuAnchors}
-                    onProjectSettings={() => { 
-                        onProjectSettings()
-                        this.setState({...this.state, elementMenuOptions: null }) }
-                    }
-                    {...elementMenuOptions}
-                ></ElementMenu>
+                { elementMenuOptions && <ElementMenu
+                        menus={menus}
+                        elements={elements}
+                        onClose={onCloseElementMenu}
+                        elementMenuAnchors={this.elementMenuAnchors}
+                        onAction={onAction}
+                        validAction={(elementID) => {
+                            return validAction( elementID, teiDocument )
+                        }}
+                        onProjectSettings={() => { 
+                            onProjectSettings()
+                            this.setState({...this.state, elementMenuOptions: null }) }
+                        }
+                        onExited={() => {
+                            // return focus to active editor after menu closes
+                            editorView.focus()
+                        }}
+                        {...elementMenuOptions}
+                    ></ElementMenu> }
             </div>
         )
     }
