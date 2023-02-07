@@ -32,6 +32,7 @@ export default class TEIEditor extends Component {
             notePopupAnchorEl: null,
             elementMenuOptions: null,
             paletteWindowOpen: false,
+            drawerPinned: false,
             currentSubmenuID: 0
         }
         this.drawerRef = null
@@ -215,6 +216,11 @@ export default class TEIEditor extends Component {
         this.setState({...this.state, paletteWindowOpen: !paletteWindowOpen})
     }
 
+    onDrawerPinToggle = () => {
+        const { drawerPinned } = this.state
+        this.setState({...this.state, drawerPinned: !drawerPinned})
+    }
+
     openNotePopup = (noteID, notePopupAnchorEl) => {
         this.setState({...this.state, noteID, notePopupAnchorEl })
     }
@@ -272,7 +278,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, currentView } = this.props
-        const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
+        const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, drawerPinned, paletteWindowOpen } = this.state
         const { fairCopyProject } = teiDocument
         const { isLoggedIn, configLastAction, userID, permissions, remote } = fairCopyProject
         const readOnly = !teiDocument.isEditable() 
@@ -300,9 +306,9 @@ export default class TEIEditor extends Component {
         }
 
         const { selectedElements } = teiDocument
-        const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
+        const drawerHeight = drawerPinned || selectedElements.length > 0 ? 300 : 50 
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
-        const editorHeight = selectedElements.length > 0 ? 530 : 180
+        const editorHeight = drawerPinned || selectedElements.length > 0 ? 530 : 180
 
         const editorHeightCSS = `calc(100% - ${editorHeight}px)`
         const editorWidthCSS = `calc(100vw - 10px - ${leftPaneWidth}px)`
@@ -371,6 +377,8 @@ export default class TEIEditor extends Component {
                         { !hidden && <ParameterDrawer 
                             teiDocument={teiDocument} 
                             onRef={(el) => { this.drawerRef = el}}
+                            drawerPinned={drawerPinned}
+                            onDrawerPinToggle={this.onDrawerPinToggle}
                             noteID={noteID}
                             height={drawerHeight}
                             width={drawerWidthCSS}

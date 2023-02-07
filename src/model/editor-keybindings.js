@@ -32,16 +32,18 @@ function getProjectHotKeys( teiDocument ) {
 
     const projectKeyMap = {}, projectHanders = {}
 
-    let n = 0
-    for( const chord of Object.keys(keybindings) ) {
-        const actionName = `userDefined_${n++}`
-        const keybinding = keybindings[chord]
-        const { elementName } = keybinding
-
-        projectKeyMap[actionName] = chord
-        projectHanders[actionName] = () => {
-            createPhraseElement( elementName, {}, teiDocument )
-        }
+    if( keybindings ) {
+        let n = 0
+        for( const chord of Object.keys(keybindings) ) {
+            const actionName = `userDefined_${n++}`
+            const keybinding = keybindings[chord]
+            const { elementName } = keybinding
+    
+            projectKeyMap[actionName] = chord
+            projectHanders[actionName] = () => {
+                createPhraseElement( elementName, {}, teiDocument )
+            }
+        }    
     }
 
     return { projectKeyMap, projectHanders }
