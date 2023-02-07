@@ -22,14 +22,16 @@ export default class KeyBindingsTable extends Component {
         const { fairCopyConfig, teiSchema, onUpdateConfig, readOnly } = this.props
         const { selectedAction, selectedKey, keybindingDialog } = this.state
         const { keybindings } = fairCopyConfig
-        const assignedKeys = [ ...Object.keys(keybindings).filter( key => key !== selectedKey ), ...Object.values(teiEditorKeyMap) ]
+
+        const chords = keybindings ? Object.keys(keybindings) : []
+        const assignedKeys = [ ...chords.filter( key => key !== selectedKey ), ...Object.values(teiEditorKeyMap) ]
 
         const onAddKeybinding = () => {
             this.setState({ ...this.state, selectedAction: null, selectedKey: null, keybindingDialog: true })
         }
 
         const keyRows = []
-        for( const chord of Object.keys(keybindings) ) {
+        for( const chord of chords ) {
             const keybinding = keybindings[chord]
             const { elementType, elementName } = keybinding
 
@@ -67,7 +69,10 @@ export default class KeyBindingsTable extends Component {
         }
 
         const onSave = (chord, elementType, elementName) => {
-            keybindings[chord] = { elementType, elementName }
+            if( !fairCopyConfig.keybindings ) {
+                fairCopyConfig.keybindings = {}
+            }
+            fairCopyConfig.keybindings[chord] = { elementType, elementName }
             onUpdateConfig(fairCopyConfig)
             onClose()
         }
