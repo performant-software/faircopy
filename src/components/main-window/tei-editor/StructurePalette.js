@@ -4,6 +4,7 @@ import EmptyGroup from './EmptyGroup'
 import ElementInfoPopup from './ElementInfoPopup'
 import { determineRules, createStructureElement } from '../../../model/editor-actions'
 import { validNodeAction } from '../../../model/element-validators'
+import { getElementIcon } from '../../../model/TEISchema'
 
 const clientOffset = { x: 0, y: 0 }
 
@@ -203,7 +204,7 @@ renderElement(elementID,groupID,paletteOrder) {
 
   const elType = elementGroups.hard.includes(elementID) ? 'hard' : 'soft'
   const className = `element-type ${elType}`
-  const icon = teiSchema.getElementIcon(elementID)
+  const icon = getElementIcon(elementID, teiSchema.elements)
   const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
 
   return (

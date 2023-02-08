@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-ui/core'
-import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core'
+import { Card, CardContent, CardActions, CardHeader, Tooltip } from '@material-ui/core'
 
 import Typography from '@material-ui/core/Typography'
 import {Node} from 'prosemirror-model'
@@ -430,11 +430,28 @@ export default class ParameterDrawer extends Component {
         )
     }
 
+    renderDrawerPin() {
+        const { drawerPinned, onDrawerPinToggle } = this.props
+        const pinIcon = drawerPinned ? 'fas fa-thumbtack' : 'far fa-thumbtack' 
+
+        return (
+            <Tooltip title="Pin the attribute drawer to keep it open.">
+                <IconButton
+                    onClick={onDrawerPinToggle}
+                    className='drawer-pin'
+                    size="small"
+                >
+                    <i className={pinIcon}></i>
+                </IconButton>
+            </Tooltip>
+        )
+    }
+
     render() {
-        const { teiDocument, width, height, onRef } = this.props
+        const { teiDocument, width, height, drawerPinned, onRef } = this.props
 
         const elements = teiDocument.selectedElements
-        if( elements.length === 0 ) return null
+        if( !drawerPinned && elements.length === 0 ) return null
 
         const elementEls = []
         let count = 0
@@ -448,14 +465,12 @@ export default class ParameterDrawer extends Component {
         return (
             <div id="ParameterDrawer" tabIndex={0} ref={onRef}>
                 <div role="status" className="header">
+                    { this.renderDrawerPin() }
                     <Typography>{headerMessage}</Typography>
                 </div>
-                { elementEls.length > 0 ? 
-                    <div className="attribute-list"  style={ { width, height } }>
-                        { elementEls }
-                    </div>
-                    : null
-                }
+                <div className="attribute-list"  style={ { width, height } }>
+                    { (drawerPinned || elementEls.length > 0) && elementEls }
+                </div>
                 { this.renderDialogs() }                
             </div>
         )

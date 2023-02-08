@@ -2,6 +2,17 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.6
+
+### Improvements
+
+* Users can now create hotkeys for their favorite Mark elements. Hotkeys must use at least one of: alt, control, meta, or option keys. When used in a remote project, the user must have project config privs to edit the hotkeys, which will be shared by all members of the project.
+* User can now pin the attribute drawer in the open position, to prevent the editor from hopping around as they move between elements.
+
+### Bug Fixes
+
+* A number of issues have been addressed around log in to remote projects, include server side session time outs.
+
 ## Version 1.1.4
 
 ### Improvements

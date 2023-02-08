@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {EditorView} from "prosemirror-view"
 import { debounce } from "debounce";
-import {TextSelection} from "prosemirror-state"
+import { HotKeys } from 'react-hotkeys'
 
 // import applyDevTools from "prosemirror-dev-tools";
 
@@ -15,10 +15,11 @@ import ReadOnlyToolbar from './ReadOnlyToolbar'
 import TitleBar from '../TitleBar'
 import NotePopup from './NotePopup'
 import { transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
-import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks, navigateFromEditorToTree } from '../../../model/editor-navigation'
+import { navigateFromTreeToEditor, getSelectedElements, broadcastZoneLinks, navigateFromEditorToTree, getEditorCommands, arrowNavToNote } from '../../../model/editor-navigation'
 import { findNoteNode } from '../../../model/xml'
 import { canConfigAdmin } from '../../../model/permissions'
 import { getConfigStatus } from '../../../model/faircopy-config'
+import { getHotKeyConfig } from "../../../model/editor-keybindings"
 
 const resizeRefreshRate = 100
 
@@ -29,10 +30,9 @@ export default class TEIEditor extends Component {
         this.state = {
             noteID: null,
             notePopupAnchorEl: null,
-            ctrlDown: false,
-            altDown: false,
             elementMenuOptions: null,
             paletteWindowOpen: false,
+            drawerPinned: false,
             currentSubmenuID: 0
         }
         this.drawerRef = null
@@ -68,10 +68,22 @@ export default class TEIEditor extends Component {
         } 
     }
 
-    // prevent text entry when a node is selected
+    // Since the editor isn't a react component, some hotkeys are handled by editor directly
     onEditorKeyDown = (editorView,e) => {
+        const { teiDocument } = this.props
         const selection = (editorView) ? editorView.state.selection : null    
         const key = e.key     
+
+        if( key === 'ArrowLeft' ) {
+            arrowNavToNote( this.openNotePopup, teiDocument, -1 )
+            return 
+        }
+
+        if( key === 'ArrowRight') {
+            arrowNavToNote( this.openNotePopup, teiDocument, 1 )
+            return
+        }
+
         if( selection && selection.node ) {
             return (key === "Backspace" || key === "Delete") ? false : true
         }
@@ -204,7 +216,12 @@ export default class TEIEditor extends Component {
         this.setState({...this.state, paletteWindowOpen: !paletteWindowOpen})
     }
 
-    openNotePopup(noteID, notePopupAnchorEl) {
+    onDrawerPinToggle = () => {
+        const { drawerPinned } = this.state
+        this.setState({...this.state, drawerPinned: !drawerPinned})
+    }
+
+    openNotePopup = (noteID, notePopupAnchorEl) => {
         this.setState({...this.state, noteID, notePopupAnchorEl })
     }
 
@@ -215,47 +232,14 @@ export default class TEIEditor extends Component {
         }
     }
 
-    onKeyDown = ( event ) => {
-        const { teiDocument, altDown, ctrlDown } = this.props 
-        const shiftKey = !!event.shiftKey
+    getMainEditorHotKeyConfig() {
+        const { teiDocument } = this.props 
+        
+        // get the base hotkey config
+        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer ) )
 
-        if( event.altKey && !altDown ) {
-            this.setState({...this.state, altDown: true })
-        }
-        if( event.ctrlKey && !ctrlDown ) {
-            this.setState({...this.state, ctrlDown: true })            
-        }
-
-        // if we are on an aside, open it
-        if( event.key === 'ArrowRight' || event.key === 'ArrowLeft' ) {
-            const { editorView } = teiDocument
-            const { selection } = editorView.state
-            if( selection && selection.node ) {            
-                const { node } = selection    
-                const nodeName = node.type.name
-
-                const {teiSchema} = teiDocument.fairCopyProject
-                if( teiSchema.elementGroups.asides.includes(nodeName) ) {
-                    const noteID = node.attrs['__id__']
-                    const { $anchor } = selection
-                    const anchorEl = editorView.nodeDOM($anchor.pos)
-                    this.openNotePopup(noteID, anchorEl)
-                } 
-                else {
-                    const {editorView} = teiDocument
-                    const {tr, selection} = editorView.state
-                    const {$anchor} = selection
-                    const direction = event.key === 'ArrowRight' ? 1 : -1
-                    tr.setSelection(TextSelection.create(tr.doc, $anchor.pos + direction))
-                    editorView.dispatch(tr)
-                }
-
-                return
-            }
-        }
- 
-        // Move from the editor to the tree w/ keyboard
-        if( event.key === 'Tab' && shiftKey ) {
+        keyMap.hopToTree = 'shift+tab'
+        handlers.hopToTree = () => {
             const { editorView } = teiDocument
             const { treeID } = teiDocument.currentTreeNode
             const { editorGutterPos } = teiDocument.currentTreeNode
@@ -264,21 +248,9 @@ export default class TEIEditor extends Component {
                 const { nextPos, nextPath } = navigateFromEditorToTree( editorView )
                 this.onChangePos(nextPos, nextPath, treeID)
             }
-            return
-        } 
-
-        handleEditorHotKeys(event, teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer );
-    }
-
-    onKeyUp = ( event ) => {
-        const { ctrlDown, altDown } = this.state
-
-        if( !event.altKey && altDown ) {
-            this.setState({...this.state, altDown: false })
         }
-        if( !event.ctrlKey && ctrlDown ) {
-            this.setState({...this.state, ctrlDown: false })            
-        }
+     
+        return { keyMap, handlers }
     }
 
     onOpenElementMenu = (elementMenuOptions ) => {
@@ -306,7 +278,7 @@ export default class TEIEditor extends Component {
 
     render() {    
         const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, currentView } = this.props
-        const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, paletteWindowOpen } = this.state
+        const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, drawerPinned, paletteWindowOpen } = this.state
         const { fairCopyProject } = teiDocument
         const { isLoggedIn, configLastAction, userID, permissions, remote } = fairCopyProject
         const readOnly = !teiDocument.isEditable() 
@@ -334,9 +306,9 @@ export default class TEIEditor extends Component {
         }
 
         const { selectedElements } = teiDocument
-        const drawerHeight = selectedElements.length > 0 ? 300 : 50  //335
+        const drawerHeight = drawerPinned || selectedElements.length > 0 ? 300 : 50 
         const drawerWidthCSS = `calc(100vw - 30px - ${leftPaneWidth}px)`
-        const editorHeight = selectedElements.length > 0 ? 530 : 180
+        const editorHeight = drawerPinned || selectedElements.length > 0 ? 530 : 180
 
         const editorHeightCSS = `calc(100% - ${editorHeight}px)`
         const editorWidthCSS = `calc(100vw - 10px - ${leftPaneWidth}px)`
@@ -346,68 +318,75 @@ export default class TEIEditor extends Component {
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
         const canEditConfig = !remote || (canConfig && lockStatus === 'checked_out')
+
+        const { keyMap, handlers } = this.getMainEditorHotKeyConfig()
         
         return (
             <main 
                 style={style} 
                 className='TEIEditor'
             > 
-                <div
-                    onKeyDown={this.onKeyDown} 
-                    onKeyUp={this.onKeyUp}                 
+                <HotKeys 
+                    keyMap={keyMap} 
+                    handlers={handlers} 
+                    allowChanges={true}
                 >
-                    { !hidden && <TitleBar 
-                        parentResource={parentResource} 
-                        onResourceAction={onResourceAction} 
-                        resourceName={resourceEntry.name}    
-                        currentView={currentView}     
-                        isLoggedIn={isLoggedIn}
-                        >                   
-                        </TitleBar> 
-                    }
-                    { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } teiDocument={teiDocument}>
-                        </ReadOnlyToolbar> :
-                        <EditorToolbar
-                            teiDocument={teiDocument}
-                            onSave={onSave}
-                            onTogglePalette={this.onTogglePalette}
-                            paletteActive={paletteWindowOpen}
-                            onProjectSettings={onProjectSettings}
-                            onEditResource={onEditResource}
-                            onOpenElementMenu={this.onOpenElementMenu}
-                            onCloseElementMenu={this.onCloseElementMenu}
-                            elementMenuOptions={elementMenuOptions}
-                        ></EditorToolbar>
-                    }
-                    <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
-                        { !hidden && <EditorGutter
-                            treeID="main"
-                            onDragElement={onDragElement}
-                            teiDocument={teiDocument}
-                            editorView={teiDocument.editorView}
-                            onJumpToDrawer={onJumpToDrawer}
-                            onChangePos={this.onChangePos}
-                        /> }     
-                        <ProseMirrorComponent
-                            createEditorView={this.createEditorView}
-                            editorView={teiDocument.editorView}
-                            onFocus={onFocus}
-                            thumbMargin={true}
-                        />
-                        { !hidden && <ThumbnailMargin
-                            teiDocument={teiDocument}
-                        /> }      
+                    <div>
+                        { !hidden && <TitleBar 
+                            parentResource={parentResource} 
+                            onResourceAction={onResourceAction} 
+                            resourceName={resourceEntry.name}    
+                            currentView={currentView}     
+                            isLoggedIn={isLoggedIn}
+                            >                   
+                            </TitleBar> 
+                        }
+                        { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } teiDocument={teiDocument}>
+                            </ReadOnlyToolbar> :
+                            <EditorToolbar
+                                teiDocument={teiDocument}
+                                onSave={onSave}
+                                onTogglePalette={this.onTogglePalette}
+                                paletteActive={paletteWindowOpen}
+                                onProjectSettings={onProjectSettings}
+                                onEditResource={onEditResource}
+                                onOpenElementMenu={this.onOpenElementMenu}
+                                onCloseElementMenu={this.onCloseElementMenu}
+                                elementMenuOptions={elementMenuOptions}
+                            ></EditorToolbar>
+                        }
+                        <div id={teiDocument.resourceID} onClick={onClickBody} style={editorStyle} onScroll={this.onScrollEditor} className='body'>
+                            { !hidden && <EditorGutter
+                                treeID="main"
+                                onDragElement={onDragElement}
+                                teiDocument={teiDocument}
+                                editorView={teiDocument.editorView}
+                                onJumpToDrawer={onJumpToDrawer}
+                                onChangePos={this.onChangePos}
+                            /> }     
+                            <ProseMirrorComponent
+                                createEditorView={this.createEditorView}
+                                editorView={teiDocument.editorView}
+                                onFocus={onFocus}
+                                thumbMargin={true}
+                            />
+                            { !hidden && <ThumbnailMargin
+                                teiDocument={teiDocument}
+                            /> }      
+                        </div>
+                        { !hidden && <ParameterDrawer 
+                            teiDocument={teiDocument} 
+                            onRef={(el) => { this.drawerRef = el}}
+                            drawerPinned={drawerPinned}
+                            onDrawerPinToggle={this.onDrawerPinToggle}
+                            noteID={noteID}
+                            height={drawerHeight}
+                            width={drawerWidthCSS}
+                            readOnly={readOnly}
+                            canEditConfig={canEditConfig}
+                        /> }
                     </div>
-                    { !hidden && <ParameterDrawer 
-                        teiDocument={teiDocument} 
-                        onRef={(el) => { this.drawerRef = el}}
-                        noteID={noteID}
-                        height={drawerHeight}
-                        width={drawerWidthCSS}
-                        readOnly={readOnly}
-                        canEditConfig={canEditConfig}
-                    /> }
-                </div>
+                </HotKeys>
                 { !hidden && <NotePopup
                     noteID={noteID}
                     teiDocument={teiDocument}

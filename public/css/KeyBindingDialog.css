@@ -1,0 +1,17 @@
+#KeyBindingDialog .element-field {
+    display: inline-block;
+}
+
+#KeyBindingDialog .keystroke-record-button {
+    margin-top: 20px;
+}
+
+#KeyBindingDialog .record-icon {
+    margin-right: 5px;
+    color: red;
+}
+
+#KeyBindingDialog .error-message {
+    margin: 5px;
+    color: red;
+}

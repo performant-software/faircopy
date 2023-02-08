@@ -3,12 +3,14 @@ import { Popper, Paper } from '@material-ui/core'
 import {EditorView} from "prosemirror-view"
 import {TextSelection} from "prosemirror-state"
 import EditorGutter from "./EditorGutter"
+import { HotKeys } from 'react-hotkeys'
 // import applyDevTools from "prosemirror-dev-tools";
 
 import ProseMirrorComponent from "../../common/ProseMirrorComponent"
 import {transformPastedHTMLHandler,transformPastedHandler, createClipboardSerializer } from "../../../model/cut-and-paste"
 import {addTextNodes} from "../../../model/xml"
-import { handleEditorHotKeys, navigateFromTreeToEditor, getSelectedElements } from "../../../model/editor-navigation"
+import { getEditorCommands, navigateFromTreeToEditor, getSelectedElements } from "../../../model/editor-navigation"
+import { getHotKeyConfig } from "../../../model/editor-keybindings"
 
 export default class NotePopup extends Component {
 
@@ -105,10 +107,15 @@ export default class NotePopup extends Component {
         editorView.dispatch(tr)
     }
 
-    onKeyDown = ( event ) => {
-        const { teiDocument, onTogglePalette, onOpenElementMenu, onClose } = this.props
+    getNoteHotKeyConfig() {
+        const { teiDocument, onTogglePalette, onOpenElementMenu, onClose, clipboardSerializer } = this.props
 
-        if( event.key === 'Escape' ) {
+        // get the base hotkey config
+        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) )
+
+        // add ESC hotkey
+        keyMap.closeNote = 'escape'
+        handlers.closeNote = () => {
             // move the selection past the inline node and return to main editor
             const {editorView} = teiDocument
             const {tr, selection} = editorView.state
@@ -119,9 +126,8 @@ export default class NotePopup extends Component {
             onClose()
             editorView.focus()
         }
-        else {
-            return handleEditorHotKeys(event, teiDocument, onTogglePalette, onOpenElementMenu, this.clipboardSerializer )
-        }
+
+        return { keyMap, handlers }
     }
 
     renderEditor() {
@@ -147,27 +153,35 @@ export default class NotePopup extends Component {
             this.el = el
         }
 
+        const { keyMap, handlers } = this.getNoteHotKeyConfig()
+
         const gutterTop = (this.el) ? this.el.getBoundingClientRect().top - 5 : 0
         // if( this.el ) console.log(`top: ${gutterTop}`)
 
         return (
-            <div className='note-body' ref={onRef} onKeyDown={this.onKeyDown} >
-                <EditorGutter 
-                    treeID="note"
-                    gutterTop={gutterTop}
-                    onJumpToDrawer={onJumpToDrawer}
-                    onDragElement={onDragElement}
-                    teiDocument={teiDocument}
-                    editorView={noteEditorView}
-                    onChangePos={this.onChangePos}
-                /> 
-                <ProseMirrorComponent
-                    destroyEditorView={this.destroyEditorView}
-                    createEditorView={this.createEditorView}
-                    onFocus={onFocus}
-                    editorView={noteEditorView}
-                />                  
-            </div>
+            <HotKeys 
+                keyMap={keyMap} 
+                handlers={handlers} 
+                allowChanges={true}
+            >
+                <div className='note-body' ref={onRef} >
+                    <EditorGutter 
+                        treeID="note"
+                        gutterTop={gutterTop}
+                        onJumpToDrawer={onJumpToDrawer}
+                        onDragElement={onDragElement}
+                        teiDocument={teiDocument}
+                        editorView={noteEditorView}
+                        onChangePos={this.onChangePos}
+                    /> 
+                    <ProseMirrorComponent
+                        destroyEditorView={this.destroyEditorView}
+                        createEditorView={this.createEditorView}
+                        onFocus={onFocus}
+                        editorView={noteEditorView}
+                    />                  
+                </div>
+            </HotKeys>
         )        
     }
 

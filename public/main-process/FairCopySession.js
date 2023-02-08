@@ -61,6 +61,11 @@ class FairCopySession {
         if( this.remoteProject ) this.remoteProject.close()
     }
 
+    reopenProject() {
+        this.remoteProject.open()
+        this.requestResourceView()
+    }
+    
     openImageResource(url) {
         this.projectStore.openImageResource(url)
     }

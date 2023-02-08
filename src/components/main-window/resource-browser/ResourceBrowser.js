@@ -3,7 +3,6 @@ import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, Ta
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { isLoggedIn } from '../../../model/cloud-api/auth'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
 
 export default class ResourceBrowser extends Component {
@@ -84,10 +83,8 @@ export default class ResourceBrowser extends Component {
 
   renderLoginButton(buttonProps) {
     const { onLogin, fairCopyProject, onLogout } = this.props
-    const { remote, userID, serverURL } = fairCopyProject
-    const loggedIn = remote ? isLoggedIn(userID, serverURL) : false
 
-    return loggedIn ? 
+    return fairCopyProject.isLoggedIn() ? 
         <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
         <Button {...buttonProps} onClick={onLogin}>Log In</Button>
   }
@@ -279,13 +276,19 @@ export default class ResourceBrowser extends Component {
   }
 
   renderEmptyListMessage() {
-    const { resourceIndex, currentView } = this.props
-    if( resourceIndex.length > 0 || currentView !== 'home' ) return null
+    const { resourceIndex, currentView, fairCopyProject, resourceView } = this.props
+    if( resourceIndex.length > 0 || resourceView.loading ) return null
+
+    const message = currentView === 'home' ? 
+      <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
+      fairCopyProject.isLoggedIn() ? 
+        <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography> :
+        <Typography>You are not logged into the server. Click on the LOG IN button above.</Typography>
 
     return (
       <Card raised={true} className='empty-list-card'>
         <CardContent>
-          <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography>
+          { message }
         </CardContent>
       </Card>
     )

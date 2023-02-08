@@ -7,6 +7,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 import ElementInfoPopup from '../main-window/tei-editor/ElementInfoPopup';
 import { removeGroupFromMenu } from '../../model/faircopy-config'
 import { determineRules } from '../../model/editor-actions'
+import { getElementIcon } from '../../model/TEISchema';
 
 export default class ElementTree extends Component {
 
@@ -56,7 +57,7 @@ export default class ElementTree extends Component {
 
     renderElement(groupID,elementID,index) {
         const { teiSchema, onSelect, selectedElement, selectedGroup, readOnly } = this.props
-        const icon = teiSchema.getElementIcon(elementID)
+        const icon = getElementIcon(elementID, teiSchema.elements)
         const elementType = teiSchema.getElementType(elementID)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         const elementKey = `group${groupID}_element-${elementID}`

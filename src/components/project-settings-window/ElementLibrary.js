@@ -2,12 +2,14 @@ import { Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 import { Droppable, Draggable } from "react-beautiful-dnd"
 
+import { getElementIcon } from '../../model/TEISchema'
+
 export default class ElementLibrary extends Component {
 
     renderElement(elementID,index) {
         const { teiSchema, selectedElement, readOnly } = this.props
         const key = `element-${elementID}`
-        const icon = teiSchema.getElementIcon(elementID)
+        const icon = getElementIcon(elementID, teiSchema.elements)
         const elementIcon = icon ? <i className={`${icon} fa-sm element-icon`}></i> : null
         const selected = ( elementID === selectedElement ) ? "selected-item" : ""
 

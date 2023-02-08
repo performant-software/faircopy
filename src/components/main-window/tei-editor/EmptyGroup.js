@@ -6,6 +6,8 @@ export default class EmptyGroup extends Component {
     render() {  
         const { onProjectSettings, anchorEl} = this.props
 
+        if( !onProjectSettings ) return null
+
         // TODO handle left arrow .. add tabIndex and onClose
         // TODO neeed a mode for the structure palette
 

@@ -3,6 +3,7 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
+import KeyBindingsTable from './KeyBindingsTable'
 import { canConfigAdmin } from '../../model/permissions'
 import { getConfigStatus } from '../../model/faircopy-config'
 import { inlineRingSpinner } from '../common/ring-spinner'
@@ -34,9 +35,9 @@ export default class ProjectSettingsWindow extends Component {
         return (
             <div className="sidebar">
                 <Tabs orientation="vertical" value={selectedPage} onChange={onChangeMenu}>
-                    <Tab value="general" label="General" />
-                    <Tab value="elements" label="Schema"/>
-                    {/* <Tab disabled value="vocabs" label="Vocabs"/> */}
+                    <Tab value="general" label="Project" />
+                    <Tab value="elements" label="Menus"/>
+                    <Tab value="keybindings" label="Hot Keys"/>
                 </Tabs>
             </div>
         )
@@ -78,9 +79,12 @@ export default class ProjectSettingsWindow extends Component {
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></SchemaEditor> }
-                { selectedPage === 'vocabs' && <div>
-                    <h1>VOCAB EDITOR</h1>
-                </div> }
+                { selectedPage === 'keybindings' && <KeyBindingsTable
+                    fairCopyConfig={fairCopyConfig}
+                    teiSchema={teiSchema}
+                    readOnly={!canEdit}
+                    onUpdateConfig={onUpdate}
+                ></KeyBindingsTable> }
             </div>
         )
     }
@@ -90,6 +94,7 @@ export default class ProjectSettingsWindow extends Component {
         const { permissions, configLastAction, userID, remote } = fairCopyProject
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
+        const loggedIn = fairCopyProject.isLoggedIn()
 
         const onSaveConfig = () => {
             const { fairCopyConfig, projectInfo } = this.state
@@ -112,7 +117,7 @@ export default class ProjectSettingsWindow extends Component {
 
         return (
             <div>
-                { remote && canConfig && <div className="window-actions-left">
+                { remote && loggedIn && canConfig && <div className="window-actions-left">
                     <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
                     { checkOutError && <Typography className="error-message" >Error: {checkOutError}</Typography>}
                 </div> }

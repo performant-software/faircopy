@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.1.4",
+  "version": "1.1.6",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -36,7 +36,6 @@
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.53",
-    "react-spring": "9.5.5",
     "@rails/actioncable": "^6.0.5",
     "annotorious-openseadragon": "github:performant-software/annotorious-openseadragon",
     "axios": "^0.19.2",
@@ -64,10 +63,12 @@
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
     "react-force-graph-2d": "^1.13.6",
+    "react-hotkeys": "^2.0.0",
     "react-markdown": "^6.0.0",
     "react-scripts": "3.4.1",
     "react-scroll": "1.8.3",
     "react-split-pane": "^0.1.92",
+    "react-spring": "9.5.5",
     "semver": "^7.3.5",
     "uuid": "^8.1.0",
     "w3c-xmlserializer": "^2.0.0",
@@ -106,7 +107,9 @@
     "win": {
       "icon": "build/icon.ico",
       "certificateSubjectName": "Performant Software Solutions LLC",
-      "signingHashAlgorithms": ["sha256"],
+      "signingHashAlgorithms": [
+        "sha256"
+      ],
       "publisherName": "Performant Software Solutions LLC",
       "signAndEditExecutable": true,
       "target": [

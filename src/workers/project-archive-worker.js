@@ -66,7 +66,7 @@ async function checkIn( userID, serverURL, projectID, committedResources, messag
             }
         }
       
-        checkInResources(serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
+        checkInResources(userID, serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
     } else {
         postMessage({ messageType: 'check-in-results', resourceIDs: [], error: "User not logged in." })
     }
@@ -81,7 +81,7 @@ async function checkOut( userID, serverURL, projectID, resourceEntries, zip, pos
     for( const resourceEntry of resourceEntries ) {
         const { id: resourceID, type } = resourceEntry
         if( type === 'teidoc' ) {
-            const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceID, 1)
+            const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, 1)
             for( const resource of resourceData.remoteResources ) {
                 if( resource.type !== 'header' ) resourceIDs.push(resource.id)
             }
@@ -96,7 +96,7 @@ async function checkOut( userID, serverURL, projectID, resourceEntries, zip, pos
             // get the contents for each resource and add them to the project 
             for( const resourceState of resourceStates ) {
                 const { resource_guid: resourceID, state } = resourceState
-                const { resourceEntry, parentEntry, content } = await getResourceAsync( serverURL, authToken, resourceID )
+                const { resourceEntry, parentEntry, content } = await getResourceAsync( userID, serverURL, authToken, resourceID )
 
                 if( state === 'success') {
                     resources[resourceEntry.id] = { state, resourceEntry, parentEntry, content }
@@ -128,7 +128,7 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
             }
     
             if( resourceEntry.type === 'teidoc' ) {
-                const resourceData = await getResourcesAsync(serverURL, authToken, projectID, resourceEntry.id, 1)
+                const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry.id, 1)
                 const { remoteResources } = resourceData
 
                 for( const remoteEntry of remoteResources ) {
@@ -139,7 +139,7 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
                         contents[resourceID] = await readUTF8( resourceID, zip )
                     } else {
                         childEntries.push(remoteEntry)
-                        const remoteResource = await getResourceAsync(serverURL,authToken,resourceID)
+                        const remoteResource = await getResourceAsync( userID, serverURL,authToken,resourceID)
                         contents[resourceID] = remoteResource.content
                     }
                 }
@@ -149,7 +149,7 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
                 if( localEntry ) {
                     contents[resourceID] = await readUTF8( resourceID, zip )
                 } else {
-                    const remoteResource = await getResourceAsync(serverURL,authToken,resourceID)
+                    const remoteResource = await getResourceAsync( userID, serverURL,authToken,resourceID)
                     contents[resourceID] = remoteResource.content
                 }
             }    
