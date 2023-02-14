@@ -62,6 +62,8 @@ export default class App extends Component {
     if( lockStatus !== 'checked_out' ) {
       fairCopyProject.saveFairCopyConfig( config, configLastAction )
       this.setState( { ...this.state } )
+    } else {
+      fairCopyProject.configLastAction = configLastAction
     }
   }
 
