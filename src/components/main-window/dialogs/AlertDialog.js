@@ -77,7 +77,7 @@ export default class AlertDialog extends Component {
 
             // we need to see if any of the open resources have a doomed resource as a parent and add them to close list
             for( const openResource of Object.values(openResources) ) {
-                if( resourceIDs.includes( openResource.parentEntry.id ) ) {
+                if( openResource.parentEntry && resourceIDs.includes( openResource.parentEntry.id ) ) {
                     closingResourceIDs.push( openResource.resourceID )
                 }
             }

@@ -2,6 +2,13 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.7
+
+### Bug Fixes
+
+* Crash bug deleting resource with no parent
+* Error message when checking out config
+
 ## Version 1.1.6
 
 ### Improvements
