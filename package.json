@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.1.7-dev.1",
+  "version": "1.1.7",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -126,8 +126,8 @@
     "publish": {
       "provider": "keygen",
       "account": "8a8d3d6a-ab09-4f51-aea5-090bfd025dd8",
-      "product": "b2bfc67b-26bf-4407-b3d9-d7ad94d7f225",
-      "channel": "dev"
+      "product": "1e330e29-f0b4-4942-b813-0c78614e3abb",
+      "channel": "stable"
     }
   },
   "postinstall": "electron-builder install-app-deps",
