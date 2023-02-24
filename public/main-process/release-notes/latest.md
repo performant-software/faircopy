@@ -2,6 +2,12 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.8
+
+### Bug Fixes
+
+* Fixes a problem where facsimile resource viewer will not advance to the next or previous image.
+
 ## Version 1.1.7
 
 ### Bug Fixes
