@@ -260,7 +260,7 @@ class FairCopySession {
             }
             this.projectStore.saveManifest() 
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )  
-            if( resourceEntry.type === 'teidoc' ) this.requestResourceView()      
+            this.requestResourceView()      
         } else {
             log.info(`Error updating resource entry: ${resourceEntry.id}`)
         }
