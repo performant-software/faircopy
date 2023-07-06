@@ -404,16 +404,16 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
     }
 
-    getCheckedOutResources() {
+    getLocalResources() {
         const resourceEntries = Object.values( this.manifestData.resources )
 
-        const checkedOutResources = {}
+        const localResources = {}
         for( const resourceEntry of resourceEntries ) {
             if( resourceEntry.type !== 'image') {
-                checkedOutResources[resourceEntry.id] = resourceEntry
+                localResources[resourceEntry.id] = resourceEntry
             }
         }
-        return checkedOutResources
+        return localResources
     }
 }
 

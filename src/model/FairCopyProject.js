@@ -8,7 +8,7 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {saveConfig} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
-import { getBlankResourceMap } from './id-map'
+import { getBlankResourceMap, getUniqueResourceID } from './id-map'
 import { isLoggedIn } from './cloud-api/auth'
 
 const fairCopy = window.fairCopy
@@ -192,56 +192,23 @@ export default class FairCopyProject {
         saveConfig( this.fairCopyConfig, this.configLastAction )
     }
 
-    // TODO REFACTOR
     // take the resources and move them into the parent ID
-    moveResources( resourceIDs, targetParentID ) {
-        const updatedResources = {}
+    moveResources( resourceEntries, targetParentEntry ) {
+        for( const resourceEntry of resourceEntries ) {
+            if( resourceEntry.parentResource === targetParentEntry?.id ) continue
 
-        const checkoutResource = (resourceID) => {
-            return updatedResources[resourceID] ? updatedResources[resourceID] : { ...this.resources[resourceID] }
-        }
-
-        const checkinResource = (resource) => {
-            updatedResources[resource.id] = resource
-        }
-
-        for( const resourceID of resourceIDs ) {
-            const resourceEntry = checkoutResource(resourceID)
-            if( resourceEntry.parentResource === targetParentID ) continue
-
-            // first remove the resource from current parent
-            if( resourceEntry.parentResource ) {
-                const parent = checkoutResource(resourceEntry.parentResource)
-                parent.resources = parent.resources.filter( id => id !== resourceID )
-                checkinResource(parent)
+            if( targetParentEntry ) {
+                const childLocalIDs = Object.keys(this.idMap.idMap[targetParentEntry.localID].ids)
+                resourceEntry.localID = getUniqueResourceID( resourceEntry.type, childLocalIDs, resourceEntry.localID )
+                resourceEntry.parentResource = targetParentEntry.id
+            } else {
+                const childLocalIDs = Object.keys(this.idMap.idMap)
+                resourceEntry.localID = getUniqueResourceID( resourceEntry.type, childLocalIDs, resourceEntry.localID )
+                resourceEntry.parentResource = null
             }
 
-            if( targetParentID ) {
-                // add resource to new parent
-                const targetParent = checkoutResource(targetParentID)
-
-                // is localID unique in this context?
-                for( const siblingResourceID of targetParent.resources ) {
-                    const siblingResource = checkoutResource(siblingResourceID)
-                    if( resourceEntry.localID === siblingResource.localID ) {
-                        // make localID unique
-                        resourceEntry.localID = this.idMap.getUniqueID(resourceEntry.localID)
-                    }
-                }
-
-                // add resource to target parent
-                targetParent.resources = !targetParent.resources ? [resourceID] : targetParent.resources.concat( resourceID )
-                checkinResource( targetParent )    
-            } 
-
             // update resource
-            resourceEntry.parentResource = targetParentID
-            checkinResource( resourceEntry )
-        }
-
-        // to prevent racing with main thread, only update the resources once they are final
-        for( const resource of Object.values(updatedResources) ) {
-            this.updateResource(resource)
+            this.updateResource( resourceEntry )
         }
     }
 

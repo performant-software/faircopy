@@ -198,13 +198,9 @@ class FairCopySession {
         }
     }
 
-    requestCheckedOutResources() {
-        if( this.remote ) {
-            const checkedOutResources = this.projectStore.getCheckedOutResources()
-            this.fairCopyApplication.sendToMainWindow('checkedOutResources', checkedOutResources )
-        } else {
-            log.info("Requested checked out view when project is not remote.")
-        }
+    requestLocalResources() {
+        const localResources = this.projectStore.getLocalResources()
+        this.fairCopyApplication.sendToMainWindow('localResources', localResources )
     }
 
     sendResourceViewUpdate(resourceView, remoteResources) {

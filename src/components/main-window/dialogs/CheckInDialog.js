@@ -31,18 +31,18 @@ export default class CheckInDialog extends Component {
 
     componentDidMount() {
         const {services} = fairCopy
-        services.ipcRegisterCallback('checkedOutResources', this.onCheckedOutResources )
+        services.ipcRegisterCallback('localResources', this.onLocalResources )
         services.ipcRegisterCallback('checkInResults', this.onCheckInResults )
-        services.ipcSend('requestCheckedOutResources')
+        services.ipcSend('requestLocalResources')
     }
 
     componentWillUnmount() {
         const {services} = fairCopy
-        services.ipcRemoveListener('checkedOutResources', this.onCheckedOutResources )
+        services.ipcRemoveListener('localResources', this.onLocalResources )
         services.ipcRemoveListener('checkInResults', this.onCheckInResults )
     }
 
-    onCheckedOutResources = (event,checkedOutResources) => {
+    onLocalResources = (event,checkedOutResources) => {
         const { checkInResources } = this.props
         let resourcesToCommit = []
         for( const resourceID of checkInResources ) {

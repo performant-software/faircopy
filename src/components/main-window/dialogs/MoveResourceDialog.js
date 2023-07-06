@@ -3,28 +3,38 @@ import React, { Component } from 'react'
 import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBody, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 
+const fairCopy = window.fairCopy
+
 export default class MoveResourceDialog extends Component {
 
     constructor(props) {
         super(props)
-        this.state = this.initialState(props)
+        this.state = {
+            targetID: null,
+            teiDocs: []
+        }
     }
 
-    initialState(props) {
-        const { resources } = props.fairCopyProject
+    componentDidMount() {
+        const {services} = fairCopy
+        services.ipcRegisterCallback('localResources', this.onLocalResources )
+        services.ipcSend('requestLocalResources')
+    }
 
-        // take the resources, find the TEI docs
+    componentWillUnmount() {
+        const {services} = fairCopy
+        services.ipcRemoveListener('localResources', this.onLocalResources )
+    }
+
+    onLocalResources = (event,localResources) => {
         const teiDocs = []
-        for( const resource of Object.values(resources) ) {
-            if( resource.type === 'teidoc' ) {
-                teiDocs.push(resource)
+        for( const resourceEntry of Object.values(localResources) ) {
+            const { type: resourceType, deleted } = resourceEntry                
+            if( resourceType === 'teidoc' && !deleted ) {
+                teiDocs.push(resourceEntry)
             }
         }
-
-        return {
-            targetID: null,
-            teiDocs
-        }
+        this.setState({...this.state, teiDocs })
     }
 
     renderRow(resource) {        
@@ -101,27 +111,19 @@ export default class MoveResourceDialog extends Component {
         )
     }
 
+    onClickMove = () => {
+        const { onClose, fairCopyProject, resourceEntries } = this.props
+        const { targetID, teiDocs } = this.state
+
+        const validEntries = resourceEntries.filter( r => r.type !== 'teidoc' )
+        const parentEntry = targetID === 'ROOT' ? null : teiDocs.find( r => r.id === targetID )
+        fairCopyProject.moveResources( validEntries, parentEntry )
+        onClose()
+    }
+
     render() {      
+        const { onClose, resourceEntries } = this.props
         const { targetID } = this.state
-        const { onClose, resourceEntries, closeResources } = this.props
-        
-        const onClickMove = () => {
-            const { targetID } = this.state
-            const { fairCopyProject } = this.props
-
-            // ignore the tei docs
-            const validIDs = []
-            for( const resourceEntry of resourceEntries ) {
-                if( resourceEntry.type !== 'teidoc' ) {
-                    validIDs.push(resourceEntry.id)
-                }
-            }
-
-            const parentID = targetID === 'ROOT' ? null : targetID
-            fairCopyProject.moveResources( validIDs, parentID )
-            closeResources(validIDs, false, false )  
-            onClose()
-        }
 
         const moveDisabled = (targetID === null)
 
@@ -139,11 +141,10 @@ export default class MoveResourceDialog extends Component {
                     { this.renderTable() }
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" disabled={moveDisabled} color="primary" onClick={onClickMove} autoFocus>Move</Button>
+                    <Button variant="contained" disabled={moveDisabled} color="primary" onClick={this.onClickMove} autoFocus>Move</Button>
                     <Button variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )
     }
-
 }
