@@ -20,22 +20,44 @@ export default class FacsDocument {
         this.load(resourceData)
     }
 
-    onResourceUpdated = ( resource ) => {
-        if( resource.resourceEntry ) {
-            const { resourceEntry } = resource
-            if( resourceEntry.id === this.resourceEntry.id ) {
-                this.resourceEntry = resourceEntry
-                this.resourceID = resourceEntry.id
-                this.resourceType = resourceEntry.type    
+    onResourceUpdated = ( eventType, resource ) => {
+        let changed = false
+        if( eventType === 'resourceEntryUpdated' ) {
+            const { id: targetResourceID, parentResource } = resource
+            if( this.resourceID === targetResourceID ) {
+                // if the parent changes, look up the resource entry for the new parent
+                if( parentResource !== this.resourceEntry.parentResource ) {
+                    const { idMap } = this.imageViewContext
+                    if( parentResource ) {
+                        const { localID: parentLocalID } = idMap.getLocalIDs(parentResource)
+                        this.parentEntry = idMap.getResourceEntry(parentLocalID)
+                    } else {
+                        this.parentEntry = null
+                    }
+                }    
+                this.resourceEntry = resource
+                this.resourceID = this.resourceEntry.id  
+                this.resourceType = this.resourceEntry.type
+                changed = true
             }
-            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
-                this.parentEntry = resourceEntry
-            }    
+            if( this.parentEntry && this.parentEntry.id === targetResourceID ) {
+                this.parentEntry = resource
+                changed = true
+            }
+        } else if( eventType === 'resourceContentUpdated' ) {
+            const { resourceID: targetResourceID, resourceContent, messageID } = resource
+            // ignore content messages from yourself
+            if( targetResourceID === this.resourceID && messageID !== this.lastMessageID ) {
+                this.load(resourceContent)
+                changed = true
+            }
         }
-        // load updated content if it is from a different source
-        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && resource.messageID !== this.lastMessageID ) {
-            const { resourceContent } = resource
-            this.load(resourceContent)
+
+        // communicate to the views that something has changed
+        if( changed ) {
+            for( const listener of this.updateListeners ) {
+                listener()
+            }
         }
     }
 
@@ -45,14 +67,6 @@ export default class FacsDocument {
 
     isRemote() {
         return this.imageViewContext.remote
-    }
-
-    // Called when document is updated by a different window process
-    onResourceUpdated(resourceData) {
-        this.load(resourceData)
-        for( const listener of this.updateListeners ) {
-            listener()
-        }
     }
 
     addUpdateListener(listener) {

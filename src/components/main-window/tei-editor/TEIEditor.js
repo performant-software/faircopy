@@ -277,9 +277,9 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, parentResource, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, resourceEntry, leftPaneWidth, currentView } = this.props
+        const { teiDocument, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, leftPaneWidth, currentView } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, drawerPinned, paletteWindowOpen } = this.state
-        const { fairCopyProject } = teiDocument
+        const { fairCopyProject, parentEntry, resourceEntry } = teiDocument
         const { isLoggedIn, configLastAction, userID, permissions, remote } = fairCopyProject
         const readOnly = !teiDocument.isEditable() 
 
@@ -333,7 +333,7 @@ export default class TEIEditor extends Component {
                 >
                     <div>
                         { !hidden && <TitleBar 
-                            parentResource={parentResource} 
+                            parentResource={parentEntry} 
                             onResourceAction={onResourceAction} 
                             resourceName={resourceEntry.name}    
                             currentView={currentView}     

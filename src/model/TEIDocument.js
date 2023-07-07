@@ -50,24 +50,36 @@ export default class TEIDocument {
         this.changedSinceLastSave = false
     }
 
-    onResourceUpdated = ( resource ) => {
-        if( resource.resourceEntry ) {
-            const { resourceEntry } = resource
-            if( resourceEntry.id === this.resourceEntry.id ) {
-                this.resourceEntry = resourceEntry
-                this.resourceID = resourceEntry.id
-                this.resourceType = resourceEntry.type    
+    onResourceUpdated = ( eventType, resource ) => {
+        if( eventType === 'resourceEntryUpdated' ) {
+            const { id: targetResourceID, parentResource } = resource
+            if( this.resourceID === targetResourceID ) {
+                // if the parent changes, look up the resource entry for the new parent
+                if( parentResource !== this.resourceEntry.parentResource ) {
+                    const { idMap } = this.fairCopyProject
+                    if( parentResource ) {
+                        const { localID: parentLocalID } = idMap.getLocalIDs(parentResource)
+                        this.parentEntry = idMap.getResourceEntry(parentLocalID)
+                    } else {
+                        this.parentEntry = null
+                    }
+                }    
+                this.resourceEntry = resource
+                this.resourceID = this.resourceEntry.id  
+                this.resourceType = this.resourceEntry.type    
             }
-            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
-                this.parentEntry = resourceEntry
-            }    
+            if( this.parentEntry && this.parentEntry.id === targetResourceID ) {
+                this.parentEntry = resource
+            }
         }
-        // load updated content if we are in read only mode
-        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && !this.isEditable() ) {
-            // TODO make this work
-            // const { resourceContent } = resource
-            // this.load(resourceContent)
-        }
+        // TODO right now this only works for FacsDocument, make it work here too
+        // else if( eventType === 'resourceContentUpdated' ) {
+            // load updated content if we are in read only mode
+            // if( !this.isEditable() ) {
+                // const { resourceContent } = resource
+                // this.load(resourceContent)
+            // }
+        // }
     }
 
     isEditable() {

@@ -174,13 +174,13 @@ export default class MainWindow extends Component {
 
     onResourceEntryUpdated = (e, resourceEntry) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners({ resourceEntry })
+        fairCopyProject.notifyListeners( 'resourceEntryUpdated', resourceEntry)
         this.refreshWindow()
     }
 
     onResourceContentUpdated = (e, resourceUpdate) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners(resourceUpdate)
+        fairCopyProject.notifyListeners( 'resourceContentUpdated', resourceUpdate)
         this.refreshWindow()
     }
 
@@ -649,8 +649,6 @@ export default class MainWindow extends Component {
                         key={key}
                         hidden={hidden}
                         teiDocument={resource}
-                        resourceEntry={resourceEntry}
-                        parentResource={parentEntry}
                         onOpenElementMenu={this.onOpenElementMenu}
                         onProjectSettings={onProjectSettings}
                         onDragElement={this.onDragElement}

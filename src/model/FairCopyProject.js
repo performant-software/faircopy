@@ -33,9 +33,9 @@ export default class FairCopyProject {
         this.updateListeners = []
     }
 
-    notifyListeners(resource) {
+    notifyListeners(messageType,resource) {
         for( const listener of this.updateListeners ) {
-            listener(resource)
+            listener(messageType,resource)
         }
     }
 
