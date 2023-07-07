@@ -549,7 +549,7 @@ export default class MainWindow extends Component {
                 }
                 break
             case 'move':
-                this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries} )
+                this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries, ...closePopUpState} )
                 break
             case 'save':
                 this.saveResources(resourceIDs)
