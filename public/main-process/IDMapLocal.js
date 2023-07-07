@@ -62,7 +62,7 @@ class IDMapLocal {
         // move the resource map on both editable layers to the new address
 
         // update the next map 
-        const nextResourceMap = parentID ? this.idMapNext[parentID].ids[oldID] : this.idMapNext[oldID]
+        const nextResourceMap = parentID ? this.idMapNext[parentID]?.ids[oldID] : this.idMapNext[oldID]
         if( nextResourceMap ) {
             if( parentID ) {
                 if(  !this.idMapNext[parentID] ) this.idMapNext[parentID] = this.copyParent(parentID) 
@@ -75,7 +75,7 @@ class IDMapLocal {
         }
 
         // update the staged map
-        const baseResourceMap = parentID ? this.idMapBase[parentID].ids[oldID] : this.idMapBase[oldID]
+        const baseResourceMap = parentID ? this.idMapBase[parentID]?.ids[oldID] : this.idMapBase[oldID]
         if( baseResourceMap ) {
             if( parentID ) {
                 if(  !this.idMapBase[parentID] ) this.idMapBase[parentID] = this.copyParent(parentID) 
