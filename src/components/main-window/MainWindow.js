@@ -249,6 +249,16 @@ export default class MainWindow extends Component {
         }
     }
 
+    isResourceOpen( resourceEntries ) {
+        const { openResources } = this.state
+        for( const resourceEntry of resourceEntries ) {
+            if( openResources[resourceEntry.id] ) {
+                return true
+            }
+        }
+        return false
+    }
+
     selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
         const { openResources, selectedResource } = this.state
@@ -549,7 +559,11 @@ export default class MainWindow extends Component {
                 }
                 break
             case 'move':
-                this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries, ...closePopUpState} )
+                if( this.isResourceOpen( resourceEntries ) ) {
+                    this.onAlertMessage("You must close open editor windows before moving a resource.")
+                } else {
+                    this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries, ...closePopUpState} )
+                }
                 break
             case 'save':
                 this.saveResources(resourceIDs)

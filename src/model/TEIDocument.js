@@ -52,18 +52,8 @@ export default class TEIDocument {
 
     onResourceUpdated = ( eventType, resource ) => {
         if( eventType === 'resourceEntryUpdated' ) {
-            const { id: targetResourceID, parentResource } = resource
+            const { id: targetResourceID } = resource
             if( this.resourceID === targetResourceID ) {
-                // if the parent changes, look up the resource entry for the new parent
-                if( parentResource !== this.resourceEntry.parentResource ) {
-                    const { idMap } = this.fairCopyProject
-                    if( parentResource ) {
-                        const { localID: parentLocalID } = idMap.getLocalIDs(parentResource)
-                        this.parentEntry = idMap.getResourceEntry(parentLocalID)
-                    } else {
-                        this.parentEntry = null
-                    }
-                }    
                 this.resourceEntry = resource
                 this.resourceID = this.resourceEntry.id  
                 this.resourceType = this.resourceEntry.type    
