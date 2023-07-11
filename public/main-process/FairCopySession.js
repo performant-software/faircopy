@@ -247,17 +247,23 @@ class FairCopySession {
             const currentLocalID = resources[resourceEntry.id].localID
             const currentParentID = resources[resourceEntry.id].parentResource
             resources[resourceEntry.id] = resourceEntry
-            // change local ID or parentID
-            if( resourceEntry.localID !== currentLocalID || resourceEntry.parentResource !== currentParentID ) {
-                let idMap = null
+
+            let idMap = null 
+            if( resourceEntry.parentResource !== currentParentID ) {
+                idMap = this.idMapAuthority.moveResourceMap( resourceEntry.localID, currentLocalID, resourceEntry.parentResource, currentParentID ) 
+            }
+            if( resourceEntry.localID !== currentLocalID ) {
                 if( resourceEntry.parentResource ) {
                     const { localID: parentID } = this.idMapAuthority.getLocalIDs(resourceEntry.parentResource)
                     idMap = this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, parentID ) 
                 } else {
                     idMap = this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, null )     
                 }
+            }
+
+            if( idMap ) {
                 this.projectStore.saveIDMap(idMap)
-                this.idMapAuthority.sendIDMapUpdate()
+                this.idMapAuthority.sendIDMapUpdate()    
             }
             this.projectStore.saveManifest() 
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )  

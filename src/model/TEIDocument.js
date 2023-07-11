@@ -52,8 +52,17 @@ export default class TEIDocument {
 
     onResourceUpdated = ( eventType, resource ) => {
         if( eventType === 'resourceEntryUpdated' ) {
-            const { id: targetResourceID } = resource
+            const { id: targetResourceID, parentResource } = resource
             if( this.resourceID === targetResourceID ) {
+                if( parentResource !== this.resourceEntry.parentResource ) {
+                    const { idMap } = this.imageViewContext
+                    if( parentResource ) {
+                        const { localID: parentLocalID } = idMap.getLocalIDs(parentResource)
+                        this.parentEntry = idMap.getResourceEntry(parentLocalID)
+                    } else {
+                        this.parentEntry = null
+                    }
+                }  
                 this.resourceEntry = resource
                 this.resourceID = this.resourceEntry.id  
                 this.resourceType = this.resourceEntry.type    
