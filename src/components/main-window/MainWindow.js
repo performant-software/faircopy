@@ -559,12 +559,11 @@ export default class MainWindow extends Component {
                 }
                 break
             case 'move':
-                // TODO remove
-                // if( this.isResourceOpen( resourceEntries ) ) {
-                //     this.onAlertMessage("You must close open editor windows before moving a resource.")
-                // } else {
+                if( this.isResourceOpen( resourceEntries ) ) {
+                    this.onAlertMessage("You must close open editor windows before moving a resource.")
+                } else {
                     this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries, ...closePopUpState} )
-                // }
+                }
                 break
             case 'save':
                 this.saveResources(resourceIDs)
