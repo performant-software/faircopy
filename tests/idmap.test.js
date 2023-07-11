@@ -27,4 +27,14 @@ test('test local move resource', () => {
     expect(Object.keys(idMap.idMap).length).toBe(2)
     expect(Object.keys(idMap.idMap['testDoc'].ids).length).toBe(2)
     expect(Object.keys(idMap.idMap['nextParent'].ids).length).toBe(1)
+
+    idMap.moveResourceMap( 'nextName', 'transcription', nextParentID, parentResourceID )
+    idMap.sendIDMapUpdate() 
+
+    expect(onUpdate).toHaveBeenCalled()
+    expect(Object.keys(idMap.idMap).length).toBe(2)
+    expect(Object.keys(idMap.idMap['testDoc'].ids).length).toBe(1)
+    expect(Object.keys(idMap.idMap['nextParent'].ids).length).toBe(2)
+    expect(idMap.idMap['nextParent'].ids['nextName']).not.toBe(null)
+
 })

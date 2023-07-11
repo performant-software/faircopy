@@ -59,8 +59,8 @@ class IDMapLocal {
     }
 
     moveResourceMap( localID, oldLocalID, targetParentResource, oldParentResourceID ) {
-        const targetParentID = targetParentResource ? this.getLocalIDs(targetParentResource) : null
-        const oldParentID = oldParentResourceID ? this.getLocalIDs(oldParentResourceID) : null
+        const targetParentID = targetParentResource ? this.getLocalIDs(targetParentResource)?.localID : null
+        const oldParentID = oldParentResourceID ? this.getLocalIDs(oldParentResourceID)?.localID : null
 
         // the resource map being moved
         let resourceMap
