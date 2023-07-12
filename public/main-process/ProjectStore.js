@@ -367,7 +367,7 @@ class ProjectStore {
             if( state === 'success') {
                 this.manifestData.resources[resourceEntry.id] = resourceEntry
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
-                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
+                if( parentEntry ) this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
                 this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID: resourceEntry.id, messageID: 'check-out-messsage', resourceContent: content })     
             } 
             checkOutStatus.push({ state, resourceEntry })
