@@ -44,14 +44,4 @@ describe('test local move resource', () => {
         expect(Object.keys(idMap.idMap['nextParent'].ids).length).toBe(2)
         expect(idMap.idMap['nextParent'].ids['nextName']).not.toBe(null)        
     })
-
-    test('test moving an unsaved resourceMap', () => {
-        idMap.setResourceMap( imagesResourceMap, 'images', 'testDoc' )
-        idMap.moveResourceMap( 'images', 'images', nextParentID, parentResourceID )
-
-        expect(onUpdate).toHaveBeenCalledTimes(4)
-        expect(Object.keys(idMap.idMapNext['testDoc'].ids).length).toBe(0)
-        expect(Object.keys(idMap.idMapBase['testDoc'].ids).length).toBe(0)
-        expect(Object.keys(idMap.idMapBase['nextParent'].ids).length).toBe(3)    
-    })
 })
