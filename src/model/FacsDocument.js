@@ -189,6 +189,31 @@ export default class FacsDocument {
         this.save()
     }
 
+    moveSurfaces( movingSurfaces, targetFacs ) {
+        
+        fairCopy.services.ipcSend('removeResource', resourceEntryID )
+
+
+        const {surfaces} = this.facs 
+        
+        // add the moving surfaces to the target facs
+        for( const movingSurfaceIndex of movingSurfaces ) {
+            const movingSurface = surfaces[movingSurfaceIndex]
+            targetFacsDoc.facs.surfaces.push(movingSurface)
+        }
+
+        // remove the moving surfaces from this facs
+        const nextSurfaces = []
+        for( let i=0; i < surfaces.length; i++ ) {
+            if( !movingSurfaces.includes(i) ) nextSurfaces.push(surfaces[i])
+        }
+        this.facs.surfaces = nextSurfaces
+
+        // save the results
+        this.save()
+        targetFacsDoc.save()
+    }
+
     updateSurfaceInfo(surfaceInfo) {
         const { surfaceID, name } = surfaceInfo
         const surface = this.facs.surfaces[ this.getIndex(surfaceID) ]

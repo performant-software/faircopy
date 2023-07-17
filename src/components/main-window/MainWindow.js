@@ -561,8 +561,13 @@ export default class MainWindow extends Component {
             case 'move':
                 if( this.isResourceOpen( resourceEntries ) ) {
                     this.onAlertMessage("You must close open editor windows before moving a resource.")
+                } else if( resourceEntries.find( r => r.type === 'teidoc' ) ) {
+                    this.onAlertMessage("Cannot move TEIDocument type resources.")
                 } else {
-                    this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries, ...closePopUpState} )
+                    const { fairCopyProject } = this.props
+                    const onMove = (movingItems, parentEntry)=>{ fairCopyProject.moveResources( movingItems, parentEntry ) }
+                    const moveResourceProps = { resourceType: 'teidoc', allowRoot: true, movingItems: resourceEntries, onMove }
+                    this.setState( {...nextState, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
                 }
                 break
             case 'save':
@@ -653,6 +658,11 @@ export default class MainWindow extends Component {
             const onConfirmDeleteImages = ( alertOptions ) => {
                 this.setState({ ...this.state, alertDialogMode: 'confirmDeleteImages', alertOptions })
             }
+            const onMoveSurfaces = ( facsDocument, surfaces ) => {
+                const onMove = (movingItems, parentEntry)=>{ facsDocument.moveSurfaces( movingItems, parentEntry ) }
+                const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove }
+                this.setState( {...this.state, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
+            }
 
             // bump state to update sidebar
             const onErrorCountChange = () => { this.setState({...this.state})}
@@ -689,6 +699,7 @@ export default class MainWindow extends Component {
                         onAddImages={this.onAddImages}
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onConfirmDeleteImages={onConfirmDeleteImages}
+                        onMoveSurfaces={onMoveSurfaces}
                         onEditSurfaceInfo={this.onEditSurfaceInfo}
                         currentView={currentView}
                     ></FacsEditor>
@@ -759,7 +770,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
         const { idMap, serverURL } = fairCopyProject
@@ -839,9 +850,8 @@ export default class MainWindow extends Component {
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></EditorDraggingElement> }
                 { moveResourceMode && <MoveResourceDialog
-                    resourceEntries={moveResources}
-                    fairCopyProject={fairCopyProject}
-                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResources: null} )}}
+                    { ...moveResourceProps }
+                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceProps: null} )}}
                 ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}

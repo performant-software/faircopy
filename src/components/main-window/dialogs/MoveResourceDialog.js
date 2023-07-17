@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBody, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
 
 const fairCopy = window.fairCopy
 
@@ -11,7 +12,7 @@ export default class MoveResourceDialog extends Component {
         super(props)
         this.state = {
             targetID: null,
-            teiDocs: []
+            moveTargets: []
         }
     }
 
@@ -27,17 +28,19 @@ export default class MoveResourceDialog extends Component {
     }
 
     onLocalResources = (event,localResources) => {
-        const teiDocs = []
+        const { resourceType } = this.props
+
+        const moveTargets = []
         for( const resourceEntry of Object.values(localResources) ) {
-            const { type: resourceType, deleted } = resourceEntry                
-            if( resourceType === 'teidoc' && !deleted ) {
-                teiDocs.push(resourceEntry)
+            const { type: currentResourceType, deleted } = resourceEntry                
+            if( currentResourceType === resourceType && !deleted ) {
+                moveTargets.push(resourceEntry)
             }
         }
-        this.setState({...this.state, teiDocs })
+        this.setState({...this.state, moveTargets })
     }
 
-    renderRow(resource) {        
+    renderRow(resource) {
         const { targetID } = this.state
 
         const onSelect = (e) => {
@@ -67,11 +70,13 @@ export default class MoveResourceDialog extends Component {
             )
         } else {
             const selected = resource.id === targetID ? 'selected' : ''
+            const resourceIcon = getResourceIcon(resource.type)
+            const resourceLabel = getResourceIconLabel(resource.type)
 
             return (
                 <TableRow hover onClick={onSelect} className={selected} dataresourceid={resource.id} key={`resource-${resource.id}`}>
                     <TableCell {...cellProps} >
-                        <i className={`fa fa-books fa-lg`}></i>
+                        <i aria-label={resourceLabel} className={`${resourceIcon} fa-lg`}></i>
                     </TableCell>
                     <TableCell {...cellProps} >
                         {resource.name}
@@ -85,12 +90,15 @@ export default class MoveResourceDialog extends Component {
     }
 
     renderTable() {
-        const { teiDocs } = this.state
+        const { allowRoot } = this.props
+        const { moveTargets } = this.state
 
-        const teiDocRows = []
-        teiDocRows.push(this.renderRow(null))
-        for( const teiDoc of teiDocs ) {            
-            teiDocRows.push(this.renderRow(teiDoc))
+        const rows = []
+        if( allowRoot ) {
+            rows.push(this.renderRow(null))
+        }
+        for( const moveTarget of moveTargets ) {            
+            rows.push(this.renderRow(moveTarget))
         }
 
         return (
@@ -104,7 +112,7 @@ export default class MoveResourceDialog extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        { teiDocRows }
+                        { rows }
                     </TableBody>
                 </Table>
           </TableContainer>
@@ -112,17 +120,16 @@ export default class MoveResourceDialog extends Component {
     }
 
     onClickMove = () => {
-        const { onClose, fairCopyProject, resourceEntries } = this.props
-        const { targetID, teiDocs } = this.state
+        const { onClose, movingItems, onMove } = this.props
+        const { targetID, moveTargets } = this.state
 
-        const validEntries = resourceEntries.filter( r => r.type !== 'teidoc' )
-        const parentEntry = targetID === 'ROOT' ? null : teiDocs.find( r => r.id === targetID )
-        fairCopyProject.moveResources( validEntries, parentEntry )
+        const parentEntry = targetID === 'ROOT' ? null : moveTargets.find( r => r.id === targetID )
+        onMove( movingItems, parentEntry )
         onClose()
     }
 
     render() {      
-        const { onClose, resourceEntries } = this.props
+        const { onClose, movingItems } = this.props
         const { targetID } = this.state
 
         const moveDisabled = (targetID === null)
@@ -135,7 +142,7 @@ export default class MoveResourceDialog extends Component {
                 aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="move-resource-dialog">Move Resources ({resourceEntries.length})</DialogTitle>
+                <DialogTitle id="move-resource-dialog">Move Resources ({movingItems.length})</DialogTitle>
                 <DialogContent>
                     <Typography>Select a destination for these resources: </Typography>
                     { this.renderTable() }
