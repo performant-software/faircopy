@@ -71,6 +71,7 @@ export default class MainWindow extends Component {
             allResourcesCheckmarked: false,
             resourceCheckmarks: {},
             resourceIndex: [],
+            requestedResources: [],
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -111,16 +112,28 @@ export default class MainWindow extends Component {
 
     onResourceOpened = (event, resourceData) => {
         const { fairCopyProject } = this.props
-        const { openResources } = this.state
+        const { openResources, requestedResources } = this.state
         const { resourceEntry, parentEntry, resource } = resourceData
-        const doc = fairCopyProject.onResourceOpened(resourceEntry, parentEntry, resource)
-        if( doc ) {
-            const nextOpenResources = { ...openResources }
-            nextOpenResources[resourceEntry.id] = doc
-            this.setState( {
-                ...this.state, 
-                openResources: nextOpenResources,
-            })    
+
+        // if this is a resource we asked for, then open it. 
+        // (resources can also be asked for by FacsDocument, maybe others in future)
+        if( requestedResources.includes( resourceEntry.id ) ) {
+            const nextRequestedResources = requestedResources.filter( r => r === resourceEntry.id )
+            const doc = fairCopyProject.onResourceOpened(resourceEntry, parentEntry, resource)
+            if( doc ) {
+                const nextOpenResources = { ...openResources }
+                nextOpenResources[resourceEntry.id] = doc
+                this.setState( {
+                    ...this.state, 
+                    openResources: nextOpenResources,
+                    requestedResources: nextRequestedResources
+                })    
+            } else {
+                this.setState( {
+                    ...this.state, 
+                    requestedResources: nextRequestedResources
+                })
+            }
         }
     }
 
@@ -261,13 +274,15 @@ export default class MainWindow extends Component {
 
     selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        const { openResources, selectedResource } = this.state
+        const { openResources, selectedResource, requestedResources } = this.state
 
         let nextSelection = resourceIDs[0]
         let change = (selectedResource !== nextSelection)
+        const nextRequestedResources = [ ...requestedResources ]
 
         for( const resourceID of resourceIDs ) {
-            if( !openResources[resourceID] ) {                
+            if( !openResources[resourceID] ) {      
+                nextRequestedResources.push(resourceID)
                 fairCopyProject.openResource(resourceID)
             }    
         }
@@ -277,6 +292,7 @@ export default class MainWindow extends Component {
                 ...this.state,
                 selectedResource: nextSelection,
                 resourceBrowserOpen: false, 
+                requestedResources: nextRequestedResources,
                 currentSubmenuID: 0,
                 searchSelectionIndex: 0,
                 popupMenuOptions: null, 
@@ -293,6 +309,7 @@ export default class MainWindow extends Component {
             this.setState( {
                 ...this.state, 
                 resourceBrowserOpen: false, 
+                requestedResources: nextRequestedResources,
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null,
                 popupMenuPlacement: null

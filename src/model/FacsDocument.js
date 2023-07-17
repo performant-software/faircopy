@@ -81,11 +81,6 @@ export default class FacsDocument {
         return null
     }
 
-    requestResource( resourceID ) {
-        fairCopy.services.ipcSend('openResource', resourceID )
-        this.loading = true
-    }
-
     // Next zone ID in format: <surfaceID>_z<next zone number>
     nextZoneID(surfaceID) {
         const surface = this.getSurface( this.getIndex(surfaceID) )
@@ -190,28 +185,41 @@ export default class FacsDocument {
     }
 
     moveSurfaces( movingSurfaces, targetFacs ) {
-        
-        fairCopy.services.ipcSend('removeResource', resourceEntryID )
+        const resourceOpened = (e, resourceData) => {
+            const { resourceEntry, parentEntry, resource } = resourceData
 
-
-        const {surfaces} = this.facs 
+            // make sure this is the document we are waiting for
+            if( resourceEntry.id === targetFacs.id ) {
+                const targetFacsDoc = new FacsDocument( resourceEntry, parentEntry, this.imageViewContext, resource )
+                const {surfaces} = this.facs 
         
-        // add the moving surfaces to the target facs
-        for( const movingSurfaceIndex of movingSurfaces ) {
-            const movingSurface = surfaces[movingSurfaceIndex]
-            targetFacsDoc.facs.surfaces.push(movingSurface)
+                // add the moving surfaces to the target facs
+                for( const movingSurfaceIndex of movingSurfaces ) {
+                    const movingSurface = surfaces[movingSurfaceIndex]
+                    // TODO avoid ID collisions 
+                    // let nextSurfaceID = this.parentEntry ? idMap.nextSurfaceID(this.parentEntry.localID) : idMap.nextSurfaceID(this.resourceEntry.localID)
+                    targetFacsDoc.facs.surfaces.push(movingSurface)
+                }
+        
+                // remove the moving surfaces from this facs
+                const nextSurfaces = []
+                for( let i=0; i < surfaces.length; i++ ) {
+                    if( !movingSurfaces.includes(i) ) nextSurfaces.push(surfaces[i])
+                }
+                this.facs.surfaces = nextSurfaces
+        
+                // save the results
+                this.save()
+                targetFacsDoc.save()
+        
+                // stop listening
+                fairCopy.services.ipcRemoveListener('resourceOpened', resourceOpened )
+            }
         }
 
-        // remove the moving surfaces from this facs
-        const nextSurfaces = []
-        for( let i=0; i < surfaces.length; i++ ) {
-            if( !movingSurfaces.includes(i) ) nextSurfaces.push(surfaces[i])
-        }
-        this.facs.surfaces = nextSurfaces
-
-        // save the results
-        this.save()
-        targetFacsDoc.save()
+        // before we move things, we need to load the targetFacs
+        fairCopy.services.ipcRegisterCallback('resourceOpened', resourceOpened )
+        fairCopy.services.ipcSend('openResource', targetFacs.id )        
     }
 
     updateSurfaceInfo(surfaceInfo) {

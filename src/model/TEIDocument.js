@@ -273,11 +273,6 @@ export default class TEIDocument {
         return { vocabID, vocab } 
     }
 
-    requestResource( resourceID ) {
-        this.loading = true
-        fairCopy.services.ipcSend('openResource', resourceID )
-    }
-
     getActiveView() {
         // if the note editor is active, use it, otherwise use main view
         return this.noteEditorView ? this.noteEditorView : this.editorView
