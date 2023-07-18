@@ -192,12 +192,13 @@ export default class FacsDocument {
             if( resourceEntry.id === targetFacs.id ) {
                 const targetFacsDoc = new FacsDocument( resourceEntry, parentEntry, this.imageViewContext, resource )
                 const {surfaces} = this.facs 
-        
+                const { idMap } = this.imageViewContext
+                let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
+
                 // add the moving surfaces to the target facs
                 for( const movingSurfaceIndex of movingSurfaces ) {
                     const movingSurface = surfaces[movingSurfaceIndex]
-                    // TODO avoid ID collisions 
-                    // let nextSurfaceID = this.parentEntry ? idMap.nextSurfaceID(this.parentEntry.localID) : idMap.nextSurfaceID(this.resourceEntry.localID)
+                    movingSurface.id = generateOrdinalID('f',nextSurfaceID++)
                     targetFacsDoc.facs.surfaces.push(movingSurface)
                 }
         
