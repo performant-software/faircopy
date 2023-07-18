@@ -184,7 +184,7 @@ export default class FacsDocument {
         this.save()
     }
 
-    moveSurfaces( movingSurfaces, targetFacs ) {
+    moveSurfaces( movingSurfaces, targetFacs, onMoved ) {
         const resourceOpened = (e, resourceData) => {
             const { resourceEntry, parentEntry, resource } = resourceData
 
@@ -215,6 +215,8 @@ export default class FacsDocument {
         
                 // stop listening
                 fairCopy.services.ipcRemoveListener('resourceOpened', resourceOpened )
+
+                onMoved(true)
             }
         }
 

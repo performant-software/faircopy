@@ -675,9 +675,9 @@ export default class MainWindow extends Component {
             const onConfirmDeleteImages = ( alertOptions ) => {
                 this.setState({ ...this.state, alertDialogMode: 'confirmDeleteImages', alertOptions })
             }
-            const onMoveSurfaces = ( facsDocument, surfaces ) => {
-                const onMove = (movingItems, parentEntry)=>{ facsDocument.moveSurfaces( movingItems, parentEntry ) }
-                const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove }
+            const onMoveSurfaces = ( facsDocument, surfaces, onMoved ) => {
+                const onMove = (movingItems, parentEntry)=>{ facsDocument.moveSurfaces( movingItems, parentEntry, onMoved ) }
+                const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove, onMoved }
                 this.setState( {...this.state, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
             }
 

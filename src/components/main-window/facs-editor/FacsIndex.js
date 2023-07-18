@@ -54,8 +54,11 @@ export default class FacsIndex extends Component {
                             movingSurfaces.push(parseInt(surfaceIndex)) 
                         }
                     }
-                    this.setState({ ...this.state, checked: {}, allChecked: false })
-                    onMoveSurfaces( facsDocument, movingSurfaces )
+                    onMoveSurfaces( facsDocument, movingSurfaces, (moved) => {
+                        if(moved) {
+                            this.setState({ ...this.state, checked: {}, allChecked: false })
+                        }
+                    })
                 }
             },
             {

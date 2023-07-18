@@ -129,16 +129,21 @@ export default class MoveResourceDialog extends Component {
     }
 
     render() {      
-        const { onClose, movingItems } = this.props
+        const { onClose, onMoved, movingItems } = this.props
         const { targetID } = this.state
 
         const moveDisabled = (targetID === null)
+
+        const onClickClose = () => {
+            if( onMoved ) onMoved(false)
+            onClose()
+        }
 
         return (
             <Dialog
                 id="MoveResourceDialog"
                 open={true}
-                onClose={onClose}
+                onClose={onClickClose}
                 aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
@@ -149,7 +154,7 @@ export default class MoveResourceDialog extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" disabled={moveDisabled} color="primary" onClick={this.onClickMove} autoFocus>Move</Button>
-                    <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                    <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )
