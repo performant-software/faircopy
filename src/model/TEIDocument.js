@@ -124,30 +124,8 @@ export default class TEIDocument {
     }
 
     hasID = (targetID) => {       
-        const editorState = this.editorView.state
-        const {doc} = editorState
-        let found = false
-
-        // check to see if this ID exists in the parent resource
-        if( this.fairCopyProject.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
-    
-        const findID = (element) => {
-            const xmlID = element.attrs['xml:id']
-            if( targetID === xmlID ) {
-                found = true
-            }
-        }
-        
-        // gather up all xml:ids and their nodes/marks
-        doc.descendants((node) => {
-            if( findID(node) ) return false
-            for( const mark of node.marks ) {
-                if( findID(mark) ) return false
-            }        
-            return true
-        })
-
-        return found
+        const localID = this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
+        return this.fairCopyProject.hasID(targetID, localID) 
     }
 
     // called by dispatch transaction for every change to doc state

@@ -245,8 +245,8 @@ export default class FairCopyProject {
         fairCopy.services.ipcSend('updateProjectInfo', projectInfo )
     }
 
-    isUnique(targetID,localID, parentID) {
-        return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
+    hasID(xmlID, localID) {
+        return this.idMap.hasID(xmlID, localID)
     }
 
     areEditable = ( resourceEntries ) => {

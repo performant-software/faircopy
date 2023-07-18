@@ -104,9 +104,17 @@ export default class IDMap {
         return parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
     }
 
-    getResourceEntry(localID,parentID,xmlID) {
-        const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
-        return resourceMap ? resourceMap.ids[xmlID] : null
+    hasID(xmlID,localID) {
+        const resourceMap = this.idMap[localID]
+        const { resourceType, ids } = resourceMap
+        if( resourceType === 'teidoc' ) {
+            for( const childResourceMap of Object.values(ids) ) {
+                if( childResourceMap.ids[xmlID] ) return true
+            }
+            return false
+        } else {
+            return !!ids[xmlID]
+        }
     }    
 }
 

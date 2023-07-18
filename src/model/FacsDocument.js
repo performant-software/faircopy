@@ -103,19 +103,8 @@ export default class FacsDocument {
     }
 
     hasID = (targetID) => {       
-        const { surfaces } = this.facs
-
-        // check to see if this ID exists in the parent resource
-        if( this.imageViewContext.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
-
-        for( const surface of surfaces ) {
-            if(surface.id === targetID ) return true
-            for( const zone of surface.zones ) {
-                if(zone.id === targetID ) return true
-            }
-        }
-
-        return false
+        const localID = this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
+        return this.imageViewContext.hasID(targetID, localID) 
     }
 
     addLocalImages( imagesData ) {
