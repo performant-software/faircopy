@@ -16,7 +16,7 @@
     "dist": "electron-builder -ml --publish always",
     "build": "react-scripts build",
     "start": "react-scripts start",
-    "test": "react-scripts test"
+    "test": "jest"
   },
   "repository": "https://github.com/performant-software/faircopy",
   "keywords": [
@@ -80,7 +80,7 @@
   "build": {
     "appId": "com.performantsoftware.faircopy",
     "productName": "FairCopy",
-    "copyright": "Copyright © 2022 ${author}",
+    "copyright": "Copyright © 2023 ${author}",
     "files": [
       "build/**/*",
       "node_modules/**/*"

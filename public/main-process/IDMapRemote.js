@@ -92,6 +92,44 @@ class IDMapRemote {
         return JSON.stringify(this.idMapStaged)
     }
 
+
+    moveResourceMap( localID, oldLocalID, targetParentResource, oldParentResourceID ) {
+        const targetParentID = targetParentResource ? this.getLocalIDs(targetParentResource)?.localID : null
+        const oldParentID = oldParentResourceID ? this.getLocalIDs(oldParentResourceID)?.localID : null
+
+        // the resource map being moved
+        let resourceMap
+
+        // remove the resourceMap from the old parent, prefering latest state from idMapNext
+        if( oldParentID ) {
+            if( this.idMapNext[oldParentID] && this.idMapNext[oldParentID].ids[oldLocalID] ) {
+                resourceMap = this.idMapNext[oldParentID].ids[oldLocalID]
+                delete this.idMapNext[oldParentID].ids[oldLocalID]
+            } else {
+                resourceMap = this.idMapStaged[oldParentID].ids[oldLocalID]
+            }
+            delete this.idMapStaged[oldParentID].ids[oldLocalID]
+        } else {
+            if( this.idMapNext[oldLocalID] ) {
+                resourceMap = this.idMapNext[oldLocalID]
+                delete this.idMapNext[oldLocalID]
+            } else {
+                resourceMap = this.idMapStaged[oldLocalID]
+            }
+            delete this.idMapStaged[oldLocalID]
+        }  
+
+        // add it to the new parent
+        if( targetParentID ) {
+            if( !this.idMapStaged[targetParentID] ) this.idMapStaged[targetParentID] = this.copyParent( localID )
+            this.idMapStaged[targetParentID].ids[localID] = resourceMap
+        } else {
+            this.idMapStaged[localID] = resourceMap
+        }
+        
+        return JSON.stringify(this.idMapStaged)
+    }
+
     changeID( newID, oldID, parentID ) {
         // move the resource map on both editable layers to the new address
 

@@ -58,10 +58,12 @@ export default class IDMap {
         const resourceMap = this.idMap[localID]
         const { resourceType, ids } = resourceMap
         let highestID = -1
-        if( resourceType === 'teiDoc' ) {
-            for( const key of Object.keys(ids) ) {
-                const childLastID = this.getHighestFacsID(ids[key])
-                highestID = childLastID > highestID ? childLastID : highestID
+        if( resourceType === 'teidoc' ) {
+            for( const childResourceMap of Object.values(ids) ) {
+                if( childResourceMap.resourceType === 'facs' ) {
+                    const childLastID = getHighestFacsID(childResourceMap.ids)
+                    highestID = childLastID > highestID ? childLastID : highestID    
+                }
             }
         } else {
             highestID = getHighestFacsID(ids)
@@ -102,9 +104,17 @@ export default class IDMap {
         return parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
     }
 
-    getResourceEntry(localID,parentID,xmlID) {
-        const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
-        return resourceMap ? resourceMap.ids[xmlID] : null
+    hasID(xmlID,localID) {
+        const resourceMap = this.idMap[localID]
+        const { resourceType, ids } = resourceMap
+        if( resourceType === 'teidoc' ) {
+            for( const childResourceMap of Object.values(ids) ) {
+                if( childResourceMap.ids[xmlID] ) return true
+            }
+            return false
+        } else {
+            return !!ids[xmlID]
+        }
     }    
 }
 

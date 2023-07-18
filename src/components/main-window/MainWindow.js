@@ -71,6 +71,7 @@ export default class MainWindow extends Component {
             allResourcesCheckmarked: false,
             resourceCheckmarks: {},
             resourceIndex: [],
+            requestedResources: [],
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -111,16 +112,28 @@ export default class MainWindow extends Component {
 
     onResourceOpened = (event, resourceData) => {
         const { fairCopyProject } = this.props
-        const { openResources } = this.state
+        const { openResources, requestedResources } = this.state
         const { resourceEntry, parentEntry, resource } = resourceData
-        const doc = fairCopyProject.onResourceOpened(resourceEntry, parentEntry, resource)
-        if( doc ) {
-            const nextOpenResources = { ...openResources }
-            nextOpenResources[resourceEntry.id] = doc
-            this.setState( {
-                ...this.state, 
-                openResources: nextOpenResources,
-            })    
+
+        // if this is a resource we asked for, then open it. 
+        // (resources can also be asked for by FacsDocument, maybe others in future)
+        if( requestedResources.includes( resourceEntry.id ) ) {
+            const nextRequestedResources = requestedResources.filter( r => r === resourceEntry.id )
+            const doc = fairCopyProject.onResourceOpened(resourceEntry, parentEntry, resource)
+            if( doc ) {
+                const nextOpenResources = { ...openResources }
+                nextOpenResources[resourceEntry.id] = doc
+                this.setState( {
+                    ...this.state, 
+                    openResources: nextOpenResources,
+                    requestedResources: nextRequestedResources
+                })    
+            } else {
+                this.setState( {
+                    ...this.state, 
+                    requestedResources: nextRequestedResources
+                })
+            }
         }
     }
 
@@ -174,13 +187,13 @@ export default class MainWindow extends Component {
 
     onResourceEntryUpdated = (e, resourceEntry) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners({ resourceEntry })
+        fairCopyProject.notifyListeners( 'resourceEntryUpdated', resourceEntry)
         this.refreshWindow()
     }
 
     onResourceContentUpdated = (e, resourceUpdate) => {
         const { fairCopyProject } = this.props
-        fairCopyProject.notifyListeners(resourceUpdate)
+        fairCopyProject.notifyListeners( 'resourceContentUpdated', resourceUpdate)
         this.refreshWindow()
     }
 
@@ -249,15 +262,27 @@ export default class MainWindow extends Component {
         }
     }
 
+    isResourceOpen( resourceEntries ) {
+        const { openResources } = this.state
+        for( const resourceEntry of resourceEntries ) {
+            if( openResources[resourceEntry.id] ) {
+                return true
+            }
+        }
+        return false
+    }
+
     selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        const { openResources, selectedResource } = this.state
+        const { openResources, selectedResource, requestedResources } = this.state
 
         let nextSelection = resourceIDs[0]
         let change = (selectedResource !== nextSelection)
+        const nextRequestedResources = [ ...requestedResources ]
 
         for( const resourceID of resourceIDs ) {
-            if( !openResources[resourceID] ) {                
+            if( !openResources[resourceID] ) {      
+                nextRequestedResources.push(resourceID)
                 fairCopyProject.openResource(resourceID)
             }    
         }
@@ -267,6 +292,7 @@ export default class MainWindow extends Component {
                 ...this.state,
                 selectedResource: nextSelection,
                 resourceBrowserOpen: false, 
+                requestedResources: nextRequestedResources,
                 currentSubmenuID: 0,
                 searchSelectionIndex: 0,
                 popupMenuOptions: null, 
@@ -283,6 +309,7 @@ export default class MainWindow extends Component {
             this.setState( {
                 ...this.state, 
                 resourceBrowserOpen: false, 
+                requestedResources: nextRequestedResources,
                 popupMenuOptions: null, 
                 popupMenuAnchorEl: null,
                 popupMenuPlacement: null
@@ -549,7 +576,16 @@ export default class MainWindow extends Component {
                 }
                 break
             case 'move':
-                this.setState( {...nextState, moveResourceMode: true, moveResources: resourceEntries} )
+                if( this.isResourceOpen( resourceEntries ) ) {
+                    this.onAlertMessage("You must close open editor windows before moving a resource.")
+                } else if( resourceEntries.find( r => r.type === 'teidoc' ) ) {
+                    this.onAlertMessage("Cannot move TEIDocument type resources.")
+                } else {
+                    const { fairCopyProject } = this.props
+                    const onMove = (movingItems, parentEntry)=>{ fairCopyProject.moveResources( movingItems, parentEntry ) }
+                    const moveResourceProps = { resourceType: 'teidoc', allowRoot: true, movingItems: resourceEntries, onMove }
+                    this.setState( {...nextState, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
+                }
                 break
             case 'save':
                 this.saveResources(resourceIDs)
@@ -639,6 +675,11 @@ export default class MainWindow extends Component {
             const onConfirmDeleteImages = ( alertOptions ) => {
                 this.setState({ ...this.state, alertDialogMode: 'confirmDeleteImages', alertOptions })
             }
+            const onMoveSurfaces = ( facsDocument, surfaces, onMoved ) => {
+                const onMove = (movingItems, parentEntry)=>{ facsDocument.moveSurfaces( movingItems, parentEntry, onMoved ) }
+                const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove, onMoved }
+                this.setState( {...this.state, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
+            }
 
             // bump state to update sidebar
             const onErrorCountChange = () => { this.setState({...this.state})}
@@ -649,8 +690,6 @@ export default class MainWindow extends Component {
                         key={key}
                         hidden={hidden}
                         teiDocument={resource}
-                        resourceEntry={resourceEntry}
-                        parentResource={parentEntry}
                         onOpenElementMenu={this.onOpenElementMenu}
                         onProjectSettings={onProjectSettings}
                         onDragElement={this.onDragElement}
@@ -677,6 +716,7 @@ export default class MainWindow extends Component {
                         onAddImages={this.onAddImages}
                         onOpenPopupMenu={this.onOpenPopupMenu}
                         onConfirmDeleteImages={onConfirmDeleteImages}
+                        onMoveSurfaces={onMoveSurfaces}
                         onEditSurfaceInfo={this.onEditSurfaceInfo}
                         currentView={currentView}
                     ></FacsEditor>
@@ -747,7 +787,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, moveResources, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
         const { idMap, serverURL } = fairCopyProject
@@ -827,10 +867,8 @@ export default class MainWindow extends Component {
                     onDrop={()=>{ this.setState( {...this.state, dragInfo: null, draggingElementActive: false} )}}
                 ></EditorDraggingElement> }
                 { moveResourceMode && <MoveResourceDialog
-                    resourceEntries={moveResources}
-                    fairCopyProject={fairCopyProject}
-                    closeResources={this.closeResources}
-                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResources: null} )}}
+                    { ...moveResourceProps }
+                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceProps: null} )}}
                 ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}

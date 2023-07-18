@@ -20,22 +20,34 @@ export default class FacsDocument {
         this.load(resourceData)
     }
 
-    onResourceUpdated = ( resource ) => {
-        if( resource.resourceEntry ) {
-            const { resourceEntry } = resource
-            if( resourceEntry.id === this.resourceEntry.id ) {
-                this.resourceEntry = resourceEntry
-                this.resourceID = resourceEntry.id
-                this.resourceType = resourceEntry.type    
+    onResourceUpdated = ( eventType, resource ) => {
+        let changed = false
+        if( eventType === 'resourceEntryUpdated' ) {
+            const { id: targetResourceID } = resource
+            if( this.resourceID === targetResourceID ) {
+                this.resourceEntry = resource
+                this.resourceID = this.resourceEntry.id  
+                this.resourceType = this.resourceEntry.type
+                changed = true
             }
-            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
-                this.parentEntry = resourceEntry
-            }    
+            if( this.parentEntry && this.parentEntry.id === targetResourceID ) {
+                this.parentEntry = resource
+                changed = true
+            }
+        } else if( eventType === 'resourceContentUpdated' ) {
+            const { resourceID: targetResourceID, resourceContent, messageID } = resource
+            // ignore content messages from yourself
+            if( targetResourceID === this.resourceID && messageID !== this.lastMessageID ) {
+                this.load(resourceContent)
+                changed = true
+            }
         }
-        // load updated content if it is from a different source
-        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && resource.messageID !== this.lastMessageID ) {
-            const { resourceContent } = resource
-            this.load(resourceContent)
+
+        // communicate to the views that something has changed
+        if( changed ) {
+            for( const listener of this.updateListeners ) {
+                listener()
+            }
         }
     }
 
@@ -45,14 +57,6 @@ export default class FacsDocument {
 
     isRemote() {
         return this.imageViewContext.remote
-    }
-
-    // Called when document is updated by a different window process
-    onResourceUpdated(resourceData) {
-        this.load(resourceData)
-        for( const listener of this.updateListeners ) {
-            listener()
-        }
     }
 
     addUpdateListener(listener) {
@@ -77,11 +81,6 @@ export default class FacsDocument {
         return null
     }
 
-    requestResource( resourceID ) {
-        fairCopy.services.ipcSend('openResource', resourceID )
-        this.loading = true
-    }
-
     // Next zone ID in format: <surfaceID>_z<next zone number>
     nextZoneID(surfaceID) {
         const surface = this.getSurface( this.getIndex(surfaceID) )
@@ -104,19 +103,8 @@ export default class FacsDocument {
     }
 
     hasID = (targetID) => {       
-        const { surfaces } = this.facs
-
-        // check to see if this ID exists in the parent resource
-        if( this.imageViewContext.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
-
-        for( const surface of surfaces ) {
-            if(surface.id === targetID ) return true
-            for( const zone of surface.zones ) {
-                if(zone.id === targetID ) return true
-            }
-        }
-
-        return false
+        const localID = this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
+        return this.imageViewContext.hasID(targetID, localID) 
     }
 
     addLocalImages( imagesData ) {
@@ -183,6 +171,47 @@ export default class FacsDocument {
         }
         this.facs.surfaces = nextSurfaces
         this.save()
+    }
+
+    moveSurfaces( movingSurfaces, targetFacs, onMoved ) {
+        const resourceOpened = (e, resourceData) => {
+            const { resourceEntry, parentEntry, resource } = resourceData
+
+            // make sure this is the document we are waiting for
+            if( resourceEntry.id === targetFacs.id ) {
+                const targetFacsDoc = new FacsDocument( resourceEntry, parentEntry, this.imageViewContext, resource )
+                const {surfaces} = this.facs 
+                const { idMap } = this.imageViewContext
+                let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
+
+                // add the moving surfaces to the target facs
+                for( const movingSurfaceIndex of movingSurfaces ) {
+                    const movingSurface = surfaces[movingSurfaceIndex]
+                    movingSurface.id = generateOrdinalID('f',nextSurfaceID++)
+                    targetFacsDoc.facs.surfaces.push(movingSurface)
+                }
+        
+                // remove the moving surfaces from this facs
+                const nextSurfaces = []
+                for( let i=0; i < surfaces.length; i++ ) {
+                    if( !movingSurfaces.includes(i) ) nextSurfaces.push(surfaces[i])
+                }
+                this.facs.surfaces = nextSurfaces
+        
+                // save the results
+                this.save()
+                targetFacsDoc.save()
+        
+                // stop listening
+                fairCopy.services.ipcRemoveListener('resourceOpened', resourceOpened )
+
+                onMoved(true)
+            }
+        }
+
+        // before we move things, we need to load the targetFacs
+        fairCopy.services.ipcRegisterCallback('resourceOpened', resourceOpened )
+        fairCopy.services.ipcSend('openResource', targetFacs.id )        
     }
 
     updateSurfaceInfo(surfaceInfo) {

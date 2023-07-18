@@ -38,31 +38,51 @@ export default class FacsIndex extends Component {
     }
 
     onOpenActionMenu = (anchorEl) => {    
-        const { onOpenPopupMenu, onConfirmDeleteImages } = this.props
+        const { onOpenPopupMenu, onConfirmDeleteImages, onMoveSurfaces } = this.props
         
         const menuOptions = [
-          {
-            id: 'delete',
-            label: 'Delete',
-            action: () => {
-                const doomedSurfaces = []
-                const { checked } = this.state
-                for( const surfaceIndex of Object.keys(checked) ) {
-                    if( checked[surfaceIndex] ) {
-                        doomedSurfaces.push(parseInt(surfaceIndex)) 
-                    }
-                }
+            {
+                id: 'move',
+                label: 'Move',
+                action: () => {
+                    const { facsDocument } = this.props
 
-                const surfaceCount = doomedSurfaces.length
-                const { facsDocument } = this.props
-                const onDelete = () => {
-                    facsDocument.deleteSurfaces(doomedSurfaces)
-                    this.setState({ ...this.state, checked: {}, allChecked: false })    
+                    const movingSurfaces = []
+                    const { checked } = this.state
+                    for( const surfaceIndex of Object.keys(checked) ) {
+                        if( checked[surfaceIndex] ) {
+                            movingSurfaces.push(parseInt(surfaceIndex)) 
+                        }
+                    }
+                    onMoveSurfaces( facsDocument, movingSurfaces, (moved) => {
+                        if(moved) {
+                            this.setState({ ...this.state, checked: {}, allChecked: false })
+                        }
+                    })
                 }
-                onConfirmDeleteImages({ onDelete, surfaceCount })
-                return true
+            },
+            {
+                id: 'delete',
+                label: 'Delete',
+                action: () => {
+                    const doomedSurfaces = []
+                    const { checked } = this.state
+                    for( const surfaceIndex of Object.keys(checked) ) {
+                        if( checked[surfaceIndex] ) {
+                            doomedSurfaces.push(parseInt(surfaceIndex)) 
+                        }
+                    }
+
+                    const surfaceCount = doomedSurfaces.length
+                    const { facsDocument } = this.props
+                    const onDelete = () => {
+                        facsDocument.deleteSurfaces(doomedSurfaces)
+                        this.setState({ ...this.state, checked: {}, allChecked: false })    
+                    }
+                    onConfirmDeleteImages({ onDelete, surfaceCount })
+                    return true
+                }
             }
-          }
         ]
         onOpenPopupMenu(menuOptions, anchorEl)
     }
