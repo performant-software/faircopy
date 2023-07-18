@@ -200,7 +200,7 @@ class FairCopySession {
 
     requestLocalResources() {
         const localResources = this.projectStore.getLocalResources()
-        this.fairCopyApplication.sendToMainWindow('localResources', localResources )
+        this.fairCopyApplication.sendToAllWindows('localResources', localResources )
     }
 
     sendResourceViewUpdate(resourceView, remoteResources) {
@@ -297,7 +297,7 @@ class FairCopySession {
                 // at the moment, only image views use xmlID
                 this.openImageView( { xmlID, resourceEntry, parentEntry, resource } )
             } else {
-                this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
+                this.fairCopyApplication.sendToAllWindows('resourceOpened', { resourceEntry, parentEntry, resource } )
                 log.info(`opened resourceID: ${resourceEntry.id}`)            
             }
         }

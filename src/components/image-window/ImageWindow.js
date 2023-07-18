@@ -6,6 +6,7 @@ import AddImageDialog from '../main-window/dialogs/AddImageDialog'
 import PopupMenu from '../common/PopupMenu'
 import AlertDialog from '../main-window/dialogs/AlertDialog'
 import EditSurfaceInfoDialog from '../main-window/dialogs/EditSurfaceInfoDialog'
+import MoveResourceDialog from '../main-window/dialogs/MoveResourceDialog'
 
 export default class ImageWindow extends Component {
 
@@ -65,6 +66,12 @@ export default class ImageWindow extends Component {
         this.setState( {...this.state, surfaceInfo: surfaceInfo, editSurfaceInfoMode: true} )
     }
 
+    onMoveSurfaces = ( facsDocument, surfaces, onMoved ) => {
+        const onMove = (movingItems, parentEntry)=>{ facsDocument.moveSurfaces( movingItems, parentEntry, onMoved ) }
+        const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove, onMoved }
+        this.setState( {...this.state, moveResourceMode: true, moveResourceProps } )
+    }
+
     onSaveSurfaceInfo = (surfaceInfo) => {
         const { imageView } = this.props
         imageView.facsDocument.updateSurfaceInfo(surfaceInfo)
@@ -96,7 +103,7 @@ export default class ImageWindow extends Component {
 
         if(!imageView || imageView.facsDocument.loading ) return null
         const { facsDocument, resourceEntry, parentEntry, idMap, startingID } = imageView
-        const { editDialogMode, addImagesMode, popupMenuAnchorEl, popupMenuOptions, surfaceInfo, editSurfaceInfoMode } = this.state
+        const { editDialogMode, addImagesMode, popupMenuAnchorEl, moveResourceMode, moveResourceProps, popupMenuOptions, surfaceInfo, editSurfaceInfoMode } = this.state
 
         const startIndex = facsDocument.getIndex(startingID)
 
@@ -111,6 +118,7 @@ export default class ImageWindow extends Component {
                     onOpenPopupMenu={this.onOpenPopupMenu}
                     onConfirmDeleteImages={this.onConfirmDeleteImages}
                     onEditSurfaceInfo={this.onEditSurfaceInfo}
+                    onMoveSurfaces={this.onMoveSurfaces}
                     startIndex={startIndex}
                     windowed={true}
                 ></FacsEditor>
@@ -127,6 +135,10 @@ export default class ImageWindow extends Component {
                     facsDocument={imageView.facsDocument}
                     onClose={()=>{ this.setState( {...this.state, addImagesMode: false} )}}
                 ></AddImageDialog> }
+                { moveResourceMode && <MoveResourceDialog
+                    { ...moveResourceProps }
+                    onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceProps: null, popupMenuOptions: null, popupMenuAnchorEl: null} )}}
+                ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
                     menuOptions={popupMenuOptions}
                     anchorEl={popupMenuAnchorEl}
