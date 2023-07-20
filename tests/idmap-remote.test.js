@@ -6,55 +6,76 @@ describe('Exercise the functions of the IDMapRemote module', () => {
     const onUpdate = jest.fn();
     const idMap = new IDMapRemote("{}", onUpdate) 
     
-    const parentResourceID = uuidv4()
-    // create a facs with stuff in it and add it to the parent
-    // add a second copy to the parent
     const imagesResourceMap = getBlankResourceMap(uuidv4(), 'facs')
     imagesResourceMap.ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
     imagesResourceMap.ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
     const transcriptionResourceMap = getBlankResourceMap(uuidv4(), 'text')
     transcriptionResourceMap.ids['div-a'] = { type: 'text', useCount: 1 }
     transcriptionResourceMap.ids['div-b'] = { type: 'text', useCount: 1 }
+    const translationResourceMap = getBlankResourceMap(uuidv4(), 'text')
+    const parentResourceEntry = {
+        id: uuidv4(),
+        localID: 'testDoc',
+        name: 'testDoc', 
+        type: 'teidoc',
+        parentResource: null,
+        local: true,
+        deleted: false,
+        gitHeadRevision: null,
+        lastAction: null
+    }
+    const parentResourceMap = getBlankResourceMap(parentResourceEntry.id, parentResourceEntry.type)
 
     test('test addResource', () => {
-        idMap.addResource( 'testDoc', null, getBlankResourceMap(parentResourceID, 'teidoc'))
-        idMap.addResource( 'images', 'testDoc', imagesResourceMap )
-        idMap.addResource( 'transcription', 'testDoc', transcriptionResourceMap )
-        idMap.sendIDMapUpdate() 
-    
-        // expect(onUpdate).toHaveBeenCalled()
+        idMap.addResource( parentResourceEntry.localID, null, parentResourceMap)
+        idMap.addResource( 'images', parentResourceEntry.localID, imagesResourceMap )
+        idMap.addResource( 'transcription', parentResourceEntry.localID, transcriptionResourceMap )
+        idMap.addResource( 'franslation', parentResourceEntry.localID, translationResourceMap )
+        idMap.sendIDMapUpdate()
+
         expect(Object.keys(idMap.idMap).length).toBe(1)
-        expect(Object.keys(idMap.idMap['testDoc'].ids).length).toBe(2)
+        expect(Object.keys(idMap.idMap['testDoc'].ids).length).toBe(3)
     })
 
     test('test removeResources', () => {
         idMap.removeResources([ transcriptionResourceMap.resourceID ])
-        idMap.sendIDMapUpdate()
 
-        // expect(onUpdate).toHaveBeenCalledTimes(2)
         expect(Object.keys(idMap.idMap).length).toBe(1)
-        expect(Object.keys(idMap.idMap['testDoc'].ids).length).toBe(1)
+        expect(Object.keys(idMap.idMap['testDoc'].ids['transcription']).deleted)
     })
 
     test('test recoverResources', () => {
-        idMap.removeResources([ transcriptionResourceMap.resourceID ])
-        idMap.sendIDMapUpdate() 
+        idMap.recoverResources([ transcriptionResourceMap.resourceID ])
 
-        // expect(onUpdate).toHaveBeenCalledTimes(3)
         expect(Object.keys(idMap.idMap).length).toBe(1)
-        expect(Object.keys(idMap.idMap['testDoc'].ids).length).toBe(2)
+        expect(Object.keys(idMap.idMap['testDoc'].ids['transcription']).deleted).not
     })
 
     test('test changeID', () => {
-        // TODO
+        idMap.changeID( 'translation', 'franslation', 'testDoc' )
+        idMap.changeID( 'testDocument', 'testDoc' )
+        parentResourceEntry.localID = 'testDocument'
+        idMap.sendIDMapUpdate()
+
+        expect(!!Object.keys(idMap.idMap['testDocument'].ids['translation']))
     })
 
     test('test moveResourceMap', () => {
-        // TODO
+        idMap.moveResourceMap( 'translation2', 'translation', null, parentResourceMap.resourceID )
+        idMap.sendIDMapUpdate() 
+
+        expect(Object.keys(idMap.idMap).length).toBe(2)
+        expect(Object.keys(idMap.idMap['testDocument'].ids).length).toBe(2)
+        expect(!!Object.keys(idMap.idMap['translation2']))
     })
 
     test('test checkIn', () => {
         // TODO
+        // idMap.checkIn([parentResourceEntry])
+
+        // expect(Object.keys(idMap.idMap).length).toBe(2)
+        // expect(Object.keys(idMap.idMap['testDocument'].ids).length).toBe(2)
+        // expect(!!Object.keys(idMap.idMap['translation2']))
     })
 
     test('test checkOut', () => {
