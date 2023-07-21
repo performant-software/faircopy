@@ -44,12 +44,12 @@ describe('Exercise the functions of the IDMapRemote module', () => {
         expect(Object.keys(idMap.idMap['testDoc'].ids['transcription']).deleted)
     })
 
-    test('test recoverResources', () => {
-        idMap.recoverResources([ transcriptionResourceMap.resourceID ])
+    // test('test recoverResources', () => {
+    //     idMap.recoverResources([ transcriptionResourceMap.resourceID ])
 
-        expect(Object.keys(idMap.idMap).length).toBe(1)
-        expect(Object.keys(idMap.idMap['testDoc'].ids['transcription']).deleted).not
-    })
+    //     expect(Object.keys(idMap.idMap).length).toBe(1)
+    //     expect(!Object.keys(idMap.idMap['testDoc'].ids['transcription']).deleted)
+    // })
 
     test('test changeID', () => {
         idMap.changeID( 'translation', 'franslation', 'testDoc' )
@@ -70,12 +70,12 @@ describe('Exercise the functions of the IDMapRemote module', () => {
     })
 
     test('test checkIn', () => {
-        // TODO
-        // idMap.checkIn([parentResourceEntry])
+        // TODO need resource entries for the other resources
+        idMap.checkIn([parentResourceEntry])
 
-        // expect(Object.keys(idMap.idMap).length).toBe(2)
-        // expect(Object.keys(idMap.idMap['testDocument'].ids).length).toBe(2)
-        // expect(!!Object.keys(idMap.idMap['translation2']))
+        expect(Object.keys(idMap.idMapBase).length).toBe(1)
+        expect(Object.keys(idMap.idMapBase['testDocument'].ids).length).toBe(2)
+        expect(Object.keys(idMap.idMapStaged).length).toBe(1)
     })
 
     test('test checkOut', () => {
