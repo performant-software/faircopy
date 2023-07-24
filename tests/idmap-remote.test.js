@@ -37,6 +37,7 @@ describe('Exercise the functions of the IDMapRemote module', () => {
         idMap.changeID( 'translation', 'franslation', 'testDoc' )
         idMap.changeID( 'testDocument', 'testDoc' )
         resourceEntries['parent'].localID = 'testDocument'
+        resourceEntries['translation'].localID = 'translation'
         idMap.sendIDMapUpdate()
 
         expect(!!Object.keys(idMap.idMap['testDocument'].ids['translation']))
@@ -44,6 +45,8 @@ describe('Exercise the functions of the IDMapRemote module', () => {
 
     test('test moveResourceMap', () => {
         idMap.moveResourceMap( 'translation2', 'translation', null, resourceMaps['parent'].resourceID )
+        resourceEntries['translation'].localID = 'translation2'
+        resourceEntries['translation'].parentResource = null
         idMap.sendIDMapUpdate() 
 
         expect(Object.keys(idMap.idMap).length).toBe(2)
@@ -52,15 +55,24 @@ describe('Exercise the functions of the IDMapRemote module', () => {
     })
 
     test('test checkIn', () => {
-        idMap.checkIn(Object.values(resourceEntries))
+        idMap.checkIn([ resourceEntries['transcription'] ])
 
         expect(Object.keys(idMap.idMapBase).length).toBe(1)
-        expect(Object.keys(idMap.idMapBase['testDocument'].ids).length).toBe(2)
-        expect(Object.keys(idMap.idMapStaged).length).toBe(1)
+        expect(Object.keys(idMap.idMapBase['testDocument'].ids).length).toBe(1)
+        expect(Object.keys(idMap.idMapStaged).length).toBe(2)
     })
 
-    test('test checkOut', () => {
-        // TODO
+    test('test checkOut and commit', () => {
+        const resourceEntry = resourceEntries['transcription']
+        const parentEntry = resourceEntries['parent']
+        const checkOutResults = { 'transcription': { state: 'success', resourceEntry, parentEntry, content: ""} }
+        idMap.checkOut(checkOutResults)
+        idMap.setResourceMap( resourceMaps['transcription'], resourceEntry.localID, parentEntry.localID )
+        idMap.commitResource( resourceEntry.localID, parentEntry.localID )
+
+        expect(Object.keys(idMap.idMapBase).length).toBe(1)
+        expect(Object.keys(idMap.idMapBase['testDocument'].ids).length).toBe(1)
+        expect(Object.keys(idMap.idMapStaged).length).toBe(2)       
     })
 
     test('test commitResource', () => {
@@ -69,13 +81,13 @@ describe('Exercise the functions of the IDMapRemote module', () => {
 })
 
 
-function createResourceEntry( localID, name, type ) {
+function createResourceEntry( localID, name, type, parentResource ) {
     return {
         id: uuidv4(),
         localID,
         name, 
         type,
-        parentResource: null,
+        parentResource,
         local: true,
         deleted: false,
         gitHeadRevision: null,
@@ -86,21 +98,22 @@ function createResourceEntry( localID, name, type ) {
 function createResourceTestData() {
     const resourceEntries = {}, resourceMaps = {}
 
+    resourceEntries['parent'] = createResourceEntry( 'testDoc', 'testDoc', 'teidoc', null )
+    const parentResourceID = resourceEntries['parent'].id
+    resourceMaps['parent'] = getBlankResourceMap( parentResourceID, 'teidoc')
+
     resourceMaps['images'] = getBlankResourceMap(uuidv4(), 'facs')
     resourceMaps['images'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
     resourceMaps['images'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
-    resourceEntries['images'] = createResourceEntry( 'images', 'images', 'facs' )
+    resourceEntries['images'] = createResourceEntry( 'images', 'images', 'facs', parentResourceID )
     
     resourceMaps['transcription'] = getBlankResourceMap(uuidv4(), 'text')
     resourceMaps['transcription'].ids['div-a'] = { type: 'text', useCount: 1 }
     resourceMaps['transcription'].ids['div-b'] = { type: 'text', useCount: 1 }
-    resourceEntries['transcription'] = createResourceEntry( 'transcription', 'transcription', 'text' )
+    resourceEntries['transcription'] = createResourceEntry( 'transcription', 'transcription', 'text', parentResourceID )
     
     resourceMaps['translation'] = getBlankResourceMap(uuidv4(), 'text')
-    resourceEntries['translation'] = createResourceEntry( 'translation', 'translation', 'text' )
-    
-    resourceEntries['parent'] = createResourceEntry( 'testDoc', 'testDoc', 'teidoc' )
-    resourceMaps['parent'] = getBlankResourceMap(resourceEntries['parent'].id, 'teidoc')
-    
+    resourceEntries['translation'] = createResourceEntry( 'translation', 'franslation', 'text', parentResourceID )
+        
     return { resourceEntries, resourceMaps }
 }
