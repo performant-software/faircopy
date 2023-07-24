@@ -74,6 +74,23 @@ describe('Exercise the functions of the IDMapRemote module', () => {
         expect(Object.keys(idMap.idMapBase['testDocument'].ids).length).toBe(1)
         expect(Object.keys(idMap.idMapStaged).length).toBe(2)       
     })
+
+    // while processing the checkIn results from a child resource deletion, the child resource is not in the idMapStaged map. The child resource is a facs type. 
+    // The parent resource is checked in, the child that was deleted was replaced with a new child with the 
+    // same localID.
+    
+    test('test bug', () => {
+        const resourceEntry = resourceEntries['images']
+        const { localID: parentLocalID } = resourceEntries['parent']
+        
+        idMap.addResource( 'images2', parentLocalID, resourceMaps['images2'] )
+        idMap.removeResources([ resourceEntry.id ])
+        idMap.changeID('images','images2', parentLocalID)
+        // idMap.commitResource('images',parentLocalID)
+        resourceEntries['images2'].localID = 'images'
+        idMap.checkIn([ resourceEntries['images2'] ])
+        expect(Object.keys(idMap.idMapBase).length).toBe(1)
+    })
 })
 
 
@@ -100,9 +117,12 @@ function createResourceTestData() {
 
     resourceMaps['images'] = getBlankResourceMap(uuidv4(), 'facs')
     resourceMaps['images'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
-    resourceMaps['images'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
     resourceEntries['images'] = createResourceEntry( 'images', 'images', 'facs', parentResourceID )
-    
+ 
+    resourceMaps['images2'] = getBlankResourceMap(uuidv4(), 'facs')
+    resourceMaps['images2'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
+    resourceEntries['images2'] = createResourceEntry( 'images2', 'images2', 'facs', parentResourceID )
+ 
     resourceMaps['transcription'] = getBlankResourceMap(uuidv4(), 'text')
     resourceMaps['transcription'].ids['div-a'] = { type: 'text', useCount: 1 }
     resourceMaps['transcription'].ids['div-b'] = { type: 'text', useCount: 1 }
