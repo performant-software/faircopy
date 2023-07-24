@@ -74,10 +74,6 @@ describe('Exercise the functions of the IDMapRemote module', () => {
         expect(Object.keys(idMap.idMapBase['testDocument'].ids).length).toBe(1)
         expect(Object.keys(idMap.idMapStaged).length).toBe(2)       
     })
-
-    test('test commitResource', () => {
-        // TODO
-    })
 })
 
 
