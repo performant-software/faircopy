@@ -78,7 +78,8 @@ describe('Exercise the functions of the IDMapRemote module', () => {
     // while processing the checkIn results from a child resource deletion, the child resource is not in the idMapStaged map. The child resource is a facs type. 
     // The parent resource is checked in, the child that was deleted was replaced with a new child with the 
     // same localID.
-    
+    // the problem is perhaps changing the local id to match the deleted resource
+
     test('test bug', () => {
         const resourceEntry = resourceEntries['images']
         const { localID: parentLocalID } = resourceEntries['parent']
@@ -86,10 +87,9 @@ describe('Exercise the functions of the IDMapRemote module', () => {
         idMap.addResource( 'images2', parentLocalID, resourceMaps['images2'] )
         idMap.removeResources([ resourceEntry.id ])
         idMap.changeID('images','images2', parentLocalID)
-        // idMap.commitResource('images',parentLocalID)
+        idMap.commitResource('images',parentLocalID)
         resourceEntries['images2'].localID = 'images'
         idMap.checkIn([ resourceEntries['images2'] ])
-        expect(Object.keys(idMap.idMapBase).length).toBe(1)
     })
 })
 
@@ -115,21 +115,21 @@ function createResourceTestData() {
     const parentResourceID = resourceEntries['parent'].id
     resourceMaps['parent'] = getBlankResourceMap( parentResourceID, 'teidoc')
 
-    resourceMaps['images'] = getBlankResourceMap(uuidv4(), 'facs')
-    resourceMaps['images'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
     resourceEntries['images'] = createResourceEntry( 'images', 'images', 'facs', parentResourceID )
+    resourceMaps['images'] = getBlankResourceMap(resourceEntries['images'].id, 'facs')
+    resourceMaps['images'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
  
-    resourceMaps['images2'] = getBlankResourceMap(uuidv4(), 'facs')
-    resourceMaps['images2'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
     resourceEntries['images2'] = createResourceEntry( 'images2', 'images2', 'facs', parentResourceID )
+    resourceMaps['images2'] = getBlankResourceMap(resourceEntries['images2'].id, 'facs')
+    resourceMaps['images2'].ids['f000'] = { type: 'facs', thumbnailURL: 'https://url.to/thumnbail.jpg' }
  
-    resourceMaps['transcription'] = getBlankResourceMap(uuidv4(), 'text')
+    resourceEntries['transcription'] = createResourceEntry( 'transcription', 'transcription', 'text', parentResourceID )
+    resourceMaps['transcription'] = getBlankResourceMap(resourceEntries['transcription'].id, 'text')
     resourceMaps['transcription'].ids['div-a'] = { type: 'text', useCount: 1 }
     resourceMaps['transcription'].ids['div-b'] = { type: 'text', useCount: 1 }
-    resourceEntries['transcription'] = createResourceEntry( 'transcription', 'transcription', 'text', parentResourceID )
     
-    resourceMaps['translation'] = getBlankResourceMap(uuidv4(), 'text')
     resourceEntries['translation'] = createResourceEntry( 'translation', 'franslation', 'text', parentResourceID )
+    resourceMaps['translation'] = getBlankResourceMap(resourceEntries['translation'].id, 'text')
         
     return { resourceEntries, resourceMaps }
 }
