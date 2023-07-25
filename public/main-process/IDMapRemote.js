@@ -241,7 +241,7 @@ class IDMapRemote {
         // move resource map from draft form to authoritative
         if( parentID ) {
             if( !this.idMapStaged[parentID] ) this.idMapStaged[parentID] = this.copyParent(parentID,'idMapStaged') 
-            if( this.idMapStaged[parentID] && this.idMapNext[parentID] ) {
+            if( this.idMapStaged[parentID] && this.idMapNext[parentID] && this.idMapNext[parentID].ids[localID] ) {
                 this.idMapStaged[parentID].ids[localID] = this.idMapNext[parentID].ids[localID]
                 delete this.idMapNext[parentID].ids[localID]     
             }
