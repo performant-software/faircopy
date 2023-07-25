@@ -75,21 +75,12 @@ describe('Exercise the functions of the IDMapRemote module', () => {
         expect(Object.keys(idMap.idMapStaged).length).toBe(2)       
     })
 
-    // while processing the checkIn results from a child resource deletion, the child resource is not in the idMapStaged map. The child resource is a facs type. 
-    // The parent resource is checked in, the child that was deleted was replaced with a new child with the 
-    // same localID.
-    // the problem is perhaps changing the local id to match the deleted resource
-
-    test('test bug', () => {
-        const resourceEntry = resourceEntries['images']
-        const { localID: parentLocalID } = resourceEntries['parent']
-        
-        idMap.addResource( 'images2', parentLocalID, resourceMaps['images2'] )
-        idMap.removeResources([ resourceEntry.id ])
-        idMap.changeID('images','images2', parentLocalID)
+    // while processing the checkIn results from a child resource deletion, the child resource 
+    // is not in the idMapStaged map. The child resource is a facs type. 
+    test('test committing a resource that has no changes', () => {
+        const { localID: parentLocalID } = resourceEntries['parent']        
         idMap.commitResource('images',parentLocalID)
-        resourceEntries['images2'].localID = 'images'
-        idMap.checkIn([ resourceEntries['images2'] ])
+        expect(idMap.idMapStaged['testDocument'].ids['images']).not.toBe(undefined)
     })
 })
 
