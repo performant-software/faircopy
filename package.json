@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.1.9-dev.1",
+  "version": "1.1.9-dev.2",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -28,8 +28,8 @@
   "homepage": ".",
   "devDependencies": {
     "dotenv": "^8.2.0",
-    "electron": "^18.2.0",
-    "electron-builder": "^23.3.3",
+    "electron": "^25.5.0",
+    "electron-builder": "^23.6.0",
     "electron-notarize": "^1.2.1"
   },
   "dependencies": {
