@@ -81,7 +81,3 @@ When deploying to staging, in addition to the steps above, the `version` key in 
 In `public/main-process/config/dist-config.json`, the `devMode` key MUST be set to false. This hides disables any development and staging related functionality. 
 
 In `public/main-process/release-notes/latest.md`, the release notes should be updated to document any new features, functionality, and bug fixes. This file is displayed to the end user whenever the software is updated.
-
-Developer Notes (Last updated: 2/10/22)
------
-* We are presently stuck at JSZip 3.2.0 because the latest version doesn't work on Electron Renderer. 
