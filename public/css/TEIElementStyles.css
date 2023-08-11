@@ -9,13 +9,18 @@
     text-align:left;
 }
 
+[__error__ = "true"] {
+    border-bottom: dotted red;
+}
+
 /* Phrase level markup styling is based on information layers */
 [phraselvl = "true"] {
     border-bottom: dotted #0187a8;
 }
 
-[__error__ = "true"] {
-    border-bottom: dotted red;
+[phraselvl = "false"] {
+    margin: 0px;
+    display: block;
 }
 
 /* Leave blank space for structure elements that have no content */
@@ -27,8 +32,8 @@
 tei-textnode0, tei-textnode1, tei-textnode2, tei-textnode3, tei-textnode4, tei-textnode5, tei-textnode6, tei-textnode7, tei-textnode8, tei-textnode9, tei-textnode10,
 tei-textnode11, tei-textnode12, tei-textnode13, tei-textnode14, tei-textnode15, tei-textnode16, tei-textnode17, tei-textnode18, tei-textnode19, tei-textnode20 {
     display: block;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .inline-node {
