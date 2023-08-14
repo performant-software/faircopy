@@ -29,10 +29,11 @@
   "devDependencies": {
     "dotenv": "^8.2.0",
     "electron": "^25.5.0",
-    "electron-builder": "^23.6.0",
-    "electron-notarize": "^1.2.1"
+    "electron-builder": "^24.6.3",
+    "@electron/notarize": "^2.1.0"
   },
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.53",
