@@ -9,6 +9,7 @@
 
 #ProjectNavigator .tree-item-name {
     margin-left: 10px;
+    padding-right: 10px;
     display: inline-block;
     width: 100%;
 }
