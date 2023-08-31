@@ -6,6 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Button, Icon, Typography, Chip, Tooltip } from '@material-ui/core';
 import { getResourceIcon } from '../../model/resource-icon';
+import { ellipsis } from '../../model/ellipsis'
 
 
 export default class ProjectNavigator extends Component {
@@ -48,7 +49,9 @@ export default class ProjectNavigator extends Component {
     }
 
     renderTreeItemLabel(resourceName, resourceID, errorCount) {
-      const { onCloseResource } = this.props
+      const { onCloseResource, panelWidth } = this.props
+      const maxLength = (panelWidth-170)/10 
+      const resourceNameElided = ellipsis( resourceName, maxLength )
 
       const onClick = (event) => {
         onCloseResource(resourceID)
@@ -57,7 +60,7 @@ export default class ProjectNavigator extends Component {
 
       return (
         <div className='tree-item'>
-          <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceName}</Typography>
+          <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceNameElided}</Typography>
           { this.renderStatusChip(errorCount) }
           <Tooltip title="Close resource">
             <Button 
