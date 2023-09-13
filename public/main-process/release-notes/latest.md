@@ -2,6 +2,19 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.9
+
+### Improvements
+
+* Users can now move images between facsimiles
+* Move Resource function is restored and now works for remote projects
+
+### Bug Fixes
+
+* Long filenames obscure close button
+* Limit autocomplete of TEI Pointers to current document
+* Fixed intermittent error when checking out resources in remote projects
+
 ## Version 1.1.8
 
 ### Bug Fixes

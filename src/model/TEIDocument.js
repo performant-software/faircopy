@@ -50,24 +50,26 @@ export default class TEIDocument {
         this.changedSinceLastSave = false
     }
 
-    onResourceUpdated = ( resource ) => {
-        if( resource.resourceEntry ) {
-            const { resourceEntry } = resource
-            if( resourceEntry.id === this.resourceEntry.id ) {
-                this.resourceEntry = resourceEntry
-                this.resourceID = resourceEntry.id
-                this.resourceType = resourceEntry.type    
+    onResourceUpdated = ( eventType, resource ) => {
+        if( eventType === 'resourceEntryUpdated' ) {
+            const { id: targetResourceID } = resource
+            if( this.resourceID === targetResourceID ) {
+                this.resourceEntry = resource
+                this.resourceID = this.resourceEntry.id  
+                this.resourceType = this.resourceEntry.type    
             }
-            if( this.parentEntry && resourceEntry.id === this.parentEntry.id ) {
-                this.parentEntry = resourceEntry
-            }    
+            if( this.parentEntry && this.parentEntry.id === targetResourceID ) {
+                this.parentEntry = resource
+            }
         }
-        // load updated content if we are in read only mode
-        if( resource.resourceContent && resource.resourceID === this.resourceEntry.id && !this.isEditable() ) {
-            // TODO make this work
-            // const { resourceContent } = resource
-            // this.load(resourceContent)
-        }
+        // TODO right now this only works for FacsDocument, make it work here too
+        // else if( eventType === 'resourceContentUpdated' ) {
+            // load updated content if we are in read only mode
+            // if( !this.isEditable() ) {
+                // const { resourceContent } = resource
+                // this.load(resourceContent)
+            // }
+        // }
     }
 
     isEditable() {
@@ -122,30 +124,8 @@ export default class TEIDocument {
     }
 
     hasID = (targetID) => {       
-        const editorState = this.editorView.state
-        const {doc} = editorState
-        let found = false
-
-        // check to see if this ID exists in the parent resource
-        if( this.fairCopyProject.isUnique(targetID, this.resourceEntry.localID, this.parentEntry?.localID) ) return true 
-    
-        const findID = (element) => {
-            const xmlID = element.attrs['xml:id']
-            if( targetID === xmlID ) {
-                found = true
-            }
-        }
-        
-        // gather up all xml:ids and their nodes/marks
-        doc.descendants((node) => {
-            if( findID(node) ) return false
-            for( const mark of node.marks ) {
-                if( findID(mark) ) return false
-            }        
-            return true
-        })
-
-        return found
+        const localID = this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
+        return this.fairCopyProject.hasID(targetID, localID) 
     }
 
     // called by dispatch transaction for every change to doc state
@@ -269,11 +249,6 @@ export default class TEIDocument {
         const vocabID = fairCopyConfig.elements[elementName].attrState[attrName].vocabID
         const vocab = ( vocabID && fairCopyConfig.vocabs[vocabID]) ? fairCopyConfig.vocabs[vocabID] : []
         return { vocabID, vocab } 
-    }
-
-    requestResource( resourceID ) {
-        this.loading = true
-        fairCopy.services.ipcSend('openResource', resourceID )
     }
 
     getActiveView() {

@@ -60,8 +60,8 @@ export default class ImageView {
         }
     }
 
-    isUnique(targetID,localID, parentID) {
-        return ( this.idMap.getResourceEntry(localID,parentID,targetID) === null )
+    hasID(xmlID, localID) {
+        return this.idMap.hasID(xmlID, localID)
     }
 
     addUpdateListener(listener) {

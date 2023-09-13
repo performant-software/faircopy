@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Typography } from '@material-ui/core'
 import { IconButton, Tooltip } from '@material-ui/core'
 import { inlineRingSpinner } from '../common/ring-spinner'
+import { ellipsis } from '../../model/ellipsis'
 
 const maxTitleLength = 50
 
@@ -52,9 +53,9 @@ export default class TitleBar extends Component {
         const resourceNameLength = resourceName ? resourceName.length > (maxTitleLength - surfaceNameLength) ? (maxTitleLength - surfaceNameLength) : resourceName.length : 0
         const teiDocNameLength = parentResource ? parentResource.name.length > (maxTitleLength - surfaceNameLength - resourceNameLength) ? (maxTitleLength - surfaceNameLength  - resourceNameLength) : parentResource.name.length : 0
 
-        const teiDocNameShort = parentResource ? shorten( parentResource.name, teiDocNameLength ) : ''
-        const resourceNameShort = resourceName ? shorten( resourceName, resourceNameLength ) : ''
-        const surfaceNameShort = surfaceName ? shorten( surfaceName, surfaceNameLength ) : ''
+        const teiDocNameShort = parentResource ? ellipsis( parentResource.name, teiDocNameLength ) : ''
+        const resourceNameShort = resourceName ? ellipsis( resourceName, resourceNameLength ) : ''
+        const surfaceNameShort = surfaceName ? ellipsis( surfaceName, surfaceNameLength ) : ''
 
         const chevClass = "fa fa-chevron-right"
         const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
@@ -82,10 +83,4 @@ export default class TitleBar extends Component {
             </header>
         )
     }
-}
-
-function shorten( originalString, length ) {
-    if( originalString.length <= length ) return originalString
-    let shortString = originalString.substr(0,length)
-    return `${shortString}...`
 }

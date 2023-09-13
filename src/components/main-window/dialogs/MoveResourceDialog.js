@@ -2,32 +2,45 @@ import React, { Component } from 'react'
 
 import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBody, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
+
+const fairCopy = window.fairCopy
 
 export default class MoveResourceDialog extends Component {
 
     constructor(props) {
         super(props)
-        this.state = this.initialState(props)
+        this.state = {
+            targetID: null,
+            moveTargets: []
+        }
     }
 
-    initialState(props) {
-        const { resources } = props.fairCopyProject
+    componentDidMount() {
+        const {services} = fairCopy
+        services.ipcRegisterCallback('localResources', this.onLocalResources )
+        services.ipcSend('requestLocalResources')
+    }
 
-        // take the resources, find the TEI docs
-        const teiDocs = []
-        for( const resource of Object.values(resources) ) {
-            if( resource.type === 'teidoc' ) {
-                teiDocs.push(resource)
+    componentWillUnmount() {
+        const {services} = fairCopy
+        services.ipcRemoveListener('localResources', this.onLocalResources )
+    }
+
+    onLocalResources = (event,localResources) => {
+        const { resourceType } = this.props
+
+        const moveTargets = []
+        for( const resourceEntry of Object.values(localResources) ) {
+            const { type: currentResourceType, deleted } = resourceEntry                
+            if( currentResourceType === resourceType && !deleted ) {
+                moveTargets.push(resourceEntry)
             }
         }
-
-        return {
-            targetID: null,
-            teiDocs
-        }
+        this.setState({...this.state, moveTargets })
     }
 
-    renderRow(resource) {        
+    renderRow(resource) {
         const { targetID } = this.state
 
         const onSelect = (e) => {
@@ -57,11 +70,13 @@ export default class MoveResourceDialog extends Component {
             )
         } else {
             const selected = resource.id === targetID ? 'selected' : ''
+            const resourceIcon = getResourceIcon(resource.type)
+            const resourceLabel = getResourceIconLabel(resource.type)
 
             return (
                 <TableRow hover onClick={onSelect} className={selected} dataresourceid={resource.id} key={`resource-${resource.id}`}>
                     <TableCell {...cellProps} >
-                        <i className={`fa fa-books fa-lg`}></i>
+                        <i aria-label={resourceLabel} className={`${resourceIcon} fa-lg`}></i>
                     </TableCell>
                     <TableCell {...cellProps} >
                         {resource.name}
@@ -75,12 +90,15 @@ export default class MoveResourceDialog extends Component {
     }
 
     renderTable() {
-        const { teiDocs } = this.state
+        const { allowRoot } = this.props
+        const { moveTargets } = this.state
 
-        const teiDocRows = []
-        teiDocRows.push(this.renderRow(null))
-        for( const teiDoc of teiDocs ) {            
-            teiDocRows.push(this.renderRow(teiDoc))
+        const rows = []
+        if( allowRoot ) {
+            rows.push(this.renderRow(null))
+        }
+        for( const moveTarget of moveTargets ) {            
+            rows.push(this.renderRow(moveTarget))
         }
 
         return (
@@ -94,56 +112,51 @@ export default class MoveResourceDialog extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        { teiDocRows }
+                        { rows }
                     </TableBody>
                 </Table>
           </TableContainer>
         )
     }
 
+    onClickMove = () => {
+        const { onClose, movingItems, onMove } = this.props
+        const { targetID, moveTargets } = this.state
+
+        const parentEntry = targetID === 'ROOT' ? null : moveTargets.find( r => r.id === targetID )
+        onMove( movingItems, parentEntry )
+        onClose()
+    }
+
     render() {      
+        const { onClose, onMoved, movingItems } = this.props
         const { targetID } = this.state
-        const { onClose, resourceEntries, closeResources } = this.props
-        
-        const onClickMove = () => {
-            const { targetID } = this.state
-            const { fairCopyProject } = this.props
-
-            // ignore the tei docs
-            const validIDs = []
-            for( const resourceEntry of resourceEntries ) {
-                if( resourceEntry.type !== 'teidoc' ) {
-                    validIDs.push(resourceEntry.id)
-                }
-            }
-
-            const parentID = targetID === 'ROOT' ? null : targetID
-            fairCopyProject.moveResources( validIDs, parentID )
-            closeResources(validIDs, false, false )  
-            onClose()
-        }
 
         const moveDisabled = (targetID === null)
+
+        const onClickClose = () => {
+            if( onMoved ) onMoved(false)
+            onClose()
+        }
 
         return (
             <Dialog
                 id="MoveResourceDialog"
                 open={true}
-                onClose={onClose}
+                onClose={onClickClose}
                 aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="move-resource-dialog">Move Resources ({resourceEntries.length})</DialogTitle>
+                <DialogTitle id="move-resource-dialog">Move Resources ({movingItems.length})</DialogTitle>
                 <DialogContent>
                     <Typography>Select a destination for these resources: </Typography>
                     { this.renderTable() }
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" disabled={moveDisabled} color="primary" onClick={onClickMove} autoFocus>Move</Button>
-                    <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                    <Button variant="contained" disabled={moveDisabled} color="primary" onClick={this.onClickMove} autoFocus>Move</Button>
+                    <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         )
     }
-
 }

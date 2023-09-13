@@ -198,13 +198,9 @@ class FairCopySession {
         }
     }
 
-    requestCheckedOutResources() {
-        if( this.remote ) {
-            const checkedOutResources = this.projectStore.getCheckedOutResources()
-            this.fairCopyApplication.sendToMainWindow('checkedOutResources', checkedOutResources )
-        } else {
-            log.info("Requested checked out view when project is not remote.")
-        }
+    requestLocalResources() {
+        const localResources = this.projectStore.getLocalResources()
+        this.fairCopyApplication.sendToAllWindows('localResources', localResources )
     }
 
     sendResourceViewUpdate(resourceView, remoteResources) {
@@ -249,22 +245,29 @@ class FairCopySession {
         const { resources } = this.projectStore.manifestData
         if( resources[resourceEntry.id] ) {
             const currentLocalID = resources[resourceEntry.id].localID
+            const currentParentID = resources[resourceEntry.id].parentResource
             resources[resourceEntry.id] = resourceEntry
-            // change local ID
+
+            let idMap = null 
+            if( resourceEntry.parentResource !== currentParentID ) {
+                idMap = this.idMapAuthority.moveResourceMap( resourceEntry.localID, currentLocalID, resourceEntry.parentResource, currentParentID ) 
+            }
             if( resourceEntry.localID !== currentLocalID ) {
-                let idMap = null
                 if( resourceEntry.parentResource ) {
                     const { localID: parentID } = this.idMapAuthority.getLocalIDs(resourceEntry.parentResource)
                     idMap = this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, parentID ) 
                 } else {
                     idMap = this.idMapAuthority.changeID( resourceEntry.localID, currentLocalID, null )     
                 }
+            }
+
+            if( idMap ) {
                 this.projectStore.saveIDMap(idMap)
-                this.idMapAuthority.sendIDMapUpdate()
+                this.idMapAuthority.sendIDMapUpdate()    
             }
             this.projectStore.saveManifest() 
             this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )  
-            if( resourceEntry.type === 'teidoc' ) this.requestResourceView()      
+            this.requestResourceView()      
         } else {
             log.info(`Error updating resource entry: ${resourceEntry.id}`)
         }
@@ -294,7 +297,7 @@ class FairCopySession {
                 // at the moment, only image views use xmlID
                 this.openImageView( { xmlID, resourceEntry, parentEntry, resource } )
             } else {
-                this.fairCopyApplication.sendToMainWindow('resourceOpened', { resourceEntry, parentEntry, resource } )
+                this.fairCopyApplication.sendToAllWindows('resourceOpened', { resourceEntry, parentEntry, resource } )
                 log.info(`opened resourceID: ${resourceEntry.id}`)            
             }
         }

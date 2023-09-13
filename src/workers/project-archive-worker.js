@@ -1,9 +1,9 @@
-import JSZip from 'jszip'
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 
 const fairCopy = window.fairCopy
+const JSZip = fairCopy.services.JSZip
 
 // Worker state
 let projectArchiveState = { open: false, jobQueue: [] }

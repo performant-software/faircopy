@@ -367,7 +367,7 @@ class ProjectStore {
             if( state === 'success') {
                 this.manifestData.resources[resourceEntry.id] = resourceEntry
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )   
-                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
+                if( parentEntry ) this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
                 this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID: resourceEntry.id, messageID: 'check-out-messsage', resourceContent: content })     
             } 
             checkOutStatus.push({ state, resourceEntry })
@@ -404,16 +404,16 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
     }
 
-    getCheckedOutResources() {
+    getLocalResources() {
         const resourceEntries = Object.values( this.manifestData.resources )
 
-        const checkedOutResources = {}
+        const localResources = {}
         for( const resourceEntry of resourceEntries ) {
             if( resourceEntry.type !== 'image') {
-                checkedOutResources[resourceEntry.id] = resourceEntry
+                localResources[resourceEntry.id] = resourceEntry
             }
         }
-        return checkedOutResources
+        return localResources
     }
 }
 

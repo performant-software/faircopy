@@ -8,7 +8,7 @@ import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
 export default class ResourceBrowser extends Component {
 
   onOpenActionMenu = (anchorEl) => {
-    const { onOpenPopupMenu, fairCopyProject } = this.props
+    const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
     const checkout = remoteProject ? canCheckOut(permissions) : true
@@ -36,12 +36,6 @@ export default class ResourceBrowser extends Component {
       },
       ...remoteProjectOptions,
       {
-        id: 'move',
-        label: 'Move',
-        disabled: true,
-        action: this.createResourceAction('move')
-      },
-      {
         id: 'export',
         label: 'Export',
         action: this.createResourceAction('export')
@@ -53,6 +47,15 @@ export default class ResourceBrowser extends Component {
         disabled: !del
       }
     ]
+
+    // move only works with local resources 
+    if( currentView === 'home' ) {
+      menuOptions.push({
+        id: 'move',
+        label: 'Move',
+        action: this.createResourceAction('move')   
+      })     
+    }
 
     // you can recover deleted items when logged out
     if( remoteProject ) {

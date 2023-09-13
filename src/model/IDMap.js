@@ -58,10 +58,12 @@ export default class IDMap {
         const resourceMap = this.idMap[localID]
         const { resourceType, ids } = resourceMap
         let highestID = -1
-        if( resourceType === 'teiDoc' ) {
-            for( const key of Object.keys(ids) ) {
-                const childLastID = this.getHighestFacsID(ids[key])
-                highestID = childLastID > highestID ? childLastID : highestID
+        if( resourceType === 'teidoc' ) {
+            for( const childResourceMap of Object.values(ids) ) {
+                if( childResourceMap.resourceType === 'facs' ) {
+                    const childLastID = getHighestFacsID(childResourceMap.ids)
+                    highestID = childLastID > highestID ? childLastID : highestID    
+                }
             }
         } else {
             highestID = getHighestFacsID(ids)
@@ -72,30 +74,25 @@ export default class IDMap {
     getRelativeURIList( localID, parentID ) {
         const uris = []
 
-        const getURIs = (resourceMapID, ids, local) => {
+        const getURIs = (ids) => {
             for( const xmlID of Object.keys(ids)) {
-                if( local ) {
-                    uris.push(`#${xmlID}`)
-                } else {
-                    uris.push(`${resourceMapID}#${xmlID}`)
-                }
+                uris.push(`#${xmlID}`)
             }   
             return uris
         }
 
-        for( const resourceMapID of Object.keys(this.idMap) ) {
-            const resourceMap = this.idMap[resourceMapID]
-            const { resourceType, ids } = resourceMap
-            if( resourceType === 'teidoc' ) {
-                const local = ( resourceMapID === parentID )
-                for( const childID of Object.keys(ids) ) {
-                    getURIs(resourceMapID, ids[childID].ids, local)
-                }
-            } else {
-                const local = ( resourceMapID === localID )
-                getURIs(resourceMapID, ids, local)           
+        const resourceMapID = parentID ? parentID : localID
+        const resourceMap = this.idMap[resourceMapID]
+        const { ids } = resourceMap
+
+        if( parentID ) {
+            for( const childID of Object.keys(ids) ) {
+                getURIs(ids[childID].ids)
             }
+        } else {
+            getURIs(ids)           
         }
+
         return uris.sort()
     }
 
@@ -107,9 +104,17 @@ export default class IDMap {
         return parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
     }
 
-    getResourceEntry(localID,parentID,xmlID) {
-        const resourceMap = parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
-        return resourceMap ? resourceMap.ids[xmlID] : null
+    hasID(xmlID,localID) {
+        const resourceMap = this.idMap[localID]
+        const { resourceType, ids } = resourceMap
+        if( resourceType === 'teidoc' ) {
+            for( const childResourceMap of Object.values(ids) ) {
+                if( childResourceMap.ids[xmlID] ) return true
+            }
+            return false
+        } else {
+            return !!ids[xmlID]
+        }
     }    
 }
 
