@@ -5,19 +5,18 @@ const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const serialize = require("w3c-xmlserializer");
 
-const exportResource =  async function exportResource(resourceData, path) {
+const serializeResource = function serializeResource(resourceData) {
     const { resourceEntry, contents } = resourceData
     if( resourceEntry.type === 'teidoc') {
         const { childEntries } = resourceData
-        exportTEIDoc(resourceEntry,childEntries,contents,path)
+        return serializeTEIDoc(childEntries,contents)
     } else {
         const content = contents[resourceEntry.id]
-        exportXMLFile(path, resourceEntry.localID, content)    
+        return serializeXMLFile(content)
     }
-    log.info(`Export resources to: ${path}`)
 }
 
-async function exportTEIDoc(resourceEntry,childEntries,contents,path) {
+function serializeTEIDoc(childEntries,contents) {
     let header, resources = []
     for( const childEntry of childEntries ) {
         const resourceXML = contents[childEntry.id]
@@ -37,7 +36,7 @@ async function exportTEIDoc(resourceEntry,childEntries,contents,path) {
     teiDoc.appendChild(header)
     resources.map( resource => teiDoc.appendChild(resource))
     const teiDocXML = serialize(xmlDoc)
-    exportXMLFile(path,resourceEntry.localID,teiDocXML)
+    return serializeXMLFile(teiDocXML)
 }
 
 function getResourceEl( resourceXML, elName, localID ) {
@@ -48,20 +47,19 @@ function getResourceEl( resourceXML, elName, localID ) {
     return el
 }
 
-function exportXMLFile(path, localID, content) {
-    const filePath = `${path}/${localID}.xml`
+function serializeXMLFile(content) {
     try {
         const xml = format(content, {
             indentation: '\t', 
             collapseContent: true, 
             lineSeparator: '\n'
         })
-        fs.writeFileSync(filePath,xml)    
+        return xml
     } catch(e) {
         log.error(e)
         // if formatting fails, try to write the file without it
-        fs.writeFileSync(filePath,content)    
+        return content  
     }
 }
 
-exports.exportResource = exportResource
+exports.serializeResource = serializeResource

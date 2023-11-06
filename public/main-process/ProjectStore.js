@@ -5,7 +5,7 @@ const { readFile, stat } = require('fs/promises')
 const { compatibleProject, migrateConfig, migrateIDMap, migrateManifestData } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
-const { exportResource } = require('./export-xml')
+const { serializeResource } = require('./serialize-xml')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -52,10 +52,20 @@ class ProjectStore {
                         if( error ) {
                             // TODO send back error message
                         } else {
-                            exportResource(resourceData, path)
+                            this.exportResource(resourceData, path)
                         }
                     }
                     break
+                case 'preview-resource':
+                    {
+                        const { resourceData, error } = msg
+                        if( error ) {
+                            // TODO send back error message
+                        } else {
+                            this.previewResource(resourceData)
+                        }
+                    }
+                    break  
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -147,6 +157,28 @@ class ProjectStore {
         this.onProjectOpened( projectData )
     }
 
+    previewResource(resourceData) {
+        try {
+            const teiDocXML = serializeResource(resourceData)
+            this.fairCopyApplication.openPreview(resourceData.resourceEntry,teiDocXML)    
+        } catch(e) {
+            log.error(e)
+        }  
+    }
+
+    exportResource(resourceData, path) {       
+        const { resourceEntry } = resourceData
+        const { localID } = resourceEntry
+        const filePath = `${path}/${localID}.xml`
+        try {
+            const xml = serializeResource(resourceData)
+            fs.writeFileSync(filePath,xml)    
+            log.info(`Export resources to: ${path}`)
+        } catch(e) {
+            log.error(e)
+        }
+    }
+
     async importStart(paths,options) {
         this.importRunning(true)
         const importList = []
@@ -191,6 +223,12 @@ class ProjectStore {
         for( const resourceEntry of resourceEntries ) {
             this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, projectData, path })
         }
+    }
+
+    requestPreviewView(resourceEntry) {
+        const { resources: localEntries, remote, userID, serverURL, projectID } = this.manifestData
+        const projectData = { localEntries, remote, userID, serverURL, projectID }
+        this.projectArchiveWorker.postMessage({ messageType: 'request-preview', resourceEntry, projectData })
     }
 
     close() {

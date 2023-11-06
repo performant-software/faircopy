@@ -6,6 +6,7 @@ import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
 import LicenseWindow from './license-window/LicenseWindow'
 import WorkerWindow from './worker-window/WorkerWindow'
+import PreviewWindow from './preview-window/PreviewWindow'
 import IncompatDialog from './IncompatDialog'
 import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
 
@@ -241,6 +242,11 @@ export default class App extends Component {
             <ImageWindow
               imageView={imageView}
             ></ImageWindow>
+        )
+    } else if( rootComponent === "PreviewWindow" ) {
+        return (
+            <PreviewWindow
+            ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {
       return (

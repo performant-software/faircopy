@@ -413,6 +413,10 @@ class FairCopySession {
         // permissions etc can only be set from server.
     }
 
+    requestPreviewView(resourceEntry) {
+        this.projectStore.requestPreviewView(resourceEntry)
+    }
+
     requestExport(resourceEntries,path) {
         this.projectStore.requestExport(resourceEntries,path)
     }

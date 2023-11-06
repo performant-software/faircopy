@@ -327,6 +327,14 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 })
             }
             break    
+        case 'request-preview':
+            {
+                const { resourceEntry, projectData } = msg
+                prepareResourceExport(resourceEntry,projectData,zip).then( resourceData => {
+                    postMessage({ messageType: 'preview-resource', resourceData })
+                })
+            }
+            break            
         case 'write-resource':
             {
                 const { resourceID, data } = msg

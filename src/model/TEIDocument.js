@@ -300,6 +300,11 @@ export default class TEIDocument {
         fairCopy.services.ipcSend('abandonResourceMap', this.resourceID)
     }
 
+    previewDocument() {
+        const previewEntry = this.parentEntry ? this.parentEntry : this.resourceEntry
+        fairCopy.services.ipcSend('requestPreviewView', previewEntry)
+    }
+
     save() {
         const editorState = this.editorView.state
         const teiSchema = this.getTEISchema()
