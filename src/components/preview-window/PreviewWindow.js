@@ -71,7 +71,7 @@ const htmlToReactParserOptions = () => {
 function convertToHTML( xml ) {
     try {
         const doc = new DOMParser().parseFromString(xml,"text/xml")
-        const data = domToHTML5(doc.window.document)
+        const data = domToHTML5(doc.documentElement)
         return data.outerHTML
     } catch( err ) {
         console.error(`ERROR ${err}: ${err.stack}`)
@@ -86,7 +86,7 @@ function domToHTML5(XML_dom){
         // Elements with defined namespaces get the prefix mapped to that element. All others keep
         // their namespaces and are copied as-is.
         const prefix = 'tei';
-        const newElement = XML_dom.createElement(prefix + "-" + el.localName);
+        const newElement = document.createElement(prefix + "-" + el.localName);
         // Copy attributes; @xmlns, @xml:id, @xml:lang, and
         // @rendition get special handling.
         for (const att of Array.from(el.attributes)) {
@@ -107,7 +107,7 @@ function domToHTML5(XML_dom){
         }
 
         for (const node of Array.from(el.childNodes)){
-            if (node.nodeType === XML_dom.defaultView.Node.ELEMENT_NODE) {
+            if (node.nodeType === document.defaultView.Node.ELEMENT_NODE) {
                 newElement.appendChild(  convertEl(node)  );
             }
             else {

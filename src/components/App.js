@@ -110,6 +110,10 @@ export default class App extends Component {
       configure({ ignoreEventsCondition: () => false })      
     } else if( rootComponent === 'ImageWindow' ) {
       services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
+    } else if( rootComponent === 'PreviewWindow' ) {
+      //  setTimeout( () => {
+        this.setTitle('Preview Document')
+      // },5000)
     }
   }
 
