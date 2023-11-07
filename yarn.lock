@@ -7944,6 +7944,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dom-serializer@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "dom-serializer@npm:2.0.0"
+  dependencies:
+    domelementtype: ^2.3.0
+    domhandler: ^5.0.2
+    entities: ^4.2.0
+  checksum: cd1810544fd8cdfbd51fa2c0c1128ec3a13ba92f14e61b7650b5de421b88205fd2e3f0cc6ace82f13334114addb90ed1c2f23074a51770a8e9c1273acbc7f3e6
+  languageName: node
+  linkType: hard
+
 "dom-walk@npm:^0.1.0":
   version: 0.1.2
   resolution: "dom-walk@npm:0.1.2"
@@ -7958,7 +7969,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domelementtype@npm:^2.0.1, domelementtype@npm:^2.2.0":
+"domelementtype@npm:^2.0.1, domelementtype@npm:^2.2.0, domelementtype@npm:^2.3.0":
   version: 2.3.0
   resolution: "domelementtype@npm:2.3.0"
   checksum: ee837a318ff702622f383409d1f5b25dd1024b692ef64d3096ff702e26339f8e345820f29a68bcdcea8cfee3531776b3382651232fbeae95612d6f0a75efb4f6
@@ -7971,6 +7982,15 @@ __metadata:
   dependencies:
     webidl-conversions: ^5.0.0
   checksum: d638e9cb05c52999f1b2eb87c374b03311ea5b1d69c2f875bc92da73e17db60c12142b45c950228642ff7f845c536b65305483350d080df59003a653da80b691
+  languageName: node
+  linkType: hard
+
+"domhandler@npm:5.0.3, domhandler@npm:^5.0.2, domhandler@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "domhandler@npm:5.0.3"
+  dependencies:
+    domelementtype: ^2.3.0
+  checksum: 0f58f4a6af63e6f3a4320aa446d28b5790a009018707bce2859dcb1d21144c7876482b5188395a188dfa974238c019e0a1e610d2fc269a12b2c192ea2b0b131c
   languageName: node
   linkType: hard
 
@@ -8001,6 +8021,17 @@ __metadata:
     domelementtype: ^2.2.0
     domhandler: ^4.2.0
   checksum: abf7434315283e9aadc2a24bac0e00eab07ae4313b40cc239f89d84d7315ebdfd2fb1b5bf750a96bc1b4403d7237c7b2ebf60459be394d625ead4ca89b934391
+  languageName: node
+  linkType: hard
+
+"domutils@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "domutils@npm:3.1.0"
+  dependencies:
+    dom-serializer: ^2.0.0
+    domelementtype: ^2.3.0
+    domhandler: ^5.0.3
+  checksum: e5757456ddd173caa411cfc02c2bb64133c65546d2c4081381a3bafc8a57411a41eed70494551aa58030be9e58574fcc489828bebd673863d39924fb4878f416
   languageName: node
   linkType: hard
 
@@ -8249,6 +8280,13 @@ __metadata:
   version: 2.2.0
   resolution: "entities@npm:2.2.0"
   checksum: 19010dacaf0912c895ea262b4f6128574f9ccf8d4b3b65c7e8334ad0079b3706376360e28d8843ff50a78aabcb8f08f0a32dbfacdc77e47ed77ca08b713669b3
+  languageName: node
+  linkType: hard
+
+"entities@npm:^4.2.0, entities@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "entities@npm:4.5.0"
+  checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
   languageName: node
   linkType: hard
 
@@ -9056,6 +9094,7 @@ __metadata:
     electron-log: ^4.2.3
     electron-updater: ^4.6.1
     flexsearch: ^0.7.21
+    html-react-parser: ^5.0.6
     jimp: ^0.16.1
     jszip: 3.10.1
     openseadragon: ^3.0.0
@@ -10024,6 +10063,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-dom-parser@npm:5.0.4":
+  version: 5.0.4
+  resolution: "html-dom-parser@npm:5.0.4"
+  dependencies:
+    domhandler: 5.0.3
+    htmlparser2: 9.0.0
+  checksum: fd2747752dd3cebc9c4c1d6cf148eed3cc788ea0665c10572363b226b654f41af9169374f5418afe9173bcbbaed384dd28362e21ad2001050fb87645fb59f4de
+  languageName: node
+  linkType: hard
+
 "html-encoding-sniffer@npm:^2.0.1":
   version: 2.0.1
   resolution: "html-encoding-sniffer@npm:2.0.1"
@@ -10064,6 +10113,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-react-parser@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "html-react-parser@npm:5.0.6"
+  dependencies:
+    domhandler: 5.0.3
+    html-dom-parser: 5.0.4
+    react-property: 2.0.2
+    style-to-js: 1.1.9
+  peerDependencies:
+    react: 0.14 || 15 || 16 || 17 || 18
+  checksum: 59f33d7442b611fa7ec793705d20d84a7bdbd8dd176bcfb43aaf9d094d5a35c9bf2a58800ebea1f17603430c1c732338f0288db9b78663266ce81ed6f34503fa
+  languageName: node
+  linkType: hard
+
 "html-webpack-plugin@npm:^5.5.0":
   version: 5.5.3
   resolution: "html-webpack-plugin@npm:5.5.3"
@@ -10087,6 +10150,18 @@ __metadata:
   bin:
     html: ./bin/html.js
   checksum: 131f5a7b18f6a86c434aba047244ee5d7c8e578d377ee00231fb854778c4500c4dfee1e44eacfd06b6ffad6a90857bd14c4b6ec2c627ed96f67e8e6afa5cef26
+  languageName: node
+  linkType: hard
+
+"htmlparser2@npm:9.0.0":
+  version: 9.0.0
+  resolution: "htmlparser2@npm:9.0.0"
+  dependencies:
+    domelementtype: ^2.3.0
+    domhandler: ^5.0.3
+    domutils: ^3.1.0
+    entities: ^4.5.0
+  checksum: a234c3add821cae8308ca61ce4b8ad3e88af83cf9c3c2003059adc89c46a06ffc39cc2a92b39af8d16c3705e1055df6769d80877acb6529983867f0d7e74098d
   languageName: node
   linkType: hard
 
@@ -10417,6 +10492,13 @@ __metadata:
   version: 0.1.1
   resolution: "inline-style-parser@npm:0.1.1"
   checksum: 5d545056a3e1f2bf864c928a886a0e1656a3517127d36917b973de581bd54adc91b4bf1febcb0da054f204b4934763f1a4e09308b4d55002327cf1d48ac5d966
+  languageName: node
+  linkType: hard
+
+"inline-style-parser@npm:0.2.2":
+  version: 0.2.2
+  resolution: "inline-style-parser@npm:0.2.2"
+  checksum: 698893d6542d4e7c0377936a1c7daec34a197765bd77c5599384756a95ce8804e6b79347b783aa591d5e9c6f3d33dae74c6d4cad3a94647eb05f3a785e927a3f
   languageName: node
   linkType: hard
 
@@ -15008,6 +15090,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-property@npm:2.0.2":
+  version: 2.0.2
+  resolution: "react-property@npm:2.0.2"
+  checksum: c67fb2590dad9102239b2e574fbc078b472e227b66c3d64e1949426e33889d78c2ac5369cc4c740bb8fe61665505940e39a78d113261ac52410f7538089fe367
+  languageName: node
+  linkType: hard
+
 "react-redux@npm:^7.2.0":
   version: 7.2.8
   resolution: "react-redux@npm:7.2.8"
@@ -16674,6 +16763,24 @@ __metadata:
   peerDependencies:
     webpack: ^5.0.0
   checksum: f59c953f56f6a935bd6a1dfa409f1128fed2b66b48ce4a7a75b85862a7156e5e90ab163878962762f528ec4d510903d828da645e143fbffd26f055dc1c094078
+  languageName: node
+  linkType: hard
+
+"style-to-js@npm:1.1.9":
+  version: 1.1.9
+  resolution: "style-to-js@npm:1.1.9"
+  dependencies:
+    style-to-object: 1.0.4
+  checksum: f05dcd9edc7c2b530159c3eea7be558ebd324073dad444220ca3c12a15bdfa55f5690625238597190d0e21cc87433d6b745eb757055e0e781998153863fdc105
+  languageName: node
+  linkType: hard
+
+"style-to-object@npm:1.0.4":
+  version: 1.0.4
+  resolution: "style-to-object@npm:1.0.4"
+  dependencies:
+    inline-style-parser: 0.2.2
+  checksum: d3d2ea838b7777d3d6db165df8322e0f6b4f550f081e5833c89c4d91e5de2f7a09fa81cfd2208221683a94e476d4fc24df65c4d3ab75ddd45b419bef9426fbaf
   languageName: node
   linkType: hard
 

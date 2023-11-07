@@ -259,7 +259,7 @@ class FairCopyApplication {
 
   async createPreviewWindow(resourceEntry,teiDocXML) {
     if( !this.previewView ) {
-      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff' )
+      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', true )
       this.previewView.on('close', this.closePreview)
     }
     this.previewView.webContents.send('resourceUpdated', {resourceEntry, teiDocXML})

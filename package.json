@@ -44,6 +44,7 @@
     "electron-log": "^4.2.3",
     "electron-updater": "^4.6.1",
     "flexsearch": "^0.7.21",
+    "html-react-parser": "^5.0.6",
     "jimp": "^0.16.1",
     "jszip": "3.10.1",
     "openseadragon": "^3.0.0",
