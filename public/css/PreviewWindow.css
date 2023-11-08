@@ -1,3 +1,15 @@
+
+#PreviewWindow {
+  margin: 10px;
+}
+
+#PreviewWindow .document-viewer {
+  height: 50vw;
+  overflow-y: scroll;
+}
+ 
+
+
 /* This is a sample stylesheet for use with CETEIcean. It is not intended    */
 /* to be comprehensive. The rules here are largely derived from earlier work */
 /* on TEI Boilerplate                                                        */
@@ -909,4 +921,8 @@ tei-text. Otherwise they show up in the header. */
 }
 #PreviewWindow tei-witdetail {
   display:none;
+}
+
+#PreviewWindow tei-teiheader {
+  display: none;
 }

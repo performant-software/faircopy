@@ -46,10 +46,12 @@ export default class PreviewWindow extends Component {
         return (
             <div id="PreviewWindow">
                 <h1>{resourceEntry.name}</h1>
-                <Parser
-                    html={teiDocHTML}
-                    htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
-                />
+                <div className='document-viewer'>
+                    <Parser
+                        html={teiDocHTML}
+                        htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
+                    />
+                </div>
             </div>
         )
     }
