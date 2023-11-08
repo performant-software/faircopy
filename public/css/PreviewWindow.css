@@ -4,7 +4,7 @@
 
 /* language support */
 /* render Arabic, Persian, Ottoman, Hebrew  as rtl */
-[lang = "ar"],
+#PreviewWindow [lang = "ar"],
 [lang = "ota"],
 [lang = "fa"],
 [lang = "he"],
@@ -13,7 +13,7 @@
     text-align:right;
 }
 /* display latin scripts as ltr  */
-[lang = "en"],
+#PreviewWindow [lang = "en"],
 [lang = "fr"],
 [lang = "de"],
 [lang = "it"],
@@ -24,7 +24,7 @@
 }
 
 /* Choice elements */
-tei-choice tei-abbr + tei-expan:before,
+#PreviewWindow tei-choice tei-abbr + tei-expan:before,
 tei-choice tei-expan + tei-abbr:before,
 tei-choice tei-sic + tei-corr:before,
 tei-choice tei-corr + tei-sic:before,
@@ -32,7 +32,7 @@ tei-choice tei-orig + tei-reg:before,
 tei-choice tei-reg + tei-orig:before {
   content: " (";
 }
-tei-choice tei-abbr + tei-expan:after,
+#PreviewWindow tei-choice tei-abbr + tei-expan:after,
 tei-choice tei-expan + tei-abbr:after,
 tei-choice tei-sic + tei-corr:after,
 tei-choice tei-corr + tei-sic:after,
@@ -41,249 +41,249 @@ tei-choice tei-reg + tei-orig:after {
   content: ")";
 }
 /* A */
-tei-ab {
+#PreviewWindow tei-ab {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-accMat {
+#PreviewWindow tei-accMat {
   display: block;
 }
-tei-accMat:before {
+#PreviewWindow tei-accMat:before {
   content: "accompanying materials: ";
 }
-tei-acquisition {
+#PreviewWindow tei-acquisition {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-acquisition:before {
+#PreviewWindow tei-acquisition:before {
   font-weight: bold;
   content: "acquisition";
 }
-tei-activity {
+#PreviewWindow tei-activity {
   display: block;
 }
-tei-activity:before {
+#PreviewWindow tei-activity:before {
   content: "activity: ";
 }
-tei-add[place=above] {
+#PreviewWindow tei-add[place=above] {
   color: blue;
   vertical-align: super;
   font-size: 10pt;
 }
-tei-add[place=inline]:before {
+#PreviewWindow tei-add[place=inline]:before {
   content: "«";
 }
-tei-add[place=inline]:after {
+#PreviewWindow tei-add[place=inline]:after {
   content: "»";
 }
-tei-add[place=below] {
+#PreviewWindow tei-add[place=below] {
   vertical-align: sub;
 }
-tei-additional {
+#PreviewWindow tei-additional {
   display: block;
 }
-tei-additions {
+#PreviewWindow tei-additions {
   display: block;
 }
-tei-additions:before {
+#PreviewWindow tei-additions:before {
   content: "Significant additions within the document: ";
 }
-tei-addrLine {
+#PreviewWindow tei-addrLine {
   display: block;
 }
-tei-address[data-tei-rend~="block"], addresss[data-tei-rendition~="#block"] {
+#PreviewWindow tei-address[data-tei-rend~="block"], addresss[data-tei-rendition~="#block"] {
   display: block;
 }
-tei-adminInfo {
+#PreviewWindow tei-adminInfo {
   display: block;
 }
-tei-app tei-note {
+#PreviewWindow tei-app tei-note {
   display: none;
 }
-tei-appInfo {
+#PreviewWindow tei-appInfo {
   display: block;
 }
-tei-appInfo:before {
+#PreviewWindow tei-appInfo:before {
   content: "Application information: ";
 }
-tei-application {
+#PreviewWindow tei-application {
   display: block;
 }
-tei-application:after {
+#PreviewWindow tei-application:after {
   content: " " attr(version);
 }
-tei-argument {
+#PreviewWindow tei-argument {
   display: block;
 }
-tei-att {
+#PreviewWindow tei-att {
   font-family: Courier,monospace;
 }
-tei-att:before {
+#PreviewWindow tei-att:before {
   content: "@";
 }
-tei-titlestmt > tei-author {
+#PreviewWindow tei-titlestmt > tei-author {
   display: block;
   margin-bottom: 1em;
 }
-tei-publicationstmt > tei-availability {
+#PreviewWindow tei-publicationstmt > tei-availability {
   font-size: 80%;
 }
-tei-publicationstmt > tei-availability:before {
+#PreviewWindow tei-publicationstmt > tei-availability:before {
   font-weight: bold;
   content: "Availability: ";
 }
-tei-publicationstmt > tei-availability[data-tei-status]:before {
+#PreviewWindow tei-publicationstmt > tei-availability[data-tei-status]:before {
   font-weight: bold;
   content: "Availability (" attr(status) "): ";
 }
 /* B */
-tei-back {
+#PreviewWindow tei-back {
   display: block;
 }
-tei-bibl[data-tei-rend~="block"], bibl[data-tei-rendition~="#block"] {
+#PreviewWindow tei-bibl[data-tei-rend~="block"], bibl[data-tei-rendition~="#block"] {
   display: block;
   padding-left: 2em;
   text-indent: -2em;
 }
-tei-biblFull {
+#PreviewWindow tei-biblFull {
   display: block;
 }
-tei-binding {
+#PreviewWindow tei-binding {
   display: block;
 }
-tei-binding:before {
+#PreviewWindow tei-binding:before {
   content: "Binding: \a";
   white-space: pre-wrap;
 }
-tei-binding[data-tei-contemporary]:before {
+#PreviewWindow tei-binding[data-tei-contemporary]:before {
   content: "Binding: \A" "Contemporary: " attr(contemporary) "\A";
   white-space: pre-wrap;
 }
-tei-bindingdesc {
+#PreviewWindow tei-bindingdesc {
   display: block;
 }
-tei-bindngdesc:before {
+#PreviewWindow tei-bindngdesc:before {
   content: "Binding description: \A";
 }
-tei-birth {
+#PreviewWindow tei-birth {
   display: block;
 }
-tei-birth:before {
+#PreviewWindow tei-birth:before {
   content: "Birth: ";
 }
 /* c */
-tei-cRefPattern {
+#PreviewWindow tei-cRefPattern {
   display: none;
 }
-tei-caption {
+#PreviewWindow tei-caption {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-case[data-tei-value]:before {
+#PreviewWindow tei-case[data-tei-value]:before {
   font-weight: bold;
   content: attr(value) " ";
 }
-tei-castgroup {
+#PreviewWindow tei-castgroup {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-castitem {
+#PreviewWindow tei-castitem {
   display: list-item;
 }
-tei-castlist {
+#PreviewWindow tei-castlist {
   display: block;
   list-style-type: none;
   margin-top: 1em;
   margin-bottom: 1em;
   margin-left: 2em;
 }
-tei-cb {
+#PreviewWindow tei-cb {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-cb:before {
+#PreviewWindow tei-cb:before {
   content: "[column break]";
 }
-tei-cell {
+#PreviewWindow tei-cell {
   border-right: thin solid black;
   border-bottom: thin solid black;
   padding: 2px;
 }
 /* for cell or row with @role = label */
-tei-cell[data-tei-role=label] {
+#PreviewWindow tei-cell[data-tei-role=label] {
   font-weight: bold;
 }
-tei-climate {
+#PreviewWindow tei-climate {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-climate:before {
+#PreviewWindow tei-climate:before {
   font-weight: bold;
   content: "Climate: ";
 }
-tei-code {
+#PreviewWindow tei-code {
   font-family: Courier,monospace;
 }
-tei-collation {
+#PreviewWindow tei-collation {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-condition {
+#PreviewWindow tei-condition {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-constitution {
+#PreviewWindow tei-constitution {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-constitution:before {
+#PreviewWindow tei-constitution:before {
   font-weight: bold;
   content: "Constitution: ";
 }
-tei-constitution[data-tei-type] {
+#PreviewWindow tei-constitution[data-tei-type] {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-constitution[data-tei-type]:before {
+#PreviewWindow tei-constitution[data-tei-type]:before {
   font-weight: bold;
   content: "Constitution (" attr(type) "): ";
 }
-tei-constitution[data-tei-type=frags] {
+#PreviewWindow tei-constitution[data-tei-type=frags] {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-constitution[data-tei-type=frags]:before {
+#PreviewWindow tei-constitution[data-tei-type=frags]:before {
   font-weight: bold;
   content: "Constitution (fragments): ";
 }
-tei-custevent {
+#PreviewWindow tei-custevent {
   display: list-item;
 }
-tei-custodialhist {
+#PreviewWindow tei-custodialhist {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
 /* d */
-tei-date[data-tei-when]:empty:before {
+#PreviewWindow tei-date[data-tei-when]:empty:before {
   content: attr(when);
 }
-tei-del {
+#PreviewWindow tei-del {
   color: red;
 }
 /* e */
-tei-editionstmt {
+#PreviewWindow tei-editionstmt {
   display:block;
 }
 teieg-egxml {
@@ -299,84 +299,84 @@ teieg-egxml {
   font-family: monospace;
   white-space: pre;
 }
-tei-emph {
+#PreviewWindow tei-emph {
   font-style: italic;
 }
-tei-encodingdesc {
+#PreviewWindow tei-encodingdesc {
   display: none;
 }
-tei-epigraph {
+#PreviewWindow tei-epigraph {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-explicit {
+#PreviewWindow tei-explicit {
   font-style: italic;
 }
-tei-filedesc > tei-extent {
+#PreviewWindow tei-filedesc > tei-extent {
   display: none;
 }
 /* f */
-tei-figure {
+#PreviewWindow tei-figure {
   display: block;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 /* g */
-tei-gap[data-tei-reason='lost']:before {
+#PreviewWindow tei-gap[data-tei-reason='lost']:before {
   content:'[';
 }
-tei-gap[data-tei-reason='lost']:after {
+#PreviewWindow tei-gap[data-tei-reason='lost']:after {
   content: attr(data-content) ']';
 }
-tei-gap[data-tei-reason='illegible']:after {
+#PreviewWindow tei-gap[data-tei-reason='illegible']:after {
   content: attr(data-content);
 }
-tei-gi {
+#PreviewWindow tei-gi {
   font-family: Courier,monospace;
 }
 tei-gi:before {
   content: "<";
 }
-tei-gi:after {
+#PreviewWindow tei-gi:after {
   content: ">";
 }
 /* h */
-tei-head {
+#PreviewWindow tei-head {
   display: block;
   font-family: 'OpenSans', sans-serif;
   font-weight: 700;
   font-size: 1.5em;
   line-height: 1.5rem;
 }
-tei-body > tei-head {
+#PreviewWindow tei-body > tei-head {
   font-size: 180%;
   text-indent: -0.5em;
 }
-tei-div.textpart {
+#PreviewWindow tei-div.textpart {
   display: none;
 }
-tei-div > tei-head {
+#PreviewWindow tei-div > tei-head {
   font-size: 170%;
   text-indent: -0.5em;
 }
-tei-div > tei-div > tei-head {
+#PreviewWindow tei-div > tei-div > tei-head {
   font-size: 155%;
 }
-tei-div > tei-div > tei-div > tei-head {
+#PreviewWindow tei-div > tei-div > tei-div > tei-head {
   font-size: 140%;
 }
-tei-div > tei-div > tei-div > tei-div > tei-head, list > tei-head {
+#PreviewWindow tei-div > tei-div > tei-div > tei-div > tei-head, list > tei-head {
   font-size: 130%;
 }
-tei-div > tei-div > tei-div > tei-div > tei-div > tei-head {
+#PreviewWindow tei-div > tei-div > tei-div > tei-div > tei-div > tei-head {
   font-size: 120%;
 }
-tei-div > tei-div > tei-div > tei-div > tei-div > tei-div tei-head {
+#PreviewWindow tei-div > tei-div > tei-div > tei-div > tei-div > tei-div tei-head {
   font-size: 110%;
 }
-tei-figure > tei-head {
+#PreviewWindow tei-figure > tei-head {
   display: block;
   margin: 1.5em auto 1.5em auto;
   padding: .5em 1.5em 1.5em 1.5em;
@@ -397,191 +397,191 @@ tei-figure > tei-head {
   font-family: Georgia, Serif;
   font-size: 13pt;
 }
-tei-hi[rend~="caps"] {
+#PreviewWindow tei-hi[rend~="caps"] {
   font-weight:bold;
 }
-tei-hi[rend~="italic"] {
+#PreviewWindow tei-hi[rend~="italic"] {
   font-style: italic;
 }
-tei-hi[rend~="underline"] {
+#PreviewWindow tei-hi[rend~="underline"] {
   text-decoration: underline;
 }
-tei-ident {
+#PreviewWindow tei-ident {
   font-family: Courier,monospace;
 }
-tei-incipit {
+#PreviewWindow tei-incipit {
   font-style: italic;
 }
-tei-item {
+#PreviewWindow tei-item {
   display: list-item;
   margin-left: 1em;
 }
-tei-cell item {
+#PreviewWindow tei-cell item {
   margin-left: 1em;
 }
 
 /* j */
 
 /* l */
-tei-l {
+#PreviewWindow tei-l {
   display: block;
   width: 35em;
 }
-tei-l[data-lineno]:before {
+#PreviewWindow tei-l[data-lineno]:before {
   content: attr(data-lineno);
   position: absolute;
   left: 2em;
 }
-tei-lb:after {
+#PreviewWindow tei-lb:after {
   content: '\a';
   white-space: pre;
 }
-tei-lg {
+#PreviewWindow tei-lg {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-list {
+#PreviewWindow tei-list {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
   list-style-type: none;
 }
-tei-item > tei-list {
+#PreviewWindow tei-item > tei-list {
   margin-top: 0;
 }
-tei-sourcedesc tei-list {
+#PreviewWindow tei-sourcedesc tei-list {
   list-style-type: none;
 }
-tei-sourcedesc > tei-list > tei-head {
+#PreviewWindow tei-sourcedesc > tei-list > tei-head {
   font-size: 140%;
   font-weight: bold;
 }
-tei-sourcedesc tei-list > tei-item {
+#PreviewWindow tei-sourcedesc tei-list > tei-item {
   display: list-item;
 }
 /* Match only lists that are descendants of
 tei-text. Otherwise they show up in the header. */
-tei-text tei-list[type=simple] {
+#PreviewWindow tei-text tei-list[type=simple] {
   list-style-type: none;
 }
-tei-text tei-list[type=bulleted] {
+#PreviewWindow tei-text tei-list[type=bulleted] {
   list-style-type: disc;
 }
-tei-text tei-list[type=ordered] {
+#PreviewWindow tei-text tei-list[type=ordered] {
   list-style-type: none;
   counter-reset: items 0;
 }
-tei-text tei-list[type=ordered] > tei-item {
+#PreviewWindow tei-text tei-list[type=ordered] > tei-item {
   display: list-item;
   margin-left: 0;
 }
-tei-item > tei-list[type=ordered] {
+#PreviewWindow tei-item > tei-list[type=ordered] {
   margin-left: 1em;
 }
-tei-text tei-list[type=ordered] > item:before {
+#PreviewWindow tei-text tei-list[type=ordered] > item:before {
   counter-increment: items 1;
   content: counter(items, decimal) ". ";
 }
-tei-text tei-list[type=gloss] {
+#PreviewWindow tei-text tei-list[type=gloss] {
   list-style-type: none;
 }
-tei-list[type="gloss"] > tei-label {
+#PreviewWindow tei-list[type="gloss"] > tei-label {
   display: block;
   margin-top: 0.25em;
   margin-bottom: 0.25em;
   font-weight: bold;
 }
-tei-list[type="gloss"] > tei-item {
+#PreviewWindow tei-list[type="gloss"] > tei-item {
   margin-left: 2em;
 }
-tei-item > tei-list[type=ordered] {
+#PreviewWindow tei-item > tei-list[type=ordered] {
   margin-left: 1em;
 }
-tei-listapp {
+#PreviewWindow tei-listapp {
   display: block;
   margin: 1em;
   padding: 1em;
 }
-tei-listbibl {
+#PreviewWindow tei-listbibl {
   display:block;
   list-style-type: none;
   margin-left: .5 em;
   margin-top: .5em;
 }
-tei-listbibl > tei-head {
+#PreviewWindow tei-listbibl > tei-head {
   font-size: 120%;
   font-weight: bold;
 }
-tei-listbibl > tei-bibl {
+#PreviewWindow tei-listbibl > tei-bibl {
   display: list-item;
   margin-left: .5em;
 }
-tei-listwit {
+#PreviewWindow tei-listwit {
   display:block;
   list-style-type: none;
   margin-left: .5em;
 }
-tei-listwit > tei-head {
+#PreviewWindow tei-listwit > tei-head {
   font-size: 120%;
   font-weight: bold;
 }
-tei-listwit > tei-witness {
+#PreviewWindow tei-listwit > tei-witness {
   display: list-item;
   margin-left: 2em;
   text-indent: -1.1em;
 }
-tei-witness > tei-listwit {
+#PreviewWindow tei-witness > tei-listwit {
   display: inline;
 }
-tei-witness > tei-listwit > tei-head {
+#PreviewWindow tei-witness > tei-listwit > tei-head {
   display: inline;
 }
-tei-witness > tei-listwit > tei-witness {
+#PreviewWindow tei-witness > tei-listwit > tei-witness {
   display: inline;
 }
-tei-locus {
+#PreviewWindow tei-locus {
   display: none;
 }
 
 /* m */
-tei-milestone {
+#PreviewWindow tei-milestone {
   display: none;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
-tei-musicNotation {
+#PreviewWindow tei-musicNotation {
   font-weight: bold;
 }
-tei-musicNotation:before {
+#PreviewWindow tei-musicNotation:before {
   font-weight: bold;
   content: "Musical Notation: ";
 }
 /* n */
-tei-node {
+#PreviewWindow tei-node {
   display: none;
 }
-tei-note {
+#PreviewWindow tei-note {
   display: none;
 }
-tei-notesstmt {
+#PreviewWindow tei-notesstmt {
   display: none;
 }
 /* o */
-tei-ovar {
+#PreviewWindow tei-ovar {
   font-style: italic;
 }
-tei-origPlace {
+#PreviewWindow tei-origPlace {
   font-weight: bold;
 }
-tei-origPlace:before {
+#PreviewWindow tei-origPlace:before {
   font-weight: bold;
   content: "Place of Origin: ";
 }
 
 /* p */
-tei-p {
+#PreviewWindow tei-p {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
@@ -590,259 +590,259 @@ tei-p {
 *[data-tei-rendition~="#center"] p {
   text-align: center;
 }
-tei-availability > p:first-child {
+#PreviewWindow tei-availability > p:first-child {
   margin-top: 0em;
 }
-tei-performance {
+#PreviewWindow tei-performance {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-person {
+#PreviewWindow tei-person {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-personGrp {
+#PreviewWindow tei-personGrp {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-postscript {
+#PreviewWindow tei-postscript {
   display: block;
   margin-top: 2em;
 }
-tei-principal {
+#PreviewWindow tei-principal {
   font-weight: bold;
 }
-tei-principal:before {
+#PreviewWindow tei-principal:before {
   font-weight: bold;
   content: "Principal: ";
 }
-tei-profiledesc {
+#PreviewWindow tei-profiledesc {
   display: none;
 }
-tei-publicationstmt > * {
+#PreviewWindow tei-publicationstmt > * {
   display: none;
 }
-tei-publicationstmt {
+#PreviewWindow tei-publicationstmt {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-publicationstmt > date {
+#PreviewWindow tei-publicationstmt > date {
   display: none;
 }
-tei-publicationstmt > publisher {
+#PreviewWindow tei-publicationstmt > publisher {
   display: none;
 }
 
 /* q */
-tei-q {
+#PreviewWindow tei-q {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
 }
-tei-q:before {
+#PreviewWindow tei-q:before {
   content: "";
 }
-tei-q:after {
+#PreviewWindow tei-q:after {
   content: "";
 }
-tei-q[data-tei-next]:after {
+#PreviewWindow tei-q[data-tei-next]:after {
   content: "" !important;
 }
-tei-q[data-tei-prev]:before {
+#PreviewWindow tei-q[data-tei-prev]:before {
   content: "" !important;
 }
-tei-quote {
+#PreviewWindow tei-quote {
   font-style:italic;
 }
 
 /* r */
-tei-app tei-rdg {
+#PreviewWindow tei-app tei-rdg {
   /*perhaps choice */
   display:none;
 }
-tei-re {
+#PreviewWindow tei-re {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-recordhist {
+#PreviewWindow tei-recordhist {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-ref {
+#PreviewWindow tei-ref {
   color: #5f0000;
 }
-tei-remarks {
+#PreviewWindow tei-remarks {
   font-weight: bold;
 }
-tei-remarks:before {
+#PreviewWindow tei-remarks:before {
   font-weight: bold;
   content: "remarks: ";
 }
-tei-respstmt {
+#PreviewWindow tei-respstmt {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-revisiondesc {
+#PreviewWindow tei-revisiondesc {
   display: none;
 }
-tei-row {
+#PreviewWindow tei-row {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
 }
 
 /* s */
-tei-salute {
+#PreviewWindow tei-salute {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-samplingdecl {
+#PreviewWindow tei-samplingdecl {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-scriptnote {
+#PreviewWindow tei-scriptnote {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-seal {
+#PreviewWindow tei-seal {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-seal:before {
+#PreviewWindow tei-seal:before {
   font-weight: bold;
   content: "Seal: ";
 }
-tei-sealdesc {
+#PreviewWindow tei-sealdesc {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-secFol:before {
+#PreviewWindow tei-secFol:before {
   font-weight: bold;
   content: "Second Folio: ";
 }
-tei-secl>*:first-child:before {
+#PreviewWindow tei-secl>*:first-child:before {
   content: "\a[";
   white-space: pre;
 }
-tei-secl>*:last-child:after {
+#PreviewWindow tei-secl>*:last-child:after {
   content: "]\a\a";
   white-space: pre;
 }
-tei-seg {
+#PreviewWindow tei-seg {
   outline: 0px solid transparent;
 }
-tei-sense {
+#PreviewWindow tei-sense {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-seriesstmt {
+#PreviewWindow tei-seriesstmt {
   display: none;
 }
-tei-setting {
+#PreviewWindow tei-setting {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-signed {
+#PreviewWindow tei-signed {
   display: block;
   margin-top: 2em;
 }
-tei-soCalled {
+#PreviewWindow tei-soCalled {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
 }
-tei-soCalled:before {
+#PreviewWindow tei-soCalled:before {
   content: open-quote;
 }
-tei-soCalled:after {
+#PreviewWindow tei-soCalled:after {
   content: close-quote;
 }
-tei-soCalled[data-tei-next]:after {
+#PreviewWindow tei-soCalled[data-tei-next]:after {
   content: "" !important;
 }
-tei-soCalled[data-tei-prev]:before {
+#PreviewWindow tei-soCalled[data-tei-prev]:before {
   content: "" !important;
 }
-tei-sound {
+#PreviewWindow tei-sound {
   font-style: italic;
 }
-tei-source {
+#PreviewWindow tei-source {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-sourcedesc {
+#PreviewWindow tei-sourcedesc {
   display: none;
 }
-tei-space:before {
+#PreviewWindow tei-space:before {
   font-weight: bold;
   content: "";
 }
-tei-span[data-tei-data-n]:before {
+#PreviewWindow tei-span[data-tei-data-n]:before {
   content: attr(data-n);
 }
-tei-speaker {
+#PreviewWindow tei-speaker {
   font-weight: bold;
   margin-right: 0;
 }
-tei-sponsor {
+#PreviewWindow tei-sponsor {
   display: block;
   margin-top: 0;
   margin-bottom: 0;
 }
-tei-sponsor:before {
+#PreviewWindow tei-sponsor:before {
   font-weight: bold;
   content: "Sponsor:";
 }
-tei-stage {
+#PreviewWindow tei-stage {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
   font-style: italic;
 }
-tei-stamp {
+#PreviewWindow tei-stamp {
   display: block;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-tei-stamp:before {
+#PreviewWindow tei-stamp:before {
   font-weight: bold;
   content: "Stamped: ";
 }
 
-tei-surplus>*:first-child:before {
+#PreviewWindow tei-surplus>*:first-child:before {
   content: "\a[";
   white-space: pre;
 }
-tei-surplus>*:last-child:after {
+#PreviewWindow tei-surplus>*:last-child:after {
   content: "]\a\a";
   white-space: pre;
 }
 /* t */
-tei-tei {
+#PreviewWindow tei-tei {
   display: block;
 }
-tei-table {
+#PreviewWindow tei-table {
   display: block;
   border-top: thin solid black;
   border-left: thin solid black;
 }
-tei-table {
+#PreviewWindow tei-table {
   margin-top: 2em;
   margin-bottom: 2em;
   font-size: 12pt;
 }
-tei-table > tei-head {
+#PreviewWindow tei-table > tei-head {
   border-bottom: thin solid black;
   border-right: thin solid black;
   font-size: 120%;
@@ -850,63 +850,63 @@ tei-table > tei-head {
   padding: 2px;
   text-align: center;
 }
-tei-teiheader {
+#PreviewWindow tei-teiheader {
   display: block;
   margin-top: 2em;
   margin-bottom: 2em;
 }
-tei-tei > tei-text {
+#PreviewWindow tei-tei > tei-text {
   display: block;
   line-height: 1.5;
 }
-tei-textclass {
+#PreviewWindow tei-textclass {
   display: none;
 }
-tei-textdesc {
+#PreviewWindow tei-textdesc {
   display: none;
 }
 /* title */
-tei-tei tei-title {
+#PreviewWindow tei-tei tei-title {
   display: inline;
 }
-tei-tei tei-title[level=a] {
+#PreviewWindow tei-tei tei-title[level=a] {
   quotes: "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d" "\2018" "\2019" "\201c" "\201d";
 }
-tei-tei tei-title[level=a]:before {
+#PreviewWindow tei-tei tei-title[level=a]:before {
   content: open-quote;
 }
-tei-tei tei-title[level=a]:after {
+#PreviewWindow tei-tei tei-title[level=a]:after {
   content: close-quote;
 }
-tei-tei tei-title[level=a][next]:after {
+#PreviewWindow tei-tei tei-title[level=a][next]:after {
   content: "" !important;
 }
-tei-tei tei-title[level=a][prev]:before {
+#PreviewWindow tei-tei tei-title[level=a][prev]:before {
   content: "" !important;
 }
-tei-title[level=m] {
+#PreviewWindow tei-title[level=m] {
   font-style: italic;
 }
-tei-titlestmt > tei-title {
+#PreviewWindow tei-titlestmt > tei-title {
   display: block;
   font-family: Arvo, sans-serif;
   font-weight: normal;
   font-weight: bold !important;
   font-size: 150%;
 }
-tei-typedesc {
+#PreviewWindow tei-typedesc {
   display: none;
 }
 /* u */
-tei-u:before {
+#PreviewWindow tei-u:before {
   content: "-";
 }
-tei-view {
+#PreviewWindow tei-view {
   font-style: italic;
 }
-tei-wit {
+#PreviewWindow tei-wit {
   display: inline;
 }
-tei-witdetail {
+#PreviewWindow tei-witdetail {
   display:none;
 }
