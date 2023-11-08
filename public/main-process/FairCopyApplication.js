@@ -101,7 +101,7 @@ class FairCopyApplication {
       this.fairCopySession.searchProject(searchQuery)  
     })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
-      const ok = this.fairCopySession.saveResource(resourceID, resourceData) 
+      const ok = this.fairCopySession.saveResource(resourceID, resourceData, !!this.previewView) 
       if( ok ) {
         const update = { resourceID, messageID: msgID, resourceContent: resourceData }        
         this.sendToAllWindows('resourceContentUpdated', update )
@@ -260,7 +260,7 @@ class FairCopyApplication {
   async createPreviewWindow(resourceEntry,teiDocXML) {
     if( !this.previewView ) {
       this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', true )
-      this.previewView.on('close', this.closePreview)
+      this.previewView.on('close', e => delete this.previewView )
     }
     this.previewView.webContents.send('resourceUpdated', {resourceEntry, teiDocXML})
   }
@@ -307,13 +307,6 @@ class FairCopyApplication {
     this.createPreviewWindow(resourceEntry,teiDocXML).then(() => {
       log.info(`Opened preview view.`)
     })
-  }
-
-  closePreview() {
-    if( this.previewView ) {
-      this.previewView.close()
-      this.previewView = null
-    }
   }
 
   openProject(targetFile) {
