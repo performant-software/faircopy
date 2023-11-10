@@ -198,8 +198,8 @@ class FairCopyApplication {
       })
     })
 
-    ipcMain.on('requestPreviewView', (event, resourceEntry) => { 
-      this.fairCopySession.requestPreviewView(resourceEntry)
+    ipcMain.on('requestPreviewView', (event, previewData) => { 
+      this.fairCopySession.requestPreviewView(previewData)
     })
 
     ipcMain.on('selectedZones', (event, selectedZones) => { 
@@ -257,12 +257,12 @@ class FairCopyApplication {
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 
-  async createPreviewWindow(resourceEntry,teiDocXML) {
+  async createPreviewWindow(previewData) {
     if( !this.previewView ) {
       this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', true )
       this.previewView.on('close', e => delete this.previewView )
     }
-    this.previewView.webContents.send('resourceUpdated', {resourceEntry, teiDocXML})
+    this.previewView.webContents.send('updatePreview', previewData)
   }
 
   async createImageWindow(imageViewInfo) {
@@ -303,8 +303,8 @@ class FairCopyApplication {
     }
   }
 
-  openPreview(resourceEntry,teiDocXML) {
-    this.createPreviewWindow(resourceEntry,teiDocXML).then(() => {
+  openPreview(previewData) {
+    this.createPreviewWindow(previewData).then(() => {
       log.info(`Opened preview view.`)
     })
   }

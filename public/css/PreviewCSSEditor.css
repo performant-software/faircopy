@@ -1,0 +1,12 @@
+#PreviewCSSEditor { 
+    margin: 50px;
+    width: 600px;
+}
+
+#PreviewCSSEditor .cm-editor {
+    margin-top: 30px;
+}
+
+#PreviewCSSEditor .action {
+    margin-right: 10px;
+}

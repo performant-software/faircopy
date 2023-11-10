@@ -237,7 +237,7 @@ class FairCopySession {
             const idMap = this.idMapAuthority.commitResource(localID, parentID)
             this.projectStore.saveResource(resourceEntry, resourceData, idMap)  
             if( updatePreview ) {
-                this.requestPreviewView(resourceEntry)
+                this.requestPreviewView({ resourceEntry })
             }       
             return true  
         }
@@ -416,8 +416,8 @@ class FairCopySession {
         // permissions etc can only be set from server.
     }
 
-    requestPreviewView(resourceEntry) {
-        this.projectStore.requestPreviewView(resourceEntry)
+    requestPreviewView(previewData) {
+        this.projectStore.requestPreviewView(previewData)
     }
 
     requestExport(resourceEntries,path) {

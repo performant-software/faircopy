@@ -9,24 +9,26 @@ export default class PreviewWindow extends Component {
         super()
         this.state = {
             resourceEntry: null,
-            teiDocHTML: null
+            teiDocHTML: null,
+            projectCSS: ""
         }	
     }
 
-    onResourceUpdated = (e, resourceData) => {
-        const { resourceEntry, teiDocXML } = resourceData
-        const teiDocHTML = teiDocXML ? convertToHTML(teiDocXML) : null
-        this.setState({ ...this.state, resourceEntry, teiDocHTML })
+    onUpdate = (e, previewData) => {
+        const projectCSS = previewData?.projectCSS
+        const teiDocHTML = previewData?.teiDocXML ? convertToHTML(previewData.teiDocXML) : null
+        if( projectCSS ) {
+            updateStyleSheet(projectCSS)
+        }
+        this.setState({ ...this.state, ...previewData, teiDocHTML })
     }
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('resourceUpdated', this.onResourceUpdated )
+        fairCopy.services.ipcRegisterCallback('updatePreview', this.onUpdate )
     }
     
     componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('resourceUpdated', this.onResourceUpdated )
+        fairCopy.services.ipcRemoveListener('updatePreview', this.onUpdate )
     }
 
     renderSpinner() {
@@ -46,7 +48,7 @@ export default class PreviewWindow extends Component {
         return (
             <div id="PreviewWindow">
                 <h1>{resourceEntry.name}</h1>
-                <div className='document-viewer'>
+                <div id='preview-viewer'>
                     <Parser
                         html={teiDocHTML}
                         htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
@@ -69,6 +71,12 @@ const htmlToReactParserOptions = () => {
     };
     return parserOptions;
 };
+
+function updateStyleSheet(projectCSS) {
+    const sheet = new CSSStyleSheet()
+    sheet.replaceSync(projectCSS)
+    document.adoptedStyleSheets = [sheet]
+}
   
 function convertToHTML( xml ) {
     try {

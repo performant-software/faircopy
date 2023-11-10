@@ -27,6 +27,11 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
         log.info('applying migrations for v1.1.6')
     }
 
+    if( semver.lt(projectVersion,'1.2.0') ) {
+        migrationAddProjectCSS(projectConfig)
+        log.info('applying migrations for v1.2.0')
+    }
+
     if( semver.lt(projectVersion,'0.10.1') ) {
         migrationAddMenus(projectConfig,baseConfig)
         migrationAddActiveState(projectConfig)
@@ -72,6 +77,10 @@ exports.migrateManifestData = migrateManifestData
 
 function migrationAddKeybindings(projectConfig) {
     projectConfig.keybindings = {}
+}
+
+function migrationAddProjectCSS(projectConfig) {
+    projectConfig.projectCSS = ""
 }
 
 function migrationAddNewElements(baseConfig,projectConfig) {

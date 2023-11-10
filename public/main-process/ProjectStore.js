@@ -58,11 +58,11 @@ class ProjectStore {
                     break
                 case 'preview-resource':
                     {
-                        const { resourceData, error } = msg
+                        const { resourceData, previewData, error } = msg
                         if( error ) {
                             // TODO send back error message
                         } else {
-                            this.previewResource(resourceData)
+                            this.previewResource(resourceData, previewData)
                         }
                     }
                     break  
@@ -157,13 +157,14 @@ class ProjectStore {
         this.onProjectOpened( projectData )
     }
 
-    previewResource(resourceData) {
+    previewResource(resourceData, previewData) {
         try {
             const teiDocXML = serializeResource(resourceData)
-            this.fairCopyApplication.openPreview(resourceData.resourceEntry,teiDocXML)    
+            const previewDataWithXML = { ...previewData, teiDocXML }
+            this.fairCopyApplication.openPreview(previewDataWithXML)    
         } catch(e) {
             log.error(e)
-        }  
+        }
     }
 
     exportResource(resourceData, path) {       
@@ -225,10 +226,10 @@ class ProjectStore {
         }
     }
 
-    requestPreviewView(resourceEntry) {
+    requestPreviewView(previewData) {
         const { resources: localEntries, remote, userID, serverURL, projectID } = this.manifestData
         const projectData = { localEntries, remote, userID, serverURL, projectID }
-        this.projectArchiveWorker.postMessage({ messageType: 'request-preview', resourceEntry, projectData })
+        this.projectArchiveWorker.postMessage({ messageType: 'request-preview', previewData, projectData })
     }
 
     close() {
