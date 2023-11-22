@@ -1,9 +1,9 @@
 
 #PreviewWindow {
-  margin: 10px;
+  margin: 30px;
 }
 
 #PreviewWindow #preview-viewer {
-  height: 50vw;
+  height: 90vw;
   overflow-y: scroll;
 }
