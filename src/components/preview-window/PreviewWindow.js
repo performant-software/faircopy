@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Parser from './Parser'
+import { bigRingSpinner } from '../common/ring-spinner'
 
 const fairCopy = window.fairCopy
 
@@ -34,7 +35,7 @@ export default class PreviewWindow extends Component {
     renderSpinner() {
         return (
             <div id="PreviewWindow">
-                <h1>Loading...</h1>
+                { bigRingSpinner() }
             </div>
         )
     }
@@ -47,7 +48,6 @@ export default class PreviewWindow extends Component {
 
         return (
             <div id="PreviewWindow">
-                <h1>{resourceEntry.name}</h1>
                 <div id='preview-viewer'>
                     <Parser
                         html={teiDocHTML}
@@ -63,6 +63,20 @@ const htmlToReactParserOptions = () => {
     const parserOptions = {
       replace(domNode) {
         switch (domNode.name) {
+            // TODO process anchor tags only (not outbound links)
+            case 'tei-graphic': {
+                const src = domNode.attribs?.url;
+                if (!src) {
+                  return domNode;
+                }
+                const desc = ""
+                return (
+                  <figure className="inline-figure">
+                    <img src={src} alt={desc || ''} className="inline-image" />
+                    { desc ? <figcaption>{desc}</figcaption> : null }
+                  </figure>
+                );
+            }
           default:
             /* Otherwise, Just pass through */
             return domNode;
