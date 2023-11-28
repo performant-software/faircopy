@@ -21,10 +21,8 @@
   "homepage": ".",
   "devDependencies": {
     "@electron-forge/cli": "^7.1.0",
-    "@electron-forge/maker-deb": "^7.1.0",
-    "@electron-forge/maker-rpm": "^7.1.0",
     "@electron-forge/maker-squirrel": "^7.1.0",
-    "@electron-forge/maker-zip": "^7.1.0",
+    "@electron-forge/maker-dmg": "^7.1.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.1.0",
     "dotenv": "^8.2.0",
     "electron": "^25.5.0"
@@ -36,7 +34,7 @@
     "@material-ui/lab": "^4.0.0-alpha.53",
     "@rails/actioncable": "^6.0.5",
     "annotorious-openseadragon": "github:performant-software/annotorious-openseadragon",
-    "axios": "^0.19.2",
+    "axios": "^1.6.2",
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
     "electron-squirrel-startup": "^1.0.0",
