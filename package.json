@@ -1,22 +1,15 @@
 {
   "name": "faircopy",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
   "scripts": {
-    "postinstall": "electron-builder install-app-deps",
-    "predist": "yarn build",
-    "predist-mac": "yarn build",
-    "predist-win": "yarn build",
-    "predist-linux": "yarn build",
-    "dist-mac": "electron-builder -m --publish always",
-    "dist-win": "electron-builder -w --publish always",
-    "dist-linux": "electron-builder -l --publish always",
-    "dist": "electron-builder -ml --publish always",
     "build": "react-scripts build",
-    "start": "react-scripts start",
-    "test": "jest"
+    "start": "electron-forge start",
+    "test": "jest",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": "https://github.com/performant-software/faircopy",
   "keywords": [
@@ -27,10 +20,14 @@
   "author": "Performant Software Solutions LLC",
   "homepage": ".",
   "devDependencies": {
-    "@electron/notarize": "^2.1.0",
+    "@electron-forge/cli": "^7.1.0",
+    "@electron-forge/maker-deb": "^7.1.0",
+    "@electron-forge/maker-rpm": "^7.1.0",
+    "@electron-forge/maker-squirrel": "^7.1.0",
+    "@electron-forge/maker-zip": "^7.1.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.1.0",
     "dotenv": "^8.2.0",
-    "electron": "^25.5.0",
-    "electron-builder": "^24.6.3"
+    "electron": "^25.5.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -42,6 +39,7 @@
     "axios": "^0.19.2",
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^4.6.1",
     "flexsearch": "^0.7.21",
     "jimp": "^0.16.1",
@@ -88,50 +86,8 @@
     ],
     "directories": {
       "buildResources": "assets"
-    },
-    "linux": {
-      "icon": "build/512x512.png",
-      "target": "AppImage",
-      "category": "public.app-category.utilities"
-    },
-    "mac": {
-      "icon": "build/icon.png",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "scripts/entitlements.mac.plist",
-      "entitlementsInherit": "scripts/entitlements.mac.plist",
-      "category": "public.app-category.utilities"
-    },
-    "dmg": {
-      "sign": false
-    },
-    "win": {
-      "icon": "build/icon.ico",
-      "certificateSubjectName": "Performant Software Solutions LLC",
-      "signingHashAlgorithms": [
-        "sha256"
-      ],
-      "publisherName": "Performant Software Solutions LLC",
-      "signAndEditExecutable": true,
-      "target": [
-        {
-          "target": "nsis"
-        }
-      ]
-    },
-    "nsis": {
-      "license": "LICENSE",
-      "createDesktopShortcut": false
-    },
-    "afterSign": "scripts/notarize.js",
-    "publish": {
-      "provider": "keygen",
-      "account": "8a8d3d6a-ab09-4f51-aea5-090bfd025dd8",
-      "product": "1e330e29-f0b4-4942-b813-0c78614e3abb",
-      "channel": "stable"
     }
   },
-  "postinstall": "electron-builder install-app-deps",
   "browserslist": {
     "production": [
       ">0.2%",
