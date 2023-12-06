@@ -6,6 +6,7 @@
 /package
 /test-docs/example.faircopy
 /temp
+/cert
 faircopy*.tgz
 forge.config.js
 .env
