@@ -26,8 +26,6 @@ import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults, scrollToSearchResult } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog'
-import LicenseBar from './LicenseBar'
-import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import CheckOutDialog from './dialogs/CheckOutDialog'
 import { bigRingSpinner } from '../common/ring-spinner'
@@ -105,7 +103,6 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
-            licenseMode: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -252,9 +249,8 @@ export default class MainWindow extends Component {
         const { appConfig } = this.props
         const { version } = appConfig
 
-        const licenseDataJSON = localStorage.getItem('licenseData')
-        const licenseData = JSON.parse(licenseDataJSON)
-        const { viewedReleaseNotes } = licenseData
+        // TODO refactor
+        const viewedReleaseNotes  = true
         
         // display release notes if they haven't been viewed
         if( !viewedReleaseNotes || viewedReleaseNotes !== version ) {
@@ -638,10 +634,6 @@ export default class MainWindow extends Component {
         this.setState({...this.state, searchFilterMode: true })
     }
 
-    onLicense = () => {
-        this.setState({...this.state, licenseMode: true })
-    }
-
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
         const { searchQuery } = this.state
         const query = searchQuery ? searchQuery.query : ""
@@ -787,7 +779,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
         const { idMap, serverURL } = fairCopyProject
@@ -894,10 +886,6 @@ export default class MainWindow extends Component {
                     updateSearchFilter={this.updateSearchFilter}
                     onClose={()=>{ this.setState( {...this.state, searchFilterMode: false} )}}
                 ></SearchDialog> }
-                { licenseMode && <LicenseDialog
-                    appConfig={appConfig}
-                    onClose={()=>{ this.setState( {...this.state, licenseMode: false} )}}
-                ></LicenseDialog> }
                 { checkInMode && <CheckInDialog
                     fairCopyProject={fairCopyProject}
                     checkInResources={checkInResources}
@@ -999,9 +987,6 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
-                    { resourceBrowserOpen && <LicenseBar
-                        onLicense={this.onLicense}
-                    ></LicenseBar> }
                     <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                         { this.renderProjectSidebar() }
                         { this.renderContentPane() }

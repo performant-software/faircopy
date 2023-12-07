@@ -10,13 +10,9 @@ export default class MainWindowStatusBar extends Component {
     constructor(props) {
         super(props)
 
-        const licenseDataJSON = localStorage.getItem('licenseData')
-        const licenseData = JSON.parse(licenseDataJSON)
-
         this.state = {
             softwareUpdateStatus: 'OK',
-            progress: 0,
-            licenseData
+            progress: 0
         }
     }
 
@@ -41,9 +37,6 @@ export default class MainWindowStatusBar extends Component {
         fairCopy.services.ipcRegisterCallback('updateDownloading', this.onUpdateDownloading)
         fairCopy.services.ipcRegisterCallback('updateDownloaded', this.onUpdateDownloaded)
         fairCopy.services.ipcRegisterCallback('errorUpdating', this.onErrorUpdating)
-
-        const { licenseData } = this.state
-        fairCopy.services.ipcSend( 'checkForUpdates', licenseData )
     }
 
     componentWillUnmount() {
