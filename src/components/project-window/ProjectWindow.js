@@ -38,7 +38,7 @@ export default class ProjectWindow extends Component {
         )
     }
   
-    renderSelectProject(allowKeyReset) {
+    renderSelectProject() {
         let projects = localStorage.getItem('recentProjects')
         projects = projects ? JSON.parse(projects) : []
 
@@ -53,10 +53,6 @@ export default class ProjectWindow extends Component {
         const onClickNewRemote = () => {
             this.setState({ ...this.state, mode: 'new-remote' })
         }  
-
-        const onResetKey = () => {
-            fairCopy.services.ipcSend('exitApp')
-        }
 
         const projectCards = []
         for( const project of projects ) {
@@ -84,7 +80,6 @@ export default class ProjectWindow extends Component {
         const { mode } = this.state
 
         const appVersion = appConfig ? `v${appConfig.version}` : ''
-        const allowKeyReset = appConfig ? appConfig.devMode : false
         const devModeTag = appConfig && appConfig.devMode ? 'DEV' : ''
 
         const onClose = () => {
@@ -94,7 +89,7 @@ export default class ProjectWindow extends Component {
         let content 
         switch(mode) {
             case 'select':
-                content = this.renderSelectProject(allowKeyReset)
+                content = this.renderSelectProject()
                 break
             case 'new-remote':
                 content = <NewRemoteProjectPanel onClose={onClose}></NewRemoteProjectPanel>

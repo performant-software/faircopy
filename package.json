@@ -41,7 +41,6 @@
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-updater": "^4.6.1",
     "flexsearch": "^0.7.21",
     "jimp": "^0.16.1",
     "jszip": "3.10.1",
