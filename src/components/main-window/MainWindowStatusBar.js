@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SearchBar from './SearchBar'
 
-import { Button, Tooltip } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 const fairCopy = window.fairCopy
 
@@ -101,7 +101,7 @@ export default class MainWindowStatusBar extends Component {
     }
 
     render() {
-        const { onFeedback, remoteProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
+        const { remoteProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
         return (
             <footer id="MainWindowStatusBar" className="bar">
                     { !remoteProject && <SearchBar
@@ -116,9 +116,6 @@ export default class MainWindowStatusBar extends Component {
                         searchFilterOptions={searchFilterOptions}
                     ></SearchBar> }
                     { this.renderStatusButton() }
-                    <Tooltip title="Send developer feedback">
-                        <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
-                    </Tooltip>
             </footer>
         )
     }

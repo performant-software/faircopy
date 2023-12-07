@@ -20,7 +20,6 @@ import EditSurfaceInfoDialog from './dialogs/EditSurfaceInfoDialog'
 import MoveResourceDialog from './dialogs/MoveResourceDialog'
 import MainWindowStatusBar from './MainWindowStatusBar'
 import ReleaseNotesDialog from './dialogs/ReleaseNotesDialog'
-import FeedbackDialog from './dialogs/FeedbackDialog'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
@@ -77,7 +76,6 @@ export default class MainWindow extends Component {
             editDialogMode: false,
             addImagesMode: false,
             releaseNotesMode: false,
-            feedbackMode: false,
             loginMode: false,
             draggingElementActive: false,
             dragInfo: null,
@@ -779,7 +777,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
         const { idMap, serverURL } = fairCopyProject
@@ -872,10 +870,6 @@ export default class MainWindow extends Component {
                     appConfig={appConfig}
                     onClose={()=> { this.setState( { ...this.state, releaseNotesMode: false })}}                
                 ></ReleaseNotesDialog> }
-                { feedbackMode && <FeedbackDialog
-                    appConfig={appConfig}
-                    onClose={()=> { this.setState( { ...this.state, feedbackMode: false })}}                
-                ></FeedbackDialog> }
                 { editSurfaceInfoMode && <EditSurfaceInfoDialog
                     surfaceInfo={surfaceInfo}
                     onSave={onSaveSurfaceInfo}
@@ -972,7 +966,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex, resourceBrowserOpen } = this.state
+        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -1004,7 +998,6 @@ export default class MainWindow extends Component {
                         onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
-                        onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                     ></MainWindowStatusBar>
                 </div>
