@@ -1,10 +1,11 @@
 const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
-const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
+const { updateElectronApp } = require('update-electron-app')
+
 const { FairCopySession } = require('./FairCopySession')
 
 const indexFilePath = 'build/index.html'
@@ -23,6 +24,13 @@ class FairCopyApplication {
 
     this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
+
+    if( app.isPackaged ) {
+      log.info("Initializing auotUpdate Service")
+      updateElectronApp({
+        logger: log
+      })  
+    }
     this.mainMenu = new MainMenu(this)
     this.initLocalFileProtocol()
     this.initIPC()
@@ -51,8 +59,6 @@ class FairCopyApplication {
 
   initIPC() {
     
-    ipcMain.on('checkForUpdates', (event,licenseData) => { checkForUpdates(licenseData, this.sendToMainWindow) })
-    ipcMain.on('downloadUpdate', (event) => { downloadUpdate(this.sendToMainWindow) })
     ipcMain.on('closeProject', (event) => { 
       this.closeProject()
       this.exitApp()

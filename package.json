@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.2.0",
+  "version": "1.2.0-dev.4",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -9,9 +9,11 @@
     "start": "react-scripts start",
     "test": "jest",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "prepublish": "npm run build",
+    "publish": "electron-forge publish"
   },
-  "repository": "https://github.com/performant-software/faircopy",
+  "repository": "https://github.com/performant-software/faircopy-dev-releases.git",
   "keywords": [
     "TEI",
     "Editor",
@@ -21,6 +23,7 @@
   "homepage": ".",
   "devDependencies": {
     "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/publisher-github": "^7.2.0",
     "@electron-forge/maker-dmg": "^7.1.0",
     "@electron-forge/maker-squirrel": "^7.1.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.1.0",
@@ -67,6 +70,7 @@
     "react-split-pane": "^0.1.92",
     "react-spring": "9.5.5",
     "semver": "^7.3.5",
+    "update-electron-app": "^3.0.0",
     "uuid": "^8.1.0",
     "w3c-xmlserializer": "^2.0.0",
     "xml-formatter": "^2.5.0"
