@@ -207,7 +207,6 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
         services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
         services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
-        this.checkReleaseNotes()
     }
 
     componentWillUnmount() {
@@ -240,19 +239,6 @@ export default class MainWindow extends Component {
             this.closeResources( resourceIDs, true)
         } else {
             fairCopy.services.ipcSend('exitApp')
-        }
-    }
-
-    checkReleaseNotes() {
-        const { appConfig } = this.props
-        const { version } = appConfig
-
-        // TODO refactor
-        const viewedReleaseNotes  = true
-        
-        // display release notes if they haven't been viewed
-        if( !viewedReleaseNotes || viewedReleaseNotes !== version ) {
-            this.setState({ ...this.state, releaseNotesMode: true })
         }
     }
 

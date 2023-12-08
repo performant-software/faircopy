@@ -26,7 +26,7 @@ class FairCopyApplication {
     this.config = this.getConfig()
 
     if( app.isPackaged ) {
-      log.info("Initializing auotUpdate Service")
+      log.info("Initializing autoUpdate Service")
       updateElectronApp({
         logger: log
       })  

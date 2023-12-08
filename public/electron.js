@@ -3,6 +3,9 @@ const { app } = require('electron')
 const { FairCopyApplication } = require('./main-process/FairCopyApplication')
 const log = require('electron-log')
 
+// Handle squirrelyness 
+if(require('electron-squirrel-startup')) return;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let fairCopyApplication
