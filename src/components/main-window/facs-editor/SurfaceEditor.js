@@ -8,7 +8,6 @@ import SurfaceDetailCard from './SurfaceDetailCard'
 import ZonePopup from './ZonePopup'
 import TitleBar from '../TitleBar'
 import { getSurfaceNames } from '../../../model/convert-facs'
-import { getLicenseType } from '../../../model/license-key'
 
 const fairCopy = window.fairCopy
 
@@ -277,14 +276,8 @@ class SeaDragonComponent extends Component {
 
     render() {
         const { initViewer, isWindowed } = this.props
-        const licenseType = getLicenseType()
         
-        let modeClass
-        if( licenseType === 'free' ) {
-            modeClass = isWindowed ? 'windowed' : 'full-with-bar'
-        } else {
-            modeClass = isWindowed ? 'windowed' : 'full'
-        }
+        const modeClass = isWindowed ? 'windowed' : 'full'
 
         return <div className={`osd-viewer ${modeClass}`} ref={(el)=> { initViewer(el) }}></div>
     }

@@ -1,17 +1,18 @@
 # dependencies
 /node_modules
-yarn-error.log
 /scripts/node_modules
-/scripts/yarn-error.log
 /build
 /dist
 /package
 /test-docs/example.faircopy
 /temp
+/cert
 faircopy*.tgz
+forge.config.js
 .env
 .env-prod
 .env-dev
 .yarn
 .yarnrc.yml
 /certs
+out/

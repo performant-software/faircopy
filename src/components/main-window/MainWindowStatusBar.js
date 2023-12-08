@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SearchBar from './SearchBar'
 
-import { Button, Tooltip } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 
 const fairCopy = window.fairCopy
 
@@ -10,13 +10,9 @@ export default class MainWindowStatusBar extends Component {
     constructor(props) {
         super(props)
 
-        const licenseDataJSON = localStorage.getItem('licenseData')
-        const licenseData = JSON.parse(licenseDataJSON)
-
         this.state = {
             softwareUpdateStatus: 'OK',
-            progress: 0,
-            licenseData
+            progress: 0
         }
     }
 
@@ -41,9 +37,6 @@ export default class MainWindowStatusBar extends Component {
         fairCopy.services.ipcRegisterCallback('updateDownloading', this.onUpdateDownloading)
         fairCopy.services.ipcRegisterCallback('updateDownloaded', this.onUpdateDownloaded)
         fairCopy.services.ipcRegisterCallback('errorUpdating', this.onErrorUpdating)
-
-        const { licenseData } = this.state
-        fairCopy.services.ipcSend( 'checkForUpdates', licenseData )
     }
 
     componentWillUnmount() {
@@ -108,7 +101,7 @@ export default class MainWindowStatusBar extends Component {
     }
 
     render() {
-        const { onFeedback, remoteProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
+        const { remoteProject, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
         return (
             <footer id="MainWindowStatusBar" className="bar">
                     { !remoteProject && <SearchBar
@@ -123,9 +116,6 @@ export default class MainWindowStatusBar extends Component {
                         searchFilterOptions={searchFilterOptions}
                     ></SearchBar> }
                     { this.renderStatusButton() }
-                    <Tooltip title="Send developer feedback">
-                        <Button className="feedback-button" size="small" color="inherit" onClick={onFeedback}><i className="fas fa-bullhorn fa-lg"></i></Button>
-                    </Tooltip>
             </footer>
         )
     }
