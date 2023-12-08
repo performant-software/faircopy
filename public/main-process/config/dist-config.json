@@ -1,5 +1,3 @@
 {
-    "devMode": false,
-    "devURL": "https://faircopy-activate-2-staging.herokuapp.com",
-    "prodURL": "https://faircopyeditor.com"
+    "devMode": true
 }
