@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Parser from './Parser'
+import { Button, Tooltip } from '@material-ui/core'
 import { bigRingSpinner } from '../common/ring-spinner'
+import TitleBar from '../main-window/TitleBar'
 
 const fairCopy = window.fairCopy
 
@@ -40,6 +42,23 @@ export default class PreviewWindow extends Component {
         )
     }
 
+
+    renderToolbar() {
+        const textButtonProps = {
+            className: 'toolbar-button',
+            disableRipple: true,
+            disableFocusRipple: true,
+            variant: "outlined",
+            size: 'small',      
+        }
+
+        return (
+            <div className="toolbar">
+                <Button {...textButtonProps}>test</Button>
+            </div>
+        )
+    }
+
     render() {
         const { resourceEntry, teiDocHTML } = this.state
         if(!resourceEntry || !teiDocHTML ) return this.renderSpinner()
@@ -48,6 +67,16 @@ export default class PreviewWindow extends Component {
 
         return (
             <div id="PreviewWindow">
+                <TitleBar 
+                        resourceName={ resourceEntry.name } 
+                        onResourceAction={()=>{}} 
+                        parentResource={ null } 
+                        isImageWindow={true}
+                        isLoggedIn={false}
+                        currentView={'home'}
+                    >
+                </TitleBar>
+                { this.renderToolbar() }
                 <div id='preview-viewer'>
                     <Parser
                         html={teiDocHTML}
