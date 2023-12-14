@@ -1,6 +1,7 @@
 const fs = require('fs')
 const log = require('electron-log')
 const { readFile, stat } = require('fs/promises')
+const { app } = require('electron')
 
 const { compatibleProject, migrateConfig, migrateIDMap, migrateManifestData } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
@@ -95,7 +96,7 @@ class ProjectStore {
     openProject(projectFilePath, onProjectOpened) {
         const {baseDir} = this.fairCopyApplication
         this.onProjectOpened = onProjectOpened
-        const debug = this.fairCopyApplication.isDebugMode()
+        const debug = !app.isPackaged
         this.initProjectArchiveWorker( baseDir, debug, projectFilePath ).then(() => {
             this.projectArchiveWorker.postMessage({ messageType: 'open' })
         })
@@ -129,7 +130,7 @@ class ProjectStore {
         this.manifestData = fairCopyManifest
 
         const currentVersion = this.fairCopyApplication.config.version
-        if( !this.fairCopyApplication.isDebugMode() && !compatibleProject(this.manifestData, currentVersion) ) {
+        if( app.isPackaged && !compatibleProject(this.manifestData, currentVersion) ) {
             log.info('Project file is incompatible.')
             const incompatInfo = { projectFilePath, projectFileVersion: this.manifestData.generatedWith }
             this.fairCopyApplication.sendToMainWindow('projectIncompatible', incompatInfo)

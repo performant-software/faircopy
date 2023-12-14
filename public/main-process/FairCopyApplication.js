@@ -22,7 +22,7 @@ class FairCopyApplication {
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
 
-    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
+    this.baseDir = app.isPackaged ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
 
     if( app.isPackaged ) {
@@ -37,16 +37,11 @@ class FairCopyApplication {
   }
 
   getConfig() {
-    const distConfigJSON = fs.readFileSync(`${this.baseDir}/config/dist-config.json`).toString('utf-8')
-    const distConfig = JSON.parse(distConfigJSON)
+    const distConfig = {}
+    distConfig.devMode = !app.isPackaged
     distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/release-notes/latest.md`).toString('utf-8')
-    distConfig.version = this.isDebugMode() ? process.env.FAIRCOPY_DEV_VERSION : app.getVersion()
-    distConfig.websiteURL = distConfig.devMode ? distConfig.devURL : distConfig.prodURL
+    distConfig.version = app.isPackaged ? app.getVersion() : process.env.FAIRCOPY_DEV_VERSION
     return distConfig
-  }
-
-  isDebugMode() {
-    return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
   }
 
   // local file protocol for accessing image resources
@@ -128,18 +123,6 @@ class FairCopyApplication {
       } else {
         this.sendToAllWindows('imagesOpened', [])
       }
-    })
-
-    ipcMain.on('openBuyNowWebpage', (event) => {
-      shell.openExternal(`${this.config.websiteURL}/prices`);
-    })
-
-    ipcMain.on('openRenewalWebpage', (event, secureID ) => {
-      shell.openExternal(`${this.config.websiteURL}/renew/${secureID}`);
-    })  
-
-    ipcMain.on('openLandingPage', (event) => {
-      shell.openExternal(`${this.config.websiteURL}`);
     })
     
     // Main window events //////
@@ -245,7 +228,7 @@ class FairCopyApplication {
       this.mainWindow = null
     }
 
-    const windowSize = this.isDebugMode() ? [1440,1200] : [1440,900]
+    const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
     this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true )
     this.mainWindow.webContents.send('appConfig', this.config)
 
@@ -367,7 +350,7 @@ class FairCopyApplication {
   async createWindow(preload, width, height, resizable, backgroundColor, devTools ) {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
-    const webSecurity = !this.isDebugMode() 
+    const webSecurity = app.isPackaged
     
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -383,12 +366,13 @@ class FairCopyApplication {
           preload: `${this.baseDir}/${preload}`,
           spellcheck: false
       },
+      autoHideMenuBar: true,
       resizable,
       backgroundColor
     })
 
     // and load the index.html of the app.
-    if( this.isDebugMode() ) {
+    if( !app.isPackaged ) {
       await browserWindow.loadURL('http://localhost:4000')
       if(devTools) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {
