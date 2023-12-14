@@ -49,6 +49,4 @@ Deploying to Production
 
 When deploying to staging, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0`.
 
-In `public/main-process/config/dist-config.json`, the `devMode` key MUST be set to false. This hides disables any development and staging related functionality. 
-
 In `public/main-process/release-notes/latest.md`, the release notes should be updated to document any new features, functionality, and bug fixes. This file is displayed to the end user whenever the software is updated.
