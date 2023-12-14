@@ -42,11 +42,11 @@ The installers will be created in the `out` folder.
 Deploying to Staging
 ------
 
-When deploying to staging, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0-dev.0`.
+When deploying to staging, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0-dev.0`. The `repository` key should be set to: "https://github.com/performant-software/faircopy-dev-releases.git"
 
 Deploying to Production
 ------
 
-When deploying to staging, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0`.
+When deploying to production, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0`. The `repository` key should be set to: "https://github.com/performant-software/faircopy.git"
 
 In `public/main-process/release-notes/latest.md`, the release notes should be updated to document any new features, functionality, and bug fixes. This file is displayed to the end user whenever the software is updated.
