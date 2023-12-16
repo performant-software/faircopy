@@ -103,7 +103,7 @@ class ProjectStore {
     }
 
     loadProject(project) {
-        const { baseDir } = this.fairCopyApplication
+        const { baseDir, config: fairCopyAppConfig } = this.fairCopyApplication
         
         if( !project ) {
             log.error('Attempted to open invalid project file.')
@@ -141,7 +141,7 @@ class ProjectStore {
         this.manifestData = migrateManifestData(this.manifestData)
         
         // if elements changed in config, migrate project config
-        migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig)
+        migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig, fairCopyAppConfig)
         this.migratedConfig = fairCopyConfig
 
         // apply any migrations to ID Map data

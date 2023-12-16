@@ -40,6 +40,7 @@ class FairCopyApplication {
     const distConfig = {}
     distConfig.devMode = !app.isPackaged
     distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/release-notes/latest.md`).toString('utf-8')
+    distConfig.defaultProjectCSS = fs.readFileSync(`${this.baseDir}/config/default-project-css.css`).toString('utf-8')
     distConfig.version = app.isPackaged ? app.getVersion() : process.env.FAIRCOPY_DEV_VERSION
     return distConfig
   }
@@ -203,7 +204,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive({ ...projectInfo, generatedWith: this.config.version}, this.baseDir, () => {
+      createProjectArchive({ ...projectInfo, defaultProjectCSS: this.config.defaultProjectCSS, generatedWith: this.config.version}, this.baseDir, () => {
         this.openProject(projectInfo.filePath)
       })
     })
