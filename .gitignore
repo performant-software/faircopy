@@ -12,5 +12,5 @@ faircopy*.tgz
 .env
 .env-prod
 .env-dev
-/certs
+/cert
 .yarn
