@@ -68,13 +68,10 @@ export default class PreviewWindow extends Component {
         return (
             <div id="PreviewWindow">
                 <TitleBar 
-                        resourceName={ resourceEntry.name } 
-                        onResourceAction={()=>{}} 
-                        parentResource={ null } 
-                        isImageWindow={true}
-                        isLoggedIn={false}
-                        currentView={'home'}
-                    >
+                    resourceName={ resourceEntry.name } 
+                    isPreviewWindow={true}
+                    currentView={'home'}
+                >
                 </TitleBar>
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
