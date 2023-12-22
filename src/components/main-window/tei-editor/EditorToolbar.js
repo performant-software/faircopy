@@ -128,6 +128,7 @@ export default class EditorToolbar extends Component {
         const editorView = teiDocument.getActiveView()
         const { menus } = fairCopyProject.fairCopyConfig
         const { elements } = fairCopyProject.teiSchema
+        const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
 
         const onAction = (member) => {
             const selection = (editorView) ? editorView.state.selection : null 
@@ -151,7 +152,7 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Undo", "fas fa-undo", this.onUndo ) }
                     { this.renderButton("Redo", "fas fa-redo", this.onRedo ) }    
                     { seperator }
-                    { this.renderButton("Preview", "fas fa-eye", this.onPreview ) }
+                    { this.renderButton("Preview", "fas fa-eye", this.onPreview, canPreview ) }
                 </div>
                 <div className="rightgroup">
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }

@@ -96,6 +96,7 @@ export default class ResourceBrowser extends Component {
     const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
     const createAllowed = remoteProject ? canCreate(permissions) : true
+    const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -138,10 +139,11 @@ export default class ResourceBrowser extends Component {
               </span>
           </Tooltip> 
         }
-        { teiDoc && 
+        { teiDoc &&
           <Tooltip title="Preview Published Document">
               <span>
                   <Button
+                      disabled={!canPreview}
                       onClick={onPreviewResource}
                       className='toolbar-button'
                       disableRipple={true}
