@@ -302,8 +302,7 @@ export default class TEIDocument {
 
     previewDocument() {
         const previewEntry = this.parentEntry ? this.parentEntry : this.resourceEntry
-        const { projectCSS } = this.fairCopyProject.fairCopyConfig
-        fairCopy.services.ipcSend('requestPreviewView', { resourceEntry: previewEntry, projectCSS })
+        this.fairCopyProject.previewResource(previewEntry)
     }
 
     save() {

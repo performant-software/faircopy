@@ -105,6 +105,7 @@ export default class ResourceBrowser extends Component {
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
+    const onPreviewResource = () => { fairCopyProject.previewResource(teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
 
     return (
@@ -136,6 +137,21 @@ export default class ResourceBrowser extends Component {
                   </Button>                   
               </span>
           </Tooltip> 
+        }
+        { teiDoc && 
+          <Tooltip title="Preview Published Document">
+              <span>
+                  <Button
+                      onClick={onPreviewResource}
+                      className='toolbar-button'
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                      style={{float: 'right'}}
+                  >
+                      <i className="far fa-eye fa-2x"></i>
+                  </Button>                   
+              </span>
+          </Tooltip>   
         }
         { currentView === 'remote' &&
          <div className='inline-button-group right-button'>
