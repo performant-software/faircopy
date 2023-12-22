@@ -234,7 +234,7 @@ class FairCopyApplication {
     }
 
     const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
-    this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true )
+    this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true, true )
     this.mainWindow.webContents.send('appConfig', this.config)
 
     // let render window handle on close (without browser restrictions)
@@ -247,20 +247,20 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 570, false, '#E6DEF9' ) 
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 570, false, '#E6DEF9', false ) 
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 
   async createPreviewWindow(previewData) {
     if( !this.previewView ) {
-      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', true )
+      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
     }
     this.previewView.webContents.send('updatePreview', previewData)
   }
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff' )
+    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', false )
     const {resourceID, xmlID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
@@ -357,7 +357,7 @@ class FairCopyApplication {
     return imageData
   }
 
-  async createWindow(preload, width, height, resizable, backgroundColor, devTools ) {
+  async createWindow(preload, width, height, resizable, backgroundColor, menuBar, devTools ) {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
     const webSecurity = app.isPackaged
@@ -376,7 +376,7 @@ class FairCopyApplication {
           preload: `${this.baseDir}/${preload}`,
           spellcheck: false
       },
-      autoHideMenuBar: true,
+      autoHideMenuBar: !menuBar,
       resizable,
       backgroundColor
     })
