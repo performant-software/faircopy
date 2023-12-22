@@ -283,6 +283,11 @@ class FairCopyApplication {
       }
       this.imageViews = {}
 
+      if( this.previewView ) {
+        this.previewView.close()
+        this.previewView = null
+      }
+
       if( this.returnToProjectWindow ) {
         this.createProjectWindow().then(() => {
           this.returnToProjectWindow = false
