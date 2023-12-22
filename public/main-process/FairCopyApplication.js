@@ -189,6 +189,10 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestPreviewView', (event, previewData) => { 
+      // if the preview window already exists, move it to the front
+      if( this.previewView ) {
+        this.previewView.focus()
+      }
       this.fairCopySession.requestPreviewView(previewData)
     })
 
