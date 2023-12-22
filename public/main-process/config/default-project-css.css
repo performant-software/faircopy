@@ -312,6 +312,9 @@ tei-filedesc > tei-extent {
   display: none;
 }
 /* f */
+tei-facsimile {
+  display: none;
+}
 tei-figure {
   display: block;
   text-align: center;
@@ -811,7 +814,9 @@ tei-stamp:before {
   font-weight: bold;
   content: "Stamped: ";
 }
-
+tei-standoff {
+  display: none;
+}
 tei-surplus>*:first-child:before {
   content: "\a[";
   white-space: pre;
@@ -843,9 +848,7 @@ tei-table > tei-head {
   text-align: center;
 }
 tei-teiheader {
-  display: block;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  display: none;
 }
 tei-tei > tei-text {
   display: block;
