@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.2.0-dev.5",
+  "version": "1.2.0-dev.3",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -28,20 +28,23 @@
     "@electron-forge/maker-squirrel": "^7.1.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.1.0",
     "dotenv": "^16.3.1",
-    "electron": "^25.5.0"
+    "electron": "^28.0.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@codemirror/lang-css": "^6.2.1",
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.53",
     "@rails/actioncable": "^6.0.5",
-    "annotorious-openseadragon": "github:performant-software/annotorious-openseadragon",
+    "@uiw/react-codemirror": "^4.21.20",    
+    "annotorious-openseadragon": "github:performant-software/annotorious-openseadragon#nl/update-sass",
     "axios": "^1.6.2",
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
     "electron-squirrel-startup": "^1.0.0",
     "flexsearch": "^0.7.21",
+    "html-react-parser": "^5.0.6",
     "jimp": "^0.16.1",
     "jszip": "3.10.1",
     "openseadragon": "^3.0.0",

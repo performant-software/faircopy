@@ -4,6 +4,7 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
 import KeyBindingsTable from './KeyBindingsTable'
+import PreviewCSSEditor from './PreviewCSSEditor'
 import { canConfigAdmin } from '../../model/permissions'
 import { getConfigStatus } from '../../model/faircopy-config'
 import { inlineRingSpinner } from '../common/ring-spinner'
@@ -38,6 +39,7 @@ export default class ProjectSettingsWindow extends Component {
                     <Tab value="general" label="Project" />
                     <Tab value="elements" label="Menus"/>
                     <Tab value="keybindings" label="Hot Keys"/>
+                    <Tab value="previewCSS" label="Preview CSS"/>
                 </Tabs>
             </div>
         )
@@ -85,6 +87,11 @@ export default class ProjectSettingsWindow extends Component {
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></KeyBindingsTable> }
+                { selectedPage === 'previewCSS' && <PreviewCSSEditor
+                    fairCopyConfig={fairCopyConfig}
+                    readOnly={!canEdit}
+                    onUpdateConfig={onUpdate}
+                ></PreviewCSSEditor>}
             </div>
         )
     }

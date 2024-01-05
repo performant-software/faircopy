@@ -15,7 +15,7 @@ const compatibleProject = function compatibleProject(manifestData, currentVersio
     return simpleCurrentVersion === projectVersion || semver.gt(simpleCurrentVersion, projectVersion)
 }
 
-const migrateConfig = function migrateConfig( generatedWith, baseConfig, projectConfig ) {
+const migrateConfig = function migrateConfig( generatedWith, baseConfig, projectConfig, fairCopyAppConfig ) {
     const projectVersion = getProjectVersion(generatedWith)
 
     // always keep projectConfig up to date with latest elements
@@ -25,6 +25,11 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
     if( semver.lt(projectVersion,'1.1.6') ) {
         migrationAddKeybindings(projectConfig)
         log.info('applying migrations for v1.1.6')
+    }
+
+    if( semver.lt(projectVersion,'1.2.0') ) {
+        migrationAddProjectCSS(projectConfig,fairCopyAppConfig)
+        log.info('applying migrations for v1.2.0')
     }
 
     if( semver.lt(projectVersion,'0.10.1') ) {
@@ -72,6 +77,11 @@ exports.migrateManifestData = migrateManifestData
 
 function migrationAddKeybindings(projectConfig) {
     projectConfig.keybindings = {}
+}
+
+function migrationAddProjectCSS(projectConfig,fairCopyAppConfig) {
+    const { defaultProjectCSS } = fairCopyAppConfig
+    projectConfig.projectCSS = defaultProjectCSS
 }
 
 function migrationAddNewElements(baseConfig,projectConfig) {

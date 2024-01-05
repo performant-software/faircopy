@@ -1,5 +1,6 @@
 const { WorkerWindow } = require('./WorkerWindow')
 const log = require('electron-log')
+const { app } = require('electron')
 
 const checkStatusInterval = 300
 
@@ -12,7 +13,7 @@ class SearchIndex {
         this.indexing = false
 
         const {baseDir} = this.projectStore.fairCopyApplication
-        const debug = this.projectStore.fairCopyApplication.isDebugMode()
+        const debug = !app.isPackaged
         this.initIndexWorker(baseDir,debug,schemaJSON).then(() => {
             this.initSearchIndex( this.projectStore.manifestData )                
         })

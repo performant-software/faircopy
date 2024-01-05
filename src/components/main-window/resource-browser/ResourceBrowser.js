@@ -96,6 +96,7 @@ export default class ResourceBrowser extends Component {
     const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
     const createAllowed = remoteProject ? canCreate(permissions) : true
+    const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -105,6 +106,7 @@ export default class ResourceBrowser extends Component {
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
+    const onPreviewResource = () => { fairCopyProject.previewResource(teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
 
     return (
@@ -136,6 +138,22 @@ export default class ResourceBrowser extends Component {
                   </Button>                   
               </span>
           </Tooltip> 
+        }
+        { teiDoc &&
+          <Tooltip title="Preview Published Document">
+              <span>
+                  <Button
+                      disabled={!canPreview}
+                      onClick={onPreviewResource}
+                      className='toolbar-button'
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                      style={{float: 'right'}}
+                  >
+                      <i className="far fa-eye fa-2x"></i>
+                  </Button>                   
+              </span>
+          </Tooltip>   
         }
         { currentView === 'remote' &&
          <div className='inline-button-group right-button'>

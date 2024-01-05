@@ -229,13 +229,16 @@ class FairCopySession {
         this.projectStore.searchIndex.searchProject(searchQuery) 
     }
 
-    saveResource(resourceID, resourceData) {
+    saveResource(resourceID, resourceData, updatePreview) {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
             const idMap = this.idMapAuthority.commitResource(localID, parentID)
             this.projectStore.saveResource(resourceEntry, resourceData, idMap)  
+            if( updatePreview ) {
+                this.requestPreviewView({ resourceEntry })
+            }       
             return true  
         }
         return false
@@ -411,6 +414,10 @@ class FairCopySession {
         this.projectStore.updateProjectInfo(projectInfo)
         // TODO if this is a remote project, send the latest name and description to server
         // permissions etc can only be set from server.
+    }
+
+    requestPreviewView(previewData) {
+        this.projectStore.requestPreviewView(previewData)
     }
 
     requestExport(resourceEntries,path) {

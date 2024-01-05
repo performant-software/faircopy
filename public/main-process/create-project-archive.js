@@ -3,7 +3,7 @@ const fs = require('fs')
 const { manifestEntryName, configSettingsEntryName, idMapEntryName } = require('./ProjectStore')
 
 const createProjectArchive = function createProjectArchive(projectInfo,baseDir,callback) {
-    const { projectID, name, userID, permissions, serverURL, description, filePath, remote, generatedWith } = projectInfo
+    const { projectID, name, userID, permissions, serverURL, description, filePath, remote, defaultProjectCSS, generatedWith } = projectInfo
     const projectArchive = new JSZip()      
    
     const fairCopyManifest = {
@@ -19,11 +19,13 @@ const createProjectArchive = function createProjectArchive(projectInfo,baseDir,c
         configLastAction: null
     }
 
-    // Load the initial config for the project
-    const fairCopyConfig = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
-
+    // Load the initial config for the project and mix in default CSS
+    const fairCopyConfigJSON = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
+    const fairCopyConfig = JSON.parse(fairCopyConfigJSON)
+    fairCopyConfig.projectCSS = defaultProjectCSS
+    
     projectArchive.file(manifestEntryName, JSON.stringify(fairCopyManifest))
-    projectArchive.file(configSettingsEntryName, fairCopyConfig)
+    projectArchive.file(configSettingsEntryName, JSON.stringify(fairCopyConfig))
     projectArchive.file(idMapEntryName, "{}")
     
     projectArchive

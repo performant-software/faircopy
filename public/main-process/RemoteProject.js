@@ -1,5 +1,6 @@
 const { WorkerWindow } = require('./WorkerWindow')
 const { migrateConfig } = require('./data-migration')
+const { app } = require('electron')
 
 class RemoteProject {
 
@@ -7,7 +8,7 @@ class RemoteProject {
         const { fairCopyApplication } = fairCopySession
         const {baseDir} = fairCopyApplication
         this.fairCopySession = fairCopySession
-        this.initRemoteProjectWorker( baseDir, fairCopyApplication.isDebugMode(), userID, serverURL, projectID ).then(() => {
+        this.initRemoteProjectWorker( baseDir, !app.isPackaged, userID, serverURL, projectID ).then(() => {
             this.open()
         })
     }

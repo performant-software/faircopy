@@ -74,6 +74,11 @@ export default class FairCopyProject {
         this.updateListeners = this.updateListeners.filter( l => l !== listener )
     }
 
+    previewResource(resourceEntry) {
+        const { projectCSS } = this.fairCopyConfig
+        fairCopy.services.ipcSend('requestPreviewView', { resourceEntry, projectCSS })
+    }
+
     loadManifest(fairCopyManifest) {
         this.projectName = fairCopyManifest.projectName
         this.description = fairCopyManifest.description

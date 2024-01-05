@@ -5,6 +5,7 @@ import MainWindow from './main-window/MainWindow'
 import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
 import WorkerWindow from './worker-window/WorkerWindow'
+import PreviewWindow from './preview-window/PreviewWindow'
 import IncompatDialog from './IncompatDialog'
 import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
 
@@ -96,6 +97,10 @@ export default class App extends Component {
       configure({ ignoreEventsCondition: () => false })      
     } else if( rootComponent === 'ImageWindow' ) {
       services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
+    } else if( rootComponent === 'PreviewWindow' ) {
+      //  setTimeout( () => {
+        this.setTitle('Preview Document')
+      // },5000)
     }
   }
 
@@ -214,6 +219,11 @@ export default class App extends Component {
             <ImageWindow
               imageView={imageView}
             ></ImageWindow>
+        )
+    } else if( rootComponent === "PreviewWindow" ) {
+        return (
+            <PreviewWindow
+            ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {
       return (
