@@ -4,7 +4,6 @@ const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
-const { updateElectronApp } = require('update-electron-app')
 
 const { FairCopySession } = require('./FairCopySession')
 
@@ -24,13 +23,7 @@ class FairCopyApplication {
 
     this.baseDir = app.isPackaged ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
-
-    if( app.isPackaged ) {
-      log.info("Initializing autoUpdate Service")
-      updateElectronApp({
-        logger: log
-      })  
-    }
+    
     this.mainMenu = new MainMenu(this)
     this.initLocalFileProtocol()
     this.initIPC()

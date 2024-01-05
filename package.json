@@ -72,7 +72,6 @@
     "react-split-pane": "^0.1.92",
     "react-spring": "9.5.5",
     "semver": "^7.3.5",
-    "update-electron-app": "^3.0.0",
     "uuid": "^8.1.0",
     "w3c-xmlserializer": "^2.0.0",
     "xml-formatter": "^2.5.0"
