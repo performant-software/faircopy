@@ -1,15 +1,15 @@
 {
   "name": "faircopy",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "predist": "yarn build",
-    "predist-mac": "yarn build",
-    "predist-win": "yarn build",
-    "predist-linux": "yarn build",
+    "predist": "npm run build",
+    "predist-mac": "npm run build",
+    "predist-win": "npm run build",
+    "predist-linux": "npm run build",
     "dist-mac": "electron-builder -m --publish always",
     "dist-win": "electron-builder -w --publish always",
     "dist-linux": "electron-builder -l --publish always",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
     "dotenv": "^8.2.0",
-    "electron": "^25.5.0",
+    "electron": "^28.0.0",
     "electron-builder": "^24.6.3"
   },
   "dependencies": {
@@ -38,8 +38,8 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.53",
     "@rails/actioncable": "^6.0.5",
-    "annotorious-openseadragon": "github:performant-software/annotorious-openseadragon",
-    "axios": "^0.19.2",
+    "annotorious-openseadragon": "github:performant-software/annotorious-openseadragon#nl/update-sass",
+    "axios": "^1.6.2",
     "debounce": "^1.2.0",
     "electron-log": "^4.2.3",
     "electron-updater": "^4.6.1",
@@ -81,7 +81,7 @@
   "build": {
     "appId": "com.performantsoftware.faircopy",
     "productName": "FairCopy",
-    "copyright": "Copyright © 2023 ${author}",
+    "copyright": "Copyright © 2024 ${author}",
     "files": [
       "build/**/*",
       "node_modules/**/*"
