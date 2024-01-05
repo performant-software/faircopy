@@ -2,14 +2,16 @@
 #PreviewWindow #preview-viewer {
   display: flex;
   width: calc( 100% - 100px );
-  height: calc( 100% );
+  height: calc( 100% - 100px );
   overflow-y: scroll;
   position: fixed;
   background: white;
   padding-left: 50px;
   padding-right: 50px;
+  margin-bottom: 20px; 
   border-left: 3px solid #ddf8ff
 }
+
 
 #PreviewWindow .toolbar {
   margin-top: 10px;
