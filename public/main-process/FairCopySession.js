@@ -91,11 +91,31 @@ class FairCopySession {
     }
 
     replaceTEIDocument( resources ) {
-        // in this case, the existing TEI document must be checked out 
+        const { resources: manifestResources } = this.projectStore.manifestData
 
-        // const { resources } = this.projectStore.manifestData
-        // TODO if the incoming resources match xml_ids with existing resources, replace them.
-        // TODO 
+        const teiDocResource = resources.find( r => r.type == 'teidoc' )
+        // if( !teiDocResource ) TODO error
+        const existingTEIDoc = Object.values(manifestResources).find( r => r.localID == teiDocResource.localID && r.type == 'teidoc' )
+
+        if( existingTEIDoc ) {
+            // TODO replace the existing resources
+            // save over top of it
+            // this.setResourceMap(resourceMap, localID, parentEntry.localID)
+            // this.saveResource(existingLocalResource.id,content,false)
+            // remove the resources that were not replaced
+        } else {
+            const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(teiDocResource.localID,null)
+            // if not, just add this resource
+            if( !existingResourceMap ) {
+                // add this teidoc and its resources as a new doc
+                for( const resource of resources ) {
+                    const { resourceEntry, content, resourceMap } = resource 
+                    this.addResource(resourceEntry, content, resourceMap )
+                }
+            } else {
+                // TODO teidoc exists but not checked out - error
+            }
+        }
     }
 
     replaceResource(resource, parentEntry) {
@@ -112,8 +132,9 @@ class FairCopySession {
         }
 
         if( existingLocalResource ) {
-            // TODO there is an existing resource in the project store, replace it
-
+            // save over top of the existing resource
+            this.setResourceMap(resourceMap, localID, parentEntry.localID)
+            this.saveResource(existingLocalResource.id,content,false)
         } else {
             // otherwise, does it exist in the idMap? 
             const parentID = parentEntry ? parentEntry.localID : null
@@ -121,6 +142,8 @@ class FairCopySession {
             // if not, just add this resource
             if( !existingResourceMap ) {
                 this.addResource(resourceEntry, content, resourceMap)
+            } else {
+                // TODO already exists but not checked out - error
             }
         }
     }
