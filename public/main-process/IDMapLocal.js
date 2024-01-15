@@ -140,6 +140,10 @@ class IDMapLocal {
         }
     }
 
+    getResourceMapByLocalID(localID,parentID) {
+        return parentID ? this.idMap[parentID].ids[localID] : this.idMap[localID]
+    }
+    
     commitResource( localID, parentID ) {
         // move resource map from draft form to authoritative
         if( parentID ) {

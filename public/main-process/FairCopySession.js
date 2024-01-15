@@ -90,6 +90,41 @@ class FairCopySession {
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
     }
 
+    replaceTEIDocument( resources ) {
+        // in this case, the existing TEI document must be checked out 
+
+        // const { resources } = this.projectStore.manifestData
+        // TODO if the incoming resources match xml_ids with existing resources, replace them.
+        // TODO 
+    }
+
+    replaceResource(resource, parentEntry) {
+        const { resourceEntry, content, resourceMap } = resource
+        const { localID } = resourceEntry
+        const { resources } = this.projectStore.manifestData
+
+        // is there an existing resource with this id and parent?
+        let existingLocalResource = null
+        if( parentEntry ) {
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID && parentEntry.id == r.parentResource )
+        } else {
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID )
+        }
+
+        if( existingLocalResource ) {
+            // TODO there is an existing resource in the project store, replace it
+
+        } else {
+            // otherwise, does it exist in the idMap? 
+            const parentID = parentEntry ? parentEntry.localID : null
+            const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(localID,parentID)
+            // if not, just add this resource
+            if( !existingResourceMap ) {
+                this.addResource(resourceEntry, content, resourceMap)
+            }
+        }
+    }
+
     removeResources(resourceIDs) {
         const { resources } = this.projectStore.manifestData
         // use this map to generate unique ID list

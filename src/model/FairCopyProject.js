@@ -151,9 +151,18 @@ export default class FairCopyProject {
     async importResource(importData,parentEntry) {
         try {
             const resources = await importResource(importData,parentEntry,this)
-            for( const resource of resources ) {
-                const { resourceEntry, content, resourceMap } = resource
-                this.addResource( resourceEntry, content, resourceMap )
+            const {replaceResource} = importData.options
+            if( replaceResource ) {
+                if( resources.length > 1 ) {
+                    fairCopy.services.ipcSend( 'replaceTEIDocument', resources )
+                } else {
+                    fairCopy.services.ipcSend( 'replaceResource', resources[0], parentEntry )
+                }
+            } else {
+                for( const resource of resources ) {
+                    const { resourceEntry, content, resourceMap } = resource
+                    this.addResource( resourceEntry, content, resourceMap )
+                }    
             }
             return { error: false, errorMessage: null, resourceCount: resources.length }
         } catch(e) {
