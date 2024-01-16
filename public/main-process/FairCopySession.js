@@ -93,19 +93,25 @@ class FairCopySession {
     replaceTEIDocument( resources ) {
         const { resources: manifestResources } = this.projectStore.manifestData
 
-        const teiDocResource = resources.find( r => r.type == 'teidoc' )
-        // if( !teiDocResource ) TODO error
-        const existingTEIDoc = Object.values(manifestResources).find( r => r.localID == teiDocResource.localID && r.type == 'teidoc' )
+        const teiDocResource = resources.find( r => r.resourceEntry.type == 'teidoc' )
+        const teiDocLocalID = teiDocResource.resourceEntry.localID 
+        const existingTEIDoc = Object.values(manifestResources).find( r => r.localID == teiDocLocalID && r.type == 'teidoc' )
+        const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(teiDocLocalID,null)
 
         if( existingTEIDoc ) {
-            // TODO replace the existing resources
-            // save over top of it
-            // this.setResourceMap(resourceMap, localID, parentEntry.localID)
-            // this.saveResource(existingLocalResource.id,content,false)
-            // remove the resources that were not replaced
+            for( const resource of resources ) {
+                this.replaceResource(resource,existingTEIDoc)
+            }
+            const doomedIDs = []
+            for( const childLocalID of Object.keys(existingResourceMap.ids) ) {
+                const newerVersion = resources.find( r => r.resourceEntry.localID == childLocalID )
+                if( !newerVersion ) {
+                    // if there wasn't a newer version of this resource, remove it
+                    doomedIDs.push( existingResourceMap[childLocalID].resourceID )
+                }
+            }
+            if( doomedIDs.length > 0 ) this.removeResources(doomedIDs)
         } else {
-            const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(teiDocResource.localID,null)
-            // if not, just add this resource
             if( !existingResourceMap ) {
                 // add this teidoc and its resources as a new doc
                 for( const resource of resources ) {
@@ -113,7 +119,7 @@ class FairCopySession {
                     this.addResource(resourceEntry, content, resourceMap )
                 }
             } else {
-                // TODO teidoc exists but not checked out - error
+                this.projectStore.importError(`${teiDocLocalID} is not checked out and could not be replaced.`)
             }
         }
     }
@@ -141,9 +147,10 @@ class FairCopySession {
             const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(localID,parentID)
             // if not, just add this resource
             if( !existingResourceMap ) {
+                if( parentEntry ) resourceEntry.parentResource = parentEntry.id
                 this.addResource(resourceEntry, content, resourceMap)
             } else {
-                // TODO already exists but not checked out - error
+                this.projectStore.importError(`${localID} is not checked out and could not be replaced.`)
             }
         }
     }

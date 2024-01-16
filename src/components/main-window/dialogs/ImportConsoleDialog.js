@@ -43,6 +43,11 @@ export default class ImportConsoleDialog extends Component {
             const {importList} = importData
             this.setState({...this.state, consoleLines: nextConsole, importList, open: true })            
         } 
+        else if( command === 'error' ) {
+            // There was an error reported by main process, display it.
+            nextConsole.push(importData.errorMessage)
+            // TODO adjust imported resource count appropriately.
+        }
         else if( command === 'next' ) {
             const { fairCopyProject, parentEntry } = this.props
             const { successCount, subResourceCount, totalCount, importList } = this.state

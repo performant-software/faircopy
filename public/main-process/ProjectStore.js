@@ -209,6 +209,10 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
     }
 
+    importError(errorMessage) {
+        this.fairCopyApplication.sendToMainWindow('importData', { command: 'error', errorMessage } )  
+    }
+
     importEnd() {
         this.importRunning(false)
         this.saveManifest()
