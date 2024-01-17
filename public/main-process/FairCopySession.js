@@ -102,6 +102,11 @@ class FairCopySession {
             for( const resource of resources ) {
                 if( resource.resourceEntry.type !== 'teidoc') {
                     this.replaceResource(resource,existingTEIDoc)
+                } else {
+                    // acknowledge that we got the tei doc
+                    if(this.projectStore.importInProgress) {
+                        this.projectStore.importContinue()
+                    }
                 }
             }
             const doomedIDs = []
@@ -121,7 +126,10 @@ class FairCopySession {
                     this.addResource(resourceEntry, content, resourceMap )
                 }
             } else {
-                this.projectStore.importError(`${teiDocLocalID} is not checked out and could not be replaced.`)
+                if(this.projectStore.importInProgress) {
+                    this.projectStore.importError(`${teiDocLocalID} is not checked out and could not be replaced.`)
+                    this.projectStore.importContinue()                    
+                }
             }
         }
     }
@@ -148,6 +156,10 @@ class FairCopySession {
             const parentLocalID = parentEntry ? parentEntry.localID : null
             this.setResourceMap(resourceMap, localID, parentLocalID)
             this.saveResource(resourceEntry.id,content,false)
+
+            if(this.projectStore.importInProgress) {
+                this.projectStore.importContinue()
+            }
         } else {
             // otherwise, does it exist in the idMap? 
             const parentID = parentEntry ? parentEntry.localID : null
@@ -157,7 +169,10 @@ class FairCopySession {
                 if( parentEntry ) resourceEntry.parentResource = parentEntry.id
                 this.addResource(resourceEntry, content, resourceMap)
             } else {
-                this.projectStore.importError(`${localID} is not checked out and could not be replaced.`)
+                if(this.projectStore.importInProgress) {
+                    this.projectStore.importError(`${localID} is not checked out and could not be replaced.`)
+                    this.projectStore.importContinue()
+                }
             }
         }
     }
