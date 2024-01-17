@@ -100,7 +100,9 @@ class FairCopySession {
 
         if( existingTEIDoc ) {
             for( const resource of resources ) {
-                this.replaceResource(resource,existingTEIDoc)
+                if( resource.resourceEntry.type !== 'teidoc') {
+                    this.replaceResource(resource,existingTEIDoc)
+                }
             }
             const doomedIDs = []
             for( const childLocalID of Object.keys(existingResourceMap.ids) ) {
@@ -129,18 +131,23 @@ class FairCopySession {
         const { localID } = resourceEntry
         const { resources } = this.projectStore.manifestData
 
-        // is there an existing resource with this id and parent?
+        // is there an existing resource with this id and parent? also set parentResource
         let existingLocalResource = null
         if( parentEntry ) {
             existingLocalResource = Object.values(resources).find( r => r.localID == localID && parentEntry.id == r.parentResource )
+            resourceEntry.parentResource = parentEntry.id
         } else {
             existingLocalResource = Object.values(resources).find( r => r.localID == localID )
+            resourceEntry.parentResource = null
         }
 
         if( existingLocalResource ) {
             // save over top of the existing resource
-            this.setResourceMap(resourceMap, localID, parentEntry.localID)
-            this.saveResource(existingLocalResource.id,content,false)
+            resourceEntry.id = existingLocalResource.id            
+            resourceMap.resourceID = existingLocalResource.id
+            const parentLocalID = parentEntry ? parentEntry.localID : null
+            this.setResourceMap(resourceMap, localID, parentLocalID)
+            this.saveResource(resourceEntry.id,content,false)
         } else {
             // otherwise, does it exist in the idMap? 
             const parentID = parentEntry ? parentEntry.localID : null
