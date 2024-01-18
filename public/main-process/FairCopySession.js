@@ -101,7 +101,9 @@ class FairCopySession {
         if( existingTEIDoc ) {
             for( const resource of resources ) {
                 if( resource.resourceEntry.type !== 'teidoc') {
-                    this.replaceResource(resource,existingTEIDoc)
+                    if( !this.replaceResource(resource,existingTEIDoc) ) {
+                        // TODO don't continue
+                    }
                 } else {
                     // acknowledge that we got the tei doc
                     if(this.projectStore.importInProgress) {
@@ -114,7 +116,7 @@ class FairCopySession {
                 const newerVersion = resources.find( r => r.resourceEntry.localID == childLocalID )
                 if( !newerVersion ) {
                     // if there wasn't a newer version of this resource, remove it
-                    doomedIDs.push( existingResourceMap[childLocalID].resourceID )
+                    doomedIDs.push( existingResourceMap.ids[childLocalID].resourceID )
                 }
             }
             if( doomedIDs.length > 0 ) this.removeResources(doomedIDs)
@@ -172,9 +174,11 @@ class FairCopySession {
                 if(this.projectStore.importInProgress) {
                     this.projectStore.importError(`${localID} is not checked out and could not be replaced.`)
                     this.projectStore.importContinue()
+                    return false
                 }
             }
         }
+        return true
     }
 
     removeResources(resourceIDs) {
