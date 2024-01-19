@@ -102,7 +102,8 @@ class FairCopySession {
             for( const resource of resources ) {
                 if( resource.resourceEntry.type !== 'teidoc') {
                     if( !this.replaceResource(resource,existingTEIDoc) ) {
-                        // TODO don't continue
+                        // don't continue if any sub resources fail
+                        return
                     }
                 } else {
                     // acknowledge that we got the tei doc
