@@ -90,6 +90,98 @@ class FairCopySession {
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
     }
 
+    replaceTEIDocument( resources ) {
+        const { resources: manifestResources } = this.projectStore.manifestData
+
+        const teiDocResource = resources.find( r => r.resourceEntry.type == 'teidoc' )
+        const teiDocLocalID = teiDocResource.resourceEntry.localID 
+        const existingTEIDoc = Object.values(manifestResources).find( r => r.localID == teiDocLocalID && r.type == 'teidoc' )
+        const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(teiDocLocalID,null)
+
+        if( existingTEIDoc ) {
+            for( const resource of resources ) {
+                if( resource.resourceEntry.type !== 'teidoc') {
+                    if( !this.replaceResource(resource,existingTEIDoc) ) {
+                        // don't continue if any sub resources fail
+                        return
+                    }
+                } else {
+                    // acknowledge that we got the tei doc
+                    if(this.projectStore.importInProgress) {
+                        this.projectStore.importContinue()
+                    }
+                }
+            }
+            const doomedIDs = []
+            for( const childLocalID of Object.keys(existingResourceMap.ids) ) {
+                const newerVersion = resources.find( r => r.resourceEntry.localID == childLocalID )
+                if( !newerVersion ) {
+                    // if there wasn't a newer version of this resource, remove it
+                    doomedIDs.push( existingResourceMap.ids[childLocalID].resourceID )
+                }
+            }
+            if( doomedIDs.length > 0 ) this.removeResources(doomedIDs)
+        } else {
+            if( !existingResourceMap ) {
+                // add this teidoc and its resources as a new doc
+                for( const resource of resources ) {
+                    const { resourceEntry, content, resourceMap } = resource 
+                    this.addResource(resourceEntry, content, resourceMap )
+                }
+            } else {
+                if(this.projectStore.importInProgress) {
+                    this.projectStore.importError(`${teiDocLocalID} is not checked out and could not be replaced.`)
+                    this.projectStore.importContinue()                    
+                }
+            }
+        }
+    }
+
+    replaceResource(resource, parentEntry) {
+        const { resourceEntry, content, resourceMap } = resource
+        const { localID } = resourceEntry
+        const { resources } = this.projectStore.manifestData
+
+        // is there an existing resource with this id and parent? also set parentResource
+        let existingLocalResource = null
+        if( parentEntry ) {
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID && parentEntry.id == r.parentResource )
+            resourceEntry.parentResource = parentEntry.id
+        } else {
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID && r.parentResource == null)
+            resourceEntry.parentResource = null
+        }
+
+        if( existingLocalResource ) {
+            // save over top of the existing resource
+            resourceEntry.id = existingLocalResource.id            
+            resourceMap.resourceID = existingLocalResource.id
+            const parentLocalID = parentEntry ? parentEntry.localID : null
+            this.setResourceMap(resourceMap, localID, parentLocalID)
+            this.saveResource(resourceEntry.id,content,false)
+
+            if(this.projectStore.importInProgress) {
+                this.projectStore.importContinue()
+            }
+        } else {
+            // otherwise, does it exist in the idMap? 
+            const parentID = parentEntry ? parentEntry.localID : null
+            const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(localID,parentID)
+            // if not, just add this resource
+            if( !existingResourceMap ) {
+                if( parentEntry ) resourceEntry.parentResource = parentEntry.id
+                this.addResource(resourceEntry, content, resourceMap)
+            } else {
+                if(this.projectStore.importInProgress) {
+                    this.projectStore.importError(`${localID} is not checked out and could not be replaced.`)
+                    this.projectStore.importContinue()
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
     removeResources(resourceIDs) {
         const { resources } = this.projectStore.manifestData
         // use this map to generate unique ID list

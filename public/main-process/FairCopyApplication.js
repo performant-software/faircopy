@@ -67,6 +67,9 @@ class FairCopyApplication {
     
     ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
 
+    ipcMain.on('replaceTEIDocument', (event, resources) => { this.fairCopySession.replaceTEIDocument(resources) })
+    ipcMain.on('replaceResource', (event, resource, parentEntry) => { this.fairCopySession.replaceResource(resource,parentEntry) })
+
     ipcMain.on('removeResources', (event, resourceIDs) => { 
       this.fairCopySession.removeResources(resourceIDs) 
       

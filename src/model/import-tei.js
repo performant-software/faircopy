@@ -23,6 +23,7 @@ export async function importResource(importData,parentEntry,fairCopyProject) {
 
 function importFileResource(importData,parentEntry,fairCopyProject) {
     const { path, data, options } = importData
+    const { replaceResource } = options
     const { idMap } = fairCopyProject
 
     // what do we call this resource?
@@ -36,8 +37,13 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
     } else {
         name = fairCopy.services.getBasename(path).trim()
     }
-    const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
-    const localID = getUniqueResourceID('resource', siblingIDs, name )
+    let localID
+    if( replaceResource ) {
+        localID = getUniqueResourceID('resource', [], name )
+    } else {
+        const siblingIDs = parentEntry ? Object.keys(idMap.idMap[parentEntry.localID].ids) : Object.keys(idMap.idMap)
+        localID = getUniqueResourceID('resource', siblingIDs, name )
+    }
     const existingParentID = parentEntry ? parentEntry.id : null
 
     // if this is an XML file, parse the dom
