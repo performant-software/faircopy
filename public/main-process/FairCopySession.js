@@ -148,7 +148,7 @@ class FairCopySession {
             existingLocalResource = Object.values(resources).find( r => r.localID == localID && parentEntry.id == r.parentResource )
             resourceEntry.parentResource = parentEntry.id
         } else {
-            existingLocalResource = Object.values(resources).find( r => r.localID == localID )
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID && r.parentResource == null)
             resourceEntry.parentResource = null
         }
 
