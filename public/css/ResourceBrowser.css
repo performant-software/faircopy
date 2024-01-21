@@ -18,6 +18,10 @@
     max-width: 300px;
 }
 
+#ResourceBrowser .login-button {
+    margin-top: 10px;
+}
+
 #ResourceBrowser .down-caret {
     margin-left: 5px;
 }

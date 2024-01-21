@@ -28,7 +28,6 @@ import SearchDialog from './dialogs/SearchDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import CheckOutDialog from './dialogs/CheckOutDialog'
 import { bigRingSpinner } from '../common/ring-spinner'
-import { logout } from '../../model/cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -405,21 +404,11 @@ export default class MainWindow extends Component {
     }
 
     onLoggedIn = () => {
-        this.setState( {...this.state, loginMode: false} )
-        fairCopy.services.ipcSend('reopenProject')
-    }
-
-    onLogOut = () => {
         const { resourceViews } = this.state
-        const { fairCopyProject } = this.props
-        const { userID, serverURL } = fairCopyProject
-        const { currentView } = resourceViews
-        const resourceView = resourceViews[currentView]
-        const { indexParentID, parentEntry, currentPage } = resourceView
-        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
-        logout(userID, serverURL)
-        this.setState( {...this.state} )
-        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+        const nextResourceViews = { ...resourceViews }
+        nextResourceViews['remote'].loading = true
+        this.setState( {...this.state, resourceViews: nextResourceViews, loginMode: false} )
+        fairCopy.services.ipcSend('reopenProject')
     }
 
     onEditResource = () => {
@@ -725,7 +714,6 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         onLogin={this.onLogin}
-                        onLogout={this.onLogOut}
                         teiDoc={parentEntry}
                         setResourceCheckmark={this.setResourceCheckmark}
                         setAllCheckmarks={this.setAllCheckmarks}

@@ -84,14 +84,6 @@ export default class ResourceBrowser extends Component {
     }
   }
 
-  renderLoginButton(buttonProps) {
-    const { onLogin, fairCopyProject, onLogout } = this.props
-
-    return fairCopyProject.isLoggedIn() ? 
-        <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
-        <Button {...buttonProps} onClick={onLogin}>Log In</Button>
-  }
-
   renderToolbar() {
     const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
@@ -154,11 +146,6 @@ export default class ResourceBrowser extends Component {
                   </Button>                   
               </span>
           </Tooltip>   
-        }
-        { currentView === 'remote' &&
-         <div className='inline-button-group right-button'>
-          { this.renderLoginButton(buttonProps) }
-        </div>   
         }
       </div>
     )
@@ -297,19 +284,27 @@ export default class ResourceBrowser extends Component {
   }
 
   renderEmptyListMessage() {
-    const { resourceIndex, currentView, fairCopyProject, resourceView } = this.props
+    const { resourceIndex, currentView, fairCopyProject, resourceView, onLogin } = this.props
     if( resourceIndex.length > 0 || resourceView.loading ) return null
+
+    const buttonProps = {
+      className: 'login-button',
+      variant: "outlined",
+      size: 'small'
+    }
+    const displayLoginButton = !fairCopyProject.isLoggedIn() && currentView === 'remote'
 
     const message = currentView === 'home' ? 
       <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
-      fairCopyProject.isLoggedIn() ? 
-        <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography> :
-        <Typography>You are not logged into the server. Click on the LOG IN button above.</Typography>
+      displayLoginButton ? 
+          <Typography>You are not logged into the server. Click below to login.</Typography> :
+          <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>
 
     return (
       <Card raised={true} className='empty-list-card'>
         <CardContent>
           { message }
+          { displayLoginButton && <Button onClick={onLogin} {...buttonProps}>Login</Button>}
         </CardContent>
       </Card>
     )

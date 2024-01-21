@@ -242,10 +242,12 @@ class FairCopySession {
     }
 
     updateResourceView(resourceViewRequest) {
-        const { currentView, indexParentID, parentEntry, currentPage }  = resourceViewRequest
-        const resourceView = this.resourceViews[currentView]
-        this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, currentPage }
-        this.resourceViews.currentView = currentView
+        if( resourceViewRequest ) {
+            const { currentView, indexParentID, parentEntry, currentPage }  = resourceViewRequest
+            const resourceView = this.resourceViews[currentView]
+            this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, currentPage }
+            this.resourceViews.currentView = currentView    
+        }
         this.requestResourceView()
     }
 
