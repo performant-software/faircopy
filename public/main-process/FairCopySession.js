@@ -22,6 +22,7 @@ class FairCopySession {
                 currentPage: 1, 
                 rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
+                nameFilter: null,
                 loading: true
             },
             home: {
@@ -30,6 +31,7 @@ class FairCopySession {
                 currentPage: 1, 
                 rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
+                nameFilter: null,
                 loading: true           
             }
         }
@@ -243,9 +245,17 @@ class FairCopySession {
 
     updateResourceView(resourceViewRequest) {
         if( resourceViewRequest ) {
-            const { currentView, indexParentID, parentEntry, currentPage }  = resourceViewRequest
+            const { currentView, indexParentID, parentEntry }  = resourceViewRequest
             const resourceView = this.resourceViews[currentView]
-            this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, currentPage }
+            const currentPage = resourceViewRequest.currentPage !== undefined ? resourceViewRequest.currentPage : resourceView.currentPage
+            let nameFilter
+            // carry over name filter value if switching views
+            if( this.resourceViews.currentView !== currentView ) {
+                nameFilter = resourceViewRequest.nameFilter !== undefined ? resourceViewRequest.nameFilter : this.resourceViews[currentView].nameFilter
+            } else {
+                nameFilter = resourceViewRequest.nameFilter !== undefined ? resourceViewRequest.nameFilter : resourceView.nameFilter
+            }
+            this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, nameFilter, currentPage }
             this.resourceViews.currentView = currentView    
         }
         this.requestResourceView()
@@ -263,18 +273,24 @@ class FairCopySession {
         } else {
             // respond right away from project store
             resourceView.parentEntry = indexParentID ? localResources[indexParentID] : null
+            const { nameFilter } = resourceView
 
             let resourceIndex = []
             for( const localResource of Object.values(localResources) ) {
                 const { parentResource } = localResource
                 if( localResource.type !== 'image' ) {
+                    // if this resource is a child of current parent OR 
+                    // if the parent is not checked out, display it at top level
                     if( parentResource === indexParentID ||
                         ( indexParentID === null && !localResources[parentResource] )) {
-                        // if this resource is a child of current parent OR 
-                        // if the parent is not checked out, display it at top level
-                        resourceIndex.push(localResource)                    
-                    } 
-                }                    
+                        if( indexParentID ) {
+                            // filter doesn't act on teidoc views
+                            resourceIndex.push(localResource)                    
+                        } else if( !nameFilter || localResource.name.includes(nameFilter) ) {
+                            resourceIndex.push(localResource)                    
+                        }
+                    }
+                } 
             }
             // don't let currentPage be > page count 
             let pageCount = Math.ceil(resourceIndex.length/rowsPerPage)

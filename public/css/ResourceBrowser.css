@@ -11,6 +11,10 @@
     float: right;
 }
 
+#ResourceBrowser .filter-input {
+    float: right;
+}
+
 #ResourceBrowser .empty-list-card {
     position: absolute;
     left: 33%;

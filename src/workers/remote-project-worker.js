@@ -15,8 +15,8 @@ function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
 
 function updateResourceView( userID, serverURL, projectID, resourceView, authToken, postMessage ) {
     if( authToken ) {
-        const { currentPage, rowsPerPage, indexParentID } = resourceView
-        getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, (resourceData) => {
+        const { currentPage, rowsPerPage, nameFilter, indexParentID } = resourceView
+        getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, (resourceData) => {
             const { parentEntry, remoteResources, totalRows } = resourceData
             resourceView.parentEntry = parentEntry
             resourceView.totalRows = totalRows

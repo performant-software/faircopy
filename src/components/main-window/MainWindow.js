@@ -53,6 +53,7 @@ export default class MainWindow extends Component {
                     currentPage: 1, 
                     rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
+                    nameFilter: null,
                     loading: true
                 },
                 home: {
@@ -61,6 +62,7 @@ export default class MainWindow extends Component {
                     currentPage: 1, 
                     rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
+                    nameFilter: null,
                     loading: true           
                 }
             },
@@ -440,12 +442,12 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
-    onPageChange = (currentPage) => { 
+    onResourceViewChange = (nextView) => { 
         const { resourceViews } = this.state
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
         const { indexParentID, parentEntry } = resourceView
-        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+        const resourceViewRequest = { currentView, indexParentID, parentEntry, ...nextView }
         fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
         const checkMarkState = this.setAllCheckmarks(false,false)
         const nextResourceViews = { ...resourceViews }
@@ -719,7 +721,7 @@ export default class MainWindow extends Component {
                         setAllCheckmarks={this.setAllCheckmarks}
                         allResourcesCheckmarked={allResourcesCheckmarked}
                         resourceCheckmarks={resourceCheckmarks}
-                        onPageChange={this.onPageChange}
+                        onResourceViewChange={this.onResourceViewChange}
                         currentView={currentView}
                         resourceView={resourceView}
                         resourceIndex={resourceIndex}

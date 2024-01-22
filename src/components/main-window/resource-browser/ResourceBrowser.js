@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
-import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, TableContainer, Table, TextField, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
+import { filter } from 'jszip';
 
 export default class ResourceBrowser extends Component {
+
+  constructor() {
+    super()
+    this.initialState = {
+      filterBuffer: ""
+    }
+    this.state = this.initialState
+}
 
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
@@ -84,6 +93,40 @@ export default class ResourceBrowser extends Component {
     }
   }
 
+  renderFilterInput() {
+    const { filterBuffer } = this.state
+
+    const onChange = (e) => {
+      const {value} = e.target
+      this.setState({ ...this.state, filterBuffer: value })
+    }
+
+    const onSubmit = () => {
+      const nameFilter = filterBuffer.length > 0 ? filterBuffer : null
+      this.props.onResourceViewChange({ nameFilter })
+    }
+
+    const onKeyPress = (e) => {
+      if( e.key === 'Enter' ) {
+          onSubmit()
+      }
+    }
+
+    return <TextField 
+                name="filter-input"
+                className="filter-input"
+                size="small"
+                margin="dense"
+                autoFocus={true}
+                value={filterBuffer}
+                onKeyPress={onKeyPress} 
+                onChange={onChange}
+                aria-label="Filter resource list"
+                label="Type to filter" 
+                variant='outlined'
+            />
+  }
+
   renderToolbar() {
     const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
@@ -147,6 +190,7 @@ export default class ResourceBrowser extends Component {
               </span>
           </Tooltip>   
         }
+        { !teiDoc && this.renderFilterInput() }
       </div>
     )
   }
@@ -246,7 +290,7 @@ export default class ResourceBrowser extends Component {
 
     const onChangePage = (e,page) => { 
       // pages counted ordinally outside this control (because that is how server counts them)
-      this.props.onPageChange(page+1)
+      this.props.onResourceViewChange({ currentPage: page+1 })
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'

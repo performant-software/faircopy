@@ -5,9 +5,11 @@ import { standardErrorHandler } from './error-handler';
 
 const maxResourcesPerPage = 9999
 
-export function getResources(userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, onSuccess, onFail) {
+export function getResources(userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, onSuccess, onFail) {
     const parentQ = indexParentID ? `/${indexParentID}` : '/null'
-    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?per_page=${rowsPerPage}&page=${currentPage}`
+    const nameFilterQ = nameFilter ? `&search=${nameFilter}` : ''
+    const currentPageQ = currentPage ? `&page=${currentPage}` : '&page=1'
+    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?per_page=${rowsPerPage}${currentPageQ}${nameFilterQ}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {
@@ -36,9 +38,9 @@ export function getResource( userID, serverURL, authToken, resourceID, onSuccess
     )
 }
 
-export async function getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage ) {
+export async function getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage, nameFilter=null ) {
     return new Promise( ( resolve, reject ) => {
-        getResources( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, (remoteResources) => {
+        getResources( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, nameFilter, (remoteResources) => {
             resolve(remoteResources)
         }, (errorMessage) => {
             reject(new Error(errorMessage))
