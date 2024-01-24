@@ -4,14 +4,16 @@ import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
-import { filter } from 'jszip';
 
 export default class ResourceBrowser extends Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
+    const { resourceView } = props
+    const { nameFilter } = resourceView
+
     this.initialState = {
-      filterBuffer: ""
+      filterBuffer: nameFilter ? nameFilter : ''
     }
     this.state = this.initialState
 }
