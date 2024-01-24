@@ -9,7 +9,8 @@ export function getResources(userID, serverURL, authToken, projectID, indexParen
     const parentQ = indexParentID ? `/${indexParentID}` : '/null'
     const nameFilterQ = nameFilter ? `&search=${nameFilter}` : ''
     const currentPageQ = currentPage ? `&page=${currentPage}` : '&page=1'
-    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?per_page=${rowsPerPage}${currentPageQ}${nameFilterQ}`
+    const rowsPerPageQ = `per_page=${rowsPerPage}`        
+    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?${rowsPerPageQ}${currentPageQ}${nameFilterQ}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {
