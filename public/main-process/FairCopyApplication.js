@@ -9,7 +9,7 @@ const { FairCopySession } = require('./FairCopySession')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
-const distBaseDir = `${process.cwd()}/resources/app.asar/public/main-process`
+const distBaseDir = __dirname 
 
 class FairCopyApplication {
 
