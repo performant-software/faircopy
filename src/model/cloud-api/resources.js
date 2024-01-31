@@ -9,8 +9,9 @@ export function getResources(userID, serverURL, authToken, projectID, indexParen
     const parentQ = indexParentID ? `/${indexParentID}` : '/null'
     const nameFilterQ = nameFilter ? `&search=${nameFilter}` : ''
     const currentPageQ = currentPage ? `&page=${currentPage}` : '&page=1'
-    const rowsPerPageQ = `per_page=${rowsPerPage}`       
-    const sortByQ = `&sort_by=${orderBy}`
+    const rowsPerPageQ = `per_page=${rowsPerPage}`   
+    const sortBy = orderBy === 'localID' ? 'local_id' : orderBy   
+    const sortByQ = `&sort_by=${sortBy}`
     const sortDirectionQ = `&sort_direction=${order}` 
     const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?${rowsPerPageQ}${currentPageQ}${nameFilterQ}${sortByQ}${sortDirectionQ}`
 
