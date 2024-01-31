@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
-import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, TableContainer, Table, TextField, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
 
 export default class ResourceBrowser extends Component {
+
+  constructor(props) {
+    super(props)
+    const { resourceView } = props
+    const { nameFilter } = resourceView
+
+    this.initialState = {
+      filterBuffer: nameFilter ? nameFilter : ''
+    }
+    this.state = this.initialState
+}
 
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
@@ -84,12 +95,38 @@ export default class ResourceBrowser extends Component {
     }
   }
 
-  renderLoginButton(buttonProps) {
-    const { onLogin, fairCopyProject, onLogout } = this.props
+  renderFilterInput() {
+    const { filterBuffer } = this.state
 
-    return fairCopyProject.isLoggedIn() ? 
-        <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
-        <Button {...buttonProps} onClick={onLogin}>Log In</Button>
+    const onChange = (e) => {
+      const {value} = e.target
+      this.setState({ ...this.state, filterBuffer: value })
+    }
+
+    const onSubmit = () => {
+      const nameFilter = filterBuffer.length > 0 ? filterBuffer : null
+      this.props.onResourceViewChange({ nameFilter })
+    }
+
+    const onKeyPress = (e) => {
+      if( e.key === 'Enter' ) {
+          onSubmit()
+      }
+    }
+
+    return <TextField 
+                name="filter-input"
+                className="filter-input"
+                size="small"
+                margin="dense"
+                autoFocus={true}
+                value={filterBuffer}
+                onKeyPress={onKeyPress} 
+                onChange={onChange}
+                aria-label="Filter resource list"
+                label="Type to filter" 
+                variant='outlined'
+            />
   }
 
   renderToolbar() {
@@ -155,11 +192,7 @@ export default class ResourceBrowser extends Component {
               </span>
           </Tooltip>   
         }
-        { currentView === 'remote' &&
-         <div className='inline-button-group right-button'>
-          { this.renderLoginButton(buttonProps) }
-        </div>   
-        }
+        { !teiDoc && this.renderFilterInput() }
       </div>
     )
   }
@@ -259,7 +292,7 @@ export default class ResourceBrowser extends Component {
 
     const onChangePage = (e,page) => { 
       // pages counted ordinally outside this control (because that is how server counts them)
-      this.props.onPageChange(page+1)
+      this.props.onResourceViewChange({ currentPage: page+1 })
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
@@ -297,19 +330,27 @@ export default class ResourceBrowser extends Component {
   }
 
   renderEmptyListMessage() {
-    const { resourceIndex, currentView, fairCopyProject, resourceView } = this.props
+    const { resourceIndex, currentView, fairCopyProject, resourceView, onLogin } = this.props
     if( resourceIndex.length > 0 || resourceView.loading ) return null
+
+    const buttonProps = {
+      className: 'login-button',
+      variant: "outlined",
+      size: 'small'
+    }
+    const displayLoginButton = !fairCopyProject.isLoggedIn() && currentView === 'remote'
 
     const message = currentView === 'home' ? 
       <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
-      fairCopyProject.isLoggedIn() ? 
-        <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography> :
-        <Typography>You are not logged into the server. Click on the LOG IN button above.</Typography>
+      displayLoginButton ? 
+          <Typography>You are not logged into the server. Click below to login.</Typography> :
+          <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>
 
     return (
       <Card raised={true} className='empty-list-card'>
         <CardContent>
           { message }
+          { displayLoginButton && <Button onClick={onLogin} {...buttonProps}>Login</Button>}
         </CardContent>
       </Card>
     )

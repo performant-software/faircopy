@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.2.0-dev.3",
+  "version": "1.2.0-dev.4",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -28,7 +28,7 @@
     "@electron-forge/maker-squirrel": "^7.1.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.1.0",
     "dotenv": "^16.3.1",
-    "electron": "^28.0.0"
+    "electron": "^28.2.0"
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

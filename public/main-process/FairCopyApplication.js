@@ -9,7 +9,7 @@ const { FairCopySession } = require('./FairCopySession')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
-const distBaseDir = __dirname
+const distBaseDir = __dirname 
 
 class FairCopyApplication {
 
@@ -21,7 +21,7 @@ class FairCopyApplication {
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
 
-    this.baseDir = app.isPackaged ? debugBaseDir : distBaseDir
+    this.baseDir = !app.isPackaged ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
     
     this.mainMenu = new MainMenu(this)

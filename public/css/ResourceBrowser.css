@@ -11,11 +11,19 @@
     float: right;
 }
 
+#ResourceBrowser .filter-input {
+    float: right;
+}
+
 #ResourceBrowser .empty-list-card {
     position: absolute;
     left: 33%;
     top: 33%;
     max-width: 300px;
+}
+
+#ResourceBrowser .login-button {
+    margin-top: 10px;
 }
 
 #ResourceBrowser .down-caret {
