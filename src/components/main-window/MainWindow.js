@@ -54,6 +54,8 @@ export default class MainWindow extends Component {
                     rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
                     nameFilter: null,
+                    orderBy: 'name',
+                    order: 'ascending',
                     loading: true
                 },
                 home: {
@@ -62,6 +64,8 @@ export default class MainWindow extends Component {
                     currentPage: 1, 
                     rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
+                    orderBy: 'name',
+                    order: 'ascending',
                     nameFilter: null,
                     loading: true           
                 }

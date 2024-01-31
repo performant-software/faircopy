@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, TableContainer, Table, TextField, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, TableContainer, TableSortLabel, Table, TextField, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
@@ -197,10 +197,30 @@ export default class ResourceBrowser extends Component {
     )
   }
 
+  renderSortableHeaderCell(key,label,orderBy,order) {
+
+    const createSortHandler = (nextOrderBy, nextOrder) => {      
+      return () => {
+        this.props.onResourceViewChange({ orderBy: nextOrderBy, order: nextOrder })  
+      }
+    } 
+    const sortDirection = order === 'ascending' ? 'asc' : 'desc'
+
+    return <TableCell sortDirection={orderBy === key ? sortDirection : false}>
+              <TableSortLabel
+                active={orderBy === key}
+                direction={orderBy === key ? sortDirection : 'asc'}
+                onClick={createSortHandler(key, order === 'ascending' ? 'descending' : 'ascending')}
+              >
+                {label}
+              </TableSortLabel>
+            </TableCell>
+  }
+
   renderResourceTable() {
     const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
-    const { currentPage, rowsPerPage, totalRows } = resourceView
+    const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
@@ -307,9 +327,9 @@ export default class ResourceBrowser extends Component {
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
                           { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
                           <TableCell>Type</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell>ID</TableCell>
-                          { remoteProject && <TableCell>Last Modified</TableCell> }
+                          { this.renderSortableHeaderCell('name','Name',orderBy,order) }
+                          { this.renderSortableHeaderCell('local_id','ID',orderBy,order) }
+                          <TableCell>Last Modified</TableCell>
                       </TableRow>
                   </TableHead>
                   <TableBody>

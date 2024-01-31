@@ -5,12 +5,14 @@ import { standardErrorHandler } from './error-handler';
 
 const maxResourcesPerPage = 9999
 
-export function getResources(userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, onSuccess, onFail) {
+export function getResources(userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, order, orderBy, onSuccess, onFail) {
     const parentQ = indexParentID ? `/${indexParentID}` : '/null'
     const nameFilterQ = nameFilter ? `&search=${nameFilter}` : ''
     const currentPageQ = currentPage ? `&page=${currentPage}` : '&page=1'
-    const rowsPerPageQ = `per_page=${rowsPerPage}`        
-    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?${rowsPerPageQ}${currentPageQ}${nameFilterQ}`
+    const rowsPerPageQ = `per_page=${rowsPerPage}`       
+    const sortByQ = `&sort_by=${orderBy}`
+    const sortDirectionQ = `&sort_direction=${order}` 
+    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?${rowsPerPageQ}${currentPageQ}${nameFilterQ}${sortByQ}${sortDirectionQ}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {

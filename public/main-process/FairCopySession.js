@@ -23,6 +23,8 @@ class FairCopySession {
                 rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
                 nameFilter: null,
+                orderBy: 'name',
+                order: 'ascending',
                 loading: true
             },
             home: {
@@ -32,6 +34,8 @@ class FairCopySession {
                 rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
                 nameFilter: null,
+                orderBy: 'name',
+                order: 'ascending',
                 loading: true           
             }
         }
@@ -248,14 +252,18 @@ class FairCopySession {
             const { currentView, indexParentID, parentEntry }  = resourceViewRequest
             const resourceView = this.resourceViews[currentView]
             const currentPage = resourceViewRequest.currentPage !== undefined ? resourceViewRequest.currentPage : resourceView.currentPage
-            let nameFilter
-            // carry over name filter value if switching views
+            let nameFilter, order, orderBy
+            // carry over name filter and order values if switching views
             if( this.resourceViews.currentView !== currentView ) {
                 nameFilter = resourceViewRequest.nameFilter !== undefined ? resourceViewRequest.nameFilter : this.resourceViews[currentView].nameFilter
+                order = resourceViewRequest.order !== undefined ? resourceViewRequest.order : this.resourceViews[currentView].order
+                orderBy = resourceViewRequest.orderBy !== undefined ? resourceViewRequest.orderBy : this.resourceViews[currentView].orderBy
             } else {
                 nameFilter = resourceViewRequest.nameFilter !== undefined ? resourceViewRequest.nameFilter : resourceView.nameFilter
+                order = resourceViewRequest.order !== undefined ? resourceViewRequest.order : resourceView.order
+                orderBy = resourceViewRequest.orderBy !== undefined ? resourceViewRequest.orderBy : resourceView.orderBy
             }
-            this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, nameFilter, currentPage }
+            this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, nameFilter, order, orderBy, currentPage }
             this.resourceViews.currentView = currentView    
         }
         this.requestResourceView()
@@ -273,10 +281,20 @@ class FairCopySession {
         } else {
             // respond right away from project store
             resourceView.parentEntry = indexParentID ? localResources[indexParentID] : null
-            const { nameFilter } = resourceView
+            const { nameFilter, order, orderBy } = resourceView
+            const sortedResources = Object.values(localResources).sort((a,b) => {
+                const valueA = a[orderBy].toUpperCase()
+                const valueB = b[orderBy].toUpperCase()
+                if( valueA === valueB ) return 0
+                if( order == 'ascending' ) {
+                    return valueA > valueB ? 1 : -1
+                } else {
+                    return valueA < valueB ? 1 : -1
+                }
+            })
 
             let resourceIndex = []
-            for( const localResource of Object.values(localResources) ) {
+            for( const localResource of sortedResources ) {
                 const { parentResource } = localResource
                 if( localResource.type !== 'image' ) {
                     // if this resource is a child of current parent OR 
