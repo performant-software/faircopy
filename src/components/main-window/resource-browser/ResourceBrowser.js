@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Card, TableContainer, TableSortLabel, Table, TextField, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
+import { debounce } from "debounce";
+
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
@@ -16,6 +18,10 @@ export default class ResourceBrowser extends Component {
       filterBuffer: nameFilter ? nameFilter : ''
     }
     this.state = this.initialState
+
+    this.updateNameFilter = debounce((nameFilter) => {
+      this.props.onResourceViewChange({ nameFilter })
+    }, 100)
 }
 
   onOpenActionMenu = (anchorEl) => {
@@ -96,37 +102,44 @@ export default class ResourceBrowser extends Component {
   }
 
   renderFilterInput() {
-    const { filterBuffer } = this.state
 
     const onChange = (e) => {
       const {value} = e.target
-      this.setState({ ...this.state, filterBuffer: value })
+      const nameFilter = value.length > 0 ? value : null
+      this.setState({ ...this.state, filterBuffer: nameFilter })
+      this.updateNameFilter(nameFilter)
     }
 
-    const onSubmit = () => {
-      const nameFilter = filterBuffer.length > 0 ? filterBuffer : null
-      this.props.onResourceViewChange({ nameFilter })
+    const onClearFilter = () => {
+      this.setState({ ...this.state, filterBuffer: '' })
+      this.updateNameFilter(null)
     }
 
-    const onKeyPress = (e) => {
-      if( e.key === 'Enter' ) {
-          onSubmit()
-      }
-    }
-
-    return <TextField 
+    return <div className='filter-input'>
+            <Input 
                 name="filter-input"
                 className="filter-input"
                 size="small"
                 margin="dense"
                 autoFocus={true}
-                value={filterBuffer}
-                onKeyPress={onKeyPress} 
                 onChange={onChange}
                 aria-label="Filter resource list"
                 label="Type to filter" 
                 variant='outlined'
+                endAdornment={
+                  <Tooltip title="Clear Name Filter">
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="clear name filter"
+                        onClick={onClearFilter}
+                      >
+                        <i className="fas fa-times-circle fa-sm"></i>
+                      </IconButton>
+                    </InputAdornment>
+                  </Tooltip>
+                }
             />
+          </div>
   }
 
   renderToolbar() {
