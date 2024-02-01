@@ -9,10 +9,16 @@ export function getResources(userID, serverURL, authToken, projectID, indexParen
     const parentQ = indexParentID ? `/${indexParentID}` : '/null'
     const nameFilterQ = nameFilter ? `&search=${nameFilter}` : ''
     const currentPageQ = currentPage ? `&page=${currentPage}` : '&page=1'
-    const rowsPerPageQ = `per_page=${rowsPerPage}`   
-    const sortBy = orderBy === 'localID' ? 'local_id' : orderBy   
-    const sortByQ = `&sort_by=${sortBy}`
-    const sortDirectionQ = `&sort_direction=${order}` 
+    const rowsPerPageQ = `per_page=${rowsPerPage}`
+    let sortByQ, sortDirectionQ
+    if( order && orderBy ) {
+        const sortBy = orderBy === 'localID' ? 'local_id' : orderBy   
+        sortByQ = `&sort_by=${sortBy}`
+        sortDirectionQ = `&sort_direction=${order}`     
+    } else {
+        sortByQ = ''
+        sortDirectionQ = ''
+    }
     const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?${rowsPerPageQ}${currentPageQ}${nameFilterQ}${sortByQ}${sortDirectionQ}`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
@@ -42,9 +48,9 @@ export function getResource( userID, serverURL, authToken, resourceID, onSuccess
     )
 }
 
-export async function getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage, nameFilter=null ) {
+export async function getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage, nameFilter=null, order=null, orderBy=null ) {
     return new Promise( ( resolve, reject ) => {
-        getResources( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, nameFilter, (remoteResources) => {
+        getResources( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, nameFilter, order, orderBy, (remoteResources) => {
             resolve(remoteResources)
         }, (errorMessage) => {
             reject(new Error(errorMessage))
