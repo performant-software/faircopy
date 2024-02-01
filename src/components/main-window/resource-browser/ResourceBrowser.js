@@ -329,7 +329,7 @@ export default class ResourceBrowser extends Component {
                           <TableCell>Type</TableCell>
                           { this.renderSortableHeaderCell('name','Name',orderBy,order) }
                           { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
-                          <TableCell>Last Modified</TableCell>
+                          { remoteProject && <TableCell>Last Modified</TableCell> }
                       </TableRow>
                   </TableHead>
                   <TableBody>
