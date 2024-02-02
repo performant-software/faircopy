@@ -42,6 +42,8 @@ export default class MainWindow extends Component {
 
     constructor() {
         super()
+
+        this.filterInitialState = { orderBy: 'name', order: 'ascending', nameFilter: null, rowsPerPage: initialRowsPerPage }
         this.state = {
             selectedResource: null,
             openResources: {},
@@ -50,23 +52,17 @@ export default class MainWindow extends Component {
                 remote: { 
                     indexParentID: null,
                     parentEntry: null,
-                    currentPage: 1, 
-                    rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
-                    nameFilter: null,
-                    orderBy: 'name',
-                    order: 'ascending',
+                    currentPage: 1,
+                    ...this.filterInitialState,
                     loading: true
                 },
                 home: {
                     indexParentID: null,
                     parentEntry: null,
-                    currentPage: 1, 
-                    rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
-                    orderBy: 'name',
-                    order: 'ascending',
-                    nameFilter: null,
+                    currentPage: 1,
+                    ...this.filterInitialState,
                     loading: true           
                 }
             },
@@ -473,7 +469,7 @@ export default class MainWindow extends Component {
                 const indexParentID = resourceIDs
                 const parentEntry = resourceEntries
                 const currentPage = 1
-                const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+                const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage, ...this.filterInitialState }
                 const nextResourceIndex = currentView === 'home' ? resourceIndex : []
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
                 const nextResourceViews = { ...resourceViews }
@@ -516,7 +512,7 @@ export default class MainWindow extends Component {
                     nextResourceViews.currentView = 'remote'
                     nextResourceViews.remote.loading = true    
                     const { indexParentID, parentEntry, currentPage } = resourceViews.remote
-                    const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
+                    const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage, ...this.filterInitialState } 
                     fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )   
                     this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })                
                 }
@@ -527,7 +523,7 @@ export default class MainWindow extends Component {
                 const {resourceViews} = this.state 
                 if( resourceViews.currentView === 'remote' && !resourceViews.remote.loading ) {
                     const { indexParentID, parentEntry, currentPage } = resourceViews.home
-                    const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage } 
+                    const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage, ...this.filterInitialState } 
                     fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
                     const nextResourceViews = { ...resourceViews }
                     nextResourceViews.currentView = 'home'

@@ -11,11 +11,9 @@ export default class ResourceBrowser extends Component {
 
   constructor(props) {
     super(props)
-    const { resourceView } = props
-    const { nameFilter } = resourceView
 
     this.initialState = {
-      filterBuffer: nameFilter ? nameFilter : ''
+      filterBuffer: ''
     }
     this.state = this.initialState
 
@@ -115,6 +113,8 @@ export default class ResourceBrowser extends Component {
       this.updateNameFilter(null)
     }
 
+    const { filterBuffer } = this.state
+
     return <div className='filter-input'>
             <Input 
                 name="filter-input"
@@ -126,7 +126,7 @@ export default class ResourceBrowser extends Component {
                 onChange={onChange}
                 aria-label="Filter resource list"
                 placeholder="Type to filter list" 
-                variant='outlined'
+                value={filterBuffer}
                 endAdornment={
                   <Tooltip title="Clear Name Filter">
                     <InputAdornment position="end">
@@ -395,9 +395,17 @@ export default class ResourceBrowser extends Component {
       const { loading } = resourceView
       const { isLoggedIn, remote: remoteProject } = fairCopyProject
 
+      // reset the filter when switching views
+      const onResourceActionFilter = (actionID, resourceIDs, resourceEntries) => {
+        if( actionID === 'remote' || actionID === 'home' ) {
+          this.setState(this.initialState)
+        }
+        onResourceAction(actionID, resourceIDs, resourceEntries)
+      }
+
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
+          <TitleBar parentResource={teiDoc} onResourceAction={onResourceActionFilter} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
