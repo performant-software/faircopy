@@ -122,9 +122,10 @@ export default class ResourceBrowser extends Component {
                 size="small"
                 margin="dense"
                 autoFocus={true}
+                disableUnderline={true}
                 onChange={onChange}
                 aria-label="Filter resource list"
-                label="Type to filter" 
+                placeholder="Type to filter list" 
                 variant='outlined'
                 endAdornment={
                   <Tooltip title="Clear Name Filter">
