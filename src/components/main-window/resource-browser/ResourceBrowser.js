@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Card, TableContainer, Table, TextField, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
+import { debounce } from "debounce";
+
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
@@ -9,13 +11,15 @@ export default class ResourceBrowser extends Component {
 
   constructor(props) {
     super(props)
-    const { resourceView } = props
-    const { nameFilter } = resourceView
 
     this.initialState = {
-      filterBuffer: nameFilter ? nameFilter : ''
+      filterBuffer: ''
     }
     this.state = this.initialState
+
+    this.updateNameFilter = debounce((nameFilter) => {
+      this.props.onResourceViewChange({ nameFilter })
+    }, 100)
 }
 
   onOpenActionMenu = (anchorEl) => {
@@ -96,37 +100,47 @@ export default class ResourceBrowser extends Component {
   }
 
   renderFilterInput() {
-    const { filterBuffer } = this.state
 
     const onChange = (e) => {
       const {value} = e.target
-      this.setState({ ...this.state, filterBuffer: value })
+      const nameFilter = value.length > 0 ? value : null
+      this.setState({ ...this.state, filterBuffer: nameFilter })
+      this.updateNameFilter(nameFilter)
     }
 
-    const onSubmit = () => {
-      const nameFilter = filterBuffer.length > 0 ? filterBuffer : null
-      this.props.onResourceViewChange({ nameFilter })
+    const onClearFilter = () => {
+      this.setState({ ...this.state, filterBuffer: '' })
+      this.updateNameFilter(null)
     }
 
-    const onKeyPress = (e) => {
-      if( e.key === 'Enter' ) {
-          onSubmit()
-      }
-    }
+    const { filterBuffer } = this.state
 
-    return <TextField 
+    return <div className='filter-input'>
+            <Input 
                 name="filter-input"
                 className="filter-input"
                 size="small"
                 margin="dense"
                 autoFocus={true}
-                value={filterBuffer}
-                onKeyPress={onKeyPress} 
+                disableUnderline={true}
                 onChange={onChange}
                 aria-label="Filter resource list"
-                label="Type to filter" 
-                variant='outlined'
+                placeholder="Type to filter list" 
+                value={filterBuffer}
+                endAdornment={
+                  <Tooltip title="Clear Name Filter">
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="clear name filter"
+                        onClick={onClearFilter}
+                      >
+                        <i className="fas fa-times-circle fa-sm"></i>
+                      </IconButton>
+                    </InputAdornment>
+                  </Tooltip>
+                }
             />
+          </div>
   }
 
   renderToolbar() {
@@ -197,10 +211,30 @@ export default class ResourceBrowser extends Component {
     )
   }
 
+  renderSortableHeaderCell(key,label,orderBy,order) {
+
+    const createSortHandler = (nextOrderBy, nextOrder) => {      
+      return () => {
+        this.props.onResourceViewChange({ orderBy: nextOrderBy, order: nextOrder })  
+      }
+    } 
+    const sortDirection = order === 'ascending' ? 'asc' : 'desc'
+
+    return <TableCell sortDirection={orderBy === key ? sortDirection : false}>
+              <TableSortLabel
+                active={orderBy === key}
+                direction={orderBy === key ? sortDirection : 'asc'}
+                onClick={createSortHandler(key, order === 'ascending' ? 'descending' : 'ascending')}
+              >
+                {label}
+              </TableSortLabel>
+            </TableCell>
+  }
+
   renderResourceTable() {
     const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
-    const { currentPage, rowsPerPage, totalRows } = resourceView
+    const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
@@ -307,8 +341,8 @@ export default class ResourceBrowser extends Component {
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
                           { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
                           <TableCell>Type</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell>ID</TableCell>
+                          { this.renderSortableHeaderCell('name','Name',orderBy,order) }
+                          { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
                           { remoteProject && <TableCell>Last Modified</TableCell> }
                       </TableRow>
                   </TableHead>
@@ -361,9 +395,17 @@ export default class ResourceBrowser extends Component {
       const { loading } = resourceView
       const { isLoggedIn, remote: remoteProject } = fairCopyProject
 
+      // reset the filter when switching views
+      const onResourceActionFilter = (actionID, resourceIDs, resourceEntries) => {
+        if( actionID === 'remote' || actionID === 'home' ) {
+          this.setState(this.initialState)
+        }
+        onResourceAction(actionID, resourceIDs, resourceEntries)
+      }
+
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
+          <TitleBar parentResource={teiDoc} onResourceAction={onResourceActionFilter} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
