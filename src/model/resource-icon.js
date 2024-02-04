@@ -8,11 +8,11 @@ export function getResourceIcon(resourceType, open=false) {
       case 'header':
         return 'fa fa-file-alt'
       case 'teidoc':
-        return 'fa fa-books'
+        return 'fa fa-book-open'
       case 'standOff':
-        return 'fa fa-bullseye-pointer'
+        return 'fa fa-bullseye'
       case 'sourceDoc':
-        return 'fa fa-scroll-old'
+        return 'fa fa-scroll'
       default:
         throw new Error('Unrecognized resource type.')
     }
