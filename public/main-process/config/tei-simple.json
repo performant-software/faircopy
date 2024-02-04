@@ -8828,7 +8828,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"icon": "fa-comment",
+			"icon": "fa-message",
 			"group": "model_paraPart_i model_global_i model_noteLike_i model_standOffPart_i model_annotationLike_i model_correspDescPart_i model_correspActionPart_i model_correspContextPart_i model_annotationPart_body_i",
 			"defaultNodes": null,
 			"desc": "contains a note or annotation.",

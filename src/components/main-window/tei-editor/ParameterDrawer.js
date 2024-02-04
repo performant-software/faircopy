@@ -432,7 +432,7 @@ export default class ParameterDrawer extends Component {
 
     renderDrawerPin() {
         const { drawerPinned, onDrawerPinToggle } = this.props
-        const pinIcon = drawerPinned ? 'fas fa-thumbtack' : 'far fa-thumbtack' 
+        const pinIcon = drawerPinned ? 'fas fa-thumbtack' : 'fas fa-thumbtack' 
 
         return (
             <Tooltip title="Pin the attribute drawer to keep it open.">
