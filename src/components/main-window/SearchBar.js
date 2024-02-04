@@ -157,12 +157,18 @@ export default class SearchBar extends Component {
         if( e.keyCode === 13 ) this.onSearch()
     }
 
+    onToggleSearch = () => {
+
+    }
+
     render() {
         const { searchEnabled, onSearchFilter, searchFilterOptions } = this.props
         const { active } = searchFilterOptions
         
         const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
         const filterIcon = active ? 'fas fa-filter' : 'far fa-filter'
+        const searchInFileIcon = 'fa fa-file-o'
+        const searchInProjectIcon = 'fa fa-files-o'
 
         return (
             <div
@@ -188,6 +194,15 @@ export default class SearchBar extends Component {
                             size="small" 
                             color="inherit">
                             <i className={`${filterIcon} fa-lg`}></i>               
+                        </Button> 
+                        <Button 
+                            aria-label="Find in Project"
+                            onClick={this.onToggleSearch} 
+                            disabled={!searchEnabled}
+                            className="search-button" 
+                            size="small" 
+                            color="inherit">
+                            <i className={searchInProjectIcon}></i>               
                         </Button> 
                     </span>
                 </Tooltip>
