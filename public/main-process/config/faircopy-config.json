@@ -1,5 +1,4 @@
 {
-	"keybindings": {},
 	"menus": {
 		"mark": [
 			{
@@ -2139,6 +2138,10 @@
 				"style": {
 					"active": false
 				},
+				"subtype": {
+					"active": false,
+					"vocabID": "calendar[subtype]"
+				},
 				"synch": {
 					"active": false
 				},
@@ -2147,6 +2150,10 @@
 				},
 				"targetLang": {
 					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "calendar[type]"
 				},
 				"xml:base": {
 					"active": false
@@ -2397,6 +2404,9 @@
 				"corresp": {
 					"active": false
 				},
+				"datcat": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
@@ -2434,6 +2444,12 @@
 					"active": false
 				},
 				"synch": {
+					"active": false
+				},
+				"targetDatcat": {
+					"active": false
+				},
+				"valueDatcat": {
 					"active": false
 				},
 				"xml:base": {
@@ -5483,8 +5499,16 @@
 				"style": {
 					"active": false
 				},
+				"subtype": {
+					"active": false,
+					"vocabID": "graphic[subtype]"
+				},
 				"synch": {
 					"active": false
+				},
+				"type": {
+					"active": false,
+					"vocabID": "graphic[type]"
 				},
 				"url": {
 					"active": true
@@ -10047,6 +10071,9 @@
 				"facs": {
 					"active": false
 				},
+				"gender": {
+					"active": false
+				},
 				"instant": {
 					"active": false
 				},
@@ -10140,6 +10167,9 @@
 				"facs": {
 					"active": false
 				},
+				"gender": {
+					"active": false
+				},
 				"instant": {
 					"active": false
 				},
@@ -10227,6 +10257,9 @@
 					"active": false
 				},
 				"facs": {
+					"active": false
+				},
+				"gender": {
 					"active": false
 				},
 				"n": {
@@ -14204,6 +14237,9 @@
 				"corresp": {
 					"active": false
 				},
+				"datcat": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
@@ -14241,6 +14277,12 @@
 					"active": false
 				},
 				"synch": {
+					"active": false
+				},
+				"targetDatcat": {
+					"active": false
+				},
+				"valueDatcat": {
 					"active": false
 				},
 				"xml:base": {
@@ -23878,6 +23920,9 @@
 				"synch": {
 					"active": false
 				},
+				"targetDatcat": {
+					"active": false
+				},
 				"type": {
 					"active": false,
 					"vocabID": "seg[type]"
@@ -25019,6 +25064,9 @@
 				"synch": {
 					"active": false
 				},
+				"targetDatcat": {
+					"active": false
+				},
 				"type": {
 					"active": false,
 					"vocabID": "cl[type]"
@@ -26010,6 +26058,12 @@
 				"ana": {
 					"active": false
 				},
+				"atLeast": {
+					"active": false
+				},
+				"atMost": {
+					"active": false
+				},
 				"cert": {
 					"active": false
 				},
@@ -26017,6 +26071,9 @@
 					"active": false
 				},
 				"commodity": {
+					"active": false
+				},
+				"confidence": {
 					"active": false
 				},
 				"copyOf": {
@@ -26029,6 +26086,12 @@
 					"active": false
 				},
 				"facs": {
+					"active": false
+				},
+				"max": {
+					"active": false
+				},
+				"min": {
 					"active": false
 				},
 				"n": {
@@ -26763,6 +26826,9 @@
 				"synch": {
 					"active": false
 				},
+				"targetDatcat": {
+					"active": false
+				},
 				"type": {
 					"active": false,
 					"vocabID": "phr[type]"
@@ -26960,6 +27026,9 @@
 					"vocabID": "s[subtype]"
 				},
 				"synch": {
+					"active": false
+				},
+				"targetDatcat": {
 					"active": false
 				},
 				"type": {
@@ -27844,6 +27913,9 @@
 				"facs": {
 					"active": false
 				},
+				"gender": {
+					"active": false
+				},
 				"key": {
 					"active": false
 				},
@@ -27872,6 +27944,9 @@
 					"active": false
 				},
 				"select": {
+					"active": false
+				},
+				"sex": {
 					"active": false
 				},
 				"source": {
@@ -31628,6 +31703,9 @@
 				"ana": {
 					"active": false
 				},
+				"calendar": {
+					"active": false
+				},
 				"cert": {
 					"active": false
 				},
@@ -31640,16 +31718,52 @@
 				"corresp": {
 					"active": false
 				},
+				"datingMethod": {
+					"active": false
+				},
+				"datingPoint": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
 				"facs": {
 					"active": false
 				},
+				"from": {
+					"active": false
+				},
+				"from-custom": {
+					"active": false
+				},
+				"from-iso": {
+					"active": false
+				},
 				"n": {
 					"active": false
 				},
 				"next": {
+					"active": false
+				},
+				"notAfter": {
+					"active": false
+				},
+				"notAfter-custom": {
+					"active": false
+				},
+				"notAfter-iso": {
+					"active": false
+				},
+				"notBefore": {
+					"active": false
+				},
+				"notBefore-custom": {
+					"active": false
+				},
+				"notBefore-iso": {
+					"active": false
+				},
+				"period": {
 					"active": false
 				},
 				"prev": {
@@ -31679,7 +31793,22 @@
 				"synch": {
 					"active": false
 				},
+				"to": {
+					"active": false
+				},
+				"to-custom": {
+					"active": false
+				},
+				"to-iso": {
+					"active": false
+				},
 				"when": {
+					"active": false
+				},
+				"when-custom": {
+					"active": false
+				},
+				"when-iso": {
 					"active": false
 				},
 				"xml:base": {
@@ -37895,6 +38024,9 @@
 				"facs": {
 					"active": false
 				},
+				"gender": {
+					"active": false
+				},
 				"n": {
 					"active": false
 				},
@@ -39193,6 +39325,9 @@
 				"facs": {
 					"active": false
 				},
+				"hand": {
+					"active": false
+				},
 				"n": {
 					"active": false
 				},
@@ -39561,6 +39696,9 @@
 				"corresp": {
 					"active": false
 				},
+				"datcat": {
+					"active": false
+				},
 				"exclude": {
 					"active": false
 				},
@@ -39604,6 +39742,12 @@
 					"active": false
 				},
 				"synch": {
+					"active": false
+				},
+				"targetDatcat": {
+					"active": false
+				},
+				"valueDatcat": {
 					"active": false
 				},
 				"withId": {

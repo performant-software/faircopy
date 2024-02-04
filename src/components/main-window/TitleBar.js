@@ -29,8 +29,8 @@ export default class TitleBar extends Component {
     }
 
     renderHomeButton() {         
-        const { currentView, isLoggedIn } = this.props    
-        const viewIcon = currentView === 'home' ? 'fa fa-home-alt' : isLoggedIn() ? 'fa fa-cloud' : 'far fa-cloud' 
+        const { currentView } = this.props    
+        const viewIcon = currentView === 'home' ? 'fa fa-home-alt' : 'fa fa-cloud'
         return (
             <Tooltip title="Local Resources">
                 <span>            
