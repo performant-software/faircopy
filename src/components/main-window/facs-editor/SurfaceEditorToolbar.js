@@ -27,7 +27,7 @@ export default class SurfaceEditorToolbar extends Component {
                         onClick={onClick}
                         {...this.buttonProps}
                     >
-                        <i className={`fas ${selectionClass} ${icon} fa-2x`}></i>
+                        <i className={`${selectionClass} ${icon} fa-2x`}></i>
                     </Button>  
                 </span>
             </Tooltip>            
@@ -39,9 +39,9 @@ export default class SurfaceEditorToolbar extends Component {
         return (
             <div id='SurfaceEditorToolbar' >
                 { editable && <span>
-                    { this.renderActionButton("Select Mode", "fa-mouse-pointer", "select" )}
-                    { this.renderActionButton("Draw Rectangle", "fa-draw-square", "rect" )}
-                    { this.renderActionButton("Draw Polygon", "fa-draw-polygon", "polygon" )}
+                    { this.renderActionButton("Select Mode", "fa-solid fa-arrow-pointer", "select" )}
+                    { this.renderActionButton("Draw Rectangle", "fa-regular fa-square", "rect" )}
+                    { this.renderActionButton("Draw Polygon", "fa-solid fa-draw-polygon", "polygon" )}
                     <Tooltip title="Edit Surface Properties">
                         <span>
                             <Button
