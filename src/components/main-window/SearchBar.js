@@ -166,7 +166,7 @@ export default class SearchBar extends Component {
         const { active } = searchFilterOptions
         
         const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
-        const filterIcon = active ? 'fas fa-filter' : 'far fa-filter'
+        const filterIcon = active ? 'fas fa-filter' : 'fas fa-filter'
         const searchInFileIcon = 'fa fa-file-o'
         const searchInProjectIcon = 'fa fa-files-o'
 

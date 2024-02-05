@@ -207,7 +207,7 @@ export default class TEISchema {
                     const teiDocument = this.teiDocuments[this.teiDocuments.length-1]
                     return teiDocument.serializeSubDocument( subDocID, name, attrs)
                 } else {
-                    const noteAttrs = { ...node.attrs, class: `far fa-xs ${icon} inline-node` }
+                    const noteAttrs = { ...node.attrs, class: `fa-solid fa-xs ${icon} inline-node` }
                     return [`tei-${name}`,noteAttrs]
                 }
             }
@@ -233,7 +233,7 @@ export default class TEISchema {
                     attrs = this.filterInternal(attrs)
                     return [name,attrs]
                 } else {
-                    const atomAttrs = { ...node.attrs, class: `far ${icon} inline-node` }
+                    const atomAttrs = { ...node.attrs, class: `fa-solid ${icon} inline-node` }
                     return [`tei-${name}`,atomAttrs]  
                 }
             }  
@@ -299,13 +299,13 @@ export default class TEISchema {
 
 export function getElementIcon(elementID, elements) {
     const elementSpec = elements[elementID]
-    return elementSpec ? `far ${elementSpec.icon}` : null
+    return elementSpec ? `fa-solid ${elementSpec.icon}` : null
 }
 
 export function getElementTypeIcon( elementType ) {
     if( elementType === 'mark' ) {
-        return "fas fa-marker"
+        return "fa-solid fa-marker"
     } else {
-        return "fas fa-stamp"
+        return "fa-solid fa-stamp"
     }
 }

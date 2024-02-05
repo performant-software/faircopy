@@ -2,6 +2,10 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.1.10
+
+This is a bug fix release to address a problem with the Facsimile Editor not being able to draw zones shapes on MacOS.
+
 ## Version 1.1.9
 
 ### Improvements
