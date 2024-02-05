@@ -43,7 +43,7 @@ export function getResourceIcon(resourceType, open=false) {
       return { icon: 'fa fa-check', label: 'Check in successful.' }
     } else {
       if( checkedOutRemote ) {
-        return { icon: 'far fa-pen', label: 'Checked out by another user.'}
+        return { icon: 'fa fa-user', label: 'Checked out by another user.'}
       }
       if( local ) {
           // Create
