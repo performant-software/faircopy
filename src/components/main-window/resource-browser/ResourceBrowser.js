@@ -103,8 +103,8 @@ export default class ResourceBrowser extends Component {
 
     const onChange = (e) => {
       const {value} = e.target
-      const nameFilter = value.length > 0 ? value : null
-      this.setState({ ...this.state, filterBuffer: nameFilter })
+      this.setState({ ...this.state, filterBuffer: value })
+      const nameFilter = value.length > 0 ? value : 'null'
       this.updateNameFilter(nameFilter)
     }
 
