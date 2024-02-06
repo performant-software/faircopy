@@ -144,6 +144,9 @@ class ProjectStore {
         migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig, fairCopyAppConfig)
         this.migratedConfig = fairCopyConfig
 
+        // clean up the idMap if there are no resources
+        idMap = this.cleanUpIDMap(idMap)
+
         // apply any migrations to ID Map data
         idMap = migrateIDMap(this.manifestData.generatedWith,idMap,this.manifestData.resources)
 
@@ -158,6 +161,15 @@ class ProjectStore {
         this.onProjectOpened( projectData )
     }
 
+    // clean up the idMap if there are no resources
+    cleanUpIDMap(idMap) {
+        const { resources } = this.manifestData
+        if( Object.values(resources).length === 0 ) {
+            return "{}"
+        } else {
+            return idMap
+        }
+    }
     previewResource(resourceData, previewData) {
         try {
             const teiDocXML = serializeResource(resourceData)
