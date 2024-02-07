@@ -365,6 +365,7 @@ export default class ResourceBrowser extends Component {
 
   renderEmptyListMessage() {
     const { resourceIndex, currentView, fairCopyProject, resourceView, onLogin } = this.props
+    const { filterBuffer } = this.state
     if( resourceIndex.length > 0 || resourceView.loading ) return null
 
     const buttonProps = {
@@ -374,11 +375,16 @@ export default class ResourceBrowser extends Component {
     }
     const displayLoginButton = !fairCopyProject.isLoggedIn() && currentView === 'remote'
 
-    const message = currentView === 'home' ? 
-      <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
-      displayLoginButton ? 
-          <Typography>You are not logged into the server. Click below to login.</Typography> :
-          <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>
+    let message
+    if( filterBuffer.length > 0 ) {
+      message = <Typography>No resources match the filter.</Typography>
+    } else {
+      message = currentView === 'home' ? 
+        <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
+        displayLoginButton ? 
+            <Typography>You are not logged into the server. Click below to login.</Typography> :
+            <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>    
+    }
 
     return (
       <Card raised={true} className='empty-list-card'>
