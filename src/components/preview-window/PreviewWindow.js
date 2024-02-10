@@ -90,18 +90,8 @@ const htmlToReactParserOptions = () => {
       replace(domNode) {
         switch (domNode.name) {
             // TODO process anchor tags only (not outbound links)
-            case 'tei-graphic': {
-                const src = domNode.attribs?.url;
-                if (!src) {
-                  return domNode;
-                }
-                const desc = ""
-                return (
-                  <figure className="inline-figure">
-                    <img src={src} alt={desc || ''} className="inline-image" />
-                    { desc ? <figcaption>{desc}</figcaption> : null }
-                  </figure>
-                );
+            case 'tei-figure': {
+                return parseFigure(domNode)
             }
           default:
             /* Otherwise, Just pass through */
@@ -168,4 +158,34 @@ function domToHTML5(XML_dom){
     }
 
     return convertEl(XML_dom);
+}
+
+function parseGraphic(domNode) {
+    const src = domNode.attribs?.url;
+    let desc = ""
+    for( const child of domNode.children ) {
+        if( child.name === 'tei-desc') {
+            desc = child.children[0]?.data
+        }
+    }
+    return { src, desc }
+}
+
+function parseFigure(domNode) {
+    for( const child of domNode.children ) {
+        if( child.name === 'tei-graphic' ) {
+            const { src, desc } = parseGraphic(child)     
+            if( !src ) return domNode
+            const figureRend = domNode.attribs?.rend
+            const figureRendition = domNode.attribs?.rendition
+            return (
+                <tei-figure>
+                    <tei-graphic>
+                        <img src={src} alt={desc || ''} rend={figureRend} rendition={figureRendition} />
+                    </tei-graphic>
+                </tei-figure>
+            );              
+        }
+    }
+    return domNode
 }
