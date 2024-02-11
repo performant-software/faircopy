@@ -52,6 +52,10 @@ class FairCopyApplication {
       this.closeProject()
       this.exitApp()
     })
+
+    ipcMain.on('openWebpage', (event, url ) => {
+      shell.openExternal(url)
+    })  
     
     ipcMain.on('exitApp', (event) => { 
       if( this.projectWindow ) {

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Parser from './Parser'
+import domToReact from 'html-react-parser/lib/dom-to-react';
+
 import { Button, Tooltip } from '@material-ui/core'
 import { bigRingSpinner } from '../common/ring-spinner'
 import TitleBar from '../main-window/TitleBar'
@@ -89,13 +91,12 @@ const htmlToReactParserOptions = () => {
     const parserOptions = {
       replace(domNode) {
         switch (domNode.name) {
-            // TODO process anchor tags only (not outbound links)
-            case 'tei-figure': {
+            case 'tei-ref': 
+                return parseLink(domNode, parserOptions)
+            case 'tei-figure': 
                 return parseFigure(domNode)
-            }
-          default:
-            /* Otherwise, Just pass through */
-            return domNode;
+            default: 
+                return domNode
         }
       },
     };
@@ -169,6 +170,27 @@ function parseGraphic(domNode) {
         }
     }
     return { src, desc }
+}
+
+function parseLink( domNode, parserOptions) {
+    const target = domNode.attribs?.target
+    if( !target ) return domNode
+
+    const onClickAnchorTag = (e) => {
+        e.preventDefault()
+        const anchor = document.querySelector(target)
+        if( anchor ) {
+            anchor.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }
+
+    const onClickExternal = (e) => {
+        fairCopy.services.ipcSend('openWebpage', target)
+    }
+    const refRend = domNode.attribs?.rend
+    const refRendition = domNode.attribs?.rendition
+    const onClick = target.startsWith('#') ? onClickAnchorTag : onClickExternal
+    return <tei-ref rend={refRend} rendition={refRendition} onClick={onClick}>{domToReact(domNode.children, parserOptions)}</tei-ref>
 }
 
 function parseFigure(domNode) {
