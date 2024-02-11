@@ -190,7 +190,7 @@ function parseLink( domNode, parserOptions) {
     const refRend = domNode.attribs?.rend
     const refRendition = domNode.attribs?.rendition
     const onClick = target.startsWith('#') ? onClickAnchorTag : onClickExternal
-    return <tei-ref rend={refRend} rendition={refRendition} onClick={onClick}>{domToReact(domNode.children, parserOptions)}</tei-ref>
+    return <tei-ref id={domNode.attribs.id} rend={refRend} rendition={refRendition} onClick={onClick}>{domToReact(domNode.children, parserOptions)}</tei-ref>
 }
 
 function parseFigure(domNode) {
