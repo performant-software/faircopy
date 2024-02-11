@@ -5,14 +5,15 @@ const jsdom = require("jsdom")
 const { JSDOM } = jsdom
 const serialize = require("w3c-xmlserializer");
 
-const serializeResource = function serializeResource(resourceData) {
+const serializeResource = function serializeResource(resourceData,formatXML=true) {
     const { resourceEntry, contents } = resourceData
     if( resourceEntry.type === 'teidoc') {
         const { childEntries } = resourceData
-        return serializeTEIDoc(childEntries,contents)
+        const teiDocXML = serializeTEIDoc(childEntries,contents)
+        return formatXML ? formatXMLFile(teiDocXML) : teiDocXML
     } else {
         const content = contents[resourceEntry.id]
-        return serializeXMLFile(content)
+        return formatXML ? formatXMLFile(content) : content
     }
 }
 
@@ -36,7 +37,7 @@ function serializeTEIDoc(childEntries,contents) {
     teiDoc.appendChild(header)
     resources.map( resource => teiDoc.appendChild(resource))
     const teiDocXML = serialize(xmlDoc)
-    return serializeXMLFile(teiDocXML)
+    return teiDocXML
 }
 
 function getResourceEl( resourceXML, elName, localID ) {
@@ -47,7 +48,7 @@ function getResourceEl( resourceXML, elName, localID ) {
     return el
 }
 
-function serializeXMLFile(content) {
+function formatXMLFile(content) {
     try {
         const xml = format(content, {
             indentation: '\t', 

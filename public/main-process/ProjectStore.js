@@ -172,7 +172,7 @@ class ProjectStore {
     }
     previewResource(resourceData, previewData) {
         try {
-            const teiDocXML = serializeResource(resourceData)
+            const teiDocXML = serializeResource(resourceData,false)
             const previewDataWithXML = { ...previewData, teiDocXML }
             this.fairCopyApplication.openPreview(previewDataWithXML)    
         } catch(e) {
