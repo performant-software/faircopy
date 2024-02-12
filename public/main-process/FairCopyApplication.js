@@ -52,6 +52,10 @@ class FairCopyApplication {
       this.closeProject()
       this.exitApp()
     })
+
+    ipcMain.on('openWebpage', (event, url ) => {
+      shell.openExternal(url)
+    })  
     
     ipcMain.on('exitApp', (event) => { 
       if( this.projectWindow ) {
@@ -249,7 +253,7 @@ class FairCopyApplication {
 
   async createPreviewWindow(previewData) {
     if( !this.previewView ) {
-      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', false )
+      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
     }
     this.previewView.webContents.send('updatePreview', previewData)
