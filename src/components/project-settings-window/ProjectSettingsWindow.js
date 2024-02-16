@@ -4,9 +4,13 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
 import KeyBindingsTable from './KeyBindingsTable'
+import PreviewCSSEditor from './PreviewCSSEditor'
 import { canConfigAdmin } from '../../model/permissions'
 import { getConfigStatus } from '../../model/faircopy-config'
 import { inlineRingSpinner } from '../common/ring-spinner'
+import { logout } from '../../model/cloud-api/auth'
+
+const fairCopy = window.fairCopy
 
 export default class ProjectSettingsWindow extends Component {
 
@@ -38,6 +42,7 @@ export default class ProjectSettingsWindow extends Component {
                     <Tab value="general" label="Project" />
                     <Tab value="elements" label="Menus"/>
                     <Tab value="keybindings" label="Hot Keys"/>
+                    <Tab value="previewCSS" label="Preview CSS"/>
                 </Tabs>
             </div>
         )
@@ -45,7 +50,7 @@ export default class ProjectSettingsWindow extends Component {
 
     renderContentArea() {
         const { checkingOut } = this.props
-        const { teiSchema, remote, configLastAction, userID } = this.props.fairCopyProject
+        const { teiSchema, remote, configLastAction, userID, isLoggedIn } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
         const lockStatus = getConfigStatus( configLastAction, userID )
         const canEdit = !remote || (!checkingOut && lockStatus === 'checked_out')
@@ -63,6 +68,14 @@ export default class ProjectSettingsWindow extends Component {
             const nextConfig = JSON.parse(baseConfigJSON)
             this.setState({...this.state,fairCopyConfig: nextConfig})     
         }
+        
+        const onLogout = () => {
+            const { fairCopyProject } = this.props
+            const { userID, serverURL } = fairCopyProject
+            logout(userID, serverURL)
+            this.setState({...this.state})
+            fairCopy.services.ipcSend('requestResourceView')
+        }
 
         return (
             <div className="content-area">
@@ -71,6 +84,8 @@ export default class ProjectSettingsWindow extends Component {
                     fairCopyConfig={fairCopyConfig}
                     onUpdateProject={onUpdateProject}
                     onUpdateConfig={onUpdate}
+                    isLoggedIn={isLoggedIn}
+                    onLogout={onLogout}
                     onReset={onReset}
                 ></GeneralSettings> }
                 { selectedPage === 'elements' && <SchemaEditor
@@ -85,6 +100,11 @@ export default class ProjectSettingsWindow extends Component {
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></KeyBindingsTable> }
+                { selectedPage === 'previewCSS' && <PreviewCSSEditor
+                    fairCopyConfig={fairCopyConfig}
+                    readOnly={!canEdit}
+                    onUpdateConfig={onUpdate}
+                ></PreviewCSSEditor>}
             </div>
         )
     }

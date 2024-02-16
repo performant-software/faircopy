@@ -46,7 +46,7 @@ export default class TitleBar extends Component {
     }
 
     renderTitle() {
-        const { parentResource, resourceName, surfaceName, isImageWindow, onClickResource, loading, currentView } = this.props
+        const { parentResource, resourceName, surfaceName, isImageWindow, isPreviewWindow, onClickResource, loading, currentView } = this.props
 
         // calculate shortened lengths
         const surfaceNameLength = surfaceName ? surfaceName.length > maxTitleLength ? maxTitleLength : surfaceName.length : 0
@@ -56,11 +56,17 @@ export default class TitleBar extends Component {
         const teiDocNameShort = parentResource ? ellipsis( parentResource.name, teiDocNameLength ) : ''
         const resourceNameShort = resourceName ? ellipsis( resourceName, resourceNameLength ) : ''
         const surfaceNameShort = surfaceName ? ellipsis( surfaceName, surfaceNameLength ) : ''
+        const secondaryWindow = isImageWindow || isPreviewWindow
 
         const chevClass = "fa fa-chevron-right"
-        const resourceNameSeperator = isImageWindow ? <i aria-label="images" className="far fa-images image-icon-padding"></i> : <i aria-label="/" className={chevClass}></i>
+        let resourceNameSeperator = <i aria-label="/" className={chevClass}></i>
+        if( isImageWindow ) {
+            resourceNameSeperator = <i aria-label="images" className="far fa-images image-icon-padding"></i>
+        } else if( isPreviewWindow ) {
+            resourceNameSeperator = <i aria-label="preview" className="far fa-books image-icon-padding"></i>
+        }
         const viewName = currentView === 'home' ? 'Local' : 'Remote'
-        const rootEl = !isImageWindow ? <span onClick={this.onClickRoot} className="nav-link" >{viewName}</span> : ""
+        const rootEl = !secondaryWindow ? <span onClick={this.onClickRoot} className="nav-link" >{viewName}</span> : ""
         const surfaceNameEl = surfaceName && <span className="nav-link" ><i aria-label="/" className={chevClass}></i> {surfaceNameShort}</span>
         const resourceNameEl = resourceName && <span className="nav-link" onClick={onClickResource}>{resourceNameSeperator} {resourceNameShort}</span>
         const teiDocNameEl = parentResource && <span className="nav-link" onClick={this.onClickTeiDoc} ><i aria-label="/" className={chevClass}></i> {teiDocNameShort}</span>
@@ -74,11 +80,12 @@ export default class TitleBar extends Component {
     }
 
     render() {
-        const { isImageWindow } = this.props
-        
+        const { isImageWindow, isPreviewWindow } = this.props
+        const secondaryWindow = isImageWindow || isPreviewWindow
+
         return (
             <header id="TitleBar" >                
-                    { !isImageWindow && this.renderHomeButton() }
+                    { !secondaryWindow && this.renderHomeButton() }
                     { this.renderTitle() }
             </header>
         )

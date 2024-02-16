@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
-import { Button, Card, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
+import { debounce } from "debounce";
+
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
 
 export default class ResourceBrowser extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.initialState = {
+      filterBuffer: ''
+    }
+    this.state = this.initialState
+
+    this.updateNameFilter = debounce((nameFilter) => {
+      this.props.onResourceViewChange({ nameFilter })
+    }, 100)
+}
 
   onOpenActionMenu = (anchorEl) => {
     const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
@@ -84,18 +99,55 @@ export default class ResourceBrowser extends Component {
     }
   }
 
-  renderLoginButton(buttonProps) {
-    const { onLogin, fairCopyProject, onLogout } = this.props
+  renderFilterInput() {
 
-    return fairCopyProject.isLoggedIn() ? 
-        <Button {...buttonProps} onClick={onLogout}>Log Out</Button> :
-        <Button {...buttonProps} onClick={onLogin}>Log In</Button>
+    const onChange = (e) => {
+      const {value} = e.target
+      this.setState({ ...this.state, filterBuffer: value })
+      const nameFilter = value.length > 0 ? value : 'null'
+      this.updateNameFilter(nameFilter)
+    }
+
+    const onClearFilter = () => {
+      this.setState({ ...this.state, filterBuffer: '' })
+      this.updateNameFilter(null)
+    }
+
+    const { filterBuffer } = this.state
+
+    return <div className='filter-input'>
+            <Input 
+                name="filter-input"
+                className="filter-input"
+                size="small"
+                margin="dense"
+                autoFocus={true}
+                disableUnderline={true}
+                onChange={onChange}
+                aria-label="Filter resource list"
+                placeholder="Type to filter list" 
+                value={filterBuffer}
+                endAdornment={
+                  <Tooltip title="Clear Name Filter">
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="clear name filter"
+                        onClick={onClearFilter}
+                      >
+                        <i className="fas fa-times-circle fa-sm"></i>
+                      </IconButton>
+                    </InputAdornment>
+                  </Tooltip>
+                }
+            />
+          </div>
   }
 
   renderToolbar() {
     const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
     const createAllowed = remoteProject ? canCreate(permissions) : true
+    const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -105,6 +157,7 @@ export default class ResourceBrowser extends Component {
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
+    const onPreviewResource = () => { fairCopyProject.previewResource(teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
 
     return (
@@ -137,19 +190,51 @@ export default class ResourceBrowser extends Component {
               </span>
           </Tooltip> 
         }
-        { currentView === 'remote' &&
-         <div className='inline-button-group right-button'>
-          { this.renderLoginButton(buttonProps) }
-        </div>   
+        { teiDoc &&
+          <Tooltip title="Preview Published Document">
+              <span>
+                  <Button
+                      disabled={!canPreview}
+                      onClick={onPreviewResource}
+                      className='toolbar-button'
+                      disableRipple={true}
+                      disableFocusRipple={true}
+                      style={{float: 'right'}}
+                  >
+                      <i className="far fa-eye fa-2x"></i>
+                  </Button>                   
+              </span>
+          </Tooltip>   
         }
+        { !teiDoc && this.renderFilterInput() }
       </div>
     )
+  }
+
+  renderSortableHeaderCell(key,label,orderBy,order) {
+
+    const createSortHandler = (nextOrderBy, nextOrder) => {      
+      return () => {
+        this.props.onResourceViewChange({ orderBy: nextOrderBy, order: nextOrder })  
+      }
+    } 
+    const sortDirection = order === 'ascending' ? 'asc' : 'desc'
+
+    return <TableCell sortDirection={orderBy === key ? sortDirection : false}>
+              <TableSortLabel
+                active={orderBy === key}
+                direction={orderBy === key ? sortDirection : 'asc'}
+                onClick={createSortHandler(key, order === 'ascending' ? 'descending' : 'ascending')}
+              >
+                {label}
+              </TableSortLabel>
+            </TableCell>
   }
 
   renderResourceTable() {
     const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
-    const { currentPage, rowsPerPage, totalRows } = resourceView
+    const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
@@ -241,7 +326,7 @@ export default class ResourceBrowser extends Component {
 
     const onChangePage = (e,page) => { 
       // pages counted ordinally outside this control (because that is how server counts them)
-      this.props.onPageChange(page+1)
+      this.props.onResourceViewChange({ currentPage: page+1 })
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
@@ -256,8 +341,8 @@ export default class ResourceBrowser extends Component {
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
                           { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
                           <TableCell>Type</TableCell>
-                          <TableCell>Name</TableCell>
-                          <TableCell>ID</TableCell>
+                          { this.renderSortableHeaderCell('name','Name',orderBy,order) }
+                          { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
                           { remoteProject && <TableCell>Last Modified</TableCell> }
                       </TableRow>
                   </TableHead>
@@ -279,19 +364,27 @@ export default class ResourceBrowser extends Component {
   }
 
   renderEmptyListMessage() {
-    const { resourceIndex, currentView, fairCopyProject, resourceView } = this.props
+    const { resourceIndex, currentView, fairCopyProject, resourceView, onLogin } = this.props
     if( resourceIndex.length > 0 || resourceView.loading ) return null
+
+    const buttonProps = {
+      className: 'login-button',
+      variant: "outlined",
+      size: 'small'
+    }
+    const displayLoginButton = !fairCopyProject.isLoggedIn() && currentView === 'remote'
 
     const message = currentView === 'home' ? 
       <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
-      fairCopyProject.isLoggedIn() ? 
-        <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography> :
-        <Typography>You are not logged into the server. Click on the LOG IN button above.</Typography>
+      displayLoginButton ? 
+          <Typography>You are not logged into the server. Click below to login.</Typography> :
+          <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>
 
     return (
       <Card raised={true} className='empty-list-card'>
         <CardContent>
           { message }
+          { displayLoginButton && <Button onClick={onLogin} {...buttonProps}>Login</Button>}
         </CardContent>
       </Card>
     )
@@ -302,9 +395,17 @@ export default class ResourceBrowser extends Component {
       const { loading } = resourceView
       const { isLoggedIn, remote: remoteProject } = fairCopyProject
 
+      // reset the filter when switching views
+      const onResourceActionFilter = (actionID, resourceIDs, resourceEntries) => {
+        if( actionID === 'remote' || actionID === 'home' ) {
+          this.setState(this.initialState)
+        }
+        onResourceAction(actionID, resourceIDs, resourceEntries)
+      }
+
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar parentResource={teiDoc} onResourceAction={onResourceAction} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
+          <TitleBar parentResource={teiDoc} onResourceAction={onResourceActionFilter} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }

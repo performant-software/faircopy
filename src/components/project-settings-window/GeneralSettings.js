@@ -62,7 +62,7 @@ export default class GeneralSettings extends Component {
         // }
         // <Button className="action" variant="contained" onClick={onExportConfig}>Export Project Config</Button>
 
-        const { projectInfo, onReset } = this.props
+        const { projectInfo, onReset, isLoggedIn, onLogout } = this.props
         const { validationErrors } = this.state
         const { name, description, projectFilePath, remote, permissions } = projectInfo
         const disabled = remote
@@ -97,6 +97,7 @@ export default class GeneralSettings extends Component {
                 <div className="info">
                     <Typography variant="subtitle2">File Location: {projectFilePath}</Typography>
                 </div>
+                { isLoggedIn() && <Button className="action" variant="contained" onClick={onLogout}>Log Out</Button> }
             </div>
         )
     }

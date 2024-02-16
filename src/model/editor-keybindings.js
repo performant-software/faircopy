@@ -8,7 +8,8 @@ export const teiEditorKeyMap = {
     undo: 'Meta+z',
     redo: 'Meta+Shift+z',
     cutSelectedNode: 'Meta+x',
-    copySelectedNode: 'Meta+v'
+    // TODO fixme
+    // copySelectedNode: 'Meta+v'
 }
 
 export function getHotKeyConfig( teiDocument, teiEditorHandlers ) {

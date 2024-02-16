@@ -11,7 +11,8 @@ export default class ImportTextsDialog extends Component {
         this.initialState = {
             lineBreakParsing: 'all',
             learnStructure: true,
-            resourceType: 'text'
+            resourceType: 'text',
+            replaceResource: false
         }
         this.state = this.initialState
     }
@@ -40,6 +41,26 @@ export default class ImportTextsDialog extends Component {
                     <MenuItem value={false}>don't add new elements</MenuItem>
                 </Select>
                 <Typography className="q-phrase"> to the schema.</Typography>
+            </div>
+        )
+    }
+    
+    renderReplaceResource() {
+        const {replaceResource} = this.state 
+
+        return (
+            <div className="q-container">
+                <Select
+                    name="replaceResource"
+                    value={replaceResource}
+                    onChange={this.onChange}
+                    aria-label="Select replace resource mode"
+                    className='import-option'
+                >
+                    <MenuItem value={true}>Replace</MenuItem>
+                    <MenuItem value={false}>Don't Replace</MenuItem>
+                </Select>
+                <Typography className="q-phrase"> resources with the same ID.</Typography>
             </div>
         )
     }
@@ -81,8 +102,8 @@ export default class ImportTextsDialog extends Component {
         const { onClose } = this.props
     
         const onClickSelect = () => {
-            const { lineBreakParsing, learnStructure, resourceType } = this.state
-            fairCopy.services.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType})
+            const { lineBreakParsing, learnStructure, resourceType, replaceResource } = this.state
+            fairCopy.services.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType,replaceResource})
             this.setState(this.initialState)
             onClose()
         }
@@ -107,6 +128,7 @@ export default class ImportTextsDialog extends Component {
                     <Typography component='h2' variant='h6'>Import Options</Typography>
                     { this.renderLineBreakOptions() }
                     { this.renderLearnStructure() }
+                    { this.renderReplaceResource() }
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onClickSelect}>Select Files</Button>   

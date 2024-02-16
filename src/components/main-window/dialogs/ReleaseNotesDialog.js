@@ -6,17 +6,9 @@ import ReactMarkdown from 'react-markdown'
 export default class ReleaseNotesDialog extends Component {
 
     componentDidMount() {
-        const { appConfig } = this.props
-        const { version } = appConfig
-        const licenseDataJSON = localStorage.getItem('licenseData')
-        const licenseData = JSON.parse(licenseDataJSON)
-        const { viewedReleaseNotes } = licenseData
-        
-        // mark latest notes as viewed
-        if( !viewedReleaseNotes || viewedReleaseNotes !== version ) {
-            licenseData.viewedReleaseNotes = version
-            localStorage.setItem('licenseData',JSON.stringify(licenseData))
-        }
+        // const { appConfig } = this.props
+        // const { version } = appConfig
+        // REFACTOR
     }
 
     render() {      

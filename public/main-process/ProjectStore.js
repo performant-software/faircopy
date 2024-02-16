@@ -1,11 +1,12 @@
 const fs = require('fs')
 const log = require('electron-log')
 const { readFile, stat } = require('fs/promises')
+const { app } = require('electron')
 
 const { compatibleProject, migrateConfig, migrateIDMap, migrateManifestData } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
-const { exportResource } = require('./export-xml')
+const { serializeResource } = require('./serialize-xml')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -52,10 +53,20 @@ class ProjectStore {
                         if( error ) {
                             // TODO send back error message
                         } else {
-                            exportResource(resourceData, path)
+                            this.exportResource(resourceData, path)
                         }
                     }
                     break
+                case 'preview-resource':
+                    {
+                        const { resourceData, previewData, error } = msg
+                        if( error ) {
+                            // TODO send back error message
+                        } else {
+                            this.previewResource(resourceData, previewData)
+                        }
+                    }
+                    break  
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -85,14 +96,14 @@ class ProjectStore {
     openProject(projectFilePath, onProjectOpened) {
         const {baseDir} = this.fairCopyApplication
         this.onProjectOpened = onProjectOpened
-        const debug = this.fairCopyApplication.isDebugMode()
+        const debug = !app.isPackaged
         this.initProjectArchiveWorker( baseDir, debug, projectFilePath ).then(() => {
             this.projectArchiveWorker.postMessage({ messageType: 'open' })
         })
     }
 
     loadProject(project) {
-        const { baseDir } = this.fairCopyApplication
+        const { baseDir, config: fairCopyAppConfig } = this.fairCopyApplication
         
         if( !project ) {
             log.error('Attempted to open invalid project file.')
@@ -119,7 +130,7 @@ class ProjectStore {
         this.manifestData = fairCopyManifest
 
         const currentVersion = this.fairCopyApplication.config.version
-        if( !this.fairCopyApplication.isDebugMode() && !compatibleProject(this.manifestData, currentVersion) ) {
+        if( app.isPackaged && !compatibleProject(this.manifestData, currentVersion) ) {
             log.info('Project file is incompatible.')
             const incompatInfo = { projectFilePath, projectFileVersion: this.manifestData.generatedWith }
             this.fairCopyApplication.sendToMainWindow('projectIncompatible', incompatInfo)
@@ -130,8 +141,11 @@ class ProjectStore {
         this.manifestData = migrateManifestData(this.manifestData)
         
         // if elements changed in config, migrate project config
-        migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig)
+        migrateConfig(this.manifestData.generatedWith,this.baseConfig,fairCopyConfig, fairCopyAppConfig)
         this.migratedConfig = fairCopyConfig
+
+        // clean up the idMap if there are no resources
+        idMap = this.cleanUpIDMap(idMap)
 
         // apply any migrations to ID Map data
         idMap = migrateIDMap(this.manifestData.generatedWith,idMap,this.manifestData.resources)
@@ -145,6 +159,38 @@ class ProjectStore {
 
         const projectData = { projectFilePath, fairCopyManifest: this.manifestData, teiSchema, fairCopyConfig, baseConfig: this.baseConfig, idMap }
         this.onProjectOpened( projectData )
+    }
+
+    // clean up the idMap if there are no resources
+    cleanUpIDMap(idMap) {
+        const { resources } = this.manifestData
+        if( Object.values(resources).length === 0 ) {
+            return "{}"
+        } else {
+            return idMap
+        }
+    }
+    previewResource(resourceData, previewData) {
+        try {
+            const teiDocXML = serializeResource(resourceData,false)
+            const previewDataWithXML = { ...previewData, teiDocXML }
+            this.fairCopyApplication.openPreview(previewDataWithXML)    
+        } catch(e) {
+            log.error(e)
+        }
+    }
+
+    exportResource(resourceData, path) {       
+        const { resourceEntry } = resourceData
+        const { localID } = resourceEntry
+        const filePath = `${path}/${localID}.xml`
+        try {
+            const xml = serializeResource(resourceData)
+            fs.writeFileSync(filePath,xml)    
+            log.info(`Export resources to: ${path}`)
+        } catch(e) {
+            log.error(e)
+        }
     }
 
     async importStart(paths,options) {
@@ -175,6 +221,10 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('importData', { command: 'next' } )  
     }
 
+    importError(errorMessage) {
+        this.fairCopyApplication.sendToMainWindow('importData', { command: 'error', errorMessage } )  
+    }
+
     importEnd() {
         this.importRunning(false)
         this.saveManifest()
@@ -191,6 +241,12 @@ class ProjectStore {
         for( const resourceEntry of resourceEntries ) {
             this.projectArchiveWorker.postMessage({ messageType: 'request-export', resourceEntry, projectData, path })
         }
+    }
+
+    requestPreviewView(previewData) {
+        const { resources: localEntries, remote, userID, serverURL, projectID } = this.manifestData
+        const projectData = { localEntries, remote, userID, serverURL, projectID }
+        this.projectArchiveWorker.postMessage({ messageType: 'request-preview', previewData, projectData })
     }
 
     close() {

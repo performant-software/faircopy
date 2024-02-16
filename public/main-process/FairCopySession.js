@@ -22,6 +22,9 @@ class FairCopySession {
                 currentPage: 1, 
                 rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
+                nameFilter: null,
+                orderBy: 'name',
+                order: 'ascending',
                 loading: true
             },
             home: {
@@ -30,6 +33,9 @@ class FairCopySession {
                 currentPage: 1, 
                 rowsPerPage: initialRowsPerPage,
                 totalRows: 0,
+                nameFilter: null,
+                orderBy: 'name',
+                order: 'ascending',
                 loading: true           
             }
         }
@@ -88,6 +94,98 @@ class FairCopySession {
             this.idMapAuthority.sendIDMapUpdate()    
         }
         this.projectStore.addResource(resourceEntry,resourceData,idMap)
+    }
+
+    replaceTEIDocument( resources ) {
+        const { resources: manifestResources } = this.projectStore.manifestData
+
+        const teiDocResource = resources.find( r => r.resourceEntry.type == 'teidoc' )
+        const teiDocLocalID = teiDocResource.resourceEntry.localID 
+        const existingTEIDoc = Object.values(manifestResources).find( r => r.localID == teiDocLocalID && r.type == 'teidoc' )
+        const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(teiDocLocalID,null)
+
+        if( existingTEIDoc ) {
+            for( const resource of resources ) {
+                if( resource.resourceEntry.type !== 'teidoc') {
+                    if( !this.replaceResource(resource,existingTEIDoc) ) {
+                        // don't continue if any sub resources fail
+                        return
+                    }
+                } else {
+                    // acknowledge that we got the tei doc
+                    if(this.projectStore.importInProgress) {
+                        this.projectStore.importContinue()
+                    }
+                }
+            }
+            const doomedIDs = []
+            for( const childLocalID of Object.keys(existingResourceMap.ids) ) {
+                const newerVersion = resources.find( r => r.resourceEntry.localID == childLocalID )
+                if( !newerVersion ) {
+                    // if there wasn't a newer version of this resource, remove it
+                    doomedIDs.push( existingResourceMap.ids[childLocalID].resourceID )
+                }
+            }
+            if( doomedIDs.length > 0 ) this.removeResources(doomedIDs)
+        } else {
+            if( !existingResourceMap ) {
+                // add this teidoc and its resources as a new doc
+                for( const resource of resources ) {
+                    const { resourceEntry, content, resourceMap } = resource 
+                    this.addResource(resourceEntry, content, resourceMap )
+                }
+            } else {
+                if(this.projectStore.importInProgress) {
+                    this.projectStore.importError(`${teiDocLocalID} is not checked out and could not be replaced.`)
+                    this.projectStore.importContinue()                    
+                }
+            }
+        }
+    }
+
+    replaceResource(resource, parentEntry) {
+        const { resourceEntry, content, resourceMap } = resource
+        const { localID } = resourceEntry
+        const { resources } = this.projectStore.manifestData
+
+        // is there an existing resource with this id and parent? also set parentResource
+        let existingLocalResource = null
+        if( parentEntry ) {
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID && parentEntry.id == r.parentResource )
+            resourceEntry.parentResource = parentEntry.id
+        } else {
+            existingLocalResource = Object.values(resources).find( r => r.localID == localID && r.parentResource == null)
+            resourceEntry.parentResource = null
+        }
+
+        if( existingLocalResource ) {
+            // save over top of the existing resource
+            resourceEntry.id = existingLocalResource.id            
+            resourceMap.resourceID = existingLocalResource.id
+            const parentLocalID = parentEntry ? parentEntry.localID : null
+            this.setResourceMap(resourceMap, localID, parentLocalID)
+            this.saveResource(resourceEntry.id,content,false)
+
+            if(this.projectStore.importInProgress) {
+                this.projectStore.importContinue()
+            }
+        } else {
+            // otherwise, does it exist in the idMap? 
+            const parentID = parentEntry ? parentEntry.localID : null
+            const existingResourceMap = this.idMapAuthority.getResourceMapByLocalID(localID,parentID)
+            // if not, just add this resource
+            if( !existingResourceMap ) {
+                if( parentEntry ) resourceEntry.parentResource = parentEntry.id
+                this.addResource(resourceEntry, content, resourceMap)
+            } else {
+                if(this.projectStore.importInProgress) {
+                    this.projectStore.importError(`${localID} is not checked out and could not be replaced.`)
+                    this.projectStore.importContinue()
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     removeResources(resourceIDs) {
@@ -150,10 +248,24 @@ class FairCopySession {
     }
 
     updateResourceView(resourceViewRequest) {
-        const { currentView, indexParentID, parentEntry, currentPage }  = resourceViewRequest
-        const resourceView = this.resourceViews[currentView]
-        this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, currentPage }
-        this.resourceViews.currentView = currentView
+        if( resourceViewRequest ) {
+            const { currentView, indexParentID, parentEntry }  = resourceViewRequest
+            const resourceView = this.resourceViews[currentView]
+            const currentPage = resourceViewRequest.currentPage !== undefined ? resourceViewRequest.currentPage : resourceView.currentPage
+            let nameFilter, order, orderBy
+            // carry over name filter and order values if switching views
+            if( this.resourceViews.currentView !== currentView ) {
+                nameFilter = resourceViewRequest.nameFilter !== undefined ? resourceViewRequest.nameFilter : this.resourceViews[currentView].nameFilter
+                order = resourceViewRequest.order !== undefined ? resourceViewRequest.order : this.resourceViews[currentView].order
+                orderBy = resourceViewRequest.orderBy !== undefined ? resourceViewRequest.orderBy : this.resourceViews[currentView].orderBy
+            } else {
+                nameFilter = resourceViewRequest.nameFilter !== undefined ? resourceViewRequest.nameFilter : resourceView.nameFilter
+                order = resourceViewRequest.order !== undefined ? resourceViewRequest.order : resourceView.order
+                orderBy = resourceViewRequest.orderBy !== undefined ? resourceViewRequest.orderBy : resourceView.orderBy
+            }
+            this.resourceViews[currentView] = { ...resourceView, indexParentID, parentEntry, nameFilter, order, orderBy, currentPage }
+            this.resourceViews.currentView = currentView    
+        }
         this.requestResourceView()
     }
 
@@ -169,18 +281,34 @@ class FairCopySession {
         } else {
             // respond right away from project store
             resourceView.parentEntry = indexParentID ? localResources[indexParentID] : null
+            const { nameFilter, order, orderBy } = resourceView
+            const sortedResources = Object.values(localResources).sort((a,b) => {
+                const valueA = a[orderBy].toUpperCase()
+                const valueB = b[orderBy].toUpperCase()
+                if( valueA === valueB ) return 0
+                if( order == 'ascending' ) {
+                    return valueA > valueB ? 1 : -1
+                } else {
+                    return valueA < valueB ? 1 : -1
+                }
+            })
 
             let resourceIndex = []
-            for( const localResource of Object.values(localResources) ) {
+            for( const localResource of sortedResources ) {
                 const { parentResource } = localResource
                 if( localResource.type !== 'image' ) {
+                    // if this resource is a child of current parent OR 
+                    // if the parent is not checked out, display it at top level
                     if( parentResource === indexParentID ||
                         ( indexParentID === null && !localResources[parentResource] )) {
-                        // if this resource is a child of current parent OR 
-                        // if the parent is not checked out, display it at top level
-                        resourceIndex.push(localResource)                    
-                    } 
-                }                    
+                        if( indexParentID ) {
+                            // filter doesn't act on teidoc views
+                            resourceIndex.push(localResource)                    
+                        } else if( !nameFilter || localResource.name.includes(nameFilter) ) {
+                            resourceIndex.push(localResource)                    
+                        }
+                    }
+                } 
             }
             // don't let currentPage be > page count 
             let pageCount = Math.ceil(resourceIndex.length/rowsPerPage)
@@ -229,13 +357,16 @@ class FairCopySession {
         this.projectStore.searchIndex.searchProject(searchQuery) 
     }
 
-    saveResource(resourceID, resourceData) {
+    saveResource(resourceID, resourceData, updatePreview) {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = resources[resourceID]
         if( resourceEntry ) {
             const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
             const idMap = this.idMapAuthority.commitResource(localID, parentID)
             this.projectStore.saveResource(resourceEntry, resourceData, idMap)  
+            if( updatePreview ) {
+                this.requestPreviewView({ resourceEntry })
+            }       
             return true  
         }
         return false
@@ -411,6 +542,10 @@ class FairCopySession {
         this.projectStore.updateProjectInfo(projectInfo)
         // TODO if this is a remote project, send the latest name and description to server
         // permissions etc can only be set from server.
+    }
+
+    requestPreviewView(previewData) {
+        this.projectStore.requestPreviewView(previewData)
     }
 
     requestExport(resourceEntries,path) {

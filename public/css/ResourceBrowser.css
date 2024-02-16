@@ -11,11 +11,27 @@
     float: right;
 }
 
+#ResourceBrowser .filter-input {
+    border-radius: 5px;
+    border: 1px solid #0000003b;
+    float: right;
+}
+
+#ResourceBrowser .filter-input input {
+    border: none;
+    padding: 5px;
+    width: 200px;
+}
+
 #ResourceBrowser .empty-list-card {
     position: absolute;
     left: 33%;
     top: 33%;
     max-width: 300px;
+}
+
+#ResourceBrowser .login-button {
+    margin-top: 10px;
 }
 
 #ResourceBrowser .down-caret {

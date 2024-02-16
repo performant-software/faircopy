@@ -20,18 +20,14 @@ import EditSurfaceInfoDialog from './dialogs/EditSurfaceInfoDialog'
 import MoveResourceDialog from './dialogs/MoveResourceDialog'
 import MainWindowStatusBar from './MainWindowStatusBar'
 import ReleaseNotesDialog from './dialogs/ReleaseNotesDialog'
-import FeedbackDialog from './dialogs/FeedbackDialog'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import { highlightSearchResults, scrollToSearchResult } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog'
-import LicenseBar from './LicenseBar'
-import LicenseDialog from './dialogs/LicenseDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import CheckOutDialog from './dialogs/CheckOutDialog'
 import { bigRingSpinner } from '../common/ring-spinner'
-import { logout } from '../../model/cloud-api/auth'
 
 const fairCopy = window.fairCopy
 
@@ -46,6 +42,8 @@ export default class MainWindow extends Component {
 
     constructor() {
         super()
+
+        this.filterInitialState = { orderBy: 'name', order: 'ascending', nameFilter: null, rowsPerPage: initialRowsPerPage }
         this.state = {
             selectedResource: null,
             openResources: {},
@@ -54,17 +52,17 @@ export default class MainWindow extends Component {
                 remote: { 
                     indexParentID: null,
                     parentEntry: null,
-                    currentPage: 1, 
-                    rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
+                    currentPage: 1,
+                    ...this.filterInitialState,
                     loading: true
                 },
                 home: {
                     indexParentID: null,
                     parentEntry: null,
-                    currentPage: 1, 
-                    rowsPerPage: initialRowsPerPage,
                     totalRows: 0,
+                    currentPage: 1,
+                    ...this.filterInitialState,
                     loading: true           
                 }
             },
@@ -79,7 +77,6 @@ export default class MainWindow extends Component {
             editDialogMode: false,
             addImagesMode: false,
             releaseNotesMode: false,
-            feedbackMode: false,
             loginMode: false,
             draggingElementActive: false,
             dragInfo: null,
@@ -105,7 +102,6 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
-            licenseMode: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -212,7 +208,6 @@ export default class MainWindow extends Component {
         services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
         services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
         services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
-        this.checkReleaseNotes()
     }
 
     componentWillUnmount() {
@@ -245,20 +240,6 @@ export default class MainWindow extends Component {
             this.closeResources( resourceIDs, true)
         } else {
             fairCopy.services.ipcSend('exitApp')
-        }
-    }
-
-    checkReleaseNotes() {
-        const { appConfig } = this.props
-        const { version } = appConfig
-
-        const licenseDataJSON = localStorage.getItem('licenseData')
-        const licenseData = JSON.parse(licenseDataJSON)
-        const { viewedReleaseNotes } = licenseData
-        
-        // display release notes if they haven't been viewed
-        if( !viewedReleaseNotes || viewedReleaseNotes !== version ) {
-            this.setState({ ...this.state, releaseNotesMode: true })
         }
     }
 
@@ -425,21 +406,11 @@ export default class MainWindow extends Component {
     }
 
     onLoggedIn = () => {
-        this.setState( {...this.state, loginMode: false} )
-        fairCopy.services.ipcSend('reopenProject')
-    }
-
-    onLogOut = () => {
         const { resourceViews } = this.state
-        const { fairCopyProject } = this.props
-        const { userID, serverURL } = fairCopyProject
-        const { currentView } = resourceViews
-        const resourceView = resourceViews[currentView]
-        const { indexParentID, parentEntry, currentPage } = resourceView
-        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
-        logout(userID, serverURL)
-        this.setState( {...this.state} )
-        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+        const nextResourceViews = { ...resourceViews }
+        nextResourceViews['remote'].loading = true
+        this.setState( {...this.state, resourceViews: nextResourceViews, loginMode: false} )
+        fairCopy.services.ipcSend('reopenProject')
     }
 
     onEditResource = () => {
@@ -471,12 +442,12 @@ export default class MainWindow extends Component {
         this.setState( {...this.state, draggingElementActive: true, dragInfo })
     }
 
-    onPageChange = (currentPage) => { 
+    onResourceViewChange = (nextView) => { 
         const { resourceViews } = this.state
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
         const { indexParentID, parentEntry } = resourceView
-        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+        const resourceViewRequest = { currentView, indexParentID, parentEntry, ...nextView }
         fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
         const checkMarkState = this.setAllCheckmarks(false,false)
         const nextResourceViews = { ...resourceViews }
@@ -498,7 +469,7 @@ export default class MainWindow extends Component {
                 const indexParentID = resourceIDs
                 const parentEntry = resourceEntries
                 const currentPage = 1
-                const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage }
+                const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage, ...this.filterInitialState }
                 const nextResourceIndex = currentView === 'home' ? resourceIndex : []
                 fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
                 const nextResourceViews = { ...resourceViews }
@@ -541,7 +512,7 @@ export default class MainWindow extends Component {
                     nextResourceViews.currentView = 'remote'
                     nextResourceViews.remote.loading = true    
                     const { indexParentID, parentEntry, currentPage } = resourceViews.remote
-                    const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage } 
+                    const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage, ...this.filterInitialState } 
                     fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )   
                     this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })                
                 }
@@ -552,7 +523,7 @@ export default class MainWindow extends Component {
                 const {resourceViews} = this.state 
                 if( resourceViews.currentView === 'remote' && !resourceViews.remote.loading ) {
                     const { indexParentID, parentEntry, currentPage } = resourceViews.home
-                    const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage } 
+                    const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage, ...this.filterInitialState } 
                     fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
                     const nextResourceViews = { ...resourceViews }
                     nextResourceViews.currentView = 'home'
@@ -636,10 +607,6 @@ export default class MainWindow extends Component {
 
     onSearchFilter = () => {        
         this.setState({...this.state, searchFilterMode: true })
-    }
-
-    onLicense = () => {
-        this.setState({...this.state, licenseMode: true })
     }
 
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
@@ -749,13 +716,12 @@ export default class MainWindow extends Component {
                         onEditTEIDoc={ () => { this.setState({ ...this.state, editTEIDocDialogMode: true }) }}
                         onImportResource={this.onImportResource}
                         onLogin={this.onLogin}
-                        onLogout={this.onLogOut}
                         teiDoc={parentEntry}
                         setResourceCheckmark={this.setResourceCheckmark}
                         setAllCheckmarks={this.setAllCheckmarks}
                         allResourcesCheckmarked={allResourcesCheckmarked}
                         resourceCheckmarks={resourceCheckmarks}
-                        onPageChange={this.onPageChange}
+                        onResourceViewChange={this.onResourceViewChange}
                         currentView={currentView}
                         resourceView={resourceView}
                         resourceIndex={resourceIndex}
@@ -787,7 +753,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, licenseMode, feedbackMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
         const { idMap, serverURL } = fairCopyProject
@@ -880,10 +846,6 @@ export default class MainWindow extends Component {
                     appConfig={appConfig}
                     onClose={()=> { this.setState( { ...this.state, releaseNotesMode: false })}}                
                 ></ReleaseNotesDialog> }
-                { feedbackMode && <FeedbackDialog
-                    appConfig={appConfig}
-                    onClose={()=> { this.setState( { ...this.state, feedbackMode: false })}}                
-                ></FeedbackDialog> }
                 { editSurfaceInfoMode && <EditSurfaceInfoDialog
                     surfaceInfo={surfaceInfo}
                     onSave={onSaveSurfaceInfo}
@@ -894,10 +856,6 @@ export default class MainWindow extends Component {
                     updateSearchFilter={this.updateSearchFilter}
                     onClose={()=>{ this.setState( {...this.state, searchFilterMode: false} )}}
                 ></SearchDialog> }
-                { licenseMode && <LicenseDialog
-                    appConfig={appConfig}
-                    onClose={()=>{ this.setState( {...this.state, licenseMode: false} )}}
-                ></LicenseDialog> }
                 { checkInMode && <CheckInDialog
                     fairCopyProject={fairCopyProject}
                     checkInResources={checkInResources}
@@ -984,7 +942,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex, resourceBrowserOpen } = this.state
+        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -999,9 +957,6 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
-                    { resourceBrowserOpen && <LicenseBar
-                        onLicense={this.onLicense}
-                    ></LicenseBar> }
                     <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
                         { this.renderProjectSidebar() }
                         { this.renderContentPane() }
@@ -1019,7 +974,6 @@ export default class MainWindow extends Component {
                         onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
-                        onFeedback={()=>{ this.setState({ ...this.state, feedbackMode: true })}}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                     ></MainWindowStatusBar>
                 </div>

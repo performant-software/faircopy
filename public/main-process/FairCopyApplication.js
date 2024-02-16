@@ -1,15 +1,15 @@
 const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
-const { checkForUpdates, downloadUpdate } = require('./app-updater')
 const fs = require('fs')
 const Jimp = require("jimp")
 const log = require('electron-log')
+
 const { FairCopySession } = require('./FairCopySession')
 
 const indexFilePath = 'build/index.html'
 const debugBaseDir = `${process.cwd()}/public/main-process`
-const distBaseDir = __dirname
+const distBaseDir = __dirname 
 
 class FairCopyApplication {
 
@@ -21,24 +21,21 @@ class FairCopyApplication {
     this.returnToProjectWindow = false
     this.autoUpdaterStarted = false
 
-    this.baseDir = this.isDebugMode() ? debugBaseDir : distBaseDir
+    this.baseDir = !app.isPackaged ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
+    
     this.mainMenu = new MainMenu(this)
     this.initLocalFileProtocol()
     this.initIPC()
   }
 
   getConfig() {
-    const distConfigJSON = fs.readFileSync(`${this.baseDir}/config/dist-config.json`).toString('utf-8')
-    const distConfig = JSON.parse(distConfigJSON)
+    const distConfig = {}
+    distConfig.devMode = !app.isPackaged
     distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/release-notes/latest.md`).toString('utf-8')
-    distConfig.version = this.isDebugMode() ? process.env.FAIRCOPY_DEV_VERSION : app.getVersion()
-    distConfig.websiteURL = distConfig.devMode ? distConfig.devURL : distConfig.prodURL
+    distConfig.defaultProjectCSS = fs.readFileSync(`${this.baseDir}/config/default-project-css.css`).toString('utf-8')
+    distConfig.version = app.isPackaged ? app.getVersion() : process.env.FAIRCOPY_DEV_VERSION
     return distConfig
-  }
-
-  isDebugMode() {
-    return ( process.env.FAIRCOPY_DEBUG_MODE !== undefined && process.env.FAIRCOPY_DEBUG_MODE !== false && process.env.FAIRCOPY_DEBUG_MODE !== 'false' )   
   }
 
   // local file protocol for accessing image resources
@@ -51,12 +48,14 @@ class FairCopyApplication {
 
   initIPC() {
     
-    ipcMain.on('checkForUpdates', (event,licenseData) => { checkForUpdates(licenseData, this.sendToMainWindow) })
-    ipcMain.on('downloadUpdate', (event) => { downloadUpdate(this.sendToMainWindow) })
     ipcMain.on('closeProject', (event) => { 
       this.closeProject()
       this.exitApp()
     })
+
+    ipcMain.on('openWebpage', (event, url ) => {
+      shell.openExternal(url)
+    })  
     
     ipcMain.on('exitApp', (event) => { 
       if( this.projectWindow ) {
@@ -71,6 +70,9 @@ class FairCopyApplication {
     })
     
     ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
+
+    ipcMain.on('replaceTEIDocument', (event, resources) => { this.fairCopySession.replaceTEIDocument(resources) })
+    ipcMain.on('replaceResource', (event, resource, parentEntry) => { this.fairCopySession.replaceResource(resource,parentEntry) })
 
     ipcMain.on('removeResources', (event, resourceIDs) => { 
       this.fairCopySession.removeResources(resourceIDs) 
@@ -101,7 +103,7 @@ class FairCopyApplication {
       this.fairCopySession.searchProject(searchQuery)  
     })
     ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
-      const ok = this.fairCopySession.saveResource(resourceID, resourceData) 
+      const ok = this.fairCopySession.saveResource(resourceID, resourceData, !!this.previewView) 
       if( ok ) {
         const update = { resourceID, messageID: msgID, resourceContent: resourceData }        
         this.sendToAllWindows('resourceContentUpdated', update )
@@ -122,18 +124,6 @@ class FairCopyApplication {
       } else {
         this.sendToAllWindows('imagesOpened', [])
       }
-    })
-
-    ipcMain.on('openBuyNowWebpage', (event) => {
-      shell.openExternal(`${this.config.websiteURL}/prices`);
-    })
-
-    ipcMain.on('openRenewalWebpage', (event, secureID ) => {
-      shell.openExternal(`${this.config.websiteURL}/renew/${secureID}`);
-    })  
-
-    ipcMain.on('openLandingPage', (event) => {
-      shell.openExternal(`${this.config.websiteURL}`);
     })
     
     // Main window events //////
@@ -198,6 +188,14 @@ class FairCopyApplication {
       })
     })
 
+    ipcMain.on('requestPreviewView', (event, previewData) => { 
+      // if the preview window already exists, move it to the front
+      if( this.previewView ) {
+        this.previewView.focus()
+      }
+      this.fairCopySession.requestPreviewView(previewData)
+    })
+
     ipcMain.on('selectedZones', (event, selectedZones) => { 
       this.sendToAllWindows('selectedZones', selectedZones )  
     })
@@ -210,7 +208,7 @@ class FairCopyApplication {
     })
 
     ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive({ ...projectInfo, generatedWith: this.config.version}, this.baseDir, () => {
+      createProjectArchive({ ...projectInfo, defaultProjectCSS: this.config.defaultProjectCSS, generatedWith: this.config.version}, this.baseDir, () => {
         this.openProject(projectInfo.filePath)
       })
     })
@@ -235,8 +233,8 @@ class FairCopyApplication {
       this.mainWindow = null
     }
 
-    const windowSize = this.isDebugMode() ? [1440,1200] : [1440,900]
-    this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true )
+    const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
+    this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true, true )
     this.mainWindow.webContents.send('appConfig', this.config)
 
     // let render window handle on close (without browser restrictions)
@@ -249,12 +247,20 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 570, false, '#E6DEF9' ) 
+    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 570, false, '#E6DEF9', false ) 
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 
+  async createPreviewWindow(previewData) {
+    if( !this.previewView ) {
+      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', false, true )
+      this.previewView.on('close', e => delete this.previewView )
+    }
+    this.previewView.webContents.send('updatePreview', previewData)
+  }
+
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff' )
+    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', false )
     const {resourceID, xmlID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
@@ -277,6 +283,11 @@ class FairCopyApplication {
       }
       this.imageViews = {}
 
+      if( this.previewView ) {
+        this.previewView.close()
+        this.previewView = null
+      }
+
       if( this.returnToProjectWindow ) {
         this.createProjectWindow().then(() => {
           this.returnToProjectWindow = false
@@ -289,6 +300,12 @@ class FairCopyApplication {
         this.fairCopySession.closeProject()
       }
     }
+  }
+
+  openPreview(previewData) {
+    this.createPreviewWindow(previewData).then(() => {
+      log.info(`Opened preview view.`)
+    })
   }
 
   openProject(targetFile) {
@@ -340,10 +357,10 @@ class FairCopyApplication {
     return imageData
   }
 
-  async createWindow(preload, width, height, resizable, backgroundColor, devTools ) {
+  async createWindow(preload, width, height, resizable, backgroundColor, menuBar, devTools ) {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
-    const webSecurity = !this.isDebugMode() 
+    const webSecurity = app.isPackaged
     
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -359,12 +376,13 @@ class FairCopyApplication {
           preload: `${this.baseDir}/${preload}`,
           spellcheck: false
       },
+      autoHideMenuBar: !menuBar,
       resizable,
       backgroundColor
     })
 
     // and load the index.html of the app.
-    if( this.isDebugMode() ) {
+    if( !app.isPackaged ) {
       await browserWindow.loadURL('http://localhost:4000')
       if(devTools) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {

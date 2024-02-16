@@ -4,14 +4,13 @@ import { configure } from 'react-hotkeys'
 import MainWindow from './main-window/MainWindow'
 import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
-import LicenseWindow from './license-window/LicenseWindow'
 import WorkerWindow from './worker-window/WorkerWindow'
+import PreviewWindow from './preview-window/PreviewWindow'
 import IncompatDialog from './IncompatDialog'
 import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
 
 import FairCopyProject from '../model/FairCopyProject'
 import ImageView from '../model/ImageView'
-import { initLicenseData, licenseLock } from '../model/license-key'
 import { getConfigStatus } from '../model/faircopy-config'
 
 
@@ -22,11 +21,8 @@ export default class App extends Component {
   constructor(props) {
     super(props)
 
-    const licenseData = initLicenseData()
-
     this.state = {
       fairCopyProject: null,
-      licenseData,
       incompatInfo: null,
       imageView: null,
       appConfig: null,
@@ -69,17 +65,9 @@ export default class App extends Component {
 
   componentDidMount() {
     if( fairCopy.rootComponent !== 'WorkerWindow' ) {
-      const { licenseData } = this.state
-
       fairCopy.services.ipcRegisterCallback('appConfig', this.onAppConfig )
       fairCopy.services.ipcRegisterCallback('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
       fairCopy.services.ipcRegisterCallback('updateFairCopyConfig', this.onUpdateFairCopyConfig )
-
-      // tell main process to check for updates 
-      if( !licenseData.activated ) {
-        this.setTitle('Activate License')
-        return
-      }
   
       this.initRootComponent()        
     }
@@ -109,6 +97,10 @@ export default class App extends Component {
       configure({ ignoreEventsCondition: () => false })      
     } else if( rootComponent === 'ImageWindow' ) {
       services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
+    } else if( rootComponent === 'PreviewWindow' ) {
+      //  setTimeout( () => {
+        this.setTitle('Preview Document')
+      // },5000)
     }
   }
 
@@ -136,12 +128,6 @@ export default class App extends Component {
       this.setTitle(title)   
       this.setState({...this.state, imageView})
     // },2000)
-  }
-
-  onActivate = () => {
-    this.initRootComponent()
-    const licenseData = JSON.parse(localStorage.getItem('licenseData'))
-    this.setState({...this.state, licenseData })
   }
 
   // record this as a recent project
@@ -172,14 +158,6 @@ export default class App extends Component {
   render() {
     const { fairCopyProject, imageView, appConfig, incompatInfo, projectSettingsActive, checkingOut, checkOutError } = this.state
     const {rootComponent} = window.fairCopy
-    if( licenseLock() ) {
-      return (
-        <LicenseWindow
-          appConfig={appConfig}
-          onActivate={this.onActivate}
-        ></LicenseWindow>
-      )
-    }
 
     if( incompatInfo ) {
       const { projectFilePath, projectFileVersion } = incompatInfo
@@ -241,6 +219,11 @@ export default class App extends Component {
             <ImageWindow
               imageView={imageView}
             ></ImageWindow>
+        )
+    } else if( rootComponent === "PreviewWindow" ) {
+        return (
+            <PreviewWindow
+            ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {
       return (
