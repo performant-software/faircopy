@@ -25,7 +25,7 @@ Building FairCopy Installers
 
 FairCopy uses Election Forge to create installers for the Mac, Windows, and Linux OSes. The Mac and Linux installers can be created on a Mac, but the Windows installer must be created on a Windows machine. This is because the code signing for Windows requires a physical USB key be connected to the computer during the signing process. The drivers for this device are Windows specific.
 
-Once the installers are built, they are automatically published to either the development or production channels using Electron Forge. The `forge.config.example.js` provides an example of how the `forge.config.js` file should be configured. This file is not checked into git because it contains a number of keys and passwords.
+Once the installers are built, they are automatically published to either the staging or production repository using Electron Forge. The `forge.config.example.js` provides an example of how the `forge.config.js` file should be configured. This file is not checked into git because it contains a number of keys and passwords.
 
 For MacOS, Apple requires us to maintain an Apple Developer subscription in order for them to sign the code of the Mac installers. These credentials are for that account.
 
@@ -37,16 +37,16 @@ Once all of this configuration is in place, use the follow command to build the 
 
 You will need to enter the password for the USB key multiple times during this process.
 
-The installers will be created in the `out` folder.
+The installers will be published to the target GitHub repository and in the `out` folder.
 
 Deploying to Staging
 ------
 
-When deploying to staging, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0-dev.0`. The `repository` key should be set to: "https://github.com/performant-software/faircopy-dev-releases.git"
+When deploying to staging, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0-dev.0`. The `repository` key should be set to: "https://github.com/performant-software/faircopy-dev-releases.git". The `publishers[0].config.repository.name` in `forge.config.js` must be set to "faircopy-dev-releases".
 
 Deploying to Production
 ------
 
-When deploying to production, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0`. The `repository` key should be set to: "https://github.com/performant-software/faircopy.git"
+When deploying to production, in addition to the steps above, the `version` key in the `package.json` file MUST be set to a new, higher, version number, obeying SEMVER standards. It should be formatted like this: `1.0.0`. The `repository` key should be set to: "https://github.com/performant-software/faircopy.git" . The `publishers[0].config.repository.name` in `forge.config.js` must be set to "faircopy".
 
 In `public/main-process/release-notes/latest.md`, the release notes should be updated to document any new features, functionality, and bug fixes. This file is displayed to the end user whenever the software is updated.
