@@ -167,8 +167,8 @@ export default class SearchBar extends Component {
         
         const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
         const filterIcon = active ? 'fas fa-filter' : 'fas fa-filter'
-        const searchInFileIcon = 'fa fa-file-o'
-        const searchInProjectIcon = 'fa fa-files-o'
+        const searchInFileIcon = 'fa fa-file fa-xl'
+        const searchInProjectIcon = 'fa fa-folder-tree fa-xl'
 
         return (
             <div
@@ -193,7 +193,7 @@ export default class SearchBar extends Component {
                             className="search-button" 
                             size="small" 
                             color="inherit">
-                            <i className={`${filterIcon} fa-lg`}></i>               
+                            <i className={`${filterIcon} fa-xl`}></i>               
                         </Button> 
                         <Button 
                             aria-label="Find in Project"
