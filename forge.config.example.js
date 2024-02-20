@@ -37,7 +37,7 @@ module.exports = {
       {
         name: '@electron-forge/publisher-github',
         config: {
-          authToken: 'GITHUB_TOKEN WITH WRITE ACCESS TO CONTENT OR REPO',
+          authToken: 'GITHUB PERSONAL ACCESS TOKEN WITH WRITE ACCESS TO REPO BELOW',
           repository: {
             owner: 'REPO OWNER',
             name: 'REPO NAME'

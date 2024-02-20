@@ -2,6 +2,26 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.2.0-beta.1
+
+## Improvements
+
+* Improvements to the sizing and layout of images in the preview window as they respond to custom CSS.
+* Links in the preview window now work, both to external websites and anchor tags within the document. Link behavior is triggered by the use of a ref element with a target attribute.
+* You can now sort by ID or by name in the Resource Browser
+* The UX for the name filter has been improved, adding a clear filter button and filter as you type functionality
+* TEI Schema has been updated to be compatible with TEI v4.7.0, latest version.
+* Font Awesome icons have been migrated to CC licensed v6.5.1. Some icons have a different appearance now. The TEI Docs icon is now an open book instead of a stack of books.
+* Replace on Import - When you import new resources, you now have the option in the import dialog to replace any existing resources that have the same ID. The existing resources must be checked out if working with a remote project.
+* Filter by Name or ID - When using the resource browser, the user can now filter the list based on the name or ID of a resource. Press enter in the field to update the filter.
+* Logout and Login buttons moved - The login button is now part of the notice when one is logged out of a remote resource. The logout button has been moved to the settings window.
+
+## Bug Fixes
+
+* XML used by preview window was being pretty formatted, which resulted in extra spaces in some documents. 
+* Bug fix for problem on production where thumbnails sometimes don't appear. Was a problem with local ID map getting out of synch with server.  
+* Cut and paste was broken in the attribute drawer fields on MacOS. This is now fixed.
+
 ## Version 1.1.10
 
 This is a bug fix release to address a problem with the Facsimile Editor not being able to draw zones shapes on MacOS.
