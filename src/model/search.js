@@ -1,9 +1,65 @@
+import TEIDocument from "./TEIDocument"
 import { scrollToNodePos } from "./scrolling"
 
 const fairCopy = window.fairCopy
 
 export function searchProject( searchQuery ) {
     fairCopy.services.ipcSend('searchProject', searchQuery)
+}
+
+export function searchResource( resource, searchQuery ) {
+    if( resource instanceof TEIDocument ) {
+        // search the document for the nodes that match the search query
+        const docSearchResults = [] 
+
+        const { query, attrQs } = searchQuery
+        const terms = query.toLowerCase().split(' ')
+        const { editorView } = resource
+        const editorState = editorView.state
+        const { doc } = editorState
+        const teiSchema = resource.getTEISchema()
+
+        // Find the deepest nodes in the tree that contain one or more terms
+        // eslint-disable-next-line no-loop-func
+        doc.descendants( (node,pos) => {
+            // get the text of this node
+            const text = node.textContent
+            const elementName = node.type.name
+            const element = teiSchema.elements[elementName]
+            if( element ) {
+                const { fcType } = element
+                const elementType = fcType === 'soft' || fcType === 'inters' ? 'softNode' : 'hardNode' 
+    
+                for( const term of terms ) {
+                    const textOffset = text.search(new RegExp(`\\b${term}\\b`))
+                    if( textOffset !== -1 ) {
+                        // don't return hard nodes if there's no elementName or attrQs in the query
+                        if( attrQs.length === 0 ) {
+                            if( elementType !== 'hardNode' ) {
+                                docSearchResults.push({ pos, elementType })
+                                return false
+                            } 
+                        } else {
+                            docSearchResults.push({ pos, elementType })
+                            return false
+                        }   
+                        return true
+                    }
+                }        
+            }
+            return true
+        })
+        
+        // return the results in the same format as searchProject()
+        const results = {}
+        results[resource.resourceID] = docSearchResults
+        return {
+            query: searchQuery,
+            results
+        }
+    } else {
+        return { query: searchQuery, results: {} }
+    }
 }
 
 export function highlightSearchResults(currentResource, searchQuery, searchResults) {
