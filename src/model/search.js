@@ -13,7 +13,7 @@ export function searchResource( resource, searchQuery ) {
         const docSearchResults = [] 
 
         const { query, attrQs } = searchQuery
-        const terms = query.toLowerCase().split(' ')
+        const queryLowerCase = query.toLowerCase()
         const { editorView } = resource
         const editorState = editorView.state
         const { doc } = editorState
@@ -28,31 +28,31 @@ export function searchResource( resource, searchQuery ) {
             const element = teiSchema.elements[elementName]
             if( element ) {
                 const { fcType } = element
-                const elementType = fcType === 'soft' || fcType === 'inters' ? 'softNode' : 'hardNode' 
-    
-                for( const term of terms ) {
-                    const textOffset = text.search(new RegExp(`\\b${term}\\b`))
-                    if( textOffset !== -1 ) {
-                        // don't return hard nodes if there's no elementName or attrQs in the query
-                        if( attrQs.length === 0 ) {
-                            if( elementType !== 'hardNode' ) {
-                                docSearchResults.push({ pos, elementType })
-                                return false
-                            } 
-                        } else {
+                const elementType = fcType === 'soft' || fcType === 'inters' ? 'softNode' : 'hardNode'     
+                const textOffset = text.search(new RegExp(queryLowerCase))
+                if( textOffset !== -1 ) {
+                    // don't return hard nodes if there's no elementName or attrQs in the query
+                    if( attrQs.length === 0 ) {
+                        if( elementType !== 'hardNode' ) {
                             docSearchResults.push({ pos, elementType })
                             return false
-                        }   
-                        return true
-                    }
-                }        
+                        } 
+                    } else {
+                        docSearchResults.push({ pos, elementType })
+                        return false
+                    }   
+                    return true
+                }
             }
             return true
         })
         
         // return the results in the same format as searchProject()
         const results = {}
-        results[resource.resourceID] = docSearchResults
+        const { resourceEntry } = resource
+        results[resourceEntry.id] = docSearchResults
+        results[resourceEntry.id].resourceEntry = resourceEntry
+        results[resourceEntry.id].parentEntry = resourceEntry.parentResource ? resource.parentEntry : null
         return {
             query: searchQuery,
             results
