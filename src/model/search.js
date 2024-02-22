@@ -23,14 +23,13 @@ export function searchResource( resource, searchQuery ) {
         // eslint-disable-next-line no-loop-func
         doc.descendants( (node,pos) => {
             // get the text of this node
-            const text = node.textContent
+            const text = node.textContent.toLowerCase()
             const elementName = node.type.name
             const element = teiSchema.elements[elementName]
             if( element ) {
                 const { fcType } = element
                 const elementType = fcType === 'soft' || fcType === 'inters' ? 'softNode' : 'hardNode'     
-                const textOffset = text.search(new RegExp(queryLowerCase))
-                if( textOffset !== -1 ) {
+                if( text.includes(queryLowerCase) ) {
                     // don't return hard nodes if there's no elementName or attrQs in the query
                     if( attrQs.length === 0 ) {
                         if( elementType !== 'hardNode' ) {
