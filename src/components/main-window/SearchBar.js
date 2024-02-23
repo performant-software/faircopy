@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { InputBase, Button, Typography, Chip, Tooltip } from '@material-ui/core'
 import { getResourceIcon } from '../../model/resource-icon'
 import { getSearchHighlights, setSelectionIndex, searchResource, scrollToSearchResult } from '../../model/search'
+import TEIDocument from '../../model/TEIDocument';
 
 const fairCopy = window.fairCopy
 
@@ -131,13 +132,16 @@ export default class SearchBar extends Component {
 
     onSearch = () => {
         const { searchFilterOptions, currentResource, onSearchResults } = this.props
-        const { searchQuery } = this.state
+        const { searchQuery, searchScope } = this.state
         const { elementName, attrQs } = searchFilterOptions
         const searchQ = { query: searchQuery.toLowerCase(), elementName, attrQs }
-        const searchResults = searchResource( currentResource, searchQ )
-        const { query, results } = searchResults
-        onSearchResults( query, results, [], this.searchBarEl )    
-        // fairCopy.services.ipcSend('searchProject', searchQ)
+        if( searchScope === 'project' ) {
+            fairCopy.services.ipcSend('searchProject', searchQ)
+        } else {
+            const searchResults = searchResource( currentResource, searchQ )
+            const { query, results } = searchResults
+            onSearchResults( query, results, [], this.searchBarEl )        
+        }
     }
 
     onResults = (event, searchResults) => {
@@ -162,33 +166,44 @@ export default class SearchBar extends Component {
     }
 
     renderSearchScopeButton() {
-        const { searchScope, searchEnabled } = this.props
-        const searchInFileIcon = 'fa fa-file fa-xl'
+        const { searchEnabled } = this.props
+        const { searchScope } = this.state
+        const searchInFileIcon = 'fa fa-file-lines fa-xl'
         const searchInProjectIcon = 'fa fa-folder-tree fa-xl'
         const searchInProject = searchScope === 'project'
         const searchIcon = searchInProject ? searchInProjectIcon : searchInFileIcon
+        const toolTipText = searchInProject ? 'Search in project' : 'Search in file'
 
         const onToggleSearch = () => {
-
+            const nextState = { ...this.state }
+            nextState.searchScope = searchInProject ? 'file' : 'project'
+            this.setState(nextState)
         }
 
         return (
-            <Button 
-                aria-label="Search Scope"
-                onClick={onToggleSearch} 
-                disabled={!searchEnabled}
-                className="search-button" 
-                size="small" 
-                color="inherit">
-                <i className={searchIcon}></i>               
-            </Button> 
+            <Tooltip title={toolTipText}>
+                <span>
+                    <Button 
+                        aria-label="Search Scope"
+                        onClick={onToggleSearch} 
+                        disabled={!searchEnabled}
+                        className="search-button" 
+                        size="small" 
+                        color="inherit">
+                        <i className={searchIcon}></i>               
+                    </Button> 
+                </span>
+            </Tooltip>
         )
     }
 
     render() {
-        const { searchEnabled, onSearchFilter, searchFilterOptions } = this.props
+        const { searchEnabled, onSearchFilter, searchFilterOptions, currentResource } = this.props
+        const { searchScope } = this.state
         const { active } = searchFilterOptions        
-        const placeholder = searchEnabled ? 'Search project...' : 'Loading index...'
+        const searchReady = (searchScope === 'file' && currentResource instanceof TEIDocument) || (searchScope === 'project' && searchEnabled )
+        const enabledText = searchScope === 'project' ? 'Search project' : 'Search current resource'
+        const placeholder = searchReady ? enabledText : 'Loading index...'
         const filterIcon = active ? 'fas fa-filter' : 'fas fa-filter'
 
         return (
@@ -201,17 +216,17 @@ export default class SearchBar extends Component {
                     className="search-input"
                     aria-label="Search Project"
                     placeholder={placeholder}
-                    disabled={!searchEnabled}
+                    disabled={!searchReady}
                     onChange={this.onChange}
                     onKeyUp={this.onKeyUp}
                 />
+                { this.renderSearchScopeButton() }
                 <Tooltip title="Filter project search">
                     <span>
-                        { this.renderSearchScopeButton() }
                         <Button 
                             aria-label="Search Filter"
                             onClick={onSearchFilter} 
-                            disabled={!searchEnabled}
+                            disabled={!searchReady}
                             className="search-button" 
                             size="small" 
                             color="inherit">
