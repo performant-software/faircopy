@@ -112,7 +112,7 @@ export default class SearchBar extends Component {
                         className="search-button" 
                         size="small" 
                         color="inherit">
-                        <i className={`fas fa-caret-circle-left fa-lg`}></i>               
+                        <i className={`fa-solid fa-circle-arrow-left fa-xl`}></i>               
                     </Button> 
                 </Tooltip>
                 <Typography className="search-button" >{ `${searchSelectionIndex+1} of ${highlights.length}` }</Typography>
@@ -122,7 +122,7 @@ export default class SearchBar extends Component {
                         className="search-button" 
                         size="small" 
                         color="inherit">
-                        <i className={`fas fa-caret-circle-right fa-lg`}></i>               
+                        <i className={`fa-solid fa-circle-arrow-right fa-xl`}></i>               
                     </Button> 
                 </Tooltip>
             </div>
