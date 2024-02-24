@@ -102,6 +102,7 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
+            showSearchBar: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -647,6 +648,7 @@ export default class MainWindow extends Component {
                 const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove, onMoved }
                 this.setState( {...this.state, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
             }
+            const onToggleSearchBar = (nextState) => { this.setState({ ...this.state, showSearchBar: nextState }) }
 
             // bump state to update sidebar
             const onErrorCountChange = () => { this.setState({...this.state})}
@@ -664,6 +666,7 @@ export default class MainWindow extends Component {
                         onAlertMessage={this.onAlertMessage}
                         onResourceAction={this.onResourceAction}
                         onErrorCountChange={onErrorCountChange}
+                        onToggleSearchBar={onToggleSearchBar}
                         onSave={onSave}
                         leftPaneWidth={leftPaneWidth}
                         currentView={currentView}
@@ -941,8 +944,8 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
+        const { appConfig, hidden } = this.props
+        const { searchEnabled, showSearchBar, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -963,7 +966,6 @@ export default class MainWindow extends Component {
                     </SplitPane>
                     <MainWindowStatusBar
                         appConfig={appConfig}
-                        remoteProject={fairCopyProject.remote}
                         onSearchResults={this.onSearchResults}
                         onSearchFilter={this.onSearchFilter}
                         onAlertMessage={this.onAlertMessage}
@@ -971,6 +973,7 @@ export default class MainWindow extends Component {
                         searchSelectionIndex={searchSelectionIndex}
                         searchFilterOptions={searchFilterOptions}
                         searchEnabled={searchEnabled}
+                        showSearchBar={showSearchBar}
                         onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}

@@ -233,10 +233,10 @@ export default class TEIEditor extends Component {
     }
 
     getMainEditorHotKeyConfig() {
-        const { teiDocument } = this.props 
+        const { teiDocument, onToggleSearchBar } = this.props 
         
         // get the base hotkey config
-        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer ) )
+        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer, onToggleSearchBar ) )
 
         keyMap.hopToTree = 'shift+tab'
         handlers.hopToTree = () => {

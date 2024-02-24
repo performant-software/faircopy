@@ -13,7 +13,7 @@ export default class SearchBar extends Component {
 
         this.initialState = {
             searchQuery: "",
-            searchScope: "project"
+            searchScope: "file"
         }
         this.state = this.initialState
         this.searchBarEl = null
@@ -219,6 +219,7 @@ export default class SearchBar extends Component {
                     disabled={!searchReady}
                     onChange={this.onChange}
                     onKeyUp={this.onKeyUp}
+                    autoFocus={true}
                 />
                 { this.renderSearchScopeButton() }
                 <Tooltip title="Filter project search">

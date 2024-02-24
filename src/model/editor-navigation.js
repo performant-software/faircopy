@@ -156,7 +156,7 @@ export function arrowNavToNote( openNotePopup, teiDocument, direction ) {
     }
 }
 
-export function getEditorCommands( teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer ) {
+export function getEditorCommands( teiDocument, onTogglePalette, onOpenElementMenu, clipboardSerializer, onToggleSearchBar ) {
     const editorView = teiDocument.getActiveView()
     const enabledMenus = getEnabledMenus(teiDocument)
     
@@ -167,7 +167,7 @@ export function getEditorCommands( teiDocument, onTogglePalette, onOpenElementMe
             if( e.key === '1' ) {
                 onTogglePalette()     
             }
-        }, 
+        },
         onOpenMarkMenu: () => { 
             if(enabledMenus.marks) onOpenElementMenu({ menuGroup: 'mark' }) 
         }, 
@@ -180,7 +180,14 @@ export function getEditorCommands( teiDocument, onTogglePalette, onOpenElementMe
         undo: () => { undo(editorView.state,editorView.dispatch) },
         redo: () => { redo(editorView.state,editorView.dispatch) },
         cutSelectedNode: () => { cutSelectedNode( teiDocument, clipboardSerializer ) },
-        copySelectedNode: () => { copySelectedNode( teiDocument, clipboardSerializer ) }
+        copySelectedNode: () => { copySelectedNode( teiDocument, clipboardSerializer ) },
+        openSearchBar: () => { 
+            console.log('open search bar')
+            onToggleSearchBar(true)
+        },
+        closeSearchBar: () => { 
+            onToggleSearchBar(false)
+        }
     }
 }
 
