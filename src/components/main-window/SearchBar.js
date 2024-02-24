@@ -13,6 +13,7 @@ export default class SearchBar extends Component {
 
         this.initialState = {
             searchQuery: "",
+            queryChanged: false,
             searchScope: "file"
         }
         this.state = this.initialState
@@ -75,11 +76,23 @@ export default class SearchBar extends Component {
         return menuOptions
     }
 
+    moveSpinner = (direction) => {
+        const { searchSelectionIndex, currentResource, onUpdateSearchSelection } = this.props
+        if( !currentResource ) return
+        const editorView = currentResource.getActiveView()
+        if( !editorView ) return
+        const highlights = getSearchHighlights( editorView ) 
+        const highlightCount = highlights.length
+        const nextSelectionIndex = (searchSelectionIndex + direction) >= highlightCount ? 0 : searchSelectionIndex + direction
+        setSelectionIndex( nextSelectionIndex, editorView )
+        scrollToSearchResult( currentResource, nextSelectionIndex ) 
+        onUpdateSearchSelection( nextSelectionIndex )
+    }
+
     renderSearchResultSpinner() {
-        const { currentResource, searchSelectionIndex, onUpdateSearchSelection } = this.props
+        const { currentResource, searchSelectionIndex } = this.props
 
         if( !currentResource ) return null
-
         const editorView = currentResource.getActiveView()
         if( !editorView ) return null
     
@@ -87,22 +100,14 @@ export default class SearchBar extends Component {
         const highlightCount = highlights.length
         if( highlightCount === 0 ) return null
 
-        function updateSelection( index ) {
-            setSelectionIndex( index, editorView )
-            scrollToSearchResult( currentResource, index ) 
-            onUpdateSearchSelection( index )
-        }
-
         const onPrev = () => {
-            const nextSelectionIndex = (searchSelectionIndex - 1) < 0 ? highlightCount-1  : searchSelectionIndex - 1
-            updateSelection( nextSelectionIndex )
+            this.moveSpinner(-1)
         }
-
+    
         const onNext = () => {
-            const nextSelectionIndex = (searchSelectionIndex + 1) >= highlightCount ? 0 : searchSelectionIndex + 1
-            updateSelection( nextSelectionIndex )
+            this.moveSpinner(1)
         }
-
+    
         return (
             <div className="search-result-spinner">
                 <Typography className="search-button" >Search Result </Typography>
@@ -115,7 +120,7 @@ export default class SearchBar extends Component {
                         <i className={`fa-solid fa-circle-arrow-left fa-xl`}></i>               
                     </Button> 
                 </Tooltip>
-                <Typography className="search-button" >{ `${searchSelectionIndex+1} of ${highlights.length}` }</Typography>
+                <Typography className="search-button" >{ `${searchSelectionIndex+1} of ${highlightCount}` }</Typography>
                 <Tooltip title="Select next search result">
                     <Button 
                         onClick={onNext} 
@@ -158,11 +163,22 @@ export default class SearchBar extends Component {
         const {name, value} = e.target
         const nextState = { ...this.state }
         nextState[name] = value
+        nextState.queryChanged = true
         this.setState(nextState)
     }
 
     onKeyUp = (e) => {
-        if( e.keyCode === 13 ) this.onSearch()
+        const { queryChanged } = this.state
+        if( e.keyCode === 13 ) {
+            if( queryChanged ) {
+                // if the query has changed, then search
+                this.onSearch()
+                this.setState({ ...this.state, queryChanged: false })
+            } else {
+                // otherwise, move to the next search result
+                this.moveSpinner(1)
+            }    
+        }
     }
 
     renderSearchScopeButton() {

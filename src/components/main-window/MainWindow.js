@@ -648,7 +648,20 @@ export default class MainWindow extends Component {
                 const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove, onMoved }
                 this.setState( {...this.state, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
             }
-            const onToggleSearchBar = (nextState) => { this.setState({ ...this.state, showSearchBar: nextState }) }
+            const onToggleSearchBar = (showSearchBar) => { 
+                if( !showSearchBar ) { 
+                    // clear search results and close search bar
+                    const { selectedResource, openResources } = this.state
+                    if( selectedResource ) {
+                        const resource = openResources[selectedResource]
+                        this.updateSearchResults(resource, '', {})
+                        resource.refreshView()     
+                    }
+                    this.setState({...this.state, showSearchBar: false, searchQuery: '', searchResults: {}, searchSelectionIndex: 0, ...closePopUpState })
+                } else {
+                    this.setState({ ...this.state, showSearchBar: true }) 
+                }                
+            }
 
             // bump state to update sidebar
             const onErrorCountChange = () => { this.setState({...this.state})}
