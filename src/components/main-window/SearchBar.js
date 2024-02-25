@@ -168,6 +168,7 @@ export default class SearchBar extends Component {
     }
 
     onKeyUp = (e) => {
+        const { onClose } = this.props
         const { queryChanged } = this.state
         if( e.keyCode === 13 ) {
             if( queryChanged ) {
@@ -178,6 +179,9 @@ export default class SearchBar extends Component {
                 // otherwise, move to the next search result
                 this.moveSpinner(1)
             }    
+        } else if( e.keyCode === 27 ) {
+            this.setState({ ...this.initialState })
+            onClose()
         }
     }
 

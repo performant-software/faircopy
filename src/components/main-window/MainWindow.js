@@ -626,6 +626,16 @@ export default class MainWindow extends Component {
         highlightSearchResults(resource, searchQuery, resourceSearchResults)
     }
 
+    closeSearchBar() {
+        const { selectedResource, openResources } = this.state
+        if( selectedResource ) {
+            const resource = openResources[selectedResource]
+            highlightSearchResults(resource, null, -1)
+            resource.getActiveView().focus()
+        }
+        this.setState({...this.state, showSearchBar: false, searchQuery: '', searchResults: {}, searchSelectionIndex: 0, ...closePopUpState })
+    }
+
     renderEditors() {
         const { openResources, selectedResource, leftPaneWidth, resourceViews } = this.state
         const { fairCopyProject, onProjectSettings } = this.props
@@ -650,13 +660,7 @@ export default class MainWindow extends Component {
             }
             const onToggleSearchBar = (showSearchBar) => { 
                 if( !showSearchBar ) { 
-                    // clear search results and close search bar
-                    const { selectedResource, openResources } = this.state
-                    if( selectedResource ) {
-                        const resource = openResources[selectedResource]
-                        highlightSearchResults(resource, null, -1)
-                    }
-                    this.setState({...this.state, showSearchBar: false, searchQuery: '', searchResults: {}, searchSelectionIndex: 0, ...closePopUpState })
+                    this.closeSearchBar()
                 } else {
                     this.setState({ ...this.state, showSearchBar: true }) 
                 }                
@@ -988,6 +992,7 @@ export default class MainWindow extends Component {
                         showSearchBar={showSearchBar}
                         onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
+                        onCloseSearch={()=>{ this.closeSearchBar() }}
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                     ></MainWindowStatusBar>

@@ -101,7 +101,7 @@ export default class MainWindowStatusBar extends Component {
     }
 
     render() {
-        const { showSearchBar, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, searchEnabled, searchFilterOptions } = this.props
+        const { showSearchBar, searchEnabled, onAlertMessage, currentResource, onSearchResults, searchSelectionIndex, onUpdateSearchSelection, onSearchFilter, onResourceAction, onCloseSearch, searchFilterOptions } = this.props
         return (
             <footer id="MainWindowStatusBar" className="bar">
                     { showSearchBar && <SearchBar
@@ -113,6 +113,7 @@ export default class MainWindowStatusBar extends Component {
                         onResourceAction={onResourceAction}
                         onSearchResults={onSearchResults}
                         onSearchFilter={onSearchFilter}
+                        onClose={onCloseSearch}
                         searchFilterOptions={searchFilterOptions}
                     ></SearchBar> }
                     { this.renderStatusButton() }
