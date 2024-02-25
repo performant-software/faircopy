@@ -16,7 +16,7 @@ export function searchHighlighter() {
                 const searchQuery = tr.getMeta('searchQuery')
                 const selectionIndex = tr.getMeta('selectionIndex')
                 const searchResults = ( newResults === -1 ) ? [] : newResults
-                if( searchResults && searchQuery ) {
+                if( searchResults ) {
                     const highlights = generateHighlights(searchQuery, searchResults, tr.doc)
                     return { highlights, selectionIndex }
                 } else if( typeof selectionIndex !== 'undefined' ) {
@@ -53,6 +53,9 @@ export function searchHighlighter() {
 function generateHighlights(searchQuery, searchResults, doc) {
     let resultsInvalid = false
     const highlights = []
+
+    // if there's no search query, clear the highlights
+    if( searchResults.length === 0 ) return []
   
     // add only unique highlight ranges
     function addHighlight(highlight) {
@@ -63,7 +66,7 @@ function generateHighlights(searchQuery, searchResults, doc) {
 
     const queryLowerCase = searchQuery.query.toLowerCase().trim()
     
-    if( queryLowerCase.length > 0 && searchResults.length > 0 ) {
+    if( queryLowerCase.length > 0 ) {
         for( const searchResult of searchResults ) {
             const { pos: nodePos, elementType } = searchResult
             const $node = doc.resolve(nodePos+1)

@@ -654,8 +654,7 @@ export default class MainWindow extends Component {
                     const { selectedResource, openResources } = this.state
                     if( selectedResource ) {
                         const resource = openResources[selectedResource]
-                        this.updateSearchResults(resource, '', {})
-                        resource.refreshView()     
+                        highlightSearchResults(resource, null, -1)
                     }
                     this.setState({...this.state, showSearchBar: false, searchQuery: '', searchResults: {}, searchSelectionIndex: 0, ...closePopUpState })
                 } else {
