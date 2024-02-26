@@ -23,7 +23,7 @@ import ReleaseNotesDialog from './dialogs/ReleaseNotesDialog'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
-import { highlightSearchResults, scrollToSearchResult } from '../../model/search'
+import { highlightSearchResults, scrollToSearchResult, searchResource } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import CheckOutDialog from './dialogs/CheckOutDialog'
@@ -102,6 +102,7 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
+            searchScope: 'file',
             showSearchBar: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
@@ -611,13 +612,23 @@ export default class MainWindow extends Component {
     }
 
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
-        const { searchQuery } = this.state
+        const { searchQuery, searchScope, selectedResource, openResources } = this.state
+        const searchFilterOptions = { elementName, attrQs, active }
         const query = searchQuery ? searchQuery.query : ""
         const searchQ = { query, elementName, attrQs }
-        fairCopy.services.ipcSend('searchProject', searchQ)
 
-        const searchFilterOptions = { elementName, attrQs, active }
-        this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })    
+        // run the search based on the new filter settings
+        if( searchScope === 'project' ) {
+            this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })   
+            fairCopy.services.ipcSend('searchProject', searchQ)
+        } else {
+            const currentResource = selectedResource ? openResources[selectedResource] : null
+            if( currentResource ) {
+                const searchResults = searchResource( currentResource, searchQ )
+                this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })
+                this.updateSearchResults(currentResource, searchQuery, searchResults)
+            }
+        }
     }
 
     updateSearchResults(resource, searchQuery, searchResults) {
@@ -634,6 +645,12 @@ export default class MainWindow extends Component {
             resource.getActiveView().focus()
         }
         this.setState({...this.state, showSearchBar: false, searchQuery: '', searchResults: {}, searchSelectionIndex: 0, ...closePopUpState })
+    }
+
+    toggleSearchScope() {
+        const { searchScope } = this.state
+        const nextScope = searchScope === 'file' ? 'project' : 'file'
+        this.setState({...this.state, searchScope: nextScope })
     }
 
     renderEditors() {
@@ -961,7 +978,7 @@ export default class MainWindow extends Component {
 
     render() {
         const { appConfig, hidden } = this.props
-        const { searchEnabled, showSearchBar, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
+        const { searchEnabled, showSearchBar, searchScope, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -989,10 +1006,12 @@ export default class MainWindow extends Component {
                         searchSelectionIndex={searchSelectionIndex}
                         searchFilterOptions={searchFilterOptions}
                         searchEnabled={searchEnabled}
+                        searchScope={searchScope}
                         showSearchBar={showSearchBar}
                         onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
-                        onCloseSearch={()=>{ this.closeSearchBar() }}
+                        onToggleSearch={()=>{ this.toggleSearchScope() }}
+                        onCloseSearch={()=>{ this.closeSearchBar() } }
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                     ></MainWindowStatusBar>

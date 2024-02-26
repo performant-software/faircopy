@@ -13,8 +13,7 @@ export default class SearchBar extends Component {
 
         this.initialState = {
             searchQuery: "",
-            queryChanged: false,
-            searchScope: "file"
+            queryChanged: false
         }
         this.state = this.initialState
         this.searchBarEl = null
@@ -136,8 +135,8 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
-        const { searchFilterOptions, currentResource, onSearchResults } = this.props
-        const { searchQuery, searchScope } = this.state
+        const { searchFilterOptions, currentResource, searchScope, onSearchResults } = this.props
+        const { searchQuery } = this.state
         const { elementName, attrQs } = searchFilterOptions
         const searchQ = { query: searchQuery.toLowerCase(), elementName, attrQs }
         if( searchScope === 'project' ) {
@@ -186,19 +185,12 @@ export default class SearchBar extends Component {
     }
 
     renderSearchScopeButton() {
-        const { searchEnabled } = this.props
-        const { searchScope } = this.state
+        const { searchEnabled, searchScope, onToggleSearch } = this.props
         const searchInFileIcon = 'fa fa-file-lines fa-xl'
         const searchInProjectIcon = 'fa fa-folder-tree fa-xl'
         const searchInProject = searchScope === 'project'
         const searchIcon = searchInProject ? searchInProjectIcon : searchInFileIcon
         const toolTipText = searchInProject ? 'Search in project' : 'Search in file'
-
-        const onToggleSearch = () => {
-            const nextState = { ...this.state }
-            nextState.searchScope = searchInProject ? 'file' : 'project'
-            this.setState(nextState)
-        }
 
         return (
             <Tooltip title={toolTipText}>
@@ -218,8 +210,7 @@ export default class SearchBar extends Component {
     }
 
     render() {
-        const { searchEnabled, onSearchFilter, searchFilterOptions, currentResource } = this.props
-        const { searchScope } = this.state
+        const { searchEnabled, searchScope, onSearchFilter, searchFilterOptions, currentResource } = this.props
         const { active } = searchFilterOptions        
         const searchReady = (searchScope === 'file' && currentResource instanceof TEIDocument) || (searchScope === 'project' && searchEnabled )
         const enabledText = searchScope === 'project' ? 'Search project' : 'Search current resource'
