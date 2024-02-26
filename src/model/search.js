@@ -13,6 +13,8 @@ export function searchResource( resource, searchQuery ) {
         const docSearchResults = [] 
 
         const { query, attrQs } = searchQuery
+        let elementNameQ = searchQuery.elementName?.toLowerCase().trim()
+        elementNameQ = elementNameQ === '' ? null : elementNameQ
         const queryLowerCase = query.toLowerCase()
         const { editorView } = resource
         const editorState = editorView.state
@@ -22,25 +24,38 @@ export function searchResource( resource, searchQuery ) {
         // Find the deepest nodes in the tree that contain one or more terms
         // eslint-disable-next-line no-loop-func
         doc.descendants( (node,pos) => {
-            // get the text of this node
-            const text = node.textContent.toLowerCase()
             const elementName = node.type.name
             const element = teiSchema.elements[elementName]
             if( element ) {
+                // don't return nodes that don't match the elementName in the query
+                if( elementNameQ && elementName.toLowerCase() !== elementNameQ ) return true
+                
+                // dont return nodes that don't match the attrQs in the query
+                if( attrQs.length > 0 ) {
+                    const attrs = node.attrs
+                    const attrMatches = attrQs.map( attrQ => {
+                        const { name, value } = attrQ
+                        const attrValue = attrs[name]
+                        if( attrValue && attrValue === value ) return true
+                        return false
+                    })
+                    if( !attrMatches.every( match => match === true ) ) return true
+                }
+                const text = node.textContent.toLowerCase()
                 const { fcType } = element
                 const elementType = fcType === 'soft' || fcType === 'inters' ? 'softNode' : 'hardNode'     
                 if( text.includes(queryLowerCase) ) {
                     // don't return hard nodes if there's no elementName or attrQs in the query
-                    if( attrQs.length === 0 ) {
+                    if( elementNameQ || attrQs.length > 0 ) {
+                        docSearchResults.push({ pos, elementType })
+                        return false
+                    } else {
                         if( elementType !== 'hardNode' ) {
                             docSearchResults.push({ pos, elementType })
                             return false
                         } 
-                    } else {
-                        docSearchResults.push({ pos, elementType })
-                        return false
-                    }   
-                    return true
+                        return true
+                    }                       
                 }
             }
             return true
