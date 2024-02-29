@@ -128,19 +128,29 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
             }
     
             if( resourceEntry.type === 'teidoc' ) {
-                const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry.id, 1)
-                const { remoteResources } = resourceData
+                // if a teidoc is local, then its children must also be local
+                if( resourceEntry.local ) {
+                    for( const localEntry of Object.values(localEntries) ) {
+                        if( localEntry.parentResource === resourceEntry.id ) {
+                            childEntries.push(localEntry)
+                            contents[localEntry.id] = await readUTF8( localEntry.id, zip )
+                        }
+                    }
+                } else {
+                    const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry.id, 1)
+                    const { remoteResources } = resourceData
 
-                for( const remoteEntry of remoteResources ) {
-                    const { id: resourceID } = remoteEntry
-                    const localEntry = localEntries[resourceID]
-                    if( localEntry ) {
-                        childEntries.push(localEntry)
-                        contents[resourceID] = await readUTF8( resourceID, zip )
-                    } else {
-                        childEntries.push(remoteEntry)
-                        const remoteResource = await getResourceAsync( userID, serverURL,authToken,resourceID)
-                        contents[resourceID] = remoteResource.content
+                    for( const remoteEntry of remoteResources ) {
+                        const { id: resourceID } = remoteEntry
+                        const localEntry = localEntries[resourceID]
+                        if( localEntry ) {
+                            childEntries.push(localEntry)
+                            contents[resourceID] = await readUTF8( resourceID, zip )
+                        } else {
+                            childEntries.push(remoteEntry)
+                            const remoteResource = await getResourceAsync( userID, serverURL,authToken,resourceID)
+                            contents[resourceID] = remoteResource.content
+                        }
                     }
                 }
             } else {
