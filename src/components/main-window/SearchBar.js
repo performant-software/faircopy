@@ -82,6 +82,7 @@ export default class SearchBar extends Component {
         if( !editorView ) return
         const highlights = getSearchHighlights( editorView ) 
         const highlightCount = highlights.length
+        if( searchSelectionIndex + direction < 0 || searchSelectionIndex + direction >= highlightCount ) return
         const nextSelectionIndex = (searchSelectionIndex + direction) >= highlightCount ? 0 : searchSelectionIndex + direction
         setSelectionIndex( nextSelectionIndex, editorView )
         scrollToSearchResult( currentResource, nextSelectionIndex ) 
