@@ -82,8 +82,15 @@ export default class SearchBar extends Component {
         if( !editorView ) return
         const highlights = getSearchHighlights( editorView ) 
         const highlightCount = highlights.length
-        if( searchSelectionIndex + direction < 0 || searchSelectionIndex + direction >= highlightCount ) return
-        const nextSelectionIndex = (searchSelectionIndex + direction) >= highlightCount ? 0 : searchSelectionIndex + direction
+        let nextSelectionIndex
+        if( searchSelectionIndex + direction < 0 ) {
+            nextSelectionIndex = highlightCount-1
+        } else if( searchSelectionIndex + direction >= highlightCount) {
+            nextSelectionIndex = 0
+        } else {
+            nextSelectionIndex = searchSelectionIndex + direction
+        }
+        
         setSelectionIndex( nextSelectionIndex, editorView )
         scrollToSearchResult( currentResource, nextSelectionIndex ) 
         onUpdateSearchSelection( nextSelectionIndex )
@@ -136,7 +143,7 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
-        const { searchFilterOptions, currentResource, searchScope, onSearchResults } = this.props
+                const { searchFilterOptions, currentResource, searchScope, onSearchResults } = this.props
         const { searchQuery } = this.state
         const { elementName, attrQs } = searchFilterOptions
         const searchQ = { query: searchQuery.toLowerCase(), elementName, attrQs }
@@ -168,7 +175,7 @@ export default class SearchBar extends Component {
     }
 
     onKeyUp = (e) => {
-        const { onClose } = this.props
+        const { onClose, searchScope } = this.props
         const { queryChanged } = this.state
         if( e.keyCode === 13 ) {
             if( queryChanged ) {
@@ -193,12 +200,17 @@ export default class SearchBar extends Component {
         const searchIcon = searchInProject ? searchInProjectIcon : searchInFileIcon
         const toolTipText = searchInProject ? 'Search in project' : 'Search in file'
 
+        const onScopeChange = () => {
+            this.setState({ ...this.state, queryChanged: true })
+            onToggleSearch()
+        }
+
         return (
             <Tooltip title={toolTipText}>
                 <span>
                     <Button 
                         aria-label="Search Scope"
-                        onClick={onToggleSearch} 
+                        onClick={onScopeChange} 
                         disabled={!searchEnabled}
                         className="search-button" 
                         size="small" 
