@@ -116,7 +116,7 @@ export default class TEIEditor extends Component {
 
     dispatchTransaction = (transaction) => {
         const { noteID } = this.state
-        const { teiDocument, onAlertMessage, onErrorCountChange } = this.props
+        const { teiDocument, onAlertMessage, onErrorCountChange, onResetSearch } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -124,6 +124,14 @@ export default class TEIEditor extends Component {
             const alertMessage = transaction.getMeta('alertMessage')
             if( alertMessage ) {
                 onAlertMessage(alertMessage)
+            }
+
+            // clear search if doc changed
+            if( transaction.docChanged ) {
+                transaction.setMeta('searchResults', -1)
+                transaction.setMeta('searchQuery', null)
+                transaction.setMeta('selectionIndex', 0)    
+                onResetSearch()
             }
 
             // update document state
@@ -233,10 +241,10 @@ export default class TEIEditor extends Component {
     }
 
     getMainEditorHotKeyConfig() {
-        const { teiDocument } = this.props 
+        const { teiDocument, onToggleSearchBar } = this.props 
         
         // get the base hotkey config
-        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer ) )
+        const { keyMap, handlers } = getHotKeyConfig( teiDocument, getEditorCommands( teiDocument, this.onTogglePalette, this.onOpenElementMenu, this.clipboardSerializer, onToggleSearchBar ) )
 
         keyMap.hopToTree = 'shift+tab'
         handlers.hopToTree = () => {
@@ -277,7 +285,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, leftPaneWidth, currentView } = this.props
+        const { teiDocument, hidden, onSave, onDragElement, onAlertMessage, onToggleSearchBar, onEditResource, onProjectSettings, onResourceAction, leftPaneWidth, currentView } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, drawerPinned, paletteWindowOpen } = this.state
         const { fairCopyProject, parentEntry, resourceEntry } = teiDocument
         const { isLoggedIn, configLastAction, userID, permissions, remote } = fairCopyProject
@@ -341,7 +349,7 @@ export default class TEIEditor extends Component {
                             >                   
                             </TitleBar> 
                         }
-                        { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } teiDocument={teiDocument}>
+                        { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } onToggleSearchBar={onToggleSearchBar} teiDocument={teiDocument}>
                             </ReadOnlyToolbar> :
                             <EditorToolbar
                                 teiDocument={teiDocument}
@@ -352,6 +360,7 @@ export default class TEIEditor extends Component {
                                 onEditResource={onEditResource}
                                 onOpenElementMenu={this.onOpenElementMenu}
                                 onCloseElementMenu={this.onCloseElementMenu}
+                                onToggleSearchBar={onToggleSearchBar}
                                 elementMenuOptions={elementMenuOptions}
                             ></EditorToolbar>
                         }

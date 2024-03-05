@@ -13,6 +13,11 @@ export default class ReadOnlyToolbar extends Component {
         fairCopy.services.ipcSend('checkOut', userID, serverURL, projectID, [ teiDocument.resourceEntry ] )
     }
 
+    onFind = () => {
+        const { onToggleSearchBar } = this.props
+        onToggleSearchBar(true)
+    }
+
     render() {
         const { teiDocument } = this.props
         const { fairCopyProject } = teiDocument
@@ -23,7 +28,8 @@ export default class ReadOnlyToolbar extends Component {
         return (
             <div id="ReadOnlyToolbar">
                 <div className="leftgroup">
-                    { !header && <Button disabled={disabled} onClick={this.onCheckOut} variant="outlined" size='small'>Check Out</Button> }
+                    { !header && <Button className="toolbar-button" disabled={disabled} onClick={this.onCheckOut} variant="outlined" size='small'>Check Out</Button> }
+                    { <Button className="toolbar-button" onClick={this.onFind} variant="outlined" size='small'><i className='fas fa-magnifying-glass'></i> Search</Button> }
                 </div>
                 <div className="rightgroup">
                 </div>

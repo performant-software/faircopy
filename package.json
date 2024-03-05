@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.2.0-beta.1",
+  "version": "1.2.0-dev.7",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -13,7 +13,7 @@
     "prepublish": "npm run build",
     "publish": "electron-forge publish"
   },
-  "repository": "https://github.com/performant-software/faircopy.git",
+  "repository": "https://github.com/performant-software/faircopy-dev-releases.git",
   "keywords": [
     "TEI",
     "Editor",

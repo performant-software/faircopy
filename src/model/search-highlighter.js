@@ -16,7 +16,7 @@ export function searchHighlighter() {
                 const searchQuery = tr.getMeta('searchQuery')
                 const selectionIndex = tr.getMeta('selectionIndex')
                 const searchResults = ( newResults === -1 ) ? [] : newResults
-                if( searchResults && searchQuery ) {
+                if( searchResults ) {
                     const highlights = generateHighlights(searchQuery, searchResults, tr.doc)
                     return { highlights, selectionIndex }
                 } else if( typeof selectionIndex !== 'undefined' ) {
@@ -53,6 +53,9 @@ export function searchHighlighter() {
 function generateHighlights(searchQuery, searchResults, doc) {
     let resultsInvalid = false
     const highlights = []
+
+    // if there's no search query, clear the highlights
+    if( searchResults.length === 0 ) return []
   
     // add only unique highlight ranges
     function addHighlight(highlight) {
@@ -61,9 +64,9 @@ function generateHighlights(searchQuery, searchResults, doc) {
         }
     }
 
-    const terms = searchQuery.query.toLowerCase().split(' ')
+    const queryLowerCase = searchQuery.query.toLowerCase().trim()
     
-    if( searchResults.length > 0 ) {
+    if( queryLowerCase.length > 0 ) {
         for( const searchResult of searchResults ) {
             const { pos: nodePos, elementType } = searchResult
             const $node = doc.resolve(nodePos+1)
@@ -77,23 +80,21 @@ function generateHighlights(searchQuery, searchResults, doc) {
                         const from = nodePos+pos
                         const to = from + node.nodeSize
                         const text = doc.textBetween(from,to, ' ', ' ').toLowerCase()
-                        for( const term of terms ) {
-                            const textOffset = text.search(new RegExp(`\\b${term}\\b`))
-                            if( textOffset !== -1 ) {
-                                // highlight the matching term
-                                const termFrom = nodePos+pos+textOffset+2
-                                const termTo = termFrom + term.length
-                                // if the result is a mark, see if there's matching mark at this location
-                                if( elementType === 'mark' ) {
-                                    const markSets = gatherMarkSets(node)
-                                    if( matchingMark(termFrom,searchQuery,doc,markSets) ) {
-                                        addHighlight({ from: termFrom, to: termTo })
-                                    }    
-                                } else {
+                        const textOffset = text.indexOf(queryLowerCase)
+                        if( textOffset !== -1 ) {
+                            // highlight the matching term
+                            const termFrom = nodePos+pos+textOffset+2
+                            const termTo = termFrom + queryLowerCase.length
+                            // if the result is a mark, see if there's matching mark at this location
+                            if( elementType === 'mark' ) {
+                                const markSets = gatherMarkSets(node)
+                                if( matchingMark(termFrom,searchQuery,doc,markSets) ) {
                                     addHighlight({ from: termFrom, to: termTo })
-                                }
+                                }    
+                            } else {
+                                addHighlight({ from: termFrom, to: termTo })
                             }
-                        }    
+                        }
                     } catch(e) {
                         // If the user edits the document, it can invalidate the search results by moving the offsets around.
                         // In this case, clear the highlights.
