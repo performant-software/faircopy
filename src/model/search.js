@@ -1,5 +1,6 @@
 import TEIDocument from "./TEIDocument"
 import { scrollToNodePos } from "./scrolling"
+import { TextSelection } from "prosemirror-state"
 
 const fairCopy = window.fairCopy
 
@@ -124,6 +125,9 @@ export function scrollToSearchResult( currentResource, searchResultIndex ) {
         const {doc} = editorView.state
         const $pos = doc.resolve( nextHighlight.from )
         const parentPos = $pos.pos - $pos.parentOffset - 1
-        scrollToNodePos(parentPos, currentResource.resourceID, editorView)    
+        scrollToNodePos(parentPos, currentResource.resourceID, editorView, true)    
+        let tr = editorView.state.tr
+        tr.setSelection( new TextSelection($pos) )
+        editorView.dispatch(tr)
     }
 }
