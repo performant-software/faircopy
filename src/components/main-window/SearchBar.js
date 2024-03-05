@@ -250,7 +250,6 @@ export default class SearchBar extends Component {
                     onFocus={this.onFocus}
                     autoFocus={true}
                 />
-                { this.renderSearchScopeButton() }
                 <Tooltip title="Filter project search">
                     <span>
                         <Button 
