@@ -285,7 +285,7 @@ export default class TEIEditor extends Component {
     }
 
     render() {    
-        const { teiDocument, hidden, onSave, onDragElement, onAlertMessage, onEditResource, onProjectSettings, onResourceAction, leftPaneWidth, currentView } = this.props
+        const { teiDocument, hidden, onSave, onDragElement, onAlertMessage, onToggleSearchBar, onEditResource, onProjectSettings, onResourceAction, leftPaneWidth, currentView } = this.props
         const { noteID, notePopupAnchorEl, elementMenuOptions, currentSubmenuID, drawerPinned, paletteWindowOpen } = this.state
         const { fairCopyProject, parentEntry, resourceEntry } = teiDocument
         const { isLoggedIn, configLastAction, userID, permissions, remote } = fairCopyProject
@@ -349,7 +349,7 @@ export default class TEIEditor extends Component {
                             >                   
                             </TitleBar> 
                         }
-                        { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } teiDocument={teiDocument}>
+                        { !hidden && readOnly ? <ReadOnlyToolbar onAlertMessage={ onAlertMessage } onToggleSearchBar={onToggleSearchBar} teiDocument={teiDocument}>
                             </ReadOnlyToolbar> :
                             <EditorToolbar
                                 teiDocument={teiDocument}
@@ -360,6 +360,7 @@ export default class TEIEditor extends Component {
                                 onEditResource={onEditResource}
                                 onOpenElementMenu={this.onOpenElementMenu}
                                 onCloseElementMenu={this.onCloseElementMenu}
+                                onToggleSearchBar={onToggleSearchBar}
                                 elementMenuOptions={elementMenuOptions}
                             ></EditorToolbar>
                         }
