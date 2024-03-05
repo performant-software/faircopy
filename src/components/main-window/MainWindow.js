@@ -34,6 +34,7 @@ const fairCopy = window.fairCopy
 const initialLeftPaneWidth = 300
 const maxLeftPaneWidth = 630
 const resizeRefreshRate = 100
+const resetSearchRate = 100
 const initialRowsPerPage = 50
 
 const closePopUpState = { popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null }
@@ -611,6 +612,13 @@ export default class MainWindow extends Component {
         this.setState({...this.state, searchFilterMode: true })
     }
 
+    onResetSearch = () => {
+        const resetSearch = debounce(() => {
+            this.setState({...this.state, searchQuery: '', searchResults: {}, searchSelectionIndex: 0 })
+        }, resetSearchRate)
+        resetSearch()
+    }
+
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
         const { searchQuery, searchScope, selectedResource, openResources } = this.state
         const searchFilterOptions = { elementName, attrQs, active }
@@ -700,6 +708,7 @@ export default class MainWindow extends Component {
                         onResourceAction={this.onResourceAction}
                         onErrorCountChange={onErrorCountChange}
                         onToggleSearchBar={onToggleSearchBar}
+                        onResetSearch={this.onResetSearch}
                         onSave={onSave}
                         leftPaneWidth={leftPaneWidth}
                         currentView={currentView}

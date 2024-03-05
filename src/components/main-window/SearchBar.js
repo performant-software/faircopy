@@ -143,7 +143,7 @@ export default class SearchBar extends Component {
     }
 
     onSearch = () => {
-                const { searchFilterOptions, currentResource, searchScope, onSearchResults } = this.props
+        const { searchFilterOptions, currentResource, searchScope, onSearchResults } = this.props
         const { searchQuery } = this.state
         const { elementName, attrQs } = searchFilterOptions
         const searchQ = { query: searchQuery.toLowerCase(), elementName, attrQs }
@@ -174,8 +174,12 @@ export default class SearchBar extends Component {
         this.setState(nextState)
     }
 
+    onFocus = () => {
+        this.setState({ ...this.state, queryChanged: true })
+    }
+
     onKeyUp = (e) => {
-        const { onClose, searchScope } = this.props
+        const { onClose } = this.props
         const { queryChanged } = this.state
         if( e.keyCode === 13 ) {
             if( queryChanged ) {
@@ -243,6 +247,7 @@ export default class SearchBar extends Component {
                     disabled={!searchReady}
                     onChange={this.onChange}
                     onKeyUp={this.onKeyUp}
+                    onFocus={this.onFocus}
                     autoFocus={true}
                 />
                 { this.renderSearchScopeButton() }

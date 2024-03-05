@@ -116,7 +116,7 @@ export default class TEIEditor extends Component {
 
     dispatchTransaction = (transaction) => {
         const { noteID } = this.state
-        const { teiDocument, onAlertMessage, onErrorCountChange } = this.props
+        const { teiDocument, onAlertMessage, onErrorCountChange, onResetSearch } = this.props
         const { editorView } = teiDocument
 
         if( editorView ) {
@@ -124,6 +124,14 @@ export default class TEIEditor extends Component {
             const alertMessage = transaction.getMeta('alertMessage')
             if( alertMessage ) {
                 onAlertMessage(alertMessage)
+            }
+
+            // clear search if doc changed
+            if( transaction.docChanged ) {
+                transaction.setMeta('searchResults', -1)
+                transaction.setMeta('searchQuery', null)
+                transaction.setMeta('selectionIndex', 0)    
+                onResetSearch()
             }
 
             // update document state
