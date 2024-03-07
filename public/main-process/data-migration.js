@@ -75,6 +75,10 @@ exports.migrateManifestData = migrateManifestData
 
 //// MIGRATIONS /////////////////////////////////////////////////
 
+function migrationAddAppearance(projectConfig) {
+    projectConfig.appearance = {}
+}
+
 function migrationAddKeybindings(projectConfig) {
     projectConfig.keybindings = {}
 }
