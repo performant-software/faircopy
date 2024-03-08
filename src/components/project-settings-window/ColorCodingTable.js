@@ -4,6 +4,8 @@ import { Tooltip, IconButton, Button } from '@material-ui/core'
 
 import ColorCodingDialog from './ColorCodingDialog'
 
+const colors = { blue: '#0187a8', red: '#a80101', green: '#01a801', purple: '#8101a8', black: '#000000' }
+
 export default class ColorCodingTable extends Component {
 
     constructor(props) {
@@ -102,7 +104,8 @@ export default class ColorCodingTable extends Component {
 }
 
 function renderColorBlock(color) {
+    const backgroundColor = colors[color]
     return (
-        <div className="color-block" style={{backgroundColor: color}}></div>
+        <div className="color-block" style={{backgroundColor}}></div>
     )
 }
