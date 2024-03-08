@@ -18,6 +18,26 @@
     border-bottom: dotted #0187a8;
 }
 
+[__mark-color__ = "blue"] {
+    border-bottom: dotted #0187a8;
+}
+
+[__mark-color__ = "red"] {
+    border-bottom: dotted #a80101;
+}
+
+[__mark-color__ = "green"] {
+    border-bottom: dotted #01a801;
+}
+
+[__mark-color__ = "purple"] {
+    border-bottom: dotted #8101a8;
+}
+
+[__mark-color__ = "black"] {
+    border-bottom: dotted #000000;
+}
+
 [phraselvl = "false"] {
     margin: 0px;
     display: block;

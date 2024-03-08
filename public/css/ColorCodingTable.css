@@ -1,0 +1,15 @@
+#ColorCodingTable {
+    margin: 20px;
+}
+
+#ColorCodingTable .explanation {
+    margin-bottom: 50px;
+}
+
+#ColorCodingTable th {
+    font-weight: bold;
+}
+
+#ColorCodingTable .add-colorcode-button {
+    margin-top: 10px;
+}

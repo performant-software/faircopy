@@ -75,8 +75,8 @@ exports.migrateManifestData = migrateManifestData
 
 //// MIGRATIONS /////////////////////////////////////////////////
 
-function migrationAddAppearance(projectConfig) {
-    projectConfig.appearance = {}
+function migrationAddColorCodings(projectConfig) {
+    projectConfig.colorCodings = { '__default__': 'blue' }
 }
 
 function migrationAddKeybindings(projectConfig) {

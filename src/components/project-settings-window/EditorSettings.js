@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Paper, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import KeyBindingsTable from './KeyBindingsTable'
-import ColorCodingPanel from './ColorCodingPanel'
+import ColorCodingTable from './ColorCodingTable'
 
 export default class EditorSettings extends Component {
 
@@ -21,7 +21,7 @@ export default class EditorSettings extends Component {
         return (
             <div id="EditorSettings">
                 <Typography variant="h4">Editor Settings</Typography>
-                <ColorCodingPanel 
+                <ColorCodingTable
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
                     readOnly={readOnly}

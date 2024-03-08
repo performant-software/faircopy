@@ -64,4 +64,5 @@
 @import "PreviewWindow.css";
 @import "PreviewCSSEditor.css";
 @import "EditorSettings.css";
-@import "ColorCodingPanel.css";
+@import "ColorCodingTable.css";
+@import "ColorCodingDialog.css";
