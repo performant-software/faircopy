@@ -93,8 +93,8 @@ export default class ColorCodingTable extends Component {
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
                     assignedElements={assignedElements}
-                    selectedColor={selectedColor}
-                    selectedElement={selectedElement}
+                    color={selectedColor}
+                    elementName={selectedElement}
                     onSave={onSave}
                     onClose={onClose}
                 ></ColorCodingDialog>}
@@ -103,7 +103,7 @@ export default class ColorCodingTable extends Component {
     }
 }
 
-function renderColorBlock(color) {
+export function renderColorBlock(color) {
     const backgroundColor = colors[color]
     return (
         <div className="color-block" style={{backgroundColor}}></div>

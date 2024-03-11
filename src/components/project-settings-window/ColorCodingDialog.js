@@ -3,27 +3,20 @@ import React, { Component } from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import { Table, TableContainer, TableBody, TableCell, TableRow, TableHead, Paper } from '@material-ui/core'
-import {recordKeyCombination} from 'react-hotkeys'
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
 
-const modifierKeys = [ 'Meta', 'Alt', 'Control' ]
-
-export default class KeyBindingDialog extends Component {
+export default class ColorCodingDialog extends Component {
 
     constructor(props) {
         super(props)
 
-        const { selectedKey, selectedAction } = this.props
-        const elementType = selectedAction ? selectedAction.elementType : 'mark'
-        const elementName = selectedAction ? selectedAction.elementName : null
-        const title = selectedKey ? "Edit Keybinding" : "New Keybinding"
+        const { color, elementName } = this.props
+        const title = color ? "Edit Color Coding" : "New Color Coding"
 
         this.state = {
             title,
-            chord: selectedKey,
-            recordingChord: false,
-            elementType,
+            color,
             elementName,
             elementMenuOptions: null,
             errorMessage: null
@@ -31,49 +24,18 @@ export default class KeyBindingDialog extends Component {
         this.elementMenuAnchors = {}
     }
 
-    renderChordField() {
-        const { assignedKeys } = this.props
-        const { recordingChord } = this.state
-
-        const onClick = () => {
-            recordKeyCombination( (e) => {
-                const {id: chord} = e
-                console.log(chord)
-                if( !assignedKeys.includes(chord) ) {
-                    if( includesModifierKey(chord) ) {
-                        this.setState({...this.state, chord, recordingChord: false, errorMessage: null }) 
-                    } else {
-                        const errorMessage = `Keystroke must include ALT, CONTROL, or META keys.`
-                        this.setState({...this.state, errorMessage, recordingChord: false })    
-                    }
-                } else {
-                    const errorMessage = `${chord.toUpperCase()} key is already assigned to another function.`
-                    this.setState({...this.state, errorMessage, recordingChord: false })
-                }
-            })
-            this.setState({...this.state, recordingChord: true })
-        }
-        
-        return (
-            <Button
-                variant={recordingChord ? 'contained' : 'outlined'}
-                className="keystroke-record-button"
-                onClick={onClick}
-            >
-                <i className="record-icon fas fa-square"></i> Record Keystroke   
-            </Button>
-        )
+    renderColorField() {
+        // TODO: Implement color picker
     }
 
     renderElementField() {
-        const { elementType, elementName } = this.state
+        const { elementName } = this.state
 
         const onClick = () => {
             this.setState({...this.state, elementMenuOptions: { menuGroup: 'mark' } })
         }
 
-        const icon = elementType === 'mark' ? <i className="fas fa-marker"></i> : <i className="fas fa-stamp"></i>
-        const elementButtonLabel = elementName ? <span>{ icon } { elementName }</span> : <span>Choose Element</span>
+        const elementButtonLabel = elementName ? <span><i className="fas fa-marker"></i> { elementName }</span> : <span>Choose Element</span>
 
         return (
             <Button
@@ -123,35 +85,32 @@ export default class KeyBindingDialog extends Component {
 
     render() {      
         const { onClose, onSave } = this.props
-        const { title, chord, elementType, elementName, errorMessage } = this.state
+        const { title, color, elementName, errorMessage } = this.state
 
         const onClickSave = () => {
-            onSave(chord, elementType, elementName)
+            onSave(elementName, color)
         }
-
-        // TODO: add a place for "keystroke already assigned message"
-        const chordLabel = chord ? chord.toUpperCase() : 'Unassigned'
 
         return (
             <Dialog
-                id="KeyBindingDialog"
+                id="ColorCodingDialog"
                 open={true}
-                aria-labelledby="keybinding-title"
+                aria-labelledby="colorcoding-title"
             >
-                <DialogTitle id="keybinding-title">{ title }</DialogTitle>
+                <DialogTitle id="colorcoding-title">{ title }</DialogTitle>
                 <DialogContent>
                     <TableContainer component={Paper}>
-                        <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
+                        <Table size="small" aria-label="a table of color codings for mark elements">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Keystroke</TableCell>
-                                    <TableCell>Description</TableCell>
+                                    <TableCell>Color</TableCell>
+                                    <TableCell>Element</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 <TableRow> 
-                                    <TableCell>{ chordLabel }</TableCell>
-                                    <TableCell><Typography>Add a {this.renderElementField()} element.</Typography></TableCell>
+                                    <TableCell>{ this.renderColorField() }</TableCell>
+                                    <TableCell><Typography>{this.renderElementField()}</Typography></TableCell>
                                 </TableRow>                            
                             </TableBody>
                         </Table>
@@ -160,20 +119,11 @@ export default class KeyBindingDialog extends Component {
                     { this.renderChordField() }
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={ !chord || !elementName } variant="contained" color="primary" onClick={onClickSave}>Save</Button>
+                    <Button disabled={ !color || !elementName } variant="contained" color="primary" onClick={onClickSave}>Save</Button>
                     <Button variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
                 { this.renderElementMenu() }
             </Dialog>
         )
     }
-
-}
-
-function includesModifierKey(chord) {
-    const parts = chord.split('+')
-    for( const part of parts ) {
-        if( modifierKeys.includes(part) ) return true
-    }
-    return false
 }
