@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 
-import { Button, Typography } from '@material-ui/core'
+import { Button, MenuItem, Select, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import { Table, TableContainer, TableBody, TableCell, TableRow, TableHead, Paper } from '@material-ui/core'
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
+import {colorCodingColors, renderColorBlock} from './ColorCodingTable'
 
 export default class ColorCodingDialog extends Component {
 
@@ -25,7 +26,27 @@ export default class ColorCodingDialog extends Component {
     }
 
     renderColorField() {
-        // TODO: Implement color picker
+        const { color } = this.state
+
+        const onChange = (event) => {
+            this.setState({ ...this.state, color: event.target.value })
+        }
+
+        const menuItems = Object.keys(colorCodingColors).map( colorName => {
+            return <MenuItem value={colorName}>
+                {renderColorBlock(colorName)} { colorName.capitalize() }
+            </MenuItem>
+        })
+
+        return <Select
+            name="color-code"
+            value={color}
+            onChange={onChange}
+            aria-label="Color Code"
+            variant="outlined"
+        >
+            { menuItems }
+        </Select>
     }
 
     renderElementField() {

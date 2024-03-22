@@ -27,11 +27,18 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
         log.info('applying migrations for v1.1.6')
     }
 
-    if( semver.lt(projectVersion,'1.2.0') ) {
+    // wip
+
+    if( semver.lt(projectVersion,'1.2.0') || semver.lt(projectVersion,'1.2.0-beta.1') || semver.lt(projectVersion,'1.2.0-dev.7') ) {
         migrationAddProjectCSS(projectConfig,fairCopyAppConfig)
-        log.info('applying migrations for v1.2.0')
+        log.info('applying migrations for v1.2.0-beta.1')
     }
 
+    if( semver.lt(projectVersion,'1.2.0') || semver.lt(projectVersion,'1.2.0-beta.2') || semver.lt(projectVersion,'1.2.0-dev.8') ) {
+        migrationAddColorCodings(projectConfig)
+        log.info('applying migrations for v1.2.0-dev.')
+    }
+    
     if( semver.lt(projectVersion,'0.10.1') ) {
         migrationAddMenus(projectConfig,baseConfig)
         migrationAddActiveState(projectConfig)
