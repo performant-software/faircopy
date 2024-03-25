@@ -23,6 +23,7 @@ const createProjectArchive = function createProjectArchive(projectInfo,baseDir,c
     const fairCopyConfigJSON = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
     const fairCopyConfig = JSON.parse(fairCopyConfigJSON)
     fairCopyConfig.projectCSS = defaultProjectCSS
+    fairCopyConfig.colorCodings = { '__default__': 'blue' }
     
     projectArchive.file(manifestEntryName, JSON.stringify(fairCopyManifest))
     projectArchive.file(configSettingsEntryName, JSON.stringify(fairCopyConfig))

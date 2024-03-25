@@ -3,9 +3,7 @@ const log = require('electron-log')
 const { getBlankResourceMap } = require('./id-map-authority')
 
 function getProjectVersion(generatedWith) {
-    const ver = generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
-    // ignore any pre-release fields (e.g "1.1.1-dev.8")
-    return `${semver.major(ver)}.${semver.minor(ver)}.${semver.patch(ver)}`
+    return generatedWith ? generatedWith : '0.9.4'  // this field was added in 0.9.5
 }
 
 // project files are backward compatible but not forward compatible
@@ -27,16 +25,14 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
         log.info('applying migrations for v1.1.6')
     }
 
-    // wip
-
-    if( semver.lt(projectVersion,'1.2.0') || semver.lt(projectVersion,'1.2.0-beta.1') || semver.lt(projectVersion,'1.2.0-dev.7') ) {
+    if( semver.lt(projectVersion,'1.2.0') || semver.lt(projectVersion,'1.2.0-dev.7') ) {
         migrationAddProjectCSS(projectConfig,fairCopyAppConfig)
-        log.info('applying migrations for v1.2.0-beta.1')
+        log.info('applying migrations for v1.2.0-beta.1/dev.7')
     }
 
     if( semver.lt(projectVersion,'1.2.0') || semver.lt(projectVersion,'1.2.0-beta.2') || semver.lt(projectVersion,'1.2.0-dev.8') ) {
         migrationAddColorCodings(projectConfig)
-        log.info('applying migrations for v1.2.0-dev.')
+        log.info('applying migrations for v1.2.0-beta.2/dev.8')
     }
     
     if( semver.lt(projectVersion,'0.10.1') ) {

@@ -34,7 +34,7 @@ export default class ColorCodingTable extends Component {
             const color = colorCodings[elementName]
 
             const onEdit = () => {
-                this.setState({ ...this.state, selectedElement: elementName, selectedColor: color, keybindingDialog: true })
+                this.setState({ ...this.state, selectedElement: elementName, selectedColor: color, colorCodingDialog: true })
             }
     
             const onDelete = () => {
