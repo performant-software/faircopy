@@ -71,7 +71,7 @@ export default class ColorCodingTable extends Component {
         }
 
         return (
-            <div id="ColorCodingPanel">
+            <div id="ColorCodingTable">
                 <Typography variant="h5">Color Coding</Typography>
                 <Typography className="explanation">Assign color codes.</Typography>
                 <TableContainer component={Paper}>

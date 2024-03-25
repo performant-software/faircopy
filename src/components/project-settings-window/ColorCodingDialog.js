@@ -17,7 +17,7 @@ export default class ColorCodingDialog extends Component {
 
         this.state = {
             title,
-            color,
+            color: color ? color : 'blue',
             elementName,
             elementMenuOptions: null,
             errorMessage: null
@@ -33,8 +33,8 @@ export default class ColorCodingDialog extends Component {
         }
 
         const menuItems = Object.keys(colorCodingColors).map( colorName => {
-            return <MenuItem value={colorName}>
-                {renderColorBlock(colorName)} { colorName.capitalize() }
+            return <MenuItem value={colorName} key={`cc-${colorName}`}>
+                {renderColorBlock(colorName)} { colorName }
             </MenuItem>
         })
 
@@ -137,7 +137,6 @@ export default class ColorCodingDialog extends Component {
                         </Table>
                     </TableContainer>    
                     { errorMessage && <Typography className='error-message'>{ errorMessage }</Typography> }           
-                    { this.renderChordField() }
                 </DialogContent>
                 <DialogActions>
                     <Button disabled={ !color || !elementName } variant="contained" color="primary" onClick={onClickSave}>Save</Button>

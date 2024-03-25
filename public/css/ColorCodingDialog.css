@@ -15,3 +15,11 @@
     margin: 5px;
     color: red;
 }
+
+#ColorCodingDialog .color-block {
+    display: inline-block;
+    min-width: 20px;
+    min-height: 20px;
+    margin-right: 5px;
+    border: 1px solid black;
+}
