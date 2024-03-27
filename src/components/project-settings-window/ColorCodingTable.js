@@ -31,6 +31,7 @@ export default class ColorCodingTable extends Component {
         const colorCodingRows = []
         for( const elementName of assignedElements ) {
             const color = colorCodings[elementName]
+            const defaultColor = elementName === '__default__'
 
             const onEdit = () => {
                 this.setState({ ...this.state, selectedElement: elementName, selectedColor: color, colorCodingDialog: true })
@@ -53,7 +54,7 @@ export default class ColorCodingTable extends Component {
                     </TableCell>
                     <TableCell>
                         { !readOnly && <Tooltip title="Edit this color code."><IconButton onClick={onEdit}><i className="fas fa-edit fa-sm"></i></IconButton></Tooltip> }
-                        { !readOnly && <Tooltip title="Remove this color code."><span><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip> }
+                        { (!readOnly && !defaultColor) && <Tooltip title="Remove this color code."><span><IconButton onClick={onDelete}><i className="fas fa-trash fa-sm"></i></IconButton></span></Tooltip> }
                     </TableCell>
                 </TableRow>
             )
