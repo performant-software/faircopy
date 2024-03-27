@@ -3,8 +3,7 @@ import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper
 import { Tooltip, IconButton, Button } from '@material-ui/core'
 
 import ColorCodingDialog from './ColorCodingDialog'
-
-export const colorCodingColors = { blue: '#0187a8', red: '#a80101', green: '#01a801', purple: '#8101a8', black: '#000000' }
+import { colorCodingColors } from '../../model/faircopy-config'
 
 export default class ColorCodingTable extends Component {
 

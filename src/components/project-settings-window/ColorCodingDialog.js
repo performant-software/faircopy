@@ -5,7 +5,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/
 import { Table, TableContainer, TableBody, TableCell, TableRow, TableHead, Paper } from '@material-ui/core'
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
-import {colorCodingColors, renderColorBlock} from './ColorCodingTable'
+import { colorCodingColors } from '../../model/faircopy-config'
+import { renderColorBlock} from './ColorCodingTable'
 
 export default class ColorCodingDialog extends Component {
 
