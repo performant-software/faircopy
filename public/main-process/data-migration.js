@@ -82,11 +82,15 @@ exports.migrateManifestData = migrateManifestData
 //// MIGRATIONS /////////////////////////////////////////////////
 
 function migrationAddColorCodings(projectConfig) {
-    projectConfig.colorCodings = { '__default__': 'blue' }
+    if( !projectConfig.colorCodings ) {
+        projectConfig.colorCodings = { '__default__': 'blue' }
+    }
 }
 
 function migrationAddKeybindings(projectConfig) {
-    projectConfig.keybindings = {}
+    if( !projectConfig.keybindings ) {
+        projectConfig.keybindings = {}
+    }
 }
 
 function migrationAddProjectCSS(projectConfig,fairCopyAppConfig) {
