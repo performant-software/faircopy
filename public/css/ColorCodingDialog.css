@@ -1,0 +1,25 @@
+#ColorCodingDialog .element-field {
+    display: inline-block;
+}
+
+#ColorCodingDialog .keystroke-record-button {
+    margin-top: 20px;
+}
+
+#ColorCodingDialog .record-icon {
+    margin-right: 5px;
+    color: red;
+}
+
+#ColorCodingDialog .error-message {
+    margin: 5px;
+    color: red;
+}
+
+#ColorCodingDialog .color-block {
+    display: inline-block;
+    min-width: 20px;
+    min-height: 20px;
+    margin-right: 5px;
+    border: 1px solid black;
+}

@@ -1,6 +1,6 @@
 {
   "name": "faircopy",
-  "version": "1.2.0-dev.7",
+  "version": "1.2.0-dev.8",
   "description": "A word processor for the humanities scholar.",
   "main": "public/electron.js",
   "private": true,
@@ -71,7 +71,7 @@
     "react-scroll": "1.8.3",
     "react-split-pane": "^0.1.92",
     "react-spring": "9.5.5",
-    "semver": "^7.3.5",
+    "semver": "^7.6.0",
     "uuid": "^8.1.0",
     "w3c-xmlserializer": "^2.0.0",
     "xml-formatter": "^2.5.0"

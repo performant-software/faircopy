@@ -69,7 +69,7 @@ export default class GeneralSettings extends Component {
 
         return (
             <div id="GeneralSettings">
-                <Typography variant="h4">Project Settings</Typography>
+                <Typography variant="h4">Project Metadata</Typography>
                 <TextField 
                     name="name"
                     className="name-field"

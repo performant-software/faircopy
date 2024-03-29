@@ -63,3 +63,6 @@
 @import "KeyBindingDialog.css";
 @import "PreviewWindow.css";
 @import "PreviewCSSEditor.css";
+@import "EditorSettings.css";
+@import "ColorCodingTable.css";
+@import "ColorCodingDialog.css";

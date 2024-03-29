@@ -35,7 +35,8 @@ export default class PreviewCSSEditor extends Component {
 
         return (            
             <Paper id="PreviewCSSEditor">
-                <Typography variant="h4">Project CSS</Typography>
+                <Typography variant="h4">Publishing Settings</Typography>
+                <Typography variant="h5">Project CSS</Typography>
                 <CodeMirror className="cm-editor" editable={!readOnly} value={projectCSS} height="400px" extensions={[css()]} onChange={onChange} />
                 <div className="actions">
                     <Button className="action" variant="contained" onClick={onSave}>Save</Button>

@@ -3,7 +3,7 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
-import KeyBindingsTable from './KeyBindingsTable'
+import EditorSettings from './EditorSettings'
 import PreviewCSSEditor from './PreviewCSSEditor'
 import { canConfigAdmin } from '../../model/permissions'
 import { getConfigStatus } from '../../model/faircopy-config'
@@ -39,10 +39,10 @@ export default class ProjectSettingsWindow extends Component {
         return (
             <div className="sidebar">
                 <Tabs orientation="vertical" value={selectedPage} onChange={onChangeMenu}>
-                    <Tab value="general" label="Project" />
-                    <Tab value="elements" label="Menus"/>
-                    <Tab value="keybindings" label="Hot Keys"/>
-                    <Tab value="previewCSS" label="Preview CSS"/>
+                    <Tab value="general" label="Metadata" />
+                    <Tab value="elements" label="Schema"/>
+                    <Tab value="editor" label="Editor"/>
+                    <Tab value="previewCSS" label="Publishing"/>
                 </Tabs>
             </div>
         )
@@ -94,12 +94,12 @@ export default class ProjectSettingsWindow extends Component {
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></SchemaEditor> }
-                { selectedPage === 'keybindings' && <KeyBindingsTable
+                { selectedPage === 'editor' && <EditorSettings
                     fairCopyConfig={fairCopyConfig}
                     teiSchema={teiSchema}
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
-                ></KeyBindingsTable> }
+                ></EditorSettings> }
                 { selectedPage === 'previewCSS' && <PreviewCSSEditor
                     fairCopyConfig={fairCopyConfig}
                     readOnly={!canEdit}

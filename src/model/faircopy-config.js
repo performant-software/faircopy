@@ -5,6 +5,8 @@ const fairCopy = window.fairCopy
 const importGroupName = "Untitled Group"
 const maxGroupSize = 18
 
+export const colorCodingColors = { blue: '#0187a8', red: '#a80101', green: '#01a801', purple: '#8101a8', black: '#000000' }
+
 // add the element to the menu and update the config
 export function addElementToMenu(elementID,palettePos,groupID,menuID,fairCopyConfig) {
     const { elements, menus } = fairCopyConfig
@@ -196,4 +198,28 @@ export function getConfigStatus( lastAction, userID ) {
 
 export function exportConfig( exportPath, fairCopyConfig ) {
     fairCopy.services.ipcSend('requestExportConfig', exportPath, JSON.stringify(fairCopyConfig))
+}
+
+export function updateColorCodingStyles( colorCodings ) {
+    const cssRules = []
+    for( const elementName of Object.keys(colorCodings) ) {
+        let cssRule
+        if( elementName === '__default__') {
+            const color = colorCodings['__default__']
+            const colorValue = colorCodingColors[color]
+            cssRule = `[phraselvl = "true"] { border-bottom: dotted ${colorValue}; }`
+        } else {
+            const elName = `tei-mark${elementName}`
+            const color = colorCodings[elementName]
+            const colorValue = colorCodingColors[color]
+            cssRule = `${elName}[phraselvl = "true"] { border-bottom: dotted ${colorValue}; }`
+        }
+        cssRules.push(cssRule)
+    }
+
+    // add CSS rules
+    const cssStr = cssRules.join('\n')
+    const colorCodingSheet = new CSSStyleSheet()
+    colorCodingSheet.replaceSync(cssStr)
+    document.adoptedStyleSheets = [colorCodingSheet]
 }

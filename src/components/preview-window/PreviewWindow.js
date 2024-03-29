@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Parser from './Parser'
 import domToReact from 'html-react-parser/lib/dom-to-react';
 
-import { Button, Tooltip } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 import { bigRingSpinner } from '../common/ring-spinner'
 import TitleBar from '../main-window/TitleBar'
 

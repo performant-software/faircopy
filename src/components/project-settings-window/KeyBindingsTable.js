@@ -79,10 +79,10 @@ export default class KeyBindingsTable extends Component {
 
         return (
             <div id="KeyBindingsTable">
-                <Typography variant="h4">Hot Keys</Typography>
+                <Typography variant="h5">Hot Keys</Typography>
                 <Typography className="explanation">Assign hotkeys and review assigned keys.</Typography>
                 <TableContainer component={Paper}>
-                    <Table size="small" aria-label="a table of keybindings for <mark> and inline elements">
+                    <Table size="small" aria-label="a table of keybindings for mark and inline elements">
                         <TableHead>
                         <TableRow>
                             <TableCell>Keystroke</TableCell>
