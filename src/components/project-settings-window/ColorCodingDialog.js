@@ -53,23 +53,27 @@ export default class ColorCodingDialog extends Component {
     renderElementField() {
         const { elementName } = this.state
 
-        const onClick = () => {
-            this.setState({...this.state, elementMenuOptions: { menuGroup: 'mark' } })
+        if( elementName === '__default__' ) {
+            return "Default Color"
+        } else {
+            const onClick = () => {
+                this.setState({...this.state, elementMenuOptions: { menuGroup: 'mark' } })
+            }
+    
+            const elementButtonLabel = elementName ? <span><i className="fas fa-marker"></i> { elementName }</span> : <span>Choose Element</span>
+    
+            return (
+                <Button
+                    className="element-field"
+                    size="small"
+                    variant="contained"
+                    onClick={onClick}
+                    ref = { (el)=> { this.elementMenuAnchors.mark = el } }
+                >
+                    { elementButtonLabel }                
+                </Button>
+            )    
         }
-
-        const elementButtonLabel = elementName ? <span><i className="fas fa-marker"></i> { elementName }</span> : <span>Choose Element</span>
-
-        return (
-            <Button
-                className="element-field"
-                size="small"
-                variant="contained"
-                onClick={onClick}
-                ref = { (el)=> { this.elementMenuAnchors.mark = el } }
-            >
-                { elementButtonLabel }                
-            </Button>
-        )
     }
 
     onCloseElementMenu = () => {
