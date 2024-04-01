@@ -20,24 +20,10 @@ const migrateConfig = function migrateConfig( generatedWith, baseConfig, project
     migrationRemoveElements(projectConfig,baseConfig)
     migrationAddNewElements(baseConfig,projectConfig)
 
-    if( semver.lt(projectVersion,'1.1.6') ) {
-        migrationAddKeybindings(projectConfig)
-        log.info('applying migrations for v1.1.6')
-    }
+    migrationAddKeybindings(projectConfig)
+    migrationAddProjectCSS(projectConfig,fairCopyAppConfig)
+    migrationAddColorCodings(projectConfig)
 
-    if( semver.lt(projectVersion,'1.2.0-dev.7') || 
-        (!semver.prerelease(projectVersion) && semver.lt(projectVersion,'1.2.0')) ) {
-        migrationAddProjectCSS(projectConfig,fairCopyAppConfig)
-        log.info('applying migrations for v1.2.0-beta.1/dev.7')
-    }
-
-    if( semver.lt(projectVersion,'1.2.0-beta.2') || 
-        semver.lt(projectVersion,'1.2.0-dev.8') || 
-        (!semver.prerelease(projectVersion) && semver.lt(projectVersion,'1.2.0')) ) {
-        migrationAddColorCodings(projectConfig)
-        log.info('applying migrations for v1.2.0-beta.2/dev.8')
-    }
-    
     if( semver.lt(projectVersion,'0.10.1') ) {
         migrationAddMenus(projectConfig,baseConfig)
         migrationAddActiveState(projectConfig)
@@ -94,8 +80,10 @@ function migrationAddKeybindings(projectConfig) {
 }
 
 function migrationAddProjectCSS(projectConfig,fairCopyAppConfig) {
-    const { defaultProjectCSS } = fairCopyAppConfig
-    projectConfig.projectCSS = defaultProjectCSS
+    if( !projectConfig.projectCSS ) {
+        const { defaultProjectCSS } = fairCopyAppConfig
+        projectConfig.projectCSS = defaultProjectCSS    
+    }
 }
 
 function migrationAddNewElements(baseConfig,projectConfig) {

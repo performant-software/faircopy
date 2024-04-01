@@ -55,9 +55,10 @@ class RemoteProject {
                     const { config, configLastAction } = msg
                     const { fairCopyApplication, projectStore } = this.fairCopySession
                     const { baseConfig } = projectStore
+                    const { config: appConfig } = fairCopyApplication
                     const { generatedWith } = projectStore.manifestData
                     // make sure that the incoming config is migrated to the latest schema                    
-                    migrateConfig(generatedWith, baseConfig, config )
+                    migrateConfig(generatedWith, baseConfig, config, appConfig )
                     fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
                 }
                 break
