@@ -6,7 +6,7 @@ import { Table, TableContainer, TableBody, TableCell, TableRow, TableHead, Paper
 
 import ElementMenu from "../main-window/tei-editor/ElementMenu"
 import { colorCodingColors } from '../../model/faircopy-config'
-import { renderColorBlock} from './ColorCodingTable'
+import { renderColorBlock } from './ColorCodingTable'
 
 export default class ColorCodingDialog extends Component {
 
@@ -33,9 +33,9 @@ export default class ColorCodingDialog extends Component {
             this.setState({ ...this.state, color: event.target.value })
         }
 
-        const menuItems = Object.keys(colorCodingColors).map( colorName => {
+        const menuItems = Object.keys(colorCodingColors).map(colorName => {
             return <MenuItem value={colorName} key={`cc-${colorName}`}>
-                {renderColorBlock(colorName)} { colorName }
+                {renderColorBlock(colorName)} {colorName}
             </MenuItem>
         })
 
@@ -46,70 +46,72 @@ export default class ColorCodingDialog extends Component {
             aria-label="Color Code"
             variant="outlined"
         >
-            { menuItems }
+            {menuItems}
         </Select>
     }
 
     renderElementField() {
         const { elementName } = this.state
 
-        if( elementName === '__default__' ) {
+        if (elementName === '__default__') {
             return "Default Color"
         } else {
             const onClick = () => {
-                this.setState({...this.state, elementMenuOptions: { menuGroup: 'mark' } })
+                this.setState({ ...this.state, elementMenuOptions: { menuGroup: 'mark' } })
             }
-    
-            const elementButtonLabel = elementName ? <span><i className="fas fa-marker"></i> { elementName }</span> : <span>Choose Element</span>
-    
+
+            const elementButtonLabel = elementName ? <span><i className="fas fa-marker"></i> {elementName}</span> : <span>Choose Element</span>
+
             return (
                 <Button
                     className="element-field"
                     size="small"
                     variant="contained"
                     onClick={onClick}
-                    ref = { (el)=> { this.elementMenuAnchors.mark = el } }
+                    ref={(el) => { this.elementMenuAnchors.mark = el }}
                 >
-                    { elementButtonLabel }                
+                    {elementButtonLabel}
                 </Button>
-            )    
+            )
         }
     }
 
     onCloseElementMenu = () => {
-        this.setState({...this.state, elementMenuOptions: null })
+        this.setState({ ...this.state, elementMenuOptions: null })
     }
 
     renderElementMenu() {
         const { fairCopyConfig, teiSchema } = this.props
         const { elementMenuOptions } = this.state
 
-        if(!elementMenuOptions) return null
+        if (!elementMenuOptions) return null
 
         const { menus } = fairCopyConfig
         const { elements } = teiSchema
-        
+
         const onAction = (elementID) => {
-            this.setState({ ...this.state, elementName: elementID, elementMenuOptions: null })
+            const { inter } = teiSchema.elementGroups
+            const elementName = inter.includes(elementID) ? `mark${elementID}` : elementID
+            this.setState({ ...this.state, elementName, elementMenuOptions: null })
         }
 
         return (
             <ElementMenu
                 menus={menus}
                 elements={elements}
-                onClose={ () => {
-                    this.setState({...this.state, elementMenuOptions: null })
-                } }
+                onClose={() => {
+                    this.setState({ ...this.state, elementMenuOptions: null })
+                }}
                 elementMenuAnchors={this.elementMenuAnchors}
                 onAction={onAction}
                 validAction={() => { return true }}
-                onExited={() => {}}
+                onExited={() => { }}
                 {...elementMenuOptions}
             ></ElementMenu>
         )
     }
 
-    render() {      
+    render() {
         const { onClose, onSave } = this.props
         const { title, color, elementName, errorMessage } = this.state
 
@@ -123,7 +125,7 @@ export default class ColorCodingDialog extends Component {
                 open={true}
                 aria-labelledby="colorcoding-title"
             >
-                <DialogTitle id="colorcoding-title">{ title }</DialogTitle>
+                <DialogTitle id="colorcoding-title">{title}</DialogTitle>
                 <DialogContent>
                     <TableContainer component={Paper}>
                         <Table size="small" aria-label="a table of color codings for mark elements">
@@ -134,20 +136,20 @@ export default class ColorCodingDialog extends Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                <TableRow> 
-                                    <TableCell>{ this.renderColorField() }</TableCell>
+                                <TableRow>
+                                    <TableCell>{this.renderColorField()}</TableCell>
                                     <TableCell><Typography>{this.renderElementField()}</Typography></TableCell>
-                                </TableRow>                            
+                                </TableRow>
                             </TableBody>
                         </Table>
-                    </TableContainer>    
-                    { errorMessage && <Typography className='error-message'>{ errorMessage }</Typography> }           
+                    </TableContainer>
+                    {errorMessage && <Typography className='error-message'>{errorMessage}</Typography>}
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={ !color || !elementName } variant="contained" color="primary" onClick={onClickSave}>Save</Button>
+                    <Button disabled={!color || !elementName} variant="contained" color="primary" onClick={onClickSave}>Save</Button>
                     <Button variant="outlined" onClick={onClose}>Cancel</Button>
                 </DialogActions>
-                { this.renderElementMenu() }
+                {this.renderElementMenu()}
             </Dialog>
         )
     }
