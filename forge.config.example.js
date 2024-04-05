@@ -20,16 +20,20 @@ module.exports = {
       {
         name: '@electron-forge/maker-dmg',
         config: {
-          background: './public/icon.png',
+          background: './public/img/DMG_background.png',
           icon: './public/icon.ico',
-          format: 'ULFO'
+          format: 'ULFO',
+          platform: 'darwin'
         }
       },
       {
         name: '@electron-forge/maker-squirrel',
         config: {
+          loadingGif: './public/img/install_spinner.gif',
+          icon: './public/img/icon.ico',
           certificateFile: 'LOCATION OF APP SIGNING CERTIFICATE',
-          certificatePassword: 'CERTIFICATE PASSWORD'
+          certificatePassword: 'CERTIFICATE PASSWORD',
+          platform: 'win32'
         }
       }
     ],
