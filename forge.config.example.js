@@ -1,6 +1,7 @@
 module.exports = {
     packagerConfig: {
       asar: true,
+      icon: './public/icons/icon',
       osxSign: {
         optionsForFile: (filePath) => {
           return {
@@ -21,7 +22,7 @@ module.exports = {
         name: '@electron-forge/maker-dmg',
         config: {
           background: './public/img/DMG_background.png',
-          icon: './public/icon.ico',
+          icon: './public/icons/icon.icns',
           format: 'ULFO',
           platform: 'darwin'
         }
@@ -30,7 +31,8 @@ module.exports = {
         name: '@electron-forge/maker-squirrel',
         config: {
           loadingGif: './public/img/install_spinner.gif',
-          icon: './public/img/icon.ico',
+          iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/public/icons/icon.ico',
+          setupIcon: './public/icons/icon.ico',
           certificateFile: 'LOCATION OF APP SIGNING CERTIFICATE',
           certificatePassword: 'CERTIFICATE PASSWORD',
           platform: 'win32'
