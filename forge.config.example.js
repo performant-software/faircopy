@@ -21,10 +21,15 @@ module.exports = {
       {
         name: '@electron-forge/maker-dmg',
         config: {
+          platform: 'darwin',
           background: './public/img/DMG_background.png',
           icon: './public/icons/icon.icns',
+          iconSize: 145,
           format: 'ULFO',
-          platform: 'darwin'
+          contents: [
+              { "x": 480, "y": 220, "type": "link", "path": "/Applications" },
+              { "x": 140, "y": 220, "type": "file", "path": "<YOUR ABSOLUTE PATH TO PROJECT BASE DIR>/out/FairCopy-darwin-x64/FairCopy.app" }
+          ]
         }
       },
       {
