@@ -209,7 +209,7 @@ export function updateColorCodingStyles( colorCodings ) {
             const colorValue = colorCodingColors[color]
             cssRule = `[phraselvl = "true"] { border-bottom: dotted ${colorValue}; }`
         } else {
-            const elName = `tei-mark${elementName}`
+            const elName = `tei-${elementName}`
             const color = colorCodings[elementName]
             const colorValue = colorCodingColors[color]
             cssRule = `${elName}[phraselvl = "true"] { border-bottom: dotted ${colorValue}; }`
