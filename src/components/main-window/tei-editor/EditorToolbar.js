@@ -84,6 +84,11 @@ export default class EditorToolbar extends Component {
         teiDocument.previewDocument()
     }
 
+    onFind = () => {
+        const { onToggleSearchBar } = this.props
+        onToggleSearchBar(true)
+    }
+
     createMark = (elementID, attrs) => {
         const { teiDocument } = this.props
         const editorView = teiDocument.getActiveView()
@@ -153,6 +158,7 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Redo", "fas fa-redo", this.onRedo ) }    
                     { seperator }
                     { this.renderButton("Preview", "fas fa-eye", this.onPreview, canPreview ) }
+                    { this.renderButton("Find", "fas fa-magnifying-glass", this.onFind ) }
                 </div>
                 <div className="rightgroup">
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }

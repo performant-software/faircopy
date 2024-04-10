@@ -23,7 +23,7 @@ import ReleaseNotesDialog from './dialogs/ReleaseNotesDialog'
 import EditorDraggingElement from './tei-editor/EditorDraggingElement'
 import ImportTextsDialog from './dialogs/ImportTextsDialog'
 import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
-import { highlightSearchResults, scrollToSearchResult } from '../../model/search'
+import { highlightSearchResults, scrollToSearchResult, searchResource } from '../../model/search'
 import SearchDialog from './dialogs/SearchDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import CheckOutDialog from './dialogs/CheckOutDialog'
@@ -34,6 +34,7 @@ const fairCopy = window.fairCopy
 const initialLeftPaneWidth = 300
 const maxLeftPaneWidth = 630
 const resizeRefreshRate = 100
+const resetSearchRate = 100
 const initialRowsPerPage = 50
 
 const closePopUpState = { popupMenuOptions: null, popupMenuAnchorEl: null, popupMenuPlacement: null }
@@ -102,6 +103,8 @@ export default class MainWindow extends Component {
             searchSelectionIndex: 0,
             searchFilterMode: false,
             searchEnabled: false,
+            searchScope: 'file',
+            showSearchBar: false,
             leftPaneWidth: initialLeftPaneWidth
         }	
     }
@@ -609,20 +612,53 @@ export default class MainWindow extends Component {
         this.setState({...this.state, searchFilterMode: true })
     }
 
+    onResetSearch = () => {
+        const resetSearch = debounce(() => {
+            this.setState({...this.state, searchQuery: '', searchResults: {}, searchSelectionIndex: 0 })
+        }, resetSearchRate)
+        resetSearch()
+    }
+
     updateSearchFilter = ( elementName, attrQs, active, open ) => {
-        const { searchQuery } = this.state
+        const { searchQuery, searchScope, selectedResource, openResources } = this.state
+        const searchFilterOptions = { elementName, attrQs, active }
         const query = searchQuery ? searchQuery.query : ""
         const searchQ = { query, elementName, attrQs }
-        fairCopy.services.ipcSend('searchProject', searchQ)
 
-        const searchFilterOptions = { elementName, attrQs, active }
-        this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })    
+        // run the search based on the new filter settings
+        if( searchScope === 'project' ) {
+            this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })   
+            fairCopy.services.ipcSend('searchProject', searchQ)
+        } else {
+            const currentResource = selectedResource ? openResources[selectedResource] : null
+            if( currentResource ) {
+                const searchResults = searchResource( currentResource, searchQ )
+                this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })
+                this.updateSearchResults(currentResource, searchQuery, searchResults)
+            }
+        }
     }
 
     updateSearchResults(resource, searchQuery, searchResults) {
         const { resourceID } = resource
         const resourceSearchResults = searchResults[resourceID] ?  searchResults[resourceID] : -1
         highlightSearchResults(resource, searchQuery, resourceSearchResults)
+    }
+
+    closeSearchBar() {
+        const { selectedResource, openResources } = this.state
+        if( selectedResource ) {
+            const resource = openResources[selectedResource]
+            highlightSearchResults(resource, null, -1)
+            resource.getActiveView().focus()
+        }
+        this.setState({...this.state, showSearchBar: false, searchQuery: '', searchResults: {}, searchSelectionIndex: 0, ...closePopUpState })
+    }
+
+    toggleSearchScope() {
+        const { searchScope } = this.state
+        const nextScope = searchScope === 'file' ? 'project' : 'file'
+        this.setState({...this.state, searchScope: nextScope })
     }
 
     renderEditors() {
@@ -647,6 +683,13 @@ export default class MainWindow extends Component {
                 const moveResourceProps = { resourceType: 'facs', allowRoot: false, movingItems: surfaces, onMove, onMoved }
                 this.setState( {...this.state, moveResourceMode: true, moveResourceProps, ...closePopUpState} )
             }
+            const onToggleSearchBar = (showSearchBar) => { 
+                if( !showSearchBar ) { 
+                    this.closeSearchBar()
+                } else {
+                    this.setState({ ...this.state, showSearchBar: true }) 
+                }                
+            }
 
             // bump state to update sidebar
             const onErrorCountChange = () => { this.setState({...this.state})}
@@ -664,6 +707,8 @@ export default class MainWindow extends Component {
                         onAlertMessage={this.onAlertMessage}
                         onResourceAction={this.onResourceAction}
                         onErrorCountChange={onErrorCountChange}
+                        onToggleSearchBar={onToggleSearchBar}
+                        onResetSearch={this.onResetSearch}
                         onSave={onSave}
                         leftPaneWidth={leftPaneWidth}
                         currentView={currentView}
@@ -941,8 +986,8 @@ export default class MainWindow extends Component {
     }
 
     render() {
-        const { appConfig, hidden, fairCopyProject } = this.props
-        const { searchEnabled, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
+        const { appConfig, hidden } = this.props
+        const { searchEnabled, showSearchBar, searchScope, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
         const onDragSplitPane = debounce((width) => {
             this.setState({...this.state, leftPaneWidth: width })
@@ -963,7 +1008,6 @@ export default class MainWindow extends Component {
                     </SplitPane>
                     <MainWindowStatusBar
                         appConfig={appConfig}
-                        remoteProject={fairCopyProject.remote}
                         onSearchResults={this.onSearchResults}
                         onSearchFilter={this.onSearchFilter}
                         onAlertMessage={this.onAlertMessage}
@@ -971,8 +1015,12 @@ export default class MainWindow extends Component {
                         searchSelectionIndex={searchSelectionIndex}
                         searchFilterOptions={searchFilterOptions}
                         searchEnabled={searchEnabled}
+                        searchScope={searchScope}
+                        showSearchBar={showSearchBar}
                         onUpdateSearchSelection={(searchSelectionIndex)=> { this.setState({...this.state, searchSelectionIndex })}}
                         onResourceAction={this.onResourceAction}
+                        onToggleSearch={()=>{ this.toggleSearchScope() }}
+                        onCloseSearch={()=>{ this.closeSearchBar() } }
                         onQuitAndInstall={()=>{ this.requestExitApp() }}
                         onDisplayNotes={()=>{ this.setState({ ...this.state, releaseNotesMode: true })}}
                     ></MainWindowStatusBar>

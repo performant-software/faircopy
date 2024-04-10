@@ -13,10 +13,6 @@
     border-bottom: dotted red;
 }
 
-/* Phrase level markup styling is based on information layers */
-[phraselvl = "true"] {
-    border-bottom: dotted #0187a8;
-}
 
 [phraselvl = "false"] {
     margin: 0px;

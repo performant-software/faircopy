@@ -1,13 +1,15 @@
 import { createPhraseElement } from "./editor-actions"
 
 export const teiEditorKeyMap = {
-    onTogglePalette: '1+Meta',
-    onOpenMarkMenu: '2+Meta',
-    onOpenInineMenu: '3+Meta',
-    eraseSelection: '4+Meta',
-    undo: 'Meta+z',
-    redo: 'Meta+Shift+z',
-    cutSelectedNode: 'Meta+x',
+    onTogglePalette: '1+Control',
+    onOpenMarkMenu: '2+Control',
+    onOpenInineMenu: '3+Control',
+    eraseSelection: '4+Control',
+    undo: 'Control+z',
+    redo: 'Control+Shift+z',
+    cutSelectedNode: 'Control+x',
+    openSearchBar: 'f+Control',
+    closeSearchBar: 'Escape',
     // TODO fixme
     // copySelectedNode: 'Meta+v'
 }

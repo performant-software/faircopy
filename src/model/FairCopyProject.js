@@ -5,7 +5,7 @@ import FacsDocument from "./FacsDocument"
 import TEISchema from "./TEISchema"
 import IDMap from "./IDMap"
 import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
-import {saveConfig} from "./faircopy-config"
+import {saveConfig, updateColorCodingStyles} from "./faircopy-config"
 import {facsTemplate} from "./tei-template"
 import {importResource} from "./import-tei"
 import { getBlankResourceMap, getUniqueResourceID } from './id-map'
@@ -27,6 +27,7 @@ export default class FairCopyProject {
         this.projectFilePath = projectData.projectFilePath
         this.loadManifest(projectData.fairCopyManifest)
         this.fairCopyConfig = projectData.fairCopyConfig
+        updateColorCodingStyles( this.fairCopyConfig.colorCodings )
         this.baseConfigJSON = projectData.baseConfig
         this.teiSchema = new TEISchema(projectData.teiSchema)
         this.idMap = new IDMap(projectData.idMap)   
@@ -172,6 +173,7 @@ export default class FairCopyProject {
     saveFairCopyConfig( nextFairCopyConfig=null, lastAction=null ) {
         if( nextFairCopyConfig ) {
             this.fairCopyConfig = nextFairCopyConfig
+            updateColorCodingStyles( this.fairCopyConfig.colorCodings )
         }
         if( lastAction ) {
             this.configLastAction = lastAction
@@ -181,6 +183,7 @@ export default class FairCopyProject {
 
     checkInConfig( nextFairCopyConfig ) {
         this.fairCopyConfig = nextFairCopyConfig
+        updateColorCodingStyles( this.fairCopyConfig.colorCodings )
         const firstAction = !!this.configLastAction.firstAction
         fairCopy.services.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
     }

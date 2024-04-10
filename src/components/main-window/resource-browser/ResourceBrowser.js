@@ -6,6 +6,9 @@ import { debounce } from "debounce";
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
+import { ellipsis } from '../../../model/ellipsis'
+
+const maxNameLength = 35
 
 export default class ResourceBrowser extends Component {
 
@@ -288,9 +291,11 @@ export default class ResourceBrowser extends Component {
       const editable = isEntryEditable( resource, userID )
       const checkedOutRemote = !editable ? isCheckedOutRemote( resource, userID ) : false
       const { label, icon } = getActionIcon( false, local, editable|deleted, checkedOutRemote )
-      const lastModified = !editable ? new Date(resource.lastAction.created_at).toLocaleString() : ''
+      const lastModified = !editable ? new Date(resource.lastAction.created_at).toDateString() : ''
       const textClass = deleted ? 'deleted-resource' : ''
       const iconClass = deleted ? 'deleted-icon' : ''
+      const displayName = ellipsis( name, maxNameLength )
+      const displayLocalID = ellipsis( localID, maxNameLength )
       
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
@@ -310,10 +315,10 @@ export default class ResourceBrowser extends Component {
             <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
           </TableCell>
           <TableCell {...cellProps} >
-            <Typography className={textClass}>{name}</Typography>
+            <Typography className={textClass}>{displayName}</Typography>
           </TableCell>
           <TableCell {...cellProps} >
-            <Typography className={textClass}>{localID}</Typography>
+            <Typography className={textClass}>{displayLocalID}</Typography>
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
@@ -365,6 +370,7 @@ export default class ResourceBrowser extends Component {
 
   renderEmptyListMessage() {
     const { resourceIndex, currentView, fairCopyProject, resourceView, onLogin } = this.props
+    const { filterBuffer } = this.state
     if( resourceIndex.length > 0 || resourceView.loading ) return null
 
     const buttonProps = {
@@ -374,11 +380,16 @@ export default class ResourceBrowser extends Component {
     }
     const displayLoginButton = !fairCopyProject.isLoggedIn() && currentView === 'remote'
 
-    const message = currentView === 'home' ? 
-      <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
-      displayLoginButton ? 
-          <Typography>You are not logged into the server. Click below to login.</Typography> :
-          <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>
+    let message
+    if( filterBuffer.length > 0 ) {
+      message = <Typography>No resources match the filter.</Typography>
+    } else {
+      message = currentView === 'home' ? 
+        <Typography>There are no local resources. Click on the <i className="fa fa-home-alt"></i> icon to see resources on the server.</Typography> :
+        displayLoginButton ? 
+            <Typography>You are not logged into the server. Click below to login.</Typography> :
+            <Typography>There are no remote resources. On the <i className="fa fa-home-alt"></i> Local page, you can create or import new resources to add to your project.</Typography>    
+    }
 
     return (
       <Card raised={true} className='empty-list-card'>

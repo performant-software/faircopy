@@ -10,7 +10,7 @@ This README discusses how to set up a development environment on Mac or Windows 
 Developer Environment
 -----------
 
-FairCopy can run in development mode on your local machine, which is useful for debugging the application and previewing functionality. This process has been tested on VSCode on both Mac and Windows. To run Faircopy in development mode, install the necessary dependencies using NPM. Next, set the following ENV variables at a minimum, using the .env file:
+FairCopy can run in development mode on your local machine, which is useful for debugging the application and previewing functionality. This process has been tested on VSCode on both Mac and Windows. To run Faircopy in development mode, install the necessary dependencies using NPM (`npm install`). Next, set the following ENV variables at a minimum, using the .env file:
 
 * BROWSER=none
 * PORT=4000 
