@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Parser from './Parser'
 import domToReact from 'html-react-parser/lib/dom-to-react';
+import EditionCrafter from '@cu-mkp/editioncrafter'
 
 import { Button } from '@material-ui/core'
 import { bigRingSpinner } from '../common/ring-spinner'
@@ -77,10 +78,19 @@ export default class PreviewWindow extends Component {
                 </TitleBar>
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
-                    <Parser
+                <EditionCrafter
+                    documentName='BnF Ms. Fr. 640'
+                    transcriptionTypes={{
+                        tc: 'Diplomatic (FR)',
+                        tcn: 'Normalized (FR)',
+                        tl: 'Translation (EN)'
+                    }}
+                    iiifManifest='https://cu-mkp.github.io/editioncrafter-data/fr640_3r-3v-example/iiif/manifest.json'
+                />
+                    {/* <Parser
                         html={teiDocHTML}
                         htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
-                    />
+                    /> */}
                 </div>
             </div>
         )
