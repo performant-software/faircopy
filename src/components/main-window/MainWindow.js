@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { debounce } from "debounce";
 
-import SplitPane from 'react-split-pane'
+// import SplitPane from 'react-split-pane'
 
 import ProjectSidebar from './ProjectSidebar'
 import AlertDialog from './dialogs/AlertDialog'
@@ -1002,10 +1002,10 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
-                    <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}>
-                        { this.renderProjectSidebar() }
+                    {/* <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}> */}
+                        {/* { this.renderProjectSidebar() } */}
                         { this.renderContentPane() }
-                    </SplitPane>
+                    {/* </SplitPane> */}
                     <MainWindowStatusBar
                         appConfig={appConfig}
                         onSearchResults={this.onSearchResults}

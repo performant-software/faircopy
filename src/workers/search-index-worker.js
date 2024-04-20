@@ -1,4 +1,4 @@
-import { Document } from "flexsearch";
+import FlexSearch from "flexsearch";
 import TEISchema from  '../model/TEISchema'
 import TEIDocument from '../model/TEIDocument'
 import { addTextNodes } from '../model/xml'
@@ -115,7 +115,7 @@ function indexResource( resourceID, resourceType, content ) {
 
     const attrFields = defineAttrFields( teiSchema.attrs )
 
-    const flexSearchIndex = new Document({
+    const flexSearchIndex = new FlexSearch.Document({
         document: { 
             id: "id",
             index: ["contents", ...attrFields]
