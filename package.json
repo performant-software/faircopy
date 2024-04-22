@@ -36,7 +36,6 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@codemirror/lang-css": "^6.2.1",
     "@cu-mkp/editioncrafter": "^0.2.7",
-    "@cu-mkp/editioncrafter-cli": "^0.2.1",
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.53",
