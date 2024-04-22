@@ -66,7 +66,9 @@ export default class PreviewWindow extends Component {
         const { resourceEntry, teiDocHTML } = this.state
         if(!resourceEntry || !teiDocHTML ) return this.renderSpinner()
 
-        const htmlToReactParserOptionsSide = htmlToReactParserOptions()
+        // const iiifManifest = `ec://${resourceEntry.id}/iiif/manifest.json`
+        const iiifManifest = "https://cu-mkp.github.io/bic-editioncrafter-data/eng-415-145a/iiif/manifest.json"
+        // const htmlToReactParserOptionsSide = htmlToReactParserOptions()
 
         return (
             <div id="PreviewWindow">
@@ -79,13 +81,13 @@ export default class PreviewWindow extends Component {
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
                 <EditionCrafter
-                    documentName='BnF Ms. Fr. 640'
+                    documentName={resourceEntry.name}
                     transcriptionTypes={{
                         tc: 'Diplomatic (FR)',
                         tcn: 'Normalized (FR)',
                         tl: 'Translation (EN)'
                     }}
-                    iiifManifest='https://cu-mkp.github.io/editioncrafter-data/fr640_3r-3v-example/iiif/manifest.json'
+                    iiifManifest={iiifManifest}
                 />
                     {/* <Parser
                         html={teiDocHTML}

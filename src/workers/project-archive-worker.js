@@ -1,6 +1,7 @@
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
+import { processTEIDocument, processRequest } from "../model/editioncrafter"
 
 const fairCopy = window.fairCopy
 const JSZip = fairCopy.services.JSZip
@@ -344,11 +345,20 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     if( resp.error ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
+                        // TODO
+                        // processTEIDocument(teiDocumentID, xml)
                         postMessage({ messageType: 'preview-resource', previewData, resourceData: resp })
                     }
                 })
             }
             break            
+        case 'request-editioncrafter-data':
+            {
+                // TODO
+                // const response = processRequest(url)
+                // postMessage({ messageType: 'editioncrafter-data', response })
+            }
+            break
         case 'write-resource':
             {
                 const { resourceID, data } = msg
