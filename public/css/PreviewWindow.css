@@ -1,4 +1,4 @@
-
+/* 
 #PreviewWindow #preview-viewer {
   display: flex;
   width: calc( 100% - 100px );
@@ -10,7 +10,7 @@
   padding-right: 50px;
   margin-bottom: 20px; 
   border-left: 3px solid #ddf8ff
-}
+} */
 
 
 #PreviewWindow .toolbar {
