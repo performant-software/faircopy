@@ -1,30 +1,16 @@
-const jsdom = require("jsdom")
-const { JSDOM } = jsdom
-const {CETEI} = require("./CETEI")
-
-const manifestTemplate = require("./templates/manifest.json")
-const canvasTemplate = require("./templates/canvas.json")
-const annotationTemplate = require("./templates/annotation.json")
-const annotationPageTemplate = require("./templates/annotationPage.json")
-const { buildSquareFragment, buildPolygonSvg } = require("./svg")
-
-const structuredClone = require('@ungap/structured-clone').default
+import { buildSquareFragment, buildPolygonSvg } from "./svg"
+import { domToHTML5, convertToHTML } from "./convert"
 
 // Profile ID for EditionCrafter text partials
 const textPartialResourceProfileID = 'https://github.com/cu-mkp/editioncrafter-project/text-partial-resource.md'
 
-function convertToHTML( xml ) {
-    try {
-        const htmlDOM = new JSDOM()
-        const ceTEI = new CETEI(htmlDOM.window)
-        const xmlDOM = new JSDOM(xml, { contentType: "text/xml" })
-        const data = ceTEI.domToHTML5(xmlDOM.window.document)
-        return data.outerHTML
-    } catch( err ) {
-        console.error(`ERROR ${err}: ${err.stack}`)
-    }
-    return null
-}
+// Load JSON templates
+const fairCopy = window.fairCopy
+const fs = fairCopy.services.getFs()
+const manifestTemplateJSON = fs.readFileSync("./templates/manifest.json")
+const canvasTemplateJSON = fs.readFileSync("./templates/canvas.json")
+const annotationTemplateJSON = fs.readFileSync("./templates/annotation.json")
+const annotationPageTemplateJSON = fs.readFileSync("./templates/annotationPage.json")
 
 function scrubTree( el, direction ) {
     let nextEl = direction === 'prev' ? el.previousSibling : el.nextSibling
@@ -107,7 +93,7 @@ function generateWebPartials( xmls ) {
 }
 
 function renderTextAnnotation( annotationPageID, canvasID, textURL, annoID, format) {
-    const annotation = structuredClone(annotationTemplate)
+    const annotation = JSON.parse(annotationTemplateJSON)
     annotation.id = `${annotationPageID}/annotation/${annoID}`
     annotation.motivation = "supplementing"
     annotation.target = canvasID
@@ -120,9 +106,9 @@ function renderTextAnnotation( annotationPageID, canvasID, textURL, annoID, form
 
 function renderTextAnnotationPage( baseURI, canvasID, surface, apIndex ) {
     const { id: surfaceID, xmls, htmls } = surface
-    if( Object.keys(xmls).length == 0 && Object.keys(htmls).length == 0 ) return null
+    if( Object.keys(xmls).length === 0 && Object.keys(htmls).length === 0 ) return null
     const annotationPageID = `${canvasID}/annotationPage/${apIndex}`
-    const annotationPage = structuredClone(annotationPageTemplate)
+    const annotationPage = JSON.parse(annotationPageTemplateJSON)
     annotationPage.id = annotationPageID
     let i = 0
     for( const localID of Object.keys(xmls) ) {
@@ -140,7 +126,7 @@ function renderTextAnnotationPage( baseURI, canvasID, surface, apIndex ) {
 
 // Builds a painting annotation for the `items` array
 function buildItemAnnotation (canvas, surface, thumbnailWidth, thumbnailHeight) {
-    const annotation = structuredClone(annotationTemplate)
+    const annotation = JSON.parse(annotationTemplateJSON)
     const { imageURL, width, height } = surface
 
     annotation.id = `${canvas.items[0].id}/annotation/0`
@@ -171,7 +157,7 @@ function buildTagAnnotations (surface) {
     const { zones } = surface;
 
     return zones.map(zone => {
-        const annotation = structuredClone(annotationTemplate)
+        const annotation = JSON.parse(annotationTemplateJSON)
 
         annotation.id = `#${zone.id}`
         annotation.motivation = 'tagging'
@@ -209,14 +195,14 @@ function buildTagAnnotations (surface) {
 }
 
 function renderManifest( manifestLabel, baseURI, surfaces, thumbnailWidth, thumbnailHeight, glossaryURL) {
-    const manifest = structuredClone(manifestTemplate)
+    const manifest = JSON.parse(manifestTemplateJSON)
     manifest.id = `${baseURI}/iiif/manifest.json`
     manifest.label = { en: [manifestLabel] }
 
     for( const surface of Object.values(surfaces) ) {
         const { id, label, width, height } = surface
 
-        const canvas = structuredClone(canvasTemplate)
+        const canvas = JSON.parse(canvasTemplateJSON)
         canvas.id = `${baseURI}/iiif/canvas/${id}`
         canvas.height = height
         canvas.width = width
@@ -297,11 +283,6 @@ function parseSurfaces(doc, teiDocumentID) {
     return surfaces
 }
 
-function validateTEIDoc(doc) {
-    // TODO needs to have exactly 1 facs. needs to be a valid xml doc
-    return 'ok'
-}
-
 function renderResources( doc, htmlDoc ) {
     const resourceTypes = [ 'text', 'sourceDoc' ]
     const resources = {}
@@ -328,25 +309,21 @@ function renderResources( doc, htmlDoc ) {
 
 export function renderTEIDocument(xml, options) {
     const { baseURL, teiDocumentID, thumbnailWidth, thumbnailHeight } = options
-    const doc = new JSDOM(xml, { contentType: "text/xml" }).window.document
-    const status = validateTEIDoc(doc)
-    if( status !== 'ok' ) return { error: status }
 
     // render complete HTML
-    const htmlDOM = new JSDOM()
-    const ceTEI = new CETEI(htmlDOM.window)
-    const htmlDoc = ceTEI.domToHTML5(doc)
-    const html = htmlDoc.outerHTML
+    const xmlDoc = new DOMParser().parseFromString(xml,"text/xml")
+    const htmlDoc = domToHTML5(xmlDoc.documentElement)
 
     // render resources
-    const resources = renderResources( doc, htmlDoc )
+    const resources = renderResources( xmlDoc, htmlDoc )
 
     // render manifest and partials
-    const surfaces = parseSurfaces(doc, teiDocumentID)
+    const surfaces = parseSurfaces(xmlDoc, teiDocumentID)
     const documentURL = `${baseURL}/${teiDocumentID}`
     // TODO temporary hardcode
     const glossaryURL = 'https://cu-mkp.github.io/editioncrafter-data/fr640_3r-3v-example/glossary.json'
     const manifest = renderManifest( teiDocumentID, documentURL, surfaces, thumbnailWidth, thumbnailHeight, glossaryURL )
+    const html = htmlDoc.outerHTML
 
     return {
         id: teiDocumentID,

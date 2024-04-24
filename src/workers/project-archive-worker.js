@@ -1,7 +1,7 @@
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
-import { processTEIDocument, processRequest } from "../model/editioncrafter"
+import { processTEIDocument, processRequest } from "../model/editioncrafter/process"
 
 const fairCopy = window.fairCopy
 const JSZip = fairCopy.services.JSZip

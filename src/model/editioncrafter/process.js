@@ -1,4 +1,4 @@
-import { renderTEIDocument } from '@cu-mkp/editioncrafter-cli'
+import { renderTEIDocument } from "./render"
 
 const thumbnailWidth = 124
 const thumbnailHeight = 192
@@ -61,15 +61,15 @@ export function processRequest(url) {
         if( !teiDocuments[teiDocumentID] ) {
             throw new Error(`Editioncrafter document not found: ${teiDocumentID}`)
         }
-        if( params.length == 1 ) {
+        if( params.length === 1 ) {
             return getTEIDocument( teiDocumentID, 'tei' )
         } else if( params.length >= 2 ) {
             const resourceType = params[1]
-            if( params.length == 2 ) {
+            if( params.length === 2 ) {
                 return getTEIDocument( teiDocumentID, resourceType )
             } else {
                 const resourceID = params[2]
-                if( params.length == 3 ) {
+                if( params.length === 3 ) {
                     if( resourceType === 'iiif' && resourceID === 'manifest.json' ) {
                         return getTEIDocument(teiDocumentID,'iiif')
                     } else if( resourceType === 'tei' && resourceID === 'index.xml') {
@@ -81,7 +81,7 @@ export function processRequest(url) {
                     }
                 } else {
                     const surfaceID = params[3]
-                    if( params.length == 4 ) {
+                    if( params.length === 4 ) {
                         const surfaceIDParts = surfaceID.split('.')
                         return getSurface( teiDocumentID, resourceType, resourceID, surfaceIDParts[0] )    
                     }
