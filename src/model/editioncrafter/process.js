@@ -98,5 +98,4 @@ export function processTEIDocument(teiDocumentID, xml) {
     const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
     const teiDoc = renderTEIDocument(xml, renderOptions)
     teiDocuments[teiDocumentID] = teiDoc
-    debugger
 }

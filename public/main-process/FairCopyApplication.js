@@ -40,8 +40,8 @@ class FairCopyApplication {
 
   initProtocols() {
     // handles requests for local image resources
-    const mainWindow = session.fromPartition('main-window')
-    const imageWindow = session.fromPartition('image-window')
+    const mainWindow = session.fromPartition('persist:main-window')
+    const imageWindow = session.fromPartition('persist:image-window')
     const localHandler = (request) => {
       this.fairCopySession.openImageResource(request.url)
       // ... need localPath
@@ -51,7 +51,7 @@ class FairCopyApplication {
     imageWindow.protocol.handle('local', localHandler)
 
     // handles requests for EditionCrafter endpoints
-    const previewWindowSession = session.fromPartition('preview-window')
+    const previewWindowSession = session.fromPartition('persist:preview-window')
     previewWindowSession.protocol.handle('ec', async (request) => {
       const content = await this.fairCopySession.requestEditionCrafterData(request.url)
       return new Response(content, {
@@ -384,7 +384,7 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
-          partition,
+          partition: `persist:${partition}`,
           webSecurity,
           enableRemoteModule: false,
           nodeIntegration: true,
