@@ -2,6 +2,7 @@ import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 import { processTEIDocument, processRequest } from "../model/editioncrafter/process"
+import { serializeResource } from "../model/serialize-xml"
 
 const fairCopy = window.fairCopy
 const JSZip = fairCopy.services.JSZip
@@ -225,6 +226,29 @@ function saveArchive(startTime, zipPath, zip, callback) {
         });
 }
 
+function exportResource(resourceData, path) {       
+    const { resourceEntry } = resourceData
+    const { localID } = resourceEntry
+    const filePath = `${path}/${localID}.xml`
+    try {
+        const xml = serializeResource(resourceData)
+        const fs = fairCopy.getFs()
+        fs.writeFileSync(filePath,xml)    
+    } catch(e) {
+        // log.error(e)
+    }
+}
+
+function previewResource(resourceData) {
+    try {
+        const teiDocXML = serializeResource(resourceData,false)
+        const teiDocumentID = resourceData.resourceEntry.id
+        processTEIDocument(teiDocumentID, teiDocXML)
+    } catch(e) {
+        // log.error(e)
+    }
+}
+
 async function openArchive(postMessage,workerData) {
     const fs = fairCopy.services.getFs()
     const { projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName } = workerData
@@ -334,7 +358,8 @@ export function projectArchive( msg, workerMethods, workerData ) {
             {
                 const { resourceEntry, projectData, path } = msg
                 prepareResourceExport(resourceEntry,projectData,zip).then( resourceData => {
-                    postMessage({ messageType: 'export-resource', resourceData, path })
+                    exportResource(resourceData, path)
+                    postMessage({ messageType: 'exported-resource', path })
                 })
             }
             break    
@@ -345,9 +370,8 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     if( resp.error ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
-                        // TODO
-                        // processTEIDocument(teiDocumentID, xml)
-                        postMessage({ messageType: 'preview-resource', previewData, resourceData: resp })
+                        previewResource(resp)
+                        postMessage({ messageType: 'preview-resource', previewData })
                     }
                 })
             }

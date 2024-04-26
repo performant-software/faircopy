@@ -1,11 +1,7 @@
-const format = require('xml-formatter')
-const fs = require('fs')
-const log = require('electron-log')
-const jsdom = require("jsdom")
-const { JSDOM } = jsdom
-const serialize = require("w3c-xmlserializer");
+import {format} from 'xml-formatter'
+import {serialize} from "w3c-xmlserializer"
 
-const serializeResource = function serializeResource(resourceData,formatXML=true) {
+export function serializeResource(resourceData,formatXML=true) {
     const { resourceEntry, contents } = resourceData
     if( resourceEntry.type === 'teidoc') {
         const { childEntries } = resourceData
@@ -31,7 +27,7 @@ function serializeTEIDoc(childEntries,contents) {
     }
 
     const resourceXML = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0"></TEI>`
-    const resourceDOM = new JSDOM(resourceXML, { contentType: "text/xml" })
+    const resourceDOM = new DOMParser().parseFromString(resourceXML,"text/xml")
     const xmlDoc = resourceDOM.window.document
     const teiDoc = xmlDoc.getElementsByTagName('TEI')[0]
     teiDoc.appendChild(header)
@@ -41,7 +37,7 @@ function serializeTEIDoc(childEntries,contents) {
 }
 
 function getResourceEl( resourceXML, elName, localID ) {
-    const resourceDOM = new JSDOM(resourceXML, { contentType: "text/xml" })
+    const resourceDOM = new DOMParser().parseFromString(resourceXML,"text/xml")
     const xmlDoc = resourceDOM.window.document
     const el = xmlDoc.getElementsByTagName(elName)[0]
     el.setAttribute('xml:id',localID)
@@ -57,10 +53,7 @@ function formatXMLFile(content) {
         })
         return xml
     } catch(e) {
-        log.error(e)
         // if formatting fails, try to write the file without it
         return content  
     }
 }
-
-exports.serializeResource = serializeResource

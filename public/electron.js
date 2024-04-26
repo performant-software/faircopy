@@ -10,6 +10,25 @@ if( app.isPackaged && require('electron-squirrel-startup')) return;
 // be closed automatically when the JavaScript object is garbage collected.
 let fairCopyApplication
 
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'local',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true
+    }
+  },
+  {
+    scheme: 'ec',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true
+    }
+  }
+])
+
 function createApplicationWindowManager () {
   const gotTheLock = app.requestSingleInstanceLock()
 

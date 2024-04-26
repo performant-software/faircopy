@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, net, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -25,7 +25,7 @@ class FairCopyApplication {
     this.config = this.getConfig()
     
     this.mainMenu = new MainMenu(this)
-    this.initLocalFileProtocol()
+    this.initProtocols()
     this.initIPC()
   }
 
@@ -38,11 +38,20 @@ class FairCopyApplication {
     return distConfig
   }
 
-  // local file protocol for accessing image resources
-  initLocalFileProtocol() {
-    protocol.registerFileProtocol('local', (request, callback) => {
+  initProtocols() {
+    // handles requests for local image resources
+    protocol.handle('local', (request) => {
       this.fairCopySession.openImageResource(request.url)
-      this.localFileProtocolCallback = callback
+      // ... need localPath
+      return net.fetch(pathToFileURL(localPath).toString())
+    })
+
+    // handles requests for EditionCrafter endpoints
+    protocol.handle('ec', (request) => {
+      // ... need response content
+      return new Response(content, {
+        headers: { 'content-type': 'text/html' }
+      })
     })
   }
 
