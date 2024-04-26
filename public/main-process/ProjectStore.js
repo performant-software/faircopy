@@ -18,6 +18,7 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
+        this.editionCrafterDataRequests = {}
     }
 
     initProjectArchiveWorker( baseDir, debug, projectFilePath ) {
@@ -66,6 +67,13 @@ class ProjectStore {
                         }
                     }
                     break  
+                case 'editioncrafter-data':
+                    {
+                        const { url } = msg
+                        const callback = editionCrafterCallbacks[url]
+                        callback(msg)
+                    }
+                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -237,6 +245,13 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: id, data: resourceData })
         if( this.searchIndex ) this.searchIndex.indexResource(id, type, resourceData )
         this.save()
+    }
+    
+    async requestEditionCrafterData( url ) {
+        this.editionCrafterDataRequests[url] = (msg) => {
+            
+        }
+        this.projectArchiveWorker.postMessage({ messageType: 'request-editioncrafter-data', url })
     }
 
     requestIndex( resourceID ) {

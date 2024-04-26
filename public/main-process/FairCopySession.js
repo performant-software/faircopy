@@ -551,6 +551,10 @@ class FairCopySession {
     requestExport(resourceEntries,path) {
         this.projectStore.requestExport(resourceEntries,path)
     }
+
+    async requestEditionCrafterData(url) {
+        return await this.projectStore.requestEditionCrafterData(url)
+    }
 }
 
 exports.FairCopySession = FairCopySession

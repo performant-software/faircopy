@@ -59,7 +59,7 @@ export function processRequest(url) {
     if( params.length > 0) {
         const teiDocumentID = params[0]
         if( !teiDocuments[teiDocumentID] ) {
-            throw new Error(`Editioncrafter document not found: ${teiDocumentID}`)
+            return { error: `Editioncrafter document not found: ${teiDocumentID}` }
         }
         if( params.length === 1 ) {
             return getTEIDocument( teiDocumentID, 'tei' )
@@ -90,7 +90,7 @@ export function processRequest(url) {
         }
     }
 
-    throw new Error(`Invalid Editioncrafter URL: ${url}`)
+    return { error: `Invalid Editioncrafter URL: ${url}` }
 }
 
 export function processTEIDocument(teiDocumentID, xml) {
@@ -98,4 +98,5 @@ export function processTEIDocument(teiDocumentID, xml) {
     const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
     const teiDoc = renderTEIDocument(xml, renderOptions)
     teiDocuments[teiDocumentID] = teiDoc
+    debugger
 }

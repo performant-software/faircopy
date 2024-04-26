@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, net, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, session, net, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -40,15 +40,20 @@ class FairCopyApplication {
 
   initProtocols() {
     // handles requests for local image resources
-    protocol.handle('local', (request) => {
+    const mainWindow = session.fromPartition('main-window')
+    const imageWindow = session.fromPartition('image-window')
+    const localHandler = (request) => {
       this.fairCopySession.openImageResource(request.url)
       // ... need localPath
       return net.fetch(pathToFileURL(localPath).toString())
-    })
+    }
+    mainWindow.protocol.handle('local', localHandler)
+    imageWindow.protocol.handle('local', localHandler)
 
     // handles requests for EditionCrafter endpoints
-    protocol.handle('ec', (request) => {
-      // ... need response content
+    const previewWindowSession = session.fromPartition('preview-window')
+    previewWindowSession.protocol.handle('ec', async (request) => {
+      const content = await this.fairCopySession.requestEditionCrafterData(request.url)
       return new Response(content, {
         headers: { 'content-type': 'text/html' }
       })
@@ -243,7 +248,7 @@ class FairCopyApplication {
     }
 
     const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
-    this.mainWindow = await this.createWindow('main-window-preload.js', ...windowSize, true, '#fff', true, true )
+    this.mainWindow = await this.createWindow('main-window', ...windowSize, true, '#fff', true, true )
     this.mainWindow.webContents.send('appConfig', this.config)
 
     // let render window handle on close (without browser restrictions)
@@ -256,20 +261,20 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window-preload.js', 740, 570, false, '#E6DEF9', false ) 
+    this.projectWindow = await this.createWindow('project-window', 740, 570, false, '#E6DEF9', false ) 
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 
   async createPreviewWindow(previewData) {
     if( !this.previewView ) {
-      this.previewView = await this.createWindow('preview-window-preload.js', 800, 600, true, '#fff', false, true )
+      this.previewView = await this.createWindow('preview-window', 800, 600, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
     }
     this.previewView.webContents.send('updatePreview', previewData)
   }
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window-preload.js', 800, 600, true, '#fff', false )
+    const imageView = await this.createWindow('image-window', 800, 600, true, '#fff', false )
     const {resourceID, xmlID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
@@ -366,10 +371,11 @@ class FairCopyApplication {
     return imageData
   }
 
-  async createWindow(preload, width, height, resizable, backgroundColor, menuBar, devTools ) {
+  async createWindow(partition, width, height, resizable, backgroundColor, menuBar, devTools ) {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
     const webSecurity = app.isPackaged
+    const preload = `${partition}-preload.js`
     
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -378,6 +384,7 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
+          partition,
           webSecurity,
           enableRemoteModule: false,
           nodeIntegration: true,

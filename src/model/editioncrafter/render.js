@@ -4,13 +4,22 @@ import { domToHTML5, convertToHTML } from "./convert"
 // Profile ID for EditionCrafter text partials
 const textPartialResourceProfileID = 'https://github.com/cu-mkp/editioncrafter-project/text-partial-resource.md'
 
+let manifestTemplateJSON
+let canvasTemplateJSON
+let annotationTemplateJSON 
+let annotationPageTemplateJSON 
+
 // Load JSON templates
-const fairCopy = window.fairCopy
-const fs = fairCopy.services.getFs()
-const manifestTemplateJSON = fs.readFileSync("./templates/manifest.json")
-const canvasTemplateJSON = fs.readFileSync("./templates/canvas.json")
-const annotationTemplateJSON = fs.readFileSync("./templates/annotation.json")
-const annotationPageTemplateJSON = fs.readFileSync("./templates/annotationPage.json")
+export function initTemplates(fs) {
+    const debugBaseDir = `${process.cwd()}/src/model/editioncrafter`
+    const distBaseDir = __dirname 
+    const baseDir = debugBaseDir
+
+    manifestTemplateJSON = fs.readFileSync(`${baseDir}/templates/manifest.json`)
+    canvasTemplateJSON = fs.readFileSync(`${baseDir}/templates/canvas.json`)
+    annotationTemplateJSON = fs.readFileSync(`${baseDir}/templates/annotation.json`)
+    annotationPageTemplateJSON = fs.readFileSync(`${baseDir}/templates/annotationPage.json`)    
+}
 
 function scrubTree( el, direction ) {
     let nextEl = direction === 'prev' ? el.previousSibling : el.nextSibling

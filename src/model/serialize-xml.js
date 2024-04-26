@@ -1,5 +1,5 @@
 import {format} from 'xml-formatter'
-import {serialize} from "w3c-xmlserializer"
+import serialize from "w3c-xmlserializer"
 
 export function serializeResource(resourceData,formatXML=true) {
     const { resourceEntry, contents } = resourceData
@@ -27,8 +27,7 @@ function serializeTEIDoc(childEntries,contents) {
     }
 
     const resourceXML = `<?xml version="1.0" encoding="UTF-8"?><TEI xmlns="http://www.tei-c.org/ns/1.0"></TEI>`
-    const resourceDOM = new DOMParser().parseFromString(resourceXML,"text/xml")
-    const xmlDoc = resourceDOM.window.document
+    const xmlDoc = new DOMParser().parseFromString(resourceXML,"text/xml")
     const teiDoc = xmlDoc.getElementsByTagName('TEI')[0]
     teiDoc.appendChild(header)
     resources.map( resource => teiDoc.appendChild(resource))
@@ -37,8 +36,7 @@ function serializeTEIDoc(childEntries,contents) {
 }
 
 function getResourceEl( resourceXML, elName, localID ) {
-    const resourceDOM = new DOMParser().parseFromString(resourceXML,"text/xml")
-    const xmlDoc = resourceDOM.window.document
+    const xmlDoc = new DOMParser().parseFromString(resourceXML,"text/xml")
     const el = xmlDoc.getElementsByTagName(elName)[0]
     el.setAttribute('xml:id',localID)
     return el

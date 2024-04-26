@@ -3,6 +3,7 @@ import { checkInResources, checkOutResources } from '../model/cloud-api/resource
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 import { processTEIDocument, processRequest } from "../model/editioncrafter/process"
 import { serializeResource } from "../model/serialize-xml"
+import { initTemplates } from "../model/editioncrafter/render"
 
 const fairCopy = window.fairCopy
 const JSZip = fairCopy.services.JSZip
@@ -245,7 +246,7 @@ function previewResource(resourceData) {
         const teiDocumentID = resourceData.resourceEntry.id
         processTEIDocument(teiDocumentID, teiDocXML)
     } catch(e) {
-        // log.error(e)
+        console.log(e)
     }
 }
 
@@ -264,6 +265,9 @@ async function openArchive(postMessage,workerData) {
 
     const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
     const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
+
+    // load EditionCrafter templates
+    initTemplates(fs)
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
@@ -378,9 +382,13 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break            
         case 'request-editioncrafter-data':
             {
-                // TODO
-                // const response = processRequest(url)
-                // postMessage({ messageType: 'editioncrafter-data', response })
+                const { url } = msg
+                const response = processRequest(url)
+                if( response.error ) { 
+                    console.error(response.error)
+                } else {
+                    postMessage({ messageType: 'editioncrafter-data', response })
+                }
             }
             break
         case 'write-resource':

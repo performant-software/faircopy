@@ -60,8 +60,8 @@ export default class PreviewWindow extends Component {
     }
 
     render() {
-        const { resourceEntry, teiDocHTML } = this.state
-        if(!resourceEntry || !teiDocHTML ) return this.renderSpinner()
+        const { resourceEntry } = this.state
+        if( !resourceEntry ) return this.renderSpinner()
 
         const iiifManifest = `ec://${resourceEntry.id}/iiif/manifest.json`
         // const iiifManifest = "https://cu-mkp.github.io/bic-editioncrafter-data/eng-415-145a/iiif/manifest.json"
