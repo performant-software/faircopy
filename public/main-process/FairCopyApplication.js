@@ -54,7 +54,7 @@ class FairCopyApplication {
     const previewWindowSession = session.fromPartition('persist:preview-window')
     previewWindowSession.protocol.handle('file', async (request) => {
       if( request.url.startsWith('file://ec')) {
-        const content = await this.fairCopySession.requestEditionCrafterData(request.url)
+        const content = this.fairCopySession.requestEditionCrafterData(request.url)
         return new Response(content, {
           headers: { 'content-type': 'text/html' }
         })  

@@ -18,7 +18,6 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
-        this.editionCrafterDataRequests = {}
     }
 
     initProjectArchiveWorker( baseDir, debug, projectFilePath ) {
@@ -247,11 +246,8 @@ class ProjectStore {
         this.save()
     }
     
-    async requestEditionCrafterData( url ) {
-        this.editionCrafterDataRequests[url] = (msg) => {
-            
-        }
-        this.projectArchiveWorker.postMessage({ messageType: 'request-editioncrafter-data', url })
+    requestEditionCrafterData( url ) {
+        // TODO respond from the cache. 
     }
 
     requestIndex( resourceID ) {

@@ -552,8 +552,8 @@ class FairCopySession {
         this.projectStore.requestExport(resourceEntries,path)
     }
 
-    async requestEditionCrafterData(url) {
-        return await this.projectStore.requestEditionCrafterData(url)
+    requestEditionCrafterData(url) {
+        return this.projectStore.requestEditionCrafterData(url)
     }
 }
 
