@@ -47,8 +47,8 @@ class FairCopyApplication {
       // ... need localPath
       return net.fetch(pathToFileURL(localPath).toString())
     }
-    mainWindow.protocol.handle('local', localHandler)
-    imageWindow.protocol.handle('local', localHandler)
+    mainWindow.protocol.handle('file', localHandler)
+    imageWindow.protocol.handle('file', localHandler)
 
     // handles requests for EditionCrafter endpoints
     const previewWindowSession = session.fromPartition('persist:preview-window')
