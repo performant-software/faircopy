@@ -3,6 +3,8 @@ import { renderTEIDocument } from "./render"
 const thumbnailWidth = 124
 const thumbnailHeight = 192
 
+const baseURL = 'file://ec/'
+
 // keep a cache here of documents that have been processed
 const teiDocuments = {}
 
@@ -54,7 +56,7 @@ function getSurface( teiDocumentID, resourceType, resourceID, surfaceID ) {
 }
 
 export function processRequest(url) {
-    const params = url.replace('ec://','').split('/')
+    const params = url.replace(baseURL,'').split('/')
 
     if( params.length > 0) {
         const teiDocumentID = params[0]
@@ -94,7 +96,6 @@ export function processRequest(url) {
 }
 
 export function processTEIDocument(teiDocumentID, xml) {
-    const baseURL = 'ec://'
     const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
     const teiDoc = renderTEIDocument(xml, renderOptions)
     teiDocuments[teiDocumentID] = teiDoc

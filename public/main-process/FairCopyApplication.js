@@ -52,11 +52,13 @@ class FairCopyApplication {
 
     // handles requests for EditionCrafter endpoints
     const previewWindowSession = session.fromPartition('persist:preview-window')
-    previewWindowSession.protocol.handle('ec', async (request) => {
-      const content = await this.fairCopySession.requestEditionCrafterData(request.url)
-      return new Response(content, {
-        headers: { 'content-type': 'text/html' }
-      })
+    previewWindowSession.protocol.handle('file', async (request) => {
+      if( request.url.startsWith('file://ec')) {
+        const content = await this.fairCopySession.requestEditionCrafterData(request.url)
+        return new Response(content, {
+          headers: { 'content-type': 'text/html' }
+        })  
+      }
     })
   }
 

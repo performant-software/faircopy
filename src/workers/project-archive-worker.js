@@ -243,7 +243,7 @@ function exportResource(resourceData, path) {
 function previewResource(resourceData) {
     try {
         const teiDocXML = serializeResource(resourceData,false)
-        const teiDocumentID = resourceData.resourceEntry.id
+        const teiDocumentID = resourceData.resourceEntry.localID
         processTEIDocument(teiDocumentID, teiDocXML)
     } catch(e) {
         console.log(e)

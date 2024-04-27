@@ -63,7 +63,7 @@ export default class PreviewWindow extends Component {
         const { resourceEntry } = this.state
         if( !resourceEntry ) return this.renderSpinner()
 
-        const iiifManifest = `ec://${resourceEntry.id}/iiif/manifest.json`
+        const iiifManifest = `file://ec/${resourceEntry.localID}/iiif/manifest.json`
         // const iiifManifest = "https://cu-mkp.github.io/bic-editioncrafter-data/eng-415-145a/iiif/manifest.json"
         // const htmlToReactParserOptionsSide = htmlToReactParserOptions()
 
