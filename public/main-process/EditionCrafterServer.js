@@ -1,4 +1,4 @@
-const baseURL = 'file://ec/'
+const baseURL = 'file://ec'
 
 class EditionCrafterServer {
 
@@ -58,7 +58,7 @@ class EditionCrafterServer {
     }
 
     processRequest(url) {
-        const params = url.replace(baseURL,'').split('/')
+        const params = url.replace(baseURL+'/','').split('/')
 
         if( params.length > 0) {
             const teiDocumentID = params[0]
