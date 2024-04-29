@@ -1,12 +1,16 @@
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
-import { processTEIDocument, processRequest } from "../model/editioncrafter/process"
 import { serializeResource } from "../model/serialize-xml"
-import { initTemplates } from "../model/editioncrafter/render"
+import { initTemplates, renderTEIDocument } from "../model/editioncrafter/render"
 
 const fairCopy = window.fairCopy
 const JSZip = fairCopy.services.JSZip
+
+// EditionCrafter options
+const thumbnailWidth = 124
+const thumbnailHeight = 192
+const baseURL = 'file://ec/'
 
 // Worker state
 let projectArchiveState = { open: false, jobQueue: [] }
@@ -244,7 +248,8 @@ function previewResource(resourceData) {
     try {
         const teiDocXML = serializeResource(resourceData,false)
         const teiDocumentID = resourceData.resourceEntry.localID
-        processTEIDocument(teiDocumentID, teiDocXML)
+        const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
+        return renderTEIDocument(teiDocXML, renderOptions)
     } catch(e) {
         console.log(e)
     }
@@ -374,23 +379,12 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     if( resp.error ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
-                        previewResource(resp)
-                        postMessage({ messageType: 'preview-resource', previewData })
+                        const ecData = previewResource(resp)
+                        postMessage({ messageType: 'preview-resource', previewData, ecData })
                     }
                 })
             }
             break            
-        case 'request-editioncrafter-data':
-            {
-                const { url } = msg
-                const response = processRequest(url)
-                if( response.error ) { 
-                    console.error(response.error)
-                } else {
-                    postMessage({ messageType: 'editioncrafter-data', response })
-                }
-            }
-            break
         case 'write-resource':
             {
                 const { resourceID, data } = msg

@@ -6,6 +6,7 @@ const { app } = require('electron')
 const { compatibleProject, migrateConfig, migrateIDMap, migrateManifestData } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
+const { EditionCrafterServer } = require('./EditionCrafterServer')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -18,6 +19,7 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
+        this.editionCrafterServer = new EditionCrafterServer()
     }
 
     initProjectArchiveWorker( baseDir, debug, projectFilePath ) {
@@ -58,21 +60,16 @@ class ProjectStore {
                     break
                 case 'preview-resource':
                     {
-                        const { previewData, error } = msg
+                        const { previewData, ecData, error } = msg
                         if( error ) {
                             log.info(`Error previewing resource: ${error}`)
                         } else {
+                            const teiDocumentID = previewData.resourceEntry.localID
+                            this.editionCrafterServer.addTEIDocument(teiDocumentID,ecData)
                             this.fairCopyApplication.openPreview(previewData)
                         }
                     }
                     break  
-                case 'editioncrafter-data':
-                    {
-                        const { url } = msg
-                        const callback = editionCrafterCallbacks[url]
-                        callback(msg)
-                    }
-                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -247,7 +244,7 @@ class ProjectStore {
     }
     
     requestEditionCrafterData( url ) {
-        // TODO respond from the cache. 
+        return this.editionCrafterServer.processRequest(url)
     }
 
     requestIndex( resourceID ) {

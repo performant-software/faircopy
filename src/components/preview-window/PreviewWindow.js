@@ -64,7 +64,6 @@ export default class PreviewWindow extends Component {
         if( !resourceEntry ) return this.renderSpinner()
 
         const iiifManifest = `file://ec/${resourceEntry.localID}/iiif/manifest.json`
-        // const iiifManifest = "https://cu-mkp.github.io/bic-editioncrafter-data/eng-415-145a/iiif/manifest.json"
         // const htmlToReactParserOptionsSide = htmlToReactParserOptions()
 
         return (
@@ -80,9 +79,7 @@ export default class PreviewWindow extends Component {
                 <EditionCrafter
                     documentName={resourceEntry.name}
                     transcriptionTypes={{
-                        tc: 'Diplomatic (FR)',
-                        tcn: 'Normalized (FR)',
-                        tl: 'Translation (EN)'
+                        transcription: 'Transcription'
                     }}
                     iiifManifest={iiifManifest}
                 />
