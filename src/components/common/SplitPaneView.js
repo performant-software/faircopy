@@ -3,14 +3,13 @@ import React, { Component } from 'react';
 export class SplitPaneView extends Component {
   constructor(props) {
     super();
-    this.firstFolio = props.document.folios[0];
     // Initialize the splitter
-    this.rightPaneMinWidth = props.rightPane.props.documentView.right.transcriptionType === "glossary" ? 450 : 200;
-    this.leftPaneMinWidth = props.leftPane.props.documentView.left.transcriptionType === "glossary" ? 450 : 200;
-    this.thirdPaneMinWidth = props.thirdPane.props.documentView.third.transcriptionType === "glossary" ? 450 : props.thirdPane.props.documentView.third.transcriptionType === "g" ? 0 : 200;
+    this.rightPaneMinWidth = 875;
+    this.leftPaneMinWidth = 250;
+    this.thirdPaneMinWidth = 0;
     this.splitFraction = props.threePanel ? 0.49 : 0.5;
     this.splitFractionRight = props.threePanel ? 0.01 : 0;
-    this.dividerWidth = 16;
+    this.dividerWidth = 8;
     const whole = window.innerWidth;
     const leftW = whole / 3;
 
@@ -56,6 +55,7 @@ export class SplitPaneView extends Component {
         && third_viewWidth >= this.thirdPaneMinWidth) {
         this.splitFraction = (whole === 0) ? 0.0 : left_viewWidth / whole;
         this.splitFractionRight = (whole === 0) ? 0.0 : third_viewWidth / whole;
+        console.log(`left: ${left_viewWidth} right: ${right_viewWidth}`)
         this.updateUI();
       }
 
@@ -118,12 +118,6 @@ export class SplitPaneView extends Component {
       const third_px = Math.floor(window.innerWidth * (1.0 - this.splitFraction));
       this.props.onWidth(left_px, right_px, third_px);
     }
-  }
-
-  componentDidUpdate(prevProps) {
-    this.rightPaneMinWidth = this.props.rightPane.props.documentView.right.transcriptionType === "glossary" ? 450 : 200;
-    this.leftPaneMinWidth = this.props.leftPane.props.documentView.left.transcriptionType === "glossary" ? 450 : 200;
-    this.thirdPaneMinWidth = this.props.thirdPane.props.documentView.third.transcriptionType === "glossary" ? 450 : this.props.thirdPane.props.documentView.third.transcriptionType === "g" ? 0 : 200;
   }
 
   componentWillUnmount() {

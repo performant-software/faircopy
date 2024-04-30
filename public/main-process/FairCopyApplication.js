@@ -44,7 +44,7 @@ class FairCopyApplication {
     const imageWindow = session.fromPartition('persist:image-window')
     const localHandler = (request) => {
       this.fairCopySession.openImageResource(request.url)
-      // ... need localPath
+      // TODO ... need localPath
       return net.fetch(pathToFileURL(localPath).toString())
     }
     mainWindow.protocol.handle('file', localHandler)
