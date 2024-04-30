@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { debounce } from "debounce";
 
-// import SplitPane from 'react-split-pane'
-
 import ProjectSidebar from './ProjectSidebar'
 import AlertDialog from './dialogs/AlertDialog'
 
@@ -28,6 +26,7 @@ import SearchDialog from './dialogs/SearchDialog'
 import CheckInDialog from './dialogs/CheckInDialog'
 import CheckOutDialog from './dialogs/CheckOutDialog'
 import { bigRingSpinner } from '../common/ring-spinner'
+import {SplitPaneView} from '../common/SplitPaneView'
 
 const fairCopy = window.fairCopy
 
@@ -1002,9 +1001,14 @@ export default class MainWindow extends Component {
         return (
             <div style={style}>
                 <div onKeyDown={this.onKeyDown} > 
+                    <SplitPaneView
+                        leftPane={this.renderProjectSidebar()}
+                        rightPane={this.renderContentPane()}
+                        onWidth={onDragSplitPane}
+                    />
                     {/* <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}> */}
                         {/* { this.renderProjectSidebar() } */}
-                        { this.renderContentPane() }
+                        {/* { this.renderContentPane() } */}
                     {/* </SplitPane> */}
                     <MainWindowStatusBar
                         appConfig={appConfig}

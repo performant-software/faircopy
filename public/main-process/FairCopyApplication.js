@@ -269,14 +269,14 @@ class FairCopyApplication {
 
   async createPreviewWindow(previewData) {
     if( !this.previewView ) {
-      this.previewView = await this.createWindow('preview-window', 800, 600, true, '#fff', false, true )
+      this.previewView = await this.createWindow('preview-window', 1024, 768, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
     }
     this.previewView.webContents.send('updatePreview', previewData)
   }
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window', 800, 600, true, '#fff', false )
+    const imageView = await this.createWindow('image-window', 1024, 768, true, '#fff', false )
     const {resourceID, xmlID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
