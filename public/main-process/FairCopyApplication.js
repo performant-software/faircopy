@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session, net, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, net, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -25,7 +25,7 @@ class FairCopyApplication {
     this.config = this.getConfig()
     
     this.mainMenu = new MainMenu(this)
-    this.initProtocols()
+    this.initFileProtocol()
     this.initIPC()
   }
 
@@ -38,26 +38,22 @@ class FairCopyApplication {
     return distConfig
   }
 
-  initProtocols() {
-    // handles requests for local image resources
-    const mainWindow = session.fromPartition('persist:main-window')
-    const imageWindow = session.fromPartition('persist:image-window')
-    const localHandler = (request) => {
-      this.fairCopySession.openImageResource(request.url)
-      // TODO ... need localPath
-      return net.fetch(pathToFileURL(localPath).toString())
-    }
-    mainWindow.protocol.handle('file', localHandler)
-    imageWindow.protocol.handle('file', localHandler)
-
-    // handles requests for EditionCrafter endpoints
-    const previewWindowSession = session.fromPartition('persist:preview-window')
-    previewWindowSession.protocol.handle('file', async (request) => {
-      if( request.url.startsWith('file://ec')) {
-        const content = this.fairCopySession.requestEditionCrafterData(request.url)
+  initFileProtocol() {
+    protocol.handle('file', async (request) => {
+      const url = request.url
+      // handle editioncrafter asset requests
+      if( url.startsWith('file://ec')) {
+        const content = this.fairCopySession.requestEditionCrafterData(url)
         return new Response(content, {
           headers: { 'content-type': 'text/html' }
         })  
+      // handle local image resource requests
+      } else if( url.startsWith('file://images') ) {
+        // TODO ... need localPath
+        // this.fairCopySession.openImageResource(request.url)
+        // return net.fetch(pathToFileURL(localPath).toString())  
+      } else {
+        // TODO ignore any other reqs
       }
     })
   }
@@ -373,11 +369,11 @@ class FairCopyApplication {
     return imageData
   }
 
-  async createWindow(partition, width, height, resizable, backgroundColor, menuBar, devTools ) {
+  async createWindow(windowName, width, height, resizable, backgroundColor, menuBar, devTools ) {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
     const webSecurity = app.isPackaged
-    const preload = `${partition}-preload.js`
+    const preload = `${windowName}-preload.js`
     
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -386,7 +382,6 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
-          partition: `persist:${partition}`,
           webSecurity,
           enableRemoteModule: false,
           nodeIntegration: true,

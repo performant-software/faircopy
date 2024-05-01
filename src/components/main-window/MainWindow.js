@@ -30,8 +30,7 @@ import {SplitPaneView} from '../common/SplitPaneView'
 
 const fairCopy = window.fairCopy
 
-const initialLeftPaneWidth = 300
-const maxLeftPaneWidth = 630
+const initialLeftPaneWidth = 250
 const resizeRefreshRate = 100
 const resetSearchRate = 100
 const initialRowsPerPage = 50
