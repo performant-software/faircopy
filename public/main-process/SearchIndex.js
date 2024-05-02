@@ -47,7 +47,7 @@ class SearchIndex {
                         const { resourceID } = response
                         this.searchIndexStatus[resourceID] = 'ready'
                         this.indexing = false
-                        log.info(`Indexed ${resourceID}`)
+                        // log.info(`Indexed ${resourceID}`)
                     }
                     break
                 case 'resource-removed':
@@ -55,7 +55,7 @@ class SearchIndex {
                         const { resourceID } = response
                         delete this.searchIndexStatus[resourceID]
                         this.checkStatus()
-                        log.info(`Removed ${resourceID}`)
+                        // log.info(`Removed ${resourceID}`)
                     }
                     break
                 case 'search-results':
@@ -96,7 +96,7 @@ class SearchIndex {
             } else {
                 this.searchIndexStatus[resourceID] = 'indexing'
                 this.indexing = true
-                log.info(`Starting to index ${resourceType} ${resourceID}`)
+                // log.info(`Starting to index ${resourceType} ${resourceID}`)
                 this.indexWorker.postMessage({ messageType: 'add-resource', resourceID, resourceType, content })     
             }
             this.checkStatus()
