@@ -1005,10 +1005,6 @@ export default class MainWindow extends Component {
                         rightPane={this.renderContentPane()}
                         onWidth={onDragSplitPane}
                     />
-                    {/* <SplitPane split="vertical" minSize={initialLeftPaneWidth} maxSize={maxLeftPaneWidth} defaultSize={initialLeftPaneWidth} onChange={onDragSplitPane}> */}
-                        {/* { this.renderProjectSidebar() } */}
-                        {/* { this.renderContentPane() } */}
-                    {/* </SplitPane> */}
                     <MainWindowStatusBar
                         appConfig={appConfig}
                         onSearchResults={this.onSearchResults}
