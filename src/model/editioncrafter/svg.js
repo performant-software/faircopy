@@ -5,8 +5,5 @@ export function buildSquareFragment(ulx, uly, lrx, lry) {
 }
 
 export function buildPolygonSvg(points) {
-  return `<svg>
-  <polygon points='${points}' style=${style}>
-  </polygon>
-  </svg>`.replaceAll('\n', '');
+  return `<svg><polygon points='${points}' style=${style}></polygon></svg>`.replaceAll('\n', '');
 } 
