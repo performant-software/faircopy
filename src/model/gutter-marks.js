@@ -1,6 +1,6 @@
 import { ReplaceStep, ReplaceAroundStep } from "prosemirror-transform"
 
-export function generateGutterMarks( editorView, expandedGutter, docNodes, gutterTop=97 ) {
+export function generateGutterMarks( editorView, expandedGutter, docNodes, gutterTop=117 ) {
     const { doc } = editorView.state
     const scrollTop = editorView.dom.parentNode.parentNode.scrollTop
 
