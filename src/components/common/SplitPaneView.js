@@ -5,11 +5,11 @@ export class SplitPaneView extends Component {
     super();
     // Initialize the splitter
     this.rightPaneMinWidth = 875;
-    this.leftPaneMinWidth = 250;
+    this.leftPaneMinWidth = 247;
     this.thirdPaneMinWidth = 0;
     this.splitFraction = props.threePanel ? .33 : 0.2;
     this.splitFractionRight = props.threePanel ? 0.33 : 0;
-    this.dividerWidth = 8;
+    this.dividerWidth = 4;
     const left = this.splitFraction;
     const third = this.splitFractionRight;
     const right = 1.0 - left - third;
