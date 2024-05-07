@@ -7,18 +7,15 @@ export class SplitPaneView extends Component {
     this.rightPaneMinWidth = 875;
     this.leftPaneMinWidth = 250;
     this.thirdPaneMinWidth = 0;
-    this.splitFraction = props.threePanel ? 0.49 : 0.5;
-    this.splitFractionRight = props.threePanel ? 0.01 : 0;
+    this.splitFraction = props.threePanel ? .33 : 0.2;
+    this.splitFractionRight = props.threePanel ? 0.33 : 0;
     this.dividerWidth = 8;
-    const whole = window.innerWidth;
-    const leftW = whole / 3;
-
-    const split_left = (leftW / whole);
-    const split_right = (1 - split_left) / 2;
-    const split_third = 1 - split_left - split_right;
+    const left = this.splitFraction;
+    const third = this.splitFractionRight;
+    const right = 1.0 - left - third;
     this.state = {
       style: {
-        gridTemplateColumns: `${split_left}fr ${this.dividerWidth}px ${split_right}fr ${this.dividerWidth}px ${split_third}fr`,
+        gridTemplateColumns: `${left}fr ${this.dividerWidth}px ${right}fr ${this.dividerWidth}px ${third}fr`,
       },
     };
 
