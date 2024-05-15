@@ -66,7 +66,7 @@ class ProjectStore {
                         } else {
                             const teiDocumentID = previewData.resourceEntry.localID
                             this.editionCrafterServer.addTEIDocument(teiDocumentID,ecData)
-                            this.fairCopyApplication.fairCopySession.openPreview(previewData)
+                            this.fairCopyApplication.createPreviewWindow(previewData).then(() => {})
                         }
                     }
                     break  

@@ -13,13 +13,13 @@ export default class PreviewWindow extends Component {
 
     onUpdate = (e, previewData) => {
         const projectCSS = previewData?.projectCSS
-        const { surfaceID, localID } = previewData
+        const { surfaceID, layerID } = previewData
 
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
         }
 
-        window.location.assign(`#/ec/${surfaceID}/f/${surfaceID}/${localID}`)
+        window.location.assign(`#/ec/${surfaceID}/f/${surfaceID}/${layerID}`)
     }
 
     componentDidMount() {

@@ -268,8 +268,10 @@ class FairCopyApplication {
     if( !this.previewView ) {
       this.previewView = await this.createWindow('preview-window', 1024, 768, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
+      this.previewView.webContents.send('previewViewOpened', previewData)
+    } else {
+      this.previewView.webContents.send('updatePreview', previewData)
     }
-    this.previewView.webContents.send('updatePreview', previewData)
   }
 
   async createImageWindow(imageViewInfo) {

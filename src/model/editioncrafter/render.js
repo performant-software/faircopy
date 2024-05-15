@@ -203,7 +203,7 @@ function buildTagAnnotations (surface) {
     })
 }
 
-function renderManifest( manifestLabel, baseURI, surfaces, thumbnailWidth, thumbnailHeight, glossaryURL) {
+function renderManifest( manifestLabel, baseURI, surfaces, thumbnailWidth, thumbnailHeight) {
     const manifest = JSON.parse(manifestTemplateJSON)
     manifest.id = `${baseURI}/iiif/manifest.json`
     manifest.label = { en: [manifestLabel] }
@@ -226,19 +226,6 @@ function renderManifest( manifestLabel, baseURI, surfaces, thumbnailWidth, thumb
         const annotationPage = renderTextAnnotationPage(baseURI, canvas.id, surface, 1)
         if( annotationPage ) canvas.annotations.push(annotationPage)
         manifest.items.push( canvas )
-    }
-
-    if (glossaryURL) {
-        manifest.seeAlso = [
-            {
-                id: glossaryURL,
-                type: "Dataset",
-                label: "Glossary",
-                format: "text/json",
-                // the spec says we "SHOULD" include a profile field
-                // but I don't know what the URL would be in this case
-            }
-        ]
     }
 
     const manifestJSON = JSON.stringify(manifest, null, '\t')
@@ -329,9 +316,8 @@ export function renderTEIDocument(xml, options) {
     // render manifest and partials
     const surfaces = parseSurfaces(xmlDoc, teiDocumentID)
     const documentURL = `${baseURL}/${teiDocumentID}`
-    // TODO temporary hardcode
-    const glossaryURL = 'https://cu-mkp.github.io/editioncrafter-data/fr640_3r-3v-example/glossary.json'
-    const manifest = renderManifest( teiDocumentID, documentURL, surfaces, thumbnailWidth, thumbnailHeight, glossaryURL )
+
+    const manifest = renderManifest( teiDocumentID, documentURL, surfaces, thumbnailWidth, thumbnailHeight )
     const html = htmlDoc.outerHTML
 
     return {

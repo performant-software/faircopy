@@ -131,7 +131,7 @@ export default class App extends Component {
 
   openPreviewView( previewView ) {
       // setTimeout( () => {
-        this.setTitle(previewView.resourceName)   
+        this.setTitle(previewView.resourceEntry.name)   
         this.setState({...this.state, previewView})
       // },2000)  
   }
@@ -227,12 +227,12 @@ export default class App extends Component {
             ></ImageWindow>
         )
     } else if( rootComponent === "PreviewWindow" && previewView ) {
-        const { resourceName, layerNames, localID } = previewView
+        const { resourceEntry, layerNames } = previewView
         return (
             <PreviewWindow
-              resourceName={resourceName} 
+              resourceName={resourceEntry.name} 
               layerNames={layerNames}
-              localID={localID}
+              localID={resourceEntry.localID}
             ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {
