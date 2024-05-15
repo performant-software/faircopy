@@ -11,20 +11,15 @@ const fairCopy = window.fairCopy
 
 export default class PreviewWindow extends Component {
 
-    constructor() {
-        super()
-        this.state = {
-            resourceEntry: null,
-            projectCSS: ""
-        }	
-    }
-
     onUpdate = (e, previewData) => {
         const projectCSS = previewData?.projectCSS
+        const { surfaceID, localID } = previewData
+
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
         }
-        this.setState({ ...this.state, ...previewData })
+
+        window.location.assign(`#/ec/${surfaceID}/f/${surfaceID}/${localID}`)
     }
 
     componentDidMount() {
@@ -60,16 +55,15 @@ export default class PreviewWindow extends Component {
     }
 
     render() {
-        const { resourceEntry } = this.state
-        if( !resourceEntry ) return this.renderSpinner()
+        const { resourceName, layerNames, localID } = this.props
 
-        const iiifManifest = `file://ec/${resourceEntry.localID}/iiif/manifest.json`
+        const iiifManifest = `file://ec/${localID}/iiif/manifest.json`
         // const htmlToReactParserOptionsSide = htmlToReactParserOptions()
 
         return (
             <div id="PreviewWindow">
                 <TitleBar 
-                    resourceName={ resourceEntry.name } 
+                    resourceName={resourceName} 
                     isPreviewWindow={true}
                     currentView={'home'}
                 >
@@ -77,10 +71,8 @@ export default class PreviewWindow extends Component {
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
                 <EditionCrafter
-                    documentName={resourceEntry.name}
-                    transcriptionTypes={{
-                        transcription: 'Transcription'
-                    }}
+                    documentName={resourceName}
+                    transcriptionTypes={layerNames}
                     iiifManifest={iiifManifest}
                 />
                     {/* <Parser

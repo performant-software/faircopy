@@ -464,6 +464,13 @@ class FairCopySession {
         imageView.webContents.send('imageViewOpened', imageViewData )    
     }
 
+    openPreviewView(previewData) {
+        this.fairCopyApplication.createPreviewWindow(previewData).then(() => {
+            const previewView = this.fairCopyApplication.previewView
+            previewView.webContents.send('previewViewOpened', previewData ) 
+        })
+    }
+
     importStart(paths,options) {
         this.projectStore.importStart(paths,options)
     }

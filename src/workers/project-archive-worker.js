@@ -249,7 +249,8 @@ function previewResource(resourceData) {
         const teiDocXML = serializeResource(resourceData,false)
         const teiDocumentID = resourceData.resourceEntry.localID
         const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
-        return renderTEIDocument(teiDocXML, renderOptions)
+        const ecData = renderTEIDocument(teiDocXML, renderOptions)
+        return { layerNames, surfaceID, ecData }
     } catch(e) {
         console.log(e)
     }
@@ -379,7 +380,9 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     if( resp.error ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
-                        const ecData = previewResource(resp)
+                        const { ecData, layerNames, surfaceID } = previewResource(resp)
+                        previewData.layerNames = layerNames
+                        previewData.surfaceID = surfaceID
                         postMessage({ messageType: 'preview-resource', previewData, ecData })
                     }
                 })

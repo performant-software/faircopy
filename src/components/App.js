@@ -25,6 +25,7 @@ export default class App extends Component {
       fairCopyProject: null,
       incompatInfo: null,
       imageView: null,
+      previewView: null,
       appConfig: null,
       checkingOut: false,
       checkOutError: null,
@@ -98,9 +99,7 @@ export default class App extends Component {
     } else if( rootComponent === 'ImageWindow' ) {
       services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
     } else if( rootComponent === 'PreviewWindow' ) {
-      //  setTimeout( () => {
-        this.setTitle('Preview Document')
-      // },5000)
+      services.ipcRegisterCallback('previewViewOpened', (event, previewData) => this.openPreviewView(previewData))
     }
   }
 
@@ -130,6 +129,13 @@ export default class App extends Component {
     // },2000)
   }
 
+  openPreviewView( previewView ) {
+      // setTimeout( () => {
+        this.setTitle(previewView.resourceName)   
+        this.setState({...this.state, previewView})
+      // },2000)  
+  }
+
   // record this as a recent project
   addToRecentProjects( fairCopyProject ) {
     let projects = localStorage.getItem('recentProjects');
@@ -156,7 +162,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { fairCopyProject, imageView, appConfig, incompatInfo, projectSettingsActive, checkingOut, checkOutError } = this.state
+    const { fairCopyProject, imageView, previewView, appConfig, incompatInfo, projectSettingsActive, checkingOut, checkOutError } = this.state
     const {rootComponent} = window.fairCopy
 
     if( incompatInfo ) {
@@ -220,9 +226,13 @@ export default class App extends Component {
               imageView={imageView}
             ></ImageWindow>
         )
-    } else if( rootComponent === "PreviewWindow" ) {
+    } else if( rootComponent === "PreviewWindow" && previewView ) {
+        const { resourceName, layerNames, localID } = previewView
         return (
             <PreviewWindow
+              resourceName={resourceName} 
+              layerNames={layerNames}
+              localID={localID}
             ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {

@@ -15,6 +15,7 @@ class FairCopyApplication {
 
   constructor() {
     this.mainWindow = null
+    this.previewView = null
     this.fairCopySession = null
     this.imageViews = {}
     this.exiting = false
@@ -312,12 +313,6 @@ class FairCopyApplication {
         this.fairCopySession.closeProject()
       }
     }
-  }
-
-  openPreview(previewData) {
-    this.createPreviewWindow(previewData).then(() => {
-      log.info(`Opened preview view.`)
-    })
   }
 
   openProject(targetFile) {
