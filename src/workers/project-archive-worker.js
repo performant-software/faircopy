@@ -249,13 +249,14 @@ function previewResource(resourceData) {
     const teiDocumentID = resourceData.resourceEntry.localID
     const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
     const ecData = renderTEIDocument(teiDocXML, renderOptions)
-
-    const { surfaces } = ecData
-    const surfaceIDs = Object.keys(surfaces)
-    const defaultLayerID = surfaceIDs ? surfaceIDs[0] : null
-    const defaultSurfaceID = defaultLayerID ? surfaces[defaultLayerID].id : null
-
-    return { layerNames, defaultSurfaceID, defaultLayerID, ecData }
+    const layerNames = {}
+    const { childEntries } = resourceData
+    for( const childEntry of childEntries ) {
+        if( childEntry.type === 'text' || childEntry.type === 'sourceDoc') {
+            layerNames[childEntry.localID] = childEntry.name
+        }
+    }
+    return { layerNames, ecData }
 }
 
 async function openArchive(postMessage,workerData) {
@@ -382,10 +383,8 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     if( resp.error ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
-                        const { ecData, layerNames, defaultSurfaceID, defaultLayerID } = previewResource(resp)
+                        const { ecData, layerNames } = previewResource(resp)
                         previewData.layerNames = layerNames
-                        previewData.surfaceID = previewData.surfaceID ? previewData.surfaceID : defaultSurfaceID
-                        previewData.layerID = previewData.layerID ? previewData.layerID : defaultLayerID
                         postMessage({ messageType: 'preview-resource', previewData, ecData })
                     }
                 })

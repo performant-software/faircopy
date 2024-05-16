@@ -12,14 +12,19 @@ const fairCopy = window.fairCopy
 export default class PreviewWindow extends Component {
 
     onUpdate = (e, previewData) => {
-        const projectCSS = previewData?.projectCSS
-        const { surfaceID, layerID } = previewData
+        const projectCSS = previewData.projectCSS
+        const surfaceID = previewData.surfaceID
+        const layerID = previewData.layerID
 
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
         }
 
-        window.location.assign(`#/ec/${surfaceID}/f/${surfaceID}/${layerID}`)
+        if( surfaceID ) {
+            window.location.assign(`#/ec/${surfaceID}/f/${surfaceID}/${layerID}`)
+        } else {
+            window.location.assign(`#/ec`)
+        }
     }
 
     componentDidMount() {
