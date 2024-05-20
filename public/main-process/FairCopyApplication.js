@@ -266,7 +266,8 @@ class FairCopyApplication {
 
   async createPreviewWindow(previewData) {
     if( !this.previewView ) {
-      this.previewView = await this.createWindow('preview-window', 1024, 768, true, '#fff', false, true )
+      const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
+      this.previewView = await this.createWindow('preview-window', ...windowSize, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
       this.previewView.webContents.send('previewViewOpened', previewData)
     } else {

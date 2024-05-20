@@ -3,7 +3,7 @@ import Parser from './Parser'
 import domToReact from 'html-react-parser/lib/dom-to-react';
 import EditionCrafter from '@cu-mkp/editioncrafter'
 
-import { Button } from '@material-ui/core'
+import { Button, ButtonGroup } from '@material-ui/core'
 import { bigRingSpinner } from '../common/ring-spinner'
 import TitleBar from '../main-window/TitleBar'
 
@@ -13,17 +13,20 @@ export default class PreviewWindow extends Component {
 
     constructor(props) {
         super()
-        const { resourceEntry, layers, layerID } = props
+        const { resourceEntry, layers, layerID, projectCSS } = props
+        if( projectCSS ) {
+            updateStyleSheet(projectCSS)
+        }
         this.state = {
-            resourceEntry, layers, layerID
+            resourceEntry, layers, layerID,
+            mode: 'reading'
         }	
     }
 
     onUpdate = (e, previewData) => {
         const projectCSS = previewData.projectCSS
         const surfaceID = previewData.surfaceID
-        const layerID = previewData.layerID
-        const { resourceEntry, layers } = previewData
+        const { resourceEntry, layers, layerID } = previewData
 
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
@@ -58,28 +61,32 @@ export default class PreviewWindow extends Component {
         const textButtonProps = {
             className: 'toolbar-button',
             disableRipple: true,
-            disableFocusRipple: true,
-            variant: "outlined",
-            size: 'small',      
+            disableFocusRipple: true
         }
 
+        const onReading = () => { this.setState({...this.state, mode: 'reading'} )}
+        const onDocumentary = () => { this.setState({...this.state, mode: 'documentary'} )}
+
         return (
-            <div className="toolbar">
-                <Button {...textButtonProps}>test</Button>
+            <div className="toolbar">                
+                <ButtonGroup color="primary" aria-label="outlined primary button group">
+                    <Button {...textButtonProps} onClick={onReading}>Reading</Button>
+                    <Button {...textButtonProps} onClick={onDocumentary}>Documentary</Button>    
+                </ButtonGroup>
             </div>
         )
     }
 
     render() {
-        const { resourceEntry, layers, layerID } = this.state
+        const { resourceEntry, layers, layerID, mode } = this.state
         const { name: resourceName, localID } = resourceEntry
 
         const iiifManifest = `file://ec/${localID}/iiif/manifest.json`
         const htmlToReactParserOptionsSide = htmlToReactParserOptions()
         const { html } = layers[layerID]
-        const layerNames = {}
+        const transcriptionTypes = {}
         for( const layer of Object.keys(layers) ) {
-            layerNames[layer] = layers[layer].name
+            transcriptionTypes[layer] = layers[layer].name
         }
 
         return (
@@ -92,15 +99,16 @@ export default class PreviewWindow extends Component {
                 </TitleBar>
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
-                    {/* <EditionCrafter
+                    { mode === 'documentary' && <EditionCrafter
                         documentName={resourceName}
-                        transcriptionTypes={layerNames}
+                        transcriptionTypes={transcriptionTypes}
                         iiifManifest={iiifManifest}
-                    /> */}
-                    <Parser
-                        html={html}
-                        htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
-                    />
+                    /> }
+                    { mode === 'reading' && <div id="reading-view"><Parser
+                            html={html}
+                            htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
+                        /></div>
+                    }
                 </div>
             </div>
         )
