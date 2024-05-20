@@ -230,9 +230,8 @@ export default class App extends Component {
         const { resourceEntry, layerNames } = previewView
         return (
             <PreviewWindow
-              resourceName={resourceEntry.name} 
+              resourceEntry={resourceEntry} 
               layerNames={layerNames}
-              localID={resourceEntry.localID}
             ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {

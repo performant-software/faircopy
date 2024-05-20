@@ -11,10 +11,19 @@ const fairCopy = window.fairCopy
 
 export default class PreviewWindow extends Component {
 
+    constructor(props) {
+        super()
+        const { resourceEntry, layerNames } = props
+        this.state = {
+            resourceEntry, layerNames
+        }	
+    }
+
     onUpdate = (e, previewData) => {
         const projectCSS = previewData.projectCSS
         const surfaceID = previewData.surfaceID
         const layerID = previewData.layerID
+        const { resourceEntry, layerNames } = previewData
 
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
@@ -25,6 +34,8 @@ export default class PreviewWindow extends Component {
         } else {
             window.location.assign(`#/ec`)
         }
+
+        this.setState({...this.state, resourceEntry, layerNames })
     }
 
     componentDidMount() {
@@ -60,7 +71,8 @@ export default class PreviewWindow extends Component {
     }
 
     render() {
-        const { resourceName, layerNames, localID } = this.props
+        const { resourceEntry, layerNames } = this.state
+        const { name: resourceName, localID } = resourceEntry
 
         const iiifManifest = `file://ec/${localID}/iiif/manifest.json`
         // const htmlToReactParserOptionsSide = htmlToReactParserOptions()
