@@ -13,9 +13,9 @@ export default class PreviewWindow extends Component {
 
     constructor(props) {
         super()
-        const { resourceEntry, layerNames } = props
+        const { resourceEntry, layers, layerID } = props
         this.state = {
-            resourceEntry, layerNames
+            resourceEntry, layers, layerID
         }	
     }
 
@@ -23,7 +23,7 @@ export default class PreviewWindow extends Component {
         const projectCSS = previewData.projectCSS
         const surfaceID = previewData.surfaceID
         const layerID = previewData.layerID
-        const { resourceEntry, layerNames } = previewData
+        const { resourceEntry, layers } = previewData
 
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
@@ -35,7 +35,7 @@ export default class PreviewWindow extends Component {
             window.location.assign(`#/ec`)
         }
 
-        this.setState({...this.state, resourceEntry, layerNames })
+        this.setState({...this.state, resourceEntry, layers, layerID, surfaceID })
     }
 
     componentDidMount() {
@@ -71,11 +71,16 @@ export default class PreviewWindow extends Component {
     }
 
     render() {
-        const { resourceEntry, layerNames } = this.state
+        const { resourceEntry, layers, layerID } = this.state
         const { name: resourceName, localID } = resourceEntry
 
         const iiifManifest = `file://ec/${localID}/iiif/manifest.json`
-        // const htmlToReactParserOptionsSide = htmlToReactParserOptions()
+        const htmlToReactParserOptionsSide = htmlToReactParserOptions()
+        const { html } = layers[layerID]
+        const layerNames = {}
+        for( const layer of Object.keys(layers) ) {
+            layerNames[layer] = layers[layer].name
+        }
 
         return (
             <div id="PreviewWindow">
@@ -87,15 +92,15 @@ export default class PreviewWindow extends Component {
                 </TitleBar>
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
-                <EditionCrafter
-                    documentName={resourceName}
-                    transcriptionTypes={layerNames}
-                    iiifManifest={iiifManifest}
-                />
-                    {/* <Parser
-                        html={teiDocHTML}
-                        htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
+                    {/* <EditionCrafter
+                        documentName={resourceName}
+                        transcriptionTypes={layerNames}
+                        iiifManifest={iiifManifest}
                     /> */}
+                    <Parser
+                        html={html}
+                        htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
+                    />
                 </div>
             </div>
         )
