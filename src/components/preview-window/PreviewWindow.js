@@ -58,6 +58,8 @@ export default class PreviewWindow extends Component {
     }
 
     renderToolbar() {
+        const { mode } = this.state
+
         const textButtonProps = {
             className: 'toolbar-button',
             disableRipple: true,
@@ -66,12 +68,14 @@ export default class PreviewWindow extends Component {
 
         const onReading = () => { this.setState({...this.state, mode: 'reading'} )}
         const onDocumentary = () => { this.setState({...this.state, mode: 'documentary'} )}
+        const readingSelected = mode === 'reading' ? { variant: "contained" } : {}
+        const docSelected = mode === 'documentary' ? { variant: "contained" } : {}
 
         return (
             <div className="toolbar">                
-                <ButtonGroup color="primary" aria-label="outlined primary button group">
-                    <Button {...textButtonProps} onClick={onReading}>Reading</Button>
-                    <Button {...textButtonProps} onClick={onDocumentary}>Documentary</Button>    
+                <ButtonGroup className="mode-buttons" color="primary" aria-label="outlined primary button group">
+                    <Button {...textButtonProps } { ...readingSelected } onClick={onReading}>Reading</Button>
+                    <Button {...textButtonProps } { ...docSelected } onClick={onDocumentary}>Documentary</Button>    
                 </ButtonGroup>
             </div>
         )

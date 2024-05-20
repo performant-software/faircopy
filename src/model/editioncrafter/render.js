@@ -11,10 +11,7 @@ let annotationPageTemplateJSON
 
 // Load JSON templates
 export function initTemplates(fs) {
-    const debugBaseDir = `${process.cwd()}/src/model/editioncrafter`
-    const distBaseDir = __dirname 
-    const baseDir = debugBaseDir
-
+    const baseDir = `${process.cwd()}/src/model/editioncrafter`
     manifestTemplateJSON = fs.readFileSync(`${baseDir}/templates/manifest.json`)
     canvasTemplateJSON = fs.readFileSync(`${baseDir}/templates/canvas.json`)
     annotationTemplateJSON = fs.readFileSync(`${baseDir}/templates/annotation.json`)
