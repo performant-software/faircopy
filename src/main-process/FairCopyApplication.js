@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
+const path = require('node:path')
 const Jimp = require("jimp")
 const log = require('electron-log')
 

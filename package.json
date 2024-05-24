@@ -3,7 +3,7 @@
   "productName": "FairCopy",
   "version": "1.2.0-dev.9",
   "description": "A word processor for the humanities scholar.",
-  "main": ".vite/build/main.js",
+  "main": "src/main.js",
   "private": true,
   "scripts": {
     "start": "electron-forge start",
