@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Typography, Card } from '@material-ui/core'
-import IDField from '../../main-window/tei-editor/attribute-fields/IDField'
+import IDField from '../tei-editor/attribute-fields/IDField'
 
 export default class SurfaceDetailCard extends Component {
 

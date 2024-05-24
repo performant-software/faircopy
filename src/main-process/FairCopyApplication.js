@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, net, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -7,8 +7,7 @@ const log = require('electron-log')
 
 const { FairCopySession } = require('./FairCopySession')
 
-const indexFilePath = 'build/index.html'
-const debugBaseDir = `${process.cwd()}/public/main-process`
+const debugBaseDir = `${process.cwd()}/src`
 const distBaseDir = __dirname 
 
 class FairCopyApplication {
@@ -384,20 +383,21 @@ class FairCopyApplication {
           enableRemoteModule: false,
           nodeIntegration: true,
           contextIsolation: false,
-          preload: `${this.baseDir}/${preload}`,
+          preload: path.join(this.baseDir, preload),
           spellcheck: false
       },
+
       autoHideMenuBar: !menuBar,
       resizable,
       backgroundColor
     })
 
     // and load the index.html of the app.
-    if( !app.isPackaged ) {
-      await browserWindow.loadURL('http://localhost:4000')
+    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+      await browserWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
       if(devTools) browserWindow.webContents.openDevTools({ mode: 'bottom'} )
     } else {
-      await browserWindow.loadFile(indexFilePath)
+      await browserWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
     }
 
     // For now, there is only one document window
