@@ -41,7 +41,7 @@
                 "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
             },
             "env": { "FAIRCOPY_DEBUG_MODE": "true", "FAIRCOPY_DEV_VERSION": "1.2.0-dev.9" },
-            "program": "${workspaceRoot}/public/electron.js",
+            "program": "${workspaceRoot}/src/main.js",
             "protocol": "inspector",
         },
         {

@@ -12,6 +12,7 @@ forge.config.js
 .env
 .env-prod
 .env-dev
+.vite
 .yarn
 .yarnrc.yml
 /certs

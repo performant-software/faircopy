@@ -4,7 +4,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
     packagerConfig: {
       asar: true,
-      icon: './src/render-process/icons/icon',
+      icon: './render/icons/icon',
       osxSign: {
         optionsForFile: (filePath) => {
           return {
@@ -25,8 +25,8 @@ module.exports = {
         name: '@electron-forge/maker-dmg',
         config: {
           platform: 'darwin',
-          background: './public/img/DMG_background.png',
-          icon: './public/icons/icon.icns',
+          background: './render/img/DMG_background.png',
+          icon: './render/icons/icon.icns',
           iconSize: 145,
           format: 'ULFO',
           contents: [
@@ -38,9 +38,9 @@ module.exports = {
       {
         name: '@electron-forge/maker-squirrel',
         config: {
-          loadingGif: './public/img/install_spinner.gif',
-          iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/public/icons/icon.ico',
-          setupIcon: './public/icons/icon.ico',
+          loadingGif: './render/img/install_spinner.gif',
+          iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/render/icons/icon.ico',
+          setupIcon: './render/icons/icon.ico',
           certificateFile: 'LOCATION OF APP SIGNING CERTIFICATE',
           certificatePassword: 'CERTIFICATE PASSWORD',
           platform: 'win32'
