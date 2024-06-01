@@ -393,12 +393,11 @@ class FairCopyApplication {
       backgroundColor
     })
 
-    // and load the index.html of the app.
-    if (process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-      await browserWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL)
-       browserWindow.webContents.openDevTools({ mode: 'bottom'} )
-    } else {
-      await browserWindow.loadFile(path.join(__dirname, `../renderer/${process.env.MAIN_WINDOW_VITE_NAME}/index.html`));
+    try {
+      browserWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
+      browserWindow.webContents.openDevTools({ mode: 'bottom'} )  
+    } catch(e) {
+      log.error(e)
     }
 
     // For now, there is only one document window
