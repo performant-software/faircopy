@@ -1,5 +1,5 @@
 const electron = require("electron")
-// const path = require('path');
+const path = require('path');
 
 const readClipBoardHTML = function readClipBoardHTML() {
     return electron.clipboard.readHTML()

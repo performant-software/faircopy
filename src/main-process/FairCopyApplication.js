@@ -382,8 +382,8 @@ class FairCopyApplication {
       webPreferences: {
           webSecurity,
           enableRemoteModule: false,
-          nodeIntegration: true,
-          contextIsolation: false,
+          nodeIntegration: false,
+          contextIsolation: true,
           preload: path.join(this.baseDir, preload),
           spellcheck: false
       },
@@ -394,7 +394,17 @@ class FairCopyApplication {
     })
 
     // and load the index.html of the app.
-    browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    switch( windowName ) {
+      case 'main':
+        browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+        break
+      case 'project':
+        browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
+        break
+      case 'worker':
+        browserWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
+        break
+    }
 
     // Open the DevTools.
     browserWindow.webContents.openDevTools();
