@@ -370,7 +370,7 @@ class FairCopyApplication {
   async createWindow(windowName, width, height, resizable, backgroundColor, menuBar, devTools ) {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
-    const webSecurity = app.isPackaged
+    // const webSecurity = app.isPackaged
     const preload = path.join(this.baseDir, `${windowName}-preload.js`) 
     
     // Create the browser window.
@@ -380,10 +380,8 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
-          webSecurity,
+          // webSecurity,
           enableRemoteModule: false,
-          nodeIntegration: false,
-          contextIsolation: true,
           preload,
           spellcheck: false
       },
@@ -413,7 +411,6 @@ class FairCopyApplication {
     // if( devTools ) 
       browserWindow.webContents.openDevTools();
 
-    // For now, there is only one document window
     return browserWindow
   }
 }

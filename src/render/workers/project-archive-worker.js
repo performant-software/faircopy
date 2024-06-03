@@ -4,9 +4,6 @@ import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resource
 import { serializeResource } from "../model/serialize-xml"
 import { initTemplates, renderTEIDocument } from "../model/editioncrafter/render"
 
-const fairCopy = window.fairCopy
-const JSZip = fairCopy.services.JSZip
-
 // EditionCrafter options
 const thumbnailWidth = 124
 const thumbnailHeight = 192
@@ -16,9 +13,6 @@ const baseURL = 'file://ec'
 let projectArchiveState = { open: false, jobQueue: [] }
 
 function setupTempFolder() {
-    const os = fairCopy.services.getOs()
-    const fs = fairCopy.services.getFs()
-
     const cacheFolder = `${os.tmpdir()}/faircopy/`
     if( !fs.existsSync(cacheFolder) ) fs.mkdirSync(cacheFolder)
     const zipPath = fs.mkdtempSync(cacheFolder)
@@ -35,7 +29,6 @@ function writeUTF8( targetFilePath, data, zip ) {
 }
 
 function addFile( localFilePath, resourceID, zip ) {
-    const fs = fairCopy.services.getFs()
     const buffer = fs.readFileSync(localFilePath)
     zip.file(resourceID, buffer)
 }
@@ -191,8 +184,6 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
 }
 
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {
-    const fs = fairCopy.services.getFs()
-
     const cacheFile = `${cacheFolder}/${fileName}`
     if( !fs.existsSync(cacheFile) ) {
         const imageBuffer = await zip.file(resourceID).async('nodebuffer')
@@ -206,7 +197,6 @@ async function cacheResource(resourceID, fileName, cacheFolder, zip) {
 }
 
 function saveArchive(startTime, zipPath, zip, callback) {
-    const fs = fairCopy.services.getFs()
     const { projectFilePath } = projectArchiveState
     const zipFile = `${zipPath}/${startTime}.zip`
 
@@ -237,7 +227,6 @@ function exportResource(resourceData, path) {
     const filePath = `${path}/${localID}.xml`
     try {
         const xml = serializeResource(resourceData)
-        const fs = fairCopy.getFs()
         fs.writeFileSync(filePath,xml)    
     } catch(e) {
         // log.error(e)
@@ -265,7 +254,6 @@ function previewResource(resourceData) {
 }
 
 async function openArchive(postMessage,workerData) {
-    const fs = fairCopy.services.getFs()
     const { projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName } = workerData
 
     // create the archive based on worker data
@@ -323,7 +311,6 @@ const save = () => {
 
 // terminate worker after all jobs are done
 const closeSafely = (close) => {      
-    const fs = fairCopy.services.getFs()
     const { jobQueue, cacheFolder } = projectArchiveState
 
     if( jobQueue.length > 0 ) {

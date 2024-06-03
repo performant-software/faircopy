@@ -21,14 +21,15 @@ class WorkerWindow {
     
         ipcMain.on('worker-window-message', this.messageForwarder)
         ipcMain.on('close-worker-window', this.closeMessageHandler)
-
+        const preload = path.join(this.baseDir, `worker-preload.js`) 
+ 
         this.workerWindow = new BrowserWindow({
-            show: false,
+            show: true,
             webPreferences: {
-                webSecurity: !this.debug,
+                // webSecurity: !this.debug,
+                preload,
                 nodeIntegration: true,
                 enableRemoteModule: false,
-                contextIsolation: false
             }
         })
         if( this.debug ) this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
