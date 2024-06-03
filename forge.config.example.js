@@ -106,8 +106,12 @@ module.exports = {
               },
               {
                 html: './src/index.html',
-                js: './src/worker-renderer.js',
-                name: 'worker_window'
+                nodeIntegration: true,
+                js: './src/renderer.js',
+                name: 'worker_window',
+                preload: {
+                  js: './src/worker-preload.js',
+                },
               },
             ],
           },
