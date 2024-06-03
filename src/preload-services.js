@@ -2,7 +2,7 @@ const electron = require("electron")
 const { contextBridge } = require("electron");
 //const path = require('path');
 
-function preloadServices(rootComponent) {
+const preloadServices = function preloadServices(rootComponent) {
     contextBridge.exposeInMainWorld(
         'faircopy',
         {

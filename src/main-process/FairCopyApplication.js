@@ -395,22 +395,23 @@ class FairCopyApplication {
 
     // and load the index.html of the app.
     switch( windowName ) {
-      case 'main':
+      case 'main-window':
         browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
         break
-      case 'project':
+      case 'project-window':
         browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
         break
-      case 'preview':
-        browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
+      case 'preview-window':
+        browserWindow.loadURL(PREVIEW_WINDOW_WEBPACK_ENTRY);
         break
-      case 'image':
-        browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
+      case 'image-window':
+        browserWindow.loadURL(IMAGE_WINDOW_WEBPACK_ENTRY);
         break
     }
 
     // Open the DevTools.
-    if( devTools ) browserWindow.webContents.openDevTools();
+    // if( devTools ) 
+      browserWindow.webContents.openDevTools();
 
     // For now, there is only one document window
     return browserWindow

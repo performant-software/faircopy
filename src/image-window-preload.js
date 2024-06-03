@@ -1,2 +1,2 @@
-const { preloadServices } = require('./preload-services')
+const preloadServices = require('./preload-services')
 preloadServices("ImageWindow")
