@@ -28,8 +28,7 @@ class WorkerWindow {
                 webSecurity: !this.debug,
                 nodeIntegration: true,
                 enableRemoteModule: false,
-                contextIsolation: false,
-                preload: `${this.baseDir}/worker-window-preload.js`
+                contextIsolation: false
             }
         })
         if( this.debug ) this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
@@ -40,13 +39,7 @@ class WorkerWindow {
             ipcMain.removeListener('close-worker-window', this.closeMessageHandler)
         })
         
-        // and load the index.html of the app.
-        if( this.debug ) {
-            await this.workerWindow.loadURL('http://localhost:4000')
-        } else {
-            await this.workerWindow.loadFile('build/index.html')
-        }
-        
+        this.workerWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
         this.workerWindow.webContents.send('init', { workerID: this.workerID, workerData }) 
     }
 

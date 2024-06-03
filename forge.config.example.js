@@ -77,8 +77,37 @@ module.exports = {
                 js: './src/renderer.js',
                 name: 'main_window',
                 preload: {
-                  js: './src/preload.js',
+                  js: './src/main-window-preload.js',
                 },
+              },
+              {
+                html: './src/index.html',
+                js: './src/renderer.js',
+                name: 'project_window',
+                preload: {
+                  js: './src/project-window-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/renderer.js',
+                name: 'preview_window',
+                preload: {
+                  js: './src/preview-window-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/renderer.js',
+                name: 'image_window',
+                preload: {
+                  js: './src/image-window-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/worker-renderer.js',
+                name: 'worker_window'
               },
             ],
           },

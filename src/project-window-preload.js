@@ -1,7 +1,2 @@
-
-const preloadServices = require('./preload-services')
-
-window.fairCopy = {
-    rootComponent: "ProjectWindow",
-    services: preloadServices.services
-}
+const { preloadServices } = require('./preload-services')
+preloadServices("ProjectWindow")

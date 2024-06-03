@@ -371,7 +371,7 @@ class FairCopyApplication {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
     const webSecurity = app.isPackaged
-    const preload = `${windowName}-preload.js`
+    const preload = path.join(this.baseDir, `${windowName}-preload.js`) 
     
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -384,7 +384,7 @@ class FairCopyApplication {
           enableRemoteModule: false,
           nodeIntegration: false,
           contextIsolation: true,
-          preload: path.join(this.baseDir, preload),
+          preload,
           spellcheck: false
       },
 
@@ -401,13 +401,16 @@ class FairCopyApplication {
       case 'project':
         browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
         break
-      case 'worker':
-        browserWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
+      case 'preview':
+        browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
+        break
+      case 'image':
+        browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
         break
     }
 
     // Open the DevTools.
-    browserWindow.webContents.openDevTools();
+    if( devTools ) browserWindow.webContents.openDevTools();
 
     // For now, there is only one document window
     return browserWindow
