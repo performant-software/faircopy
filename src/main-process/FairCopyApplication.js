@@ -393,12 +393,11 @@ class FairCopyApplication {
       backgroundColor
     })
 
-    try {
-      browserWindow.loadURL(process.env.MAIN_WINDOW_VITE_DEV_SERVER_URL);
-      browserWindow.webContents.openDevTools({ mode: 'bottom'} )  
-    } catch(e) {
-      log.error(e)
-    }
+    // and load the index.html of the app.
+    browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+    // Open the DevTools.
+    browserWindow.webContents.openDevTools();
 
     // For now, there is only one document window
     return browserWindow
