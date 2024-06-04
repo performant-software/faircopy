@@ -42,7 +42,7 @@ class WorkerWindow {
             ipcMain.removeListener('close-worker-window', this.closeMessageHandler)
         })
         
-        this.workerWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
+        await this.workerWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
         this.workerWindow.webContents.send('init', { workerID: this.workerID, workerData }) 
     }
 

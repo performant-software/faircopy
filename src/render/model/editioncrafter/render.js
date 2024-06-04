@@ -11,11 +11,11 @@ let annotationPageTemplateJSON
 
 // Load JSON templates
 export function initTemplates(fs) {
-    const baseDir = `${process.cwd()}/src/model/editioncrafter`
-    manifestTemplateJSON = fs.readFileSync(`${baseDir}/templates/manifest.json`)
-    canvasTemplateJSON = fs.readFileSync(`${baseDir}/templates/canvas.json`)
-    annotationTemplateJSON = fs.readFileSync(`${baseDir}/templates/annotation.json`)
-    annotationPageTemplateJSON = fs.readFileSync(`${baseDir}/templates/annotationPage.json`)    
+    const baseDir = `${process.cwd()}/src/render/model/editioncrafter/templates`
+    manifestTemplateJSON = fs.readFileSync(`${baseDir}/manifest.json`)
+    canvasTemplateJSON = fs.readFileSync(`${baseDir}/canvas.json`)
+    annotationTemplateJSON = fs.readFileSync(`${baseDir}/annotation.json`)
+    annotationPageTemplateJSON = fs.readFileSync(`${baseDir}/annotationPage.json`)    
 }
 
 function scrubTree( el, direction ) {

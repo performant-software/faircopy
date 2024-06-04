@@ -395,16 +395,16 @@ class FairCopyApplication {
     // and load the index.html of the app.
     switch( windowName ) {
       case 'main-window':
-        browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+        await browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
         break
       case 'project-window':
-        browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
+        await browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
         break
       case 'preview-window':
-        browserWindow.loadURL(PREVIEW_WINDOW_WEBPACK_ENTRY);
+        await browserWindow.loadURL(PREVIEW_WINDOW_WEBPACK_ENTRY);
         break
       case 'image-window':
-        browserWindow.loadURL(IMAGE_WINDOW_WEBPACK_ENTRY);
+        await browserWindow.loadURL(IMAGE_WINDOW_WEBPACK_ENTRY);
         break
     }
 
