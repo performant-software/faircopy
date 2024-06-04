@@ -380,7 +380,6 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
-          // webSecurity,
           nodeIntegration: true,
           contextIsolation: false,
           enableRemoteModule: true,

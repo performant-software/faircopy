@@ -52,6 +52,10 @@ window.fairCopy = {
     
             getPlatform: () => {
                 return process.platform
+            },
+
+            getElectron: () => {
+                return electron
             }
         }
     }

@@ -1,4 +1,5 @@
 const { BrowserWindow, ipcMain } = require('electron')
+const path = require('node:path')
 
 class WorkerWindow {
     constructor(baseDir, debug, workerID, messageHandler) {
@@ -24,7 +25,7 @@ class WorkerWindow {
         const preload = path.join(this.baseDir, `faircopy-preload.js`) 
  
         this.workerWindow = new BrowserWindow({
-            show: false,
+            show: true,
             webPreferences: {
                 // webSecurity: !this.debug,
                 preload,
