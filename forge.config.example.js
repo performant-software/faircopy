@@ -74,43 +74,47 @@ module.exports = {
             entryPoints: [
               {
                 html: './src/index.html',
-                js: './src/renderer.js',
+                js: './src/main-window-renderer.js',
+                nodeIntegration: true,
                 name: 'main_window',
                 preload: {
-                  js: './src/main-window-preload.js',
+                  js: './src/faircopy-preload.js',
                 },
               },
               {
                 html: './src/index.html',
-                js: './src/renderer.js',
+                js: './src/project-window-renderer.js',
+                nodeIntegration: true,
                 name: 'project_window',
                 preload: {
-                  js: './src/project-window-preload.js',
+                  js: './src/faircopy-preload.js',
                 },
               },
               {
                 html: './src/index.html',
-                js: './src/renderer.js',
+                js: './src/preview-window-renderer.js',
+                nodeIntegration: true,
                 name: 'preview_window',
                 preload: {
-                  js: './src/preview-window-preload.js',
+                  js: './src/faircopy-preload.js',
                 },
               },
               {
                 html: './src/index.html',
-                js: './src/renderer.js',
+                js: './src/image-window-renderer.js',
+                nodeIntegration: true,
                 name: 'image_window',
                 preload: {
-                  js: './src/image-window-preload.js',
+                  js: './src/faircopy-preload.js',
                 },
               },
               {
                 html: './src/index.html',
+                js: './src/worker-window-renderer.js',
                 nodeIntegration: true,
-                js: './src/renderer.js',
                 name: 'worker_window',
                 preload: {
-                  js: './src/worker-preload.js',
+                  js: './src/faircopy-preload.js',
                 },
               },
             ],
