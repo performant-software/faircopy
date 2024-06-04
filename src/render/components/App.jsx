@@ -65,7 +65,8 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    if( fairCopy.rootComponent !== 'WorkerWindow' ) {
+    const { rootComponent } = this.props
+    if( rootComponent !== 'WorkerWindow' ) {
       fairCopy.services.ipcRegisterCallback('appConfig', this.onAppConfig )
       fairCopy.services.ipcRegisterCallback('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
       fairCopy.services.ipcRegisterCallback('updateFairCopyConfig', this.onUpdateFairCopyConfig )
@@ -75,7 +76,8 @@ export default class App extends Component {
   }
 
   componentWillUnmount() {
-    if( fairCopy.rootComponent !== 'WorkerWindow' ) {
+    const { rootComponent } = this.props
+    if( rootComponent !== 'WorkerWindow' ) {
       fairCopy.services.ipcRemoveListener('appConfig', this.onAppConfig )
       fairCopy.services.ipcRemoveListener('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
       fairCopy.services.ipcRemoveListener('updateFairCopyConfig', this.onUpdateFairCopyConfig )
@@ -83,7 +85,8 @@ export default class App extends Component {
   }
 
   initRootComponent() {
-    const { rootComponent, services } = fairCopy
+    const { rootComponent } = this.props
+    const { services } = fairCopy
 
     if( rootComponent === 'ProjectWindow' ) {
       this.setTitle('Select Project')
@@ -163,7 +166,7 @@ export default class App extends Component {
 
   render() {
     const { fairCopyProject, imageView, previewView, appConfig, incompatInfo, projectSettingsActive, checkingOut, checkOutError } = this.state
-    const {rootComponent} = window.fairCopy
+    const {rootComponent} = this.props
 
     if( incompatInfo ) {
       const { projectFilePath, projectFileVersion } = incompatInfo

@@ -371,7 +371,7 @@ class FairCopyApplication {
 
     // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
     // const webSecurity = app.isPackaged
-    const preload = path.join(this.baseDir, `${windowName}-preload.js`) 
+    const preload = path.join(this.baseDir, `faircopy-preload.js`) 
     
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -381,7 +381,9 @@ class FairCopyApplication {
       minHeight: 768,
       webPreferences: {
           // webSecurity,
-          enableRemoteModule: false,
+          nodeIntegration: true,
+          contextIsolation: false,
+          enableRemoteModule: true,
           preload,
           spellcheck: false
       },

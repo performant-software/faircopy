@@ -4,6 +4,10 @@ import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resource
 import { serializeResource } from "../model/serialize-xml"
 import { initTemplates, renderTEIDocument } from "../model/editioncrafter/render"
 
+const fs = window.fairCopy.services.getFs()
+const os = window.fairCopy.services.getOs()
+const JSZip = window.fairCopy.services.getJSZip()
+
 // EditionCrafter options
 const thumbnailWidth = 124
 const thumbnailHeight = 192
