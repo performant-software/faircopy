@@ -25,9 +25,8 @@ class WorkerWindow {
         const preload = path.join(this.baseDir, `faircopy-preload.js`) 
  
         this.workerWindow = new BrowserWindow({
-            show: true,
+            show: false,
             webPreferences: {
-                // webSecurity: !this.debug,
                 preload,
                 nodeIntegration: true,
                 contextIsolation: false,
