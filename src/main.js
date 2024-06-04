@@ -1,12 +1,18 @@
 // Modules to control application life and create native browser window
 const { app } = require('electron')
 const { FairCopyApplication } = require('./main-process/FairCopyApplication')
+const { protocol } = require('electron')
 const log = require('electron-log')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
+
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'https', privileges: { bypassCSP: true } }, 
+  { scheme: 'file', privileges: { bypassCSP: true } }
+])
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
