@@ -20,7 +20,7 @@ const createProjectArchive = function createProjectArchive(projectInfo,baseDir,c
     }
 
     // Load the initial config for the project and mix in default CSS
-    const fairCopyConfigJSON = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
+    const fairCopyConfigJSON = fs.readFileSync(`${baseDir}/faircopy-config.json`).toString('utf-8')
     const fairCopyConfig = JSON.parse(fairCopyConfigJSON)
     fairCopyConfig.projectCSS = defaultProjectCSS
     fairCopyConfig.colorCodings = { '__default__': 'blue' }

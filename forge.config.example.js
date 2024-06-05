@@ -12,6 +12,12 @@ module.exports = {
           };
         }
       },
+      extraResource: [
+        'src/default-project-css.css',
+        'src/faircopy-config.json',
+        'src/latest.md',
+        'src/tei-simple.json'
+      ],
       osxNotarize: {
         tool: 'notarytool',
         appleId: 'APPLE ID OF ACCOUNT WITH APPLE DEVELOPER SUBSCRIPTION',

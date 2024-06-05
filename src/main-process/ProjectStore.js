@@ -112,8 +112,8 @@ class ProjectStore {
             log.error('Attempted to open invalid project file.')
             return
         }
-        const teiSchema = fs.readFileSync(`${baseDir}/config/tei-simple.json`).toString('utf-8')
-        const baseConfigJSON = fs.readFileSync(`${baseDir}/config/faircopy-config.json`).toString('utf-8')
+        const teiSchema = fs.readFileSync(`${baseDir}/tei-simple.json`).toString('utf-8')
+        const baseConfigJSON = fs.readFileSync(`${baseDir}/faircopy-config.json`).toString('utf-8')
 
         if( !teiSchema || !baseConfigJSON ) {
             log.info('Application data is missing or corrupted.')

@@ -9,7 +9,7 @@ const log = require('electron-log')
 const { FairCopySession } = require('./FairCopySession')
 
 const debugBaseDir = `${process.cwd()}/src`
-const distBaseDir = __dirname 
+const distBaseDir = process.resourcesPath 
 
 class FairCopyApplication {
 
@@ -33,8 +33,8 @@ class FairCopyApplication {
   getConfig() {
     const distConfig = {}
     distConfig.devMode = !app.isPackaged
-    distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/release-notes/latest.md`).toString('utf-8')
-    distConfig.defaultProjectCSS = fs.readFileSync(`${this.baseDir}/config/default-project-css.css`).toString('utf-8')
+    distConfig.releaseNotes = fs.readFileSync(`${this.baseDir}/latest.md`).toString('utf-8')
+    distConfig.defaultProjectCSS = fs.readFileSync(`${this.baseDir}/default-project-css.css`).toString('utf-8')
     distConfig.version = app.isPackaged ? app.getVersion() : process.env.FAIRCOPY_DEV_VERSION
     return distConfig
   }
