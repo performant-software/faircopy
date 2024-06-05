@@ -410,9 +410,10 @@ class FairCopyApplication {
     }
 
     // Open the DevTools.
-    // if( devTools ) 
-      browserWindow.webContents.openDevTools();
-
+    if( !app.isPackaged ) {
+      if( devTools ) browserWindow.webContents.openDevTools();
+    }
+    
     return browserWindow
   }
 }

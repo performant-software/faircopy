@@ -25,8 +25,8 @@ module.exports = {
         name: '@electron-forge/maker-dmg',
         config: {
           platform: 'darwin',
-          background: './render/img/DMG_background.png',
-          icon: './render/icons/icon.icns',
+          background: './src/render/img/DMG_background.png',
+          icon: './src/render/icons/icon.icns',
           iconSize: 145,
           format: 'ULFO',
           contents: [
@@ -38,9 +38,9 @@ module.exports = {
       {
         name: '@electron-forge/maker-squirrel',
         config: {
-          loadingGif: './render/img/install_spinner.gif',
+          loadingGif: './src/render/img/install_spinner.gif',
           iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/render/icons/icon.ico',
-          setupIcon: './render/icons/icon.ico',
+          setupIcon: './src/render/icons/icon.ico',
           certificateFile: 'LOCATION OF APP SIGNING CERTIFICATE',
           certificatePassword: 'CERTIFICATE PASSWORD',
           platform: 'win32'
