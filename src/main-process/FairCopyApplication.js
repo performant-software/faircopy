@@ -42,6 +42,7 @@ class FairCopyApplication {
   initFileProtocol() {
     protocol.handle('file', async (request) => {
       const url = request.url
+      console.log(`handling request: ${url}`)
       // handle editioncrafter asset requests
       if( url.startsWith('file://ec')) {
         const content = this.fairCopySession.requestEditionCrafterData(url)
@@ -247,7 +248,7 @@ class FairCopyApplication {
     }
 
     const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
-    this.mainWindow = await this.createWindow('main-window', ...windowSize, true, '#fff', true, true )
+    this.mainWindow = await this.createWindow('main_window', ...windowSize, true, '#fff', true, true )
     this.mainWindow.webContents.send('appConfig', this.config)
 
     // let render window handle on close (without browser restrictions)
@@ -260,14 +261,14 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project-window', 740, 570, false, '#E6DEF9', false ) 
+    this.projectWindow = await this.createWindow('project_window', 740, 570, false, '#E6DEF9', false ) 
     this.projectWindow.webContents.send('appConfig', this.config)
   }  
 
   async createPreviewWindow(previewData) {
     if( !this.previewView ) {
       const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
-      this.previewView = await this.createWindow('preview-window', ...windowSize, true, '#fff', false, true )
+      this.previewView = await this.createWindow('preview_window', ...windowSize, true, '#fff', false, true )
       this.previewView.on('close', e => delete this.previewView )
       this.previewView.webContents.send('previewViewOpened', previewData)
     } else {
@@ -276,7 +277,7 @@ class FairCopyApplication {
   }
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image-window', 1024, 768, true, '#fff', false )
+    const imageView = await this.createWindow('image_window', 1024, 768, true, '#fff', false )
     const {resourceID, xmlID} = imageViewInfo
   
     this.imageViews[resourceID] = imageView
@@ -368,11 +369,17 @@ class FairCopyApplication {
   }
 
   async createWindow(windowName, width, height, resizable, backgroundColor, menuBar, devTools ) {
-
-    // Since dev mode is loaded via localhost, disable web security so we can use file:// urls.
-    // const webSecurity = app.isPackaged
-    const preload = path.join(this.baseDir, `faircopy-preload.js`) 
+    const rendererDir = `/app.asar/.webpack/renderer/${windowName}`
+    let preload
+    if( app.isPackaged ) {
+      preload = path.join(this.baseDir, `${rendererDir}/preload.js`)
+    } else {
+      preload = path.join(this.baseDir, 'faircopy-preload.js')
+    }
     
+    log.info(`looking for preload: ${preload}`)
+    log.info(`env preload: ${PROJECT_WINDOW_PRELOAD_WEBPACK_ENTRY}`)
+
     // Create the browser window.
     const browserWindow = new BrowserWindow({
       width,
@@ -384,7 +391,7 @@ class FairCopyApplication {
           nodeIntegration: true,
           contextIsolation: false,
           enableRemoteModule: true,
-          preload,
+          preload: PROJECT_WINDOW_PRELOAD_WEBPACK_ENTRY,
           spellcheck: false
       },
 
@@ -393,26 +400,43 @@ class FairCopyApplication {
       backgroundColor
     })
 
+    log.info(`constructed window: ${PROJECT_WINDOW_WEBPACK_ENTRY}`)
+
     // and load the index.html of the app.
-    switch( windowName ) {
-      case 'main-window':
-        await browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-        break
-      case 'project-window':
-        await browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
-        break
-      case 'preview-window':
-        await browserWindow.loadURL(PREVIEW_WINDOW_WEBPACK_ENTRY);
-        break
-      case 'image-window':
-        await browserWindow.loadURL(IMAGE_WINDOW_WEBPACK_ENTRY);
-        break
-    }
+    // if( app.isPackaged ) {
+    //   const html = path.join(this.baseDir, `${rendererDir}/index.html`)
+    //   log.info(`loading from file: ${html}`)
+    //   await browserWindow.loadFile(html)
+    // } else {
+      try {
+        log.info('loading from url')
+        switch( windowName ) {
+          case 'main_window':
+            await browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+            break
+          case 'project_window':
+            await browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
+            break
+          case 'preview_window':
+            await browserWindow.loadURL(PREVIEW_WINDOW_WEBPACK_ENTRY);
+            break
+          case 'image_window':
+            await browserWindow.loadURL(IMAGE_WINDOW_WEBPACK_ENTRY);
+            break
+        }  
+      }
+      catch(e) {
+        log.info(`Error opening window: ${e}`)
+      }
+    // }
+
+    log.info(`Opened window.`)
 
     // Open the DevTools.
-    if( !app.isPackaged ) {
-      if( devTools ) browserWindow.webContents.openDevTools();
-    }
+    // if( !app.isPackaged ) {
+      // if( devTools ) 
+        browserWindow.webContents.openDevTools();
+    // }
     
     return browserWindow
   }

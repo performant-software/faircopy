@@ -22,8 +22,16 @@ class WorkerWindow {
     
         ipcMain.on('worker-window-message', this.messageForwarder)
         ipcMain.on('close-worker-window', this.closeMessageHandler)
-        const preload = path.join(this.baseDir, `faircopy-preload.js`) 
- 
+
+        const rendererDir = `/app.asar/.webpack/renderer/worker_window`
+
+        let preload
+        if( app.isPackaged ) {
+          preload = path.join(this.baseDir, `${rendererDir}/preload.js`)
+        } else {
+          preload = path.join(this.baseDir, 'faircopy-preload.js')
+        }
+     
         this.workerWindow = new BrowserWindow({
             show: false,
             webPreferences: {
@@ -41,7 +49,12 @@ class WorkerWindow {
             ipcMain.removeListener('close-worker-window', this.closeMessageHandler)
         })
         
-        await this.workerWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
+        // if( app.isPackaged ) {
+        //     const html = path.join(this.baseDir, `${rendererDir}/index.html`)
+        //     await this.workerWindow.loadFile(html)
+        // } else {
+            await this.workerWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
+        // }
         this.workerWindow.webContents.send('init', { workerID: this.workerID, workerData }) 
     }
 
