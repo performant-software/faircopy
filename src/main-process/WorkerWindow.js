@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain } = require('electron')
+const { BrowserWindow, ipcMain, app } = require('electron')
 const path = require('node:path')
 
 class WorkerWindow {
