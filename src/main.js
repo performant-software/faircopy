@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app } = require('electron')
+const { app, session } = require('electron')
 const { FairCopyApplication } = require('./main-process/FairCopyApplication')
 const { protocol } = require('electron')
 const log = require('electron-log')
@@ -9,7 +9,9 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-protocol.registerSchemesAsPrivileged([
+const partition = 'persist:example'
+const ses = session.fromPartition(partition)
+ses.protocol.registerSchemesAsPrivileged([
   { scheme: 'https', privileges: { bypassCSP: true } }, 
   { scheme: 'file', privileges: { bypassCSP: true } }
 ])

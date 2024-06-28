@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, session } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const fs = require('fs')
@@ -40,7 +40,10 @@ class FairCopyApplication {
   }
 
   initFileProtocol() {
-    protocol.handle('file', async (request) => {
+    const partition = 'persist:example'
+    const ses = session.fromPartition(partition)
+
+    ses.protocol.handle('file', async (request) => {
       const url = request.url
       console.log(`handling request: ${url}`)
       // handle editioncrafter asset requests
@@ -388,6 +391,7 @@ class FairCopyApplication {
       minHeight: 768,
       webPreferences: {
           webSecurity: false,
+          partition: 'persist:example',
           nodeIntegration: true,
           contextIsolation: false,
           enableRemoteModule: true,
