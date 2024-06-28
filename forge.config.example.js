@@ -4,7 +4,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
     packagerConfig: {
       asar: true,
-      icon: './render/icons/icon',
+      icon: './src/render/icons/icon',
       osxSign: {
         optionsForFile: (filePath) => {
           return {
