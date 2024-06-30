@@ -26,11 +26,9 @@ class WorkerWindow {
         this.workerWindow = new BrowserWindow({
             show: true,
             webPreferences: {
-                partition: 'faircopy:render',
                 preload: webpackPreloadPath,
                 nodeIntegration: true,
                 contextIsolation: false,
-                enableRemoteModule: true,
             }
         })
         // if( this.debug ) 

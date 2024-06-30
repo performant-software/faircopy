@@ -381,10 +381,6 @@ class FairCopyApplication {
       minHeight: 768,
       webPreferences: {
           partition: 'faircopy:render',
-          webSecurity: false,
-          nodeIntegration: true,
-          contextIsolation: false,
-          enableRemoteModule: true,
           preload: webpackPreloadPath,
           spellcheck: false
       },

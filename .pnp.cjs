@@ -12,14 +12,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     ],\
     "dependencyTreeRoots": [\
       {\
-        "name": "my-app-webpack",\
+        "name": "faircopy",\
         "reference": "workspace:."\
       }\
     ],\
     "enableTopLevelFallback": true,\
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
-      ["my-app-webpack", ["workspace:."]]\
+      ["faircopy", ["workspace:."]]\
     ],\
     "fallbackPool": [\
     ],\
@@ -5079,11 +5079,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["my-app-webpack", [\
+      ["faircopy", [\
         ["workspace:.", {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["my-app-webpack", "workspace:."],\
+            ["faircopy", "workspace:."],\
             ["@electron-forge/cli", "npm:7.4.0"],\
             ["@electron-forge/maker-deb", "npm:7.4.0"],\
             ["@electron-forge/maker-rpm", "npm:7.4.0"],\
