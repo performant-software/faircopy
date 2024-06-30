@@ -1,22 +1,14 @@
 import { buildSquareFragment, buildPolygonSvg } from "./svg"
 import { domToHTML5, convertToHTML } from "./convert"
+import { manifestTemplate, canvasTemplate, annotationPageTemplate, annotationTemplate } from "./iiif-templates"
 
 // Profile ID for EditionCrafter text partials
 const textPartialResourceProfileID = 'https://github.com/cu-mkp/editioncrafter-project/text-partial-resource.md'
 
-let manifestTemplateJSON
-let canvasTemplateJSON
-let annotationTemplateJSON 
-let annotationPageTemplateJSON 
-
-// Load JSON templates
-export function initTemplates(fs) {
-    const baseDir = `${process.cwd()}/src/render/model/editioncrafter/templates`
-    manifestTemplateJSON = fs.readFileSync(`${baseDir}/manifest.json`)
-    canvasTemplateJSON = fs.readFileSync(`${baseDir}/canvas.json`)
-    annotationTemplateJSON = fs.readFileSync(`${baseDir}/annotation.json`)
-    annotationPageTemplateJSON = fs.readFileSync(`${baseDir}/annotationPage.json`)    
-}
+const manifestTemplateJSON = manifestTemplate()
+const canvasTemplateJSON = canvasTemplate()
+const annotationTemplateJSON = annotationTemplate()
+const annotationPageTemplateJSON = annotationPageTemplate()
 
 function scrubTree( el, direction ) {
     let nextEl = direction === 'prev' ? el.previousSibling : el.nextSibling

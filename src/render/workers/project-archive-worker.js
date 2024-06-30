@@ -2,7 +2,7 @@ import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 import { serializeResource } from "../model/serialize-xml"
-import { initTemplates, renderTEIDocument } from "../model/editioncrafter/render"
+import { renderTEIDocument } from "../model/editioncrafter/render"
 
 const fs = window.fairCopy.services.getFs()
 const os = window.fairCopy.services.getOs()
@@ -271,9 +271,6 @@ async function openArchive(postMessage,workerData) {
 
     const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
     const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
-
-    // load EditionCrafter templates
-    initTemplates(fs)
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }

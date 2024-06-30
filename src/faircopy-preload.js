@@ -1,5 +1,4 @@
 const electron = require("electron")
-const { app } = require("electron")
 // const { contextBridge } = require("electron");
 const path = require('path');
 const fs = require("fs")
@@ -50,10 +49,6 @@ window.fairCopy = {
     
             getBasename: ( mypath, ext ) => {
                 return path.basename(mypath,ext)
-            },
-
-            isPackaged: () => {
-                return app.isPackaged
             },
     
             getPlatform: () => {
