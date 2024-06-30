@@ -1,17 +1,17 @@
 export function manifestTemplate() {
-    return {
+    return `{
         "@context": [
             "http://www.w3.org/ns/anno.jsonld",
             "http://iiif.io/api/presentation/3/context.json"
         ],
         "id": "",
         "type": "Manifest",
-        "items": []    
-    }
+        "items": []     
+    }`
 }
 
 export function canvasTemplate() {
-    return {
+    return `{
         "id": "",
         "type": "Canvas",
         "items": [
@@ -23,11 +23,11 @@ export function canvasTemplate() {
                 ]
             }
         ]
-    }
+    }`
 }
 
 export function annotationTemplate() {
-    return {
+    return `{
         "@context": "https://www.w3.org/ns/anno.jsonld",
         "id": "",
         "type": "Annotation",
@@ -37,15 +37,15 @@ export function annotationTemplate() {
             "format": ""
         },
         "target": ""
-    }    
+    }` 
 }
 
 export function annotationPageTemplate() {
-    return {
+    return `{
         "id": "",
         "type": "AnnotationPage",
         "items": [
             
         ]
-    }    
+    }`   
 }

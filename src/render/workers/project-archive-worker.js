@@ -11,7 +11,7 @@ const JSZip = window.fairCopy.services.getJSZip()
 // EditionCrafter options
 const thumbnailWidth = 124
 const thumbnailHeight = 192
-const baseURL = 'file://ec'
+const baseURL = 'ec://ec'
 
 // Worker state
 let projectArchiveState = { open: false, jobQueue: [] }

@@ -85,7 +85,7 @@ export default class PreviewWindow extends Component {
         const { resourceEntry, layers, layerID, mode } = this.state
         const { name: resourceName, localID } = resourceEntry
 
-        const iiifManifest = `file://ec/${localID}/iiif/manifest.json`
+        const iiifManifest = `ec://ec/${localID}/iiif/manifest.json`
         const htmlToReactParserOptionsSide = htmlToReactParserOptions()
         const { html } = layers[layerID]
         const transcriptionTypes = {}

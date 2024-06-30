@@ -51,11 +51,11 @@ class FairCopyApplication {
           headers: { 'content-type': 'text/html' }
         })  
       // handle local image resource requests
-      } else if( url.startsWith('file://images') ) {
+      // } else if( url.startsWith('file://images') ) {
         // TODO ... need localPath
         // this.fairCopySession.openImageResource(request.url)
         // return net.fetch(pathToFileURL(localPath).toString())  
-      } else {
+      // } else {
         // TODO ignore any other reqs
       }
     })

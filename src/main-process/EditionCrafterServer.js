@@ -1,4 +1,4 @@
-const baseURL = 'file://ec'
+const baseURL = 'ec://ec'
 
 class EditionCrafterServer {
 
