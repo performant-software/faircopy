@@ -395,7 +395,7 @@ class FairCopyApplication {
     log.info(`Opened window.`)
 
     // Open the DevTools.
-    // if( !app.isPackaged && devTools ) 
+    if( !app.isPackaged && devTools ) 
       browserWindow.webContents.openDevTools({ mode: 'bottom'})
     
     return browserWindow

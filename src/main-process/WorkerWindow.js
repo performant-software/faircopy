@@ -31,7 +31,7 @@ class WorkerWindow {
                 contextIsolation: false,
             }
         })
-        // if( this.debug ) 
+        if( this.debug ) 
             this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
 
         this.workerWindow.on('closed', () => {
