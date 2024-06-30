@@ -42,11 +42,11 @@ export default class PreviewWindow extends Component {
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('updatePreview', this.onUpdate )
+        fairCopy.ipcRegisterCallback('updatePreview', this.onUpdate )
     }
     
     componentWillUnmount() {
-        fairCopy.services.ipcRemoveListener('updatePreview', this.onUpdate )
+        fairCopy.ipcRemoveListener('updatePreview', this.onUpdate )
     }
 
     renderSpinner() {
@@ -165,7 +165,7 @@ function parseLink( domNode, parserOptions) {
     }
 
     const onClickExternal = (e) => {
-        fairCopy.services.ipcSend('openWebpage', target)
+        fairCopy.ipcSend('openWebpage', target)
     }
     const refRend = domNode.attribs?.rend
     const refRendition = domNode.attribs?.rendition

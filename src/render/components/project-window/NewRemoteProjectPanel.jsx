@@ -39,7 +39,7 @@ export default class NewRemoteProjectPanel extends Component {
             permissions,
             remote: true
         }
-        fairCopy.services.ipcSend('requestNewProject', projectInfo )
+        fairCopy.ipcSend('requestNewProject', projectInfo )
     }
 
     render() {

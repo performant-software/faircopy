@@ -297,7 +297,7 @@ export default class TEIDocument {
 
     abandonChanges() {
         this.changedSinceLastSave = false
-        fairCopy.services.ipcSend('abandonResourceMap', this.resourceID)
+        fairCopy.ipcSend('abandonResourceMap', this.resourceID)
     }
 
     previewDocument() {
@@ -312,7 +312,7 @@ export default class TEIDocument {
         const fileContents = serializeText(editorState.doc, this, teiSchema)
 
         const messageID = uuidv4()
-        fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
+        fairCopy.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.lastMessageID = messageID
     
         this.changedSinceLastSave = false

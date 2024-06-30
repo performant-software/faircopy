@@ -66,7 +66,7 @@ export default class IDField extends Component {
         const onCopy= () => {
             const value = this.getID()
             const fullID = idPrefix ? `${idPrefix}#${value}` : `#${value}`
-            fairCopy.services.copyToClipBoard(fullID)
+            fairCopy.copyToClipBoard(fullID)
         }
         const error = preExistingCondition ? 'error' : ''
         const displayValue = value.length > 0 ? `#${value}` : ''

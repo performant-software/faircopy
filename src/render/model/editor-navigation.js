@@ -263,5 +263,5 @@ export function broadcastZoneLinks( teiDocument ) {
         }
     }
 
-    fairCopy.services.ipcSend('selectedZones', selectedZones )
+    fairCopy.ipcSend('selectedZones', selectedZones )
 }

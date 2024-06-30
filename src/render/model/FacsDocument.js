@@ -109,7 +109,7 @@ export default class FacsDocument {
 
     addLocalImages( imagesData ) {
         const { idMap } = this.imageViewContext
-        const isWin32 = fairCopy.services.getPlatform() === 'win32'
+        const isWin32 = fairCopy.getPlatform() === 'win32'
         const seperatorChar = isWin32 ? "\\" : "/"
         let nextSurfaceID = this.parentEntry ? idMap.nextSurfaceID(this.parentEntry.localID) : idMap.nextSurfaceID(this.resourceEntry.localID)
 
@@ -145,7 +145,7 @@ export default class FacsDocument {
             }
 
             // send the entry plus path to project store
-            fairCopy.services.ipcSend('addResource', resourceEntry, path )
+            fairCopy.ipcSend('addResource', resourceEntry, path )
         }
 
         // save changes to this document
@@ -160,7 +160,7 @@ export default class FacsDocument {
             const surface = surfaces[surfaceIndex]
             if( surface.type === 'local' ) {
                 const { resourceEntryID } = surface
-                fairCopy.services.ipcSend('removeResource', resourceEntryID )
+                fairCopy.ipcSend('removeResource', resourceEntryID )
             }    
         }
 
@@ -203,15 +203,15 @@ export default class FacsDocument {
                 targetFacsDoc.save()
         
                 // stop listening
-                fairCopy.services.ipcRemoveListener('resourceOpened', resourceOpened )
+                fairCopy.ipcRemoveListener('resourceOpened', resourceOpened )
 
                 onMoved(true)
             }
         }
 
         // before we move things, we need to load the targetFacs
-        fairCopy.services.ipcRegisterCallback('resourceOpened', resourceOpened )
-        fairCopy.services.ipcSend('openResource', targetFacs.id )        
+        fairCopy.ipcRegisterCallback('resourceOpened', resourceOpened )
+        fairCopy.ipcSend('openResource', targetFacs.id )        
     }
 
     updateSurfaceInfo(surfaceInfo) {
@@ -230,7 +230,7 @@ export default class FacsDocument {
 
     abandonChanges() {
         this.changedSinceLastSave = false
-        fairCopy.services.ipcSend('abandonResourceMap', this.resourceID)
+        fairCopy.ipcSend('abandonResourceMap', this.resourceID)
     }
 
     save() {
@@ -242,7 +242,7 @@ export default class FacsDocument {
         // save the facs
         const fileContents = facsimileToTEI(this.facs)
         const messageID = uuidv4()
-        fairCopy.services.ipcSend('requestSave', messageID, this.resourceID, fileContents)
+        fairCopy.ipcSend('requestSave', messageID, this.resourceID, fileContents)
         this.changedSinceLastSave = false
         this.lastMessageID = messageID
     }

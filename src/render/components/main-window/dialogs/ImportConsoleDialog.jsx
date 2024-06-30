@@ -24,12 +24,11 @@ export default class ImportConsoleDialog extends Component {
     onImportData = (event, importData) => this.receiveImportData(importData)
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('importData', this.onImportData )
+        fairCopy.ipcRegisterCallback('importData', this.onImportData )
     }
 
     componentWillUnmount() {
-        fairCopy.services.ipcRemoveListener('importData', this.onImportData )
+        fairCopy.ipcRemoveListener('importData', this.onImportData )
     }
 
     async receiveImportData( importData ) {        
@@ -63,7 +62,7 @@ export default class ImportConsoleDialog extends Component {
         
             const importItem = importList.pop()
             if( importItem ) {
-                const resourceName = importItem.path ? fairCopy.services.getBasename(importItem.path).trim() : importItem.manifestID
+                const resourceName = importItem.path ? fairCopy.getBasename(importItem.path).trim() : importItem.manifestID
                 if( importItem.error ) {
                     if( importItem.error === 'too-big' ) {
                         nextConsole.push(`File is too large, 3MB max size: ${resourceName}`)
@@ -89,7 +88,7 @@ export default class ImportConsoleDialog extends Component {
                 done = true
                 const s = totalCount !== 1 ? 's' : ''
                 nextConsole.push(`Import finished. ${successCount} out of ${totalCount} file${s} imported.`)
-                fairCopy.services.ipcSend('importEnd')
+                fairCopy.ipcSend('importEnd')
             }
     
             if( this.el ) {

@@ -113,7 +113,7 @@ export default class TEIGraph {
 
     loadModule( moduleName ) {
         const moduleFile = `${teiSpecsDir}/${moduleName}.xml`
-        const moduleXML = fairCopy.services.readFileSync(moduleFile)
+        const moduleXML = fairCopy.readFileSync(moduleFile)
         const parser = new DOMParser();
         const moduleDOM = parser.parseFromString(moduleXML, "text/xml");
 
@@ -148,7 +148,7 @@ export default class TEIGraph {
 
     // load simple file, locate body els, make a list of their modules
     loadModuleNames() {
-        const teiSimpleXML = fairCopy.services.readFileSync(teiSimplePrintODD)
+        const teiSimpleXML = fairCopy.readFileSync(teiSimplePrintODD)
         const parser = new DOMParser();
         const simpleDOM = parser.parseFromString(teiSimpleXML, "text/xml");
 

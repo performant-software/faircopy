@@ -103,7 +103,7 @@ export default class ImportTextsDialog extends Component {
     
         const onClickSelect = () => {
             const { lineBreakParsing, learnStructure, resourceType, replaceResource } = this.state
-            fairCopy.services.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType,replaceResource})
+            fairCopy.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType,replaceResource})
             this.setState(this.initialState)
             onClose()
         }

@@ -11,7 +11,7 @@ export default class IncompatDialog extends Component {
         const { projectFilePath, projectFileVersion } = this.props
 
         const onClickClose = () => {
-            fairCopy.services.ipcSend('closeProject')
+            fairCopy.ipcSend('closeProject')
         }
 
         return (

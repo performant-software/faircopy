@@ -213,7 +213,7 @@ function addBelow( elementID, attrs, teiDocument, pos, tr ) {
 }
 
 export function onClippy() {
-    // const html = fairCopy.services.readClipBoardHTML()
+    // const html = fairCopy.readClipBoardHTML()
     // console.log( `clippy: ${html}`) 
 }
 

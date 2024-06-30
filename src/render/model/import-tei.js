@@ -29,13 +29,13 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
     // what do we call this resource?
     let name, xmlExt = false
     if( path.toLowerCase().endsWith('.xml') ) {
-        name = fairCopy.services.getBasename(path,'.xml').trim()
+        name = fairCopy.getBasename(path,'.xml').trim()
         xmlExt = true
     } else if( path.toLowerCase().endsWith('.txt') ){
         // trim off .txt if it is found 
-        name = fairCopy.services.getBasename(path,'.txt').trim()
+        name = fairCopy.getBasename(path,'.txt').trim()
     } else {
-        name = fairCopy.services.getBasename(path).trim()
+        name = fairCopy.getBasename(path).trim()
     }
     let localID
     if( replaceResource ) {

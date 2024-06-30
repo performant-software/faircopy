@@ -20,11 +20,11 @@ export default class SearchBar extends Component {
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('searchResults', this.onResults ) 
+        fairCopy.ipcRegisterCallback('searchResults', this.onResults ) 
     }
 
     componentWillUnmount() {
-        fairCopy.services.ipcRemoveListener('searchResults', this.onResults ) 
+        fairCopy.ipcRemoveListener('searchResults', this.onResults ) 
     }
 
     renderStatusChip(hitCount) {        
@@ -148,7 +148,7 @@ export default class SearchBar extends Component {
         const { elementName, attrQs } = searchFilterOptions
         const searchQ = { query: searchQuery.toLowerCase(), elementName, attrQs }
         if( searchScope === 'project' ) {
-            fairCopy.services.ipcSend('searchProject', searchQ)
+            fairCopy.ipcSend('searchProject', searchQ)
         } else {
             const searchResults = searchResource( currentResource, searchQ )
             const { query, results } = searchResults

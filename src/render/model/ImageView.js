@@ -41,15 +41,15 @@ export default class ImageView {
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
-        fairCopy.services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
-        fairCopy.services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
+        fairCopy.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     componentWillUnmount() {
-        fairCopy.services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
-        fairCopy.services.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
-        fairCopy.services.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
+        fairCopy.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     // Called when resource entry is updated by a different window process
@@ -86,6 +86,6 @@ export default class ImageView {
     updateResource( nextResourceEntry ) {     
         const resourceEntry = { id: this.resourceEntry.id, ...nextResourceEntry }
         const messageID = uuidv4()
-        fairCopy.services.ipcSend('updateResource', messageID, JSON.stringify(resourceEntry) )
+        fairCopy.ipcSend('updateResource', messageID, JSON.stringify(resourceEntry) )
     }
 }

@@ -17,13 +17,11 @@ export default class ChooseLocalFilePanel extends Component {
     onPathSelected = (event, filePath) => this.onPathUpdated(filePath)
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('pathSelected', this.onPathSelected )
+        fairCopy.ipcRegisterCallback('pathSelected', this.onPathSelected )
     }
 
     componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('pathSelected', this.onPathSelected )
+        fairCopy.ipcRemoveListener('pathSelected', this.onPathSelected )
     }
 
     onPathUpdated(filePath) {
@@ -41,7 +39,7 @@ export default class ChooseLocalFilePanel extends Component {
             onSave(filePath)
         }
         const onClickBrowse = () => {
-            fairCopy.services.ipcSend('requestNewPath' )
+            fairCopy.ipcSend('requestNewPath' )
         }
         const { filePath } = this.state
         const saveAllowed = filePath.length > 0

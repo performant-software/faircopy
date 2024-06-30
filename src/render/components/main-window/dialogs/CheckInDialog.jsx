@@ -30,16 +30,14 @@ export default class CheckInDialog extends Component {
     }
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('localResources', this.onLocalResources )
-        services.ipcRegisterCallback('checkInResults', this.onCheckInResults )
-        services.ipcSend('requestLocalResources')
+        fairCopy.ipcRegisterCallback('localResources', this.onLocalResources )
+        fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults )
+        fairCopy.ipcSend('requestLocalResources')
     }
 
     componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('localResources', this.onLocalResources )
-        services.ipcRemoveListener('checkInResults', this.onCheckInResults )
+        fairCopy.ipcRemoveListener('localResources', this.onLocalResources )
+        fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults )
     }
 
     onLocalResources = (event,checkedOutResources) => {
@@ -142,7 +140,7 @@ export default class CheckInDialog extends Component {
         if( message.length > 0 ) {
             const resourceIDs = resourcesToCommit.map( r => r.id )
             this.setState({ ...this.state, status: 'loading' }) 
-            fairCopy.services.ipcSend('checkIn', userID, serverURL, projectID, resourceIDs, message )   
+            fairCopy.ipcSend('checkIn', userID, serverURL, projectID, resourceIDs, message )   
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
         }

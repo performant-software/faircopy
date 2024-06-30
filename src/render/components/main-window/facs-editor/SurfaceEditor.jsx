@@ -29,7 +29,7 @@ export default class SurfaceEditor extends Component {
     componentDidMount() {
         const { facsDocument } = this.props
         facsDocument.addUpdateListener(this.updateListener)
-        fairCopy.services.ipcRegisterCallback('selectedZones', this.onSelectedZones )
+        fairCopy.ipcRegisterCallback('selectedZones', this.onSelectedZones )
     }
     
     componentWillUnmount() {
@@ -38,7 +38,7 @@ export default class SurfaceEditor extends Component {
         }    
         const { facsDocument } = this.props
         facsDocument.removeUpdateListener(this.updateListener)
-        fairCopy.services.ipcRemoveListener('selectedZones', this.onSelectedZones)
+        fairCopy.ipcRemoveListener('selectedZones', this.onSelectedZones)
     }
 
     onSelectedZones = (e, selectedZones) => {

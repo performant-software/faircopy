@@ -33,21 +33,21 @@ export default class MainWindowStatusBar extends Component {
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('updateAvailable', this.onUpdateAvailable)
-        fairCopy.services.ipcRegisterCallback('updateDownloading', this.onUpdateDownloading)
-        fairCopy.services.ipcRegisterCallback('updateDownloaded', this.onUpdateDownloaded)
-        fairCopy.services.ipcRegisterCallback('errorUpdating', this.onErrorUpdating)
+        fairCopy.ipcRegisterCallback('updateAvailable', this.onUpdateAvailable)
+        fairCopy.ipcRegisterCallback('updateDownloading', this.onUpdateDownloading)
+        fairCopy.ipcRegisterCallback('updateDownloaded', this.onUpdateDownloaded)
+        fairCopy.ipcRegisterCallback('errorUpdating', this.onErrorUpdating)
     }
 
     componentWillUnmount() {
-        fairCopy.services.ipcRemoveListener('updateAvailable', this.onUpdateAvailable)
-        fairCopy.services.ipcRemoveListener('updateDownloading', this.onUpdateDownloading)
-        fairCopy.services.ipcRemoveListener('updateDownloaded', this.onUpdateDownloaded)
-        fairCopy.services.ipcRemoveListener('errorUpdating', this.onErrorUpdating)
+        fairCopy.ipcRemoveListener('updateAvailable', this.onUpdateAvailable)
+        fairCopy.ipcRemoveListener('updateDownloading', this.onUpdateDownloading)
+        fairCopy.ipcRemoveListener('updateDownloaded', this.onUpdateDownloaded)
+        fairCopy.ipcRemoveListener('errorUpdating', this.onErrorUpdating)
     }
 
     onStartUpdate = () => {
-        fairCopy.services.ipcSend( 'downloadUpdate' )
+        fairCopy.ipcSend( 'downloadUpdate' )
         this.setState({ ...this.state, softwareUpdateStatus: 'downloading', progress: 0 })
     }
 

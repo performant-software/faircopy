@@ -4,7 +4,6 @@ import { configure } from 'react-hotkeys'
 import MainWindow from './main-window/MainWindow'
 import ImageWindow from './image-window/ImageWindow'
 import ProjectWindow from './project-window/ProjectWindow'
-import WorkerWindow from './worker-window/WorkerWindow'
 import PreviewWindow from './preview-window/PreviewWindow'
 import IncompatDialog from './IncompatDialog'
 import ProjectSettingsWindow from './project-settings-window/ProjectSettingsWindow'
@@ -66,27 +65,20 @@ export default class App extends Component {
 
   componentDidMount() {
     const { rootComponent } = this.props
-    if( rootComponent !== 'WorkerWindow' ) {
-      fairCopy.services.ipcRegisterCallback('appConfig', this.onAppConfig )
-      fairCopy.services.ipcRegisterCallback('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
-      fairCopy.services.ipcRegisterCallback('updateFairCopyConfig', this.onUpdateFairCopyConfig )
-  
-      this.initRootComponent()        
-    }
+    fairCopy.ipcRegisterCallback('appConfig', this.onAppConfig )
+    fairCopy.ipcRegisterCallback('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
+    fairCopy.ipcRegisterCallback('updateFairCopyConfig', this.onUpdateFairCopyConfig )
+    this.initRootComponent()        
   }
 
   componentWillUnmount() {
-    const { rootComponent } = this.props
-    if( rootComponent !== 'WorkerWindow' ) {
-      fairCopy.services.ipcRemoveListener('appConfig', this.onAppConfig )
-      fairCopy.services.ipcRemoveListener('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
-      fairCopy.services.ipcRemoveListener('updateFairCopyConfig', this.onUpdateFairCopyConfig )
-    }
+    fairCopy.ipcRemoveListener('appConfig', this.onAppConfig )
+    fairCopy.ipcRemoveListener('fairCopyConfigCheckedOut', this.onFairCopyConfigCheckedOut )
+    fairCopy.ipcRemoveListener('updateFairCopyConfig', this.onUpdateFairCopyConfig )
   }
 
   initRootComponent() {
     const { rootComponent } = this.props
-    const { services } = fairCopy
 
     if( rootComponent === 'ProjectWindow' ) {
       this.setTitle('Select Project')
@@ -94,15 +86,15 @@ export default class App extends Component {
 
     // Receive open and save file events from the main process
     if( rootComponent === 'MainWindow' ) {
-      services.ipcRegisterCallback('projectOpened', (event, projectData) => this.openProject(projectData))
-      services.ipcRegisterCallback('projectIncompatible', (event, incompatInfo) => this.setState({ ...this.state, incompatInfo }) )
+      fairCopy.ipcRegisterCallback('projectOpened', (event, projectData) => this.openProject(projectData))
+      fairCopy.ipcRegisterCallback('projectIncompatible', (event, incompatInfo) => this.setState({ ...this.state, incompatInfo }) )
 
       // configure hot keys to accept input from all element types
       configure({ ignoreEventsCondition: () => false })      
     } else if( rootComponent === 'ImageWindow' ) {
-      services.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
+      fairCopy.ipcRegisterCallback('imageViewOpened', (event, imageViewData) => this.openImageView(imageViewData))
     } else if( rootComponent === 'PreviewWindow' ) {
-      services.ipcRegisterCallback('previewViewOpened', (event, previewData) => this.openPreviewView(previewData))
+      fairCopy.ipcRegisterCallback('previewViewOpened', (event, previewData) => this.openPreviewView(previewData))
     }
   }
 
@@ -245,11 +237,7 @@ export default class App extends Component {
             appConfig={appConfig}
           ></ProjectWindow>
       )
-    } else if( rootComponent === "WorkerWindow" ) {
-      return (
-        <WorkerWindow></WorkerWindow>
-      )
-    }
+    } 
     else return null
 
   }

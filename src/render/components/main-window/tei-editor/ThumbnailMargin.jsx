@@ -32,7 +32,7 @@ export default class ThumbnailMargin extends Component {
                     const imageViewData = { resourceID, xmlID, parentID: parentEntry?.id }
                     thumbnails.push(
                         <img 
-                            onClick={() => { fairCopy.services.ipcSend('requestImageView', imageViewData) }} 
+                            onClick={() => { fairCopy.ipcSend('requestImageView', imageViewData) }} 
                             key={thumbKey} 
                             style={thumbStyle} 
                             className="facs-thumbnail" 

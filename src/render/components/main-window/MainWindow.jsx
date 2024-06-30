@@ -200,27 +200,25 @@ export default class MainWindow extends Component {
     }
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
-        services.ipcRegisterCallback('resourceViewUpdate', this.onResourceViewUpdate )
-        services.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
-        services.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
-        services.ipcRegisterCallback('checkOutResults', this.onCheckOutResults )
-        services.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
-        services.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
-        services.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
+        fairCopy.ipcRegisterCallback('resourceOpened', this.onResourceOpened )
+        fairCopy.ipcRegisterCallback('resourceViewUpdate', this.onResourceViewUpdate )
+        fairCopy.ipcRegisterCallback('requestExitApp', this.onRequestExitApp  ) 
+        fairCopy.ipcRegisterCallback('searchSystemStatus', this.onSearchSystemStatus )
+        fairCopy.ipcRegisterCallback('checkOutResults', this.onCheckOutResults )
+        fairCopy.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('resourceOpened', this.onResourceOpened )
-        services.ipcRemoveListener('resourceViewUpdate', this.onResourceViewUpdate )
-        services.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
-        services.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
-        services.ipcRemoveListener('checkOutResults', this.onCheckOutResults )
-        services.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
-        services.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
-        services.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
+        fairCopy.ipcRemoveListener('resourceOpened', this.onResourceOpened )
+        fairCopy.ipcRemoveListener('resourceViewUpdate', this.onResourceViewUpdate )
+        fairCopy.ipcRemoveListener('requestExitApp', this.onRequestExitApp  ) 
+        fairCopy.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus )
+        fairCopy.ipcRemoveListener('checkOutResults', this.onCheckOutResults )
+        fairCopy.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
+        fairCopy.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
+        fairCopy.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
     }
 
     refreshWindow() {
@@ -240,7 +238,7 @@ export default class MainWindow extends Component {
         if( resourceIDs.length > 0 ) {
             this.closeResources( resourceIDs, true)
         } else {
-            fairCopy.services.ipcSend('exitApp')
+            fairCopy.ipcSend('exitApp')
         }
     }
 
@@ -352,7 +350,7 @@ export default class MainWindow extends Component {
         })
 
         if( exitOnClose ) {
-            fairCopy.services.ipcSend('exitApp')
+            fairCopy.ipcSend('exitApp')
         }    
     }
 
@@ -391,7 +389,7 @@ export default class MainWindow extends Component {
     checkOutResources(resourceEntries) {
         const { fairCopyProject } = this.props
         const { userID, serverURL, projectID } = fairCopyProject
-        fairCopy.services.ipcSend('checkOut', userID, serverURL, projectID, resourceEntries )
+        fairCopy.ipcSend('checkOut', userID, serverURL, projectID, resourceEntries )
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -411,7 +409,7 @@ export default class MainWindow extends Component {
         const nextResourceViews = { ...resourceViews }
         nextResourceViews['remote'].loading = true
         this.setState( {...this.state, resourceViews: nextResourceViews, loginMode: false} )
-        fairCopy.services.ipcSend('reopenProject')
+        fairCopy.ipcSend('reopenProject')
     }
 
     onEditResource = () => {
@@ -449,7 +447,7 @@ export default class MainWindow extends Component {
         const resourceView = resourceViews[currentView]
         const { indexParentID, parentEntry } = resourceView
         const resourceViewRequest = { currentView, indexParentID, parentEntry, ...nextView }
-        fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+        fairCopy.ipcSend('requestResourceView', resourceViewRequest )
         const checkMarkState = this.setAllCheckmarks(false,false)
         const nextResourceViews = { ...resourceViews }
         nextResourceViews[currentView].loading = true
@@ -472,7 +470,7 @@ export default class MainWindow extends Component {
                 const currentPage = 1
                 const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage, ...this.filterInitialState }
                 const nextResourceIndex = currentView === 'home' ? resourceIndex : []
-                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+                fairCopy.ipcSend('requestResourceView', resourceViewRequest )
                 const nextResourceViews = { ...resourceViews }
                 nextResourceViews[currentView] = { ...currentResourceView, indexParentID, parentEntry, currentPage, loading: true }
                 this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
@@ -514,7 +512,7 @@ export default class MainWindow extends Component {
                     nextResourceViews.remote.loading = true    
                     const { indexParentID, parentEntry, currentPage } = resourceViews.remote
                     const resourceViewRequest = { currentView: 'remote', indexParentID, parentEntry, currentPage, ...this.filterInitialState } 
-                    fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )   
+                    fairCopy.ipcSend('requestResourceView', resourceViewRequest )   
                     this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: [] })                
                 }
                 }
@@ -525,7 +523,7 @@ export default class MainWindow extends Component {
                 if( resourceViews.currentView === 'remote' && !resourceViews.remote.loading ) {
                     const { indexParentID, parentEntry, currentPage } = resourceViews.home
                     const resourceViewRequest = { currentView: 'home', indexParentID, parentEntry, currentPage, ...this.filterInitialState } 
-                    fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )               
+                    fairCopy.ipcSend('requestResourceView', resourceViewRequest )               
                     const nextResourceViews = { ...resourceViews }
                     nextResourceViews.currentView = 'home'
                     nextResourceViews.home.loading = true    
@@ -540,7 +538,7 @@ export default class MainWindow extends Component {
                 const currentResourceView = resourceViews[currentView]
                 const { currentPage } = currentResourceView
                 const resourceViewRequest = { currentView, indexParentID: null, parentEntry: null, currentPage }
-                fairCopy.services.ipcSend('requestResourceView', resourceViewRequest )
+                fairCopy.ipcSend('requestResourceView', resourceViewRequest )
                 const nextResourceViews = { ...resourceViews }
                 const nextResourceIndex = currentView === 'home' ? resourceIndex : []
                 nextResourceViews[currentView] = { ...currentResourceView, indexParentID: null, parentEntry: null, loading: true }
@@ -582,7 +580,7 @@ export default class MainWindow extends Component {
                 }
                 break     
             case 'export':
-                fairCopy.services.ipcSend('requestExport', resourceEntries)
+                fairCopy.ipcSend('requestExport', resourceEntries)
                 this.setState({...nextState, ...closePopUpState })
                 break
             default:
@@ -626,7 +624,7 @@ export default class MainWindow extends Component {
         // run the search based on the new filter settings
         if( searchScope === 'project' ) {
             this.setState({...this.state, searchQuery: searchQ, searchFilterOptions, searchFilterMode: open })   
-            fairCopy.services.ipcSend('searchProject', searchQ)
+            fairCopy.ipcSend('searchProject', searchQ)
         } else {
             const currentResource = selectedResource ? openResources[selectedResource] : null
             if( currentResource ) {

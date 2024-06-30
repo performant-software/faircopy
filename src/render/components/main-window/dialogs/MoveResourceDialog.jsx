@@ -17,14 +17,12 @@ export default class MoveResourceDialog extends Component {
     }
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('localResources', this.onLocalResources )
-        services.ipcSend('requestLocalResources')
+        fairCopy.ipcRegisterCallback('localResources', this.onLocalResources )
+        fairCopy.ipcSend('requestLocalResources')
     }
 
     componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('localResources', this.onLocalResources )
+        fairCopy.ipcRemoveListener('localResources', this.onLocalResources )
     }
 
     onLocalResources = (event,localResources) => {

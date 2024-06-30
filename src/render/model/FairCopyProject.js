@@ -77,7 +77,7 @@ export default class FairCopyProject {
 
     previewResource(resourceEntry) {
         const { projectCSS } = this.fairCopyConfig
-        fairCopy.services.ipcSend('requestPreviewView', { resourceEntry, projectCSS })
+        fairCopy.ipcSend('requestPreviewView', { resourceEntry, projectCSS })
     }
 
     loadManifest(fairCopyManifest) {
@@ -92,7 +92,7 @@ export default class FairCopyProject {
     }
     
     updateResource( resourceEntry ) {
-        fairCopy.services.ipcSend('updateResource', resourceEntry )
+        fairCopy.ipcSend('updateResource', resourceEntry )
     }
 
     getNextSurfaceID(parentEntry) {
@@ -138,15 +138,15 @@ export default class FairCopyProject {
     }
 
     removeResources( resourceIDs ) {
-        fairCopy.services.ipcSend('removeResources', resourceIDs )
+        fairCopy.ipcSend('removeResources', resourceIDs )
     }
 
     recoverResources(resourceIDs) {
-        fairCopy.services.ipcSend('recoverResources', resourceIDs )
+        fairCopy.ipcSend('recoverResources', resourceIDs )
     }  
 
     openResource( resourceID ) {
-        fairCopy.services.ipcSend('openResource', resourceID )
+        fairCopy.ipcSend('openResource', resourceID )
     }
 
     async importResource(importData,parentEntry) {
@@ -154,9 +154,9 @@ export default class FairCopyProject {
             const resources = await importResource(importData,parentEntry,this)
             if( importData.options?.replaceResource ) {
                 if( resources.length > 1 ) {
-                    fairCopy.services.ipcSend( 'replaceTEIDocument', resources )
+                    fairCopy.ipcSend( 'replaceTEIDocument', resources )
                 } else {
-                    fairCopy.services.ipcSend( 'replaceResource', resources[0], parentEntry )
+                    fairCopy.ipcSend( 'replaceResource', resources[0], parentEntry )
                 }
             } else {
                 for( const resource of resources ) {
@@ -185,7 +185,7 @@ export default class FairCopyProject {
         this.fairCopyConfig = nextFairCopyConfig
         updateColorCodingStyles( this.fairCopyConfig.colorCodings )
         const firstAction = !!this.configLastAction.firstAction
-        fairCopy.services.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
+        fairCopy.ipcSend('checkInConfig', nextFairCopyConfig, firstAction)
     }
 
     checkOutConfig() {
@@ -197,7 +197,7 @@ export default class FairCopyProject {
             return true
         } else {
             // note: state is updated once we hear that the check out was a success    
-            fairCopy.services.ipcSend('checkOutConfig')    
+            fairCopy.ipcSend('checkOutConfig')    
             return false
         }
     }
@@ -229,7 +229,7 @@ export default class FairCopyProject {
     }
 
     addResource( resourceEntry, content, resourceMap ) {
-        fairCopy.services.ipcSend('addResource', resourceEntry, content, resourceMap )
+        fairCopy.ipcSend('addResource', resourceEntry, content, resourceMap )
     }
 
     getProjectInfo() {
@@ -258,7 +258,7 @@ export default class FairCopyProject {
             recentProjectData.description = this.description
             localStorage.setItem('recentProjects', JSON.stringify(projects));
         }
-        fairCopy.services.ipcSend('updateProjectInfo', projectInfo )
+        fairCopy.ipcSend('updateProjectInfo', projectInfo )
     }
 
     hasID(xmlID, localID) {

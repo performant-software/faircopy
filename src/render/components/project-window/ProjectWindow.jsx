@@ -23,7 +23,7 @@ export default class ProjectWindow extends Component {
         const { projectName, description, projectFilePath } = project
 
         const onClick = () => {
-            fairCopy.services.ipcSend('requestProject', projectFilePath )
+            fairCopy.ipcSend('requestProject', projectFilePath )
         }
 
         return (
@@ -43,7 +43,7 @@ export default class ProjectWindow extends Component {
         projects = projects ? JSON.parse(projects) : []
 
         const onClickOpen = () => {
-            fairCopy.services.ipcSend('requestFileOpen')
+            fairCopy.ipcSend('requestFileOpen')
         }
 
         const onClickNew = () => {

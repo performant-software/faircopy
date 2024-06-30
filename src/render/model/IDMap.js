@@ -10,7 +10,7 @@ export default class IDMap {
         this.loadIDMap(JSON.parse(idMapData))
 
         // Listen for updates
-        fairCopy.services.ipcRegisterCallback('IDMapUpdated', (e, d) => {
+        fairCopy.ipcRegisterCallback('IDMapUpdated', (e, d) => {
             this.loadIDMap(d.idMapData)
         })
     }
@@ -51,7 +51,7 @@ export default class IDMap {
     }
     
     setResourceMap( resourceMap, localID, parentID ) {
-        fairCopy.services.ipcSend('setResourceMap', resourceMap, localID, parentID )
+        fairCopy.ipcSend('setResourceMap', resourceMap, localID, parentID )
     }
 
     nextSurfaceID( localID ) {

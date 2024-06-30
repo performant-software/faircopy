@@ -181,7 +181,7 @@ function getDefaultVocabKey(elementName,attributeName) {
 }
 
 export function saveConfig( fairCopyConfig, lastAction ) {
-    fairCopy.services.ipcSend('requestSaveConfig', fairCopyConfig, lastAction)
+    fairCopy.ipcSend('requestSaveConfig', fairCopyConfig, lastAction)
 }
 
 export function getConfigStatus( lastAction, userID ) {
@@ -197,7 +197,7 @@ export function getConfigStatus( lastAction, userID ) {
 }
 
 export function exportConfig( exportPath, fairCopyConfig ) {
-    fairCopy.services.ipcSend('requestExportConfig', exportPath, JSON.stringify(fairCopyConfig))
+    fairCopy.ipcSend('requestExportConfig', exportPath, JSON.stringify(fairCopyConfig))
 }
 
 export function updateColorCodingStyles( colorCodings ) {

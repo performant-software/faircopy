@@ -19,13 +19,11 @@ export default class NewProjectPanel extends Component {
     onPathSelected = (event, filePath) => this.onPathUpdated(filePath)
 
     componentDidMount() {
-        const {services} = fairCopy
-        services.ipcRegisterCallback('pathSelected', this.onPathSelected )
+        fairCopy.ipcRegisterCallback('pathSelected', this.onPathSelected )
     }
 
     componentWillUnmount() {
-        const {services} = fairCopy
-        services.ipcRemoveListener('pathSelected', this.onPathSelected )
+        fairCopy.ipcRemoveListener('pathSelected', this.onPathSelected )
     }
 
     onPathUpdated(filePath) {
@@ -47,13 +45,13 @@ export default class NewProjectPanel extends Component {
                 permissions: [],
                 remote: false
             }
-            fairCopy.services.ipcSend('requestNewProject', projectInfo )
+            fairCopy.ipcSend('requestNewProject', projectInfo )
         }
         const onClickCancel = () => {
             onClose()
         }
         const onClickBrowse = () => {
-            fairCopy.services.ipcSend('requestNewPath' )
+            fairCopy.ipcSend('requestNewPath' )
         }
         const onChangeName = (e) => {
             const value = e.currentTarget.value

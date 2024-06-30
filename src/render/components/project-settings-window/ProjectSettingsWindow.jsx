@@ -74,7 +74,7 @@ export default class ProjectSettingsWindow extends Component {
             const { userID, serverURL } = fairCopyProject
             logout(userID, serverURL)
             this.setState({...this.state})
-            fairCopy.services.ipcSend('requestResourceView')
+            fairCopy.ipcSend('requestResourceView')
         }
 
         return (

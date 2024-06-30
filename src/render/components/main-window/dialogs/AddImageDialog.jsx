@@ -16,11 +16,11 @@ export default class AddImageDialog extends Component {
     }
 
     componentDidMount() {
-        fairCopy.services.ipcRegisterCallback('imagesOpened', this.imagesOpenedCallback)
+        fairCopy.ipcRegisterCallback('imagesOpened', this.imagesOpenedCallback)
     }
 
     componentWillUnmount() {
-        fairCopy.services.ipcRemoveListener('imagesOpened', this.imagesOpenedCallback)
+        fairCopy.ipcRemoveListener('imagesOpened', this.imagesOpenedCallback)
     }
 
     imagesOpenedCallback = ( event, imagesData ) => {
@@ -32,7 +32,7 @@ export default class AddImageDialog extends Component {
 
         const onClickBrowse = () => {
             this.setState({...this.state, spinner: true })
-            fairCopy.services.ipcSend('requestImageData')
+            fairCopy.ipcSend('requestImageData')
         }
         const s = imagesData.length === 1 ? '' : 's'
         

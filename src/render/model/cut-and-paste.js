@@ -38,7 +38,7 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
             teiSchema.teiDocuments.push(teiDocument)
 
             // also set a flag to show the type of copy operation
-            const platform = fairCopy.services.getPlatform()
+            const platform = fairCopy.getPlatform()
             const topLevelNode = platform === 'win32' ? xmlDom.firstChild.firstChild.childNodes[1].childNodes[2] : xmlDom.firstChild.firstChild 
             if( topLevelNode.getAttribute('data-fc-node') === 'true' ) {
                 topLevelNode.removeAttribute('data-fc-node')
@@ -139,7 +139,7 @@ function copyNode(teiDocument,cut=false) {
             const end = start + node.nodeSize
             const slice = doc.slice(start,end)
             const clips = serializeForClipboard(editorView,slice)
-            fairCopy.services.copyToClipBoardHTML(clips.dom.innerHTML)
+            fairCopy.copyToClipBoardHTML(clips.dom.innerHTML)
             if( cut ) {
                 const {tr} = editorView.state
                 tr.delete(start,end)

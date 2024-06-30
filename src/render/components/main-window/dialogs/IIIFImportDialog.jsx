@@ -131,7 +131,7 @@ export default class IIIFImportDialog extends Component {
         }
 
         const importList = Object.values(importItems)
-        fairCopy.services.ipcSend('requestIIIFImport', importList )
+        fairCopy.ipcSend('requestIIIFImport', importList )
 
         onClose()
     }

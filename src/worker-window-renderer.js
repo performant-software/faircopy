@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './render/components/App';
+import WorkerWindow from './render/components/worker-window/WorkerWindow';
 
-ReactDOM.render(<App rootComponent="WorkerWindow"/>, document.getElementById('root'));
+ReactDOM.render(<WorkerWindow/>, document.getElementById('root'));

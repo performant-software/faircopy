@@ -5,7 +5,7 @@ import { TextSelection } from "prosemirror-state"
 const fairCopy = window.fairCopy
 
 export function searchProject( searchQuery ) {
-    fairCopy.services.ipcSend('searchProject', searchQuery)
+    fairCopy.ipcSend('searchProject', searchQuery)
 }
 
 export function searchResource( resource, searchQuery ) {
