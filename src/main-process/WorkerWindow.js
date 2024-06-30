@@ -1,5 +1,5 @@
-const { BrowserWindow, ipcMain, app } = require('electron')
-const path = require('node:path')
+const { BrowserWindow, ipcMain } = require('electron')
+const { getWebpackEntry, getWebpackPreload } = require('./webpack-envs')
 
 class WorkerWindow {
     constructor(baseDir, debug, workerID, messageHandler) {
@@ -18,30 +18,23 @@ class WorkerWindow {
         if( wid === this.workerID ) this.close()
     }
 
-    async start( workerData ) {
-    
+    async start( workerData ) {    
         ipcMain.on('worker-window-message', this.messageForwarder)
         ipcMain.on('close-worker-window', this.closeMessageHandler)
+        const webpackPreloadPath = getWebpackPreload('worker_window')
 
-        const rendererDir = `/app.asar/.webpack/renderer/worker_window`
-
-        let preload
-        if( app.isPackaged ) {
-          preload = path.join(this.baseDir, `${rendererDir}/preload.js`)
-        } else {
-          preload = path.join(this.baseDir, 'faircopy-preload.js')
-        }
-     
         this.workerWindow = new BrowserWindow({
-            show: false,
+            show: true,
             webPreferences: {
-                preload,
+                partition: 'faircopy:render',
+                preload: webpackPreloadPath,
                 nodeIntegration: true,
                 contextIsolation: false,
                 enableRemoteModule: true,
             }
         })
-        if( this.debug ) this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
+        // if( this.debug ) 
+            this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
 
         this.workerWindow.on('closed', () => {
             this.workerWindow = null
@@ -49,12 +42,8 @@ class WorkerWindow {
             ipcMain.removeListener('close-worker-window', this.closeMessageHandler)
         })
         
-        // if( app.isPackaged ) {
-        //     const html = path.join(this.baseDir, `${rendererDir}/index.html`)
-        //     await this.workerWindow.loadFile(html)
-        // } else {
-            await this.workerWindow.loadURL(WORKER_WINDOW_WEBPACK_ENTRY);
-        // }
+        const webpackEntryURL = getWebpackEntry('worker_window')
+        await this.workerWindow.loadURL(webpackEntryURL);
         this.workerWindow.webContents.send('init', { workerID: this.workerID, workerData }) 
     }
 

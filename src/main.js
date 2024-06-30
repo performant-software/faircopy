@@ -1,7 +1,6 @@
 // Modules to control application life and create native browser window
-const { app, session } = require('electron')
+const { app, protocol } = require('electron')
 const { FairCopyApplication } = require('./main-process/FairCopyApplication')
-const { protocol } = require('electron')
 const log = require('electron-log')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -9,11 +8,9 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const partition = 'persist:example'
-const ses = session.fromPartition(partition)
-ses.protocol.registerSchemesAsPrivileged([
+protocol.registerSchemesAsPrivileged([
   { scheme: 'https', privileges: { bypassCSP: true } }, 
-  { scheme: 'file', privileges: { bypassCSP: true } }
+  { scheme: 'ec', privileges: { bypassCSP: true } }
 ])
 
 // Keep a global reference of the window object, if you don't, the window will

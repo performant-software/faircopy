@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, shell, session } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
+const { getWebpackEntry, getWebpackPreload } = require('./webpack-envs')
 const fs = require('fs')
-const path = require('node:path')
 const Jimp = require("jimp")
 const log = require('electron-log')
 
@@ -40,14 +40,12 @@ class FairCopyApplication {
   }
 
   initFileProtocol() {
-    const partition = 'persist:example'
-    const ses = session.fromPartition(partition)
-
-    ses.protocol.handle('file', async (request) => {
+    const ses = session.fromPartition('faircopy:render')
+    ses.protocol.handle('ec', async (request) => {
       const url = request.url
       console.log(`handling request: ${url}`)
       // handle editioncrafter asset requests
-      if( url.startsWith('file://ec')) {
+      if( url.startsWith('ec://ec')) {
         const content = this.fairCopySession.requestEditionCrafterData(url)
         return new Response(content, {
           headers: { 'content-type': 'text/html' }
@@ -372,16 +370,8 @@ class FairCopyApplication {
   }
 
   async createWindow(windowName, width, height, resizable, backgroundColor, menuBar, devTools ) {
-    const rendererDir = `/app.asar/.webpack/renderer/${windowName}`
-    let preload
-    if( app.isPackaged ) {
-      preload = path.join(this.baseDir, `${rendererDir}/preload.js`)
-    } else {
-      preload = path.join(this.baseDir, 'faircopy-preload.js')
-    }
-    
-    log.info(`looking for preload: ${preload}`)
-    log.info(`env preload: ${PROJECT_WINDOW_PRELOAD_WEBPACK_ENTRY}`)
+
+    const webpackPreloadPath = getWebpackPreload(windowName)
 
     // Create the browser window.
     const browserWindow = new BrowserWindow({
@@ -390,12 +380,12 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
+          partition: 'faircopy:render',
           webSecurity: false,
-          partition: 'persist:example',
           nodeIntegration: true,
           contextIsolation: false,
           enableRemoteModule: true,
-          preload: PROJECT_WINDOW_PRELOAD_WEBPACK_ENTRY,
+          preload: webpackPreloadPath,
           spellcheck: false
       },
 
@@ -404,43 +394,13 @@ class FairCopyApplication {
       backgroundColor
     })
 
-    log.info(`constructed window: ${PROJECT_WINDOW_WEBPACK_ENTRY}`)
-
-    // and load the index.html of the app.
-    // if( app.isPackaged ) {
-    //   const html = path.join(this.baseDir, `${rendererDir}/index.html`)
-    //   log.info(`loading from file: ${html}`)
-    //   await browserWindow.loadFile(html)
-    // } else {
-      try {
-        log.info('loading from url')
-        switch( windowName ) {
-          case 'main_window':
-            await browserWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-            break
-          case 'project_window':
-            await browserWindow.loadURL(PROJECT_WINDOW_WEBPACK_ENTRY);
-            break
-          case 'preview_window':
-            await browserWindow.loadURL(PREVIEW_WINDOW_WEBPACK_ENTRY);
-            break
-          case 'image_window':
-            await browserWindow.loadURL(IMAGE_WINDOW_WEBPACK_ENTRY);
-            break
-        }  
-      }
-      catch(e) {
-        log.info(`Error opening window: ${e}`)
-      }
-    // }
-
+    const webpackEntryURL = getWebpackEntry(windowName)
+    await browserWindow.loadURL(webpackEntryURL) 
     log.info(`Opened window.`)
 
     // Open the DevTools.
-    // if( !app.isPackaged ) {
-      // if( devTools ) 
-        browserWindow.webContents.openDevTools();
-    // }
+    // if( !app.isPackaged && devTools ) 
+      browserWindow.webContents.openDevTools({ mode: 'bottom'})
     
     return browserWindow
   }
