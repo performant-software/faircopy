@@ -272,9 +272,6 @@ async function openArchive(postMessage,workerData) {
     const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
     const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
 
-    // load EditionCrafter templates
-    initTemplates(fs)
-
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
     postMessage({ messageType: 'project-data', project })
