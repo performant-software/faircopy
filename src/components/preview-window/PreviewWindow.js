@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import Parser from './Parser'
 import domToReact from 'html-react-parser/lib/dom-to-react';
+import EditionCrafter from '@cu-mkp/editioncrafter'
 
-import { Button } from '@material-ui/core'
+import { Button, ButtonGroup } from '@material-ui/core'
 import { bigRingSpinner } from '../common/ring-spinner'
 import TitleBar from '../main-window/TitleBar'
 
@@ -10,22 +11,34 @@ const fairCopy = window.fairCopy
 
 export default class PreviewWindow extends Component {
 
-    constructor() {
+    constructor(props) {
         super()
+        const { resourceEntry, layers, layerID, projectCSS } = props
+        if( projectCSS ) {
+            updateStyleSheet(projectCSS)
+        }
         this.state = {
-            resourceEntry: null,
-            teiDocHTML: null,
-            projectCSS: ""
+            resourceEntry, layers, layerID,
+            mode: 'reading'
         }	
     }
 
     onUpdate = (e, previewData) => {
-        const projectCSS = previewData?.projectCSS
-        const teiDocHTML = previewData?.teiDocXML ? convertToHTML(previewData.teiDocXML) : null
+        const projectCSS = previewData.projectCSS
+        const surfaceID = previewData.surfaceID
+        const { resourceEntry, layers, layerID } = previewData
+
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
         }
-        this.setState({ ...this.state, ...previewData, teiDocHTML })
+
+        if( surfaceID ) {
+            window.location.assign(`#/ec/${surfaceID}/f/${surfaceID}/${layerID}`)
+        } else {
+            window.location.assign(`#/ec`)
+        }
+
+        this.setState({...this.state, resourceEntry, layers, layerID, surfaceID })
     }
 
     componentDidMount() {
@@ -44,43 +57,62 @@ export default class PreviewWindow extends Component {
         )
     }
 
-
     renderToolbar() {
+        const { mode } = this.state
+
         const textButtonProps = {
             className: 'toolbar-button',
             disableRipple: true,
-            disableFocusRipple: true,
-            variant: "outlined",
-            size: 'small',      
+            disableFocusRipple: true
         }
 
+        const onReading = () => { this.setState({...this.state, mode: 'reading'} )}
+        const onDocumentary = () => { this.setState({...this.state, mode: 'documentary'} )}
+        const readingSelected = mode === 'reading' ? { variant: "contained" } : {}
+        const docSelected = mode === 'documentary' ? { variant: "contained" } : {}
+
         return (
-            <div className="toolbar">
-                <Button {...textButtonProps}>test</Button>
+            <div className="toolbar">                
+                <ButtonGroup className="mode-buttons" color="primary" aria-label="outlined primary button group">
+                    <Button {...textButtonProps } { ...readingSelected } onClick={onReading}>Reading</Button>
+                    <Button {...textButtonProps } { ...docSelected } onClick={onDocumentary}>Documentary</Button>    
+                </ButtonGroup>
             </div>
         )
     }
 
     render() {
-        const { resourceEntry, teiDocHTML } = this.state
-        if(!resourceEntry || !teiDocHTML ) return this.renderSpinner()
+        const { resourceEntry, layers, layerID, mode } = this.state
+        const { name: resourceName, localID } = resourceEntry
 
+        const iiifManifest = `file://ec/${localID}/iiif/manifest.json`
         const htmlToReactParserOptionsSide = htmlToReactParserOptions()
+        const { html } = layers[layerID]
+        const transcriptionTypes = {}
+        for( const layer of Object.keys(layers) ) {
+            transcriptionTypes[layer] = layers[layer].name
+        }
 
         return (
             <div id="PreviewWindow">
                 <TitleBar 
-                    resourceName={ resourceEntry.name } 
+                    resourceName={resourceName} 
                     isPreviewWindow={true}
                     currentView={'home'}
                 >
                 </TitleBar>
                 { this.renderToolbar() }
                 <div id='preview-viewer'>
-                    <Parser
-                        html={teiDocHTML}
-                        htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
-                    />
+                    { mode === 'documentary' && <EditionCrafter
+                        documentName={resourceName}
+                        transcriptionTypes={transcriptionTypes}
+                        iiifManifest={iiifManifest}
+                    /> }
+                    { mode === 'reading' && <div id="reading-view"><Parser
+                            html={html}
+                            htmlToReactParserOptionsSide={htmlToReactParserOptionsSide}
+                        /></div>
+                    }
                 </div>
             </div>
         )
@@ -109,58 +141,6 @@ function updateStyleSheet(projectCSS) {
     document.adoptedStyleSheets = [sheet]
 }
   
-function convertToHTML( xml ) {
-    try {
-        const doc = new DOMParser().parseFromString(xml,"text/xml")
-        const data = domToHTML5(doc.documentElement)
-        return data.outerHTML
-    } catch( err ) {
-        console.error(`ERROR ${err}: ${err.stack}`)
-    }
-    return null
-}
-
-
-// Converts the supplied XML DOM into HTML5 Custom Elements. 
-function domToHTML5(XML_dom){
-    const convertEl = (el) => {
-        // Elements with defined namespaces get the prefix mapped to that element. All others keep
-        // their namespaces and are copied as-is.
-        const prefix = 'tei';
-        const newElement = document.createElement(prefix + "-" + el.localName);
-        // Copy attributes; @xmlns, @xml:id, @xml:lang, and
-        // @rendition get special handling.
-        for (const att of Array.from(el.attributes)) {
-            if (att.name === "xmlns") {
-                newElement.setAttribute("data-xmlns", att.value); //Strip default namespaces, but hang on to the values
-            } else {
-                newElement.setAttribute(att.name, att.value);
-            }
-            if (att.name === "xml:id") {
-                newElement.setAttribute("id", att.value);
-            }
-            if (att.name === "xml:lang") {
-                newElement.setAttribute("lang", att.value);
-            }
-            if (att.name === "rendition") {
-                newElement.setAttribute("class", att.value.replace(/#/g, ""));
-            }
-        }
-
-        for (const node of Array.from(el.childNodes)){
-            if (node.nodeType === document.defaultView.Node.ELEMENT_NODE) {
-                newElement.appendChild(  convertEl(node)  );
-            }
-            else {
-                newElement.appendChild(node.cloneNode());
-            }
-        }
-        return newElement;
-    }
-
-    return convertEl(XML_dom);
-}
-
 function parseGraphic(domNode) {
     const src = domNode.attribs?.url;
     let desc = ""

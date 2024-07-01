@@ -1,24 +1,17 @@
-
-#PreviewWindow #preview-viewer {
+#PreviewWindow #reading-view {
   display: flex;
   width: calc( 100% - 100px );
   height: calc( 100% - 100px );
   overflow-y: scroll;
   position: fixed;
   background: white;
-  padding-left: 50px;
-  padding-right: 50px;
-  margin-bottom: 20px; 
+  padding: 50px;
   border-left: 3px solid #ddf8ff
 }
 
-
 #PreviewWindow .toolbar {
   margin-top: 10px;
+  padding-left: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid #bbb;
-}
- 
-#PreviewWindow .toolbar-button {
-  margin-left: 10px;
 }

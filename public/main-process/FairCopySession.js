@@ -551,6 +551,10 @@ class FairCopySession {
     requestExport(resourceEntries,path) {
         this.projectStore.requestExport(resourceEntries,path)
     }
+
+    requestEditionCrafterData(url) {
+        return this.projectStore.requestEditionCrafterData(url)
+    }
 }
 
 exports.FairCopySession = FairCopySession

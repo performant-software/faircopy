@@ -30,7 +30,7 @@ export default class ProjectNavigator extends Component {
       if( errorCount === 0 ) {
         return (
           <Tooltip title={`Resource is valid.`}>
-            <Icon aria-label="resource valid" className="fa-solid fa-circle-check" />
+            <Icon aria-label="resource valid" className="fa fa-solid fa-circle-check" />
           </Tooltip>
         )
       } else {

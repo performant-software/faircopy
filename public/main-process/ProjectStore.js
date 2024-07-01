@@ -6,7 +6,7 @@ const { app } = require('electron')
 const { compatibleProject, migrateConfig, migrateIDMap, migrateManifestData } = require('./data-migration')
 const { SearchIndex } = require('./SearchIndex')
 const { WorkerWindow } = require('./WorkerWindow')
-const { serializeResource } = require('./serialize-xml')
+const { EditionCrafterServer } = require('./EditionCrafterServer')
 
 const manifestEntryName = 'faircopy-manifest.json'
 const configSettingsEntryName = 'config-settings.json'
@@ -19,6 +19,7 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
+        this.editionCrafterServer = new EditionCrafterServer()
     }
 
     initProjectArchiveWorker( baseDir, debug, projectFilePath ) {
@@ -47,23 +48,25 @@ class ProjectStore {
                         this.searchIndex.indexResource( resourceID, resourceEntry.type, resource )  
                     }
                     break
-                case 'export-resource':
+                case 'exported-resource':
                     {
-                        const { resourceData, error, path } = msg
+                        const { error, path } = msg
                         if( error ) {
-                            // TODO send back error message
+                            log.info(`Error exporting resources to: ${path} ${error}`)
                         } else {
-                            this.exportResource(resourceData, path)
+                            log.info(`Exported resources to: ${path}`)
                         }
                     }
                     break
                 case 'preview-resource':
                     {
-                        const { resourceData, previewData, error } = msg
+                        const { previewData, ecData, error } = msg
                         if( error ) {
-                            // TODO send back error message
+                            log.info(`Error previewing resource: ${error}`)
                         } else {
-                            this.previewResource(resourceData, previewData)
+                            const teiDocumentID = previewData.resourceEntry.localID
+                            this.editionCrafterServer.addTEIDocument(teiDocumentID,ecData)
+                            this.fairCopyApplication.createPreviewWindow(previewData).then(() => {})
                         }
                     }
                     break  
@@ -170,29 +173,7 @@ class ProjectStore {
             return idMap
         }
     }
-    previewResource(resourceData, previewData) {
-        try {
-            const teiDocXML = serializeResource(resourceData,false)
-            const previewDataWithXML = { ...previewData, teiDocXML }
-            this.fairCopyApplication.openPreview(previewDataWithXML)    
-        } catch(e) {
-            log.error(e)
-        }
-    }
-
-    exportResource(resourceData, path) {       
-        const { resourceEntry } = resourceData
-        const { localID } = resourceEntry
-        const filePath = `${path}/${localID}.xml`
-        try {
-            const xml = serializeResource(resourceData)
-            fs.writeFileSync(filePath,xml)    
-            log.info(`Export resources to: ${path}`)
-        } catch(e) {
-            log.error(e)
-        }
-    }
-
+    
     async importStart(paths,options) {
         this.importRunning(true)
         const importList = []
@@ -260,6 +241,10 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: id, data: resourceData })
         if( this.searchIndex ) this.searchIndex.indexResource(id, type, resourceData )
         this.save()
+    }
+    
+    requestEditionCrafterData( url ) {
+        return this.editionCrafterServer.processRequest(url)
     }
 
     requestIndex( resourceID ) {

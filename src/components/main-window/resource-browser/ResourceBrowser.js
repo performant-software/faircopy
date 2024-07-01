@@ -337,7 +337,6 @@ export default class ResourceBrowser extends Component {
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
   
     return (
-      <Paper >
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
                   <caption>{tableCaption}</caption>
@@ -355,16 +354,15 @@ export default class ResourceBrowser extends Component {
                       { resourceRows }
                   </TableBody>
               </Table>
-          </TableContainer>
-          <TablePagination
+              <TablePagination
               component="div"
               rowsPerPageOptions={[rowsPerPage]}
               count={totalRows}
               rowsPerPage={rowsPerPage}
               page={currentPage-1}
               onPageChange={onChangePage}
-          />
-      </Paper>
+            />
+          </TableContainer>
   )
   }
 

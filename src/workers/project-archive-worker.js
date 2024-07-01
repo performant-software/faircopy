@@ -1,9 +1,16 @@
 import { getAuthToken } from '../model/cloud-api/auth'
 import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
+import { serializeResource } from "../model/serialize-xml"
+import { initTemplates, renderTEIDocument } from "../model/editioncrafter/render"
 
 const fairCopy = window.fairCopy
 const JSZip = fairCopy.services.JSZip
+
+// EditionCrafter options
+const thumbnailWidth = 124
+const thumbnailHeight = 192
+const baseURL = 'file://ec'
 
 // Worker state
 let projectArchiveState = { open: false, jobQueue: [] }
@@ -224,6 +231,39 @@ function saveArchive(startTime, zipPath, zip, callback) {
         });
 }
 
+function exportResource(resourceData, path) {       
+    const { resourceEntry } = resourceData
+    const { localID } = resourceEntry
+    const filePath = `${path}/${localID}.xml`
+    try {
+        const xml = serializeResource(resourceData)
+        const fs = fairCopy.getFs()
+        fs.writeFileSync(filePath,xml)    
+    } catch(e) {
+        // log.error(e)
+    }
+}
+
+function previewResource(resourceData) {
+    const teiDocXML = serializeResource(resourceData,false)
+    const teiDocumentID = resourceData.resourceEntry.localID
+    const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
+    const ecData = renderTEIDocument(teiDocXML, renderOptions)
+    const layers = {}
+    let layerID
+    const { childEntries } = resourceData
+    for( const childEntry of childEntries ) {
+        if( childEntry.type === 'text' || childEntry.type === 'sourceDoc') {
+            const {name, localID} = childEntry
+            const html = ecData.resources[localID].html
+            layers[localID] = { name, html }
+            // first layer found is default layerID
+            if( !layerID ) layerID = localID
+        }
+    }
+    return { layers, layerID, ecData }
+}
+
 async function openArchive(postMessage,workerData) {
     const fs = fairCopy.services.getFs()
     const { projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName } = workerData
@@ -239,6 +279,9 @@ async function openArchive(postMessage,workerData) {
 
     const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
     const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
+
+    // load EditionCrafter templates
+    initTemplates(fs)
 
     // send initial project data back to project store
     const project = { fairCopyManifest, fairCopyConfig, idMap, projectFilePath }
@@ -333,7 +376,8 @@ export function projectArchive( msg, workerMethods, workerData ) {
             {
                 const { resourceEntry, projectData, path } = msg
                 prepareResourceExport(resourceEntry,projectData,zip).then( resourceData => {
-                    postMessage({ messageType: 'export-resource', resourceData, path })
+                    exportResource(resourceData, path)
+                    postMessage({ messageType: 'exported-resource', path })
                 })
             }
             break    
@@ -344,7 +388,10 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     if( resp.error ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
-                        postMessage({ messageType: 'preview-resource', previewData, resourceData: resp })
+                        const { ecData, layers, layerID } = previewResource(resp)
+                        previewData.layers = layers
+                        previewData.layerID = previewData.layerID ? previewData.layerID : layerID
+                        postMessage({ messageType: 'preview-resource', previewData, ecData })
                     }
                 })
             }

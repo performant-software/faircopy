@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app } = require('electron')
+const { app, protocol } = require('electron')
 const { FairCopyApplication } = require('./main-process/FairCopyApplication')
 const log = require('electron-log')
 
