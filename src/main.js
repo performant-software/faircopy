@@ -10,7 +10,13 @@ if (require('electron-squirrel-startup')) {
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'https', privileges: { bypassCSP: true } }, 
-  { scheme: 'ec', privileges: { bypassCSP: true } }
+  { scheme: 'ec', privileges: { 
+      bypassCSP: true,
+      standard: true,
+      secure: true,
+      supportFetchAPI: true, 
+    } 
+  }
 ])
 
 // Keep a global reference of the window object, if you don't, the window will
