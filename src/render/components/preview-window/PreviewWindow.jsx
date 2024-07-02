@@ -87,7 +87,7 @@ export default class PreviewWindow extends Component {
 
         const iiifManifest = `ec://ec/${localID}/iiif/manifest.json`
         const htmlToReactParserOptionsSide = htmlToReactParserOptions()
-        const { html } = layers[layerID]
+        const html = layers[layerID] ? layers[layerID].html : "" 
         const transcriptionTypes = {}
         for( const layer of Object.keys(layers) ) {
             transcriptionTypes[layer] = layers[layer].name
