@@ -1,5 +1,4 @@
 const { ipcRenderer } = require("electron");
-const path = require('path');
 
 window.fairCopy = {
     getFs: function() {
@@ -26,10 +25,6 @@ window.fairCopy = {
 
     ipcSend: ( eventID, ...params) => {
         ipcRenderer.send(eventID,...params)
-    },
-
-    getBasename: ( mypath, ext ) => {
-        return path.basename(mypath,ext)
     },
 
     getPlatform: () => {
