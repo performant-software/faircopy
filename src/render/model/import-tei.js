@@ -1,7 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid'
 import axios from 'axios';
-import getPathBasename from '../components/common/parse-path'
+import {getPathBasename} from './parse-path'
 
 import TEIDocument from "./TEIDocument"
 import {learnDoc} from "./faircopy-config"

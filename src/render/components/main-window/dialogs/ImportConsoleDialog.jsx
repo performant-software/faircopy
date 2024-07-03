@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import getPathBasename from '../../common/parse-path'
+import {getPathBasename} from '../../../model/parse-path'
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 
