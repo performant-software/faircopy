@@ -1,5 +1,5 @@
-const { createIDMapAuthority } = require('../public/main-process/IDMapAuthority')
-const { getBlankResourceMap } = require('../public/main-process/id-map-authority')
+const { createIDMapAuthority } = require('../src/main-process/IDMapAuthority')
+const { getBlankResourceMap } = require('../src/main-process/id-map-authority')
 const { v4: uuidv4 } = require('uuid')
 
 describe('test local move resource', () => {

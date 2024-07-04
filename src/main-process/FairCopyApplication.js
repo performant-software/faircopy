@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, shell, session } = require('electron')
+const { app, BrowserWindow, ipcMain, shell, protocol } = require('electron')
 const { createProjectArchive } = require('./create-project-archive')
 const { MainMenu } = require('./MainMenu')
 const { getWebpackEntry, getWebpackPreload } = require('./webpack-envs')
@@ -40,8 +40,7 @@ class FairCopyApplication {
   }
 
   initFileProtocol() {
-    const ses = session.fromPartition('faircopy:render')
-    ses.protocol.handle('ec', async (request) => {
+    protocol.handle('ec', async (request) => {
       const url = request.url
       console.log(`handling request: ${url}`)
       // handle editioncrafter asset requests
@@ -380,7 +379,6 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
-          partition: 'faircopy:render',
           preload: webpackPreloadPath,
           spellcheck: false
       },
