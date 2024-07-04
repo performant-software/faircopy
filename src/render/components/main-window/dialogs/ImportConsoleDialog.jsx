@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import {getPathBasename} from '../../../model/parse-path'
 
+import {getPathBasename} from '../../../model/parse-path'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { inlineRingSpinner } from '../../common/ring-spinner'
 
 const fairCopy = window.fairCopy
 
@@ -141,7 +142,7 @@ export default class ImportConsoleDialog extends Component {
             >
                 <DialogTitle>
                     Import Console 
-                    { !done && <img className='spinner' alt='loading images' src='img/spinner.gif'></img> }
+                    { !done && inlineRingSpinner('dark') }
                 </DialogTitle>
                 <DialogContent>
                     <div ref={onRef} className='import-console'>

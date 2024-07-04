@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { Button, Typography } from '@material-ui/core'
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
+import { inlineRingSpinner } from '../../common/ring-spinner'
 
 const fairCopy = window.fairCopy
 
@@ -40,7 +41,7 @@ export default class AddImageDialog extends Component {
             <div>
                 { spinner ? 
                     <div>
-                        <img className='spinner' alt='loading images' src='img/spinner.gif'></img>
+                        { inlineRingSpinner('dark') }
                     </div> : 
                     <div>
                         <Typography>{imagesData.length} file{s} selected.</Typography>
