@@ -26,7 +26,6 @@ class WorkerWindow {
         this.workerWindow = new BrowserWindow({
             show: false,
             webPreferences: {
-                partition: 'faircopy:render',
                 preload: webpackPreloadPath,
                 nodeIntegration: true,
                 contextIsolation: false,
