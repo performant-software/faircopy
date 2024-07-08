@@ -202,15 +202,12 @@ export default class FacsDocument {
                 this.save()
                 targetFacsDoc.save()
         
-                // stop listening
-                fairCopy.ipcRemoveListener('resourceOpened', resourceOpened )
-
                 onMoved(true)
             }
         }
 
         // before we move things, we need to load the targetFacs
-        fairCopy.ipcRegisterCallback('resourceOpened', resourceOpened )
+        fairCopy.ipcRegisterCallbackOnce('resourceOpened', resourceOpened )
         fairCopy.ipcSend('openResource', targetFacs.id )        
     }
 

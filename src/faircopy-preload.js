@@ -23,6 +23,10 @@ contextBridge.exposeInMainWorld(
             ipcRenderer.on(eventID,callback)
         },
 
+        ipcRegisterCallbackOnce: ( eventID, callback ) => {
+            ipcRenderer.once(eventID,callback)
+        },
+
         ipcRemoveListener: ( eventID, callback ) => {
             ipcRenderer.removeListener(eventID,callback)
         },
