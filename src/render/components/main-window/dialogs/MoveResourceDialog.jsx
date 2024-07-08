@@ -137,7 +137,7 @@ export default class MoveResourceDialog extends Component {
                 aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="move-resource-dialog">Move Resources ({movingItems.length})</DialogTitle>
+                <DialogTitle id="move-resource-dialog">Copy Resources ({movingItems.length})</DialogTitle>
                 <DialogContent>
                     <Typography>Select a destination for these resources: </Typography>
                     { this.renderTable() }
