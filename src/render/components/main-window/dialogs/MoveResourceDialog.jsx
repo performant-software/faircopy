@@ -4,29 +4,19 @@ import { Button, TableRow, TableCell, TableContainer, TableHead, Table, TableBod
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 import { getResourceIcon, getResourceIconLabel } from '../../../model/resource-icon';
 
-const fairCopy = window.fairCopy
-
 export default class MoveResourceDialog extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            targetID: null,
-            moveTargets: []
+            targetID: null
         }
     }
 
-    componentDidMount() {
-        fairCopy.ipcRegisterCallback('localResources', this.onLocalResources )
-        fairCopy.ipcSend('requestLocalResources')
-    }
+    getMoveTargets = () => {
+        const { resourceType, localResources } = this.props
 
-    componentWillUnmount() {
-        fairCopy.ipcRemoveListener('localResources', this.onLocalResources )
-    }
-
-    onLocalResources = (event,localResources) => {
-        const { resourceType } = this.props
+        if( !localResources ) return []
 
         const moveTargets = []
         for( const resourceEntry of Object.values(localResources) ) {
@@ -35,7 +25,8 @@ export default class MoveResourceDialog extends Component {
                 moveTargets.push(resourceEntry)
             }
         }
-        this.setState({...this.state, moveTargets })
+
+        return moveTargets
     }
 
     renderRow(resource) {
@@ -89,7 +80,7 @@ export default class MoveResourceDialog extends Component {
 
     renderTable() {
         const { allowRoot } = this.props
-        const { moveTargets } = this.state
+        const moveTargets = this.getMoveTargets()
 
         const rows = []
         if( allowRoot ) {
@@ -119,7 +110,8 @@ export default class MoveResourceDialog extends Component {
 
     onClickMove = () => {
         const { onClose, movingItems, onMove } = this.props
-        const { targetID, moveTargets } = this.state
+        const { targetID } = this.state
+        const moveTargets = this.getMoveTargets()
 
         const parentEntry = targetID === 'ROOT' ? null : moveTargets.find( r => r.id === targetID )
         onMove( movingItems, parentEntry )

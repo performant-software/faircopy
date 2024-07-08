@@ -20,7 +20,6 @@ export default class CheckInDialog extends Component {
         super()
         this.initialState = {
             message: "",
-            resourcesToCommit: [],
             committedResources: [],
             status: 'ready',
             resourceStatus: null,
@@ -30,28 +29,26 @@ export default class CheckInDialog extends Component {
     }
 
     componentDidMount() {
-        fairCopy.ipcRegisterCallback('localResources', this.onLocalResources )
         fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults )
-        fairCopy.ipcSend('requestLocalResources')
     }
 
     componentWillUnmount() {
-        fairCopy.ipcRemoveListener('localResources', this.onLocalResources )
         fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults )
     }
 
-    onLocalResources = (event,checkedOutResources) => {
-        const { checkInResources } = this.props
+    getResourcesToCommit() {
+        const { checkInResources, localResources } = this.props
         let resourcesToCommit = []
         for( const resourceID of checkInResources ) {
-            const resource = checkedOutResources[resourceID]
+            const resource = localResources[resourceID]
             // ignore resources that aren't checked out
             if( resource ) {
                 const { id: resourceID, type: resourceType, deleted } = resource                
                 if( resourceType === 'teidoc' ) {
                     // commit any checked out children, delete if parent is deleted
-                    for( const checkedOutResource of Object.values(checkedOutResources) ) {
+                    for( const checkedOutResource of Object.values(localResources) ) {
                         if( resourceID === checkedOutResource.parentResource ) {
+                            // TODO refactor so that it doesn't mutate local resource
                             if( deleted ) checkedOutResource.deleted = true
                             resourcesToCommit.push(checkedOutResource) 
                         }
@@ -60,7 +57,7 @@ export default class CheckInDialog extends Component {
                 resourcesToCommit.push(resource)    
             }
         }
-        this.setState({...this.state, resourcesToCommit })
+        return resourcesToCommit
     }
 
     onCheckInResults = (event, checkInResult) => {
@@ -74,8 +71,8 @@ export default class CheckInDialog extends Component {
 
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourcesToCommit, resourceStatus, status } = this.state
-
+        const { committedResources, resourceStatus, status } = this.state
+        const resourcesToCommit = this.getResourcesToCommit()
         const responseReceived = status === 'done'
         const resourceList = responseReceived ? committedResources : resourcesToCommit
         const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
@@ -136,7 +133,9 @@ export default class CheckInDialog extends Component {
     onCheckIn = () => {              
         const { fairCopyProject } = this.props
         const { userID, serverURL, projectID } = fairCopyProject
-        const { message, resourcesToCommit } = this.state   
+        const { message } = this.state   
+        const resourcesToCommit = this.getResourcesToCommit()
+
         if( message.length > 0 ) {
             const resourceIDs = resourcesToCommit.map( r => r.id )
             this.setState({ ...this.state, status: 'loading' }) 

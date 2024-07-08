@@ -445,7 +445,8 @@ class ProjectStore {
         this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
     }
 
-    getLocalResources() {
+    // send a list of the local resources to main window
+    sendLocalResources() {
         const resourceEntries = Object.values( this.manifestData.resources )
 
         const localResources = {}
@@ -454,7 +455,7 @@ class ProjectStore {
                 localResources[resourceEntry.id] = resourceEntry
             }
         }
-        return localResources
+        this.fairCopyApplication.sendToMainWindow('localResources', localResources )
     }
 }
 

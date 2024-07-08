@@ -60,6 +60,7 @@ class FairCopySession {
         }
 
         this.requestResourceView()
+        this.projectStore.sendLocalResources()
     }
 
     closeProject() {
@@ -324,11 +325,6 @@ class FairCopySession {
 
             this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex } )
         }
-    }
-
-    requestLocalResources() {
-        const localResources = this.projectStore.getLocalResources()
-        this.fairCopyApplication.sendToAllWindows('localResources', localResources )
     }
 
     sendResourceViewUpdate(resourceView, remoteResources) {
