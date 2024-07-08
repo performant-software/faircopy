@@ -47,8 +47,7 @@ export default class CheckInDialog extends Component {
                 if( resourceType === 'teidoc' ) {
                     // commit any checked out children, delete if parent is deleted
                     for( const checkedOutResource of Object.values(localResources) ) {
-                        if( resourceID === checkedOutResource.parentResource ) {
-                            // TODO refactor so that it doesn't mutate local resource
+                        if( resourceID === checkedOutResource.parentResource ) {                            
                             if( deleted ) checkedOutResource.deleted = true
                             resourcesToCommit.push(checkedOutResource) 
                         }
