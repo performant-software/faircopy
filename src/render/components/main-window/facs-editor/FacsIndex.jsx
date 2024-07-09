@@ -44,7 +44,7 @@ export default class FacsIndex extends Component {
         const menuOptions = [
             {
                 id: 'move',
-                label: 'Move',
+                label: 'Copy',
                 action: () => {
                     const { facsDocument } = this.props
 

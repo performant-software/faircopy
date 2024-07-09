@@ -8,11 +8,14 @@ import AlertDialog from '../main-window/dialogs/AlertDialog'
 import EditSurfaceInfoDialog from '../main-window/dialogs/EditSurfaceInfoDialog'
 import MoveResourceDialog from '../main-window/dialogs/MoveResourceDialog'
 
+const fairCopy = window.fairCopy
+
 export default class ImageWindow extends Component {
 
     constructor() {
         super()
         this.state = {
+            localResources: [],
             editDialogMode: false,
             addImagesMode: false,
             popupMenuOptions: null, 
@@ -27,11 +30,17 @@ export default class ImageWindow extends Component {
     componentDidMount() {
         const { imageView } = this.props
         imageView.addUpdateListener(this.updateListener)
+        fairCopy.ipcRegisterCallback('localResources', this.onLocalResources )
     }
     
     componentWillUnmount() {
         const { imageView } = this.props
         imageView.removeUpdateListener(this.updateListener)
+        fairCopy.ipcRemoveListener('localResources', this.onLocalResources )
+    }
+
+    onLocalResources = (event,localResources) => {
+        this.setState({...this.state, localResources })
     }
 
     updateListener = () => { this.setState({...this.state}) }
@@ -103,7 +112,7 @@ export default class ImageWindow extends Component {
 
         if(!imageView || imageView.facsDocument.loading ) return null
         const { facsDocument, resourceEntry, parentEntry, idMap, startingID } = imageView
-        const { editDialogMode, addImagesMode, popupMenuAnchorEl, moveResourceMode, moveResourceProps, popupMenuOptions, surfaceInfo, editSurfaceInfoMode } = this.state
+        const { editDialogMode, addImagesMode, popupMenuAnchorEl, moveResourceMode, moveResourceProps, popupMenuOptions, surfaceInfo, editSurfaceInfoMode, localResources } = this.state
 
         const startIndex = facsDocument.getIndex(startingID)
 
@@ -137,6 +146,7 @@ export default class ImageWindow extends Component {
                 ></AddImageDialog> }
                 { moveResourceMode && <MoveResourceDialog
                     { ...moveResourceProps }
+                    localResources={localResources}
                     onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceProps: null, popupMenuOptions: null, popupMenuAnchorEl: null} )}}
                 ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu

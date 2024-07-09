@@ -119,10 +119,11 @@ export default class MoveResourceDialog extends Component {
     }
 
     render() {      
-        const { onClose, onMoved, movingItems } = this.props
+        const { onClose, onMoved, movingItems, resourceType } = this.props
         const { targetID } = this.state
 
         const moveDisabled = (targetID === null)
+        const moveLabel = resourceType === 'facs' ? "Copy" : "Move"
 
         const onClickClose = () => {
             if( onMoved ) onMoved(false)
@@ -137,7 +138,7 @@ export default class MoveResourceDialog extends Component {
                 aria-labelledby="move-resource-dialog"
                 aria-describedby="edit-resource-description"
             >
-                <DialogTitle id="move-resource-dialog">Copy Resources ({movingItems.length})</DialogTitle>
+                <DialogTitle id="move-resource-dialog">{moveLabel} Resources ({movingItems.length})</DialogTitle>
                 <DialogContent>
                     <Typography>Select a destination for these resources: </Typography>
                     { this.renderTable() }

@@ -458,6 +458,7 @@ class FairCopySession {
         }
         const imageView = this.fairCopyApplication.imageViews[resourceEntry.id]
         imageView.webContents.send('imageViewOpened', imageViewData )    
+        this.projectStore.sendLocalResources()
     }
 
     importStart(paths,options) {

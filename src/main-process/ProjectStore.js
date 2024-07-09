@@ -456,7 +456,7 @@ class ProjectStore {
                 localResources[resourceEntry.id] = resourceEntry
             }
         }
-        this.fairCopyApplication.sendToMainWindow('localResources', localResources )
+        this.fairCopyApplication.sendToAllWindows('localResources', localResources )
     }
 }
 
