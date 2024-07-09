@@ -212,7 +212,7 @@ export default class FacsDocument {
             // make sure this is the document we are waiting for
             if( resourceEntry.id === targetFacs.id ) {
                 const targetFacsDoc = new FacsDocument( resourceEntry, parentEntry, this.imageViewContext, resource )
-                const targetSurfaceList = targetFacs.surfaces
+                const targetSurfaceList = targetFacsDoc.facs.surfaces
                 const { idMap } = this.imageViewContext
 
                 // add the surfaces to the target facs
