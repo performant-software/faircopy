@@ -23,11 +23,13 @@ export default class FacsIndex extends Component {
 
     componentDidMount() {
         const { facsDocument } = this.props
+        this._ismounted = true;
         facsDocument.addUpdateListener(this.updateListener)
     }
     
     componentWillUnmount() {
         const { facsDocument } = this.props
+        this._ismounted = false;
         facsDocument.removeUpdateListener(this.updateListener)
     }
 
@@ -42,7 +44,7 @@ export default class FacsIndex extends Component {
         const menuOptions = [
             {
                 id: 'move',
-                label: 'Move',
+                label: 'Copy',
                 action: () => {
                     const { facsDocument } = this.props
 
@@ -54,7 +56,7 @@ export default class FacsIndex extends Component {
                         }
                     }
                     onMoveSurfaces( facsDocument, movingSurfaces, (moved) => {
-                        if(moved) {
+                        if(moved && this._ismounted) {
                             this.setState({ ...this.state, checked: {}, allChecked: false })
                         }
                     })

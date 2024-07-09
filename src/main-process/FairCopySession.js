@@ -60,6 +60,7 @@ class FairCopySession {
         }
 
         this.requestResourceView()
+        this.projectStore.sendLocalResources()
     }
 
     closeProject() {
@@ -326,11 +327,6 @@ class FairCopySession {
         }
     }
 
-    requestLocalResources() {
-        const localResources = this.projectStore.getLocalResources()
-        this.fairCopyApplication.sendToAllWindows('localResources', localResources )
-    }
-
     sendResourceViewUpdate(resourceView, remoteResources) {
         const { resources: localResources } = this.projectStore.manifestData
         const { indexParentID, rowsPerPage, currentPage, totalRows } = resourceView
@@ -462,6 +458,7 @@ class FairCopySession {
         }
         const imageView = this.fairCopyApplication.imageViews[resourceEntry.id]
         imageView.webContents.send('imageViewOpened', imageViewData )    
+        this.projectStore.sendLocalResources()
     }
 
     importStart(paths,options) {

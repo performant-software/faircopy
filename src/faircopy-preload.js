@@ -23,11 +23,16 @@ contextBridge.exposeInMainWorld(
             ipcRenderer.on(eventID,callback)
         },
 
+        ipcRegisterCallbackOnce: ( eventID, callback ) => {
+            ipcRenderer.once(eventID,callback)
+        },
+
         ipcRemoveListener: ( eventID, callback ) => {
             ipcRenderer.removeListener(eventID,callback)
         },
 
         ipcSend: ( eventID, ...params) => {
+            console.log(`sending ${eventID} ${params}`)
             ipcRenderer.send(eventID,...params)
         },
 

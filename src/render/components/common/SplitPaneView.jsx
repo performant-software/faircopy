@@ -107,7 +107,7 @@ export class SplitPaneView extends Component {
     window.addEventListener('mousemove', this.onDrag);
     window.addEventListener('mouseup', this.onEndDrag);
     window.addEventListener('resize', this.onResize);
-    console.log(this.props);
+
     // Set the default width on mount
     if (this.props.onWidth) {
       const left_px = Math.floor(Math.abs(window.innerWidth * this.splitFraction));

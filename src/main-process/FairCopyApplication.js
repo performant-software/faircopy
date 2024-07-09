@@ -108,10 +108,6 @@ class FairCopyApplication {
     ipcMain.on('requestResourceView', (event, resourceViewRequest) => { 
       this.fairCopySession.updateResourceView(resourceViewRequest) 
     })
-
-    ipcMain.on('requestLocalResources', (event) => { 
-      this.fairCopySession.requestLocalResources() 
-    })
     
     ipcMain.on('searchProject', (event, searchQuery) => { 
       this.fairCopySession.searchProject(searchQuery)  

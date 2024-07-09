@@ -69,6 +69,7 @@ export default class MainWindow extends Component {
             resourceCheckmarks: {},
             resourceIndex: [],
             requestedResources: [],
+            localResources: [],
             resourceBrowserOpen: true,
             alertDialogMode: 'closed',
             alertOptions: null,
@@ -208,6 +209,7 @@ export default class MainWindow extends Component {
         fairCopy.ipcRegisterCallback('resourceEntryUpdated', this.onResourceEntryUpdated )
         fairCopy.ipcRegisterCallback('resourceContentUpdated', this.onResourceContentUpdated )
         fairCopy.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo )
+        fairCopy.ipcRegisterCallback('localResources', this.onLocalResources )
     }
 
     componentWillUnmount() {
@@ -219,6 +221,7 @@ export default class MainWindow extends Component {
         fairCopy.ipcRemoveListener('resourceEntryUpdated', this.onResourceEntryUpdated )
         fairCopy.ipcRemoveListener('resourceContentUpdated', this.onResourceContentUpdated )
         fairCopy.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo )
+        fairCopy.ipcRemoveListener('localResources', this.onLocalResources )
     }
 
     refreshWindow() {
@@ -390,6 +393,10 @@ export default class MainWindow extends Component {
         const { fairCopyProject } = this.props
         const { userID, serverURL, projectID } = fairCopyProject
         fairCopy.ipcSend('checkOut', userID, serverURL, projectID, resourceEntries )
+    }
+
+    onLocalResources = (event,localResources) => {
+        this.setState({...this.state, localResources })
     }
 
     onOpenPopupMenu = (popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement ) => {
@@ -794,7 +801,7 @@ export default class MainWindow extends Component {
     }
 
     renderDialogs() {
-        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, resourceViews } = this.state
+        const { editDialogMode, searchFilterMode, searchFilterOptions, moveResourceProps, checkInResources, checkOutMode, checkOutStatus, checkOutError, loginMode, checkInMode, addImagesMode, releaseNotesMode, dragInfo, draggingElementActive, moveResourceMode, editTEIDocDialogMode, openResources, selectedResource, localResources, resourceViews } = this.state
         
         const { fairCopyProject, appConfig } = this.props
         const { idMap, serverURL } = fairCopyProject
@@ -875,6 +882,7 @@ export default class MainWindow extends Component {
                 ></EditorDraggingElement> }
                 { moveResourceMode && <MoveResourceDialog
                     { ...moveResourceProps }
+                    localResources={localResources}
                     onClose={()=>{ this.setState( {...this.state, moveResourceMode: false, moveResourceProps: null} )}}
                 ></MoveResourceDialog> }
                 { popupMenuAnchorEl && <PopupMenu
@@ -900,6 +908,7 @@ export default class MainWindow extends Component {
                 { checkInMode && <CheckInDialog
                     fairCopyProject={fairCopyProject}
                     checkInResources={checkInResources}
+                    localResources={localResources}
                     onClose={()=>{ this.setState( {...this.state, checkInMode: false} )}}
                 ></CheckInDialog> }
                 { checkOutMode && <CheckOutDialog

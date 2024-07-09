@@ -173,6 +173,38 @@ export default class FacsDocument {
         this.save()
     }
 
+    duplicateSurface( surfaceIndex ) {
+        const surface = this.getSurface(surfaceIndex)
+        const { id, type, canvasURI, resourceEntryID, localLabels, width, height, mimeType, imageAPIURL, zones } = surface
+
+        const nextLocalLabels = {}
+        for( const localLabelKey of Object.keys(localLabels) ) {
+            nextLocalLabels[localLabelKey] = [ ...localLabels[localLabelKey] ]
+        }
+
+        const nextZones = []
+        for( const zone of zones ) {
+            const { id, coords, note } = zone
+            const { ulx, uly, lrx, lry } = coords
+            const nextCoords = { ulx, uly, lrx, lry }
+            nextZones.push({ id, coords: nextCoords, note })
+        }
+
+        const dupeSurface = {
+            id,
+            type,
+            canvasURI,
+            resourceEntryID,
+            localLabels: nextLocalLabels,
+            width,
+            height,
+            mimeType,
+            imageAPIURL,
+            zones: nextZones
+        }
+        return dupeSurface
+    }
+
     moveSurfaces( movingSurfaces, targetFacs, onMoved ) {
         const resourceOpened = (e, resourceData) => {
             const { resourceEntry, parentEntry, resource } = resourceData
@@ -180,37 +212,26 @@ export default class FacsDocument {
             // make sure this is the document we are waiting for
             if( resourceEntry.id === targetFacs.id ) {
                 const targetFacsDoc = new FacsDocument( resourceEntry, parentEntry, this.imageViewContext, resource )
-                const {surfaces} = this.facs 
+                const targetSurfaceList = targetFacsDoc.facs.surfaces
                 const { idMap } = this.imageViewContext
-                let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
 
-                // add the moving surfaces to the target facs
+                // add the surfaces to the target facs
                 for( const movingSurfaceIndex of movingSurfaces ) {
-                    const movingSurface = surfaces[movingSurfaceIndex]
-                    movingSurface.id = generateOrdinalID('f',nextSurfaceID++)
-                    targetFacsDoc.facs.surfaces.push(movingSurface)
+                    const dupeSurface = this.duplicateSurface(movingSurfaceIndex)
+                    if( targetSurfaceList.find( s => s.id === dupeSurface.id )) {
+                        let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
+                        dupeSurface.id = generateOrdinalID('f',nextSurfaceID++)
+                    }
+                    targetSurfaceList.push(dupeSurface)
                 }
-        
-                // remove the moving surfaces from this facs
-                const nextSurfaces = []
-                for( let i=0; i < surfaces.length; i++ ) {
-                    if( !movingSurfaces.includes(i) ) nextSurfaces.push(surfaces[i])
-                }
-                this.facs.surfaces = nextSurfaces
-        
-                // save the results
-                this.save()
-                targetFacsDoc.save()
-        
-                // stop listening
-                fairCopy.ipcRemoveListener('resourceOpened', resourceOpened )
-
+                
+                targetFacsDoc.save()        
                 onMoved(true)
             }
         }
 
         // before we move things, we need to load the targetFacs
-        fairCopy.ipcRegisterCallback('resourceOpened', resourceOpened )
+        fairCopy.ipcRegisterCallbackOnce('resourceOpened', resourceOpened )
         fairCopy.ipcSend('openResource', targetFacs.id )        
     }
 
