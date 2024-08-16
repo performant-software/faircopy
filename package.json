@@ -1,7 +1,7 @@
 {
   "name": "faircopy",
   "productName": "FairCopy",
-  "version": "1.2.0-dev.11",
+  "version": "1.2.0-dev.12",
   "description": "A word processor for the humanities scholar.",
   "main": "./.webpack/main",
   "private": true,

@@ -24,7 +24,7 @@ class WorkerWindow {
         const webpackPreloadPath = getWebpackPreload('worker_window')
 
         this.workerWindow = new BrowserWindow({
-            show: false,
+            show: true,
             webPreferences: {
                 preload: webpackPreloadPath,
                 nodeIntegration: true,
