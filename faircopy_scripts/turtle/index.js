@@ -15,7 +15,7 @@ const teiSpecsDir = '../TEI/P5/Source/Specs'
 async function run() {
     const exp = true
     const expPrefix = exp ? 'exp-' : ''
-    const elementGroups = JSON.parse(fs.readFileSync(`scripts/turtle/${expPrefix}element-groups.json`).toString('utf-8'))
+    const elementGroups = JSON.parse(fs.readFileSync(`faircopy_scripts/turtle/${expPrefix}element-groups.json`).toString('utf-8'))
     const allElements = getAllElements(elementGroups)
     const specs = load( teiSpecsDir, allElements )
 
@@ -24,11 +24,11 @@ async function run() {
     const modules = createModules(allElements,specs)
 
     const teiSimpleConfig = { elements, attrs, elementGroups, modules }
-    fs.writeFileSync("public/main-process/config/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
+    fs.writeFileSync("src/tei-simple.json",JSON.stringify(teiSimpleConfig, null, '\t'))
 
     // new project config is based on schema
     const fairCopyConfig = createConfig(teiSimpleConfig)
-    fs.writeFileSync("public/main-process/config/faircopy-config.json",JSON.stringify(fairCopyConfig, null, '\t'))
+    fs.writeFileSync("src/faircopy-config.json",JSON.stringify(fairCopyConfig, null, '\t'))
 }
 
 // A wise turtle that understands ODD and ProseMirror
