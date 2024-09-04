@@ -4,7 +4,7 @@ import { authConfig } from './auth'
 import { standardErrorHandler } from './error-handler';
 
 export function getProjects( userID, serverURL, authToken, onSuccess, onFail) {
-    const getProjectsURL = `${serverURL}/api/projects`
+    const getProjectsURL = `${serverURL}/api/projects?per_page=1000`
 
     axios.get(getProjectsURL,authConfig(authToken)).then(
         (okResponse) => {

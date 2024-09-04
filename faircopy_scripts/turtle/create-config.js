@@ -70,7 +70,7 @@ const createConfig = function createConfig(teiSchema) {
     }
 
     // initialize menus, parse from config file to internal format
-    const menuGroupsJSON = fs.readFileSync(`scripts/turtle/menu-groups-en.json`).toString('utf-8')
+    const menuGroupsJSON = fs.readFileSync(`faircopy_scripts/turtle/menu-groups-en.json`).toString('utf-8')
     const menus = parseMenus(menuGroupsJSON,elements)
 
     return { menus, elements, vocabs }

@@ -47,8 +47,7 @@ module.exports = {
           loadingGif: './src/render/img/install_spinner.gif',
           iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/render/icons/icon.ico',
           setupIcon: './src/render/icons/icon.ico',
-          certificateFile: 'LOCATION OF APP SIGNING CERTIFICATE',
-          certificatePassword: 'CERTIFICATE PASSWORD',
+          signWithParams: '/a',
           platform: 'win32'
         }
       }
