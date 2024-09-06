@@ -2,6 +2,35 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.2.0 beta.3
+
+# Improvements
+* The user can now preview TEI Documents in either as a reading text or documentary view.
+* In the Facs Editor, "Move Surfaces" is now "Copy Surfaces". This creates duplicate surfaces in the target facs instead of moving them.
+* Make the project window resizable, increase the max number of remote projects displayed
+* Change date element to inter type
+
+# Bug Fixes
+* Fixed bugs related to move surfaces function.
+* Reimplement getPathBasename() to remove dependency on Node module in render process.
+* Fix bug in structure tree alignment
+* Remove old gif based spinner in favor of ring spinner
+* Refactored application to use Electron Forge Webpack instead of Create React App.
+* Improved security of Render Processes using Context Isolation
+
+## Version 1.2.0 beta.2
+
+# Improvements
+
+* The user can now configure the color of the underlines used for mark elements. This allows the user to at a glance identify elements common to their corpus. This is configured in Project Settings -> Editor.
+* New application icon and installer assets have been added for Windows and MacOS. There is now a cool spinner that runs while installing on Windows. On Mac, the DMG page has been spiffed up.
+* Added a "Find" feature to the editor in remote and offline projects. Disabled the project wide search, which was only available in offline projects. This feature allows you to search the currently open document for a case insensitive match on the search query. Also supports searching for the phrase with a specific element type or with specific attributes.
+
+# Bug Fixes
+
+* Established a max character length for display of names in the resource browser, so that longer names don't break display.
+* Fixed a bug where when a user creates a new TEI Document in a remote project and then tries to preview or export it without first checking it in, nothing happened. New TEI Documents now export and preview properly.
+
 ## Version 1.2.0-beta.1
 
 ## Improvements

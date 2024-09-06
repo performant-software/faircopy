@@ -23,13 +23,13 @@ Electron apps have multiple running threads: a main thread and a number of rende
 Building FairCopy Installers
 ----------
 
-FairCopy uses Election Forge to create installers for the Mac, Windows, and Linux OSes. The Mac and Linux installers can be created on a Mac, but the Windows installer must be created on a Windows machine. This is because the code signing for Windows requires a physical USB key be connected to the computer during the signing process. The drivers for this device are Windows specific.
+FairCopy uses Election Forge to create installers for the Mac, Windows, and Linux OSes. The Mac and Linux installers can be created on a Mac, but the Windows installer must be created on a Windows machine. This is because the code signing for Windows requires a physical USB key be connected to the computer during the signing process. 
 
 Once the installers are built, they are automatically published to either the staging or production repository using Electron Forge. The `forge.config.example.js` provides an example of how the `forge.config.js` file should be configured. This file is not checked into git because it contains a number of keys and passwords.
 
 For MacOS, Apple requires us to maintain an Apple Developer subscription in order for them to sign the code of the Mac installers. These credentials are for that account.
 
-For Windows, we need to maintain a valid CV Code signing certifacte. The pss.pfx file is exported from the DigiCert EV Code. The password is set on the USB device. One must have the physical USB key and the password to be able to sign Windows installers.
+For Windows, we need to maintain a valid CV Code signing certifacte. One must have the physical USB key and the password to be able to sign Windows installers.
 
 Once all of this configuration is in place, use the follow command to build the installers:
 
