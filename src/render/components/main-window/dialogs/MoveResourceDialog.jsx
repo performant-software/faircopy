@@ -144,7 +144,7 @@ export default class MoveResourceDialog extends Component {
                     { this.renderTable() }
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" disabled={moveDisabled} color="primary" onClick={this.onClickMove} autoFocus>Move</Button>
+                    <Button variant="contained" disabled={moveDisabled} color="primary" onClick={this.onClickMove} autoFocus>{moveLabel}</Button>
                     <Button variant="outlined" onClick={onClickClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>

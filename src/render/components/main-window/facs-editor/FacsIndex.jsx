@@ -248,17 +248,19 @@ export default class FacsIndex extends Component {
         const { surfaces } = facsDocument.facs
         const detailEnabled = surfaces.length > 0
         const editable = facsDocument.isEditable()
-        const remote = facsDocument.isRemote()
+
+        // Uploading local images is disabled for now.
+        // const remote = facsDocument.isRemote()
+        // { !remote && <Button
+        //     onClick={onAddImages}
+        //     {...textButtonProps}
+        // >
+        //     Add Images
+        // </Button> }
 
         return (
             <div>
                 { editable && <span>
-                    { !remote && <Button
-                        onClick={onAddImages}
-                        {...textButtonProps}
-                    >
-                        Add Images
-                    </Button> }
                     <Button 
                         disabled={!actionsEnabled}
                         ref={(el)=> { this.actionButtonEl = el }}
