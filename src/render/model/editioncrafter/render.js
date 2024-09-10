@@ -224,9 +224,12 @@ function renderManifest( manifestLabel, baseURI, surfaces, thumbnailWidth, thumb
 function parseSurfaces(doc, teiDocumentID) {
     // gather resource elements
     const facsEl = doc.getElementsByTagName('facsimile')[0]
+    if( !facsEl ) return null
+
     const textEls = doc.getElementsByTagName('text')
     const sourceDocEls = doc.getElementsByTagName('sourceDoc')
     const surfaceEls = facsEl.getElementsByTagName('surface')
+    if( !surfaceEls || surfaceEls.length === 0 ) return null   
 
     // parse invididual surfaces and partials
     const surfaces = {}
@@ -305,8 +308,9 @@ export function renderTEIDocument(xml, options) {
     // render manifest and partials
     const surfaces = parseSurfaces(xmlDoc, teiDocumentID)
     const documentURL = `${baseURL}/${teiDocumentID}`
+    const validModes = surfaces ? [ 'reading', 'documentary' ] : [ 'reading' ]
 
-    const manifest = renderManifest( teiDocumentID, documentURL, surfaces, thumbnailWidth, thumbnailHeight )
+    const manifest = surfaces ? renderManifest( teiDocumentID, documentURL, surfaces, thumbnailWidth, thumbnailHeight ) : null
     const html = htmlDoc.outerHTML
 
     return {
@@ -315,6 +319,7 @@ export function renderTEIDocument(xml, options) {
         html,
         manifest,
         resources,
+        validModes,
         surfaces
     }
 }

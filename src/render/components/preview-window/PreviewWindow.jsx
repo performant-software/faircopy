@@ -13,12 +13,12 @@ export default class PreviewWindow extends Component {
 
     constructor(props) {
         super()
-        const { resourceEntry, layers, layerID, projectCSS } = props
+        const { resourceEntry, layers, layerID, projectCSS, validModes } = props
         if( projectCSS ) {
             updateStyleSheet(projectCSS)
         }
         this.state = {
-            resourceEntry, layers, layerID,
+            resourceEntry, layers, layerID, validModes,
             mode: 'reading'
         }	
     }
@@ -70,12 +70,14 @@ export default class PreviewWindow extends Component {
         const onDocumentary = () => { this.setState({...this.state, mode: 'documentary'} )}
         const readingSelected = mode === 'reading' ? { variant: "contained" } : {}
         const docSelected = mode === 'documentary' ? { variant: "contained" } : {}
+        const readingDisabled = !this.state.validModes.includes('reading')
+        const documentaryDisabled = !this.state.validModes.includes('documentary')
 
         return (
             <div className="toolbar">                
                 <ButtonGroup className="mode-buttons" color="primary" aria-label="outlined primary button group">
-                    <Button {...textButtonProps } { ...readingSelected } onClick={onReading}>Reading</Button>
-                    <Button {...textButtonProps } { ...docSelected } onClick={onDocumentary}>Documentary</Button>    
+                    <Button {...textButtonProps } { ...readingSelected } disabled={readingDisabled} onClick={onReading}>Reading</Button>
+                    <Button {...textButtonProps } { ...docSelected } disabled={documentaryDisabled} onClick={onDocumentary}>Documentary</Button>    
                 </ButtonGroup>
             </div>
         )
