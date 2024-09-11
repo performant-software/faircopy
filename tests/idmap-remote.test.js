@@ -1,5 +1,5 @@
-const { getBlankResourceMap } = require('../public/main-process/id-map-authority')
-const { IDMapRemote } = require('../public/main-process/IDMapRemote')
+const { getBlankResourceMap } = require('../src/main-process/id-map-authority')
+const { IDMapRemote } = require('../src/main-process/IDMapRemote')
 const { v4: uuidv4 } = require('uuid')
 
 describe('Exercise the functions of the IDMapRemote module', () => {

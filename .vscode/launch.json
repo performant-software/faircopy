@@ -7,11 +7,14 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Collate",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/scripts/collate/index.js"
+            "name": "Electron Main",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/@electron-forge/cli/script/vscode.sh",
+            "windows": {
+              "runtimeExecutable": "${workspaceFolder}/node_modules/@electron-forge/cli/script/vscode.cmd"
+            },            
+            "env": { "FAIRCOPY_DEBUG_MODE": "true", "FAIRCOPY_DEV_VERSION": "1.2.0-dev.11" },
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
         },
         {
             "type": "node",
@@ -20,7 +23,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/scripts/turtle/index.js"
+            "program": "${workspaceFolder}/faircopy_scripts/turtle/index.js"
         },
         {
             "type": "node",
@@ -29,32 +32,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/scripts/turtle/element-report.js"
-        },
-        {
-            "name": "Debug Main Process",
-            "type": "node",
-            "request": "launch",
-            "cwd": "${workspaceRoot}",
-            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
-            "windows": {
-                "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
-            },
-            "env": { "FAIRCOPY_DEBUG_MODE": "true", "FAIRCOPY_DEV_VERSION": "1.2.0-dev.8" },
-            "program": "${workspaceRoot}/public/electron.js",
-            "protocol": "inspector",
-        },
-        {
-            "name": "Debug Jest Tests",
-            "type": "node",
-            "request": "launch",
-            "runtimeArgs": [
-              "--inspect-brk",
-              "${workspaceRoot}/node_modules/.bin/jest",
-              "--runInBand"
-            ],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
+            "program": "${workspaceFolder}/faircopy_scripts/turtle/element-report.js"
         }
     ]
 }

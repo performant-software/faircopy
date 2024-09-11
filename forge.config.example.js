@@ -1,14 +1,23 @@
+const { FusesPlugin } = require('@electron-forge/plugin-fuses');
+const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+
 module.exports = {
     packagerConfig: {
       asar: true,
-      icon: './public/icons/icon',
+      icon: './src/render/icons/icon',
       osxSign: {
         optionsForFile: (filePath) => {
           return {
-            entitlements: 'scripts/entitlements.mac.plist'
+            entitlements: 'faircopy_scripts/entitlements.mac.plist'
           };
         }
       },
+      extraResource: [
+        'src/default-project-css.css',
+        'src/faircopy-config.json',
+        'src/latest.md',
+        'src/tei-simple.json'
+      ],
       osxNotarize: {
         tool: 'notarytool',
         appleId: 'APPLE ID OF ACCOUNT WITH APPLE DEVELOPER SUBSCRIPTION',
@@ -22,8 +31,8 @@ module.exports = {
         name: '@electron-forge/maker-dmg',
         config: {
           platform: 'darwin',
-          background: './public/img/DMG_background.png',
-          icon: './public/icons/icon.icns',
+          background: './src/render/img/DMG_background.png',
+          icon: './src/render/icons/icon.icns',
           iconSize: 145,
           format: 'ULFO',
           contents: [
@@ -35,11 +44,10 @@ module.exports = {
       {
         name: '@electron-forge/maker-squirrel',
         config: {
-          loadingGif: './public/img/install_spinner.gif',
-          iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/public/icons/icon.ico',
-          setupIcon: './public/icons/icon.ico',
-          certificateFile: 'LOCATION OF APP SIGNING CERTIFICATE',
-          certificatePassword: 'CERTIFICATE PASSWORD',
+          loadingGif: './src/render/img/install_spinner.gif',
+          iconURL: 'https://raw.githubusercontent.com/performant-software/faircopy/main/render/icons/icon.ico',
+          setupIcon: './src/render/icons/icon.ico',
+          signWithParams: '/a',
           platform: 'win32'
         }
       }
@@ -62,5 +70,72 @@ module.exports = {
         name: '@electron-forge/plugin-auto-unpack-natives',
         config: {},
       },
+      {
+        name: '@electron-forge/plugin-webpack',
+        config: {
+          mainConfig: './webpack.main.config.js',
+          renderer: {
+            config: './webpack.renderer.config.js',
+            entryPoints: [
+              {
+                html: './src/index.html',
+                js: './src/main-window-renderer.js',
+                nodeIntegration: true,
+                name: 'main_window',
+                preload: {
+                  js: './src/faircopy-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/project-window-renderer.js',
+                nodeIntegration: true,
+                name: 'project_window',
+                preload: {
+                  js: './src/faircopy-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/preview-window-renderer.js',
+                nodeIntegration: true,
+                name: 'preview_window',
+                preload: {
+                  js: './src/faircopy-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/image-window-renderer.js',
+                nodeIntegration: true,
+                name: 'image_window',
+                preload: {
+                  js: './src/faircopy-preload.js',
+                },
+              },
+              {
+                html: './src/index.html',
+                js: './src/worker-window-renderer.js',
+                nodeIntegration: true,
+                name: 'worker_window',
+                preload: {
+                  js: './src/faircopy-preload.js',
+                },
+              },
+            ],
+          },
+        },
+      },
+      // Fuses are used to enable/disable various Electron functionality
+      // at package time, before code signing the application
+      new FusesPlugin({
+        version: FuseVersion.V1,
+        [FuseV1Options.RunAsNode]: false,
+        [FuseV1Options.EnableCookieEncryption]: true,
+        [FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+        [FuseV1Options.EnableNodeCliInspectArguments]: false,
+        [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
+        [FuseV1Options.OnlyLoadAppFromAsar]: true,
+      }),
     ],
   };

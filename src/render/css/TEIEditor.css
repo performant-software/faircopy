@@ -1,0 +1,31 @@
+
+
+.TEIEditor .body {
+    display: flex;
+    width: calc( 100% - 400px );
+    height: calc( 100% - 60px );
+    overflow-y: scroll;
+    position: fixed;
+    background: white;
+}
+
+.TEIEditor .dialogPlaneTop {
+    position: fixed;
+    top: 70px;
+}
+
+.TEIEditor .dialogPlaneBottom {
+    position: fixed;
+    bottom: 0px;
+    margin-bottom: 5px;
+}
+
+.TEIEditor .save-button {
+    background: '#FAFAFA';
+    float: right;
+}
+
+
+.TEIEditor .draggable {
+    -webkit-app-region: drag
+}
