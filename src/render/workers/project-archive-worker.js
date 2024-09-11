@@ -377,6 +377,7 @@ export function projectArchive( msg, workerMethods, workerData ) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
                         const { ecData, layers, layerID } = previewResource(resp)
+                        previewData.validModes = ecData.validModes
                         previewData.layers = layers
                         previewData.layerID = previewData.layerID ? previewData.layerID : layerID
                         postMessage({ messageType: 'preview-resource', previewData, ecData })

@@ -222,13 +222,14 @@ export default class App extends Component {
             ></ImageWindow>
         )
     } else if( rootComponent === "PreviewWindow" && previewView ) {
-        const { resourceEntry, layers, layerID, projectCSS } = previewView
+        const { resourceEntry, layers, layerID, projectCSS, validModes } = previewView
         return (
             <PreviewWindow
               resourceEntry={resourceEntry} 
               layers={layers}
               layerID={layerID}
               projectCSS={projectCSS}
+              validModes={validModes}
             ></PreviewWindow>
         )
     } else if( rootComponent === "ProjectWindow" ) {
