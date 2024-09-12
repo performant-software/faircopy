@@ -375,6 +375,7 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
+          sandbox: false, // so we can use system clipboard
           preload: webpackPreloadPath,
           spellcheck: false
       },
