@@ -3,8 +3,8 @@ const fs = require('fs')
 const Diff = require('diff')
 
 function main() {    
-    const one = fs.readFileSync(`temp/testcollation/damozel1855MS.txt`).toString('utf-8')
-    const other = fs.readFileSync(`temp/testcollation/damozel18701st.txt`).toString('utf-8')
+    const one = "This is a test."
+    const other = "This is a fish."
 
     const diff = Diff.diffWords(one, other)
     
@@ -15,6 +15,8 @@ function main() {
         const color = part.added ? 'green' : part.removed ? 'red' : 'grey'
         out.push(`<span style="color: ${color}">${part.value}</span>`)
     });
+
+    console.log(out)
     
     console.log(Diff.convertChangesToXML(diff))
 }
