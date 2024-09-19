@@ -6,10 +6,14 @@ const isMac = (platform === 'darwin')
 class MainMenu {
 
     constructor(fairCopyApplication) {
-      this.fairCopyApplication = fairCopyApplication      
+      this.fairCopyApplication = fairCopyApplication  
+      this.updateMenu()     
+    }
+
+    updateMenu = () => {
       const template = this.mainMenuTemplate()
       const menu = Menu.buildFromTemplate(template)
-      Menu.setApplicationMenu(menu)    
+      Menu.setApplicationMenu(menu)  
     }
 
     openFileMenu = () => {
@@ -106,6 +110,7 @@ class MainMenu {
                 { 
                   label: 'Open Project...',
                   accelerator: 'CommandOrControl+O',
+                  enabled: !this.fairCopyApplication.isProjectOpen(),
                   click: this.openFileMenu
                 },
                 // { 

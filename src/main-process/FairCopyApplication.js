@@ -235,6 +235,10 @@ class FairCopyApplication {
   
   }
 
+  isProjectOpen() {
+    return true
+  }
+
   async createMainWindow() {
     if( this.mainWindow ) {
       if( !this.mainWindow.isDestroyed() ) {
