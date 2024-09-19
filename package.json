@@ -40,6 +40,7 @@
     "dotenv": "^16.3.1",
     "electron": "30.1.0",
     "node-loader": "^2.0.0",
+    "prosemirror-dev-tools": "4.1.0",
     "style-loader": "^3.0.0"
   },
   "dependencies": {
