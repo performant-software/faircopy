@@ -32,7 +32,7 @@ contextBridge.exposeInMainWorld(
         },
 
         ipcSend: ( eventID, ...params) => {
-            console.log(`sending ${eventID} ${params}`)
+            // console.log(`sending ${eventID} ${params}`)
             ipcRenderer.send(eventID,...params)
         },
 
