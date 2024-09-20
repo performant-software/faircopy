@@ -121,6 +121,7 @@ class MainMenu {
                 { 
                   label: 'Close Project',
                   accelerator: 'CommandOrControl+W',
+                  enabled: this.fairCopyApplication.isProjectOpen(),
                   click: this.closeProject
                 },
               ]
