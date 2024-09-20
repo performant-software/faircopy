@@ -14,6 +14,7 @@ class FairCopySession {
         this.projectStore = new ProjectStore(fairCopyApplication)
         this.projectStore.openProject(targetFile, this.onProjectOpened )
         this.remote = false
+        this.projectOpen = true
         this.resourceViews = {
             currentView: 'home',
             remote: { 
@@ -66,6 +67,7 @@ class FairCopySession {
     closeProject() {
         this.projectStore.close()
         if( this.remoteProject ) this.remoteProject.close()
+        this.projectOpen = false
     }
 
     reopenProject() {
