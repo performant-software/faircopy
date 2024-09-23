@@ -137,7 +137,7 @@ export class SplitPaneView extends Component {
 
   render() {
     return (
-      <div className="split-pane-view three-pane" style={{ ...this.state.style }}>
+      <div className="split-pane-view two-pane" style={{ ...this.state.style }}>
         { this.props.leftPane }
         { this.renderDivider('first') }
         { this.props.rightPane }

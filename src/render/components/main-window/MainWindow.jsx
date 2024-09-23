@@ -755,7 +755,7 @@ export default class MainWindow extends Component {
         const { parentEntry } = resourceView
         
         return (
-            <div>
+            <div className="content-pane">
                 { resourceBrowserOpen && 
                     <ResourceBrowser
                         onResourceAction={this.onResourceAction}
@@ -1005,7 +1005,7 @@ export default class MainWindow extends Component {
         const style = hidden ? { display: 'none' } : {}
 
         return (
-            <div style={style}>
+            <div id="MainWindow" style={style}>
                 <div onKeyDown={this.onKeyDown} > 
                     <SplitPaneView
                         leftPane={this.renderProjectSidebar()}
