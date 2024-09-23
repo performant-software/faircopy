@@ -31,6 +31,7 @@ import {SplitPaneView} from '../common/SplitPaneView'
 const fairCopy = window.fairCopy
 
 const initialLeftPaneWidth = 250
+const initialRightPaneWidth = 1120
 const resizeRefreshRate = 100
 const resetSearchRate = 100
 const initialRowsPerPage = 50
@@ -104,7 +105,8 @@ export default class MainWindow extends Component {
             searchEnabled: false,
             searchScope: 'file',
             showSearchBar: false,
-            leftPaneWidth: initialLeftPaneWidth
+            leftPaneWidth: initialLeftPaneWidth,
+            rightPaneWidth: initialRightPaneWidth
         }	
     }
 
@@ -749,7 +751,7 @@ export default class MainWindow extends Component {
 
     renderContentPane() {
         const { fairCopyProject } = this.props
-        const { resourceBrowserOpen, resourceViews, resourceIndex, allResourcesCheckmarked, resourceCheckmarks } = this.state
+        const { resourceBrowserOpen, resourceViews, rightPaneWidth, resourceIndex, allResourcesCheckmarked, resourceCheckmarks } = this.state
         const { currentView } = resourceViews
         const resourceView = resourceViews[currentView]
         const { parentEntry } = resourceView
@@ -774,6 +776,7 @@ export default class MainWindow extends Component {
                         resourceView={resourceView}
                         resourceIndex={resourceIndex}
                         fairCopyProject={fairCopyProject}
+                        panelWidth={rightPaneWidth}
                     ></ResourceBrowser> }
                 { this.renderEditors() }
             </div>
@@ -994,8 +997,8 @@ export default class MainWindow extends Component {
         const { appConfig, hidden } = this.props
         const { searchEnabled, showSearchBar, searchScope, searchFilterOptions, selectedResource, openResources, searchSelectionIndex } = this.state
 
-        const onDragSplitPane = debounce((width) => {
-            this.setState({...this.state, leftPaneWidth: width })
+        const onDragSplitPane = debounce((leftPaneWidth, rightPaneWidth) => {
+            this.setState({...this.state, leftPaneWidth, rightPaneWidth })
         }, resizeRefreshRate)
 
         // TODO fix for search ( selectedResource && isIndexable(openResources[selectedResource].resourceType) ) 

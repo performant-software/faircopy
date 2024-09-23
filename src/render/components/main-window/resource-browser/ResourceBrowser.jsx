@@ -8,7 +8,8 @@ import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProj
 import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
 import { ellipsis } from '../../../model/ellipsis'
 
-const maxNameLength = 35
+const idealNameLength = 35
+const idealPanelWidth = 1172
 
 export default class ResourceBrowser extends Component {
 
@@ -235,7 +236,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
 
@@ -294,6 +295,8 @@ export default class ResourceBrowser extends Component {
       const lastModified = !editable ? new Date(resource.lastAction.created_at).toDateString() : ''
       const textClass = deleted ? 'deleted-resource' : ''
       const iconClass = deleted ? 'deleted-icon' : ''
+      const widthFactor = panelWidth >= idealPanelWidth ? 1 : (panelWidth/idealPanelWidth)*0.6
+      const maxNameLength = Math.floor(idealNameLength * widthFactor)
       const displayName = ellipsis( name, maxNameLength )
       const displayLocalID = ellipsis( localID, maxNameLength )
       

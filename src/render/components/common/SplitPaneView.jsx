@@ -4,8 +4,8 @@ export class SplitPaneView extends Component {
   constructor() {
     super();
     // Initialize the splitter
-    this.rightPaneMinWidth = 1120;
-    this.leftPaneMinWidth = 250;
+    this.rightPaneMinWidth = 875;
+    this.leftPaneMinWidth = 247;
     this.splitFraction = 0.2;
     this.dividerWidth = 4;
     const left = this.splitFraction;
