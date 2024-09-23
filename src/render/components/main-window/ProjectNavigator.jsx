@@ -60,7 +60,7 @@ export default class ProjectNavigator extends Component {
 
       return (
         <div className='tree-item'>
-          <Typography dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceNameElided}</Typography>
+          <Typography title={resourceName} dataresourceid={resourceID} onClick={this.onClickNode} className="tree-item-name">{resourceNameElided}</Typography>
           { this.renderStatusChip(errorCount) }
           <Tooltip title="Close resource">
             <Button 

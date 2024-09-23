@@ -315,10 +315,10 @@ export default class ResourceBrowser extends Component {
             <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
           </TableCell>
           <TableCell {...cellProps} >
-            <Typography className={textClass}>{displayName}</Typography>
+            <Typography title={name} className={textClass}>{displayName}</Typography>
           </TableCell>
           <TableCell {...cellProps} >
-            <Typography className={textClass}>{displayLocalID}</Typography>
+            <Typography title={localID} className={textClass}>{displayLocalID}</Typography>
           </TableCell>
           { remoteProject && 
           <TableCell {...cellProps} >
