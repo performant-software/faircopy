@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 
 export class SplitPaneView extends Component {
-  constructor(props) {
+  constructor() {
     super();
     // Initialize the splitter
-    this.rightPaneMinWidth = 875;
-    this.leftPaneMinWidth = 247;
-    this.thirdPaneMinWidth = 0;
-    this.splitFraction = props.threePanel ? .33 : 0.2;
-    this.splitFractionRight = props.threePanel ? 0.33 : 0;
+    this.rightPaneMinWidth = 1120;
+    this.leftPaneMinWidth = 250;
+    this.splitFraction = 0.2;
     this.dividerWidth = 4;
     const left = this.splitFraction;
-    const third = this.splitFractionRight;
-    const right = 1.0 - left - third;
+    const right = 1.0 - left;
     this.state = {
       style: {
-        gridTemplateColumns: `${left}fr ${this.dividerWidth}px ${right}fr ${this.dividerWidth}px ${third}fr`,
+        gridTemplateColumns: `${left}fr ${this.dividerWidth}px ${right}fr`,
       },
     };
 
@@ -26,7 +23,6 @@ export class SplitPaneView extends Component {
     this.onResize = this.onResize.bind(this);
     this.onEndDrag = this.onEndDrag.bind(this);
     this.updatePaneSize = this.updatePaneSize.bind(this);
-    this.updatePaneSize = this.updatePaneSize.bind(this);
   }
 
   // On drag, update the UI continuously
@@ -35,24 +31,19 @@ export class SplitPaneView extends Component {
       const whole = window.innerWidth - 2*this.dividerWidth;
       let left_viewWidth;
       let right_viewWidth;
-      let third_viewWidth;
       if (this.activeDivider === 1) {
         left_viewWidth = e.clientX - this.dividerWidth / 2;
-        third_viewWidth = whole*this.splitFractionRight;
-        right_viewWidth = whole - left_viewWidth - third_viewWidth;
+        right_viewWidth = whole - left_viewWidth;
       }
       else {
-        third_viewWidth = whole - e.clientX - this.dividerWidth / 2;
         left_viewWidth = whole*this.splitFraction;
-        right_viewWidth = whole - left_viewWidth - third_viewWidth;
+        right_viewWidth = whole - left_viewWidth;
       }
       // Update as long as we're within limits
       if (left_viewWidth >= this.leftPaneMinWidth
-        && right_viewWidth >= this.rightPaneMinWidth
-        && third_viewWidth >= this.thirdPaneMinWidth) {
+        && right_viewWidth >= this.rightPaneMinWidth) {
         this.splitFraction = (whole === 0) ? 0.0 : left_viewWidth / whole;
-        this.splitFractionRight = (whole === 0) ? 0.0 : third_viewWidth / whole;
-        // console.log(`left: ${left_viewWidth} right: ${right_viewWidth}`)
+        console.log(`left: ${left_viewWidth} right: ${right_viewWidth}`)
         this.updateUI();
       }
 
@@ -63,7 +54,7 @@ export class SplitPaneView extends Component {
   // Drag start: mark it
   onStartDrag = (position) => {
     this.dragging = true;
-    this.activeDivider = position === 'first' ? 1 : 2;
+    this.activeDivider = 1;
   };
 
   // Drag end
@@ -80,13 +71,12 @@ export class SplitPaneView extends Component {
   // Update the screen with the new split info
   updateUI() {
     const left = this.splitFraction;
-    const third = this.splitFractionRight;
-    const right = 1.0 - left - third;
+    const right = 1.0 - left;
     this.setState({
       ...this.state,
       style: {
         ...this.state.style,
-        gridTemplateColumns: `${left}fr ${this.dividerWidth}px ${right}fr ${this.dividerWidth}px ${third}fr`,
+        gridTemplateColumns: `${left}fr ${this.dividerWidth}px ${right}fr`,
       },
     });
   }
@@ -95,11 +85,10 @@ export class SplitPaneView extends Component {
   updatePaneSize() {
     // Record state change
     const left_px = Math.floor(Math.abs(window.innerWidth * this.splitFraction));
-    const third_px = Math.floor(Math.abs(window.innerWidth * this.splitFractionRight));
-    const right_px = Math.floor(window.innerWidth * (1.0 - this.splitFraction - this.splitFractionRight));
-    if (this.props.onWidth && left_px >= this.leftPaneMinWidth && right_px >= this.rightPaneMinWidth && third_px >= this.thirdPaneMinWidth) {
-      this.props.onWidth(left_px, right_px, third_px);
-    }
+    const right_px = Math.floor(window.innerWidth * (1.0 - this.splitFraction));
+    // if (this.props.onWidth && left_px >= this.leftPaneMinWidth && right_px >= this.rightPaneMinWidth) {
+      this.props.onWidth(left_px, right_px);
+    // }
   }
 
   componentDidMount() {
@@ -112,8 +101,7 @@ export class SplitPaneView extends Component {
     if (this.props.onWidth) {
       const left_px = Math.floor(Math.abs(window.innerWidth * this.splitFraction));
       const right_px = Math.floor(window.innerWidth * (1.0 - this.splitFraction));
-      const third_px = Math.floor(window.innerWidth * (1.0 - this.splitFraction));
-      this.props.onWidth(left_px, right_px, third_px);
+      this.props.onWidth(left_px, right_px);
     }
   }
 
@@ -141,8 +129,6 @@ export class SplitPaneView extends Component {
         { this.props.leftPane }
         { this.renderDivider('first') }
         { this.props.rightPane }
-        { this.props.threePanel && this.renderDivider('second') }
-        { this.props.threePanel && this.props.thirdPane }
       </div>
     );
   }
