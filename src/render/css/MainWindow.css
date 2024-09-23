@@ -1,0 +1,4 @@
+
+#MainWindow .content-pane {
+    grid-area: content_pane;
+}

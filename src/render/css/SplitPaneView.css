@@ -5,11 +5,7 @@
 }
   
 .split-pane-view.two-pane {
-    grid-template-areas: "image_viewer divider transcription";
-}
-
-.split-pane-view.three-pane {
-    grid-template-areas: "image_viewer divider transcription divider_two third_pane";
+    grid-template-areas: "project_sidebar divider content_pane";
 }
 
 .split-pane-view > .divider {
@@ -30,7 +26,6 @@
 
 .split-pane-view > .divider > .drawer-button {
     align-self: center;
-    align: center;
     cursor: auto;
 }
 
