@@ -43,7 +43,7 @@ export class SplitPaneView extends Component {
       if (left_viewWidth >= this.leftPaneMinWidth
         && right_viewWidth >= this.rightPaneMinWidth) {
         this.splitFraction = (whole === 0) ? 0.0 : left_viewWidth / whole;
-        console.log(`left: ${left_viewWidth} right: ${right_viewWidth}`)
+        // console.log(`left: ${left_viewWidth} right: ${right_viewWidth}`)
         this.updateUI();
       }
 
