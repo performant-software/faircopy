@@ -1,4 +1,3 @@
-import { ReplaceStep, ReplaceAroundStep } from "prosemirror-transform"
 
 export function generateGutterMarks( editorView, expandedGutter, docNodes, gutterTop ) {
     const { doc } = editorView.state
