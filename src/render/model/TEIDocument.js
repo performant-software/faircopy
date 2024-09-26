@@ -16,6 +16,9 @@ import { generateGutterMarks, isGutterDirty } from './gutter-marks'
 
 const fairCopy = window.fairCopy
 
+const gutterTopEditable = 96
+const gutterTopReadOnly = 115
+
 export default class TEIDocument {
 
     constructor( resourceEntry, parentEntry, fairCopyProject, teiSchema=null ) {
@@ -172,7 +175,8 @@ export default class TEIDocument {
             const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
             // if the width changes, keep gutter dirty for one more refresh as editor re-lineates
             const lastWidth = this.gutterMarkCache ? this.gutterMarkCache.totalWidth : null
-            this.gutterMarkCache = generateGutterMarks( this.editorView, this.expandedGutter, docNodes )
+            const gutterTop = this.isEditable() ? gutterTopEditable : gutterTopReadOnly
+            this.gutterMarkCache = generateGutterMarks( this.editorView, this.expandedGutter, docNodes, gutterTop )
             this.gutterMarkCacheDirty = lastWidth !== this.gutterMarkCache.totalWidth
         }
         return this.gutterMarkCache
