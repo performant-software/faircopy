@@ -118,13 +118,3 @@ export function generateGutterMarks( editorView, expandedGutter, docNodes, gutte
 
     return { gutterMarks, totalWidth, columnPositions }
 }
-
-// changes that may effect the shape of the gutter marks tree cause it to be dirty 
-// (meaning that it requires a re-generation)
-export function isGutterDirty(transaction) {
-    const { steps } = transaction
-    for( const step of steps ) {
-        if( step instanceof ReplaceAroundStep || step instanceof ReplaceStep ) return true
-    }
-    return false
-}
