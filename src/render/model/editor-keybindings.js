@@ -1,6 +1,10 @@
 import { createPhraseElement } from "./editor-actions"
 
-export const teiEditorKeyMap = {
+const fairCopy = window.fairCopy
+
+const platform = fairCopy.getPlatform()
+
+const windowsKeyMap = {
     onTogglePalette: '1+Control',
     onOpenMarkMenu: '2+Control',
     onOpenInineMenu: '3+Control',
@@ -8,11 +12,25 @@ export const teiEditorKeyMap = {
     undo: 'Control+z',
     redo: 'Control+Shift+z',
     cutSelectedNode: 'Control+x',
-    openSearchBar: 'f+Control',
+    copySelectedNode: 'Control+c',
+    openSearchBar: 'Control+f',
     closeSearchBar: 'Escape',
-    // TODO fixme
-    // copySelectedNode: 'Meta+v'
 }
+
+const macKeyMap = {
+    onTogglePalette: '1+Meta',
+    onOpenMarkMenu: '2+Meta',
+    onOpenInineMenu: '3+Meta',
+    eraseSelection: '4+Meta',
+    undo: 'Meta+z',
+    redo: 'Meta+Shift+z',
+    cutSelectedNode: 'Meta+x',
+    copySelectedNode: 'Meta+c',
+    openSearchBar: 'Meta+f',
+    closeSearchBar: 'Escape',
+}
+
+export const teiEditorKeyMap = ( platform === 'win32' ) ? windowsKeyMap : macKeyMap 
 
 export function getHotKeyConfig( teiDocument, teiEditorHandlers ) {
     const { projectKeyMap, projectHanders } = getProjectHotKeys( teiDocument )

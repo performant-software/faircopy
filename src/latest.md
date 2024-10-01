@@ -2,6 +2,25 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.2.0
+
+This public release includes all the beta improvements and bug fixes since v1.1.10. 
+
+# Improvements
+
+* Hovering the mouse over a resource name or ID now summons a tooltip with the unabridged name or ID.
+
+# Bug Fixes
+
+* Copying a surface now also copies the associated zones.
+* Fixed problem where the structure tree would occasionally disappear
+* Fixed TEI Export so that XML is properly formatted.
+* Fixed issues with Resource Browser formatting when names and/or IDs are really long.
+* Don't allow the user to select Documentary Preview mode if the document has no facsimiles or no surfaces on facsimiles.
+* Disable local images, doesn't work presently.
+* Fix label on the Copy surface button.
+
+
 ## Version 1.2.0 beta.3
 
 # Improvements

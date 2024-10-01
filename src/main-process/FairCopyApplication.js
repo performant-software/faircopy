@@ -322,6 +322,7 @@ class FairCopyApplication {
         this.projectWindow = null  
       }
       this.fairCopySession = new FairCopySession(this, targetFile)
+      this.mainMenu.updateMenu()
       log.info(`Opened project: ${targetFile}`)
     })
   }
@@ -330,10 +331,16 @@ class FairCopyApplication {
     if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
+      this.fairCopySession.closeProject()
+      this.mainMenu.updateMenu()
     }
     if( this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()
     }
+  }
+
+  isProjectOpen() {
+    return !!this.fairCopySession?.projectOpen
   }
 
   sendToMainWindow = (message, params) => {
@@ -375,6 +382,7 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
+          sandbox: false, // so we can use system clipboard
           preload: webpackPreloadPath,
           spellcheck: false
       },

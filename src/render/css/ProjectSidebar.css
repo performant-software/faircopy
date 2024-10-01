@@ -2,6 +2,7 @@
     background: #F3F6F8;
     overflow-y: auto;
     height: calc( 100vh - 50px);
+    grid-area: project_sidebar;
 }
 
 #ProjectSidebar .title-bar {

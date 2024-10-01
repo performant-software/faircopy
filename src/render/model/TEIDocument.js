@@ -12,9 +12,12 @@ import {teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTem
 import {parseText, proseMirrorToDOM, serializeText, addTextNodes} from "./xml"
 import {applySystemFlags} from "./system-flags"
 import {mapResource} from "./id-map"
-import { generateGutterMarks, isGutterDirty } from './gutter-marks'
+import { generateGutterMarks } from './gutter-marks'
 
 const fairCopy = window.fairCopy
+
+const gutterTopEditable = 96
+const gutterTopReadOnly = 115
 
 export default class TEIDocument {
 
@@ -33,10 +36,6 @@ export default class TEIDocument {
         this.teiSchema = teiSchema
         this.currentTreeNode = { editorGutterPos: null, editorGutterPath: null, treeID: "main" }
         this.selectedElements = []
-        this.gutterMarkCache = null
-        this.gutterMarkCacheDirty = true
-        this.noteGutterMarkCache = null
-        this.noteGutterMarkCacheDirty = true
         this.expandedGutter = true
         this.plugins = [
             keymap(baseKeymap),
@@ -139,12 +138,7 @@ export default class TEIDocument {
             // note unsaved state
             this.changedSinceLastSave = this.changedSinceLastSave || transaction.docChanged
         }
-        
-        // check if gutter cache is dirty
-        if( !this.gutterMarkCacheDirty ) {
-            this.gutterMarkCacheDirty = isGutterDirty( transaction )
-        }
-
+    
         // update editor state
         const nextEditorState = this.editorView.state.apply(transaction)
         this.editorView.updateState(nextEditorState)
@@ -156,26 +150,15 @@ export default class TEIDocument {
     }
 
     getNoteGutterMarks(gutterTop) {
-        // regenerate gutter marks if the document structure has changed
-        if( this.noteGutterMarkCacheDirty ) {
-            const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
-            const lastWidth = this.noteGutterMarkCache ? this.noteGutterMarkCache.totalWidth : null
-            this.noteGutterMarkCache = generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes, gutterTop )
-            this.noteGutterMarkCacheDirty = lastWidth !== this.noteGutterMarkCache.totalWidth
-        }
-        return this.noteGutterMarkCache
+        const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+        return generateGutterMarks( this.noteEditorView, this.expandedGutter, docNodes, gutterTop )
     }
 
     getGutterMarks() {
         // regenerate gutter marks if the document structure has changed
-        if( this.gutterMarkCacheDirty ) {
-            const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
-            // if the width changes, keep gutter dirty for one more refresh as editor re-lineates
-            const lastWidth = this.gutterMarkCache ? this.gutterMarkCache.totalWidth : null
-            this.gutterMarkCache = generateGutterMarks( this.editorView, this.expandedGutter, docNodes )
-            this.gutterMarkCacheDirty = lastWidth !== this.gutterMarkCache.totalWidth
-        }
-        return this.gutterMarkCache
+        const { docNodes } = this.fairCopyProject.teiSchema.elementGroups
+        const gutterTop = this.isEditable() ? gutterTopEditable : gutterTopReadOnly
+        return generateGutterMarks( this.editorView, this.expandedGutter, docNodes, gutterTop )
     }
 
     updateSystemFlags(transaction,onErrorCountChange) {
@@ -194,7 +177,10 @@ export default class TEIDocument {
 
     finalizeEditorView(editorView) {
         this.editorView = editorView
+        const { tr, doc } = editorView.state
+        editorView.dispatch(tr.setSelection(TextSelection.create(doc, 0)));
         addTextNodes(editorView.state, editorView.dispatch)
+        editorView.focus()
         this.changedSinceLastSave = false
     }
 

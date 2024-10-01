@@ -184,10 +184,8 @@ export default class FacsDocument {
 
         const nextZones = []
         for( const zone of zones ) {
-            const { id, coords, note } = zone
-            const { ulx, uly, lrx, lry } = coords
-            const nextCoords = { ulx, uly, lrx, lry }
-            nextZones.push({ id, coords: nextCoords, note })
+            const { id, ulx, uly, lrx, lry, note } = zone
+            nextZones.push({ id, ulx, uly, lrx, lry, note })
         }
 
         const dupeSurface = {
@@ -221,6 +219,10 @@ export default class FacsDocument {
                     if( targetSurfaceList.find( s => s.id === dupeSurface.id )) {
                         let nextSurfaceID = parentEntry ? idMap.nextSurfaceID(parentEntry.localID) : idMap.nextSurfaceID(resourceEntry.localID)
                         dupeSurface.id = generateOrdinalID('f',nextSurfaceID++)
+                        // update the surface ID in the zones
+                        for( const zone of dupeSurface.zones ) {
+                            zone.id = `${dupeSurface.id}_z${zone.id.split('_z')[1]}`
+                        }
                     }
                     targetSurfaceList.push(dupeSurface)
                 }

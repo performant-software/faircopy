@@ -33,6 +33,15 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/faircopy_scripts/turtle/element-report.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Collate Test",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/faircopy_scripts/collate/index.js"
         }
     ]
 }

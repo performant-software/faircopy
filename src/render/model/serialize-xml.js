@@ -1,4 +1,4 @@
-import {format} from 'xml-formatter'
+import xmlFormat from 'xml-formatter'
 import serialize from "w3c-xmlserializer"
 
 export function serializeResource(resourceData,formatXML=true) {
@@ -44,7 +44,7 @@ function getResourceEl( resourceXML, elName, localID ) {
 
 function formatXMLFile(content) {
     try {
-        const xml = format(content, {
+        const xml = xmlFormat(content, {
             indentation: '\t', 
             collapseContent: true, 
             lineSeparator: '\n'
