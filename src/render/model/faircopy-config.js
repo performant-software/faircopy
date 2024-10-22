@@ -1,4 +1,3 @@
-import { systemElements } from './TEISchema'
 
 const fairCopy = window.fairCopy
 
@@ -110,19 +109,20 @@ export function learnDoc(fairCopyConfig, doc, teiSchema, tempDoc) {
     }
 
     const compareToActive = ( element ) => {
-        const {attrs, type} = element
-        const {name} = type
+        const name = teiSchema.pmTypeToTeiName(element.type)
 
-        // ignore system elements and synth elements
-        if( systemElements.includes(name) || teiSchema.elements[name].synth ) return
+        // ignore node and mark types that don't map to FairCopy config elements
+        if( !name ) return
 
         // if this element is not active, activate it
         if( !elements[name].active ) {
             const {pmType} = teiSchema.elements[name]
+            // TODO if this is a mark, add it to the marks menu
             const elementMenu = teiSchema.getElementMenu(pmType)[0]
             addElementToSchema( name, elementMenu, fairCopyConfig )
         }
 
+        const {attrs} = element
         for( const attrName of Object.keys(attrs)) {
             const val = attrs[attrName]
             if( val && val !== "" ) {

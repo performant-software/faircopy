@@ -1,4 +1,4 @@
-import {Schema} from "prosemirror-model"
+import {Schema, MarkType} from "prosemirror-model"
 import { DOMParser as PMDOMParser } from "prosemirror-model"
 import { createValidationSet } from "./element-validators"
 import { synthNameToElementName } from "./xml"
@@ -20,6 +20,8 @@ const elementTypeToPmTypes = {
     'inlines': ['inline-node'],
     'asides': ['inline-node']
 }
+
+export const markPrefix = 'mark'
 
 export const systemElements = [
     'text'
@@ -295,6 +297,27 @@ export default class TEISchema {
         const menus = pmTypes.map( pmType => pmTypeToMenu[pmType] ).flat()
         return menus.includes(elementMenu)
     }    
+
+    pmTypeToTeiName(elementType) {
+        const {name} = elementType
+        
+        if( systemElements.includes(name) ) return null
+
+        if( elementType instanceof MarkType ) {
+            if( !this.elements[name].synth ) return name
+            if( name.startsWith(markPrefix) ) {
+                return name.slice(markPrefix.length)
+            } else {
+                return null
+            }
+        } else {
+            if( !this.elements[name].synth ) { 
+                return name
+            } else {
+                return null
+            }
+        }
+    }
 }
 
 export function getElementIcon(elementID, elements) {
