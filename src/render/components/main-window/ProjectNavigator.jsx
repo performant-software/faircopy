@@ -83,7 +83,7 @@ export default class ProjectNavigator extends Component {
         const {id: resourceID, name, type} = resourceEntry
         const treeID = `nav-node-${resourceID}`
         const resourceIcon = getResourceIcon(type,true)
-        const errorCount = type !== 'facs' ? resource.errorCount : 0
+        const errorCount = type !== 'facs' ? resource.errors.length : 0
         const icon = <i className={`${resourceIcon} fa-lg`}></i>
         const label = this.renderTreeItemLabel(name,resourceID, errorCount)
         const nodeStyle = { wordWrap: 'break-word', maxWidth: panelWidth }

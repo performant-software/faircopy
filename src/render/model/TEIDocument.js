@@ -24,7 +24,7 @@ export default class TEIDocument {
     constructor( resourceEntry, parentEntry, fairCopyProject, teiSchema=null ) {
         this.subDocs = {}
         this.subDocCounter = 0
-        this.errorCount = 0
+        this.errors = []
         this.editorView = null
         this.lastMessageID = null
         this.noteEditorView = null
@@ -164,9 +164,9 @@ export default class TEIDocument {
     updateSystemFlags(transaction,onErrorCountChange) {
         const { idMap, teiSchema, fairCopyConfig } = this.fairCopyProject
         const relativeParentID = this.getRelativeParentID()
-        const nextErrorCount = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
-        if( this.errorCount !== nextErrorCount ) {
-            this.errorCount = nextErrorCount
+        const nextErrors = applySystemFlags(teiSchema,idMap,fairCopyConfig,relativeParentID,transaction)
+        if( this.errors.length !== nextErrors.length ) {
+            this.errors = nextErrors
             onErrorCountChange()
         }    
     }

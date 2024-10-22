@@ -4,13 +4,14 @@ import { systemAttributes, rtlLanguages } from './TEISchema'
 
 // Ammends the document with run time only flags
 export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
-    let errorCount = 0
+    const errors = []
     tr.doc.descendants((node,pos) => {
-        errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        const errorObj = markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        if( errorObj ) errors.push(errorObj)
         markRTL(node,pos,tr)
         return true
     })    
-    return errorCount
+    return errors
 }
 
 function markRTL(node,pos,tr) {
@@ -45,12 +46,12 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
     const elementID = node.type.name
     const attrState = fairCopyConfig.elements[elementID] ? fairCopyConfig.elements[elementID].attrState : null
     const $anchor = tr.doc.resolve(pos)
-    let errorCount = 0
+    let errorFound = false
 
     if( scanAttrs(node.attrs,elementID,teiSchema,attrState,parentLocalID,idMap) || scanElement(elementID,fairCopyConfig) ) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
-        errorCount++
+        errorFound = true
     } else {
         if( node.attrs['__error__'] ) {
             const nextAttrs = { ...node.attrs, '__error__': false }
@@ -65,8 +66,7 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
         if( scanAttrs(mark.attrs,name,teiSchema,markAttrState,parentLocalID,idMap) || scanElement(markElementID,fairCopyConfig)) {
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
-            errorCount++
-            return errorCount
+            errorFound = true
         } else {
             if( mark.attrs['__error__'] ) {
                 const nextAttrs = { ...mark.attrs, '__error__': false }
@@ -74,8 +74,8 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
             }
         }
     }
-
-    return errorCount
+ 
+    return errorFound ? { elementName: elementID, pos } : null
 }
 
 function scanElement( elementID, fairCopyConfig ) {
