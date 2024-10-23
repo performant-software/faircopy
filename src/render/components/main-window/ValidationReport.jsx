@@ -6,6 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 
 import { scrollToNodePos } from '../../model/scrolling';
+import { Typography } from '@material-ui/core';
 
 export default class ValidationReport extends Component {
 
@@ -19,8 +20,10 @@ export default class ValidationReport extends Component {
       scrollToNodePos(pos, teiDocument.resourceID, editorView, true)
     }
 
+    const label = <Typography className='error-line'><i className="fa-solid fa-circle-exclamation"></i> {errorMessage}</Typography>
+
     return (
-        <TreeItem onClick={onClick} key={treeID} nodeId={treeID} label={errorMessage} ></TreeItem>
+        <TreeItem onClick={onClick} key={treeID} nodeId={treeID} label={label} ></TreeItem>
     )
   }
 
@@ -44,7 +47,8 @@ export default class ValidationReport extends Component {
 
     return (
       <div id="ValidationReport">
-        <TreeView
+        <TreeView    
+          defaultExpanded={['root']}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
