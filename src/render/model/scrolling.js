@@ -1,5 +1,6 @@
 import { animateScroll as scroll } from 'react-scroll'
 import { Events } from 'react-scroll';
+import { navigateFromTreeToEditor } from './editor-navigation';
 
 // offset to account for height of the toolbar above the TEI editor
 const scrollTopOffset = 137
@@ -13,7 +14,7 @@ export function scrollToNodePos(nodePos, resourceID, editorView, selectDestinati
         }
         if( selectDestination ) {
             Events.scrollEvent.register('end', () => {
-                // TODO move the doc selection to this position
+                navigateFromTreeToEditor( editorView, nodePos )
                 Events.scrollEvent.remove('end');
             });              
         }
