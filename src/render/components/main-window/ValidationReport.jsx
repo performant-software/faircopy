@@ -12,16 +12,15 @@ export default class ValidationReport extends Component {
   renderErrorLine(error) {
     const { teiDocument } = this.props
     const { editorView } = teiDocument
-    const { elementName, pos } = error
+    const { errorMessage, elementName, pos } = error
     const treeID = `vr-${elementName}-${pos}`
-    const label = `${elementName} error`
     
     const onClick = () => {
       scrollToNodePos(pos, teiDocument.resourceID, editorView, true)
     }
 
     return (
-        <TreeItem onClick={onClick} key={treeID} nodeId={treeID} label={label} ></TreeItem>
+        <TreeItem onClick={onClick} key={treeID} nodeId={treeID} label={errorMessage} ></TreeItem>
     )
   }
 
@@ -38,8 +37,10 @@ export default class ValidationReport extends Component {
     const { teiDocument } = this.props
     if( !teiDocument ) return null
 
-    const { editorView } = teiDocument
+    const { editorView, errors } = teiDocument
     if( !editorView ) return null
+
+    if( errors.length === 0 ) return null
 
     return (
       <div id="ValidationReport">
