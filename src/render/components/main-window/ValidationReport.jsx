@@ -17,7 +17,7 @@ export default class ValidationReport extends Component {
     const label = `${elementName} error`
     
     const onClick = () => {
-      scrollToNodePos(pos, teiDocument.resourceID, editorView)
+      scrollToNodePos(pos, teiDocument.resourceID, editorView, true)
     }
 
     return (
