@@ -6,8 +6,8 @@ import { systemAttributes, rtlLanguages } from './TEISchema'
 export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
     const errors = []
     tr.doc.descendants((node,pos) => {
-        const errorObj = markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
-        if( errorObj ) errors.push(errorObj)
+        const nodeErrors = markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        errors.push(...nodeErrors)
         markRTL(node,pos,tr)
         return true
     })    
@@ -46,12 +46,12 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
     const elementID = node.type.name
     const attrState = fairCopyConfig.elements[elementID] ? fairCopyConfig.elements[elementID].attrState : null
     const $anchor = tr.doc.resolve(pos)
-    let errorFound = false
+    let errors = []
 
     if( scanAttrs(node.attrs,elementID,teiSchema,attrState,parentLocalID,idMap) || scanElement(elementID,fairCopyConfig) ) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
-        errorFound = true
+        errors.push({elementName: elementID, pos })
     } else {
         if( node.attrs['__error__'] ) {
             const nextAttrs = { ...node.attrs, '__error__': false }
@@ -66,7 +66,7 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
         if( scanAttrs(mark.attrs,name,teiSchema,markAttrState,parentLocalID,idMap) || scanElement(markElementID,fairCopyConfig)) {
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
-            errorFound = true
+            errors.push({elementName: markElementID, pos })
         } else {
             if( mark.attrs['__error__'] ) {
                 const nextAttrs = { ...mark.attrs, '__error__': false }
@@ -75,7 +75,7 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
         }
     }
  
-    return errorFound ? { elementName: elementID, pos } : null
+    return errors
 }
 
 function scanElement( elementID, fairCopyConfig ) {

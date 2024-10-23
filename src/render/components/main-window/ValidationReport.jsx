@@ -13,8 +13,8 @@ export default class ValidationReport extends Component {
     const { teiDocument } = this.props
     const { editorView } = teiDocument
     const { elementName, pos } = error
-    const treeID = `vr-${pos}`
-    const label = `${elementName} varies from the project schema.`
+    const treeID = `vr-${elementName}-${pos}`
+    const label = `${elementName} error`
     
     const onClick = () => {
       scrollToNodePos(pos, teiDocument.resourceID, editorView)
@@ -47,7 +47,7 @@ export default class ValidationReport extends Component {
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
-          <TreeItem nodeId="root" label="Validation Report" >
+          <TreeItem nodeId="root" label="Validation Errors" >
             { this.renderReport() }
           </TreeItem>
         </TreeView>
