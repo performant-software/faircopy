@@ -178,7 +178,9 @@ export default class TEIDocument {
     finalizeEditorView(editorView) {
         this.editorView = editorView
         const { tr, doc } = editorView.state
-        editorView.dispatch(tr.setSelection(TextSelection.create(doc, 0)));
+        tr.setSelection(TextSelection.create(doc, 0))
+        this.updateSystemFlags(tr,() => {})
+        editorView.dispatch(tr);
         addTextNodes(editorView.state, editorView.dispatch)
         editorView.focus()
         this.changedSinceLastSave = false
