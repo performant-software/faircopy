@@ -13,11 +13,11 @@ export default class ValidationReport extends Component {
   renderErrorLine(error) {
     const { teiDocument } = this.props
     const { editorView } = teiDocument
-    const { errorMessage, elementName, pos } = error
+    const { errorMessage, elementName, pos, nodeSelection } = error
     const treeID = `vr-${elementName}-${pos}`
     
     const onClick = () => {
-      scrollToNodePos(pos, teiDocument.resourceID, editorView, true)
+      scrollToNodePos(pos, teiDocument.resourceID, editorView, true, nodeSelection)
     }
 
     const label = <Typography className='error-line'><i className="fa-solid fa-circle-exclamation"></i> {errorMessage}</Typography>

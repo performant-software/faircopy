@@ -55,7 +55,7 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
         const errorMessage = elementMessage ? elementMessage : `${elementID}: ${attrsMessage}`
-        errors.push({errorMessage, elementName: elementID, pos })
+        errors.push({errorMessage, elementName: elementID, pos, nodeSelection: true})
     } else {
         if( node.attrs['__error__'] ) {
             const nextAttrs = { ...node.attrs, '__error__': false }
@@ -74,7 +74,7 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
             const markErrorMessage = markElementMessage ? markElementMessage : `${markElementID}: ${markAttrsMessage}`
-            errors.push({errorMessage: markErrorMessage, elementName: markElementID, pos })
+            errors.push({errorMessage: markErrorMessage, elementName: markElementID, pos, nodeSelection: false})
         } else {
             if( mark.attrs['__error__'] ) {
                 const nextAttrs = { ...mark.attrs, '__error__': false }
