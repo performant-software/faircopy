@@ -291,6 +291,10 @@ export default class TEISchema {
         return pmTypeToMenu[pmType]
     }
 
+    getPMTypes(elementID) {
+        return elementTypeToPmTypes[this.getElementType(elementID)]
+    }
+
     validElementMenu(elementMenu,elementID) {
         const elementType = this.getElementType(elementID)
         const pmTypes = elementTypeToPmTypes[elementType]
@@ -298,12 +302,12 @@ export default class TEISchema {
         return menus.includes(elementMenu)
     }    
 
-    pmTypeToTeiName(elementType) {
-        const {name} = elementType
+    pmNodeToElementName(pmNode) {
+        const {name} = pmNode.type
         
         if( systemElements.includes(name) ) return null
 
-        if( elementType instanceof MarkType ) {
+        if( pmNode.type instanceof MarkType ) {
             if( !this.elements[name].synth ) return name
             if( name.startsWith(markPrefix) ) {
                 return name.slice(markPrefix.length)
