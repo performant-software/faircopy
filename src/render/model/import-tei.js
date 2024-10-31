@@ -12,8 +12,6 @@ import {teiToFacsimile} from './convert-facs'
 import { getBlankResourceMap, mapResource, getUniqueResourceID } from "./id-map"
 import { facsimileToTEI } from './convert-facs'
 
-const fairCopy = window.fairCopy
-
 export async function importResource(importData,parentEntry,fairCopyProject) {
     if( importData.path ) {
         return importFileResource(importData,parentEntry,fairCopyProject)

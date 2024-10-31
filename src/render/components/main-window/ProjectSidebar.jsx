@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { IconButton, Typography, Tooltip } from '@material-ui/core'
 import TableOfContents from './TableOfContents'
 import ProjectNavigator from './ProjectNavigator'
+import ValidationReport from './ValidationReport'
 
 export default class ProjectSidebar extends Component {
 
@@ -44,6 +45,11 @@ export default class ProjectSidebar extends Component {
                     fairCopyProject={fairCopyProject}
                     panelWidth={panelWidth}  
                 ></TableOfContents>
+                <ValidationReport
+                    teiDocument={openResources[selectedResource]}      
+                    fairCopyProject={fairCopyProject}
+                    panelWidth={panelWidth}  
+                ></ValidationReport>
             </nav>
         )
     }
