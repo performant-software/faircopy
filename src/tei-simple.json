@@ -2313,7 +2313,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(idno* model_headLike* (model_pLike+|model_labelLike+) (model_noteLike|model_biblLike|linkGrp|link_g|idno|ptr_g)* (event|listEvent)* (model_personLike|listPerson)* (model_placeLike|listPlace)* model_objectLike* (relation|listRelation)*)",
+			"content": "(idno* model_headLike* (model_pLike+|model_labelLike+) (model_noteLike|model_biblLike|linkGrp|link_g|idno|ptr_g)* model_eventLike* (model_personLike|listPerson)* (model_placeLike|listPlace)* model_objectLike* (relation|listRelation)*)",
 			"group": "model_personPart model_orgPart model_eventLike",
 			"validAttrs": [
 				"ana",
@@ -3527,7 +3527,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_headLike* desc* (relation|listRelation)* ((event|listEvent)+ (relation|listRelation)*)+)",
+			"content": "(model_headLike* desc* (relation|listRelation)* (model_eventLike+ (relation|listRelation)*)+)",
 			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike model_personPart model_orgPart model_eventLike",
 			"validAttrs": [
 				"ana",
@@ -6780,7 +6780,7 @@
 			"defaultNodes": [
 				"line"
 			],
-			"desc": "defines a written surface as a two-dimensional coordinate space, optionally grouping one or more graphic representations of that space, zones of interest within that space, and transcriptions of the writing within them.",
+			"desc": "defines a written surface as a two-dimensional coordinate space, optionally grouping one or more graphic representations of that space, zones of interest within that space, and, when using an embedded transcription approach, transcriptions of the writing within them.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -22257,7 +22257,7 @@
 			"pmType": "node",
 			"fcType": "docNodes",
 			"isolating": true,
-			"content": "((front)? (body) (back)?)",
+			"content": "(model_global* (front)? model_global* (body) model_global* (back)? model_global*)",
 			"synth": true
 		},
 		{
@@ -24568,7 +24568,7 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": "req",
-			"mode": "add"
+			"mode": null
 		},
 		"toUnit": {
 			"ident": "toUnit",
@@ -24579,7 +24579,7 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": "req",
-			"mode": "add"
+			"mode": null
 		},
 		"agent": {
 			"ident": "agent",
