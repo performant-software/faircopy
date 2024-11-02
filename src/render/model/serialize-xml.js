@@ -22,7 +22,7 @@ function serializeTEIDoc(childEntries,contents) {
         if( childEntry.type === 'header' ) {
             header = resourceEl
         } else {
-            resources.push(resourceEl)
+            resources.push({ localID: childEntry.localID, el: resourceEl})
         }
     }
 
@@ -30,7 +30,19 @@ function serializeTEIDoc(childEntries,contents) {
     const xmlDoc = new DOMParser().parseFromString(resourceXML,"text/xml")
     const teiDoc = xmlDoc.getElementsByTagName('TEI')[0]
     teiDoc.appendChild(header)
-    resources.map( resource => teiDoc.appendChild(resource))
+    // sort resources by localID
+    resources.sort( (a,b) => { 
+        const nameA = a.localID.toUpperCase()
+        const nameB = b.localID.toUpperCase()
+        if (nameA < nameB) {
+            return -1
+        }
+        if (nameA > nameB) {
+            return 1
+        }
+        return 0
+    })
+    resources.map( resource => teiDoc.appendChild(resource.el))
     const teiDocXML = serialize(xmlDoc)
     return teiDocXML
 }
