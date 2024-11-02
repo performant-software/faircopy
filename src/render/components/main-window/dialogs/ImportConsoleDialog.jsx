@@ -77,6 +77,7 @@ export default class ImportConsoleDialog extends Component {
                     nextSubResourceCount = resourceCount
                     if( error ) {
                         nextConsole.push(errorMessage)
+                        fairCopy.ipcSend('importContinue')
                     } else {
                         success = true
                     }    
