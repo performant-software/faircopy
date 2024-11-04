@@ -245,10 +245,8 @@ export default class ResourceBrowser extends Component {
       if( resource.deleted ) return
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
-        onResourceAction( 'open-teidoc', resourceID, resource )         
-      } else {
-        onResourceAction( 'open', [resourceID] )         
-      }
+      } 
+      onResourceAction( 'open', [resourceID] )         
     }
 
     const onClick = (e) => {

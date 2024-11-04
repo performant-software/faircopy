@@ -257,11 +257,54 @@ export default class MainWindow extends Component {
         return false
     }
 
+    selectTEIDoc( teiDocID ) {
+        const {resourceViews, resourceIndex} = this.state 
+        const {currentView} = resourceViews 
+        const currentParentEntry = resourceViews[currentView].parentEntry
+
+        let teiDocEntry
+        if( currentParentEntry && teiDocID === currentParentEntry.id ) {
+            teiDocEntry = currentParentEntry
+        } else {
+            teiDocEntry = resourceIndex.find(resourceEntry => resourceEntry.id === teiDocID && resourceEntry.type === 'teidoc')
+        }
+        if(!teiDocEntry) return false
+
+        const indexParentID = teiDocEntry.id
+        const parentEntry = teiDocEntry
+        const currentPage = 1
+        const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage, ...this.filterInitialState }
+        fairCopy.ipcSend('requestResourceView', resourceViewRequest )
+
+        const nextResourceViews = { ...resourceViews }
+        const currentResourceView = resourceViews[currentView]
+        nextResourceViews[currentView] = { ...currentResourceView, indexParentID, parentEntry, currentPage, loading: true }
+
+        const nextResourceIndex = currentView === 'home' ? resourceIndex : []
+
+        const checkmarkState = this.setAllCheckmarks(false,false)
+        const nextState = { ...this.state, ...checkmarkState }
+
+        this.setState({
+            ...nextState, 
+            selectedResource: null, 
+            resourceBrowserOpen: true, 
+            resourceViews: nextResourceViews, 
+            resourceIndex: nextResourceIndex,
+            ...closePopUpState
+        })
+        return true
+    }
+
     selectResources(resourceIDs) {
         const { fairCopyProject } = this.props
-        const { openResources, selectedResource, requestedResources } = this.state
+        const { openResources, selectedResource, requestedResources, resourceIndex } = this.state
 
         let nextSelection = resourceIDs[0]
+
+        if( this.selectTEIDoc(nextSelection) ) {
+            return 
+        }
         let change = (selectedResource !== nextSelection)
         const nextRequestedResources = [ ...requestedResources ]
 
@@ -469,22 +512,6 @@ export default class MainWindow extends Component {
         const nextState = { ...this.state, ...checkmarkState }
 
         switch(actionID) {
-            case 'open-teidoc':
-                {
-                const {resourceViews, resourceIndex} = this.state 
-                const {currentView} = resourceViews 
-                const currentResourceView = resourceViews[currentView]
-                const indexParentID = resourceIDs
-                const parentEntry = resourceEntries
-                const currentPage = 1
-                const resourceViewRequest = { currentView, indexParentID, parentEntry, currentPage, ...this.filterInitialState }
-                const nextResourceIndex = currentView === 'home' ? resourceIndex : []
-                fairCopy.ipcSend('requestResourceView', resourceViewRequest )
-                const nextResourceViews = { ...resourceViews }
-                nextResourceViews[currentView] = { ...currentResourceView, indexParentID, parentEntry, currentPage, loading: true }
-                this.setState({...nextState, selectedResource: null, resourceBrowserOpen: true, resourceViews: nextResourceViews, resourceIndex: nextResourceIndex })
-                }
-                break
             case 'open':
                 this.selectResources(resourceIDs)
                 break
