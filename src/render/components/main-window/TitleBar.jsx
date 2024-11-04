@@ -25,7 +25,7 @@ export default class TitleBar extends Component {
 
     onClickTeiDoc = () => {
         const { onResourceAction, parentResource } = this.props
-        onResourceAction('open-teidoc',parentResource.id,parentResource)        
+        onResourceAction('open',[parentResource.id])        
     }
 
     renderHomeButton() {         
