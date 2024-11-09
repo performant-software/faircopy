@@ -206,6 +206,9 @@ export function addTextNodes(state, dispatch=null) {
         return true
     })
 
+    // split text nodes at line beginnings
+    splitOnLineBeginnings(doc,tr)
+
     if( dispatch ) { 
         dispatch(tr)
     } else {
@@ -272,4 +275,20 @@ function renameEls(htmlFragment, oldElName, newElName) {
 // copy all the attributes from one element to another
 function cloneAttributes(target, source) {
     [...source.attributes].forEach( attr => { target.setAttribute(attr.nodeName ,attr.nodeValue) })
+}
+
+// Honor line beginning elements by splitting the 
+// parent node at the line break
+function splitOnLineBeginnings(doc,tr) {
+    doc.descendants( (node, pos, parent) => {
+        const nodeType = node.type.name
+        const parentType = parent ? parent.type.name : null
+        if( parentType && 
+            parentType.startsWith('textNode') && 
+            nodeType === 'lb' ) {
+            const lbPos = tr.mapping.map(pos)
+            console.log(`split at ${lbPos}`)
+            tr.split(lbPos)
+        }
+    })
 }
