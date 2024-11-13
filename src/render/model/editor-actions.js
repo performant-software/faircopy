@@ -380,7 +380,11 @@ function createInline( nodeType, editorView ) {
     const { tr, selection } = state
     const { $anchor } = selection
     const node = nodeType.create()
-    tr.insert($anchor.pos, node) 
+    tr.insert($anchor.pos, node)
+    if( nodeType.name === 'lb' ) {
+        const lbPos = tr.mapping.map($anchor.pos)
+        tr.split(lbPos)
+    }
     editorView.dispatch(tr)
     editorView.focus()
 }

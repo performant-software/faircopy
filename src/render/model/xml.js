@@ -287,7 +287,6 @@ function splitOnLineBeginnings(doc,tr) {
             parentType.startsWith('textNode') && 
             nodeType === 'lb' ) {
             const lbPos = tr.mapping.map(pos)
-            console.log(`split at ${lbPos}`)
             tr.split(lbPos)
         }
     })
