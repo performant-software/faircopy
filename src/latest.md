@@ -2,6 +2,24 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.2.1
+
+This is a monthly maintenance release for November 2024.
+
+### Improvements
+
+* FairCopy now displays a list of the validation errors in the sidebar, making it easier to locate and resolve them.
+* Resources are now sorted alphanumberically by xml:id in the exported XML.
+
+### Bug Fixes
+
+* Fixed bug related to pasting into an attribute field.
+* Fixed crash bug using Actions->Open on a TEI Document resource.
+* Fixed constraint on Element Palette movement
+* Global elements may now appear as peers to front, body, and back
+* Improved error handling on XML import of invalid XML.
+
+
 ## Version 1.2.0
 
 This public release includes all the beta improvements and bug fixes since v1.1.10. 
