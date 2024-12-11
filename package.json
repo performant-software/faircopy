@@ -83,7 +83,8 @@
     "semver": "^7.6.0",
     "uuid": "^8.1.0",
     "w3c-xmlserializer": "^2.0.0",
-    "xml-formatter": "^2.5.0"
+    "xml-formatter": "^2.5.0",
+    "xpath": "^0.0.34"
   },
   "eslintConfig": {
     "extends": "react-app"
