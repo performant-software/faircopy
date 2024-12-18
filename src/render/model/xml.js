@@ -2,6 +2,8 @@ import { DOMSerializer, Fragment } from "prosemirror-model"
 import xpath from 'xpath'
 import serialize from "w3c-xmlserializer"
 import { data } from '../../data/test-milestone'
+import { RELEASE_TYPES } from "semver"
+import { find } from "../../../webpack.rules"
 
 // These elements are processed in XSLT by the xsl:strip-space command. This list is from xml/tei/odd/stripspace.xsl.model, TEI v4.1.0
 const xmlStripSpaceNames = "TEI abstract additional address adminInfo altGrp altIdentifier alternate analytic annotation annotationBlock app appInfo application arc argument att attDef attList availability back biblFull biblStruct bicond binding bindingDesc body broadcast cRefPattern calendar calendarDesc castGroup castList category certainty char charDecl charProp choice cit classDecl classSpec classes climate cond constraintSpec content correction correspAction correspContext correspDesc custodialHist dataRef dataSpec datatype decoDesc dimensions div div1 div2 div3 div4 div5 div6 div7 divGen docTitle eLeaf eTree editionStmt editorialDecl elementSpec encodingDesc entry epigraph epilogue equipment event exemplum fDecl fLib facsimile figure fileDesc floatingText forest front fs fsConstraints fsDecl fsdDecl fvLib gap gi glyph graph graphic group handDesc handNotes history hom hyphenation iNode if imprint incident index interpGrp interpretation join joinGrp keywords kinesic langKnowledge langUsage layoutDesc leaf lg linkGrp list listAnnotation listApp listBibl listChange listEvent listForest listNym listObject listOrg listPerson listPlace listPrefixDef listRef listRelation listTranspose listWit location locusGrp macroSpec media metDecl model modelGrp modelSequence moduleRef moduleSpec monogr msContents msDesc msFrag msIdentifier msItem msItemStruct msPart namespace node normalization notatedMusic notesStmt nym object objectDesc objectIdentifier org paramList paramSpec particDesc performance person personGrp persona physDesc place population postscript precision prefixDef profileDesc projectDesc prologue publicationStmt punctuation quotation rdgGrp recordHist recording recordingStmt refsDecl relatedItem relation remarks respStmt respons revisionDesc root row samplingDecl schemaRef schemaSpec scriptDesc scriptStmt seal sealDesc segmentation sequence seriesStmt set setting settingDesc sourceDesc sourceDoc sp spGrp space spanGrp specGrp specList standOff state stdVals styleDefDecl subst substJoin superEntry supportDesc surface surfaceGrp table tagsDecl taxonomy teiCorpus teiHeader terrain text textClass textDesc timeline titlePage titleStmt trait transcriptionDesc transpose tree triangle typeDesc unitDecl unitDef vAlt vColl vDefault vLabel vMerge vNot vRange valItem valList vocal".split(' ')
@@ -10,60 +12,11 @@ export function parseText(textEl, teiDocument, teiSchema, subDocName) {
     // make the TEIDocument visible to the node spec parser for access to sub docs
     teiSchema.teiDocuments.push(teiDocument)
     stripSpaces(textEl)
-    console.log(textEl)
     parseInterNodes(textEl, teiSchema, teiDocument.xmlDom)
-
-    // TODO: Test loading milestones
-    if (subDocName === 'text') {
-        data.forEach(d => {
-            const pathsRaw = d.path.split(' ')
-            const path1 = pathsRaw[0].split('::');
-            const path2 = pathsRaw[1].split('::')
-            insertMilestone(teiDocument.xmlDom, [path1[0], path1[1]], [path2[0], path2[1]], d.id)
-        })
-    }
     const domParser = subDocName !== 'text' ? teiSchema.docNodeParsers[subDocName] : teiSchema.domParser
     const doc = domParser.parse(textEl)
     teiSchema.teiDocuments.pop()
     return doc
-}
-
-function insertMilestone(xmlDom, start, end, id) {
-    const select = xpath.useNamespaces({
-        teiXML: "http://www.tei-c.org/ns/1.0",
-    });
-    const targetNodeStart = select(start[0].replaceAll('/', '/teiXML:'), xmlDom);
-    const targetNodeEnd = select(end[0].replaceAll('/', '/teiXML:'), xmlDom);
-    if (targetNodeStart[0] && targetNodeEnd[0] && start[0] === end[0]) {
-        let serializedXml = serialize(targetNodeStart[0]);
-        console.log('Target Start: ', serializedXml)
-        const normalized = serializedXml.replaceAll(' xmlns="http://www.tei-c.org/ns/1.0"', '')
-        const newNodeStr = normalized.slice(0, parseInt(start[1]) - 1) +
-            `<milestone xml:id="start-${id}"/>` +
-            normalized.slice(parseInt(start[1]) - 1, parseInt(end[1])) +
-            `<milestone xml:id="end-${id}"/>` +
-            normalized.slice(parseInt(end[1]))
-        console.log('Normalized: ', newNodeStr)
-        const parser = new DOMParser();
-        const newNode = parser.parseFromString(newNodeStr, "text/html")
-        targetNodeStart[0].replaceWith(newNode[0])
-    } else if (targetNodeStart[0] && targetNodeEnd[0]) {
-        let serializedXmlStart = serialize(targetNodeStart[0]);
-        console.log('Target Start: ', serializedXmlStart)
-        let serializedXmlEnd = serialize(targetNodeEnd[0]);
-        console.log('Target End: ', serializedXmlEnd)
-        const normalizedStart = serializedXmlStart.replaceAll(' xmlns="http://www.tei-c.org/ns/1.0"', '')
-        const newNodeStrStart = normalizedStart.slice(0, parseInt(start[1]) - 1) + `<milestone xml:id="${id}"/>` + normalizedStart.slice(parseInt(start[1]) - 1)
-        console.log('Normalized Start: ', newNodeStrStart)
-        const normalizedEnd = serializedXmlEnd.replaceAll(' xmlns="http://www.tei-c.org/ns/1.0"', '')
-        const newNodeStrEnd = normalizedEnd.slice(0, parseInt(end[1]) - 1) + `<milestone xml:id="${id}"/>` + normalizedEnd.slice(parseInt(end[1]) - 1)
-        console.log('Normalized End: ', newNodeStrEnd)
-        const parser = new DOMParser();
-        const newNodeStart = parser.parseFromString(newNodeStrStart, "text/html")
-        targetNodeStart[0].replaceWith(newNodeStart[0])
-        const newNodeEnd = parser.parseFromString(newNodeStrEnd, "text/html")
-        targetNodeEnd[0].replaceWith(newNodeEnd[0])
-    }
 }
 
 export function serializeText(doc, teiDocument, teiSchema) {
@@ -264,6 +217,97 @@ export function addTextNodes(state, dispatch = null) {
         const { state: nextState } = state.applyTransaction(tr)
         return nextState.doc
     }
+}
+
+export function addAnnotations(state, dispatch = null) {
+    function getNodeMap(path) {
+        const arr = path.split(' ')
+        const start = arr[0]
+        const end = arr[1]
+        const ret = { start: [], end: [] }
+
+        for (let i = 0; i < 2; i++) {
+            let str, input;
+            if (i === 0) {
+                str = start;
+                input = ret.start;
+            } else {
+                str = end;
+                input = ret.end;
+            }
+
+            // Always assume that first character is /
+            let index = 1
+            let next = str.substring(index).indexOf('/')
+            while (next !== -1) {
+                if (str.substring(index, index + 1) === '/') {
+                    index += 1
+                }
+
+                next = str.substring(index).indexOf('/')
+                if (next === -1) {
+                    const parse = str.substring(index).split('[');
+                    const id = parse[1].split(']')
+                    const offset = id[1].split("::")
+                    input.push({ node: parse[0], id: id[0], offset: offset[1] })
+                } else {
+                    const parse = str.substring(index, index + next).split('[');
+                    const id = parse[1].split(']')
+                    input.push({ node: parse[0], id: id[0] })
+                }
+
+                index = index + next + 1;
+            }
+        }
+
+        return ret;
+    }
+
+    function findNode(startNode, path, index, findCount, curOffset) {
+        const idCount = parseInt(path[index].id) === NaN ? -1 : parseInt(path[index].id);
+        const idMatch = idCount < 0 ? path[index].id : ''
+
+        for (let i = 0; i < startNode.childCount; i++) {
+            const node = startNode.child(i);
+            //console.log('idCount: ', idCount, ', idMatch: ', idMatch, ', Find Count: ', findCount)
+            //console.log('Node Name: ', node.type.name, ', Path Name: ', path[index].node)
+            curOffset += node.nodeSize
+            if (node.type.name === path[index].node) {
+                if ((idCount < 0 && node.attrs['@xml:id'] === idMatch) || (idCount > -1 && findCount === idCount)) {
+                    index++
+                    // console.log('Found!')
+                    if (index < path.length) {
+                        // console.log('Finding -> Node Size: ', node.nodeSize, ', Current Offset: ', curOffset - node.nodeSize)
+                        return findNode(node, path, index, 1, curOffset - node.nodeSize)
+                    } else {
+                        // console.log('Found! -> Node Size: ', node.nodeSize, ', Current Offset: ', curOffset - node.nodeSize)
+                        // Account for the TextNode by adding 2
+                        return { node, offset: curOffset - node.nodeSize + 2 }
+                    }
+                }
+
+                findCount++
+            }
+        }
+    }
+
+    const { doc } = state
+
+    data.forEach(d => {
+        const paths = getNodeMap(d.path)
+
+        // We want to start at the children of text node as that
+        // should always be present and should be the first nodes in the document
+        const startIndex = paths.start.findIndex(p => p.node === 'text') + 1;
+        const endIndex = paths.end.findIndex(p => p.node === 'text') + 1;
+        const startNode = findNode(doc, paths.start, startIndex, 1, 0);
+        const endNode = findNode(doc, paths.end, endIndex, 1, 0);
+        let position = 0
+        doc.nodesBetween(startNode.offset + parseInt(paths.start[paths.start.length - 1].offset), endNode.offset + parseInt(paths.end[paths.end.length - 1].offset), function (node, pos, parent, index) {
+            position = pos
+        })
+        console.log('Text Annotated: ', doc.textBetween(startNode.offset + parseInt(paths.start[paths.start.length - 1].offset), position + parseInt(paths.end[paths.end.length - 1].offset)))
+    })
 }
 
 // take content fragment and replace any text nodes in there with text node type
