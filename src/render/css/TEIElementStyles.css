@@ -1,100 +1,119 @@
-
-[__rtl__ = "true" ] {
-    direction:rtl;
-    text-align:right;
+[__rtl__="true"] {
+  direction: rtl;
+  text-align: right;
 }
 
-[__ltr__ = "true" ] {
-    direction:ltr;
-    text-align:left;
+[__ltr__="true"] {
+  direction: ltr;
+  text-align: left;
 }
 
-[__error__ = "true"] {
-    border-bottom: dotted red;
+[__error__="true"] {
+  border-bottom: dotted red;
 }
 
-
-[phraselvl = "false"] {
-    margin: 0px;
-    display: block;
+[phraselvl="false"] {
+  margin: 0px;
+  display: block;
 }
 
 /* Leave blank space for structure elements that have no content */
-[phraselvl = "false"]:empty {
-    display: inline-block;
-    min-height: 30px;
+[phraselvl="false"]:empty {
+  display: inline-block;
+  min-height: 30px;
 }
 
-tei-textnode0, tei-textnode1, tei-textnode2, tei-textnode3, tei-textnode4, tei-textnode5, tei-textnode6, tei-textnode7, tei-textnode8, tei-textnode9, tei-textnode10,
-tei-textnode11, tei-textnode12, tei-textnode13, tei-textnode14, tei-textnode15, tei-textnode16, tei-textnode17, tei-textnode18, tei-textnode19, tei-textnode20 {
-    display: block;
-    padding-top: 2px;
-    padding-bottom: 2px;
+__annomark__ {
+  background-color: rgba(0, 0, 255, 0.1);
+}
+
+tei-textnode0,
+tei-textnode1,
+tei-textnode2,
+tei-textnode3,
+tei-textnode4,
+tei-textnode5,
+tei-textnode6,
+tei-textnode7,
+tei-textnode8,
+tei-textnode9,
+tei-textnode10,
+tei-textnode11,
+tei-textnode12,
+tei-textnode13,
+tei-textnode14,
+tei-textnode15,
+tei-textnode16,
+tei-textnode17,
+tei-textnode18,
+tei-textnode19,
+tei-textnode20 {
+  display: block;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .inline-node {
-    margin-right: 3px;
-    margin-left: 3px;
-}  
+  margin-right: 3px;
+  margin-left: 3px;
+}
 
-tei-markdel, tei-del {
-    color: red;
-    text-decoration: line-through;
+tei-markdel,
+tei-del {
+  color: red;
+  text-decoration: line-through;
 }
 
 *[rend~="uppercase"] {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 *[rend~="italic"] {
-    font-style: italic;
+  font-style: italic;
 }
 *[rend~="bold"] {
-    font-weight: bold;
+  font-weight: bold;
 }
 *[rend~="red"] {
-    color: red;
+  color: red;
 }
 *[rend~="green"] {
-    color: green;
+  color: green;
 }
 *[rend~="blue"] {
-    color: blue;
+  color: blue;
 }
 *[rend~="purple"] {
-    color: purple;
+  color: purple;
 }
 *[rend~="orange"] {
-    color: orange;
+  color: orange;
 }
 *[rend~="brown"] {
-    color: brown;
+  color: brown;
 }
 *[rend~="gray"] {
-    color: gray;
+  color: gray;
 }
 *[rend~="small"] {
-    font-size: small;
+  font-size: small;
 }
 *[rend~="medium"] {
-    font-size: large;
+  font-size: large;
 }
 *[rend~="large"] {
-    font-size: x-large;
+  font-size: x-large;
 }
 
-
 *[rend~="underline"] {
-   text-decoration: underline;
+  text-decoration: underline;
 }
 
 *[rend~="line-through"] {
-    text-decoration: line-through;
- }
- 
+  text-decoration: line-through;
+}
 
 .ProseMirror {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 14pt;
-    line-height: 1.5em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14pt;
+  line-height: 1.5em;
 }
-  

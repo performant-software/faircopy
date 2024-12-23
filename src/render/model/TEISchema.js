@@ -126,7 +126,8 @@ export default class TEISchema {
         marks['__annoMark__'] = {
             toDOM() { return ["__annoMark__", 0] },
             parseDOM: [{ tag: "__annoMark__" }],
-            attrs: { '__id__': { hidden: true } }
+            attrs: { 'id': { hidden: true } },
+            group: "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
         }
 
         return { schemaSpec: { nodes, marks }, elements, attrs, elementGroups: teiSimple.elementGroups, modules: teiSimple.modules }

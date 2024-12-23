@@ -1,9 +1,10 @@
 import { DOMSerializer, Fragment } from "prosemirror-model"
+import { AddMarkStep, Transform } from "prosemirror-transform"
 import xpath from 'xpath'
 import serialize from "w3c-xmlserializer"
-import { data } from '../../data/test-milestone'
 import { RELEASE_TYPES } from "semver"
 import { find } from "../../../webpack.rules"
+import { generateMarks } from './commands';
 
 // These elements are processed in XSLT by the xsl:strip-space command. This list is from xml/tei/odd/stripspace.xsl.model, TEI v4.1.0
 const xmlStripSpaceNames = "TEI abstract additional address adminInfo altGrp altIdentifier alternate analytic annotation annotationBlock app appInfo application arc argument att attDef attList availability back biblFull biblStruct bicond binding bindingDesc body broadcast cRefPattern calendar calendarDesc castGroup castList category certainty char charDecl charProp choice cit classDecl classSpec classes climate cond constraintSpec content correction correspAction correspContext correspDesc custodialHist dataRef dataSpec datatype decoDesc dimensions div div1 div2 div3 div4 div5 div6 div7 divGen docTitle eLeaf eTree editionStmt editorialDecl elementSpec encodingDesc entry epigraph epilogue equipment event exemplum fDecl fLib facsimile figure fileDesc floatingText forest front fs fsConstraints fsDecl fsdDecl fvLib gap gi glyph graph graphic group handDesc handNotes history hom hyphenation iNode if imprint incident index interpGrp interpretation join joinGrp keywords kinesic langKnowledge langUsage layoutDesc leaf lg linkGrp list listAnnotation listApp listBibl listChange listEvent listForest listNym listObject listOrg listPerson listPlace listPrefixDef listRef listRelation listTranspose listWit location locusGrp macroSpec media metDecl model modelGrp modelSequence moduleRef moduleSpec monogr msContents msDesc msFrag msIdentifier msItem msItemStruct msPart namespace node normalization notatedMusic notesStmt nym object objectDesc objectIdentifier org paramList paramSpec particDesc performance person personGrp persona physDesc place population postscript precision prefixDef profileDesc projectDesc prologue publicationStmt punctuation quotation rdgGrp recordHist recording recordingStmt refsDecl relatedItem relation remarks respStmt respons revisionDesc root row samplingDecl schemaRef schemaSpec scriptDesc scriptStmt seal sealDesc segmentation sequence seriesStmt set setting settingDesc sourceDesc sourceDoc sp spGrp space spanGrp specGrp specList standOff state stdVals styleDefDecl subst substJoin superEntry supportDesc surface surfaceGrp table tagsDecl taxonomy teiCorpus teiHeader terrain text textClass textDesc timeline titlePage titleStmt trait transcriptionDesc transpose tree triangle typeDesc unitDecl unitDef vAlt vColl vDefault vLabel vMerge vNot vRange valItem valList vocal".split(' ')
@@ -219,7 +220,7 @@ export function addTextNodes(state, dispatch = null) {
     }
 }
 
-export function addAnnotations(state, dispatch = null) {
+export function addAnnotations(state, annotationData = [], dispatch = null) {
     function getNodeMap(path) {
         const arr = path.split(' ')
         const start = arr[0]
@@ -269,20 +270,24 @@ export function addAnnotations(state, dispatch = null) {
 
         for (let i = 0; i < startNode.childCount; i++) {
             const node = startNode.child(i);
-            //console.log('idCount: ', idCount, ', idMatch: ', idMatch, ', Find Count: ', findCount)
-            //console.log('Node Name: ', node.type.name, ', Path Name: ', path[index].node)
             curOffset += node.nodeSize
             if (node.type.name === path[index].node) {
                 if ((idCount < 0 && node.attrs['@xml:id'] === idMatch) || (idCount > -1 && findCount === idCount)) {
                     index++
-                    // console.log('Found!')
                     if (index < path.length) {
-                        // console.log('Finding -> Node Size: ', node.nodeSize, ', Current Offset: ', curOffset - node.nodeSize)
-                        return findNode(node, path, index, 1, curOffset - node.nodeSize)
+                        // the + 1 is to account for this node's token
+                        return findNode(node, path, index, 1, curOffset - node.nodeSize + 1)
                     } else {
-                        // console.log('Found! -> Node Size: ', node.nodeSize, ', Current Offset: ', curOffset - node.nodeSize)
-                        // Account for the TextNode by adding 2
-                        return { node, offset: curOffset - node.nodeSize + 2 }
+                        let textStartPos = 0;
+                        node.descendants(function (n, pos) {
+                            if (n.type.name === 'text') {
+                                textStartPos = pos
+                                // console.log('textStartPos: ', textStartPos)
+                                return false
+                            }
+                        })
+                        // the + 1 is to account for this node's token
+                        return { node, offset: curOffset - node.nodeSize + textStartPos + 1 }
                     }
                 }
 
@@ -291,9 +296,9 @@ export function addAnnotations(state, dispatch = null) {
         }
     }
 
-    const { doc } = state
+    const { doc, tr } = state
 
-    data.forEach(d => {
+    annotationData.forEach(d => {
         const paths = getNodeMap(d.path)
 
         // We want to start at the children of text node as that
@@ -306,8 +311,18 @@ export function addAnnotations(state, dispatch = null) {
         doc.nodesBetween(startNode.offset + parseInt(paths.start[paths.start.length - 1].offset), endNode.offset + parseInt(paths.end[paths.end.length - 1].offset), function (node, pos, parent, index) {
             position = pos
         })
-        console.log('Text Annotated: ', doc.textBetween(startNode.offset + parseInt(paths.start[paths.start.length - 1].offset), position + parseInt(paths.end[paths.end.length - 1].offset)))
+        const markStart = startNode.offset + parseInt(paths.start[paths.start.length - 1].offset)
+        const markEnd = position + parseInt(paths.end[paths.end.length - 1].offset)
+
+        // console.log('Text Annotated: ', doc.textBetween(markStart, markEnd))
+
+        let mark = doc.type.schema.marks['__annoMark__'].create({ id: d.id })
+        tr.addMark(markStart, markEnd, mark)
     })
+
+    if (dispatch) {
+        dispatch(tr)
+    }
 }
 
 // take content fragment and replace any text nodes in there with text node type

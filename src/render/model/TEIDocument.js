@@ -175,15 +175,17 @@ export default class TEIDocument {
         return this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
     }
 
-    finalizeEditorView(editorView) {
+    finalizeEditorView(editorView, annotationData) {
         this.editorView = editorView
         const { tr, doc } = editorView.state
         tr.setSelection(TextSelection.create(doc, 0))
         this.updateSystemFlags(tr, () => { })
         editorView.dispatch(tr);
         addTextNodes(editorView.state, editorView.dispatch)
+        if (this.resourceType === 'text') {
+            addAnnotations(editorView.state, annotationData, editorView.dispatch)
+        }
         editorView.focus()
-        addAnnotations(editorView.state, editorView.dispatch)
         this.changedSinceLastSave = false
     }
 

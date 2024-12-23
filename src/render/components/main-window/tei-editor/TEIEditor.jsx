@@ -100,7 +100,7 @@ export default class TEIEditor extends Component {
   };
 
   createEditorView = (element) => {
-    const { teiDocument } = this.props;
+    const { teiDocument, annotationData } = this.props;
     const { teiSchema } = teiDocument.fairCopyProject;
 
     if (teiDocument.editorView) return;
@@ -123,7 +123,7 @@ export default class TEIEditor extends Component {
     });
     // uncomment to use ProseMirror dev tools
     if (process.env["NODE_ENV"] === "development") applyDevTools(editorView);
-    teiDocument.finalizeEditorView(editorView);
+    teiDocument.finalizeEditorView(editorView, annotationData);
   };
 
   dispatchTransaction = (transaction) => {

@@ -3,6 +3,7 @@ import { checkInResources, checkOutResources } from '../model/cloud-api/resource
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 import { serializeResource } from "../model/serialize-xml"
 import { renderTEIDocument } from "../model/editioncrafter/render"
+const { parseStandoff } = require('./parse-standoff')
 
 const fs = window.fairCopy.getFs()
 const os = window.fairCopy.getOs()
@@ -18,7 +19,7 @@ let projectArchiveState = { open: false, jobQueue: [] }
 
 function setupTempFolder() {
     const cacheFolder = `${os.tmpdir()}/faircopy/`
-    if( !fs.existsSync(cacheFolder) ) fs.mkdirSync(cacheFolder)
+    if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder)
     const zipPath = fs.mkdtempSync(cacheFolder)
     return { cacheFolder, zipPath }
 }
@@ -27,84 +28,84 @@ function readUTF8(targetFilePath, zip) {
     const file = zip.file(targetFilePath)
     return file ? file.async("string") : new Promise((resolve) => resolve(null))
 }
- 
-function writeUTF8( targetFilePath, data, zip ) {
+
+function writeUTF8(targetFilePath, data, zip) {
     zip.file(targetFilePath, data)
 }
 
-function addFile( localFilePath, resourceID, zip ) {
+function addFile(localFilePath, resourceID, zip) {
     const buffer = fs.readFileSync(localFilePath)
     zip.file(resourceID, buffer)
 }
 
-async function checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage ) {
-    const authToken = getAuthToken( userID, serverURL )
+async function checkIn(userID, serverURL, projectID, committedResources, message, zip, postMessage) {
+    const authToken = getAuthToken(userID, serverURL)
 
-    if( authToken ) {
+    if (authToken) {
         const onSuccess = (results) => {
             const resourceStatus = {}
-            for( const result of results ) {
-               resourceStatus[result.resource_guid] = 'ok' 
+            for (const result of results) {
+                resourceStatus[result.resource_guid] = 'ok'
             }
             postMessage({ messageType: 'check-in-results', resourceStatus, error: null })
             console.log(`Check in successful.`)
         }
-    
-        const onFail = (error,results) => {
+
+        const onFail = (error, results) => {
             const resourceStatus = {}
-            if( results ) {
-                for( const result of results ) {
+            if (results) {
+                for (const result of results) {
                     resourceStatus[result.resource_guid] = result.error
-                }    
+                }
             }
             postMessage({ messageType: 'check-in-results', resourceStatus, error })
             console.log(error)
         }
-    
+
         // add the content for each resource being added or updated
-        for( const committedResource of committedResources ) {
-            if( committedResource.action !== 'destroy' && committedResource.type !== 'teidoc' ) {
+        for (const committedResource of committedResources) {
+            if (committedResource.action !== 'destroy' && committedResource.type !== 'teidoc') {
                 committedResource.content = await readUTF8(committedResource.id, zip)
             } else {
                 committedResource.content = null
             }
         }
-      
-        checkInResources(userID, serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
+
+        checkInResources(userID, serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)
     } else {
         postMessage({ messageType: 'check-in-results', resourceIDs: [], error: "User not logged in." })
     }
 }
 
-async function checkOut( userID, serverURL, projectID, resourceEntries, zip, postMessage ) {
-    const authToken = getAuthToken( userID, serverURL )
+async function checkOut(userID, serverURL, projectID, resourceEntries, zip, postMessage) {
+    const authToken = getAuthToken(userID, serverURL)
     const resources = {}
 
     // create a list of resource IDs include child resources
     const resourceIDs = []
-    for( const resourceEntry of resourceEntries ) {
+    for (const resourceEntry of resourceEntries) {
         const { id: resourceID, type } = resourceEntry
-        if( type === 'teidoc' ) {
-            const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, 1)
-            for( const resource of resourceData.remoteResources ) {
-                if( resource.type !== 'header' ) resourceIDs.push(resource.id)
+        if (type === 'teidoc') {
+            const resourceData = await getResourcesAsync(userID, serverURL, authToken, projectID, resourceID, 1)
+            for (const resource of resourceData.remoteResources) {
+                if (resource.type !== 'header') resourceIDs.push(resource.id)
             }
         }
         resourceIDs.push(resourceID)
     }
 
-    if( authToken ) {
+    if (authToken) {
         try {
-            const resourceStates = await checkOutResources( serverURL, authToken, projectID, resourceIDs )
-            
-            // get the contents for each resource and add them to the project 
-            for( const resourceState of resourceStates ) {
-                const { resource_guid: resourceID, state } = resourceState
-                const { resourceEntry, parentEntry, content } = await getResourceAsync( userID, serverURL, authToken, resourceID )
+            const resourceStates = await checkOutResources(serverURL, authToken, projectID, resourceIDs)
 
-                if( state === 'success') {
+            // get the contents for each resource and add them to the project 
+            for (const resourceState of resourceStates) {
+                const { resource_guid: resourceID, state } = resourceState
+                const { resourceEntry, parentEntry, content } = await getResourceAsync(userID, serverURL, authToken, resourceID)
+
+                if (state === 'success') {
                     resources[resourceEntry.id] = { state, resourceEntry, parentEntry, content }
-                    writeUTF8( resourceEntry.id, content, zip )    
+                    writeUTF8(resourceEntry.id, content, zip)
                 } else {
                     resources[resourceID] = { state, resourceEntry }
                 }
@@ -113,46 +114,46 @@ async function checkOut( userID, serverURL, projectID, resourceEntries, zip, pos
 
         } catch (e) {
             postMessage({ messageType: 'check-out-results', resources, error: e.errorMessage })
-        }          
+        }
     } else {
         postMessage({ messageType: 'check-out-results', resources, error: "User not logged in." })
     }
 }
 
-async function prepareResourceExport( resourceEntry, projectData, zip ) {
+async function prepareResourceExport(resourceEntry, projectData, zip) {
     const { remote, localEntries } = projectData
     const childEntries = [], contents = {}
 
-    if( remote ) {
+    if (remote) {
         try {
             const { serverURL, userID, projectID } = projectData
-            const authToken = getAuthToken( userID, serverURL )
-            if( !authToken ) {
+            const authToken = getAuthToken(userID, serverURL)
+            if (!authToken) {
                 return { error: "User not logged in." }
             }
-    
-            if( resourceEntry.type === 'teidoc' ) {
+
+            if (resourceEntry.type === 'teidoc') {
                 // if a teidoc is local, then its children must also be local
-                if( resourceEntry.local ) {
-                    for( const localEntry of Object.values(localEntries) ) {
-                        if( localEntry.parentResource === resourceEntry.id ) {
+                if (resourceEntry.local) {
+                    for (const localEntry of Object.values(localEntries)) {
+                        if (localEntry.parentResource === resourceEntry.id) {
                             childEntries.push(localEntry)
-                            contents[localEntry.id] = await readUTF8( localEntry.id, zip )
+                            contents[localEntry.id] = await readUTF8(localEntry.id, zip)
                         }
                     }
                 } else {
-                    const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry.id, 1)
+                    const resourceData = await getResourcesAsync(userID, serverURL, authToken, projectID, resourceEntry.id, 1)
                     const { remoteResources } = resourceData
 
-                    for( const remoteEntry of remoteResources ) {
+                    for (const remoteEntry of remoteResources) {
                         const { id: resourceID } = remoteEntry
                         const localEntry = localEntries[resourceID]
-                        if( localEntry ) {
+                        if (localEntry) {
                             childEntries.push(localEntry)
-                            contents[resourceID] = await readUTF8( resourceID, zip )
+                            contents[resourceID] = await readUTF8(resourceID, zip)
                         } else {
                             childEntries.push(remoteEntry)
-                            const remoteResource = await getResourceAsync( userID, serverURL,authToken,resourceID)
+                            const remoteResource = await getResourceAsync(userID, serverURL, authToken, resourceID)
                             contents[resourceID] = remoteResource.content
                         }
                     }
@@ -160,27 +161,27 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
             } else {
                 const { id: resourceID } = resourceEntry
                 const localEntry = localEntries[resourceID]
-                if( localEntry ) {
-                    contents[resourceID] = await readUTF8( resourceID, zip )
+                if (localEntry) {
+                    contents[resourceID] = await readUTF8(resourceID, zip)
                 } else {
-                    const remoteResource = await getResourceAsync( userID, serverURL,authToken,resourceID)
+                    const remoteResource = await getResourceAsync(userID, serverURL, authToken, resourceID)
                     contents[resourceID] = remoteResource.content
                 }
-            }    
-        } catch(e) {
+            }
+        } catch (e) {
             return { error: e.message }
         }
     } else {
-        if( resourceEntry.type === 'teidoc' ) {
-            for( const localEntry of Object.values(localEntries) ) {
-                if( localEntry.parentResource === resourceEntry.id ) {
+        if (resourceEntry.type === 'teidoc') {
+            for (const localEntry of Object.values(localEntries)) {
+                if (localEntry.parentResource === resourceEntry.id) {
                     childEntries.push(localEntry)
-                    contents[localEntry.id] = await readUTF8( localEntry.id, zip )
+                    contents[localEntry.id] = await readUTF8(localEntry.id, zip)
                 }
             }
         } else {
             const { id: resourceID } = resourceEntry
-            contents[resourceID] = await readUTF8( resourceID, zip )
+            contents[resourceID] = await readUTF8(resourceID, zip)
         }
     }
 
@@ -189,13 +190,13 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
 
 async function cacheResource(resourceID, fileName, cacheFolder, zip) {
     const cacheFile = `${cacheFolder}/${fileName}`
-    if( !fs.existsSync(cacheFile) ) {
+    if (!fs.existsSync(cacheFile)) {
         const imageBuffer = await zip.file(resourceID).async('nodebuffer')
-        if( !imageBuffer ) {
+        if (!imageBuffer) {
             console.error(`Unable to retrieve ${resourceID} from project archive.`)
             return null
         }
-        fs.writeFileSync(cacheFile,imageBuffer)
+        fs.writeFileSync(cacheFile, imageBuffer)
     }
     return cacheFile
 }
@@ -208,56 +209,56 @@ function saveArchive(startTime, zipPath, zip, callback) {
     // corrupted if we terminate unexpectedly
     zip
         .generateNodeStream({
-            type:'nodebuffer',
+            type: 'nodebuffer',
             compression: "DEFLATE",
             compressionOptions: {
                 level: 1
             },
-            streamFiles:true
+            streamFiles: true
         })
         .pipe(fs.createWriteStream(zipFile))
         .on('finish', () => {
-            fs.copyFileSync( zipFile, projectFilePath )
-            fs.unlinkSync( zipFile )
+            fs.copyFileSync(zipFile, projectFilePath)
+            fs.unlinkSync(zipFile)
             const finishTime = Date.now()
-            console.info(`${zipFile} written in ${finishTime-startTime}ms`);
+            console.info(`${zipFile} written in ${finishTime - startTime}ms`);
             callback()
         });
 }
 
-function exportResource(resourceData, path) {       
+function exportResource(resourceData, path) {
     const { resourceEntry } = resourceData
     const { localID } = resourceEntry
     const filePath = `${path}/${localID}.xml`
     try {
         const xml = serializeResource(resourceData)
-        fs.writeFileSync(filePath,xml)    
-    } catch(e) {
+        fs.writeFileSync(filePath, xml)
+    } catch (e) {
         // log.error(e)
     }
 }
 
 function previewResource(resourceData) {
-    const teiDocXML = serializeResource(resourceData,false)
+    const teiDocXML = serializeResource(resourceData, false)
     const teiDocumentID = resourceData.resourceEntry.localID
-    const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight } 
+    const renderOptions = { teiDocumentID, baseURL, thumbnailWidth, thumbnailHeight }
     const ecData = renderTEIDocument(teiDocXML, renderOptions)
     const layers = {}
     let layerID
     const { childEntries } = resourceData
-    for( const childEntry of childEntries ) {
-        if( childEntry.type === 'text' || childEntry.type === 'sourceDoc') {
-            const {name, localID} = childEntry
+    for (const childEntry of childEntries) {
+        if (childEntry.type === 'text' || childEntry.type === 'sourceDoc') {
+            const { name, localID } = childEntry
             const html = ecData.resources[localID].html
             layers[localID] = { name, html }
             // first layer found is default layerID
-            if( !layerID ) layerID = localID
+            if (!layerID) layerID = localID
         }
     }
     return { layers, layerID, ecData }
 }
 
-async function openArchive(postMessage,workerData) {
+async function openArchive(postMessage, workerData) {
     const { projectFilePath, manifestEntryName, configSettingsEntryName, idMapEntryName } = workerData
 
     // create the archive based on worker data
@@ -265,9 +266,9 @@ async function openArchive(postMessage,workerData) {
     const zip = await JSZip.loadAsync(data)
     const { cacheFolder, zipPath } = setupTempFolder()
 
-    const fairCopyManifestJSON = await readUTF8(manifestEntryName,zip)
-    const fairCopyConfigJSON = await readUTF8(configSettingsEntryName,zip)
-    const idMap = await readUTF8(idMapEntryName,zip)
+    const fairCopyManifestJSON = await readUTF8(manifestEntryName, zip)
+    const fairCopyConfigJSON = await readUTF8(configSettingsEntryName, zip)
+    const idMap = await readUTF8(idMapEntryName, zip)
 
     const fairCopyManifest = fairCopyManifestJSON ? JSON.parse(fairCopyManifestJSON) : null
     const fairCopyConfig = fairCopyConfigJSON ? JSON.parse(fairCopyConfigJSON) : null
@@ -282,18 +283,18 @@ async function openArchive(postMessage,workerData) {
     return { zip, cacheFolder, zipPath, open, jobQueue, projectFilePath }
 }
 
-function postError(errorMessage,postMessage) {
+function postError(errorMessage, postMessage) {
     postMessage({ messageType: 'error', errorMessage })
 }
 
 const save = () => {
     // process write operations in order and one at a time.
     const processNextJob = (job) => {
-        const {startTime, zipPath, zip } = job
-        saveArchive(startTime, zipPath, zip, () => {  
+        const { startTime, zipPath, zip } = job
+        saveArchive(startTime, zipPath, zip, () => {
             projectArchiveState.jobQueue.shift()
             const job = projectArchiveState.jobQueue[0]
-            if( job ) processNextJob(job)
+            if (job) processNextJob(job)
         })
     }
 
@@ -302,7 +303,7 @@ const save = () => {
     const job = { startTime, zipPath, zip }
     console.log(`job starting ${startTime}`)
 
-    if( projectArchiveState.jobQueue.length === 0 ) {
+    if (projectArchiveState.jobQueue.length === 0) {
         projectArchiveState.jobQueue.push(job)
         processNextJob(job)
     } else {
@@ -311,12 +312,12 @@ const save = () => {
 }
 
 // terminate worker after all jobs are done
-const closeSafely = (close) => {      
+const closeSafely = (close) => {
     const { jobQueue, cacheFolder } = projectArchiveState
 
-    if( jobQueue.length > 0 ) {
+    if (jobQueue.length > 0) {
         // write jobs still active, wait a moment and then try again 
-        setTimeout( () => { closeSafely(close) }, 1000 )
+        setTimeout(() => { closeSafely(close) }, 1000)
     } else {
         // when we are done with jobs, clear cache and exit
         fs.rmSync(cacheFolder, { recursive: true, force: true })
@@ -325,30 +326,39 @@ const closeSafely = (close) => {
     }
 }
 
-export function projectArchive( msg, workerMethods, workerData ) {
+export function projectArchive(msg, workerMethods, workerData) {
     const { open } = projectArchiveState
     const { messageType } = msg
     const { postMessage, close } = workerMethods
 
-    if( !open ) {
-        if( messageType === 'open' ) {
-            openArchive(postMessage,workerData).then((state) => {
+    if (!open) {
+        if (messageType === 'open') {
+            openArchive(postMessage, workerData).then((state) => {
                 projectArchiveState = state
             })
         } else {
             postError("Can't perform operations when archive is closed.", postMessage)
         }
-        return 
+        return
     }
 
     const { zip } = projectArchiveState
-    
-    switch( messageType ) {
+
+    switch (messageType) {
         case 'read-resource':
             {
                 const { resourceID, xmlID } = msg
                 readUTF8(resourceID, zip).then(resource => {
                     postMessage({ messageType: 'resource-data', resourceID, xmlID, resource })
+                })
+            }
+            break
+        case 'parse-standoff':
+            {
+                const { resourceID, parentResourceID } = msg
+                readUTF8(resourceID, zip).then(resource => {
+                    const data = parseStandoff(resource)
+                    postMessage({ messageType: 'annotation-data', data, parentResourceID })
                 })
             }
             break
@@ -363,17 +373,17 @@ export function projectArchive( msg, workerMethods, workerData ) {
         case 'request-export':
             {
                 const { resourceEntry, projectData, path } = msg
-                prepareResourceExport(resourceEntry,projectData,zip).then( resourceData => {
+                prepareResourceExport(resourceEntry, projectData, zip).then(resourceData => {
                     exportResource(resourceData, path)
                     postMessage({ messageType: 'exported-resource', path })
                 })
             }
-            break    
+            break
         case 'request-preview':
             {
                 const { previewData, projectData } = msg
-                prepareResourceExport(previewData.resourceEntry,projectData,zip).then( resp => {
-                    if( resp.error ) {
+                prepareResourceExport(previewData.resourceEntry, projectData, zip).then(resp => {
+                    if (resp.error) {
                         postMessage({ messageType: 'preview-resource', error: resp.error })
                     } else {
                         const { ecData, layers, layerID } = previewResource(resp)
@@ -384,24 +394,24 @@ export function projectArchive( msg, workerMethods, workerData ) {
                     }
                 })
             }
-            break            
+            break
         case 'write-resource':
             {
                 const { resourceID, data } = msg
-                writeUTF8( resourceID, data, zip )    
+                writeUTF8(resourceID, data, zip)
             }
-        break
+            break
         case 'write-file':
             {
                 const { fileID, data } = msg
-                writeUTF8( fileID, data, zip )    
+                writeUTF8(fileID, data, zip)
             }
-        break
+            break
         case 'cache-resource':
             {
                 const { cacheFolder } = projectArchiveState
                 const { resourceID, fileName } = msg
-                cacheResource(resourceID, fileName, cacheFolder, zip).then( (cacheFile) => {
+                cacheResource(resourceID, fileName, cacheFolder, zip).then((cacheFile) => {
                     postMessage({ messageType: 'cache-file-name', cacheFile })
                 })
             }
@@ -409,34 +419,34 @@ export function projectArchive( msg, workerMethods, workerData ) {
         case 'add-local-file':
             {
                 const { localFilePath, resourceID } = msg
-                addFile( localFilePath, resourceID, zip )    
+                addFile(localFilePath, resourceID, zip)
             }
-            break   
+            break
         case 'remove-file':
             {
                 const { fileID } = msg
                 zip.remove(fileID)
             }
-            break                   
-        case 'check-in': 
+            break
+        case 'check-in':
             {
                 const { userID, serverURL, projectID, committedResources, message } = msg
-                checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage )
-            }    
-            break  
-        case 'check-out': 
+                checkIn(userID, serverURL, projectID, committedResources, message, zip, postMessage)
+            }
+            break
+        case 'check-out':
             {
                 const { userID, serverURL, projectID, resourceEntries } = msg
-                checkOut( userID, serverURL, projectID, resourceEntries, zip, postMessage )
-            }    
-            break              
+                checkOut(userID, serverURL, projectID, resourceEntries, zip, postMessage)
+            }
+            break
         case 'save':
             save()
             break
         case 'close':
             projectArchiveState.open = false
             closeSafely(close)
-            break    
+            break
         default:
             throw new Error(`Unrecognized message type: ${messageType}`)
     }
