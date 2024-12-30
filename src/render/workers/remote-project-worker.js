@@ -1,9 +1,12 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
 import { getProject } from "../model/cloud-api/projects"
-import { getAuthToken } from '../model/cloud-api/auth'
+import { getAuthToken, authConfig } from '../model/cloud-api/auth';
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
 import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
+import axios from 'axios';
+import { standardErrorHandler } from '../model/cloud-api/error-handler';
+const { parseStandoff } = require('./parse-standoff')
 
 function updateIDMap(userID, serverURL, authToken, projectID, postMessage) {
     getIDMap(userID, serverURL, authToken, projectID, (idMapData) => {
@@ -21,6 +24,7 @@ function updateResourceView(userID, serverURL, projectID, resourceView, authToke
             resourceView.parentEntry = parentEntry
             resourceView.totalRows = totalRows
             resourceView.loading = false
+            checkForAnnotationData(serverURL, userID, authToken, remoteResources, postMessage)
             postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
         },
             (error) => {
@@ -38,6 +42,25 @@ function updateResourceView(userID, serverURL, projectID, resourceView, authToke
         }
         postMessage({ messageType: 'resource-view-update', resourceView: emptyView, remoteResources: [] })
     }
+}
+
+function checkForAnnotationData(serverURL, userID, authToken, remoteResources, postMessage) {
+    remoteResources.forEach(resource => {
+        if (resource.type === 'standOff') {
+            const getResourceURL = `${serverURL}/api/resources/${resource.id}`
+
+            axios.get(getResourceURL, authConfig(authToken)).then(
+                (okResponse) => {
+                    const { resource } = okResponse.data
+                    const { parent_resource, resource_content: content } = resource
+                    const data = parseStandoff(content)
+                    console.log('parent_resource: ', parent_resource)
+                    postMessage({ messageType: 'parsed-annotation-data', data, parentResourceID: parent_resource.resource_guid })
+                },
+                standardErrorHandler(userID, serverURL, (error) => console.log(error))
+            )
+        }
+    })
 }
 
 function updateProjectInfo(userID, serverURL, authToken, projectID, postMessage) {

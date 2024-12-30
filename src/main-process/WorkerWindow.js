@@ -9,16 +9,16 @@ class WorkerWindow {
         this.messageHandler = messageHandler
     }
 
-    messageForwarder = (e,wid,msg) => {
+    messageForwarder = (e, wid, msg) => {
         // if this message is for this worker, send to callback
-        if( wid === this.workerID ) this.messageHandler(msg)
+        if (wid === this.workerID) this.messageHandler(msg)
     }
 
-    closeMessageHandler = (e,wid) => {
-        if( wid === this.workerID ) this.close()
+    closeMessageHandler = (e, wid) => {
+        if (wid === this.workerID) this.close()
     }
 
-    async start( workerData ) {    
+    async start(workerData) {
         ipcMain.on('worker-window-message', this.messageForwarder)
         ipcMain.on('close-worker-window', this.closeMessageHandler)
         const webpackPreloadPath = getWebpackPreload('worker_window')
@@ -31,28 +31,28 @@ class WorkerWindow {
                 contextIsolation: false,
             }
         })
-        if( this.debug ) 
-            this.workerWindow.webContents.openDevTools({ mode: 'bottom'} )
+        if (this.debug)
+            this.workerWindow.webContents.openDevTools({ mode: 'bottom' })
 
         this.workerWindow.on('closed', () => {
             this.workerWindow = null
             ipcMain.removeListener('worker-window-message', this.messageForwarder)
             ipcMain.removeListener('close-worker-window', this.closeMessageHandler)
         })
-        
+
         const webpackEntryURL = getWebpackEntry('worker_window')
         await this.workerWindow.loadURL(webpackEntryURL);
-        this.workerWindow.webContents.send('init', { workerID: this.workerID, workerData }) 
+        this.workerWindow.webContents.send('init', { workerID: this.workerID, workerData })
     }
 
     postMessage(messageData) {
-        if( this.workerWindow && !this.workerWindow.isDestroyed()  ) {
+        if (this.workerWindow && !this.workerWindow.isDestroyed()) {
             this.workerWindow.webContents.send('message', messageData)
         }
     }
 
     close() {
-        if( this.workerWindow && !this.workerWindow.isDestroyed()  ) {
+        if (this.workerWindow && !this.workerWindow.isDestroyed()) {
             this.workerWindow.destroy()
         }
     }

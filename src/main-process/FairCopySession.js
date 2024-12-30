@@ -434,12 +434,7 @@ class FairCopySession {
 
 
     annotationDataReceived(data, parentResourceID) {
-        // For now this shouldn't work for remote projects
-        if (this.remote) {
-            // Do nothing
-        } else {
-            this.fairCopyApplication.sendToAllWindows('annotationDataReceived', { annotationData: data, parentResourceID })
-        }
+        this.fairCopyApplication.sendToAllWindows('annotationDataReceived', { annotationData: data, parentResourceID })
     }
 
     // parent found, send complete resourceOpened message
