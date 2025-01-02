@@ -124,8 +124,12 @@ export default class TEISchema {
 
         // This is a test of adding the annotations to the document
         marks['__annoMark__'] = {
-            toDOM() { return ["__annoMark__", 0] },
-            parseDOM: [{ tag: "__annoMark__" }],
+            toDOM(node) { let { id } = node.attrs; return ["__annoMark__", { id }, 0] },
+            parseDOM: [{
+                tag: "__annoMark__", getAttrs(el) {
+                    return { id: el.getAttribute('id') }
+                }
+            }],
             attrs: { 'id': { hidden: true } },
             group: "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
         }
@@ -267,6 +271,9 @@ export default class TEISchema {
         const elementName = synthNameToElementName(elementID)
         if (!elementName) return this.attrs[attrID]
         const elementSpec = this.elements[elementName]
+        if (!elementSpec) {
+            console.log('Whoops!')
+        }
         return elementSpec.derivedAttrs.includes(attrID) ? this.attrs[`${attrID}-${elementName}`] : this.attrs[attrID]
     }
 

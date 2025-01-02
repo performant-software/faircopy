@@ -89,7 +89,7 @@ export function findNoteNode(doc, noteID) {
 }
 
 export function synthNameToElementName(nodeName) {
-    if (nodeName.includes('textNode') || nodeName.includes('globalNode')) return null
+    if (nodeName.includes('textNode') || nodeName.includes('globalNode') || nodeName.includes('__annoMark__')) return null
     return nodeName.endsWith('X') ? nodeName.slice(0, -1) : nodeName.startsWith('mark') ? nodeName.slice('mark'.length) : nodeName
 }
 
@@ -221,6 +221,9 @@ export function addTextNodes(state, dispatch = null) {
 }
 
 export function addAnnotations(state, annotationData = [], dispatch = null) {
+
+    const { doc, tr } = state
+
     function getNodeMap(path) {
         const arr = path.split(' ')
         const start = arr[0]
@@ -264,39 +267,74 @@ export function addAnnotations(state, annotationData = [], dispatch = null) {
         return ret;
     }
 
-    function findNode(startNode, path, index, findCount, curOffset) {
+    function findMarkPositionInDescendant(markType, parent) {
+        let markPos = { start: -1, end: -1 };
+        parent.descendants((node, pos) => {
+            // stop recursing if result is found
+            if (markPos.start > -1) {
+                return false;
+            }
+            if (markPos.start === -1 && node.marks.find(m => m.type.name === markType)) {
+                // expect to see something like `markhi('my text')`
+                console.log(node.toString())
+                markPos = {
+                    start: pos,
+                    end: pos + Math.max(node.textContent.length, 1),
+                };
+            }
+        });
+
+        return markPos;
+    }
+
+    function findNode(startNode, path, index, findCount) {
         const idCount = parseInt(path[index].id) === NaN ? -1 : parseInt(path[index].id);
         const idMatch = idCount < 0 ? path[index].id : ''
 
         for (let i = 0; i < startNode.childCount; i++) {
             const node = startNode.child(i);
-            curOffset += node.nodeSize
             if (node.type.name === path[index].node) {
                 if ((idCount < 0 && node.attrs['@xml:id'] === idMatch) || (idCount > -1 && findCount === idCount)) {
                     index++
                     if (index < path.length) {
-                        // the + 1 is to account for this node's token
-                        return findNode(node, path, index, 1, curOffset - node.nodeSize + 1)
+                        return findNode(node, path, index, 1)
                     } else {
                         let textStartPos = 0;
                         node.descendants(function (n, pos) {
+                            //console.log('Descendant Pos: ', pos, ', Node: ', n.type.name)
                             if (n.type.name === 'text') {
-                                textStartPos = pos
-                                // console.log('textStartPos: ', textStartPos)
+                                // We only want the starting text node
+                                // This may have multiple nodes broken up by marks
+                                // Since this node matched the path, we want the offset to
+                                // begin from the begining of the fragments
+                                textStartPos = (textStartPos === 0 ? pos : textStartPos)
+                                //console.log('textStartPos: ', textStartPos)
                                 return false
                             }
                         })
                         // the + 1 is to account for this node's token
-                        return { node, offset: curOffset - node.nodeSize + textStartPos + 1 }
+                        return { node, offset: textStartPos + 1 }
                     }
                 }
 
                 findCount++
             }
         }
-    }
 
-    const { doc, tr } = state
+        // If you made it here, it did not find the node name...Maybe a mark instead?
+        // Looking at the startNode, see if it has 'mark${name} in its descendants'
+        const markPos = findMarkPositionInDescendant(`mark${path[index].node}`, startNode)
+        if (markPos.start > -1) {
+            //console.log('Child mark found: ', markPos)
+            index++
+            if (index < path.length) {
+                return findNode(startNode, path, index, 1)
+            } else {
+                // The +1 accounts for the mark token
+                return { node: startNode, offset: markPos.start + 1 }
+            }
+        }
+    }
 
     annotationData.forEach(d => {
         const paths = getNodeMap(d.path)
@@ -306,18 +344,38 @@ export function addAnnotations(state, annotationData = [], dispatch = null) {
         const startIndex = paths.start.findIndex(p => p.node === 'text') + 1;
         const endIndex = paths.end.findIndex(p => p.node === 'text') + 1;
         const startNode = findNode(doc, paths.start, startIndex, 1, 0);
-        const endNode = findNode(doc, paths.end, endIndex, 1, 0);
-        let position = 0
-        doc.nodesBetween(startNode.offset + parseInt(paths.start[paths.start.length - 1].offset), endNode.offset + parseInt(paths.end[paths.end.length - 1].offset), function (node, pos, parent, index) {
-            position = pos
-        })
-        const markStart = startNode.offset + parseInt(paths.start[paths.start.length - 1].offset)
-        const markEnd = position + parseInt(paths.end[paths.end.length - 1].offset)
+        const endNode = findNode(doc, paths.end, endIndex, 1, 0)
 
-        // console.log('Text Annotated: ', doc.textBetween(markStart, markEnd))
+        if (startNode && endNode) {
+            console.log('startNode: ', startNode)
+            console.log('endNode', endNode)
+            let startPosition = 0
+            doc.descendants((node, pos) => {
+                if (node === startNode.node) {
+                    startPosition = pos;
+                }
+            })
 
-        let mark = doc.type.schema.marks['__annoMark__'].create({ id: d.id })
-        tr.addMark(markStart, markEnd, mark)
+            //console.log('Alt Start Position: ', startPosition)
+
+            let endPosition = 0
+            doc.descendants((node, pos) => {
+                if (node === endNode.node) {
+                    endPosition = pos;
+                }
+            })
+
+            //console.log('Alt End Position: ', endPosition)
+
+            const markStart = startPosition + startNode.offset + parseInt(paths.start[paths.start.length - 1].offset)
+            const markEnd = endPosition + endNode.offset + parseInt(paths.end[paths.end.length - 1].offset)
+
+            //console.log('markStart: ', markStart, ', markEnd: ', markEnd)
+            console.log('Text Annotated: ', doc.textBetween(markStart, markEnd))
+
+            let mark = doc.type.schema.marks['__annoMark__'].create({ id: d.id })
+            tr.addMark(markStart, markEnd, mark)
+        }
     })
 
     if (dispatch) {

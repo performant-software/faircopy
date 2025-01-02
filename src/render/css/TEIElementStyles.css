@@ -1,30 +1,31 @@
-[__rtl__="true"] {
+[__rtl__='true'] {
   direction: rtl;
   text-align: right;
 }
 
-[__ltr__="true"] {
+[__ltr__='true'] {
   direction: ltr;
   text-align: left;
 }
 
-[__error__="true"] {
+[__error__='true'] {
   border-bottom: dotted red;
 }
 
-[phraselvl="false"] {
+[phraselvl='false'] {
   margin: 0px;
   display: block;
 }
 
 /* Leave blank space for structure elements that have no content */
-[phraselvl="false"]:empty {
+[phraselvl='false']:empty {
   display: inline-block;
   min-height: 30px;
 }
 
 __annomark__ {
   background-color: rgba(0, 0, 255, 0.1);
+  mix-blend-mode: multiply;
 }
 
 tei-textnode0,
@@ -64,51 +65,51 @@ tei-del {
   text-decoration: line-through;
 }
 
-*[rend~="uppercase"] {
+*[rend~='uppercase'] {
   text-transform: uppercase;
 }
-*[rend~="italic"] {
+*[rend~='italic'] {
   font-style: italic;
 }
-*[rend~="bold"] {
+*[rend~='bold'] {
   font-weight: bold;
 }
-*[rend~="red"] {
+*[rend~='red'] {
   color: red;
 }
-*[rend~="green"] {
+*[rend~='green'] {
   color: green;
 }
-*[rend~="blue"] {
+*[rend~='blue'] {
   color: blue;
 }
-*[rend~="purple"] {
+*[rend~='purple'] {
   color: purple;
 }
-*[rend~="orange"] {
+*[rend~='orange'] {
   color: orange;
 }
-*[rend~="brown"] {
+*[rend~='brown'] {
   color: brown;
 }
-*[rend~="gray"] {
+*[rend~='gray'] {
   color: gray;
 }
-*[rend~="small"] {
+*[rend~='small'] {
   font-size: small;
 }
-*[rend~="medium"] {
+*[rend~='medium'] {
   font-size: large;
 }
-*[rend~="large"] {
+*[rend~='large'] {
   font-size: x-large;
 }
 
-*[rend~="underline"] {
+*[rend~='underline'] {
   text-decoration: underline;
 }
 
-*[rend~="line-through"] {
+*[rend~='line-through'] {
   text-decoration: line-through;
 }
 
