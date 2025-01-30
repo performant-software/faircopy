@@ -4,12 +4,13 @@ The release notes list the improvements and bug fixes included in each new versi
 
 ## Version 1.2.1
 
-This is a monthly maintenance release for November 2024.
+This is a maintenance release for February 2025.
 
 ### Improvements
 
 * FairCopy now displays a list of the validation errors in the sidebar, making it easier to locate and resolve them.
 * Resources are now sorted alphanumberically by xml:id in the exported XML.
+* Upgrade to EditionCrafter v1.2.0
 
 ### Bug Fixes
 
