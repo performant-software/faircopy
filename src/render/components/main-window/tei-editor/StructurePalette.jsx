@@ -7,6 +7,7 @@ import { validNodeAction } from '../../../model/element-validators'
 import { getElementIcon } from '../../../model/TEISchema'
 
 const clientOffset = { x: 0, y: 0 }
+const bottomMargin = 50
 
 export default class StructurePalette extends Component {
 
@@ -77,14 +78,12 @@ elementDrag = (e) => {
   }
 }
 
-constrainToWindow( offsetX, offsetY ) {
-  const { leftPaneWidth } = this.props 
-  
+constrainToWindow( offsetX, offsetY ) {  
   if( !this.el ) return { nextX: offsetX, nextY: offsetY }
 
   const { width, height } = this.el.getBoundingClientRect()
-  const maxX = window.innerWidth - width - leftPaneWidth
-  const maxY = window.innerHeight - height
+  const maxX = window.innerWidth - width 
+  const maxY = window.innerHeight - height - bottomMargin
 
   let nextX, nextY  
   nextX = (offsetX < 0) ? 0 : offsetX

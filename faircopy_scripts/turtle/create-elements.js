@@ -191,7 +191,7 @@ const createDocNode = function createDocNode() {
             pmType: "node",
             fcType: "docNodes",
             isolating: true,
-            content: '((front)? (body) (back)?)',
+            content: '(model_global* (front)? model_global* (body) model_global* (back)? model_global*)',
             synth: true
         },
         {

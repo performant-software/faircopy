@@ -2,15 +2,34 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+## Version 1.2.1
+
+This is a maintenance release for February 2025.
+
+### Improvements
+
+* FairCopy now displays a list of the validation errors in the sidebar, making it easier to locate and resolve them.
+* Resources are now sorted alphanumberically by xml:id in the exported XML.
+* Upgrade to EditionCrafter v1.2.0
+
+### Bug Fixes
+
+* Fixed bug related to pasting into an attribute field.
+* Fixed crash bug using Actions->Open on a TEI Document resource.
+* Fixed constraint on Element Palette movement
+* Global elements may now appear as peers to front, body, and back
+* Improved error handling on XML import of invalid XML.
+
+
 ## Version 1.2.0
 
 This public release includes all the beta improvements and bug fixes since v1.1.10. 
 
-# Improvements
+### Improvements
 
 * Hovering the mouse over a resource name or ID now summons a tooltip with the unabridged name or ID.
 
-# Bug Fixes
+### Bug Fixes
 
 * Copying a surface now also copies the associated zones.
 * Fixed problem where the structure tree would occasionally disappear
@@ -23,13 +42,13 @@ This public release includes all the beta improvements and bug fixes since v1.1.
 
 ## Version 1.2.0 beta.3
 
-# Improvements
+### Improvements
 * The user can now preview TEI Documents in either as a reading text or documentary view.
 * In the Facs Editor, "Move Surfaces" is now "Copy Surfaces". This creates duplicate surfaces in the target facs instead of moving them.
 * Make the project window resizable, increase the max number of remote projects displayed
 * Change date element to inter type
 
-# Bug Fixes
+### Bug Fixes
 * Fixed bugs related to move surfaces function.
 * Reimplement getPathBasename() to remove dependency on Node module in render process.
 * Fix bug in structure tree alignment
@@ -39,20 +58,20 @@ This public release includes all the beta improvements and bug fixes since v1.1.
 
 ## Version 1.2.0 beta.2
 
-# Improvements
+### Improvements
 
 * The user can now configure the color of the underlines used for mark elements. This allows the user to at a glance identify elements common to their corpus. This is configured in Project Settings -> Editor.
 * New application icon and installer assets have been added for Windows and MacOS. There is now a cool spinner that runs while installing on Windows. On Mac, the DMG page has been spiffed up.
 * Added a "Find" feature to the editor in remote and offline projects. Disabled the project wide search, which was only available in offline projects. This feature allows you to search the currently open document for a case insensitive match on the search query. Also supports searching for the phrase with a specific element type or with specific attributes.
 
-# Bug Fixes
+### Bug Fixes
 
 * Established a max character length for display of names in the resource browser, so that longer names don't break display.
 * Fixed a bug where when a user creates a new TEI Document in a remote project and then tries to preview or export it without first checking it in, nothing happened. New TEI Documents now export and preview properly.
 
 ## Version 1.2.0-beta.1
 
-## Improvements
+### Improvements
 
 * Improvements to the sizing and layout of images in the preview window as they respond to custom CSS.
 * Links in the preview window now work, both to external websites and anchor tags within the document. Link behavior is triggered by the use of a ref element with a target attribute.
@@ -64,7 +83,7 @@ This public release includes all the beta improvements and bug fixes since v1.1.
 * Filter by Name or ID - When using the resource browser, the user can now filter the list based on the name or ID of a resource. Press enter in the field to update the filter.
 * Logout and Login buttons moved - The login button is now part of the notice when one is logged out of a remote resource. The logout button has been moved to the settings window.
 
-## Bug Fixes
+### Bug Fixes
 
 * XML used by preview window was being pretty formatted, which resulted in extra spaces in some documents. 
 * Bug fix for problem on production where thumbnails sometimes don't appear. Was a problem with local ID map getting out of synch with server.  

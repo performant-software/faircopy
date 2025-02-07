@@ -4,13 +4,14 @@ import { systemAttributes, rtlLanguages } from './TEISchema'
 
 // Ammends the document with run time only flags
 export function applySystemFlags(teiSchema, idMap, fairCopyConfig, parentLocalID, tr) {
-    let errorCount = 0
+    const errors = []
     tr.doc.descendants((node,pos) => {
-        errorCount += markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        const nodeErrors = markErrors(node,pos,tr,parentLocalID,idMap,teiSchema,fairCopyConfig)
+        errors.push(...nodeErrors)
         markRTL(node,pos,tr)
         return true
     })    
-    return errorCount
+    return errors
 }
 
 function markRTL(node,pos,tr) {
@@ -45,12 +46,16 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
     const elementID = node.type.name
     const attrState = fairCopyConfig.elements[elementID] ? fairCopyConfig.elements[elementID].attrState : null
     const $anchor = tr.doc.resolve(pos)
-    let errorCount = 0
+    let errors = []
 
-    if( scanAttrs(node.attrs,elementID,teiSchema,attrState,parentLocalID,idMap) || scanElement(elementID,fairCopyConfig) ) {
+    const attrsMessage = scanAttrs(node.attrs,elementID,teiSchema,attrState,parentLocalID,idMap)
+    const elementMessage = scanElement(elementID,fairCopyConfig)
+
+    if( attrsMessage || elementMessage ) {
         const nextAttrs = { ...node.attrs, '__error__': true }
         changeAttributes( node, nextAttrs, $anchor, tr )
-        errorCount++
+        const errorMessage = elementMessage ? elementMessage : `${elementID}: ${attrsMessage}`
+        errors.push({errorMessage, elementName: elementID, pos, nodeSelection: true})
     } else {
         if( node.attrs['__error__'] ) {
             const nextAttrs = { ...node.attrs, '__error__': false }
@@ -62,11 +67,14 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
         const name = mark.type.name 
         const markElementID = name.startsWith('mark') ? name.slice(4) : name
         const markAttrState = fairCopyConfig.elements[markElementID] ? fairCopyConfig.elements[markElementID].attrState : null
-        if( scanAttrs(mark.attrs,name,teiSchema,markAttrState,parentLocalID,idMap) || scanElement(markElementID,fairCopyConfig)) {
+        const markAttrsMessage = scanAttrs(mark.attrs,markElementID,teiSchema,markAttrState,parentLocalID,idMap)
+        const markElementMessage = scanElement(markElementID,fairCopyConfig)
+
+        if( markAttrsMessage || markElementMessage ) {
             const nextAttrs = { ...mark.attrs, '__error__': true }
             changeAttributes( mark, nextAttrs, $anchor, tr )
-            errorCount++
-            return errorCount
+            const markErrorMessage = markElementMessage ? markElementMessage : `${markElementID}: ${markAttrsMessage}`
+            errors.push({errorMessage: markErrorMessage, elementName: markElementID, pos, nodeSelection: false})
         } else {
             if( mark.attrs['__error__'] ) {
                 const nextAttrs = { ...mark.attrs, '__error__': false }
@@ -74,12 +82,16 @@ function markErrors(node, pos, tr, parentLocalID, idMap, teiSchema,fairCopyConfi
             }
         }
     }
-
-    return errorCount
+ 
+    return errors
 }
 
 function scanElement( elementID, fairCopyConfig ) {
-    return fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false
+    if( fairCopyConfig.elements[elementID] && fairCopyConfig.elements[elementID].active === false ) {
+        return `${elementID} is not in the project schema.`
+    } else {
+        return false
+    }
 }
 
 function scanAttrs(attrs, elementID, teiSchema, attrState, parentLocalID, idMap) {
@@ -90,22 +102,22 @@ function scanAttrs(attrs, elementID, teiSchema, attrState, parentLocalID, idMap)
         // flag attrs that don't have an attrSpec and aren't system attrs
         if( !attrSpec ) {
             if( systemAttributes.includes(key) ) continue
-            else return true
+            else return `${key} attribute in project schema`
         }
 
         // flag deactivate attrs that have values
         if( attrState && attrState[key] && attrSpec.hidden !== true && attrState[key].active === false && value && value !== "" ) {
-            return true
+            return `${key} attribute has a value but is not in the project schema`
         }
         // flag required attrs that aren't active
         if( attrSpec && attrSpec.usage === 'req' && attrState[key].active === false ) {
-            return true
+            return `${key} is a required attribute`
         }
 
         // flag activate attrs that don't validate
         if( value && attrSpec ) {
             const validState = validateAttribute(value,parentLocalID,idMap,attrSpec)
-            if( validState.error ) return true
+            if( validState.error ) return `${key}: ${validState.errorMessage}`
         }
     }
     return false

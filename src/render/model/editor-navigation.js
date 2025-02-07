@@ -1,5 +1,5 @@
 
-import {TextSelection} from "prosemirror-state"
+import {NodeSelection, TextSelection} from "prosemirror-state"
 import { getHighlightRanges } from "./highlighter"
 import { synthNameToElementName, findNoteNode } from "./xml"
 import {undo, redo} from "prosemirror-history"
@@ -96,6 +96,17 @@ export function navigateFromTreeToEditor( editorView, editorGutterPos ) {
     tr.setSelection( TextSelection.create(doc,editorGutterPos+1) )
     tr.scrollIntoView()
     tr.setMeta( 'highlightEnabled', true )
+    editorView.dispatch(tr)
+}
+
+export function selectElement( editorView, pos, nodeSelection ) {
+    const { tr, doc } = editorView.state
+    if( nodeSelection ) {
+        tr.setSelection( NodeSelection.create(doc,pos) )
+    } else {
+        tr.setSelection( TextSelection.create(doc,pos+1) )
+    }
+    tr.scrollIntoView()
     editorView.dispatch(tr)
 }
 

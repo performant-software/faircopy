@@ -127,11 +127,16 @@ export function insertAtomNodeAt(elementID, attrs, pos, schema, elements, insert
         node = nodeType.create(attrs)
     }
 
-    const $prev = doc.resolve(pos+offset)
+    // keep the final position in bounds at edge of document
+    let finalPos = pos+offset 
+    if( finalPos >= doc.nodeSize-1 ) finalPos = doc.nodeSize - 2
+    if( finalPos < 0 ) finalPos = 0
+
+    const $prev = doc.resolve(finalPos)
 
     // if there's already a globalNode, insert within it.
     if( $prev && $prev.parent && $prev.parent.type.name.includes('globalNode') ) {            
-        tr.insert(pos+offset,node)
+        tr.insert(finalPos,node)
     } else {
         tr.insert(pos,node)
     }
