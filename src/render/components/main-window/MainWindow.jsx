@@ -125,7 +125,7 @@ export default class MainWindow extends Component {
 
   onResourceOpened = (event, resourceData) => {
     const { fairCopyProject } = this.props
-    const { openResources, requestedResources } = this.state
+    const { openResources, requestedResources, annotationData } = this.state
     const { resourceEntry, parentEntry, resource } = resourceData
 
     // if this is a resource we asked for, then open it.
@@ -137,7 +137,8 @@ export default class MainWindow extends Component {
       const doc = fairCopyProject.onResourceOpened(
         resourceEntry,
         parentEntry,
-        resource
+        resource,
+        annotationData[parentEntry.id]
       )
       if (doc) {
         const nextOpenResources = { ...openResources }
@@ -1021,7 +1022,6 @@ export default class MainWindow extends Component {
             key={key}
             hidden={hidden}
             teiDocument={resource}
-            annotationData={annotationData[resource.parentEntry.id]}
             onOpenElementMenu={this.onOpenElementMenu}
             onProjectSettings={onProjectSettings}
             onDragElement={this.onDragElement}

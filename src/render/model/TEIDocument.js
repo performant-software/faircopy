@@ -9,7 +9,7 @@ import { gapCursor } from "prosemirror-gapcursor"
 import { v4 as uuidv4 } from 'uuid'
 
 import { teiHeaderTemplate, teiTextTemplate, teiStandOffTemplate, teiSourceDocTemplate } from "./tei-template"
-import { parseText, proseMirrorToDOM, serializeText, addTextNodes, addAnnotations } from "./xml"
+import { parseText, proseMirrorToDOM, serializeText, addTextNodes, addAnnotations, getNodeMap } from "./xml"
 import { applySystemFlags } from "./system-flags"
 import { mapResource } from "./id-map"
 import { generateGutterMarks } from './gutter-marks'
@@ -21,7 +21,7 @@ const gutterTopReadOnly = 115
 
 export default class TEIDocument {
 
-    constructor(resourceEntry, parentEntry, fairCopyProject, teiSchema = null) {
+    constructor(resourceEntry, parentEntry, fairCopyProject, teiSchema = null, annotationData = []) {
         this.subDocs = {}
         this.subDocCounter = 0
         this.errors = []
@@ -47,6 +47,7 @@ export default class TEIDocument {
         ]
         this.initialState = this.editorInitialState()
         this.changedSinceLastSave = false
+        this.annotationData = annotationData
     }
 
     onResourceUpdated = (eventType, resource) => {
@@ -175,7 +176,7 @@ export default class TEIDocument {
         return this.parentEntry ? this.parentEntry.localID : this.resourceEntry.localID
     }
 
-    finalizeEditorView(editorView, annotationData) {
+    finalizeEditorView(editorView) {
         this.editorView = editorView
         const { tr, doc } = editorView.state
         tr.setSelection(TextSelection.create(doc, 0))
@@ -183,7 +184,7 @@ export default class TEIDocument {
         editorView.dispatch(tr);
         addTextNodes(editorView.state, editorView.dispatch)
         if (this.resourceType === 'text') {
-            addAnnotations(editorView.state, annotationData, editorView.dispatch)
+            addAnnotations(editorView.state, this.annotationData, editorView.dispatch)
         }
         editorView.focus()
         this.changedSinceLastSave = false
@@ -296,6 +297,59 @@ export default class TEIDocument {
         this.fairCopyProject.previewResource(previewEntry)
     }
 
+    updateAnnotationData(annoData) {
+        for (const annoId in annoData) {
+            const data = annoData[annoId]
+
+            let curData = this.annotationData.find(a => a.id === annoId)
+
+            if (curData) {
+                let newPath = ''
+                const annoPaths = curData.path.split(' ')
+
+                for (let i = 0; i < 2; i++) {
+                    // Find the part of the xpath which is the 'text' node
+                    const findTextStart = annoPaths[i].indexOf('text')
+                    let newData = i === 0 ? data.start : data.end
+                    const newOffset = i === 0 ? data.startOffset : data.endOffset
+
+                    if (findTextStart > -1) {
+                        // Search for the next '/'.  This is the beginning of the section we want to update
+                        const textStart = annoPaths[i].indexOf('/', findTextStart)
+
+                        if (textStart > -1) {
+                            // Begin the path with the same xpath up to 'text', the +1 accounts for the '/'
+                            newPath += annoPaths[i].slice(0, textStart + 1)
+
+                            // Now fill in the rest of the new path
+                            newData.forEach((a, idx) => {
+                                newPath += `${a.node}[${a.id}]`
+                                if (idx < newData.length - 1) {
+                                    newPath += '/'
+                                } else {
+                                    newPath += `::${newOffset}`
+                                }
+                            })
+
+                            newPath += (i === 0 ? ' ' : '')
+                        } else {
+                            console.log('Failed annotation update')
+                            return
+                        }
+                    } else {
+                        console.error('Failed to find annotation data start')
+                        return
+                    }
+                }
+
+                console.log('Writing new path!')
+                console.log('Old path: ', curData.path)
+                console.log('New path: ', newPath)
+                curData.path = newPath
+            }
+        }
+    }
+
     save() {
         const editorState = this.editorView.state
         const teiSchema = this.getTEISchema()
@@ -304,6 +358,10 @@ export default class TEIDocument {
 
         const messageID = uuidv4()
         fairCopy.ipcSend('requestSave', messageID, this.resourceID, fileContents)
+        if (this.resourceType === 'text' && this.annotationData.length > 0) {
+            const annoId = uuidv4()
+            fairCopy.ipcSend('updateStandoffAnnotations', this.resourceID, this.annotationData)
+        }
         this.lastMessageID = messageID
 
         this.changedSinceLastSave = false

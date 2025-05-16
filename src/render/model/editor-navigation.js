@@ -228,7 +228,7 @@ export function getSelectedElements(teiDocument, noteID) {
     } else if (selection) {
         if (selection.node) {
             const name = selection.node.type.name
-            if (!asides.includes(name) && !name.includes('globalNode') && !name.includes('annoMark')) {
+            if (!asides.includes(name) && !name.includes('globalNode') && !name.includes('ANNOMARK')) {
                 elements.push(selection.node)
             }
         } else {
@@ -239,7 +239,7 @@ export function getSelectedElements(teiDocument, noteID) {
                 const { $anchor } = selection
                 const highlightRanges = getHighlightRanges(doc, $anchor)
                 for (const highlightRange of highlightRanges) {
-                    if (!highlightRange.mark.type.name.includes('annoMark')) {
+                    if (!highlightRange.mark.type.name.includes('ANNOMARK')) {
                         elements.push(highlightRange.mark)
                     }
                 }

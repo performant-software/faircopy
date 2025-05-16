@@ -4,6 +4,7 @@ const log = require('electron-log')
 const { RemoteProject } = require('./RemoteProject')
 const { ProjectStore } = require('./ProjectStore')
 const { createIDMapAuthority } = require('./IDMapAuthority')
+const { serializeStandoff } = require('../render/workers/serialize-standoff')
 
 const initialRowsPerPage = 50
 
@@ -355,7 +356,7 @@ class FairCopySession {
         this.projectStore.searchIndex.searchProject(searchQuery)
     }
 
-    saveResource(resourceID, resourceData, updatePreview) {
+    saveResource(resourceID, resourceData, updatePreview, annotationData) {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = resources[resourceID]
         if (resourceEntry) {
@@ -364,6 +365,28 @@ class FairCopySession {
             this.projectStore.saveResource(resourceEntry, resourceData, idMap)
             if (updatePreview) {
                 this.requestPreviewView({ resourceEntry })
+            }
+            return true
+        }
+        return false
+    }
+
+    saveAnnotations(resourceID, annotationData) {
+        const { resources } = this.projectStore.manifestData
+        const resourceEntry = resources[resourceID]
+        if (resourceEntry) {
+            // Find the standoff for this entry
+            const parent = resources[resourceEntry.parentResource]
+            let standoff
+            Object.keys(resources).forEach(key => {
+                const res = resources[key]
+                if (res.parentResource === parent.id && res.type === 'standOff') {
+                    standoff = res
+                }
+            })
+
+            if (standoff) {
+                this.projectStore.saveAnnotationData(standoff, annotationData)
             }
             return true
         }

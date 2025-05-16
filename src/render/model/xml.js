@@ -1,10 +1,4 @@
 import { DOMSerializer, Fragment } from "prosemirror-model"
-import { AddMarkStep, Transform } from "prosemirror-transform"
-import xpath from 'xpath'
-import serialize from "w3c-xmlserializer"
-import { RELEASE_TYPES } from "semver"
-import { find } from "../../../webpack.rules"
-import { generateMarks } from './commands';
 
 // These elements are processed in XSLT by the xsl:strip-space command. This list is from xml/tei/odd/stripspace.xsl.model, TEI v4.1.0
 const xmlStripSpaceNames = "TEI abstract additional address adminInfo altGrp altIdentifier alternate analytic annotation annotationBlock app appInfo application arc argument att attDef attList availability back biblFull biblStruct bicond binding bindingDesc body broadcast cRefPattern calendar calendarDesc castGroup castList category certainty char charDecl charProp choice cit classDecl classSpec classes climate cond constraintSpec content correction correspAction correspContext correspDesc custodialHist dataRef dataSpec datatype decoDesc dimensions div div1 div2 div3 div4 div5 div6 div7 divGen docTitle eLeaf eTree editionStmt editorialDecl elementSpec encodingDesc entry epigraph epilogue equipment event exemplum fDecl fLib facsimile figure fileDesc floatingText forest front fs fsConstraints fsDecl fsdDecl fvLib gap gi glyph graph graphic group handDesc handNotes history hom hyphenation iNode if imprint incident index interpGrp interpretation join joinGrp keywords kinesic langKnowledge langUsage layoutDesc leaf lg linkGrp list listAnnotation listApp listBibl listChange listEvent listForest listNym listObject listOrg listPerson listPlace listPrefixDef listRef listRelation listTranspose listWit location locusGrp macroSpec media metDecl model modelGrp modelSequence moduleRef moduleSpec monogr msContents msDesc msFrag msIdentifier msItem msItemStruct msPart namespace node normalization notatedMusic notesStmt nym object objectDesc objectIdentifier org paramList paramSpec particDesc performance person personGrp persona physDesc place population postscript precision prefixDef profileDesc projectDesc prologue publicationStmt punctuation quotation rdgGrp recordHist recording recordingStmt refsDecl relatedItem relation remarks respStmt respons revisionDesc root row samplingDecl schemaRef schemaSpec scriptDesc scriptStmt seal sealDesc segmentation sequence seriesStmt set setting settingDesc sourceDesc sourceDoc sp spGrp space spanGrp specGrp specList standOff state stdVals styleDefDecl subst substJoin superEntry supportDesc surface surfaceGrp table tagsDecl taxonomy teiCorpus teiHeader terrain text textClass textDesc timeline titlePage titleStmt trait transcriptionDesc transpose tree triangle typeDesc unitDecl unitDef vAlt vColl vDefault vLabel vMerge vNot vRange valItem valList vocal".split(' ')
@@ -65,6 +59,10 @@ export function proseMirrorToDOM(content, teiDocument, teiSchema, subDocName) {
     }
 
     renameInterMarks(inter, domFragment, teiDocument.xmlDom)
+    const annoUpdate = processAnnotations(domFragment, teiDocument.annotationData)
+    if (Object.keys(annoUpdate).length > 0) {
+        teiDocument.updateAnnotationData(annoUpdate)
+    }
     teiSchema.teiDocuments.pop()
     return domFragment
 }
@@ -89,7 +87,7 @@ export function findNoteNode(doc, noteID) {
 }
 
 export function synthNameToElementName(nodeName) {
-    if (nodeName.includes('textNode') || nodeName.includes('globalNode') || nodeName.includes('__annoMark__')) return null
+    if (nodeName.includes('textNode') || nodeName.includes('globalNode') || nodeName.includes('__ANNOMARK__')) return null
     return nodeName.endsWith('X') ? nodeName.slice(0, -1) : nodeName.startsWith('mark') ? nodeName.slice('mark'.length) : nodeName
 }
 
@@ -140,6 +138,160 @@ function parseInterNodes(textEl, teiSchema, xmlDom) {
             }
         }
     }
+}
+
+// Find the annotation marks (__ANNOMARK__) and update the annotation data
+// and remove from the xml DOM
+function processAnnotations(textEl, annotationData) {
+
+    function getXPath(element) {
+        let xpath = '';
+        let currentElement = element;
+
+        while (currentElement !== null && currentElement.localName) {
+            let tagName = currentElement.localName;
+            let index = 1;
+
+            // Check for siblings with the same tag name
+            for (let sibling = currentElement.previousSibling; sibling; sibling = sibling.previousSibling) {
+                if (sibling.nodeType === 1 && sibling.localName === tagName) {
+                    index++;
+                }
+            }
+
+            // Add the tag name and index to the XPath
+            xpath = `/${tagName}[${index}]` + xpath;
+            currentElement = currentElement.parentNode;
+        }
+
+        return xpath;
+    }
+
+    function removeTags(str) {
+        if ((str === null) || (str === ''))
+            return '';
+        else
+            str = str.toString();
+
+        // Regular expression to identify XML tags in
+        // the input string. Replacing the identified
+        // XML tag with a null string.
+        return str.replace(/(<([^>]+)>)/ig, '');
+    }
+
+    // Get all the annoMarks in the doc
+    let findMap = {}
+
+    if (annotationData.length === 0) {
+        return findMap
+    }
+
+    const annoMarks = textEl.querySelectorAll('__ANNOMARK__');
+    for (let i = 0; i < annoMarks.length; i++) {
+        const annoMark = annoMarks[i]
+
+        const parentEl = annoMark.parentElement
+        console.log('annoMark: ', annoMark)
+        // Get the current path
+        const xpath = getXPath(parentEl)
+        console.log('XPath: ', xpath)
+
+        // Convert to a path map
+        let newPath = getNodeMap(`${xpath} ${xpath}`)
+        console.log('New Paths: ', newPath)
+
+        // Find the matching annotation
+        const findMatch = annotationData.find(a => a.id === annoMark.getAttribute('id'))
+
+        if (findMatch) {
+            console.log(`Found Anno: ${JSON.stringify(findMatch, null, 2)}`)
+            const parentText = parentEl.innerText
+
+            if (!findMap[findMatch.id]) {
+                findMap[findMatch.id] = {
+                    id: findMap.id,
+                    start: newPath.start,
+                    end: [],
+                    mark: annoMark,
+                    markEnd: undefined
+                }
+            }
+
+            // Update the end path
+            findMap[findMatch.id].end = newPath.end
+            findMap[findMatch.id].markEnd = annoMark
+
+        } else {
+            console.log('Matching annotation not found!!')
+        }
+    }
+
+    console.log('Inner: ', textEl.innerHTML)
+
+    // We now use the innerHTML string to find offsets and remove the annomarks
+    let innerString = textEl.firstChild.innerHTML
+    let curIndex = 0
+
+    if (!innerString) {
+        return
+    }
+
+    console.log('Inner: ', innerString)
+    while (curIndex !== -1) {
+        // Find the next anno mark
+        curIndex = innerString.indexOf('<__annomark__', curIndex)
+        if (curIndex > -1) {
+            console.log('Anno Found!')
+            // get the id of the anno
+            const idLoc = innerString.indexOf('id="', curIndex)
+            if (idLoc > -1) {
+                // ID is a fixed size of 44, the +4 accounts for 'id="'
+                const idAnno = innerString.substring(idLoc + 4, idLoc + 44)
+                console.log('Anno ID: ', idAnno)
+
+                // Find the tag that contains this tag
+                // It should be the current index minus the index of the previous node
+                // const annoOffsetTagStart = findPreviousStartTagIndex(innerString, curIndex)
+                const annoOffsetTagStart = innerString.lastIndexOf(`<${findMap[idAnno].mark.parentElement.localName}`, curIndex)
+                const annoOffsetStart = innerString.indexOf('>', annoOffsetTagStart)
+                if (annoOffsetStart > -1) {
+                    // Remove this tag, all annoMarks opening tags are 60 chatacters long
+                    // <__annomark__ id = "uid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                    innerString = innerString.slice(0, curIndex) + innerString.slice(curIndex + 60)
+
+                    // We may have already have the beginning of this one
+                    if (!findMap[idAnno].startOffset) {
+                        // Remove any tags, the +1 accounts for the '>'
+                        const offset = removeTags(innerString.slice(annoOffsetStart + 1, curIndex)).length
+                        findMap[idAnno].startOffset = offset
+                    }
+
+                    // We now have to find the end of the annotation
+                    // This will work for annotations within annotations since 
+                    // this is accomplished with multiple tag blocks,
+                    const annoEndIndex = innerString.indexOf('</__annomark__>')
+                    const annoOffsetTagStart = innerString.lastIndexOf(`<${findMap[idAnno].markEnd.parentElement.localName}`, annoEndIndex)
+                    const annoOffsetEnd = innerString.indexOf('>', annoOffsetTagStart)
+
+                    // The + 1 accounts for the '>'
+                    // Remove any tags
+                    const offset = removeTags(innerString.slice(annoOffsetEnd + 1, annoEndIndex)).length
+                    findMap[idAnno].endOffset = offset
+
+                    // Remove the end tag, all annoMarks closing tags are 15 characters log
+                    innerString = innerString.slice(0, annoEndIndex) + innerString.slice(annoEndIndex + 15)
+                }
+
+            }
+        }
+    }
+
+    console.log('Old Data: ', JSON.stringify(annotationData, null, 2))
+    console.log('New Data: ', JSON.stringify(findMap, null, 2))
+
+    textEl.firstChild.innerHTML = innerString
+
+    return findMap
 }
 
 // Remove whitespace from children of xmlStripSpaceNames elements, 
@@ -220,52 +372,52 @@ export function addTextNodes(state, dispatch = null) {
     }
 }
 
+export function getNodeMap(path) {
+    const arr = path.split(' ')
+    const start = arr[0]
+    const end = arr[1]
+    const ret = { start: [], end: [] }
+
+    for (let i = 0; i < 2; i++) {
+        let str, input;
+        if (i === 0) {
+            str = start;
+            input = ret.start;
+        } else {
+            str = end;
+            input = ret.end;
+        }
+
+        // Always assume that first character is /
+        let index = 1
+        let next = str.substring(index).indexOf('/')
+        while (next !== -1) {
+            if (str.substring(index, index + 1) === '/') {
+                index += 1
+            }
+
+            next = str.substring(index).indexOf('/')
+            if (next === -1) {
+                const parse = str.substring(index).split('[');
+                const id = parse[1].split(']')
+                const offset = id[1].split("::")
+                input.push({ node: parse[0], id: id[0], offset: offset[1] })
+            } else {
+                const parse = str.substring(index, index + next).split('[');
+                const id = parse[1].split(']')
+                input.push({ node: parse[0], id: id[0] })
+            }
+
+            index = index + next + 1;
+        }
+    }
+
+    return ret;
+}
+
 export function addAnnotations(state, annotationData = [], dispatch = null) {
 
     const { doc, tr } = state
-
-    function getNodeMap(path) {
-        const arr = path.split(' ')
-        const start = arr[0]
-        const end = arr[1]
-        const ret = { start: [], end: [] }
-
-        for (let i = 0; i < 2; i++) {
-            let str, input;
-            if (i === 0) {
-                str = start;
-                input = ret.start;
-            } else {
-                str = end;
-                input = ret.end;
-            }
-
-            // Always assume that first character is /
-            let index = 1
-            let next = str.substring(index).indexOf('/')
-            while (next !== -1) {
-                if (str.substring(index, index + 1) === '/') {
-                    index += 1
-                }
-
-                next = str.substring(index).indexOf('/')
-                if (next === -1) {
-                    const parse = str.substring(index).split('[');
-                    const id = parse[1].split(']')
-                    const offset = id[1].split("::")
-                    input.push({ node: parse[0], id: id[0], offset: offset[1] })
-                } else {
-                    const parse = str.substring(index, index + next).split('[');
-                    const id = parse[1].split(']')
-                    input.push({ node: parse[0], id: id[0] })
-                }
-
-                index = index + next + 1;
-            }
-        }
-
-        return ret;
-    }
 
     function findMarkPositionInDescendant(markType, parent) {
         let markPos = { start: -1, end: -1 };
@@ -347,8 +499,6 @@ export function addAnnotations(state, annotationData = [], dispatch = null) {
         const endNode = findNode(doc, paths.end, endIndex, 1, 0)
 
         if (startNode && endNode) {
-            console.log('startNode: ', startNode)
-            console.log('endNode', endNode)
             let startPosition = 0
             doc.descendants((node, pos) => {
                 if (node === startNode.node) {
@@ -373,7 +523,7 @@ export function addAnnotations(state, annotationData = [], dispatch = null) {
             //console.log('markStart: ', markStart, ', markEnd: ', markEnd)
             console.log('Text Annotated: ', doc.textBetween(markStart, markEnd))
 
-            let mark = doc.type.schema.marks['__annoMark__'].create({ id: d.id })
+            let mark = doc.type.schema.marks['__ANNOMARK__'].create({ id: d.id })
             tr.addMark(markStart, markEnd, mark)
         }
     })

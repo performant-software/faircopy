@@ -4,6 +4,7 @@ import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resource
 import { serializeResource } from "../model/serialize-xml"
 import { renderTEIDocument } from "../model/editioncrafter/render"
 const { parseStandoff } = require('./parse-standoff')
+const { serializeStandoff } = require('./serialize-standoff')
 
 const fs = window.fairCopy.getFs()
 const os = window.fairCopy.getOs()
@@ -359,6 +360,18 @@ export function projectArchive(msg, workerMethods, workerData) {
                 readUTF8(resourceID, zip).then(resource => {
                     const data = parseStandoff(resource)
                     postMessage({ messageType: 'annotation-data', data, parentResourceID })
+                })
+            }
+            break
+        // { messageType: 'save-annotation-data', resourceID: standoffEntry.id, data: data }
+        case 'save-annotation-data':
+            {
+                const { resourceID, data } = msg
+                // Read in the current standoff and update with new paths
+                // TODO: in the future we may want to be able to update the annotations themselves
+                readUTF8(resourceID, zip).then(resource => {
+                    const newStandoff = serializeStandoff(resource, data)
+                    writeUTF8(resourceID, newStandoff, zip)
                 })
             }
             break

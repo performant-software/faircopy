@@ -123,10 +123,10 @@ export default class TEISchema {
         }
 
         // This is a test of adding the annotations to the document
-        marks['__annoMark__'] = {
-            toDOM(node) { let { id } = node.attrs; return ["__annoMark__", { id }, 0] },
+        marks['__ANNOMARK__'] = {
+            toDOM(node) { let { id } = node.attrs; return ["__ANNOMARK__", { id }, 0] },
             parseDOM: [{
-                tag: "__annoMark__", getAttrs(el) {
+                tag: "__ANNOMARK__", getAttrs(el) {
                     return { id: el.getAttribute('id') }
                 }
             }],

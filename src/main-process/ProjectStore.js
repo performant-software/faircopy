@@ -250,6 +250,13 @@ class ProjectStore {
         this.save()
     }
 
+    saveAnnotationData(standoffEntry, data) {
+        if (standoffEntry.local) {
+            this.projectArchiveWorker.postMessage({ messageType: 'save-annotation-data', resourceID: standoffEntry.id, data: data })
+            this.save()
+        }
+    }
+
     requestEditionCrafterData(url) {
         return this.editionCrafterServer.processRequest(url)
     }

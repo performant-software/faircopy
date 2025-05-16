@@ -410,7 +410,7 @@ export default class ParameterDrawer extends Component {
       : name.endsWith('X')
       ? name.slice(0, name.length - 1)
       : name
-    if (elementID === '__annoMark__') {
+    if (elementID === '__ANNOMARK__') {
       console.log('Why?')
     }
     const { attrState } = configElements[elementID]

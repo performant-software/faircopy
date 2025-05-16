@@ -23,9 +23,9 @@
   min-height: 30px;
 }
 
-__annomark__ {
+__ANNOMARK__ {
   background-color: rgba(0, 0, 255, 0.1);
-  mix-blend-mode: multiply;
+  mix-blend-mode: mul;
 }
 
 tei-textnode0,
