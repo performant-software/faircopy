@@ -61,6 +61,7 @@
     "jimp": "^0.16.1",
     "jszip": "3.10.1",
     "openseadragon": "^3.0.0",
+    "point-in-polygon-hao": "^1.2.4",
     "prop-types": "^15.7.2",
     "prosemirror-commands": "^1.3.0",
     "prosemirror-dropcursor": "^1.6.0",
