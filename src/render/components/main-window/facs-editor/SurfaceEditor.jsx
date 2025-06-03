@@ -9,6 +9,8 @@ import ZonePopup from "./ZonePopup";
 import TitleBar from "../TitleBar";
 import { getSurfaceNames } from "../../../model/convert-facs";
 import inside from "point-in-polygon-hao";
+import EditingCard from "./EditingCard";
+import { fixupPoints } from "../../../model/convert-facs";
 
 const fairCopy = window.fairCopy;
 
@@ -19,6 +21,7 @@ export default class SurfaceEditor extends Component {
       selectedTool: "select",
       selectedZone: null,
       selectedDOMElement: null,
+      editing: false,
       zones: [],
       zoneIntersectArray: [],
       subZones: [],
@@ -26,12 +29,15 @@ export default class SurfaceEditor extends Component {
   }
 
   clearSelection() {
+    const zones = this.zoneLayer.getZones();
     this.setState({
       ...this.state,
+      editing: false,
       selectedZone: null,
       selectedDOMElement: null,
       selectedTool: "select",
       subZones: [],
+      zoneIntersectArray: this.makeZoneIntersectArray(zones),
     });
   }
 
@@ -135,7 +141,7 @@ export default class SurfaceEditor extends Component {
       // I assume the first click is captured and then not propagated
       // So first make sure a zone is currently selected
 
-      if (this.state.selectedZone) {
+      if (this.state.selectedZone && !this.state.editing) {
         const x = evt.clientX;
         const y = evt.clientY;
 
@@ -144,7 +150,6 @@ export default class SurfaceEditor extends Component {
         // Convert from viewport coordinates to image coordinates.
         const imagePoint =
           this.viewer.viewport.windowToImageCoordinates(webPoint);
-        console.log("Image position:", imagePoint.x, imagePoint.y);
 
         // Now iterate through the zone intersect array and make a list of polygons
         // that this point intersects
@@ -269,6 +274,16 @@ export default class SurfaceEditor extends Component {
     facsDocument.save();
   };
 
+  onEditZoneShape = (zone) => {
+    this.setState({ ...this.state, editing: true });
+  };
+
+  onCancelEditing = () => {
+    this.zoneLayer.cancel();
+    this.clearSelection();
+    this.setState({ ...this.state, editing: false });
+  };
+
   makeZoneIntersectArray = (zones) => {
     let arr = [];
 
@@ -292,7 +307,8 @@ export default class SurfaceEditor extends Component {
       } else if (zone.points) {
         // This is a polygon
         let out = [[]];
-        let points = zone.points.split(" ");
+        let p = fixupPoints(zone.points);
+        let points = p.split(" ");
         points.forEach((point) => {
           const vals = point.split(",");
           out[0].push([parseFloat(vals[0]), parseFloat(vals[1])]);
@@ -320,7 +336,8 @@ export default class SurfaceEditor extends Component {
       currentView,
       imageView,
     } = this.props;
-    const { selectedDOMElement, selectedZone, selectedTool } = this.state;
+    const { selectedDOMElement, selectedZone, selectedTool, editing } =
+      this.state;
     const surface = facsDocument.getSurface(surfaceIndex);
     const surfaceNames = getSurfaceNames(surface);
     const facsID = resourceEntry.localID;
@@ -402,7 +419,15 @@ export default class SurfaceEditor extends Component {
             onSave={this.onSaveZone}
             onCancel={this.onCancelZone}
             imageView={imageView}
+            onEdit={() => this.onEditZoneShape(selectedZone)}
+            editing={editing}
           ></ZonePopup>
+          <EditingCard
+            anchorEl={selectedDOMElement}
+            editing={editing}
+            onSave={this.onSaveZone}
+            onCancel={this.onCancelEditing}
+          />
         </div>
       </div>
     );

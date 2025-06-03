@@ -332,7 +332,7 @@ function parseFormat(rend) {
     return format
 }
 
-function fixupPoints(points) {
+export function fixupPoints(points) {
     // see if breaking by ' ' produces more that 1
     let p = points.split(' ');
     if (p.length > 1) {

@@ -20,8 +20,10 @@ export default class ZonePopup extends Component {
       onChange,
       onSave,
       onCancel,
+      onEdit,
       onErase,
       imageView,
+      editing,
     } = this.props;
     const { id, note, ana } = zone;
 
@@ -76,6 +78,15 @@ export default class ZonePopup extends Component {
               className="zone-action"
               size="small"
               variant="contained"
+              color="secondary"
+              onClick={onEdit}
+            >
+              Edit
+            </Button>
+            <Button
+              className="zone-action"
+              size="small"
+              variant="contained"
               color="primary"
               onClick={onSave}
             >
@@ -96,9 +107,9 @@ export default class ZonePopup extends Component {
   }
 
   render() {
-    const { anchorEl } = this.props;
+    const { anchorEl, editing } = this.props;
 
-    if (!anchorEl) return null;
+    if (!anchorEl || editing) return null;
 
     const placement = "bottom-start";
     const elevation = 6;
