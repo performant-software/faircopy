@@ -45,25 +45,25 @@ export const teiSourceDocTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 `
 
 
-export const facsTemplate = (facsData) => { 
+export const facsTemplate = (facsData) => {
     const { manifestID, surfaces } = facsData
 
     const surfaceEls = []
-    for( const surface of surfaces ) {
-        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, mimeType, resourceEntryID, zones  } = surface
+    for (const surface of surfaces) {
+        const { id, type, width, height, imageAPIURL, canvasURI, localLabels, mimeType, resourceEntryID, zones } = surface
         const labelEls = renderLocalLabels(localLabels)
         const zoneEls = zones ? renderZones(zones) : ""
-        
-        if( type === 'iiif' ) {
+
+        if (type === 'iiif') {
             surfaceEls.push(
                 `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic mimeType="application/json" url="${imageAPIURL}"/>${zoneEls}</surface>`
-            )    
+            )
         } else {
             const ext = getExtensionForMIMEType(mimeType)
             const filename = `${id}.${ext}`
             surfaceEls.push(
                 `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic sameAs="${resourceEntryID}" mimeType="${mimeType}" url="${filename}"/>${zoneEls}</surface>`
-            )    
+            )
         }
     }
 
@@ -82,10 +82,10 @@ function renderLocalLabels(localLabels) {
     const langKeys = Object.keys(localLabels)
 
     const labelEls = []
-    for( const langKey of langKeys ) {
+    for (const langKey of langKeys) {
         const labels = localLabels[langKey]
-        for( const label of labels ) {
-            if( langKey === 'none' ) {
+        for (const label of labels) {
+            if (langKey === 'none') {
                 labelEls.push(`<label>${label}</label>`)
             } else {
                 labelEls.push(`<label xml:lang="${langKey}">${label}</label>`)
@@ -98,11 +98,12 @@ function renderLocalLabels(localLabels) {
 
 function renderZones(zones) {
     const zoneEls = []
-    for( const zone of zones ) {
-        const { id,ulx,uly,lrx,lry,note} = zone
+    for (const zone of zones) {
+        const { id, ulx, uly, lrx, lry, note, ana } = zone
         const noteEl = note && note.length > 0 ? `<note>${note}</note>` : ""
+        const anaEl = ana || ''
         const coordAttrs = zone.points ? `points="${zone.points}"` : `ulx="${ulx}" uly="${uly}" lrx="${lrx}" lry="${lry}"`
-        const zoneEl = `<zone xml:id="${id}" ${coordAttrs}>${noteEl}</zone>`
+        const zoneEl = `<zone xml:id="${id}" ${coordAttrs} ana="${anaEl}">${noteEl}</zone>`
         zoneEls.push(zoneEl)
     }
     return zoneEls.join('\n')

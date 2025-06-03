@@ -358,6 +358,7 @@ function parseZones(surfaceEl) {
         for (let i = 0; i < zoneEls.length; i++) {
             const zoneEl = zoneEls[i]
             const id = zoneEl.getAttribute('xml:id')
+            const ana = zoneEl.getAttribute('ana')
             const noteEls = zoneEl.getElementsByTagName('note')
             const noteEl = (noteEls && noteEls.length > 0) ? noteEls[0] : null
             const note = noteEl ? noteEl.innerHTML : ""
@@ -369,7 +370,7 @@ function parseZones(surfaceEl) {
                 lry: zoneEl.getAttribute('lry')
             }
             zones.push({
-                id, ...coords, note
+                id, ...coords, note, ana
             })
         }
     }

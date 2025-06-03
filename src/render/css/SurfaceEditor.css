@@ -3,26 +3,31 @@
 }
 
 #SurfaceEditor .full {
-  width: calc( 100vh );
-  height: calc( 100vh - 144px );
+  width: calc(100vh);
+  height: calc(100vh - 144px);
 }
 
 #SurfaceEditor .full-with-bar {
-  width: calc( 100vh );
-  height: calc( 100vh - 194px );
+  width: calc(100vh);
+  height: calc(100vh - 194px);
 }
 
 #SurfaceEditor .windowed {
-  width: calc( 100vh );
-  height: calc( 100vh - 89px );
+  width: calc(100vh);
+  height: calc(100vh - 89px);
 }
 
 #SurfaceEditor .editor {
-    background: #ccc;
+  background: #ccc;
+}
+
+#SurfaceEditor .field-input {
+  width: 188px;
+  margin-top: 12px;
 }
 
 .a9s-annotation.highlight .a9s-inner,
 .a9s-annotation.highlight .a9s-outer {
-  stroke-width:4;
-  stroke:yellow;
+  stroke-width: 4;
+  stroke: yellow;
 }

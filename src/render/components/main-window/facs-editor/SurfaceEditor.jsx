@@ -93,18 +93,21 @@ export default class SurfaceEditor extends Component {
   }
 
   setSelectedZone(selectedZone, selectedDOMElement) {
-    let subZones = [];
+    const el = document.querySelector(".a9s-annotation.editable.selected");
     if (selectedZone.id === null) {
       const { facsDocument, surfaceIndex } = this.props;
       const surface = facsDocument.getSurface(surfaceIndex);
       selectedZone.id = facsDocument.nextZoneID(surface.id);
-      subZones = [selectedZone.id];
     }
     this.setState({
       ...this.state,
       selectedZone,
-      selectedDOMElement,
-      subZones,
+      selectedDOMElement: el.parentElement,
+      subZones: this.state.selectedZone
+        ? selectedZone.id === this.state.selectedZone.id
+          ? []
+          : [...this.state.subZones, selectedZone.id]
+        : [selectedZone.id],
     });
   }
 
@@ -125,7 +128,9 @@ export default class SurfaceEditor extends Component {
       this.setSelectedZone(selectedZone, selectedDOMElement);
     });
 
-    window.document.addEventListener("click", (evt) => {
+    const annoPane = window.document.querySelector(".a9s-annotationlayer");
+
+    annoPane.addEventListener("click", (evt) => {
       // This will get called after a zone that is selected is clicked again
       // I assume the first click is captured and then not propagated
       // So first make sure a zone is currently selected
@@ -133,11 +138,9 @@ export default class SurfaceEditor extends Component {
       if (this.state.selectedZone) {
         const x = evt.clientX;
         const y = evt.clientY;
-        console.log("Click position:", x, y);
 
         const webPoint = new OpenSeadragon.Point(x, y);
-        const viewportPoint = this.viewer.viewport.pointFromPixel(webPoint);
-        console.log("Viewport position:", viewportPoint.x, viewportPoint.y);
+
         // Convert from viewport coordinates to image coordinates.
         const imagePoint =
           this.viewer.viewport.windowToImageCoordinates(webPoint);
@@ -164,17 +167,8 @@ export default class SurfaceEditor extends Component {
 
         if (uncheckedZones.length > 0) {
           const newZone = uncheckedZones[0];
-          const el = document.querySelector(`[data-id='${newZone.id}']`);
-          // this.zoneLayer.setHighlights([newZone.id]);
           this.zoneLayer._annotationLayer.selectAnnotation(newZone.id);
-          this.setSelectedZone(newZone, el);
-          this.setState({
-            ...this.state,
-            subZones:
-              newZone.id === this.state.selectedZone.id
-                ? []
-                : [...this.state.subZones, newZone.id],
-          });
+          this.setSelectedZone(newZone.zone, el.parentElement);
         }
       }
     });
@@ -324,6 +318,7 @@ export default class SurfaceEditor extends Component {
       onEditSurfaceInfo,
       onResourceAction,
       currentView,
+      imageView,
     } = this.props;
     const { selectedDOMElement, selectedZone, selectedTool } = this.state;
     const surface = facsDocument.getSurface(surfaceIndex);
@@ -406,6 +401,7 @@ export default class SurfaceEditor extends Component {
             onErase={this.onEraseZone}
             onSave={this.onSaveZone}
             onCancel={this.onCancelZone}
+            imageView={imageView}
           ></ZonePopup>
         </div>
       </div>
