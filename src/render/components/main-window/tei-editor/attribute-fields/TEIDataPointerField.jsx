@@ -137,7 +137,7 @@ export default class TEIDataPointerField extends Component {
     const options = this.valuesToOptions(
       idMap.getRelativeURIList(resourceEntry.localID, parentEntry?.localID)
     );
-    const values = value.length > 0 ? value.split(" ") : [];
+    const values = value && value.length > 0 ? value.split(" ") : [];
     const selectedOptions = this.valuesToOptions(values);
     const key = `multiterm-${Date.now()}`;
 
