@@ -15,6 +15,13 @@ FairCopy can run in development mode on your local machine, which is useful for 
 * BROWSER=none
 * PORT=4000 
 
+Copy `forge.config.example.js` to `forge.config.js`, and make the following changes for local development:
+* Replace `<YOUR ABSOLUTE PATH TO PROJECT BASE DIR>` with the path to the root directory of the cloned repo
+* Remove the `osxNotarize` section
+* Remove the `publishers` section
+* Remove `nodeIntegration: true` from all `entryPoints` except the last one (`worker_window`)
+* In the `worker_window` entrypoint, change `./src/faircopy-preload.js` to `./src/faircopy-worker-preload.js`
+
 After this is done, run `npm run start`. This will start the create react app server on port 4000. To run the Electron main process on VS Code, a debug configuration has been created for the project. Run the debugger and this will allow you to work in the Electron environment. Create React App will hot reload into Electron's browser as you work, but you will need to stop and start the debugger for most changes.
 
 Electron apps have multiple running threads: a main thread and a number of render threads. In FairCopy, there are hidden render threads that run things like serialization to the ZIP file and search indexing. The main thread is the "back end" which handles interprocess communication. This can be debugged using breakpoints in VS Code. All other threads must be debugged using the developer tools in the browser window. To debug worker threads, you must make their browser windows visible first.
