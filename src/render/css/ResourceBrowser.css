@@ -1,16 +1,3 @@
-
-#ResourceBrowser .toolbar {
-    margin: 10px;
-}
-
-#ResourceBrowser .toolbar-button {
-    margin-right: 20px;
-}
-
-#ResourceBrowser .right-button {
-    float: right;
-}
-
 #ResourceBrowser .filter-input {
     border-radius: 5px;
     border: 1px solid #0000003b;
@@ -52,5 +39,44 @@
 }
 
 #ResourceBrowser .inline-button-group {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+
+}
+
+#ResourceBrowser .doc-header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+    background-color: #F5F5F5;
+}
+
+#ResourceBrowser .doc-header h2 {
+    margin-right: 26px;
+}
+
+#ResourceBrowser .doc-header-left,
+#ResourceBrowser .doc-header-right {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 8px;
+}
+
+#ResourceBrowser .toolbar {
+    padding: 16px 24px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+}
+#ResourceBrowser .toolbar .tools {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 16px;
 }
