@@ -307,7 +307,10 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             { icon && 
               <Tooltip title={label}>
-                <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+                { typeof icon === "string" ?
+                  <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+                  : React.createElement(icon, { "aria-label": label, "aria-hidden": false, className: iconClass })
+                }
               </Tooltip>
             }
           </TableCell>
