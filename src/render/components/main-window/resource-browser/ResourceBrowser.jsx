@@ -262,7 +262,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
 
@@ -329,7 +329,7 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
           </TableCell>
-          { remoteProject && 
+          { remoteProject && !teiDoc && 
           <TableCell {...cellProps} align="center">
             { icon && 
               <Tooltip title={label}>
@@ -341,9 +341,11 @@ export default class ResourceBrowser extends Component {
             }
           </TableCell>
           }
-          <TableCell {...cellProps} >
-            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
-          </TableCell>
+          { teiDoc &&
+            <TableCell {...cellProps} >
+              <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
+            </TableCell>
+          }
           <TableCell {...cellProps} >
             <Typography title={name} className={textClass}>{displayName}</Typography>
           </TableCell>
@@ -373,8 +375,8 @@ export default class ResourceBrowser extends Component {
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
-                          { remoteProject && <TableCell align="center">Checked Out</TableCell> }
-                          <TableCell>Type</TableCell>
+                          { remoteProject && !teiDoc && <TableCell align="center">Checked Out</TableCell> }
+                          { teiDoc && <TableCell>Type</TableCell> }
                           { this.renderSortableHeaderCell('name','Name',orderBy,order) }
                           { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
                           { remoteProject && <TableCell>Last Modified</TableCell> }
