@@ -198,7 +198,7 @@ export default class CheckInDialog extends Component {
                    { this.renderCommitField() }
                    { this.renderResourceTable() }
                    { this.renderErrorMessage() }
-                </DialogContent>    
+                </DialogContent>
                 <DialogActions>
                     <Button {...checkInButtonProps} >Check In</Button>
                     <Button {...closeButtonProps} >{ status === 'ready' ? 'Cancel' : 'Done' }</Button>
