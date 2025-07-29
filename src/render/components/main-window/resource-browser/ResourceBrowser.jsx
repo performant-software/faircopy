@@ -27,57 +27,68 @@ export default class ResourceBrowser extends Component {
 }
 
   onOpenActionMenu = (anchorEl) => {
-    const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
-    const { remote: remoteProject, permissions } = fairCopyProject
+    const { currentView, fairCopyProject, onOpenPopupMenu, resourceCheckmarks, teiDoc } = this.props
+    const { permissions, remote: remoteProject, userID } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
-    const checkout = remoteProject ? canCheckOut(permissions) : true
     const del = remoteProject ? canDelete(permissions) : true
 
-    const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
-      {
-        id: 'check-in',
-        label: 'Check In',
-        action: this.createResourceAction('check-in')
-      },
-      {
-        id: 'check-out',
-        label: 'Check Out',
-        action: this.createResourceAction('check-out'),
-        disabled: !checkout
-      }
-    ]
-    
-    const menuOptions = [
-      {
-        id: 'open',
-        label: 'Open',
-        action: this.createResourceAction('open')
-      },
-      ...remoteProjectOptions,
-      {
-        id: 'export',
-        label: 'Export',
-        action: this.createResourceAction('export')
-      },
-      {
-        id: 'delete',
-        label: 'Delete',
-        action: this.createResourceAction('delete'),
-        disabled: !del
-      }
-    ]
+    // list of non-null selected items so we can do .some() or .every() on them
+    const resources = Object.values(resourceCheckmarks).filter(Boolean);
+    const checkedOutByUser = resources.some(
+      (r) =>
+        r.lastAction?.action_type === 'check_out' &&
+        r.lastAction.user?.id === userID,
+    )
+    const someDeleted = resources.some((r) => r.deleted)
+    const allDeleted = resources.every((r) => r.deleted)
+    const menuOptions = []
 
-    // move only works with local resources 
-    if( currentView === 'home' ) {
+    // TODO: collapse Remote and Local into a single view. for now, check them separately
+    if (remoteProject && loggedIn && !teiDoc) {
+      // checkin/checkout only in remote project, at the project root, when we are logged in
+      if (currentView === 'home' || checkedOutByUser) {
+        // can check in if we are in Local, or we're in Remote but user has something checked out
+        menuOptions.push({
+          id: 'check-in',
+          label: 'Check In',
+          action: this.createResourceAction('check-in')
+        })
+      } else if (currentView === 'remote' && canCheckOut(permissions)) {
+        // can only check out from Remote
+        menuOptions.push({
+          id: 'check-out',
+          label: 'Check Out',
+          action: this.createResourceAction('check-out'),
+        })
+      }
+    }
+
+    menuOptions.push({
+      id: 'export',
+      label: 'Export',
+      action: this.createResourceAction('export')
+    })
+
+    // move only works with local resources, and not at the project root
+    if (currentView === 'home' && teiDoc) {
       menuOptions.push({
         id: 'move',
         label: 'Move',
-        action: this.createResourceAction('move')   
-      })     
+        action: this.createResourceAction('move')
+      })
+    }
+
+    if (del && !allDeleted) {
+      menuOptions.push({
+        id: 'delete',
+        label: 'Delete',
+        classes: 'danger',
+        action: this.createResourceAction('delete'),
+      })
     }
 
     // you can recover deleted items when logged out
-    if( remoteProject ) {
+    if (remoteProject && someDeleted) {
       menuOptions.push({
         id: 'recover',
         label: 'Recover',

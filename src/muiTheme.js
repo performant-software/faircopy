@@ -6,6 +6,10 @@ const theme = createTheme({
       main: '#43639D',
       dark: '#283B5E',
     },
+    error: {
+      main: '#f44336',
+      dark: '#c00f0c',
+    },
     info: {
       main: '#1976d2',
       dark: '#01579B',
