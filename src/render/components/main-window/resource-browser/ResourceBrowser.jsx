@@ -211,13 +211,21 @@ export default class ResourceBrowser extends Component {
           </div>
         }
         <div className='toolbar'>
-          <Typography component="h2" variant="h6">Resources</Typography>
+          <Typography component="h2" variant="h6">
+            {teiDoc ? "Resources" : "Documents"}
+          </Typography>
           <div className='tools'>
             { currentView === 'home' && 
               <div className='inline-button-group'>
-                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-                <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
+                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>
+                  {teiDoc ? "New Resource" : "New Document"}
+                </Button>
+                {teiDoc &&
+                  <>
+                    <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
+                    <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
+                  </>
+                }
               </div>
             }
             <Button 
