@@ -79,13 +79,14 @@ export default class CheckInDialog extends Component {
         const resourceRows = []
         for( const resource of resources ) {
             const { id: resourceID, type: resourceType, local, deleted, localID, name } = resource
-            // don't display header entries
-            if( resourceType === 'header' ) continue
+            // only display document entries
+            if( resourceType !== 'teidoc' ) continue
             const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
             const editable = isEntryEditable(resource, fairCopyProject.userID)
             let { icon, label } = getActionIcon(responseReceived, local, editable )
-            if( deleted ) icon = 'fa-trash'
+            if( deleted ) icon = 'fa fa-trash'
+            if( local ) icon = 'fa fa-cloud-arrow-up'
 
             resourceRows.push(
                 <TableRow key={`resource-${resource.id}`}>
@@ -108,7 +109,7 @@ export default class CheckInDialog extends Component {
             )            
         }
 
-        const caption = status === 'done' ? 'These resources have been processed.' : 'These resources are ready to be checked in.'
+        const caption = status === 'done' ? 'These documents have been processed.' : 'These documents are ready to be checked in.'
 
         return (
             <div>
@@ -179,12 +180,12 @@ export default class CheckInDialog extends Component {
         const { onClose } = this.props
         const { status } = this.state
 
-        const checkInButtonProps = status === 'ready' ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } : 
-            {  variant: "outlined", color: "default", enabled: 'false' } 
-        const closeButtonProps = status === 'done' ? {  variant: "contained", color: "primary", onClick: onClose } : 
-            status === 'loading' ?  {  variant: "outlined", color: "default", enabled: 'false' } : 
+        const checkInButtonProps = status === 'ready' ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } :
+            {  variant: "outlined", color: "default", disabled: true }
+        const closeButtonProps = status === 'done' ? {  variant: "contained", color: "primary", onClick: onClose } :
+            status === 'loading' ?  {  variant: "outlined", color: "default", disabled: true } :
                                     {  variant: "outlined", color: "default", onClick: onClose }
-        
+
         return (
             <Dialog
                 id="CheckInDialog"
@@ -192,12 +193,12 @@ export default class CheckInDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
             >
-                <DialogTitle id="checkin-dialog-title">Check In Resources { status === 'loading' && inlineRingSpinner('dark') }</DialogTitle>
+                <DialogTitle id="checkin-dialog-title">Check In Documents { status === 'loading' && inlineRingSpinner('dark') }</DialogTitle>
                 <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
                    { this.renderResourceTable() }
                    { this.renderErrorMessage() }
-                </DialogContent>
+                </DialogContent>    
                 <DialogActions>
                     <Button {...checkInButtonProps} >Check In</Button>
                     <Button {...closeButtonProps} >{ status === 'ready' ? 'Cancel' : 'Done' }</Button>

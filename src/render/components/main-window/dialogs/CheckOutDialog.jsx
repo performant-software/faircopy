@@ -13,14 +13,16 @@ export default class CheckOutDialog extends Component {
     renderResourceTable() {
         const { checkOutStatus } = this.props
         
-        let successCount = 0
+        let resourceCount = 0
         const resourceRows = []
         for( const statusEntry of checkOutStatus ) {
             const { state, resourceEntry } = statusEntry
             const { id, name, type, localID } = resourceEntry
-            if( type === 'header' ) continue
             const resourceStatusMessage = getResourceStatusMessage(state)
-            if( state === 'success' ) successCount++
+            if( type !== 'teidoc' ) {
+                if( state === 'success' && type !== 'header' ) resourceCount++
+                continue
+            }
 
             resourceRows.push(
                 <TableRow key={`resource-${id}`}>
@@ -37,13 +39,15 @@ export default class CheckOutDialog extends Component {
             )
         }
 
-        const s = successCount === 1 ? '' : 's'
+        const s = resourceCount === 1 ? '' : 's'
+        const docCount = checkOutStatus.filter(status => status.resourceEntry?.type === 'teidoc').length
+        const docCountMsg = `${docCount} document${docCount === 1 ? '' : 's'}`
 
         return (
             <div>
                 <TableContainer className="table-container">
                     <Table stickyHeader size="small" >
-                        <caption>Checked out {successCount} resource{s}.</caption>
+                        <caption>Checked out {docCountMsg}, totaling {resourceCount} resource{s}.</caption>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>
@@ -78,7 +82,7 @@ export default class CheckOutDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkout-dialog-title"
             >
-                <DialogTitle id="checkout-dialog-title"><i aria-label="Checked Out Icon" className={`fa fa-pen fa-sm`}></i> Checked Out Resources</DialogTitle>
+                <DialogTitle id="checkout-dialog-title"><i aria-label="Checked Out Icon" className={`fa fa-pen fa-sm`}></i> Checked Out Documents</DialogTitle>
                 <DialogContent className="checkout-panel">
                    { this.renderResourceTable() }
                    { this.renderErrorMessage() }
