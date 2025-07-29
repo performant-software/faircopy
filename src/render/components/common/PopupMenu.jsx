@@ -42,7 +42,7 @@ export default class PopupMenu extends Component {
             if (menuOption.id === 'delete') {
                 menuItems.push(<StyledDivider component="li" key="divider" light />)
             }
-            const icon = this.MENU_ICONS[menuOption.id] || '';
+            const icon = Object.hasOwn(this.MENU_ICONS, menuOption.id) ? this.MENU_ICONS[menuOption.id] : ''
             menuItems.push(
                 <StyledMenuItem
                     onClick={onClick}
