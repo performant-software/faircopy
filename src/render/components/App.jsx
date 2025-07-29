@@ -11,6 +11,7 @@ import ProjectSettingsWindow from "./project-settings-window/ProjectSettingsWind
 import FairCopyProject from "../model/FairCopyProject";
 import ImageView from "../model/ImageView";
 import { getConfigStatus } from "../model/faircopy-config";
+import MigrateResourcesDialog from "./main-window/dialogs/MigrateResourcesDialog";
 
 const fairCopy = window.fairCopy;
 
@@ -26,6 +27,7 @@ export default class App extends Component {
       appConfig: null,
       checkingOut: false,
       checkOutError: null,
+      migrateResourcesActive: false,
       projectSettingsActive: false,
     };
 
@@ -137,8 +139,9 @@ export default class App extends Component {
     // breakpoints not to be honored. Only needed for debugging these paths.
     // setTimeout( () => {
     const fairCopyProject = new FairCopyProject(projectData);
+    const migrateResourcesActive = fairCopyProject.orphanedResources?.length > 0;
     this.setTitle(fairCopyProject.projectName);
-    this.setState({ ...this.state, fairCopyProject });
+    this.setState({ ...this.state, fairCopyProject, migrateResourcesActive });
     this.addToRecentProjects(fairCopyProject);
     // },2000)
   }
@@ -200,6 +203,7 @@ export default class App extends Component {
       previewView,
       appConfig,
       incompatInfo,
+      migrateResourcesActive,
       projectSettingsActive,
       checkingOut,
       checkOutError,
@@ -254,9 +258,17 @@ export default class App extends Component {
               onClose={onClose}
             ></ProjectSettingsWindow>
           )}
+          <MigrateResourcesDialog
+            fairCopyProject={fairCopyProject}
+            open={migrateResourcesActive}
+            onSuccess={() => {
+              this.setState({ ...this.state, migrateResourcesActive: false })
+              this.refreshMainWindow()
+            }}
+          ></MigrateResourcesDialog>
           <MainWindow
             appConfig={appConfig}
-            hidden={projectSettingsActive}
+            hidden={projectSettingsActive || migrateResourcesActive}
             onProjectSettings={() => {
               this.setState({ ...this.state, projectSettingsActive: true });
             }}
