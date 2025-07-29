@@ -9,11 +9,11 @@ export default class EditResourceDialog extends Component {
 
     constructor(props) {
         super()
-        const { resourceEntry } = props
+        const { parentEntry, resourceEntry } = props
         this.initialState = resourceEntry ? { ...resourceEntry, validationErrors: {} } : {
             name: "",
             localID: "",
-            type: "text",
+            type: parentEntry ? "text" : "teidoc",
             validationErrors: {}
         }
         this.state = this.initialState
@@ -38,8 +38,6 @@ export default class EditResourceDialog extends Component {
     }
 
     renderResourceTypeSelect(type,onChange) {
-        const { parentEntry } = this.props
-
         return (
             <div>
                 <Typography color="textSecondary" >Resource Type</Typography>
@@ -70,18 +68,13 @@ export default class EditResourceDialog extends Component {
                             <span>A lineated transcription of a <br/>single source document.</span>
                         )}
                     </MenuItem>
-                    { !parentEntry && <MenuItem value={'teidoc'}>
-                        { this.renderTypeCard("TEI Document","fa fa-book-open",
-                            <span>A group of texts and facsimiles <br/>which share a common metadata <br/>description or a single text or <br/>facsimile which requires detailed <br/>metadata.</span>
-                        )}
-                    </MenuItem> }
                 </Select><br/>
             </div>
         )
     }
 
     render() {      
-        const { editDialogMode, onSave, onClose, resourceEntry } = this.props
+        const { editDialogMode, onSave, onClose, parentEntry, resourceEntry } = this.props
         
         const onChange = (e) => {
             const {name, value} = e.target
@@ -125,7 +118,8 @@ export default class EditResourceDialog extends Component {
             onClose()
         }
 
-        const dialogTitle = resourceEntry ? "Edit Resource" : "Create Resource"
+        const resourceType = (!parentEntry || resourceEntry?.type === "teidoc") ? "Document" : "Resource"
+        const dialogTitle = resourceEntry ? `Edit ${resourceType}` : `Create ${resourceType}`
 
         const { name, type, localID, validationErrors } = this.state
 
@@ -146,8 +140,8 @@ export default class EditResourceDialog extends Component {
                         onChange={onChange}
                         error={validationErrors['name'] !== undefined }
                         helperText={validationErrors['name']}
-                        aria-label="Resource Name"
-                        label="Resource Name" 
+                        aria-label={`${resourceType} Name`}
+                        label={`${resourceType} Name`}
                     /><br/>
                     <TextField 
                         name="localID"
@@ -159,7 +153,7 @@ export default class EditResourceDialog extends Component {
                         helperText={validationErrors['localID']}
                         label="ID" 
                     /><br/>
-                    { !resourceEntry && this.renderResourceTypeSelect(type,onChange) }
+                    { !resourceEntry && parentEntry && this.renderResourceTypeSelect(type,onChange) }
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" color="primary" onClick={onSaveResource}>Save</Button>
