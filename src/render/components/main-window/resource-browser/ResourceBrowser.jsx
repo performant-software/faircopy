@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
-import { OpenInNew, Settings } from '@material-ui/icons';
 import TitleBar from '../TitleBar'
 import { debounce } from "debounce";
 
@@ -171,6 +170,16 @@ export default class ResourceBrowser extends Component {
           <div className="doc-header">
             <div className="doc-header-left">
               <Typography component="h2" variant="h6">{teiDoc.name}</Typography>
+              {currentView === 'home' && 
+                <Tooltip title="Edit Document Properties">
+                  <IconButton
+                    onClick={onEditTEIDoc}
+                    className='toolbar-button'
+                  >
+                    <i className='fa fa-pen-to-square fa-md' />
+                  </IconButton>
+                </Tooltip>
+              }
             </div>
             <div className="doc-header-right">
               <Tooltip title="Preview Published Document">
@@ -183,20 +192,10 @@ export default class ResourceBrowser extends Component {
                     disableRipple={true}
                     disableFocusRipple={true}
                   >
-                    <OpenInNew />
+                    <i className='fa fa-eye fa-md' />
                   </IconButton>
                 </span>
               </Tooltip>
-              {currentView === 'home' && 
-                <Tooltip title="Edit Document Properties">
-                  <IconButton
-                    onClick={onEditTEIDoc}
-                    className='toolbar-button'
-                  >
-                    <Settings />
-                  </IconButton>
-                </Tooltip>
-              }
             </div>
           </div>
         }
