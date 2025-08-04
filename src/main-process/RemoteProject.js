@@ -114,6 +114,10 @@ class RemoteProject {
     publish(teiDoc) {
         this.remoteProjectWorker.postMessage({ messageType: 'publish', teiDoc })
     }
+
+    abandonCheckout(resource) {
+        this.remoteProjectWorker.postMessage({ messageType: 'abandon', resource })
+    }
 }
 
 

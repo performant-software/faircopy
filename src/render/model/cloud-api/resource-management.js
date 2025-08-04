@@ -110,3 +110,21 @@ export function checkOutResources(serverURL, authToken, projectID, resourceIDs) 
         )
     })
 }
+
+export function abandonCheckout(userID, serverURL, authToken, projectID, resource, onSuccess, onFail) {
+    // abandon check out on a resource
+    const data = { project_id: projectID, resource_guid: resource.id }
+
+    const checkInURL = `${serverURL}/api/resource_management/abandon`
+    axios.post(checkInURL, data,authConfig(authToken)).then(
+        (okResponse) => {
+            const { status } = okResponse.data
+            if( status === 'success' ) {
+                onSuccess()
+            } else {
+                onFail("Unable to unlock checked-out document.")
+            }
+        },
+        standardErrorHandler(userID, serverURL, onFail)
+    )
+}

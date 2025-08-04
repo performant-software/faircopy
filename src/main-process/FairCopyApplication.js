@@ -240,6 +240,10 @@ class FairCopyApplication {
         this.openProject(targetFile)
       }
     })
+
+    ipcMain.on('abandon', (event, resourceEntries) => {
+      this.fairCopySession.abandonCheckout(resourceEntries[0])
+    })
   
   }
 

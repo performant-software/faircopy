@@ -563,6 +563,10 @@ class FairCopySession {
     requestEditionCrafterData(url) {
         return this.projectStore.requestEditionCrafterData(url)
     }
+
+    abandonCheckout(resource) {
+        this.remoteProject.abandonCheckout(resource)
+    }
 }
 
 exports.FairCopySession = FairCopySession
