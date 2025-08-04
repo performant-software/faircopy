@@ -129,6 +129,7 @@ export default class CheckInDialog extends Component {
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
             const editable = isEntryEditable(resource, fairCopyProject.userID)
             let { icon, label } = getActionIcon(responseReceived, local, editable )
+            if( resourceStatusCode && resourceStatusCode !== 'ok' ) icon = 'fa fa-x'
             if( deleted ) icon = 'fa fa-trash'
             if( local ) icon = 'fa fa-cloud-arrow-up'
 
