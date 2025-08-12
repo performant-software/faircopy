@@ -290,13 +290,22 @@ export default class FairCopyProject {
         return Object.values(resources).filter((r) => r.type !== 'teidoc' && !r.parentResource)    
     }
 
+    startMigratingResource = (resourceID) => {
+        fairCopy.ipcSend('startMigratingResource', resourceID)
+    }
+
     migrateOrphanedResources = () => {
         // v1.2.1 migration: move orphaned resources into new TEI document
+        this.orphanedResources.forEach((resourceEntry) => {
+            // queue each for migration, enabling loading spinner
+            this.startMigratingResource(resourceEntry.id)
+        })
         const docName = this.projectName
-        const existingIDs = Object.keys(this.idMap?.idMap || {})
+        const existingIDs = Object.keys(this.idMap.idMap)
         const localID = getUniqueResourceID('teidoc', existingIDs, docName)
         const teidoc = this.newResource(docName, localID, 'teidoc', null)
         this.orphanedResources.forEach((resourceEntry) => {
+            // move each into tei doc, ultimately disabling loading spinner
             resourceEntry.parentResource = teidoc.id
             this.updateResource(resourceEntry)
         })

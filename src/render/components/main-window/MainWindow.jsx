@@ -121,6 +121,7 @@ export default class MainWindow extends Component {
       leftPaneWidth: initialLeftPaneWidth,
       rightPaneWidth: initialRightPaneWidth,
       migrateResourcesMode: false,
+      migratingResources: new Set(),
     };
   }
 
@@ -238,7 +239,24 @@ export default class MainWindow extends Component {
   onResourceEntryUpdated = (e, resourceEntry) => {
     const { fairCopyProject } = this.props;
     fairCopyProject.notifyListeners("resourceEntryUpdated", resourceEntry);
+    this.setState((prevState) => {
+      // if updated resource entry was part of migration in progress, mark it migrated
+      const migratingResources = new Set(prevState.migratingResources);
+      migratingResources.delete(resourceEntry.id);
+      return {
+        ...prevState,
+        migratingResources,
+      };
+    })
     this.refreshWindow();
+  };
+
+  onMigrateResource = (e, resourceID) => {
+    // add resource id to set of migration in progress resources
+    this.setState((prevState) => ({
+      ...prevState,
+      migratingResources: new Set(prevState.migratingResources).add(resourceID),
+    }));
   };
 
   onResourceContentUpdated = (e, resourceUpdate) => {
@@ -257,6 +275,10 @@ export default class MainWindow extends Component {
     fairCopy.ipcRegisterCallback(
       "resourceViewUpdate",
       this.onResourceViewUpdate
+    );
+    fairCopy.ipcRegisterCallback(
+      "resourceMigrationStarted",
+      this.onMigrateResource
     );
     fairCopy.ipcRegisterCallback("requestExitApp", this.onRequestExitApp);
     fairCopy.ipcRegisterCallback(
@@ -1056,6 +1078,7 @@ export default class MainWindow extends Component {
       resourceIndex,
       allResourcesCheckmarked,
       resourceCheckmarks,
+      migratingResources,
     } = this.state;
     const { currentView } = resourceViews;
     const resourceView = resourceViews[currentView];
@@ -1064,27 +1087,29 @@ export default class MainWindow extends Component {
     return (
       <div className="content-pane">
         {resourceBrowserOpen && (
-          <ResourceBrowser
-            onResourceAction={this.onResourceAction}
-            onOpenPopupMenu={this.onOpenPopupMenu}
-            onEditResource={this.onEditResource}
-            onEditTEIDoc={() => {
-              this.setState({ ...this.state, editTEIDocDialogMode: true });
-            }}
-            onImportResource={this.onImportResource}
-            onLogin={this.onLogin}
-            teiDoc={parentEntry}
-            setResourceCheckmark={this.setResourceCheckmark}
-            setAllCheckmarks={this.setAllCheckmarks}
-            allResourcesCheckmarked={allResourcesCheckmarked}
-            resourceCheckmarks={resourceCheckmarks}
-            onResourceViewChange={this.onResourceViewChange}
-            currentView={currentView}
-            resourceView={resourceView}
-            resourceIndex={resourceIndex}
-            fairCopyProject={fairCopyProject}
-            panelWidth={rightPaneWidth}
-          ></ResourceBrowser>
+          migratingResources.size > 0
+          ? <div id="ResourceBrowser">{bigRingSpinner()}</div>
+          : <ResourceBrowser
+              onResourceAction={this.onResourceAction}
+              onOpenPopupMenu={this.onOpenPopupMenu}
+              onEditResource={this.onEditResource}
+              onEditTEIDoc={() => {
+                this.setState({ ...this.state, editTEIDocDialogMode: true });
+              }}
+              onImportResource={this.onImportResource}
+              onLogin={this.onLogin}
+              teiDoc={parentEntry}
+              setResourceCheckmark={this.setResourceCheckmark}
+              setAllCheckmarks={this.setAllCheckmarks}
+              allResourcesCheckmarked={allResourcesCheckmarked}
+              resourceCheckmarks={resourceCheckmarks}
+              onResourceViewChange={this.onResourceViewChange}
+              currentView={currentView}
+              resourceView={resourceView}
+              resourceIndex={resourceIndex}
+              fairCopyProject={fairCopyProject}
+              panelWidth={rightPaneWidth}
+            ></ResourceBrowser>
         )}
         {this.renderEditors()}
       </div>
