@@ -13,16 +13,14 @@ export default class CheckOutDialog extends Component {
     renderResourceTable() {
         const { checkOutStatus } = this.props
         
-        let resourceCount = 0
         const resourceRows = []
         for( const statusEntry of checkOutStatus ) {
             const { state, resourceEntry } = statusEntry
             const { id, name, type, localID } = resourceEntry
-            const resourceStatusMessage = getResourceStatusMessage(state)
             if( type !== 'teidoc' ) {
-                if( state === 'success' && type !== 'header' ) resourceCount++
                 continue
             }
+            const resourceStatusMessage = getResourceStatusMessage(state)
 
             resourceRows.push(
                 <TableRow key={`resource-${id}`}>
@@ -39,7 +37,6 @@ export default class CheckOutDialog extends Component {
             )
         }
 
-        const s = resourceCount === 1 ? '' : 's'
         const docCount = checkOutStatus.filter(status => status.resourceEntry?.type === 'teidoc').length
         const docCountMsg = `${docCount} document${docCount === 1 ? '' : 's'}`
 
@@ -47,7 +44,7 @@ export default class CheckOutDialog extends Component {
             <div>
                 <TableContainer className="table-container">
                     <Table stickyHeader size="small" >
-                        <caption>Checked out {docCountMsg}, totaling {resourceCount} resource{s}.</caption>
+                        <caption>Checked out {docCountMsg}.</caption>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>
