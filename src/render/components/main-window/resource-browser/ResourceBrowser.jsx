@@ -194,14 +194,12 @@ export default class ResourceBrowser extends Component {
             </div>
             <div className="doc-header-right">
               <Tooltip title="Preview Published Document">
-                <span>
+                <span className="iconbutton-wrapper">
                   <IconButton
                     aria-label="Preview Published Document"
                     disabled={!canPreview}
                     onClick={onPreviewResource}
                     className='toolbar-button'
-                    disableRipple={true}
-                    disableFocusRipple={true}
                   >
                     <i className='fa fa-eye fa-md' />
                   </IconButton>
