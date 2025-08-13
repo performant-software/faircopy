@@ -215,7 +215,7 @@ export default class ResourceBrowser extends Component {
           <div className='tools'>
             { currentView === 'home' && 
               <div className='inline-button-group'>
-                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>
+                <Button color="primary" variant="contained" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>
                   {teiDoc ? "New Resource" : "New Document"}
                 </Button>
                 <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
@@ -426,9 +426,9 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView } = this.props
+      const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView, resourceIndex, onCheckInAll } = this.props
       const { loading } = resourceView
-      const { isLoggedIn, remote: remoteProject } = fairCopyProject
+      const { isLoggedIn, remote: remoteProject, permissions } = fairCopyProject
 
       // reset the filter when switching views
       const onResourceActionFilter = (actionID, resourceIDs, resourceEntries) => {
@@ -438,9 +438,20 @@ export default class ResourceBrowser extends Component {
         onResourceAction(actionID, resourceIDs, resourceEntries)
       }
 
+      const canCheckInAll = resourceIndex.length > 0 && remoteProject && canCheckOut(permissions)
+
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar parentResource={teiDoc} onResourceAction={onResourceActionFilter} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
+          <TitleBar
+            canCheckInAll={canCheckInAll}
+            currentView={currentView}
+            isLoggedIn={isLoggedIn}
+            loading={loading}
+            onCheckInAll={onCheckInAll}
+            onResourceAction={onResourceActionFilter}
+            parentResource={teiDoc}
+            remoteProject={remoteProject}
+          ></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }

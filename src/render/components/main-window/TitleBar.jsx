@@ -1,10 +1,27 @@
 import React, { Component } from 'react'
-import { Typography } from '@material-ui/core'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { Typography, withStyles } from '@material-ui/core'
+import { Button, IconButton, Tooltip } from '@material-ui/core'
+import { common, indigo } from '@material-ui/core/colors'
 import { inlineRingSpinner } from '../common/ring-spinner'
 import { ellipsis } from '../../model/ellipsis'
 
 const maxTitleLength = 50
+
+const StyledButton = withStyles((theme) => ({
+    root: {
+        color: theme.palette.primary.dark,
+        backgroundColor: common.white,
+        '&:hover': {
+            backgroundColor: indigo[50],
+        },
+        '& .MuiButton-startIcon': {
+            marginLeft: 0,
+        },
+        '& .MuiButton-iconSizeMedium > *:first-child': {
+            fontSize: 16
+        }
+    },
+}))(Button)
 
 export default class TitleBar extends Component {
     
@@ -42,6 +59,23 @@ export default class TitleBar extends Component {
                     </IconButton> 
                 </span>
             </Tooltip>
+        )
+    }
+
+    renderVersionControl() {
+        const { canCheckInAll, currentView, onCheckInAll, remoteProject, parentResource } = this.props
+        return (
+            <>
+            {remoteProject && !parentResource && currentView === 'home' &&
+                <StyledButton
+                    disabled={!canCheckInAll}
+                    onClick={onCheckInAll}
+                    startIcon={<i className="fa fa-cloud-arrow-up fa-sm"></i>}
+                >
+                    Check in all
+                </StyledButton>
+            }
+            </>
         )
     }
 
@@ -84,9 +118,12 @@ export default class TitleBar extends Component {
         const secondaryWindow = isImageWindow || isPreviewWindow
 
         return (
-            <header id="TitleBar" >                
+            <header id="TitleBar" >
+                <div className="title-bar-left">
                     { !secondaryWindow && this.renderHomeButton() }
                     { this.renderTitle() }
+                </div>
+                { this.renderVersionControl() }
             </header>
         )
     }

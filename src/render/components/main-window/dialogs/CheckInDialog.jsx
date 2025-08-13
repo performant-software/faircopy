@@ -176,8 +176,22 @@ export default class CheckInDialog extends Component {
         )
     }
 
+    renderCheckInAll() {
+        const { committedResources, status } = this.state
+        const resourcesToCommit = this.getResourcesToCommit()
+        const responseReceived = status === 'done'
+        const resourceList = responseReceived ? committedResources : resourcesToCommit
+        const documentCount = resourceList.filter((resource) => resource.type === 'teidoc').length
+        const caption = status === 'done'
+            ? `${documentCount} documents have been processed.`
+            : `${documentCount} documents are ready to be checked in.`
+        return (
+            <Typography>{caption}</Typography>
+        )
+    }
+
     render() {
-        const { onClose } = this.props
+        const { onClose, checkInAll } = this.props
         const { status } = this.state
 
         const checkInButtonProps = status === 'ready' ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } :
@@ -196,7 +210,8 @@ export default class CheckInDialog extends Component {
                 <DialogTitle id="checkin-dialog-title">Check In Documents { status === 'loading' && inlineRingSpinner('dark') }</DialogTitle>
                 <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
-                   { this.renderResourceTable() }
+                   { !checkInAll && this.renderResourceTable() }
+                   { checkInAll && this.renderCheckInAll() }
                    { this.renderErrorMessage() }
                 </DialogContent>
                 <DialogActions>

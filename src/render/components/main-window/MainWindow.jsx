@@ -97,6 +97,7 @@ export default class MainWindow extends Component {
       moveResourceMode: false,
       checkInMode: false,
       checkInResources: [],
+      checkInAll: false,
       editTEIDocDialogMode: false,
       moveResources: null,
       surfaceInfo: null,
@@ -848,6 +849,18 @@ export default class MainWindow extends Component {
     }
   };
 
+  onCheckInAll = () => {
+    const { localResources } = this.state;
+    const resourceIDs = Object.keys(localResources);
+    this.setState((prevState) => ({
+      ...prevState,
+      checkInMode: true,
+      checkInResources: resourceIDs,
+      checkInAll: true,
+      ...closePopUpState,
+    }));
+  }
+
   onSearchResults = (
     searchQuery,
     searchResults,
@@ -1095,6 +1108,7 @@ export default class MainWindow extends Component {
                 this.setState({ ...this.state, editTEIDocDialogMode: true });
               }}
               onImportResource={this.onImportResource}
+              onCheckInAll={this.onCheckInAll}
               onLogin={this.onLogin}
               teiDoc={parentEntry}
               setResourceCheckmark={this.setResourceCheckmark}
@@ -1144,6 +1158,7 @@ export default class MainWindow extends Component {
       searchFilterMode,
       searchFilterOptions,
       moveResourceProps,
+      checkInAll,
       checkInResources,
       checkOutMode,
       checkOutStatus,
@@ -1340,6 +1355,7 @@ export default class MainWindow extends Component {
           <CheckInDialog
             fairCopyProject={fairCopyProject}
             checkInResources={checkInResources}
+            checkInAll={checkInAll}
             localResources={localResources}
             onClose={() => {
               this.setState({ ...this.state, checkInMode: false });
