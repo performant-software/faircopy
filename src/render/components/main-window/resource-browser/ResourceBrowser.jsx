@@ -220,12 +220,8 @@ export default class ResourceBrowser extends Component {
                 <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>
                   {teiDoc ? "New Resource" : "New Document"}
                 </Button>
-                {teiDoc &&
-                  <>
-                    <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
-                    <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
-                  </>
-                }
+                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
               </div>
             }
             <Button 
