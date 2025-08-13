@@ -90,7 +90,10 @@ export default class CheckInDialog extends Component {
             resourceRows.push(
                 <TableRow key={`resource-${resource.id}`}>
                     <TableCell {...cellProps} >
-                        <i aria-label={label} className={`fa ${icon} fa-lg`}></i>
+                        { typeof icon === "string" ?
+                            <i aria-label={label} className={`${icon} fa-lg`}></i>
+                            : React.createElement(icon, { "aria-label": label, "aria-hidden": false })
+                        }
                     </TableCell>
                     <TableCell {...cellProps} >
                         <Typography>{name}</Typography>

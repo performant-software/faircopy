@@ -1,3 +1,5 @@
+import { CloudOff } from "@material-ui/icons"
+
 export function getResourceIcon(resourceType, open=false) {
     const openBook = open ? 'fa-book-open' : 'fa-book'
     switch( resourceType ) {
@@ -40,20 +42,20 @@ export function getResourceIcon(resourceType, open=false) {
   export function getActionIcon(checkedIn, local, editable, checkedOutRemote) {
     if( checkedIn ) {
       // Done
-      return { icon: 'fa fa-check', label: 'Check in successful.' }
+      return { icon: 'fa fa-check', label: 'Check in successful' }
     } else {
       if( checkedOutRemote ) {
-        return { icon: 'fa fa-user', label: 'Checked out by another user.'}
+        return { icon: 'fa fa-lock', label: 'Checked out by another user'}
       }
       if( local ) {
           // Create
-          return { icon: 'fa fa-plus-circle', label: 'New resource' }
+          return { icon: CloudOff, label: 'Not yet checked in' }
       } else {
           // Update
           if( editable ) { 
-            return { icon: 'fa fa-pen', label: 'Checked out by you.' }
+            return { icon: 'fa fa-laptop-file', label: 'Checked out by you' }
           } else {
-            // Not editable
+            // Not editable: checked in
             return { icon: null, label: null }
           }
       }

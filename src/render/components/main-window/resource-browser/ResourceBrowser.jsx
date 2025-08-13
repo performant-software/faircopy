@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
 import TitleBar from '../TitleBar'
 import { debounce } from "debounce";
 
@@ -155,7 +155,7 @@ export default class ResourceBrowser extends Component {
 
     const buttonProps = {
       className: 'toolbar-button',
-      variant: "outlined",
+      variant: 'outlined',
       size: 'small'
     }
 
@@ -165,52 +165,59 @@ export default class ResourceBrowser extends Component {
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
 
     return (
-      <div className="toolbar">
-        { currentView === 'home' && 
-          <div className='inline-button-group'>
-            <Button disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-            <Button disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-            <Button disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
-          </div>  
-        }
-        <Button 
-          disabled={!actionsEnabled}
-          ref={(el)=> { this.actionButtonEl = el }}
-          onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
-          {...buttonProps}
-        >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button> 
-        { teiDoc && currentView === 'home' && 
-          <Tooltip title="Edit Document Properties">
-              <span>
-                  <Button
-                      onClick={onEditTEIDoc}
-                      className='toolbar-button'
-                      disableRipple={true}
-                      disableFocusRipple={true}
-                      style={{float: 'right'}}
-                  >
-                      <i className="far fa-edit fa-2x"></i>
-                  </Button>                   
-              </span>
-          </Tooltip> 
-        }
+      <div className="toolbar-container">
         { teiDoc &&
-          <Tooltip title="Preview Published Document">
-              <span>
-                  <Button
-                      disabled={!canPreview}
-                      onClick={onPreviewResource}
-                      className='toolbar-button'
-                      disableRipple={true}
-                      disableFocusRipple={true}
-                      style={{float: 'right'}}
+          <div className="doc-header">
+            <div className="doc-header-left">
+              <Typography component="h2" variant="h6">{teiDoc.name}</Typography>
+              {currentView === 'home' && 
+                <Tooltip title="Edit Document Properties">
+                  <IconButton
+                    onClick={onEditTEIDoc}
+                    className='toolbar-button'
                   >
-                      <i className="far fa-eye fa-2x"></i>
-                  </Button>                   
-              </span>
-          </Tooltip>   
+                    <i className='fa fa-pen-to-square fa-md' />
+                  </IconButton>
+                </Tooltip>
+              }
+            </div>
+            <div className="doc-header-right">
+              <Tooltip title="Preview Published Document">
+                <span>
+                  <IconButton
+                    aria-label="Preview Published Document"
+                    disabled={!canPreview}
+                    onClick={onPreviewResource}
+                    className='toolbar-button'
+                    disableRipple={true}
+                    disableFocusRipple={true}
+                  >
+                    <i className='fa fa-eye fa-md' />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </div>
+          </div>
         }
-        { !teiDoc && this.renderFilterInput() }
+        <div className='toolbar'>
+          <Typography component="h2" variant="h6">Resources</Typography>
+          <div className='tools'>
+            { currentView === 'home' && 
+              <div className='inline-button-group'>
+                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>New Resource</Button>    
+                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
+                <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
+              </div>
+            }
+            <Button 
+              disabled={!actionsEnabled}
+              ref={(el)=> { this.actionButtonEl = el }}
+              onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
+              {...buttonProps}
+            >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button>
+            { !teiDoc && this.renderFilterInput() }
+          </div>
+        </div>
       </div>
     )
   }
@@ -304,10 +311,13 @@ export default class ResourceBrowser extends Component {
             <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
           </TableCell>
           { remoteProject && 
-          <TableCell {...cellProps} >
+          <TableCell {...cellProps} align="center">
             { icon && 
               <Tooltip title={label}>
-                <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+                { typeof icon === "string" ?
+                  <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+                  : React.createElement(icon, { "aria-label": label, "aria-hidden": false, className: iconClass })
+                }
               </Tooltip>
             }
           </TableCell>
@@ -336,7 +346,7 @@ export default class ResourceBrowser extends Component {
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
-  
+
     return (
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
@@ -344,7 +354,7 @@ export default class ResourceBrowser extends Component {
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
-                          { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
+                          { remoteProject && <TableCell align="center">Checked Out</TableCell> }
                           <TableCell>Type</TableCell>
                           { this.renderSortableHeaderCell('name','Name',orderBy,order) }
                           { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
