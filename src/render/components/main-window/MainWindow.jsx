@@ -1358,7 +1358,7 @@ export default class MainWindow extends Component {
             checkInAll={checkInAll}
             localResources={localResources}
             onClose={() => {
-              this.setState({ ...this.state, checkInMode: false });
+              this.setState({ ...this.state, checkInMode: false, checkInAll: false });
             }}
           ></CheckInDialog>
         )}
