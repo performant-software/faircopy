@@ -125,6 +125,9 @@ class FairCopyApplication {
     ipcMain.on('updateResource', (event, resourceEntry) => { 
       this.fairCopySession.updateResource(resourceEntry) 
     })
+    ipcMain.on('startMigratingResource', (event, resourceID) => { 
+      this.sendToMainWindow('resourceMigrationStarted', resourceID)
+    })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
       if( paths ) {

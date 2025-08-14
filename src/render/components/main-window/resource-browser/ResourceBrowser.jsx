@@ -27,57 +27,68 @@ export default class ResourceBrowser extends Component {
 }
 
   onOpenActionMenu = (anchorEl) => {
-    const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
-    const { remote: remoteProject, permissions } = fairCopyProject
+    const { currentView, fairCopyProject, onOpenPopupMenu, resourceCheckmarks, teiDoc } = this.props
+    const { permissions, remote: remoteProject, userID } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
-    const checkout = remoteProject ? canCheckOut(permissions) : true
     const del = remoteProject ? canDelete(permissions) : true
 
-    const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
-      {
-        id: 'check-in',
-        label: 'Check In',
-        action: this.createResourceAction('check-in')
-      },
-      {
-        id: 'check-out',
-        label: 'Check Out',
-        action: this.createResourceAction('check-out'),
-        disabled: !checkout
-      }
-    ]
-    
-    const menuOptions = [
-      {
-        id: 'open',
-        label: 'Open',
-        action: this.createResourceAction('open')
-      },
-      ...remoteProjectOptions,
-      {
-        id: 'export',
-        label: 'Export',
-        action: this.createResourceAction('export')
-      },
-      {
-        id: 'delete',
-        label: 'Delete',
-        action: this.createResourceAction('delete'),
-        disabled: !del
-      }
-    ]
+    // list of non-null selected items so we can do .some() or .every() on them
+    const resources = Object.values(resourceCheckmarks).filter(Boolean);
+    const checkedOutByUser = resources.some(
+      (r) =>
+        r.lastAction?.action_type === 'check_out' &&
+        r.lastAction.user?.id === userID,
+    )
+    const someDeleted = resources.some((r) => r.deleted)
+    const allDeleted = resources.every((r) => r.deleted)
+    const menuOptions = []
 
-    // move only works with local resources 
-    if( currentView === 'home' ) {
+    // TODO: collapse Remote and Local into a single view. for now, check them separately
+    if (remoteProject && loggedIn && !teiDoc) {
+      // checkin/checkout only in remote project, at the project root, when we are logged in
+      if (currentView === 'home' || checkedOutByUser) {
+        // can check in if we are in Local, or we're in Remote but user has something checked out
+        menuOptions.push({
+          id: 'check-in',
+          label: 'Check In',
+          action: this.createResourceAction('check-in')
+        })
+      } else if (currentView === 'remote' && canCheckOut(permissions)) {
+        // can only check out from Remote
+        menuOptions.push({
+          id: 'check-out',
+          label: 'Check Out',
+          action: this.createResourceAction('check-out'),
+        })
+      }
+    }
+
+    menuOptions.push({
+      id: 'export',
+      label: 'Export',
+      action: this.createResourceAction('export')
+    })
+
+    // move only works with local resources, and not at the project root
+    if (currentView === 'home' && teiDoc) {
       menuOptions.push({
         id: 'move',
         label: 'Move',
-        action: this.createResourceAction('move')   
-      })     
+        action: this.createResourceAction('move')
+      })
+    }
+
+    if (del && !allDeleted) {
+      menuOptions.push({
+        id: 'delete',
+        label: 'Delete',
+        classes: 'danger',
+        action: this.createResourceAction('delete'),
+      })
     }
 
     // you can recover deleted items when logged out
-    if( remoteProject ) {
+    if (remoteProject && someDeleted) {
       menuOptions.push({
         id: 'recover',
         label: 'Recover',
@@ -183,14 +194,12 @@ export default class ResourceBrowser extends Component {
             </div>
             <div className="doc-header-right">
               <Tooltip title="Preview Published Document">
-                <span>
+                <span className="iconbutton-wrapper">
                   <IconButton
                     aria-label="Preview Published Document"
                     disabled={!canPreview}
                     onClick={onPreviewResource}
                     className='toolbar-button'
-                    disableRipple={true}
-                    disableFocusRipple={true}
                   >
                     <i className='fa fa-eye fa-md' />
                   </IconButton>
@@ -200,13 +209,17 @@ export default class ResourceBrowser extends Component {
           </div>
         }
         <div className='toolbar'>
-          <Typography component="h2" variant="h6">Resources</Typography>
+          <Typography component="h2" variant="h6">
+            {teiDoc ? "Resources" : "Documents"}
+          </Typography>
           <div className='tools'>
             { currentView === 'home' && 
               <div className='inline-button-group'>
-                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-                <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
+                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>
+                  {teiDoc ? "New Resource" : "New Document"}
+                </Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
               </div>
             }
             <Button 
@@ -243,7 +256,7 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
 
@@ -310,7 +323,7 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
           </TableCell>
-          { remoteProject && 
+          { remoteProject && !teiDoc && 
           <TableCell {...cellProps} align="center">
             { icon && 
               <Tooltip title={label}>
@@ -322,9 +335,11 @@ export default class ResourceBrowser extends Component {
             }
           </TableCell>
           }
-          <TableCell {...cellProps} >
-            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
-          </TableCell>
+          { teiDoc &&
+            <TableCell {...cellProps} >
+              <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
+            </TableCell>
+          }
           <TableCell {...cellProps} >
             <Typography title={name} className={textClass}>{displayName}</Typography>
           </TableCell>
@@ -354,8 +369,8 @@ export default class ResourceBrowser extends Component {
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
-                          { remoteProject && <TableCell align="center">Checked Out</TableCell> }
-                          <TableCell>Type</TableCell>
+                          { remoteProject && !teiDoc && <TableCell align="center">Checked Out</TableCell> }
+                          { teiDoc && <TableCell>Type</TableCell> }
                           { this.renderSortableHeaderCell('name','Name',orderBy,order) }
                           { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
                           { remoteProject && <TableCell>Last Modified</TableCell> }

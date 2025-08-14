@@ -89,6 +89,7 @@ export default class FairCopyProject {
         this.projectID = fairCopyManifest.projectID
         this.permissions = fairCopyManifest.permissions
         this.configLastAction = fairCopyManifest.configLastAction
+        this.orphanedResources = this.getOrphanedResources(fairCopyManifest.resources)
     }
     
     updateResource( resourceEntry ) {
@@ -135,6 +136,7 @@ export default class FairCopyProject {
         } else {
             throw new Error("Attempted to create unknown document type.")
         }
+        return resourceEntry
     }
 
     removeResources( resourceIDs ) {
@@ -281,6 +283,33 @@ export default class FairCopyProject {
     isLoggedIn = () => {
         if( !this.remote ) return false
         return isLoggedIn( this.userID, this.serverURL )
+    }
+
+    getOrphanedResources = (resources) => {
+        // v1.2.1 migration: check for orphaned resources
+        return Object.values(resources).filter((r) => r.type !== 'teidoc' && !r.parentResource)    
+    }
+
+    startMigratingResource = (resourceID) => {
+        fairCopy.ipcSend('startMigratingResource', resourceID)
+    }
+
+    migrateOrphanedResources = () => {
+        // v1.2.1 migration: move orphaned resources into new TEI document
+        this.orphanedResources.forEach((resourceEntry) => {
+            // queue each for migration, enabling loading spinner
+            this.startMigratingResource(resourceEntry.id)
+        })
+        const docName = this.projectName
+        const existingIDs = Object.keys(this.idMap.idMap)
+        const localID = getUniqueResourceID('teidoc', existingIDs, docName)
+        const teidoc = this.newResource(docName, localID, 'teidoc', null)
+        this.orphanedResources.forEach((resourceEntry) => {
+            // move each into tei doc, ultimately disabling loading spinner
+            resourceEntry.parentResource = teidoc.id
+            this.updateResource(resourceEntry)
+        })
+        this.orphanedResources = []
     }
 }
 

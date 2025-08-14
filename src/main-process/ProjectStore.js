@@ -412,7 +412,7 @@ class ProjectStore {
                 if( parentEntry ) this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
                 this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID: resourceEntry.id, messageID: 'check-out-messsage', resourceContent: content })     
             } 
-            checkOutStatus.push({ state, resourceEntry })
+            checkOutStatus.push({ state, resourceEntry, parentEntry })
         }
         const idMap = this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resources)
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })

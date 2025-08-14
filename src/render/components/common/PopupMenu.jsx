@@ -1,7 +1,33 @@
 import React, { Component } from 'react'
-import { MenuItem, Menu } from '@material-ui/core'
+import { MenuItem, Menu, Divider, withStyles, ListItemIcon, ListItemText } from '@material-ui/core'
+
+const StyledMenuItem = withStyles((theme) => ({
+    root: {
+        '&.danger .MuiListItemIcon-root, &.danger .MuiListItemText-primary': {
+            color: theme.palette.error.dark,
+        },
+        '& .MuiListItemIcon-root': {
+            minWidth: '32px'
+        }
+    },
+}))(MenuItem)
+
+const StyledDivider = withStyles((theme) => ({
+    root: {
+        margin: '4px 0',
+    },
+}))(Divider)
 
 export default class PopupMenu extends Component {
+    MENU_ICONS = {
+        'check-in': 'fa-cloud-arrow-up',
+        'check-out': 'fa-cloud-arrow-down',
+        'delete': 'fa-trash-can',
+        'export': 'fa-download',
+        'move': 'fa-folder-open',
+        'recover': 'fa-trash-arrow-up'
+    }
+
     render() {
         const { menuOptions, anchorEl, onClose, placement } = this.props
 
@@ -12,17 +38,24 @@ export default class PopupMenu extends Component {
             const key = `menugroup-${menuOption.id}`
             const onClick = () => {
                 menuOption.action()
-            }    
+            }
+            if (menuOption.id === 'delete') {
+                menuItems.push(<StyledDivider component="li" key="divider" light />)
+            }
+            const icon = Object.hasOwn(this.MENU_ICONS, menuOption.id) ? this.MENU_ICONS[menuOption.id] : ''
             menuItems.push(
-                <MenuItem 
+                <StyledMenuItem
                     onClick={onClick}
-                    key={key} 
-                    className="menu-item"
+                    key={key}
+                    className={`menu-item ${menuOption.classes || ''}`}
                     disabled={menuOption.disabled}
                     value={menuOption.id}
                 >
-                    {menuOption.label}
-                </MenuItem>
+                    <ListItemIcon>
+                        <i className={`fa ${icon}`}></i>
+                    </ListItemIcon>
+                    <ListItemText primary={menuOption.label} />
+                </StyledMenuItem>
             )
         }
         
@@ -30,7 +63,7 @@ export default class PopupMenu extends Component {
 
         return (
             <div id="PopupMenu">
-                <Menu                            
+                <Menu
                     open={true}
                     onClose={onClose}
                     anchorEl={anchorEl}
