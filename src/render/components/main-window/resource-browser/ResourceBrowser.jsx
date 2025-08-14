@@ -166,7 +166,7 @@ export default class ResourceBrowser extends Component {
 
     const buttonProps = {
       className: 'toolbar-button',
-      variant: 'outlined',
+      variant: 'contained',
       size: 'small'
     }
 
@@ -215,9 +215,7 @@ export default class ResourceBrowser extends Component {
           <div className='tools'>
             { currentView === 'home' && 
               <div className='inline-button-group'>
-                <Button color="primary" variant="contained" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>
-                  {teiDoc ? "New Resource" : "New Document"}
-                </Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>Add New</Button>
                 <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
                 <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
               </div>
@@ -227,6 +225,8 @@ export default class ResourceBrowser extends Component {
               ref={(el)=> { this.actionButtonEl = el }}
               onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
               {...buttonProps}
+              color='primary'
+              variant='outlined'
             >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button>
             { !teiDoc && this.renderFilterInput() }
           </div>
