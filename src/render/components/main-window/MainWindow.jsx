@@ -31,7 +31,6 @@ import CheckInDialog from "./dialogs/CheckInDialog";
 import CheckOutDialog from "./dialogs/CheckOutDialog";
 import { bigRingSpinner } from "../common/ring-spinner";
 import { SplitPaneView } from "../common/SplitPaneView";
-import MigrateResourcesDialog from "./dialogs/MigrateResourcesDialog";
 
 const fairCopy = window.fairCopy;
 
@@ -120,7 +119,6 @@ export default class MainWindow extends Component {
       showSearchBar: false,
       leftPaneWidth: initialLeftPaneWidth,
       rightPaneWidth: initialRightPaneWidth,
-      migrateResourcesMode: false,
       migratingResources: new Set(),
     };
   }
@@ -1158,7 +1156,6 @@ export default class MainWindow extends Component {
       draggingElementActive,
       moveResourceMode,
       editTEIDocDialogMode,
-      migrateResourcesMode,
       openResources,
       selectedResource,
       localResources,
@@ -1372,16 +1369,6 @@ export default class MainWindow extends Component {
             onLoggedIn={this.onLoggedIn}
           ></LoginDialog>
         )}
-        <MigrateResourcesDialog
-          fairCopyProject={fairCopyProject}
-          onClose={() => {
-            this.setState({
-              ...this.state,
-              migrateResourcesMode: false,
-            });
-          }}
-          open={migrateResourcesMode}
-        />
         <SnackAlert
           open={alertMessage !== null}
           message={alertMessage}
