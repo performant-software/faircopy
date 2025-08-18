@@ -39,8 +39,8 @@ class RemoteProject {
                     break
                 case 'resource-view-update':
                     {
-                        const { resourceView, remoteResources } = msg
-                        this.fairCopySession.sendResourceViewUpdate(resourceView,remoteResources)
+                        const { resourceView, remoteResources, published } = msg
+                        this.fairCopySession.sendResourceViewUpdate(resourceView,remoteResources,published)
                     }
                     break    
                 case 'id-map-update': 
@@ -69,10 +69,10 @@ class RemoteProject {
                 break
                 case 'resources-updated':
                 {
-                    const { resources } = msg
+                    const { resources, published } = msg
                     // TODO determine which resources need to be updated 
                     // TODO what does this have to do with delete again?
-                    this.fairCopySession.requestResourceView()
+                    this.fairCopySession.requestResourceView(published)
                 }
                 break
                 default:
@@ -99,8 +99,8 @@ class RemoteProject {
         this.remoteProjectWorker.postMessage({ messageType: 'get-resource', resourceID, xmlID })
     }
 
-    requestResourceView(resourceView) {
-        this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView })
+    requestResourceView(resourceView, published) {
+        this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView, published })
     }
 
     checkInConfig(config, firstAction) {
@@ -109,6 +109,10 @@ class RemoteProject {
 
     checkOutConfig() {
         this.remoteProjectWorker.postMessage({ messageType: 'checkout-config' })
+    }
+
+    publish(teiDoc) {
+        this.remoteProjectWorker.postMessage({ messageType: 'publish', teiDoc })
     }
 }
 

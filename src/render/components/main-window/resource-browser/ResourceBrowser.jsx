@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
-import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, Chip, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, TablePagination, Tooltip, Checkbox, Typography, CardContent, withStyles } from '@material-ui/core';
+import { Autorenew, Edit, Publish } from '@material-ui/icons';
 import TitleBar from '../TitleBar'
 import { debounce } from "debounce";
 
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
+import { canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
 import { ellipsis } from '../../../model/ellipsis'
 
 const idealNameLength = 35
 const idealPanelWidth = 1172
+
+const fairCopy = window.fairCopy
 
 export default class ResourceBrowser extends Component {
 
@@ -159,10 +162,11 @@ export default class ResourceBrowser extends Component {
   }
 
   renderToolbar() {
-    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject, publishingResources, resourceView } = this.props
     const { remote: remoteProject, permissions } = fairCopyProject
     const createAllowed = remoteProject ? canCreate(permissions) : true
     const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
+    const { loading } = resourceView;
 
     const buttonProps = {
       className: 'toolbar-button',
@@ -173,7 +177,17 @@ export default class ResourceBrowser extends Component {
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
     const onPreviewResource = () => { fairCopyProject.previewResource(teiDoc) }
+    const onPublishResource = () => { fairCopy.ipcSend('publish', teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
+    const atRemoteDoc = remoteProject && currentView === 'remote' && teiDoc
+    const canPublish = teiDoc?.status?.is_draft;
+    let publishTooltip = "Publish";
+    if (!canPublish) {
+      publishTooltip = "Document must have a draft checked in to publish";
+    }
+    const docActionType = teiDoc?.lastAction?.action_type;
+    const datePublished = docActionType === 'publish' ? new Date(teiDoc.lastAction.created_at).toDateString() : null;
+    const dateCheckedIn = ['update', 'create'].includes(docActionType) ? new Date(teiDoc.lastAction.created_at).toDateString() : null;    
 
     return (
       <div className="toolbar-container">
@@ -191,8 +205,42 @@ export default class ResourceBrowser extends Component {
                   </IconButton>
                 </Tooltip>
               }
+              {atRemoteDoc &&
+                <>
+                  {teiDoc.status?.is_published && (
+                    <Tooltip title={datePublished ? `Last published: ${datePublished}` : "Published"} arrow>
+                      <StyledChip label="Published" icon={<i className="fa fa-file-circle-check"></i>} size="small" color="primary" />
+                    </Tooltip>
+                  )}
+                  {teiDoc.status?.is_draft && (
+                    <Tooltip title={dateCheckedIn ? `Draft checked in: ${dateCheckedIn}` : "Draft"} arrow>
+                      <StyledChip label="Draft" icon={<Edit />} size="small" color="secondary" />
+                    </Tooltip>
+                  )}
+                  {teiDoc.status?.is_processing && (
+                    <Tooltip title="Document is currently being processed" arrow>
+                      <StyledChip label="Processing" icon={<Autorenew />} size="small" color="default" />
+                    </Tooltip>
+                  )}
+                </>
+              }
             </div>
             <div className="doc-header-right">
+              {atRemoteDoc && isAdmin(permissions) &&
+                <Tooltip title={publishTooltip} arrow>
+                  <span>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disabled={!canPublish || loading || publishingResources}
+                      onClick={onPublishResource}
+                      startIcon={<Publish />}
+                    >
+                      Publish
+                    </Button>
+                  </span>
+                </Tooltip>
+              }
               <Tooltip title="Preview Published Document">
                 <span className="iconbutton-wrapper">
                   <IconButton
@@ -259,6 +307,7 @@ export default class ResourceBrowser extends Component {
     const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
+    const atRemoteRoot = remoteProject && currentView !== 'home' && !teiDoc
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
@@ -346,10 +395,24 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             <Typography title={localID} className={textClass}>{displayLocalID}</Typography>
           </TableCell>
-          { remoteProject && 
+          { remoteProject && !teiDoc &&
           <TableCell {...cellProps} >
             <Typography className={textClass}>{lastModified}</Typography>
-          </TableCell>        
+          </TableCell>
+          }
+          { atRemoteRoot &&
+            <>
+              <TableCell {...cellProps} align="center" >
+                {resource.status?.is_draft && (
+                    <Edit aria-label="Draft" />
+                )}
+              </TableCell>
+              <TableCell {...cellProps} align="center" >
+                {resource.status?.is_published && (
+                    <i aria-label="Published" className="fa fa-file-circle-check"></i>
+                )}
+              </TableCell>
+            </>
           }
         </TableRow>
       )
@@ -373,7 +436,9 @@ export default class ResourceBrowser extends Component {
                           { teiDoc && <TableCell>Type</TableCell> }
                           { this.renderSortableHeaderCell('name','Name',orderBy,order) }
                           { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
-                          { remoteProject && <TableCell>Last Modified</TableCell> }
+                          { remoteProject && !teiDoc && <TableCell>Last Modified</TableCell> }
+                          { atRemoteRoot && <TableCell>Draft</TableCell> }
+                          { atRemoteRoot && <TableCell>Published</TableCell> }
                       </TableRow>
                   </TableHead>
                   <TableBody>
@@ -451,3 +516,20 @@ export default class ResourceBrowser extends Component {
   }
 
 }
+
+const StyledChip = withStyles((theme) => ({
+  root: {
+    paddingLeft: 4,
+    paddingRight: 4,
+  },
+  colorPrimary: {
+    backgroundColor: theme.palette.success.dark,
+  },
+  colorSecondary: {
+    backgroundColor: theme.palette.info.dark,
+  },
+  iconColorPrimary: {
+    marginLeft: 6,
+    marginTop: 4,
+  }
+}))(React.forwardRef((props, ref) => <Chip {...props} ref={ref} />))

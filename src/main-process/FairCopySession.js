@@ -272,7 +272,7 @@ class FairCopySession {
         this.requestResourceView()
     }
 
-    requestResourceView() {
+    requestResourceView(published) {
         const {currentView} = this.resourceViews
         const resourceView = this.resourceViews[currentView]
         const { indexParentID, currentPage, rowsPerPage } = resourceView
@@ -280,7 +280,7 @@ class FairCopySession {
 
         if( currentView === 'remote' ) {
             // request resource data from server
-            this.remoteProject.requestResourceView(resourceView)
+            this.remoteProject.requestResourceView(resourceView, published)
         } else {
             // respond right away from project store
             resourceView.parentEntry = indexParentID ? localResources[indexParentID] : null
@@ -329,7 +329,7 @@ class FairCopySession {
         }
     }
 
-    sendResourceViewUpdate(resourceView, remoteResources) {
+    sendResourceViewUpdate(resourceView, remoteResources, published) {
         const { resources: localResources } = this.projectStore.manifestData
         const { indexParentID, rowsPerPage, currentPage, totalRows } = resourceView
 
@@ -342,13 +342,26 @@ class FairCopySession {
             return localResources[resourceEntry.id] ? localResources[resourceEntry.id] : resourceEntry
         })
 
+        // at project root, map resource statuses to resources by guid
+        if (!resourceView.parentEntry && Object.hasOwn(resourceView, "statuses")) {
+            // get each status from resourceView.statuses into resourceIndex
+            const statusByGuid = Object.fromEntries(
+                resourceView.statuses.map(status => [status.resource_guid, status])
+            );
+            resourceIndex.forEach(resource => {
+                const { id } = resource;
+                if (id && Object.hasOwn(statusByGuid, id)) {
+                    resource.status = statusByGuid[id]
+                }
+            });
+        }
         // don't let currentPage be > page count 
         let pageCount = Math.ceil(totalRows/rowsPerPage)
         pageCount = pageCount === 0 ? 1 : pageCount
         resourceView.currentPage = currentPage > pageCount ? pageCount : currentPage
         
         this.resourceViews.remote = resourceView
-        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex })
+        this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex, published })
     }
     
     searchProject(searchQuery) {
@@ -518,6 +531,10 @@ class FairCopySession {
 
     checkOut(userID, serverURL, projectID, resourceEntries) {
         this.projectStore.checkOut(userID, serverURL, projectID, resourceEntries)
+    }
+
+    publish(teiDoc) {
+        this.remoteProject.publish(teiDoc)
     }
 
     saveFairCopyConfig(fairCopyConfig, lastAction) {

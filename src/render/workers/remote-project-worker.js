@@ -1,9 +1,10 @@
-import { getResource, getResources } from "../model/cloud-api/resources"
+import { getResource, getResources, getResourceStatus, getResourceStatuses } from "../model/cloud-api/resources"
 import { getProject } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
 import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
+import { getTeiDocument, publishTeiDocument } from "../model/cloud-api/tei-documents"
 
 function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
     getIDMap( userID, serverURL, authToken, projectID, (idMapData) => {
@@ -13,19 +14,39 @@ function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
     })
 }
 
-function updateResourceView( userID, serverURL, projectID, resourceView, authToken, postMessage ) {
+function updateResourceView( userID, serverURL, projectID, resourceView, published, authToken, postMessage ) {
     if( authToken ) {
         const { currentPage, rowsPerPage, nameFilter, order, orderBy, indexParentID } = resourceView
         getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, order, orderBy, (resourceData) => {
             const { parentEntry, remoteResources, totalRows } = resourceData
-            resourceView.parentEntry = parentEntry
+            // ensure lastAction is preserved after retrieving remote parent entry
+            resourceView.parentEntry = parentEntry ? {
+                ...parentEntry,
+                lastAction: parentEntry?.lastAction || resourceView.parentEntry?.lastAction
+            } : parentEntry
             resourceView.totalRows = totalRows
             resourceView.loading = false
-            postMessage({ messageType: 'resource-view-update', resourceView, remoteResources })
-        }, 
+            // update resource view with remote resources and their statuses
+            if (parentEntry) {
+                // inside a TEI document, get parent document's draft/published/processing status
+                const { localID } = parentEntry
+                getTeiDocument(userID, serverURL, authToken, projectID, localID, (teiDocData) => {
+                    resourceView.parentEntry.status = teiDocData
+                    postMessage({ messageType: 'resource-view-update', resourceView, remoteResources, published })
+                },
+                (error) => console.log(error))
+            } else {
+                // at the remote project root, get all document statuses
+                getResourceStatuses(userID, serverURL, authToken, projectID, currentPage, rowsPerPage, nameFilter, order, orderBy, (statusData) => {
+                    resourceView.statuses = statusData
+                    postMessage({ messageType: 'resource-view-update', resourceView, remoteResources, published })
+                },
+                (error) => console.log(error))
+            }
+        },
         (error) => {
             console.log(error)
-        })                 
+        })
     } else {
         // user is not logged in, remote list is empty
         const emptyView = { indexParentID: null,
@@ -37,6 +58,17 @@ function updateResourceView( userID, serverURL, projectID, resourceView, authTok
         } 
         postMessage({ messageType: 'resource-view-update', resourceView: emptyView, remoteResources: [] })
     }
+}
+
+function onPublishTeiDocument(userID, serverURL, projectID, teiDoc, authToken, postMessage) {
+    const { localID } = teiDoc
+    publishTeiDocument(userID, serverURL, authToken, projectID, localID, () => {
+        // refresh the current view's resources to show updated document's "published/processing" status
+        postMessage({ messageType: 'resources-updated', published: true })
+    },
+    (error) => {
+        console.log(error)
+    })
 }
 
 function updateProjectInfo( userID, serverURL, authToken, projectID, postMessage) {
@@ -163,8 +195,12 @@ export function remoteProject( msg, workerMethods, workerData ) {
             checkOutFairCopyConfig( userID, serverURL, projectID, authToken, postMessage )
             break
         case 'request-view':
-            const { resourceView } = msg     
-            updateResourceView( userID, serverURL, projectID, resourceView, authToken, postMessage )
+            const { resourceView, published } = msg     
+            updateResourceView( userID, serverURL, projectID, resourceView, published, authToken, postMessage )
+            break
+        case 'publish':
+            const { teiDoc } = msg
+            onPublishTeiDocument(userID, serverURL, projectID, teiDoc, authToken, postMessage)
             break
         case 'close':
             close()
