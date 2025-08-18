@@ -1,16 +1,25 @@
 #TitleBar {
     background: #43639D;
     height: 50px;
+    padding: 0 16px 0 0;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#TitleBar .title-bar-left {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
 }
 
 #TitleBar .home-icon {
-    margin-top: -5px;
     color: white;
 }
 
 #TitleBar .breadcrumbs {
     display: inline-block;
-    margin-top: 10px;
     color: white;
 }
 

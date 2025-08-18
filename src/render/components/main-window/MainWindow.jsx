@@ -97,6 +97,7 @@ export default class MainWindow extends Component {
       moveResourceMode: false,
       checkInMode: false,
       checkInResources: [],
+      checkInAll: false,
       editTEIDocDialogMode: false,
       moveResources: null,
       surfaceInfo: null,
@@ -848,6 +849,33 @@ export default class MainWindow extends Component {
     }
   };
 
+  onCheckInAll = () => {
+    const { localResources } = this.state;
+    // check in all TEI docs by id
+    const teiDocs = Object.entries(localResources).filter(
+      ([id, resource]) => resource.type === "teidoc" && !resource.parentResource
+    )
+    const resourceIDs = teiDocs.map(([id, resource]) => id);
+    // don't check in if there are unsaved files being committed
+    const { openResources } = this.state;
+    for (const resourceID of resourceIDs) {
+      const openResource = openResources[resourceID];
+      if (openResource && openResource.changedSinceLastSave) {
+        this.onAlertMessage(
+          "You must save all files that are being checked in."
+        );
+        return;
+      }
+    }
+    this.setState((prevState) => ({
+      ...prevState,
+      checkInMode: true,
+      checkInResources: resourceIDs,
+      checkInAll: true,
+      ...closePopUpState,
+    }));
+  }
+
   onSearchResults = (
     searchQuery,
     searchResults,
@@ -1095,6 +1123,7 @@ export default class MainWindow extends Component {
                 this.setState({ ...this.state, editTEIDocDialogMode: true });
               }}
               onImportResource={this.onImportResource}
+              onCheckInAll={this.onCheckInAll}
               onLogin={this.onLogin}
               teiDoc={parentEntry}
               setResourceCheckmark={this.setResourceCheckmark}
@@ -1144,6 +1173,7 @@ export default class MainWindow extends Component {
       searchFilterMode,
       searchFilterOptions,
       moveResourceProps,
+      checkInAll,
       checkInResources,
       checkOutMode,
       checkOutStatus,
@@ -1340,9 +1370,10 @@ export default class MainWindow extends Component {
           <CheckInDialog
             fairCopyProject={fairCopyProject}
             checkInResources={checkInResources}
+            checkInAll={checkInAll}
             localResources={localResources}
             onClose={() => {
-              this.setState({ ...this.state, checkInMode: false });
+              this.setState({ ...this.state, checkInMode: false, checkInAll: false });
             }}
           ></CheckInDialog>
         )}
