@@ -121,6 +121,7 @@ export default class MainWindow extends Component {
       leftPaneWidth: initialLeftPaneWidth,
       rightPaneWidth: initialRightPaneWidth,
       migratingResources: new Set(),
+      publishingResources: false,
     };
   }
 
@@ -201,9 +202,16 @@ export default class MainWindow extends Component {
     const {
       resourceViews: nextResourceViews,
       resourceIndex: nextResourceIndex,
+      published
     } = resourceData;
     const { currentView: nextCurrentView } = nextResourceViews;
     const nextResourceView = nextResourceViews[nextCurrentView];
+
+    // set publishingResources false if we got here from publish response
+    let publishingResourcesState = {};
+    if (published) {
+      publishingResourcesState = { publishingResources: false };
+    }
 
     // if the indexParentID or the currentView changed, clear checkmarks
     if (
@@ -214,12 +222,14 @@ export default class MainWindow extends Component {
       this.setState({
         ...this.state,
         ...checkmarkState,
+        ...publishingResourcesState,
         resourceViews: nextResourceViews,
         resourceIndex: nextResourceIndex,
       });
     } else {
       this.setState({
         ...this.state,
+        ...publishingResourcesState,
         resourceViews: nextResourceViews,
         resourceIndex: nextResourceIndex,
       });
@@ -258,6 +268,20 @@ export default class MainWindow extends Component {
     }));
   };
 
+  onPublishResource = (e) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      publishingResources: true,
+    }));
+  }
+
+  onCompletePublishResource = (e) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      publishingResources: false,
+    }));
+  }
+
   onResourceContentUpdated = (e, resourceUpdate) => {
     const { fairCopyProject } = this.props;
     fairCopyProject.notifyListeners("resourceContentUpdated", resourceUpdate);
@@ -295,6 +319,10 @@ export default class MainWindow extends Component {
     );
     fairCopy.ipcRegisterCallback("updateProjectInfo", this.onUpdateProjectInfo);
     fairCopy.ipcRegisterCallback("localResources", this.onLocalResources);
+    fairCopy.ipcRegisterCallback(
+      "publishingResourceStarted",
+      this.onPublishResource
+    );
   }
 
   componentWillUnmount() {
@@ -313,6 +341,14 @@ export default class MainWindow extends Component {
     );
     fairCopy.ipcRemoveListener("updateProjectInfo", this.onUpdateProjectInfo);
     fairCopy.ipcRemoveListener("localResources", this.onLocalResources);
+    fairCopy.ipcRemoveListener(
+      "resourceMigrationStarted",
+      this.onMigrateResource
+    );
+    fairCopy.ipcRemoveListener(
+      "publishingResourceStarted",
+      this.onPublishResource
+    );
   }
 
   refreshWindow() {
@@ -1105,6 +1141,7 @@ export default class MainWindow extends Component {
       allResourcesCheckmarked,
       resourceCheckmarks,
       migratingResources,
+      publishingResources,
     } = this.state;
     const { currentView } = resourceViews;
     const resourceView = resourceViews[currentView];
@@ -1136,6 +1173,7 @@ export default class MainWindow extends Component {
               resourceIndex={resourceIndex}
               fairCopyProject={fairCopyProject}
               panelWidth={rightPaneWidth}
+              publishingResources={publishingResources}
             ></ResourceBrowser>
         )}
         {this.renderEditors()}

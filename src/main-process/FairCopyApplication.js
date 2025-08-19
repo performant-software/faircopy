@@ -164,6 +164,11 @@ class FairCopyApplication {
       this.fairCopySession.checkOut(userID, serverURL, projectID, resourceIDs)
     })
 
+    ipcMain.on('publish', (event, teiDoc) => {
+      this.sendToMainWindow('publishingResourceStarted')
+      this.fairCopySession.publish(teiDoc)
+    })
+
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig,lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig,lastAction) })    
     ipcMain.on('checkInConfig', (event,fairCopyConfig,firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig,firstAction) })        
     ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })        
