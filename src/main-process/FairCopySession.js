@@ -342,19 +342,6 @@ class FairCopySession {
             return localResources[resourceEntry.id] ? localResources[resourceEntry.id] : resourceEntry
         })
 
-        // at project root, map resource statuses to resources by guid
-        if (!resourceView.parentEntry && Object.hasOwn(resourceView, "statuses")) {
-            // get each status from resourceView.statuses into resourceIndex
-            const statusByGuid = Object.fromEntries(
-                resourceView.statuses.map(status => [status.resource_guid, status])
-            );
-            resourceIndex.forEach(resource => {
-                const { id } = resource;
-                if (id && Object.hasOwn(statusByGuid, id)) {
-                    resource.status = statusByGuid[id]
-                }
-            });
-        }
         // don't let currentPage be > page count 
         let pageCount = Math.ceil(totalRows/rowsPerPage)
         pageCount = pageCount === 0 ? 1 : pageCount

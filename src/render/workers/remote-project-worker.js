@@ -1,4 +1,4 @@
-import { getResource, getResources, getResourceStatus, getResourceStatuses } from "../model/cloud-api/resources"
+import { getResource, getResources } from "../model/cloud-api/resources"
 import { getProject } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
@@ -16,8 +16,8 @@ function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
 
 function updateResourceView( userID, serverURL, projectID, resourceView, published, authToken, postMessage ) {
     if( authToken ) {
-        const { currentPage, rowsPerPage, nameFilter, order, orderBy, indexParentID } = resourceView
-        getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, order, orderBy, (resourceData) => {
+        const { currentPage, rowsPerPage, nameFilter, order, orderBy, parentEntry: viewParentEntry } = resourceView
+        getResources( userID, serverURL, authToken, projectID, viewParentEntry, currentPage, rowsPerPage, nameFilter, order, orderBy, (resourceData) => {
             const { parentEntry, remoteResources, totalRows } = resourceData
             // ensure lastAction is preserved after retrieving remote parent entry
             resourceView.parentEntry = parentEntry ? {
@@ -26,7 +26,7 @@ function updateResourceView( userID, serverURL, projectID, resourceView, publish
             } : parentEntry
             resourceView.totalRows = totalRows
             resourceView.loading = false
-            // update resource view with remote resources and their statuses
+            // update resource view with remote resources
             if (parentEntry) {
                 // inside a TEI document, get parent document's draft/published/processing status
                 const { localID } = parentEntry
@@ -36,12 +36,8 @@ function updateResourceView( userID, serverURL, projectID, resourceView, publish
                 },
                 (error) => console.log(error))
             } else {
-                // at the remote project root, get all document statuses
-                getResourceStatuses(userID, serverURL, authToken, projectID, currentPage, rowsPerPage, nameFilter, order, orderBy, (statusData) => {
-                    resourceView.statuses = statusData
-                    postMessage({ messageType: 'resource-view-update', resourceView, remoteResources, published })
-                },
-                (error) => console.log(error))
+                // at the remote project root, update view
+                postMessage({ messageType: 'resource-view-update', resourceView, remoteResources, published })
             }
         },
         (error) => {

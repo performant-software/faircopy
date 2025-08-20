@@ -85,7 +85,7 @@ async function checkOut( userID, serverURL, projectID, resourceEntries, zip, pos
     for( const resourceEntry of resourceEntries ) {
         const { id: resourceID, type } = resourceEntry
         if( type === 'teidoc' ) {
-            const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, 1)
+            const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry, 1)
             for( const resource of resourceData.remoteResources ) {
                 if( resource.type !== 'header' ) resourceIDs.push(resource.id)
             }
@@ -141,7 +141,7 @@ async function prepareResourceExport( resourceEntry, projectData, zip ) {
                         }
                     }
                 } else {
-                    const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry.id, 1)
+                    const resourceData = await getResourcesAsync( userID, serverURL, authToken, projectID, resourceEntry, 1)
                     const { remoteResources } = resourceData
 
                     for( const remoteEntry of remoteResources ) {
