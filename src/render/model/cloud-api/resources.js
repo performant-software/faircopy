@@ -5,28 +5,40 @@ import { standardErrorHandler } from './error-handler';
 
 const maxResourcesPerPage = 9999
 
-export function getResources(userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, order, orderBy, onSuccess, onFail) {
-    const parentQ = indexParentID ? `/${indexParentID}` : '/null'
-    const nameFilterQ = nameFilter ? `&search=${nameFilter}` : ''
-    const currentPageQ = currentPage ? `&page=${currentPage}` : '&page=1'
-    const rowsPerPageQ = `per_page=${rowsPerPage}`
-    let sortByQ, sortDirectionQ
-    if( order && orderBy ) {
-        const sortBy = orderBy === 'localID' ? 'local_id' : orderBy   
-        sortByQ = `&sort_by=${sortBy}`
-        sortDirectionQ = `&sort_direction=${order}`     
-    } else {
-        sortByQ = ''
-        sortDirectionQ = ''
-    }
-    const getProjectsURL = `${serverURL}/api/resources/by_project_by_parent/${projectID}${parentQ}?${rowsPerPageQ}${currentPageQ}${nameFilterQ}${sortByQ}${sortDirectionQ}`
+export function getResources(userID, serverURL, authToken, projectID, parentEntry, currentPage, rowsPerPage, nameFilter, order, orderBy, onSuccess, onFail) {
+    // get resource list using the status endpoint
+    const getStatusesURL = `${serverURL}/api/resource_status/search`
+    const parentID = parentEntry?.remoteID
 
-    axios.get(getProjectsURL,authConfig(authToken)).then(
+    // set pagination params, filters
+    const data = {
+        per_page: rowsPerPage,
+        page: currentPage || 1,
+        filters: [
+            { 'attribute_name': 'project_id', 'operator': 'equal', 'value': projectID },
+            // in document, get only children; at project root, get only TEI docs
+            parentID
+                ? { 'attribute_name': 'parent_id', 'operator': 'equal', 'value': parentID }
+                : { 'attribute_name': 'resource_type', 'operator': 'equal', 'value': 'teidoc' },
+        ]
+    }
+
+    // optional search/sort
+    if (nameFilter) {
+        data.search = nameFilter
+    }
+    if (order && orderBy) {
+        const sortBy = orderBy === 'localID' ? 'local_id' : orderBy   
+        data.sort_by = sortBy
+        data.sort_direction = order
+    }
+
+    axios.post(getStatusesURL, data, authConfig(authToken)).then(
         (okResponse) => {
-            const { resources, list } = okResponse.data
+            const { resource_statuses: resources, list } = okResponse.data
             const remoteResources = resources.map( resourceObj => createResourceEntry(resourceObj) )
             const totalRows = list.count
-            const parentEntry = indexParentID !== null && resources.length > 0 ? createResourceEntry( resources[0].parent_resource ) : null
+            const parentEntry = parentID && resources.length > 0 && resources[0].parent ? createResourceEntry( resources[0].parent ) : null
             onSuccess({ parentEntry, totalRows, remoteResources })
         },
         standardErrorHandler(userID, serverURL, onFail)
@@ -48,9 +60,9 @@ export function getResource( userID, serverURL, authToken, resourceID, onSuccess
     )
 }
 
-export async function getResourcesAsync( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage=maxResourcesPerPage, nameFilter=null, order=null, orderBy=null ) {
+export async function getResourcesAsync( userID, serverURL, authToken, projectID, parentEntry, currentPage, rowsPerPage=maxResourcesPerPage, nameFilter=null, order=null, orderBy=null ) {
     return new Promise( ( resolve, reject ) => {
-        getResources( userID, serverURL, authToken, projectID, resourceID, currentPage, rowsPerPage, nameFilter, order, orderBy, (remoteResources) => {
+        getResources( userID, serverURL, authToken, projectID, parentEntry, currentPage, rowsPerPage, nameFilter, order, orderBy, (remoteResources) => {
             resolve(remoteResources)
         }, (errorMessage) => {
             reject(new Error(errorMessage))
@@ -69,55 +81,11 @@ export async function getResourceAsync( userID, serverURL, authToken, resourceID
 }
 
 function createResourceEntry(resourceData) { 
-    const { resource_guid: id, name, local_id: localID, parent_guid: parentResource, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction, id: remoteID } = resourceData
+    const { resource_guid: id, name, local_id: localID, parent_guid: parentResource, resource_type: type, git_head_revision: gitHeadRevision, last_action: lastAction, id: remoteID, is_draft, is_published } = resourceData
     return {
         id, name, localID, parentResource, type, gitHeadRevision, lastAction, remoteID,
+        status: { is_draft, is_published },
         local: false,
         deleted: false
     }   
-}
-
-export function getResourceStatus(userID, serverURL, authToken, remoteID, onSuccess, onFail) {
-    // get statuses for resources at the project root
-    const getStatusURL = `${serverURL}/api/resource_status/${remoteID}`
-    axios.get(getStatusURL, authConfig(authToken)).then(
-        (okResponse) => {
-            const { resource_status } = okResponse.data
-            onSuccess(resource_status)
-        },
-        standardErrorHandler(userID, serverURL, onFail)
-    )
-}
-
-export function getResourceStatuses(userID, serverURL, authToken, projectID, currentPage, rowsPerPage, nameFilter, order, orderBy, onSuccess, onFail) {
-    // get statuses for resources at the project root
-    const getStatusesURL = `${serverURL}/api/resource_status/search`
-
-    // set pagination, filter to TEI documents at the project root
-    const data = {
-        per_page: rowsPerPage,
-        page: currentPage || 1,
-        filters: [
-            { 'attribute_name': 'project_id', 'operator': 'equal', 'value': projectID },
-            { 'attribute_name': 'resource_type', 'operator': 'equal', 'value': 'teidoc' },
-        ]
-    }
-
-    // optional search/sort
-    if (nameFilter) {
-        data.search = nameFilter
-    }
-    if (order && orderBy) {
-        const sortBy = orderBy === 'localID' ? 'local_id' : orderBy   
-        data.sort_by = sortBy
-        data.sort_direction = order
-    }
-
-    axios.post(getStatusesURL, data, authConfig(authToken)).then(
-        (okResponse) => {
-            const { resource_statuses } = okResponse.data
-            onSuccess(resource_statuses)
-        },
-        standardErrorHandler(userID, serverURL, onFail)
-    )
 }
