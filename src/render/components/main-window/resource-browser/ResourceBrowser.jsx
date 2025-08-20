@@ -264,7 +264,9 @@ export default class ResourceBrowser extends Component {
             { currentView === 'home' && 
               <div className='inline-button-group'>
                 <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>Add New</Button>
-                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>
+                  {teiDoc ? "Import Text" : "Import TEI"}
+                </Button>
                 <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
               </div>
             }

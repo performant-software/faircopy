@@ -46,8 +46,10 @@ function importFileResource(importData,parentEntry,fairCopyProject) {
     } else if( xmlExt ) {
         // if the file had a .xml extension but is invalid XML
         throw new Error('File contains invalid XML.')
-    } else {
+    } else if (parentEntry) {
         return importTxtResource(data, name, localID, existingParentID, fairCopyProject, options)
+    } else {
+        throw new Error('Only TEI document XML files may be imported to the project root.')
     }
 }
 
@@ -223,10 +225,12 @@ function importXMLResource(xmlDom, name, localID, idMap, parentEntry, existingPa
             const resource = createResource(resourceEl, childName, childLocalID, parentEntryID, fairCopyProject, fairCopyConfig, learnStructure)
             resources.push(resource)
         }
-    } else {
+    } else if (existingParentID) {
         // if there is no header only take the first resource, it gets the name and localID
         const resource = createResource(extractedResources.resources[0], name, localID, existingParentID, fairCopyProject, fairCopyConfig, learnStructure)
         resources.push(resource)
+    } else {
+        throw new Error('Document must contain a <teiHeader> element to be imported at the project root.')
     }
     
     // Things look OK, return these resources
