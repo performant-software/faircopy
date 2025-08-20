@@ -181,8 +181,8 @@ class FairCopyApplication {
       }
     })
 
-    ipcMain.on('requestImport', (event,options) => { 
-      const paths = this.mainMenu.openImport()
+    ipcMain.on('requestImport', (event,options) => {
+      const paths = this.mainMenu.openImport(options.parentResourceID)
       if( paths ) {
         this.fairCopySession.importStart(paths,options)
       }
