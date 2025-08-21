@@ -11,6 +11,7 @@ import { ellipsis } from '../../../model/ellipsis'
 
 const idealNameLength = 35
 const idealPanelWidth = 1172
+const maxDocTitleLength = 64
 
 const fairCopy = window.fairCopy
 
@@ -194,7 +195,9 @@ export default class ResourceBrowser extends Component {
         { teiDoc &&
           <div className="doc-header">
             <div className="doc-header-left">
-              <Typography component="h2" variant="h6">{teiDoc.name}</Typography>
+              <Tooltip title={teiDoc.name}>
+                <Typography component="h2" variant="h6">{ellipsis(teiDoc.name, maxDocTitleLength)}</Typography>
+              </Tooltip>
               {currentView === 'home' && 
                 <Tooltip title="Edit Document Properties">
                   <IconButton
