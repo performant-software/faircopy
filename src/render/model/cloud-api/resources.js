@@ -16,6 +16,7 @@ export function getResources(userID, serverURL, authToken, projectID, parentEntr
         page: currentPage || 1,
         filters: [
             { 'attribute_name': 'project_id', 'operator': 'equal', 'value': projectID },
+            { 'attribute_name': 'is_deleted', 'operator': 'equal', 'value': false },
             // in document, get only children; at project root, get only TEI docs
             parentID
                 ? { 'attribute_name': 'parent_id', 'operator': 'equal', 'value': parentID }
