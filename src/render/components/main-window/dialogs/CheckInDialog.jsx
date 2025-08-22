@@ -12,6 +12,9 @@ const cellProps = {
     scope: "row"
 }
 
+// maximum number of resources per batch
+const batchSizeLimit = 50
+
 const fairCopy = window.fairCopy
 
 export default class CheckInDialog extends Component {
@@ -22,14 +25,21 @@ export default class CheckInDialog extends Component {
             message: "",
             committedResources: [],
             status: 'ready',
-            resourceStatus: null,
-            errorMessage: null
+            resourceStatus: {},
+            errorMessage: null,
+            resourcesToCommit: [],
+            batchesComplete: 0,
         }
         this.state = this.initialState
     }
 
     componentDidMount() {
         fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults )
+        // perform resouce batching on mount
+        this.setState((prevState) => ({
+            ...prevState,
+            resourcesToCommit: this.getResourcesToCommit(),
+        }))
     }
 
     componentWillUnmount() {
@@ -38,50 +48,84 @@ export default class CheckInDialog extends Component {
 
     getResourcesToCommit() {
         const { checkInResources, localResources } = this.props
+
+        // group resources into batches of max size batchSizeLimit, without separating TEI docs
+        // from child resources.
+        // resourcesToCommit is a 2D array of batches.
         let resourcesToCommit = []
+        let currentBatch = []
+
         for( const resourceID of checkInResources ) {
             const resource = localResources[resourceID]
             // ignore resources that aren't checked out
-            if( resource ) {
-                const { id: resourceID, type: resourceType, deleted } = resource                
-                if( resourceType === 'teidoc' ) {
-                    // commit any checked out children, delete if parent is deleted
-                    for( const checkedOutResource of Object.values(localResources) ) {
-                        if( resourceID === checkedOutResource.parentResource ) {                            
-                            if( deleted ) checkedOutResource.deleted = true
-                            resourcesToCommit.push(checkedOutResource) 
-                        }
+            if (!resource) continue
+            
+            const { id, type, deleted } = resource
+
+            // ensure TEI docs are grouped with their child resources
+            let resourceGroup = [resource]
+
+            if( type === 'teidoc' ) {
+                // commit any checked out children, delete if parent is deleted
+                for( const checkedOutResource of Object.values(localResources) ) {
+                    if( id === checkedOutResource.parentResource ) {                            
+                        if( deleted ) checkedOutResource.deleted = true
+                        resourceGroup.push(checkedOutResource) 
                     }
                 }
-                resourcesToCommit.push(resource)    
             }
+
+            const batchSize = currentBatch.length
+
+            // prevent going over batchSizeLimit resources per batch (unless a single resource
+            // group goes over the limit, in which case currentBatch is empty)
+            if (batchSize !== 0 && batchSize + resourceGroup.length > batchSizeLimit) {
+                // push batch to queue, create new batch
+                resourcesToCommit.push(currentBatch)
+                currentBatch = []
+            }
+
+            // add all resources from resources group to current batch
+            currentBatch.push(...resourceGroup)
+        }
+        // push last batch if non-empty
+        if (currentBatch.length > 0) {
+            resourcesToCommit.push(currentBatch)
         }
         return resourcesToCommit
     }
 
     onCheckInResults = (event, checkInResult) => {
         const { resourceEntries, resourceStatus, error } = checkInResult
-        if( error ) {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, status: 'done', errorMessage: error })
-        } else {
-            this.setState({...this.state, committedResources: resourceEntries, resourceStatus, status: 'done', errorMessage: null })
-        }
+        this.setState((prevState) => {
+            // when we get new results message back, concat previous committed resources list with new one
+            const committedResources = prevState.committedResources.concat(resourceEntries)
+            // update number of batches complete to get status
+            const totalBatches = prevState.resourcesToCommit.length
+            const batchesComplete = prevState.batchesComplete + 1
+            return {
+                committedResources,
+                batchesComplete,
+                status: batchesComplete === totalBatches ? 'done' : 'loading',
+                resourceStatus: { ...prevState.resourceStatus, ...resourceStatus },
+                errorMessage: error || prevState.error || null
+            }
+        })
     }
 
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourceStatus, status } = this.state
-        const resourcesToCommit = this.getResourcesToCommit()
-        const responseReceived = status === 'done'
-        const resourceList = responseReceived ? committedResources : resourcesToCommit
-        const resources = resourceList.sort((a, b) => a.name.localeCompare(b.name))
-        
+        const { committedResources, resourceStatus, resourcesToCommit, status } = this.state
+        const allResourcesToCommit = resourcesToCommit.flat()
+        const committedDocuments = committedResources.filter((resource) => resource.type === 'teidoc')
+        const allDocuments = allResourcesToCommit.filter((resource) => resource.type === 'teidoc')
+        const responseReceived = ['loading', 'done'].includes(status)
+        const resources = responseReceived ? committedDocuments : allDocuments
+
         const resourceRows = []
         for( const resource of resources ) {
-            const { id: resourceID, type: resourceType, local, deleted, localID, name } = resource
-            // only display document entries
-            if( resourceType !== 'teidoc' ) continue
-            const resourceStatusCode = resourceStatus ? resourceStatus[resourceID] : null
+            const { id: resourceID, local, deleted, localID, name } = resource
+            const resourceStatusCode = Object.keys(resourceStatus).length ? resourceStatus[resourceID] : null
             const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
             const editable = isEntryEditable(resource, fairCopyProject.userID)
             let { icon, label } = getActionIcon(responseReceived, local, editable )
@@ -109,7 +153,10 @@ export default class CheckInDialog extends Component {
             )            
         }
 
-        const caption = status === 'done' ? 'These documents have been processed.' : 'These documents are ready to be checked in.'
+        const totalDocuments = allDocuments.length
+        const caption = responseReceived
+            ? `${committedDocuments.length}/${totalDocuments} documents have been processed.`
+            : `${totalDocuments} documents are ready to be checked in.`
 
         return (
             <div>
@@ -133,16 +180,15 @@ export default class CheckInDialog extends Component {
         )
     }
 
-    onCheckIn = () => {              
+    onCheckIn = () => {
         const { fairCopyProject } = this.props
         const { userID, serverURL, projectID } = fairCopyProject
-        const { message } = this.state   
-        const resourcesToCommit = this.getResourcesToCommit()
+        const { message, resourcesToCommit } = this.state
 
         if( message.length > 0 ) {
-            const resourceIDs = resourcesToCommit.map( r => r.id )
-            this.setState({ ...this.state, status: 'loading' }) 
-            fairCopy.ipcSend('checkIn', userID, serverURL, projectID, resourceIDs, message )   
+            this.setState({ ...this.state, status: 'loading' })
+            const resourceIDBatches = resourcesToCommit.map((batch) => batch.map(r => r.id))
+            fairCopy.ipcSend('checkIn', userID, serverURL, projectID, resourceIDBatches, message)
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
         }
@@ -177,14 +223,13 @@ export default class CheckInDialog extends Component {
     }
 
     renderCheckInAll() {
-        const { committedResources, status } = this.state
-        const resourcesToCommit = this.getResourcesToCommit()
-        const responseReceived = status === 'done'
-        const resourceList = responseReceived ? committedResources : resourcesToCommit
-        const documentCount = resourceList.filter((resource) => resource.type === 'teidoc').length
-        const caption = status === 'done'
-            ? `${documentCount} documents have been processed.`
-            : `${documentCount} documents are ready to be checked in.`
+        const { committedResources, status, resourcesToCommit } = this.state
+        const allResourcesToCommit = resourcesToCommit.flat()
+        const committedDocumentCount = committedResources.filter((resource) => resource.type === 'teidoc').length
+        const totalDocuments = allResourcesToCommit.filter((resource) => resource.type === 'teidoc').length
+        const caption = ['loading', 'done'].includes(status)
+            ? `${committedDocumentCount}/${totalDocuments} documents have been processed.`
+            : `${totalDocuments} documents are ready to be checked in.`
         return (
             <Typography>{caption}</Typography>
         )

@@ -375,8 +375,8 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    checkIn(userID, serverURL, projectID, committedResources, message) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-in', userID, serverURL, projectID, committedResources, message })
+    checkIn(userID, serverURL, projectID, committedResourceBatches, message) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-in', userID, serverURL, projectID, committedResourceBatches, message })
     }
 
     checkOut(userID, serverURL, projectID, resourceEntries ) {
