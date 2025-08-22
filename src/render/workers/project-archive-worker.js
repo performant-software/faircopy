@@ -1,5 +1,5 @@
 import { getAuthToken } from '../model/cloud-api/auth'
-import { checkInResources, checkOutResources } from '../model/cloud-api/resource-management'
+import { checkInResourceBatches, checkOutResources } from '../model/cloud-api/resource-management'
 import { getResourceAsync, getResourcesAsync } from "../model/cloud-api/resources"
 import { serializeResource } from "../model/serialize-xml"
 import { renderTEIDocument } from "../model/editioncrafter/render"
@@ -37,7 +37,7 @@ function addFile( localFilePath, resourceID, zip ) {
     zip.file(resourceID, buffer)
 }
 
-async function checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage ) {
+async function checkIn( userID, serverURL, projectID, committedResourceBatches, message, zip, postMessage ) {
     const authToken = getAuthToken( userID, serverURL )
 
     if( authToken ) {
@@ -62,17 +62,19 @@ async function checkIn( userID, serverURL, projectID, committedResources, messag
         }
     
         // add the content for each resource being added or updated
-        for( const committedResource of committedResources ) {
-            if( committedResource.action !== 'destroy' && committedResource.type !== 'teidoc' ) {
-                committedResource.content = await readUTF8(committedResource.id, zip)
-            } else {
-                committedResource.content = null
+        for( const batch of committedResourceBatches ) {
+            for( const committedResource of batch ) {
+                if( committedResource.action !== 'destroy' && committedResource.type !== 'teidoc' ) {
+                    committedResource.content = await readUTF8(committedResource.id, zip)
+                } else {
+                    committedResource.content = null
+                }
             }
         }
-      
-        checkInResources(userID, serverURL, authToken, projectID, committedResources, message, onSuccess, onFail)    
+
+        await checkInResourceBatches(userID, serverURL, authToken, projectID, committedResourceBatches, message, onSuccess, onFail)    
     } else {
-        postMessage({ messageType: 'check-in-results', resourceIDs: [], error: "User not logged in." })
+        postMessage({ messageType: 'check-in-results', resourceStatus: [], error: "User not logged in." })
     }
 }
 
@@ -420,8 +422,8 @@ export function projectArchive( msg, workerMethods, workerData ) {
             break                   
         case 'check-in': 
             {
-                const { userID, serverURL, projectID, committedResources, message } = msg
-                checkIn( userID, serverURL, projectID, committedResources, message, zip, postMessage )
+                const { userID, serverURL, projectID, committedResourceBatches, message } = msg
+                checkIn( userID, serverURL, projectID, committedResourceBatches, message, zip, postMessage )
             }    
             break  
         case 'check-out': 

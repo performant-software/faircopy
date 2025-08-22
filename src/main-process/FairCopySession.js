@@ -480,9 +480,9 @@ class FairCopySession {
         this.idMapAuthority.sendIDMapUpdate()
     }
 
-    checkIn(userID, serverURL, projectID, checkInResources, message) {
+    checkIn(userID, serverURL, projectID, resourceIDBatches, message) {
         const { resources } = this.projectStore.manifestData
-        const committedResources = []
+        const committedResourceBatches = []
 
         const createCommitEntry = ( resourceEntry ) => {
             const { id, local, deleted, name, localID, parentResource: parentID, type } = resourceEntry
@@ -498,22 +498,27 @@ class FairCopySession {
                 resourceType: type
             }
         }
-        
-        const homeParentID = this.resourceViews.home.indexParentID
-        for( const resourceID of checkInResources ) {
-            const resourceEntry = resources[resourceID]
-            // ignore resources that aren't in local manifest
-            if( resourceEntry ) {
-                const resourceCommitEntry = createCommitEntry(resourceEntry)
-                committedResources.push(resourceCommitEntry)
-            }
-            if( resourceID === homeParentID ) {
-                // if this got checked in, move to root
-                this.resourceViews.home.indexParentID = null
-            }
-        }
 
-        this.projectStore.checkIn(userID, serverURL, projectID, committedResources, message)
+        const homeParentID = this.resourceViews.home.indexParentID
+        resourceIDBatches.forEach((batch) => {
+            // convert each resource ID batch into an array of resources
+            const resourceBatch = []
+            for( const resourceID of batch ) {
+                const resourceEntry = resources[resourceID]
+                // ignore resources that aren't in local manifest
+                if( resourceEntry ) {
+                    const resourceCommitEntry = createCommitEntry(resourceEntry)
+                    resourceBatch.push(resourceCommitEntry)
+                }
+                if( resourceID === homeParentID ) {
+                    // if this got checked in, move to root
+                    this.resourceViews.home.indexParentID = null
+                }
+            }
+            committedResourceBatches.push(resourceBatch)
+        })
+
+        this.projectStore.checkIn(userID, serverURL, projectID, committedResourceBatches, message)
     }
 
     checkOut(userID, serverURL, projectID, resourceEntries) {
