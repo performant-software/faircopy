@@ -311,6 +311,49 @@ export default class FairCopyProject {
         })
         this.orphanedResources = []
     }
+
+    duplicateDocuments = (localResources) => {
+        // duplicate resources and their children with new XML IDs and uuids
+        const teiDocs = localResources.filter((r) => r.type === 'teidoc')
+        teiDocs.forEach((parent) => {
+            // duplicate parent tei doc, with new guid and local id
+            const { id, localID, name } = parent
+            const existingIDs = Object.keys(this.idMap.idMap)
+            let newLocalID = getUniqueResourceID('teidoc', existingIDs, name)
+            const parentEntry = {
+                id: uuidv4(),
+                localID: newLocalID,
+                name, 
+                type: 'teidoc',
+                parentResource: null,
+                ...cloudInitialConfig
+            }
+            this.addResource(parentEntry, "", getBlankResourceMap(parentEntry.id, parentEntry.type))
+
+            // duplicate all of its children, assign to new parent
+            const children = localResources.filter((r) => r.parentResource === id)
+            const childLocalIDs = Object.keys(this.idMap.idMap[localID].ids)
+            children.forEach((child) => {
+                const { type: childType } = child
+                const newChildLocalID = getUniqueResourceID(childType, childLocalIDs, child.localID)
+                const childEntry = {
+                    id: uuidv4(),
+                    localID: newChildLocalID,
+                    name: child.name,
+                    type: childType,
+                    parentResource: parentEntry.id,
+                    ...cloudInitialConfig
+                }
+                this.addResource(childEntry, child.content, getBlankResourceMap(childEntry.id, childEntry.type))
+            })
+        })
+    }
+
+    forceDeleteResources = (localResources) => {
+        // fully delete local resources, even in a remote project 
+        const resourceIDs = localResources.map((r) => r.id)
+        fairCopy.ipcSend('removeResources', resourceIDs, true)
+    }
 }
 
 export function isEntryEditable( resourceEntry, userID ) {        

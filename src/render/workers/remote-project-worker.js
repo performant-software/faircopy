@@ -207,6 +207,18 @@ export function remoteProject( msg, workerMethods, workerData ) {
                 console.log(errorMessage)
             })
             break
+        case 'check-abandoned':
+            {
+                const { resources: localResources, resourceView } = msg
+                const { currentPage, rowsPerPage, nameFilter, order, orderBy, indexParentID } = resourceView
+                getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, order, orderBy, (resourceData) => {
+                    const { remoteResources } = resourceData
+                    postMessage({ messageType: 'process-abandoned', localResources, remoteResources })
+                }, (errorMessage) => {
+                    console.log(errorMessage)
+                })
+            }
+            break
         case 'close':
             close()
             break            

@@ -41,6 +41,15 @@ class ProjectStore {
                         this.fairCopyApplication.fairCopySession.resourceOpened( resourceEntry, parentEntry, resource, xmlID )
                     }
                     break
+                case 'resources-data':
+                    {
+                        const { resources, abandoned } = msg
+                        if (abandoned) {
+                            this.fairCopyApplication.sendToMainWindow('abandonedResourcesData', resources)
+                        }
+                        // can do other things with resource data here; each will be an object { resourceID, content }
+                    }
+                    break
                 case 'index-resource':
                     {
                         const { resourceID, resource } = msg
@@ -271,7 +280,7 @@ class ProjectStore {
         }
     }
     
-    removeResources(resourceIDs,idMap) {
+    removeResources(resourceIDs, idMap, forceDelete) {
         for( const resourceID of resourceIDs ) {
             const resourceEntry = this.manifestData.resources[resourceID]
         
@@ -289,13 +298,15 @@ class ProjectStore {
                 // remove associated search index
                 if( this.searchIndex ) this.searchIndex.removeIndex(resourceID)
             }
-    
-            if( resourceEntry.local ) {
-                delete this.manifestData.resources[resourceID] 
+
+            // remove file from local, if local-only or forced deletion (i.e. abandoned resource)
+            if( resourceEntry.local || forceDelete ) {
+                delete this.manifestData.resources[resourceID]
                 if( resourceEntry.type !== 'teidoc' ) {
                     this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
                 }
             } else {
+                // otherwise just set deleted flag
                 resourceEntry.deleted = true
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
             }
@@ -400,6 +411,10 @@ class ProjectStore {
         if( resourceEntry ) {
             this.projectArchiveWorker.postMessage({ messageType: 'read-resource', resourceID, xmlID })
         }
+    }
+
+    readResources(resourceIDs, abandoned) {
+        this.projectArchiveWorker.postMessage({ messageType: 'read-resources', resourceIDs, abandoned })
     }
 
     checkOutResults(resources,error) {        

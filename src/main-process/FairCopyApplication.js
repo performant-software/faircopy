@@ -88,9 +88,9 @@ class FairCopyApplication {
     ipcMain.on('replaceTEIDocument', (event, resources) => { this.fairCopySession.replaceTEIDocument(resources) })
     ipcMain.on('replaceResource', (event, resource, parentEntry) => { this.fairCopySession.replaceResource(resource,parentEntry) })
 
-    ipcMain.on('removeResources', (event, resourceIDs) => { 
-      this.fairCopySession.removeResources(resourceIDs) 
-      
+    ipcMain.on('removeResources', (event, resourceIDs, forceDelete = false) => { 
+      this.fairCopySession.removeResources(resourceIDs, forceDelete) 
+
       // close any open image windows
       for( const resourceID of resourceIDs ) {
         const imageView = this.imageViews[resourceID]
@@ -243,6 +243,10 @@ class FairCopyApplication {
 
     ipcMain.on('abandon', (event, resourceEntries) => {
       this.fairCopySession.abandonCheckout(resourceEntries[0])
+    })
+
+    ipcMain.on('read-resources', (event, resourceIDs, abandoned) => {
+      this.fairCopySession.readResources(resourceIDs, abandoned)
     })
   
   }
