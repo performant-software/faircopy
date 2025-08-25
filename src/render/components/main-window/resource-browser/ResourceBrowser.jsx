@@ -164,7 +164,7 @@ export default class ResourceBrowser extends Component {
 
   renderToolbar() {
     const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject, publishingResources, resourceView } = this.props
-    const { remote: remoteProject, permissions } = fairCopyProject
+    const { remote: remoteProject, permissions, userID } = fairCopyProject
     const createAllowed = remoteProject ? canCreate(permissions) : true
     const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
     const { loading } = resourceView;
@@ -181,10 +181,12 @@ export default class ResourceBrowser extends Component {
     const onPublishResource = () => { fairCopy.ipcSend('publish', teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
     const atRemoteDoc = remoteProject && currentView === 'remote' && teiDoc
-    const canPublish = teiDoc?.status?.is_draft;
-    let publishTooltip = "Publish";
+    const editable = teiDoc && isEntryEditable(teiDoc, userID)
+    const checkedOut = teiDoc && (editable || isCheckedOutRemote(teiDoc, userID))
+    const canPublish = teiDoc?.status?.is_draft && !checkedOut
+    let publishTooltip = "Publish"
     if (!canPublish) {
-      publishTooltip = "Document must have a draft checked in to publish";
+      publishTooltip = checkedOut ? "Document must be checked in to publish" : "Document must have a draft checked in to publish"
     }
     const docActionType = teiDoc?.lastAction?.action_type;
     const datePublished = docActionType === 'publish' ? new Date(teiDoc.lastAction.created_at).toDateString() : null;
