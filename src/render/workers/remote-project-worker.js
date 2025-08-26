@@ -5,6 +5,7 @@ import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
 import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
 import { getTeiDocument, publishTeiDocument } from "../model/cloud-api/tei-documents"
+import { abandonCheckout } from "../model/cloud-api/resource-management"
 
 function updateIDMap( userID, serverURL, authToken, projectID, postMessage) {
     getIDMap( userID, serverURL, authToken, projectID, (idMapData) => {
@@ -197,6 +198,26 @@ export function remoteProject( msg, workerMethods, workerData ) {
         case 'publish':
             const { teiDoc } = msg
             onPublishTeiDocument(userID, serverURL, projectID, teiDoc, authToken, postMessage)
+            break
+        case 'abandon':
+            const { resource } = msg
+            abandonCheckout(userID, serverURL, authToken, projectID, resource, () => {
+                postMessage({ messageType: 'resources-updated', resources: [resource] })
+            }, (errorMessage) => {
+                console.log(errorMessage)
+            })
+            break
+        case 'check-abandoned':
+            {
+                const { resources: localResources, resourceView } = msg
+                const { currentPage, rowsPerPage, nameFilter, order, orderBy, indexParentID } = resourceView
+                getResources( userID, serverURL, authToken, projectID, indexParentID, currentPage, rowsPerPage, nameFilter, order, orderBy, (resourceData) => {
+                    const { remoteResources } = resourceData
+                    postMessage({ messageType: 'process-abandoned', localResources, remoteResources })
+                }, (errorMessage) => {
+                    console.log(errorMessage)
+                })
+            }
             break
         case 'close':
             close()

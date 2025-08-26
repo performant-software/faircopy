@@ -191,7 +191,7 @@ class FairCopySession {
         return true
     }
 
-    removeResources(resourceIDs) {
+    removeResources(resourceIDs, forceDelete) {
         const { resources } = this.projectStore.manifestData
         // use this map to generate unique ID list
         const doomedIDMap = {} 
@@ -216,7 +216,7 @@ class FairCopySession {
 
         const doomedIDs = Object.keys(doomedIDMap)
         const idMap = this.idMapAuthority.removeResources(doomedIDs)
-        this.projectStore.removeResources(doomedIDs,idMap)   
+        this.projectStore.removeResources(doomedIDs,idMap,forceDelete)
         this.requestResourceView()
     }
 
@@ -272,10 +272,57 @@ class FairCopySession {
         this.requestResourceView()
     }
 
-    requestResourceView(published) {
+    getCurrentResourceIndex() {
         const {currentView} = this.resourceViews
         const resourceView = this.resourceViews[currentView]
         const { indexParentID, currentPage, rowsPerPage } = resourceView
+        const { nameFilter, order, orderBy } = resourceView
+        const { resources: localResources } = this.projectStore.manifestData
+        const sortedResources = Object.values(localResources).sort((a,b) => {
+            const valueA = a[orderBy].toUpperCase()
+            const valueB = b[orderBy].toUpperCase()
+            if( valueA === valueB ) return 0
+            if( order == 'ascending' ) {
+                return valueA > valueB ? 1 : -1
+            } else {
+                return valueA < valueB ? 1 : -1
+            }
+        })
+
+        let resourceIndex = []
+        for( const localResource of sortedResources ) {
+            const { parentResource } = localResource
+            if( localResource.type !== 'image' ) {
+                // if this resource is a child of current parent OR 
+                // if the parent is not checked out, display it at top level
+                if( parentResource === indexParentID ||
+                    ( indexParentID === null && !localResources[parentResource] )) {
+                    if( indexParentID ) {
+                        // filter doesn't act on teidoc views
+                        resourceIndex.push(localResource)                    
+                    } else if( !nameFilter || localResource.name.includes(nameFilter) ) {
+                        resourceIndex.push(localResource)                    
+                    }
+                }
+            } 
+        }
+        // don't let currentPage be > page count 
+        let pageCount = Math.ceil(resourceIndex.length/rowsPerPage)
+        pageCount = pageCount === 0 ? 1 : pageCount
+        const nextPage = currentPage > pageCount ? pageCount : currentPage
+        const start = rowsPerPage * (nextPage-1)
+        const end = start + rowsPerPage
+        resourceView.totalRows = resourceIndex.length
+        resourceView.currentPage = nextPage
+        resourceView.loading = false
+        this.resourceViews[currentView] = resourceView
+        return resourceIndex.slice(start,end)
+    }
+
+    requestResourceView(published) {
+        const {currentView} = this.resourceViews
+        const resourceView = this.resourceViews[currentView]
+        const { indexParentID } = resourceView
         const { resources: localResources } = this.projectStore.manifestData
 
         if( currentView === 'remote' ) {
@@ -284,47 +331,7 @@ class FairCopySession {
         } else {
             // respond right away from project store
             resourceView.parentEntry = indexParentID ? localResources[indexParentID] : null
-            const { nameFilter, order, orderBy } = resourceView
-            const sortedResources = Object.values(localResources).sort((a,b) => {
-                const valueA = a[orderBy].toUpperCase()
-                const valueB = b[orderBy].toUpperCase()
-                if( valueA === valueB ) return 0
-                if( order == 'ascending' ) {
-                    return valueA > valueB ? 1 : -1
-                } else {
-                    return valueA < valueB ? 1 : -1
-                }
-            })
-
-            let resourceIndex = []
-            for( const localResource of sortedResources ) {
-                const { parentResource } = localResource
-                if( localResource.type !== 'image' ) {
-                    // if this resource is a child of current parent OR 
-                    // if the parent is not checked out, display it at top level
-                    if( parentResource === indexParentID ||
-                        ( indexParentID === null && !localResources[parentResource] )) {
-                        if( indexParentID ) {
-                            // filter doesn't act on teidoc views
-                            resourceIndex.push(localResource)                    
-                        } else if( !nameFilter || localResource.name.includes(nameFilter) ) {
-                            resourceIndex.push(localResource)                    
-                        }
-                    }
-                } 
-            }
-            // don't let currentPage be > page count 
-            let pageCount = Math.ceil(resourceIndex.length/rowsPerPage)
-            pageCount = pageCount === 0 ? 1 : pageCount
-            const nextPage = currentPage > pageCount ? pageCount : currentPage
-            const start = rowsPerPage * (nextPage-1)
-            const end = start + rowsPerPage
-            resourceView.totalRows = resourceIndex.length
-            resourceView.currentPage = nextPage
-            resourceView.loading = false
-            this.resourceViews[currentView] = resourceView
-            resourceIndex = resourceIndex.slice(start,end)
-
+            const resourceIndex = this.getCurrentResourceIndex()
             this.fairCopyApplication.sendToAllWindows('resourceViewUpdate', { resourceViews: this.resourceViews, resourceIndex } )
         }
     }
@@ -414,6 +421,10 @@ class FairCopySession {
         } else {
             this.projectStore.openResource(resourceID, xmlID)
         }
+    }
+
+    readResources(resourceIDs, abandoned) {
+        this.projectStore.readResources(resourceIDs, abandoned)
     }
 
     resourceOpened(resourceEntry, parentEntry, resource, xmlID) {
@@ -562,6 +573,10 @@ class FairCopySession {
 
     requestEditionCrafterData(url) {
         return this.projectStore.requestEditionCrafterData(url)
+    }
+
+    abandonCheckout(resource) {
+        this.remoteProject.abandonCheckout(resource)
     }
 }
 

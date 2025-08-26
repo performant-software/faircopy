@@ -1,0 +1,6 @@
+#AbandonedResourcesDialog .abandoned-table {
+    max-height: 300px !important;
+}
+#AbandonedResourcesDialog .abandoned-table caption {
+    caption-side: top;
+}

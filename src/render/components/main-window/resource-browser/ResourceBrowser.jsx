@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Button, Card, Chip, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, TablePagination, Tooltip, Checkbox, Typography, CardContent, withStyles } from '@material-ui/core';
-import { Autorenew, Edit, Publish } from '@material-ui/icons';
+import { Autorenew, Edit, MoreVert, Publish } from '@material-ui/icons';
 import TitleBar from '../TitleBar'
 import { debounce } from "debounce";
 
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
+import { canAbandon, canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
 import { ellipsis } from '../../../model/ellipsis'
 
 const idealNameLength = 35
@@ -30,39 +30,42 @@ export default class ResourceBrowser extends Component {
     }, 100)
 }
 
-  onOpenActionMenu = (anchorEl) => {
+  onOpenActionMenu = (anchorEl, resource) => {
     const { currentView, fairCopyProject, onOpenPopupMenu, resourceCheckmarks, teiDoc } = this.props
     const { permissions, remote: remoteProject, userID } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
     const del = remoteProject ? canDelete(permissions) : true
 
     // list of non-null selected items so we can do .some() or .every() on them
-    const resources = Object.values(resourceCheckmarks).filter(Boolean);
+    const resources = resource ? [resource] : Object.values(resourceCheckmarks).filter(Boolean);
     const checkedOutByUser = resources.some(
       (r) =>
         r.lastAction?.action_type === 'check_out' &&
         r.lastAction.user?.id === userID,
     )
+    const someCheckedIn = resources.some((r) => r.lastAction?.action_type !== 'check_out')
     const someDeleted = resources.some((r) => r.deleted)
     const allDeleted = resources.every((r) => r.deleted)
     const menuOptions = []
 
     // TODO: collapse Remote and Local into a single view. for now, check them separately
-    if (remoteProject && loggedIn && !teiDoc) {
+    const atRemoteProjectRoot = remoteProject && loggedIn && !teiDoc;
+    if (atRemoteProjectRoot) {
       // checkin/checkout only in remote project, at the project root, when we are logged in
       if (currentView === 'home' || checkedOutByUser) {
         // can check in if we are in Local, or we're in Remote but user has something checked out
         menuOptions.push({
           id: 'check-in',
           label: 'Check In',
-          action: this.createResourceAction('check-in')
+          action: this.createResourceAction('check-in', resource)
         })
-      } else if (currentView === 'remote' && canCheckOut(permissions)) {
+      }
+      if (currentView === 'remote' && canCheckOut(permissions) && someCheckedIn) {
         // can only check out from Remote
         menuOptions.push({
           id: 'check-out',
           label: 'Check Out',
-          action: this.createResourceAction('check-out'),
+          action: this.createResourceAction('check-out', resource),
         })
       }
     }
@@ -70,7 +73,7 @@ export default class ResourceBrowser extends Component {
     menuOptions.push({
       id: 'export',
       label: 'Export',
-      action: this.createResourceAction('export')
+      action: this.createResourceAction('export', resource)
     })
 
     // move only works with local resources, and not at the project root
@@ -78,16 +81,29 @@ export default class ResourceBrowser extends Component {
       menuOptions.push({
         id: 'move',
         label: 'Move',
-        action: this.createResourceAction('move')
+        action: this.createResourceAction('move', resource)
       })
     }
 
-    if (del && !allDeleted) {
+    // if the resource is checked out by someone else, can abandon checkout
+    const isAbandonable = resource?.lastAction?.action_type === 'check_out' &&
+      resource.lastAction.user?.id !== userID
+    const showAbandon = canAbandon(permissions) && isAbandonable && atRemoteProjectRoot && currentView === 'remote'
+    if (showAbandon) {
+      menuOptions.push({
+        id: 'abandon',
+        label: 'Unlock',
+        classes: 'danger',
+        action: this.createResourceAction('abandon', resource),
+      })
+    }
+
+    if (del && !allDeleted && !showAbandon) {
       menuOptions.push({
         id: 'delete',
         label: 'Delete',
         classes: 'danger',
-        action: this.createResourceAction('delete'),
+        action: this.createResourceAction('delete', resource),
       })
     }
 
@@ -96,22 +112,27 @@ export default class ResourceBrowser extends Component {
       menuOptions.push({
         id: 'recover',
         label: 'Recover',
-        action: this.createResourceAction('recover')
+        action: this.createResourceAction('recover', resource)
       })
     }
     
     onOpenPopupMenu(menuOptions, anchorEl)
   }
 
-  createResourceAction(actionID) {    
+  createResourceAction(actionID, resource) {    
     return () => {
       const { onResourceAction, resourceCheckmarks } = this.props
       const resourceIDs = [], resourceEntries = []
-      for( const resourceID of Object.keys(resourceCheckmarks) ) {
-        const resourceEntry = resourceCheckmarks[resourceID]
-        if( resourceEntry ) {
-          resourceIDs.push(resourceEntry.id)
-          resourceEntries.push(resourceEntry)
+      if (resource) {
+        resourceIDs.push(resource.id)
+        resourceEntries.push(resource)
+      } else {
+        for( const resourceID of Object.keys(resourceCheckmarks) ) {
+          const resourceEntry = resourceCheckmarks[resourceID]
+          if( resourceEntry ) {
+            resourceIDs.push(resourceEntry.id)
+            resourceEntries.push(resourceEntry)
+          }
         }
       }
       onResourceAction(actionID, resourceIDs, resourceEntries)
@@ -421,6 +442,18 @@ export default class ResourceBrowser extends Component {
               </TableCell>
             </>
           }
+          <TableCell {...cellProps} >
+            <IconButton
+              aria-label="Actions"
+              disabled={resourceView.loading}
+              onClick={(event) => {
+                event.stopPropagation()
+                this.onOpenActionMenu(event.target, resource)
+              }}
+            >
+              <MoreVert />
+            </IconButton>
+          </TableCell>
         </TableRow>
       )
     }
@@ -446,6 +479,7 @@ export default class ResourceBrowser extends Component {
                           { remoteProject && !teiDoc && <TableCell>Last Modified</TableCell> }
                           { atRemoteRoot && <TableCell>Draft</TableCell> }
                           { atRemoteRoot && <TableCell>Published</TableCell> }
+                          <TableCell aria-label="Actions" />
                       </TableRow>
                   </TableHead>
                   <TableBody>

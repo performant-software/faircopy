@@ -25,3 +25,8 @@ export function canDelete(permissions) {
     if( permissions.includes('FCC_CanDeleteResources')) return true
     return false
 }
+
+export function canAbandon(permissions) {
+    if( isAdmin(permissions) ) return true
+    return false
+}

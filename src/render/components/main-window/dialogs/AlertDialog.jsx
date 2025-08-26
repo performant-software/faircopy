@@ -175,6 +175,40 @@ export default class AlertDialog extends Component {
         return this.renderDialog( title, message, actions )
     }
 
+    renderConfirmAbandon() {
+        const { alertOptions, onCloseAlert } = this.props
+
+        const onAbandonCheckout = () => {
+            const { onAbandon } = alertOptions
+            onAbandon()
+            onCloseAlert()
+        }
+
+        const onCloseWithoutAbandon = () => {
+            onCloseAlert()
+        }
+
+        const { resource } = alertOptions
+        const resourceName = resource.name
+        const title = "Confirm Unlock"
+        const message = `Unlocking "${resourceName}" will force a check-in,
+            abandoning all local work by the user who checked it out. This
+            action cannot be undone. Are you sure you want to proceed?`
+        const actions = [
+            {
+                label: "Unlock",
+                defaultAction: true,
+                handler: onAbandonCheckout
+            },
+            {
+                label: "Cancel",
+                handler: onCloseWithoutAbandon
+            }
+        ]
+
+        return this.renderDialog( title, message, actions )
+    }
+
     render() {      
         const { alertDialogMode } = this.props
         switch(alertDialogMode) {
@@ -186,6 +220,8 @@ export default class AlertDialog extends Component {
                 return this.renderConfirmDelete()
             case 'confirmDeleteImages':
                 return this.renderConfirmDeleteImages()
+            case 'confirmAbandonCheckout':
+                return this.renderConfirmAbandon()
             case 'closed':
             default:
                 return null

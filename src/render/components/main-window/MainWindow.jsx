@@ -31,6 +31,7 @@ import CheckInDialog from "./dialogs/CheckInDialog";
 import CheckOutDialog from "./dialogs/CheckOutDialog";
 import { bigRingSpinner } from "../common/ring-spinner";
 import { SplitPaneView } from "../common/SplitPaneView";
+import AbandonedResourcesDialog from "./dialogs/AbandonedResourcesDialog";
 
 const fairCopy = window.fairCopy;
 
@@ -122,6 +123,8 @@ export default class MainWindow extends Component {
       rightPaneWidth: initialRightPaneWidth,
       migratingResources: new Set(),
       publishingResources: false,
+      abandonedDialogMode: false,
+      abandonedLocalResources: [],
     };
   }
 
@@ -282,6 +285,43 @@ export default class MainWindow extends Component {
     }));
   }
 
+  onMarkAbandoned = (e, resources) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      abandonedDialogMode: true,
+      abandonedLocalResources: resources,
+    }))
+  }
+
+  onReceiveAbandonedResourcesData = (e, resources) => {
+    const { fairCopyProject } = this.props;
+    const { abandonedLocalResources } = this.state
+
+    // should be here from "create new" option in abandoned resources dialog, which kicked off
+    // a read operation for each resource's contents; if not, bail
+    if (!abandonedLocalResources) {
+      return
+    }
+
+    // merge local resources with content
+    const resourceMap = new Map(resources.map(r => [r.resourceID, r.content]))
+    const localWithContent = abandonedLocalResources.map((resource) => ({
+      ...resource,
+      content: resourceMap.get(resource.id)
+    }))
+
+    // kick off "create new" operation and deletion of originals
+    fairCopyProject.duplicateDocuments(localWithContent)
+    const abandonedDocs = abandonedLocalResources.filter((r) => r.type === "teidoc")
+    fairCopyProject.forceDeleteResources(abandonedDocs)
+
+    this.setState((prevState) => ({
+      ...prevState,
+      abandonedDialogMode: false,
+      abandonedLocalResources: [],
+    }))
+  }
+
   onResourceContentUpdated = (e, resourceUpdate) => {
     const { fairCopyProject } = this.props;
     fairCopyProject.notifyListeners("resourceContentUpdated", resourceUpdate);
@@ -323,6 +363,11 @@ export default class MainWindow extends Component {
       "publishingResourceStarted",
       this.onPublishResource
     );
+    fairCopy.ipcRegisterCallback("markAbandoned", this.onMarkAbandoned);
+    fairCopy.ipcRegisterCallback(
+      "abandonedResourcesData",
+      this.onReceiveAbandonedResourcesData
+    );
   }
 
   componentWillUnmount() {
@@ -348,6 +393,11 @@ export default class MainWindow extends Component {
     fairCopy.ipcRemoveListener(
       "publishingResourceStarted",
       this.onPublishResource
+    );
+    fairCopy.ipcRemoveListener("markAbandoned", this.onMarkAbandoned);
+    fairCopy.ipcRemoveListener(
+      "abandonedResourcesData",
+      this.onReceiveAbandonedResourcesData
     );
   }
 
@@ -879,6 +929,18 @@ export default class MainWindow extends Component {
         fairCopy.ipcSend("requestExport", resourceEntries);
         this.setState({ ...nextState, ...closePopUpState });
         break;
+      case "abandon":
+        const alertOptions = {
+          onAbandon: () => fairCopy.ipcSend("abandon", resourceEntries),
+          resource: resourceEntries[0],
+        }
+        this.setState({
+          ...nextState,
+          alertDialogMode: "confirmAbandonCheckout",
+          alertOptions,
+          ...closePopUpState,
+        });
+        break;
       default:
         console.error(`Unrecognized resource action id: ${actionID}`);
         break;
@@ -1207,6 +1269,8 @@ export default class MainWindow extends Component {
 
   renderDialogs() {
     const {
+      abandonedDialogMode,
+      abandonedLocalResources,
       editDialogMode,
       searchFilterMode,
       searchFilterOptions,
@@ -1277,6 +1341,24 @@ export default class MainWindow extends Component {
         surfaceInfo: null,
         editSurfaceInfoMode: false,
       });
+    };
+
+    const onCreateFromAbandoned = () => {
+      // create duplicates of local copies of abandoned resources, then delete
+      const resourceIDs = abandonedLocalResources.map((r) => r.id)
+      // need to read contents of each in order to create duplicates
+      fairCopy.ipcSend("read-resources", resourceIDs, true)
+    };
+
+    const onDeleteAbandoned = () => {
+      // immediately force-delete local copies of abandoned resources
+      const abandonedDocs = abandonedLocalResources.filter((r) => r.type === "teidoc")
+      fairCopyProject.forceDeleteResources(abandonedDocs)
+      this.setState((prevState) => ({
+        ...prevState,
+        abandonedDialogMode: false,
+        abandonedLocalResources: [],
+      }));
     };
 
     return (
@@ -1437,6 +1519,13 @@ export default class MainWindow extends Component {
             serverURL={serverURL}
             onLoggedIn={this.onLoggedIn}
           ></LoginDialog>
+        )}
+        {abandonedDialogMode && (
+          <AbandonedResourcesDialog
+            abandonedResources={abandonedLocalResources}
+            onCreateFromAbandoned={onCreateFromAbandoned}
+            onDelete={onDeleteAbandoned}
+          ></AbandonedResourcesDialog>
         )}
         <SnackAlert
           open={alertMessage !== null}

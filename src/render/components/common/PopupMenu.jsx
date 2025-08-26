@@ -25,6 +25,7 @@ export default class PopupMenu extends Component {
         'delete': 'fa-trash-can',
         'export': 'fa-download',
         'move': 'fa-folder-open',
+        'abandon': 'fa-lock-open',
         'recover': 'fa-trash-arrow-up'
     }
 
@@ -39,7 +40,7 @@ export default class PopupMenu extends Component {
             const onClick = () => {
                 menuOption.action()
             }
-            if (menuOption.id === 'delete') {
+            if (menuOption.id === 'delete' || menuOption.id === 'abandon') {
                 menuItems.push(<StyledDivider component="li" key="divider" light />)
             }
             const icon = Object.hasOwn(this.MENU_ICONS, menuOption.id) ? this.MENU_ICONS[menuOption.id] : ''

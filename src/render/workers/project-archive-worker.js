@@ -354,6 +354,20 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 })
             }
             break
+        case 'read-resources':
+            {
+                // read the contents of all resources in resourceIDs, then pass back an array of
+                // objects { resourceID, content } to the main thread
+                const { resourceIDs, abandoned } = msg
+                Promise.all(
+                    resourceIDs.map((resourceID) =>
+                        readUTF8(resourceID, zip).then((content) => ({ resourceID, content }))
+                    )
+                ).then(resources => {
+                    postMessage({ messageType: 'resources-data', resources, abandoned })
+                })
+            }
+            break
         case 'request-index':
             {
                 const { resourceID } = msg

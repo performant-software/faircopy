@@ -5,11 +5,17 @@ const { app } = require('electron')
 class RemoteProject {
 
     constructor( fairCopySession, userID, serverURL, projectID ) {
-        const { fairCopyApplication } = fairCopySession
+        const { fairCopyApplication, resourceViews } = fairCopySession
+        const { currentView } = resourceViews
+        const resourceView = resourceViews[currentView]
         const {baseDir} = fairCopyApplication
         this.fairCopySession = fairCopySession
         this.initRemoteProjectWorker( baseDir, !app.isPackaged, userID, serverURL, projectID ).then(() => {
             this.open()
+            if (currentView === 'home' && !resourceView?.indexParentID) {
+                // at local project root, on remote project worker launch, check for abandoned resources
+                this.markAbandonedResources(fairCopySession.getCurrentResourceIndex(), resourceViews['home'])
+            }
         })
     }
 
@@ -75,11 +81,36 @@ class RemoteProject {
                     this.fairCopySession.requestResourceView(published)
                 }
                 break
+                case 'process-abandoned':
+                {
+                    const { fairCopyApplication, projectStore } = this.fairCopySession
+                    const { localResources, remoteResources } = msg
+                    const abandoned = localResources?.filter((resource) => {
+                        if (resource.type !== 'teidoc') return false
+                        const remoteResource = remoteResources?.find((r) => r.id === resource.id)
+                        if (remoteResource) {
+                            // mismatched action type, or action type is the same but user ID is different,
+                            // means this is probably an abandoned resource
+                            return (
+                                resource.lastAction?.action_type !== remoteResource.lastAction?.action_type ||
+                                resource.lastAction?.user?.id !== remoteResource.lastAction?.user?.id
+                            )
+                        }
+                        return false
+                    })
+                    const abandonedIDs = abandoned.map((r) => r.id)
+                    const { resources } = projectStore.manifestData
+                    const abandonedChildren = Object.values(resources)?.filter((r) => abandonedIDs.includes(r.parentResource))
+                    if (abandoned.length > 0) {
+                        fairCopyApplication.sendToMainWindow('markAbandoned', [...abandoned, ...abandonedChildren])
+                    }
+                }
+                break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }
         })
-        
+
         return this.remoteProjectWorker.start({userID, serverURL, projectID})
     }
 
@@ -113,6 +144,14 @@ class RemoteProject {
 
     publish(teiDoc) {
         this.remoteProjectWorker.postMessage({ messageType: 'publish', teiDoc })
+    }
+
+    abandonCheckout(resource) {
+        this.remoteProjectWorker.postMessage({ messageType: 'abandon', resource })
+    }
+
+    markAbandonedResources(resources, resourceView) {
+        this.remoteProjectWorker.postMessage({ messageType: 'check-abandoned', resources, resourceView })
     }
 }
 
