@@ -204,7 +204,7 @@ export default class ResourceBrowser extends Component {
     const atRemoteDoc = remoteProject && currentView === 'remote' && teiDoc
     const editable = teiDoc && isEntryEditable(teiDoc, userID)
     const checkedOut = teiDoc && (editable || isCheckedOutRemote(teiDoc, userID))
-    const canPublish = teiDoc?.status?.is_draft && !checkedOut
+    const canPublish = teiDoc?.status?.is_draft && !checkedOut && !teiDoc.status.is_processing
     let publishTooltip = "Publish"
     if (!canPublish) {
       publishTooltip = checkedOut ? "Document must be checked in to publish" : "Document must have a draft checked in to publish"
