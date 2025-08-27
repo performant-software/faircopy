@@ -74,8 +74,10 @@ export default class CSSEditorDialog extends Component {
                         className="cm-editor"
                         editable={!readOnly}
                         value={projectCSS}
-                        height="600px"
-                        width="900px"
+                        minHeight="400px"
+                        maxHeight="600px"
+                        minWidth="600px"
+                        maxWidth="900px"
                         extensions={[css()]}
                         onChange={onChange}
                     />

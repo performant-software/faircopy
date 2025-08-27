@@ -369,6 +369,9 @@ class FairCopyApplication {
 
   sendToAllWindows(message, params) {
     this.sendToMainWindow(message, params)
+    if (this.previewView) {
+      this.previewView.webContents.send(message, params)
+    }
     for( const imageView of Object.values(this.imageViews) ) {
       imageView.webContents.send(message, params)
     }

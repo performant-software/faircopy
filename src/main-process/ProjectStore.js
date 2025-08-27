@@ -352,7 +352,8 @@ class ProjectStore {
         const configData = JSON.stringify(fairCopyConfig)
         if( configData && configData.length > 0 ) {
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: configData })
-            this.saveManifest()    
+            this.fairCopyApplication.sendToAllWindows('configSaved', configData)
+            this.saveManifest()
         } else {
             log.error(`Cannot save empty FairCopy Config.`)
         }
