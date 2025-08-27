@@ -15,15 +15,29 @@ export default class PublishingSettings extends Component {
     constructor(props) {
         super(props)
         this.initialState = {
-            editorOpen: false
+            editorOpen: false,
+            isPublishing: false
         }
         this.state = this.initialState
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (!prevProps.hasPublishedCss && this.props.hasPublishedCss) {
+            this.setState((prevState) => ({
+                ...prevState,
+                isPublishing: false,
+            }))
+        }
     }
     render() {
         // TODO keep track of if anything changed.
         // Include default CSS that can be reloaded?
+
         const onPublish = () => {
             this.props.onPublishCss()
+            this.setState((prevState) => ({
+                ...prevState,
+                isPublishing: true,
+            }))
         }
 
         const onOpenEditor = () => {
@@ -41,9 +55,9 @@ export default class PublishingSettings extends Component {
         }
 
         const { checkedOut, fairCopyConfig, hasDraftCss, hasPublishedCss, onUpdateConfig, publishReadOnly, readOnly } = this.props
-        const { editorOpen } = this.state
+        const { editorOpen, isPublishing } = this.state
 
-        const canPublish = !publishReadOnly && hasDraftCss && !checkedOut
+        const canPublish = !publishReadOnly && hasDraftCss && !checkedOut && !isPublishing
         let publishTooltip = "Publish"
         if (!canPublish) {
             publishTooltip = checkedOut ? "Settings must be checked in to publish" : "Project must have draft CSS checked in to publish"
