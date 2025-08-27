@@ -21,7 +21,7 @@ export default class PublishingSettings extends Component {
         this.state = this.initialState
     }
     componentDidUpdate(prevProps, prevState) {
-        if (!prevProps.hasPublishedCss && this.props.hasPublishedCss) {
+        if (prevProps.hasDraftCss && !this.props.hasDraftCss) {
             this.setState((prevState) => ({
                 ...prevState,
                 isPublishing: false,
