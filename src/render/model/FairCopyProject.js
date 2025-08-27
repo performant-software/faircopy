@@ -238,6 +238,8 @@ export default class FairCopyProject {
         return { 
             name: this.projectName, 
             description: this.description, 
+            hasDraftCss: this.hasDraftCss,
+            hasPublishedCss: this.hasPublishedCss,
             projectFilePath: this.projectFilePath,
             userID: this.userID,
             serverURL: this.serverURL,
@@ -250,6 +252,8 @@ export default class FairCopyProject {
         this.projectName = projectInfo.name
         this.description = projectInfo.description
         this.permissions = projectInfo.permissions
+        this.hasDraftCss = projectInfo.hasDraftCss
+        this.hasPublishedCss = projectInfo.hasPublishedCss
 
         // if this project is in the recent projects list, update its info in localStorage
         let projects = localStorage.getItem('recentProjects');

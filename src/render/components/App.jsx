@@ -225,11 +225,13 @@ export default class App extends Component {
       this.refreshMainWindow();
     };
 
-    const onSave = (fairCopyConfig, projectInfo) => {
+    const onSave = (fairCopyConfig, projectInfo, closeConfig) => {
       const { fairCopyProject } = this.state;
       fairCopyProject.saveFairCopyConfig(fairCopyConfig);
       fairCopyProject.updateProjectInfo(projectInfo);
-      this.setState({ ...this.state, projectSettingsActive: false });
+      if (closeConfig) {
+        this.setState({ ...this.state, projectSettingsActive: false });
+      }
       this.refreshMainWindow();
     };
 

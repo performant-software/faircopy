@@ -169,6 +169,10 @@ class FairCopyApplication {
       this.fairCopySession.publish(teiDoc)
     })
 
+    ipcMain.on('publishCss', (event) => {
+      this.fairCopySession.publishCss()
+    })
+
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig,lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig,lastAction) })    
     ipcMain.on('checkInConfig', (event,fairCopyConfig,firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig,firstAction) })        
     ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })        
@@ -365,6 +369,9 @@ class FairCopyApplication {
 
   sendToAllWindows(message, params) {
     this.sendToMainWindow(message, params)
+    if (this.previewView) {
+      this.previewView.webContents.send(message, params)
+    }
     for( const imageView of Object.values(this.imageViews) ) {
       imageView.webContents.send(message, params)
     }

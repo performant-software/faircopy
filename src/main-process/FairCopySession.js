@@ -540,6 +540,10 @@ class FairCopySession {
         this.remoteProject.publish(teiDoc)
     }
 
+    publishCss() {
+        this.remoteProject.publishCss()
+    }
+
     saveFairCopyConfig(fairCopyConfig, lastAction) {
         this.projectStore.saveFairCopyConfig(fairCopyConfig, lastAction)
     }

@@ -17,7 +17,10 @@ const theme = createTheme({
     success: {
       main: '#388e3c',
       dark: '#1B5E20',
-    }
+    },
+    yellow: {
+      main: '#F4C31E',
+    },
   },
 });
 

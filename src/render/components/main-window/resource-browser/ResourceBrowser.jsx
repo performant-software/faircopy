@@ -241,17 +241,17 @@ export default class ResourceBrowser extends Component {
                 <>
                   {teiDoc.status?.is_published && (
                     <Tooltip title={datePublished ? `Last published: ${datePublished}` : "Published"} arrow>
-                      <StyledChip label="Published" icon={<i className="fa fa-file-circle-check"></i>} size="small" color="primary" />
+                      <StatusChip label="Published" icon={<i className="fa fa-file-circle-check"></i>} size="small" color="primary" />
                     </Tooltip>
                   )}
                   {teiDoc.status?.is_draft && (
                     <Tooltip title={dateCheckedIn ? `Draft checked in: ${dateCheckedIn}` : "Draft"} arrow>
-                      <StyledChip label="Draft" icon={<Edit />} size="small" color="secondary" />
+                      <StatusChip label="Draft" icon={<Edit />} size="small" color="secondary" />
                     </Tooltip>
                   )}
                   {teiDoc.status?.is_processing && (
                     <Tooltip title="Document is currently being processed" arrow>
-                      <StyledChip label="Processing" icon={<Autorenew />} size="small" color="default" />
+                      <StatusChip label="Processing" icon={<Autorenew />} size="small" color="default" />
                     </Tooltip>
                   )}
                 </>
@@ -575,10 +575,19 @@ export default class ResourceBrowser extends Component {
 
 }
 
-const StyledChip = withStyles((theme) => ({
+export const StatusChip = withStyles((theme) => ({
   root: {
     paddingLeft: 4,
     paddingRight: 4,
+    '&.yellow': {
+      backgroundColor: theme.palette.yellow.main,
+    },
+    '&.yellow .MuiChip-iconSmall': {
+      color: theme.palette.text.primary,
+      marginLeft: 6,
+      marginTop: 4,
+      marginRight: -8,
+    }
   },
   colorPrimary: {
     backgroundColor: theme.palette.success.dark,
