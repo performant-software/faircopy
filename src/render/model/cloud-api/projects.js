@@ -34,12 +34,19 @@ export function getProject( userID, projectID, serverURL, authToken, onSuccess, 
 }
 
 function createProjectInfo(userID, project) {
-    const { id, name, description, team } = project
+    const { id, name, description, team, custom_css, draft_custom_css } = project
 
     // pull out just english strings for now
     const enName = name.en.translation
     const enDescription = description.en.translation
-    const projectInfo = { projectID: id, name: enName, description: enDescription, permissions: [] }
+    const projectInfo = {
+        projectID: id,
+        name: enName,
+        description: enDescription,
+        permissions: [],
+        hasPublishedCss: !!custom_css,
+        hasDraftCss: !!draft_custom_css,
+    }
 
     // translate into an array of permissions for current user
     const { team_members } = team 
@@ -56,4 +63,17 @@ function createProjectInfo(userID, project) {
         projectInfo.permissions = Object.keys(permissionMap)
     }
     return projectInfo
+}
+
+export function publishCss(userID, projectID, serverURL, authToken, onSuccess, onFail) {
+    const publishCssURL = `${serverURL}/api/projects/${projectID}/publish_css`
+
+    axios.post(publishCssURL, {}, authConfig(authToken)).then(
+        (okResponse) => {
+            const { project } = okResponse.data
+            const projectInfo = createProjectInfo(userID, project)
+            onSuccess(projectInfo)
+        }, 
+        standardErrorHandler(userID, serverURL, onFail)
+    )
 }

@@ -1,5 +1,5 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
-import { getProject } from "../model/cloud-api/projects"
+import { getProject, publishCss } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
@@ -62,6 +62,15 @@ function onPublishTeiDocument(userID, serverURL, projectID, teiDoc, authToken, p
     publishTeiDocument(userID, serverURL, authToken, projectID, localID, () => {
         // refresh the current view's resources to show updated document's "published/processing" status
         postMessage({ messageType: 'resources-updated', published: true })
+    },
+    (error) => {
+        console.log(error)
+    })
+}
+
+function onPublishCss(userID, serverURL, projectID, authToken, postMessage) {
+    publishCss(userID, projectID, serverURL, authToken, (projectInfo) => {
+        postMessage({ messageType: 'project-info-update', projectInfo })
     },
     (error) => {
         console.log(error)
@@ -218,6 +227,12 @@ export function remoteProject( msg, workerMethods, workerData ) {
                     console.log(errorMessage)
                 })
             }
+            break
+        case 'publish-css':
+            onPublishCss(userID, serverURL, projectID, authToken, postMessage)
+            break
+        case 'refresh-project-info':
+            updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
             break
         case 'close':
             close()

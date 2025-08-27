@@ -66,6 +66,7 @@ class RemoteProject {
                     // make sure that the incoming config is migrated to the latest schema                    
                     migrateConfig(generatedWith, baseConfig, config, appConfig )
                     fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
+                    this.remoteProjectWorker.postMessage({ messageType: 'refresh-project-info' })
                 }
                 break
                 case 'config-check-out-result':
@@ -152,6 +153,10 @@ class RemoteProject {
 
     markAbandonedResources(resources, resourceView) {
         this.remoteProjectWorker.postMessage({ messageType: 'check-abandoned', resources, resourceView })
+    }
+
+    publishCss() {
+        this.remoteProjectWorker.postMessage({ messageType: 'publish-css' })
     }
 }
 

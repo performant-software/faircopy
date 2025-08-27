@@ -169,6 +169,10 @@ class FairCopyApplication {
       this.fairCopySession.publish(teiDoc)
     })
 
+    ipcMain.on('publishCss', (event) => {
+      this.fairCopySession.publishCss()
+    })
+
     ipcMain.on('requestSaveConfig', (event,fairCopyConfig,lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig,lastAction) })    
     ipcMain.on('checkInConfig', (event,fairCopyConfig,firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig,firstAction) })        
     ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })        
