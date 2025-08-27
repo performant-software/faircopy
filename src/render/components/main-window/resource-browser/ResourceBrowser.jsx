@@ -204,10 +204,16 @@ export default class ResourceBrowser extends Component {
     const atRemoteDoc = remoteProject && currentView === 'remote' && teiDoc
     const editable = teiDoc && isEntryEditable(teiDoc, userID)
     const checkedOut = teiDoc && (editable || isCheckedOutRemote(teiDoc, userID))
-    const canPublish = teiDoc?.status?.is_draft && !checkedOut
+    const canPublish = teiDoc?.status?.is_draft && !checkedOut && !teiDoc.status.is_processing
     let publishTooltip = "Publish"
     if (!canPublish) {
-      publishTooltip = checkedOut ? "Document must be checked in to publish" : "Document must have a draft checked in to publish"
+      if (!teiDoc?.status?.is_draft) {
+        publishTooltip = "Document must have a draft checked in to publish"
+      } else if (checkedOut) {
+        publishTooltip = "Document must be checked in to publish"
+      } else {
+        publishTooltip = "Document must finish processing before it can be published"
+      }
     }
     const docActionType = teiDoc?.lastAction?.action_type;
     const datePublished = docActionType === 'publish' ? new Date(teiDoc.lastAction.created_at).toDateString() : null;
