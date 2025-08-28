@@ -156,7 +156,8 @@ class FairCopyApplication {
       this.fairCopySession.importEnd()
     })
 
-    ipcMain.on('checkIn', (event, userID, serverURL, projectID, resourceIDBatches, message ) => { 
+    ipcMain.on('checkIn', (event, userID, serverURL, projectID, resourceIDBatches, message ) => {
+      this.sendToMainWindow('checkInStarted', resourceIDBatches.length)
       this.fairCopySession.checkIn(userID, serverURL, projectID, resourceIDBatches, message)
     })
 

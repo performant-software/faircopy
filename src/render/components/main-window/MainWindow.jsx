@@ -125,6 +125,7 @@ export default class MainWindow extends Component {
       publishingResources: false,
       abandonedDialogMode: false,
       abandonedLocalResources: [],
+      awaitingCheckIn: 0,
     };
   }
 
@@ -248,6 +249,20 @@ export default class MainWindow extends Component {
     });
   };
 
+  onCheckInStarted = (event, totalBatches) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      awaitingCheckIn: totalBatches,
+    }))
+  }
+
+  onCheckInResults = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      awaitingCheckIn: prevState.awaitingCheckIn - 1,
+    }))
+  }
+
   onResourceEntryUpdated = (e, resourceEntry) => {
     const { fairCopyProject } = this.props;
     fairCopyProject.notifyListeners("resourceEntryUpdated", resourceEntry);
@@ -368,6 +383,8 @@ export default class MainWindow extends Component {
       "abandonedResourcesData",
       this.onReceiveAbandonedResourcesData
     );
+    fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted);
+    fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults);
   }
 
   componentWillUnmount() {
@@ -399,6 +416,8 @@ export default class MainWindow extends Component {
       "abandonedResourcesData",
       this.onReceiveAbandonedResourcesData
     );
+    fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted);
+    fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults);
   }
 
   refreshWindow() {
@@ -1196,6 +1215,7 @@ export default class MainWindow extends Component {
   renderContentPane() {
     const { fairCopyProject } = this.props;
     const {
+      awaitingCheckIn,
       resourceBrowserOpen,
       resourceViews,
       rightPaneWidth,
@@ -1212,7 +1232,7 @@ export default class MainWindow extends Component {
     return (
       <div className="content-pane">
         {resourceBrowserOpen && (
-          migratingResources.size > 0
+          awaitingCheckIn > 0 || migratingResources.size > 0
           ? <div id="ResourceBrowser">{bigRingSpinner()}</div>
           : <ResourceBrowser
               onResourceAction={this.onResourceAction}
