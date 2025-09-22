@@ -127,7 +127,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (model_addrPart model_global*)+)",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_publicationStmtPart_detail",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_addressLike model_publicationStmtPart_detail",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -136,6 +136,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -214,6 +215,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"mode",
 				"n",
 				"next",
@@ -252,7 +254,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -391,7 +392,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(u|spanGrp|model_global_spoken)*",
-			"group": "model_common model_divPart model_divPart_spoken model_standOffPart model_annotationLike",
+			"group": "model_standOffPart model_annotationLike model_common model_divPart model_divPart_spoken",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -475,7 +476,6 @@
 			"group": "model_applicationLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -533,7 +533,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_global|model_headLike)* (model_common model_global*)+)",
-			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
+			"group": "model_divBottom model_divTop model_divWrapper model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -542,6 +542,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -571,7 +572,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_availabilityPart|model_pLike)+",
-			"group": "model_publicationStmtPart_detail model_biblPart",
+			"group": "model_biblPart model_publicationStmtPart_detail",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -650,7 +651,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(((titleStmt editionStmt? extent? publicationStmt seriesStmt* notesStmt?) sourceDesc*)|(fileDesc profileDesc))",
-			"group": "model_paraPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"group": "model_entryPart_top model_common model_paraPart model_inter model_msItemPart model_personPart model_standOffPart model_biblLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -660,9 +661,12 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
+				"key",
 				"n",
 				"next",
 				"prev",
+				"ref",
 				"rend",
 				"rendition",
 				"resp",
@@ -692,7 +696,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(analytic* (monogr series*)+ (model_noteLike|model_ptrLike|relatedItem|citedRange)*)",
-			"group": "model_paraPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"group": "model_entryPart_top model_common model_paraPart model_inter model_msItemPart model_personPart model_standOffPart model_biblLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -702,9 +706,12 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
+				"key",
 				"n",
 				"next",
 				"prev",
+				"ref",
 				"rend",
 				"rendition",
 				"resp",
@@ -738,7 +745,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"contemporary",
@@ -1028,7 +1034,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_divTop|model_global)* (model_common model_global*)* ((castItem|castGroup) model_global*)+ (model_common model_global*)*)",
-			"group": "model_paraPart model_common model_inter model_frontPart model_frontPart_drama model_standOffPart",
+			"group": "model_frontPart model_frontPart_drama model_common model_paraPart model_inter model_standOffPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1107,7 +1113,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_biblLike|model_global|model_graphicLike|model_ptrLike|model_attributable|q)+",
-			"group": "model_paraPart model_common model_inter model_attributable model_msItemPart model_quoteLike model_entryPart_top",
+			"group": "model_entryPart_top model_common model_paraPart model_inter model_attributable model_msItemPart model_quoteLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -1116,6 +1122,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -1227,10 +1234,9 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(precision_g* model_headLike* (model_pLike+|model_labelLike+) (model_noteLike|model_biblLike)* climate*)",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -1243,6 +1249,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -1573,7 +1580,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(dim|model_dimLike)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -1641,6 +1648,7 @@
 				"next",
 				"org",
 				"part",
+				"place",
 				"prev",
 				"real",
 				"rend",
@@ -2002,7 +2010,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "model_headLike*",
-			"group": "model_frontPart model_divGenLike",
+			"group": "model_divGenLike model_frontPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2044,7 +2052,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (titlePart model_global*)+)",
-			"group": "model_titlepagePart model_pLike_front",
+			"group": "model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2199,7 +2207,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_common|model_global)*",
-			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
+			"group": "model_divBottom model_divTop model_divWrapper model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2208,6 +2216,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -2313,11 +2322,10 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(idno* model_headLike* (model_pLike+|model_labelLike+) (model_noteLike|model_biblLike|linkGrp|link_g|idno|ptr_g)* model_eventLike* (model_personLike|listPerson)* (model_placeLike|listPlace)* model_objectLike* (relation|listRelation)*)",
-			"group": "model_personPart model_orgPart model_eventLike",
+			"content": "(idno* model_headLike* (model_pLike+|model_labelLike+) (model_noteLike|model_biblLike|model_ptrLike|linkGrp|link_g|idno)* model_eventLike* (model_personLike|listPerson)* (model_placeLike|listPlace)* model_objectLike* (relation|listRelation)*)",
+			"group": "model_orgPart model_personPart model_eventLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -2390,6 +2398,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -2463,7 +2472,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (front model_global*)? (body) model_global* (back model_global*)?)",
-			"group": "model_paraPart model_common model_inter model_attributable",
+			"group": "model_common model_paraPart model_inter model_attributable",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -2473,6 +2482,7 @@
 				"decls",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -2553,6 +2563,7 @@
 				"decls",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"height",
 				"mimeType",
 				"n",
@@ -2756,6 +2767,7 @@
 				"end",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -2798,6 +2810,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"inst",
 				"n",
 				"next",
@@ -2917,6 +2930,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -2963,6 +2977,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3049,6 +3064,7 @@
 				"end",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"iterated",
 				"n",
 				"next",
@@ -3087,7 +3103,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -3235,6 +3250,7 @@
 				"decls",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"met",
 				"n",
 				"next",
@@ -3283,6 +3299,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3317,7 +3334,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_divTop|model_global|desc*)* ((item model_global*)+|((label model_global* item model_global*)+)) (model_divBottom model_global*)*)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3326,6 +3343,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3402,7 +3420,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (app|listApp)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3444,7 +3462,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_milestoneLike|relation|listRelation)* (model_biblLike+ (model_milestoneLike|relation|listRelation)*)+)",
-			"group": "model_frontPart model_paraPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"group": "model_entryPart_top model_common model_paraPart model_inter model_msItemPart model_personPart model_standOffPart model_biblLike model_frontPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3454,6 +3472,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3528,7 +3547,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (relation|listRelation)* (model_eventLike+ (relation|listRelation)*)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike model_personPart model_orgPart model_eventLike",
+			"group": "model_orgPart model_personPart model_eventLike model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3538,6 +3557,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3570,7 +3590,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (relation|listRelation)* ((nym|listNym)+ (relation|listRelation)*)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3580,6 +3600,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3612,7 +3633,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (relation|listRelation)* (model_objectLike+ (relation|listRelation)*)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike model_objectLike",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike model_objectLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3622,6 +3643,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3654,7 +3676,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (relation|listRelation)* ((org|listOrg)+ (relation|listRelation)*)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike model_orgPart",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike model_orgPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3664,6 +3686,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3696,7 +3719,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (relation|listRelation)* ((model_personLike|listPerson)+ (relation|listRelation)*)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike model_orgPart",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike model_orgPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3706,6 +3729,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3738,7 +3762,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (relation|listRelation)* ((model_placeLike|listPlace)+ (relation|listRelation)*)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike model_orgPart",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike model_orgPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3748,6 +3772,7 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3818,7 +3843,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike* desc* (model_pLike|(relation|listRelation)+))",
-			"group": "model_biblPart model_standOffPart model_paraPart model_common model_inter model_listLike",
+			"group": "model_biblPart model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3827,6 +3852,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -3859,7 +3885,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_headLike? desc* (witness|listWit)+)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -3898,10 +3924,9 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(precision_g|model_labelLike|model_placeNamePart|model_offsetLike|model_measureLike|model_addressLike|model_noteLike|model_biblLike)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -3914,6 +3939,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"n",
 				"next",
@@ -3959,7 +3985,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "locus+",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4011,6 +4037,7 @@
 				"end",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"height",
 				"mimeType",
 				"n",
@@ -4170,7 +4197,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(msIdentifier model_headLike* (model_pLike+|(msContents|physDesc|history|additional|msPart|msFrag)*))",
-			"group": "model_paraPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike",
+			"group": "model_entryPart_top model_common model_paraPart model_inter model_msItemPart model_personPart model_standOffPart model_biblLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -4245,7 +4272,7 @@
 				"msIdentifier",
 				"p"
 			],
-			"desc": "contains information about a fragment described in relation to a prior context, typically as a description of a virtual reconstruction of a manuscript or other object whose fragments were catalogued separately",
+			"desc": "contains information about a fragment described in relation to a prior context, typically as a description of a virtual reconstruction of a manuscript or other object whose fragments were catalogued separately.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -4461,6 +4488,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"place",
@@ -4483,7 +4511,7 @@
 			"defaultNodes": [
 				"graphic"
 			],
-			"desc": "encodes the presence of music notation in a text",
+			"desc": "encodes the presence of music notation in a text.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -4734,7 +4762,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_headLike* (model_pLike*|(model_labelLike|model_nameLike|model_placeLike|model_orgPart|model_milestoneLike)*) (model_noteLike|model_biblLike|linkGrp|link_g|ptr_g)* model_personLike*)",
+			"content": "(model_headLike* (model_pLike*|(model_labelLike|model_nameLike|model_placeLike|model_orgPart|model_milestoneLike)*) (model_noteLike|model_biblLike|model_ptrLike|linkGrp|link_g)* model_personLike*)",
 			"group": "model_personLike",
 			"validAttrs": [
 				"ana",
@@ -4816,7 +4844,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_pLike+|(model_personPart|model_global|ptr_g)*)",
+			"content": "(model_pLike+|(model_personPart|model_global|model_ptrLike)*)",
 			"group": "model_personLike",
 			"validAttrs": [
 				"age",
@@ -4950,7 +4978,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_headLike* (model_pLike*|(model_labelLike|model_placeStateLike|model_eventLike|name)*) (model_noteLike|model_biblLike|idno|ptr_g|linkGrp|link_g)* (model_placeLike|listPlace)*)",
+			"content": "(model_headLike* (model_pLike*|(model_labelLike|model_placeStateLike|model_eventLike|name)*) (model_noteLike|model_biblLike|model_ptrLike|idno|linkGrp|link_g)* (model_placeLike|listPlace)*)",
 			"group": "model_placeLike",
 			"validAttrs": [
 				"ana",
@@ -4984,7 +5012,7 @@
 			"defaultNodes": [
 				"placeName"
 			],
-			"desc": "contains data about a geographic location",
+			"desc": "contains data about a geographic location.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -5071,12 +5099,11 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(precision_g* model_headLike* ((model_pLike+|model_labelLike+) (model_noteLike|model_biblLike)*)? population*)",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -5091,6 +5118,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -5155,9 +5183,11 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
+				"place",
 				"prev",
 				"rend",
 				"rendition",
@@ -5670,7 +5700,6 @@
 			"validAttrs": [
 				"active",
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -5734,7 +5763,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(((resp+ model_nameLike_agent+)|(model_nameLike_agent+ resp+)) note_g*)",
-			"group": "model_biblPart model_msItemPart model_respLike model_recordingPart",
+			"group": "model_recordingPart model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -5887,7 +5916,7 @@
 			"defaultNodes": [
 				"desc"
 			],
-			"desc": "describes or points to a related customization or schema file",
+			"desc": "describes or points to a related customization or schema file.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -6016,7 +6045,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"contemporary",
@@ -6063,7 +6091,7 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "contains a description of one seal or similar applied to the object described",
+			"desc": "contains a description of one seal or similar applied to the object described.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -6295,7 +6323,7 @@
 			"defaultNodes": [
 				"p"
 			],
-			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as \"born digital\" for a text which has no previous existence.",
+			"desc": "describes the source(s) from which an electronic text was derived or generated, typically a bibliographic description in the case of a digitized text, or a phrase such as born digital for a text which has no previous existence.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -6382,7 +6410,7 @@
 			"pmType": "node",
 			"fcType": "hard",
 			"isolating": true,
-			"content": "(model_global* (speaker model_global*)? ((lg|model_lLike|model_pLike|model_listLike|model_stageLike|model_attributable) (model_global*|q))+)",
+			"content": "(model_global* (model_stageLike model_global*)* (((speaker model_global*) ((lg|model_lLike|model_pLike|model_listLike|model_attributable|q|model_stageLike) model_global*))|((lg|model_lLike|model_pLike|model_listLike|model_attributable|q) model_global*)) ((lg|model_lLike|model_pLike|model_listLike|model_attributable|q|model_stageLike) model_global*)*)",
 			"group": "model_common model_divPart",
 			"validAttrs": [
 				"ana",
@@ -6392,8 +6420,10 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"hand",
 				"n",
 				"next",
+				"place",
 				"prev",
 				"rend",
 				"rendition",
@@ -6432,6 +6462,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"inst",
 				"n",
 				"next",
@@ -6545,12 +6576,11 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(precision_g* (state+|(model_headLike* model_pLike+ (model_noteLike|model_biblLike)*)|(model_labelLike|model_noteLike|model_biblLike)*))",
-			"group": "model_personPart model_persStateLike model_orgStateLike model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike",
+			"group": "model_orgStateLike model_personPart model_persStateLike model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -6565,6 +6595,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -6909,7 +6940,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "((model_headLike|model_global)* ((row model_global*)+|(model_graphicLike model_global*)+) (model_divBottom model_global*)*)",
-			"group": "model_standOffPart model_paraPart model_common model_inter model_listLike",
+			"group": "model_common model_paraPart model_inter model_standOffPart model_listLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -6919,6 +6950,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -6951,10 +6983,9 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(precision_g* model_headLike* (model_pLike+|model_labelLike+) (model_noteLike|model_biblLike)* terrain*)",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -6967,6 +6998,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -7110,6 +7142,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"interval",
 				"n",
 				"next",
@@ -7222,12 +7255,11 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(precision_g* (trait+|(model_headLike* model_pLike+ (model_noteLike|model_biblLike)*)|(model_labelLike|model_noteLike|model_biblLike)*))",
-			"group": "model_personPart model_persStateLike model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike",
+			"group": "model_personPart model_persStateLike model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -7242,6 +7274,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -7378,7 +7411,6 @@
 			"group": "model_encodingDescPart",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -7437,7 +7469,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -7507,6 +7538,7 @@
 				"end",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"iterated",
 				"n",
 				"next",
@@ -7603,6 +7635,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"mode",
 				"n",
 				"next",
@@ -7645,6 +7678,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -7684,6 +7718,7 @@
 				"edRef",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -7823,7 +7858,6 @@
 			"fcType": "inlines",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -7949,6 +7983,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -7999,6 +8034,7 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"instant",
 				"max",
 				"min",
@@ -8045,6 +8081,7 @@
 				"edRef",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8106,7 +8143,7 @@
 				"xml:space"
 			],
 			"icon": "fa-hand-point-right",
-			"group": "model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i model_linePart_i",
+			"group": "model_linePart_i model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i",
 			"desc": "marks the beginning of a sequence of text written in a new hand, or the beginning of a scribal stint.",
 			"synth": false,
 			"derivedAttrs": []
@@ -8196,6 +8233,7 @@
 				"edRef",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8217,7 +8255,7 @@
 			],
 			"icon": "fa-angles-right",
 			"group": "model_paraPart_i model_global_i model_milestoneLike_i",
-			"desc": "marks the beginning of a new (typographic) line in some edition or version of a text.",
+			"desc": "marks the beginning of a topographic line in some edition or version of a text.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -8234,6 +8272,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8275,6 +8314,7 @@
 				"edRef",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8336,7 +8376,7 @@
 				"xml:space"
 			],
 			"icon": "fa-shoe-prints",
-			"group": "model_paraPart_i model_common_i model_inter_i model_stageLike_i",
+			"group": "model_common_i model_paraPart_i model_inter_i model_stageLike_i",
 			"desc": "marks the actual movement of one or more characters.",
 			"synth": false,
 			"derivedAttrs": [
@@ -8358,6 +8398,7 @@
 				"end",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8400,6 +8441,7 @@
 				"edRef",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8440,6 +8482,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"mimeType",
 				"n",
 				"next",
@@ -8462,7 +8505,7 @@
 				"xml:space"
 			],
 			"icon": "fa-bullseye",
-			"group": "model_annotationPart_body_i model_paraPart_i model_phrase_i model_limitedPhrase_i model_correspContextPart_i model_publicationStmtPart_detail_i model_ptrLike_i",
+			"group": "model_annotationPart_body_i model_correspContextPart_i model_limitedPhrase_i model_paraPart_i model_phrase_i model_publicationStmtPart_detail_i model_ptrLike_i",
 			"desc": "defines a pointer to another location.",
 			"synth": false,
 			"derivedAttrs": []
@@ -8491,6 +8534,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -8514,7 +8558,7 @@
 				"xml:space"
 			],
 			"icon": "fa-rotate-right",
-			"group": "model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i model_linePart_i",
+			"group": "model_linePart_i model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i",
 			"desc": "indicates one or more cancelled interventions in a document which have subsequently been marked as reaffirmed or repeated.",
 			"synth": false,
 			"derivedAttrs": []
@@ -8571,6 +8615,7 @@
 				"exclude",
 				"facs",
 				"feature",
+				"generatedBy",
 				"n",
 				"new",
 				"next",
@@ -8619,6 +8664,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -8642,7 +8688,7 @@
 				"xml:space"
 			],
 			"icon": "fa-rotate-left",
-			"group": "model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i model_linePart_i",
+			"group": "model_linePart_i model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_transcriptional_i",
 			"desc": "indicates one or more marked-up interventions in a document which have subsequently been marked for cancellation.",
 			"synth": false,
 			"derivedAttrs": []
@@ -8805,6 +8851,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -8829,7 +8876,7 @@
 				"xml:space"
 			],
 			"icon": "fa-message",
-			"group": "model_paraPart_i model_global_i model_noteLike_i model_standOffPart_i model_annotationLike_i model_correspDescPart_i model_correspActionPart_i model_correspContextPart_i model_annotationPart_body_i",
+			"group": "model_standOffPart_i model_annotationLike_i model_annotationPart_body_i model_correspActionPart_i model_correspContextPart_i model_correspDescPart_i model_paraPart_i model_global_i model_noteLike_i",
 			"defaultNodes": null,
 			"desc": "contains a note or annotation.",
 			"synth": false,
@@ -8927,6 +8974,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -8944,7 +8992,7 @@
 				"xml:space"
 			],
 			"icon": "fa-circle-question",
-			"group": "model_paraPart_i model_phrase_i model_pPart_edit_i model_limitedPhrase_i model_pPart_editorial_i model_linePart_i",
+			"group": "model_linePart_i model_limitedPhrase_i model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_editorial_i",
 			"defaultNodes": [
 				"sic",
 				"corr"
@@ -9089,7 +9137,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -9138,7 +9185,7 @@
 				"xml:space"
 			],
 			"icon": "fa-crosshairs",
-			"group": "model_paraPart_i model_global_i model_standOffPart_i model_global_meta_i model_certLike_i",
+			"group": "model_certLike_i model_paraPart_i model_global_i model_standOffPart_i model_global_meta_i",
 			"defaultNodes": [
 				"desc"
 			],
@@ -9194,7 +9241,7 @@
 				"xml:space"
 			],
 			"icon": "fa-user",
-			"group": "model_paraPart_i model_global_i model_standOffPart_i model_global_meta_i model_certLike_i",
+			"group": "model_certLike_i model_paraPart_i model_global_i model_standOffPart_i model_global_meta_i",
 			"defaultNodes": [
 				"desc"
 			],
@@ -9300,6 +9347,7 @@
 				"exclude",
 				"facs",
 				"from",
+				"generatedBy",
 				"inst",
 				"n",
 				"next",
@@ -9369,6 +9417,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -9390,7 +9439,7 @@
 				"xml:space"
 			],
 			"icon": "fa-shuffle",
-			"group": "model_paraPart_i model_phrase_i model_pPart_edit_i model_limitedPhrase_i model_pPart_editorial_i",
+			"group": "model_limitedPhrase_i model_paraPart_i model_phrase_i model_pPart_edit_i model_pPart_editorial_i",
 			"defaultNodes": [
 				"add",
 				"del"
@@ -9440,6 +9489,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -9467,7 +9517,7 @@
 			"defaultNodes": [
 				"desc"
 			],
-			"desc": "identifies a series of possibly fragmented additions, deletions, or other revisions on a manuscript that combine to make up a single intervention in the text",
+			"desc": "identifies a series of possibly fragmented additions, deletions, or other revisions on a manuscript that combine to make up a single intervention in the text.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -9505,6 +9555,7 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"hand",
 				"instant",
 				"max",
@@ -9534,7 +9585,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains letters, words, or phrases inserted in the source text by an author, scribe, or a previous annotator or corrector.",
 			"synth": true,
 			"derivedAttrs": []
@@ -9545,7 +9596,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -9561,6 +9612,7 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"hand",
 				"instant",
 				"max",
@@ -9607,6 +9659,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -9630,7 +9683,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"desc": "contains an additional name component, such as a nickname, epithet, or alias, or any other descriptive phrase used within a personal name.",
 			"synth": true,
 			"derivedAttrs": []
@@ -9641,7 +9694,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -9652,6 +9705,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -9685,7 +9739,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -9698,6 +9751,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -9734,7 +9788,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_personPart model_persStateLike",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_addressLike model_personPart model_persStateLike",
 			"desc": "contains an informal description of a person's present or past affiliation with some organization, for example an employer or sponsor.",
 			"synth": true,
 			"derivedAttrs": [
@@ -9747,11 +9801,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike model_personPart model_persStateLike",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_addressLike model_personPart model_persStateLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -9764,6 +9817,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -9812,7 +9866,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -9824,6 +9877,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -9859,7 +9913,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of a geo-political unit consisting of two or more nation states or countries.",
 			"synth": true,
 			"derivedAttrs": []
@@ -9870,11 +9924,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -9886,6 +9939,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -9938,6 +9992,7 @@
 				"evidence",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"instant",
 				"n",
 				"next",
@@ -9957,7 +10012,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains the correct form of a passage apparently erroneous in the copy text.",
 			"synth": true,
 			"derivedAttrs": []
@@ -9968,7 +10023,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -9979,6 +10034,7 @@
 				"evidence",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"instant",
 				"n",
 				"next",
@@ -10008,7 +10064,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -10020,6 +10075,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -10055,7 +10111,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of a geo-political unit, such as a nation, country, colony, or commonwealth, larger than or administratively superior to a region and smaller than a bloc.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10066,11 +10122,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -10082,6 +10137,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -10165,7 +10221,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains an area of damage to the text witness.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10176,7 +10232,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"agent",
@@ -10247,6 +10303,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -10287,7 +10344,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike model_publicationStmtPart_detail",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_recordingPart model_dateLike model_publicationStmtPart_detail",
 			"desc": "contains a date in any format.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10298,7 +10355,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_phrase|model_global)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike model_publicationStmtPart_detail",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_recordingPart model_dateLike model_publicationStmtPart_detail",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -10321,6 +10378,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -10383,12 +10441,14 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"hand",
 				"instant",
 				"max",
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -10411,7 +10471,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains a letter, word, or passage deleted, marked as deleted, or otherwise indicated as superfluous or spurious in the copy text by an author, scribe, or a previous annotator or corrector.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10422,7 +10482,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -10438,12 +10498,14 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"hand",
 				"instant",
 				"max",
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -10476,7 +10538,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -10488,6 +10549,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -10523,7 +10585,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of any kind of subdivision of a settlement, such as a parish, ward, or other administrative or geographic unit.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10534,11 +10596,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -10550,6 +10611,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -10601,6 +10663,8 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
+				"hand",
 				"n",
 				"next",
 				"prev",
@@ -10638,6 +10702,8 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
+				"hand",
 				"n",
 				"next",
 				"prev",
@@ -10666,7 +10732,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -10681,6 +10746,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -10723,7 +10789,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_offsetLike",
 			"desc": "contains a common noun identifying some geographical feature contained within a geographic name, such as valley, mount, etc.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10734,13 +10800,12 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_offsetLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -10755,6 +10820,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -10807,7 +10873,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -10820,6 +10885,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -10856,7 +10922,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "identifies a name associated with some geographical feature such as Windrush Valley or Mount Sinai.",
 			"synth": true,
 			"derivedAttrs": []
@@ -10867,11 +10933,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -10884,6 +10949,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -10936,6 +11002,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -10974,6 +11041,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -11019,6 +11087,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -11042,7 +11111,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "represents any kind of modification identified within a single document.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11053,7 +11122,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -11075,6 +11144,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -11108,7 +11178,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11122,6 +11191,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11159,7 +11229,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_nameLike_agent model_personPart",
 			"desc": "contains a proper noun or noun phrase.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11170,11 +11240,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent model_personPart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_nameLike_agent model_personPart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11188,6 +11257,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11241,6 +11311,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -11259,7 +11330,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"desc": "contains a connecting phrase or link used within a name but not regarded as part of it, such as van der or of.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11270,7 +11341,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -11280,6 +11351,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -11308,7 +11380,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11322,6 +11393,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11359,7 +11431,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike",
 			"desc": "contains a proper noun or noun phrase used to refer to an object.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11370,11 +11442,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11388,6 +11459,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11437,7 +11509,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -11452,6 +11523,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -11494,7 +11566,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_offsetLike",
 			"desc": "marks that part of a relative temporal or spatial expression which indicates the direction of the offset between the two place names, dates, or times involved in the expression.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11505,13 +11577,12 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_offsetLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_offsetLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -11526,6 +11597,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -11578,7 +11650,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11592,6 +11663,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11629,7 +11701,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_nameLike_agent",
 			"desc": "contains an organizational name.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11640,11 +11712,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_nameLike_agent",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11658,6 +11729,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11711,6 +11783,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -11727,7 +11800,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains a reading which is marked as following the original, rather than being normalized or corrected.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11738,7 +11811,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -11748,6 +11821,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -11774,7 +11848,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11788,6 +11861,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11825,7 +11899,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_personPart model_persStateLike model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_nameLike_agent model_personPart model_persStateLike",
 			"desc": "contains a proper noun or proper-noun phrase referring to a person, possibly including one or more of the person's forenames, surnames, honorifics, added names, etc.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11836,11 +11910,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_personPart model_persStateLike model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_nameLike_agent",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_nameLike_agent model_personPart model_persStateLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11854,6 +11927,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -11901,7 +11975,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11915,6 +11988,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"n",
 				"next",
 				"notAfter",
@@ -11947,7 +12021,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_personPart model_persStateLike model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart model_personPart model_persStateLike",
 			"desc": "indicates the personal pronouns used, or assumed to be used, by the individual being described.",
 			"synth": true,
 			"derivedAttrs": []
@@ -11958,11 +12032,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_personPart model_persStateLike model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart model_personPart model_persStateLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -11976,6 +12049,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"n",
 				"next",
 				"notAfter",
@@ -12018,7 +12092,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -12032,6 +12105,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -12069,7 +12143,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart model_settingPart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart model_settingPart",
 			"desc": "contains an absolute or relative place name.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12080,11 +12154,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart model_settingPart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart model_settingPart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -12098,6 +12171,7 @@
 				"from-custom",
 				"from-iso",
 				"full",
+				"generatedBy",
 				"instant",
 				"key",
 				"n",
@@ -12151,6 +12225,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -12170,7 +12245,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
+			"group": "model_common model_paraPart model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"desc": "contains material which is distinguished from the surrounding text using quotation marks or a similar method, for any one of a variety of reasons including, but not limited to: direct speech or thought, technical terms or jargon, authorial distance, quotations from elsewhere, and passages that are mentioned but not used.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12181,7 +12256,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_paraPart model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike model_common",
+			"group": "model_common model_paraPart model_phrase model_highlighted model_limitedPhrase model_linePart model_hiLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -12191,6 +12266,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -12229,6 +12305,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"mimeType",
 				"n",
 				"next",
@@ -12250,7 +12327,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_annotationPart_body model_paraPart model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
+			"group": "model_annotationPart_body model_correspContextPart model_limitedPhrase model_paraPart model_phrase model_publicationStmtPart_detail model_ptrLike",
 			"desc": "defines a reference to another location, possibly modified by additional text or comment.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12261,7 +12338,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_annotationPart_body model_paraPart model_phrase model_limitedPhrase model_correspContextPart model_publicationStmtPart_detail model_ptrLike",
+			"group": "model_annotationPart_body model_correspContextPart model_limitedPhrase model_paraPart model_phrase model_publicationStmtPart_detail model_ptrLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -12274,6 +12351,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"mimeType",
 				"n",
 				"next",
@@ -12312,6 +12390,7 @@
 				"evidence",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"instant",
 				"n",
 				"next",
@@ -12331,7 +12410,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains a reading which has been regularized or normalized in some sense.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12342,7 +12421,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -12353,6 +12432,7 @@
 				"evidence",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"instant",
 				"n",
 				"next",
@@ -12382,7 +12462,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -12394,6 +12473,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -12429,7 +12509,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of an administrative unit such as a state, province, or county, larger than a settlement, but smaller than a country.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12440,11 +12520,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -12456,6 +12535,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -12519,6 +12599,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -12541,7 +12622,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "indicates restoration of text to an earlier state by cancellation of an editorial or authorial marking or instruction.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12552,7 +12633,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -12574,6 +12655,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -12624,6 +12706,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -12645,7 +12728,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains a sequence of writing which has been retraced, for example by over-inking, to clarify or fix it.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12656,7 +12739,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart",
+			"group": "model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -12678,6 +12761,7 @@
 				"min",
 				"n",
 				"next",
+				"place",
 				"precision",
 				"prev",
 				"quantity",
@@ -12791,6 +12875,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -12814,7 +12899,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"desc": "contains a name component which indicates that the referent has a particular role or position in society, such as an official title or rank.",
 			"synth": true,
 			"derivedAttrs": []
@@ -12825,7 +12910,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -12836,6 +12921,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -12972,6 +13058,7 @@
 				"exclude",
 				"facs",
 				"function",
+				"generatedBy",
 				"hand",
 				"met",
 				"n",
@@ -12998,7 +13085,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
+			"group": "model_choicePart model_linePart model_paraPart model_phrase model_segLike model_standOffPart",
 			"desc": "represents any segmentation of text below the chunk level.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13009,7 +13096,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_segLike model_choicePart model_linePart model_standOffPart",
+			"group": "model_choicePart model_linePart model_paraPart model_phrase model_segLike model_standOffPart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -13021,6 +13108,7 @@
 				"exclude",
 				"facs",
 				"function",
+				"generatedBy",
 				"hand",
 				"met",
 				"n",
@@ -13057,7 +13145,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -13069,6 +13156,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -13104,7 +13192,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"desc": "contains the name of a settlement such as a city, town, or village identified as a single geo-political or administrative unit.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13115,11 +13203,10 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_placeStateLike model_placeNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_placeStateLike model_placeNamePart",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -13131,6 +13218,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -13182,6 +13270,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13198,7 +13287,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains text reproduced although apparently incorrect or inaccurate.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13209,7 +13298,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -13219,6 +13308,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13267,7 +13357,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains discussion of the leaf or quire signatures found within a codex or similar object.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13278,7 +13368,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -13349,7 +13439,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "signifies text supplied by the transcriber or editor for any reason; for example because the original cannot be read due to physical damage, or because of an obvious omission by the author or scribe.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13360,7 +13450,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_choicePart",
+			"group": "model_choicePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -13504,7 +13594,6 @@
 			"fcType": "inters",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -13516,6 +13605,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"level",
 				"n",
@@ -13567,7 +13657,6 @@
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -13579,6 +13668,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"level",
 				"n",
@@ -13637,6 +13727,7 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"instant",
 				"max",
 				"min",
@@ -13661,7 +13752,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
+			"group": "model_choicePart model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"desc": "contains a word, phrase, or passage which cannot be transcribed with certainty because it is illegible or inaudible in the source.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13672,7 +13763,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional model_linePart model_choicePart",
+			"group": "model_choicePart model_linePart model_paraPart model_phrase model_pPart_edit model_pPart_transcriptional",
 			"defaultNodes": null,
 			"validAttrs": [
 				"agent",
@@ -13688,6 +13779,7 @@
 				"exclude",
 				"extent",
 				"facs",
+				"generatedBy",
 				"instant",
 				"max",
 				"min",
@@ -13729,6 +13821,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13750,7 +13843,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"desc": "contains a symbol, a word or a phrase referring to a unit of measurement in any kind of formal or informal system.",
 			"synth": true,
 			"derivedAttrs": []
@@ -13761,7 +13854,7 @@
 			"fcType": "inters",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"defaultNodes": null,
 			"validAttrs": [
 				"ana",
@@ -13772,6 +13865,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13809,6 +13903,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13827,7 +13922,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
+			"group": "model_choicePart model_limitedPhrase model_paraPart model_phrase model_pPart_edit model_pPart_editorial",
 			"desc": "contains an abbreviation of any sort.",
 			"synth": false,
 			"derivedAttrs": [
@@ -13862,7 +13957,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "describes the system used to ensure correct ordering of the quires or similar making up a codex, incunable, or other object typically by means of annotations at the foot of the page.",
 			"synth": false,
 			"derivedAttrs": []
@@ -13881,6 +13976,7 @@
 				"exclude",
 				"facs",
 				"function",
+				"generatedBy",
 				"met",
 				"n",
 				"next",
@@ -13923,6 +14019,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13963,6 +14060,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -13979,7 +14077,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_addressLike",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_addressLike",
 			"desc": "contains an email address identifying a location to which email messages can be delivered.",
 			"synth": false,
 			"derivedAttrs": []
@@ -13997,6 +14095,7 @@
 				"evidence",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"instant",
 				"n",
 				"next",
@@ -14014,7 +14113,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_pPart_edit model_limitedPhrase model_pPart_editorial model_choicePart",
+			"group": "model_choicePart model_limitedPhrase model_paraPart model_phrase model_pPart_edit model_pPart_editorial",
 			"desc": "contains the expansion of an abbreviation.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14031,6 +14130,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -14065,6 +14165,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -14088,7 +14189,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"desc": "contains a forename, given or baptismal name.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14106,6 +14207,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -14129,7 +14231,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"desc": "contains a name component used to distinguish otherwise similar names on the basis of the relative ages or generations of the persons named.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14149,6 +14251,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -14203,8 +14306,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
-			"desc": "contains a heraldic formula or phrase, typically found as part of a blazon, coat of arms, etc. ",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
+			"desc": "contains a heraldic formula or phrase, typically found as part of a blazon, coat of arms, etc.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -14242,7 +14345,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing the material of which the object being described is composed.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14263,6 +14366,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"max",
 				"min",
 				"n",
@@ -14286,7 +14390,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"desc": "contains a word or phrase referring to some quantity of an object or commodity, usually comprising a number, a unit, and a commodity name.",
 			"synth": false,
 			"derivedAttrs": [
@@ -14305,6 +14409,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -14341,6 +14446,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"max",
 				"min",
 				"n",
@@ -14362,7 +14468,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"desc": "contains a number, written in any form.",
 			"synth": false,
 			"derivedAttrs": [
@@ -14399,7 +14505,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing the type of object being referred to.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14465,7 +14571,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains any form of date, used to identify the date of origin for a manuscript, manuscript part, or other object.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14476,7 +14582,6 @@
 			"fcType": "marks",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -14525,7 +14630,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains any form of place name, used to identify the place of origin for a manuscript, manuscript part, or other object.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14544,6 +14649,7 @@
 				"exclude",
 				"facs",
 				"function",
+				"generatedBy",
 				"met",
 				"n",
 				"next",
@@ -14586,6 +14692,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -14608,7 +14715,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike",
 			"desc": "contains a general purpose name or referring string.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14627,6 +14734,7 @@
 				"exclude",
 				"facs",
 				"function",
+				"generatedBy",
 				"met",
 				"n",
 				"next",
@@ -14685,8 +14793,8 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
-			"desc": "marks the word or words taken from a fixed point in a codex (typically the beginning of the second leaf) in order to provide a unique identifier for it. ",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
+			"desc": "marks the word or words taken from a fixed point in a codex (typically the beginning of the second leaf) in order to provide a unique identifier for it.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -14702,6 +14810,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -14729,7 +14838,6 @@
 			"fcType": "marks",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -14772,7 +14880,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing a stamp or similar device.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14790,6 +14898,7 @@
 				"exclude",
 				"facs",
 				"full",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -14813,7 +14922,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_persNamePart",
+			"group": "model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_persNamePart",
 			"desc": "contains a family (inherited) name, as opposed to a given, baptismal, or nick name.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14833,6 +14942,7 @@
 				"evaluate",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -14886,6 +14996,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"instant",
 				"key",
 				"max",
@@ -14926,7 +15037,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_recordingPart model_correspActionPart model_dateLike",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_recordingPart model_dateLike",
 			"desc": "contains a phrase defining a time of day in any format.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14959,7 +15070,7 @@
 				"xml:lang",
 				"xml:space"
 			],
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"desc": "contains a word or phrase describing a watermark or similar device.",
 			"synth": false,
 			"derivedAttrs": []
@@ -14970,7 +15081,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart|ab)*",
-			"group": "model_common model_divPart model_correspContextPart model_pLike",
+			"group": "model_correspContextPart model_common model_divPart model_pLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -14980,6 +15091,7 @@
 				"decls",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -15128,7 +15240,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -15257,7 +15368,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -15327,7 +15437,6 @@
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -15421,7 +15530,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode6|model_highlighted|model_pPart_data|model_pPart_edit|model_segLike|model_ptrLike|model_biblPart|model_global)*",
-			"group": "model_paraPart model_common model_inter model_entryPart_top model_personPart model_msItemPart model_standOffPart model_biblLike model_biblPart",
+			"group": "model_entryPart_top model_common model_paraPart model_inter model_msItemPart model_personPart model_standOffPart model_biblLike model_biblPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -15431,9 +15540,12 @@
 				"default",
 				"exclude",
 				"facs",
+				"generatedBy",
+				"key",
 				"n",
 				"next",
 				"prev",
+				"ref",
 				"rend",
 				"rendition",
 				"resp",
@@ -15506,7 +15618,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -15576,7 +15687,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_phrase|docAuthor|model_global)*",
-			"group": "model_divTop model_divBottom model_divWrapper model_titlepagePart model_pLike_front",
+			"group": "model_divBottom model_divTop model_divWrapper model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -15585,6 +15696,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -15612,7 +15724,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_common model_inter model_stageLike",
+			"group": "model_common model_paraPart model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -15650,7 +15762,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_common model_inter model_stageLike",
+			"group": "model_common model_paraPart model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -15806,7 +15918,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -15932,7 +16043,7 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "defines the range of cited content, often represented by pages or other units",
+			"desc": "defines the range of cited content, often represented by pages or other units.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -15978,7 +16089,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode3|signed|dateline|salute|model_phrase|model_global)*",
+			"content": "(textNode3|byline|signed|dateline|salute|model_phrase|model_global)*",
 			"group": "model_divBottom model_divBottomPart",
 			"validAttrs": [
 				"ana",
@@ -15988,6 +16099,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -16006,7 +16118,7 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "groups together salutations, datelines, and similar phrases appearing as a final group at the end of a division, especially of a letter.",
+			"desc": "groups together salutations, datelines, bylines, and similar phrases appearing as a final group at the end of a division, especially of a letter.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -16247,7 +16359,6 @@
 			"group": "model_profileDescPart",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -16302,7 +16413,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -16356,7 +16466,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_phrase|model_global|docDate)*",
-			"group": "model_divTop model_divBottom model_divWrapper model_pLike_front",
+			"group": "model_divBottom model_divTop model_divWrapper model_pLike_front",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -16365,6 +16475,8 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
+				"hand",
 				"n",
 				"next",
 				"prev",
@@ -16392,7 +16504,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_msItemPart model_biblPart",
+			"group": "model_biblPart model_msItemPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -16430,7 +16542,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
+			"group": "model_dimLike model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -16481,7 +16593,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -16591,7 +16702,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
-			"group": "model_descLike model_paraPart model_common model_inter model_labelLike",
+			"group": "model_descLike model_common model_paraPart model_inter model_labelLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -16600,6 +16711,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -16632,7 +16744,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -16718,7 +16830,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
+			"group": "model_divBottom model_divTop model_divWrapper model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -16727,6 +16839,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -16756,7 +16869,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_titlepagePart model_divTop model_divBottom model_divWrapper model_pLike_front",
+			"group": "model_divBottom model_divTop model_divWrapper model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"calendar",
@@ -16771,6 +16884,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"n",
 				"next",
 				"notAfter",
@@ -16811,7 +16925,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_titlepagePart model_pLike_front",
+			"group": "model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -16847,7 +16961,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_phrase|pubPlace|docDate|publisher|model_global)*",
-			"group": "model_titlepagePart model_pLike_front",
+			"group": "model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -16962,7 +17076,6 @@
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -17021,7 +17134,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -17083,7 +17195,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_msItemPart model_msQuoteLike model_biblPart",
+			"group": "model_biblPart model_msItemPart model_msQuoteLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -17201,7 +17313,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -17379,7 +17490,6 @@
 				"ana",
 				"atLeast",
 				"atMost",
-				"calendar",
 				"cert",
 				"change",
 				"confidence",
@@ -17486,6 +17596,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"notation",
@@ -17517,7 +17628,6 @@
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -17571,7 +17681,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "textNode8",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -17581,6 +17691,7 @@
 				"decls",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -17697,6 +17808,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -17728,7 +17840,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
+			"group": "model_dimLike model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -17774,10 +17886,9 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8|idno)*",
-			"group": "model_msItemPart model_addrPart model_paraPart model_phrase model_limitedPhrase model_pPart_data model_correspActionPart model_nameLike model_publicationStmtPart_detail model_personPart",
+			"group": "model_msItemPart model_addrPart model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_nameLike model_personPart model_publicationStmtPart_detail",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -17789,6 +17900,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"n",
 				"next",
 				"notAfter",
@@ -17870,7 +17982,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_msItemPart model_msQuoteLike model_biblPart",
+			"group": "model_biblPart model_msItemPart model_msQuoteLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18000,6 +18112,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"inst",
 				"n",
 				"next",
@@ -18077,6 +18190,7 @@
 				"enjamb",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"met",
 				"n",
 				"next",
@@ -18108,7 +18222,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode3|model_attributable|model_phrase|model_global)*",
-			"group": "model_paraPart model_common model_inter model_labelLike",
+			"group": "model_common model_paraPart model_inter model_labelLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18117,6 +18231,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -18151,7 +18266,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -18224,6 +18338,7 @@
 				"rendition",
 				"resp",
 				"sameAs",
+				"scope",
 				"select",
 				"source",
 				"style",
@@ -18331,7 +18446,6 @@
 			"group": "model_availabilityPart",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -18385,8 +18499,8 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode13|model_global|model_linePart)*",
-			"group": "model_linePart",
+			"content": "(textNode2|model_paraPart)*",
+			"group": "model_correspContextPart model_common model_divPart model_pLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18421,7 +18535,7 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains the transcription of a topographic line in the source document",
+			"desc": "contains the transcription of a topographic line in the source document.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -18467,7 +18581,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8|hi|locus)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_msdesc",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_msdesc",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18510,8 +18624,8 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode14|model_measureLike)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike",
+			"content": "(textNode13|model_measureLike)*",
+			"group": "model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18521,6 +18635,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -18553,10 +18668,9 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode9|model_limitedPhrase|model_inter)*",
-			"group": "model_divTop model_divBottom model_divWrapper model_biblPart model_msItemPart model_respLike",
+			"group": "model_divBottom model_divTop model_divWrapper model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -18568,6 +18682,7 @@
 				"from",
 				"from-custom",
 				"from-iso",
+				"generatedBy",
 				"key",
 				"n",
 				"next",
@@ -18712,7 +18827,7 @@
 				"xml:space"
 			],
 			"defaultNodes": null,
-			"desc": "contains any form of unstructured alternative name used for a manuscript or other object, such as an ocellus nominum, or nickname.",
+			"desc": "contains a proper noun or noun phrase used for a manuscript, or other object, as opposed to a formal identification number or classmark.",
 			"synth": false,
 			"derivedAttrs": []
 		},
@@ -18725,7 +18840,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -18790,7 +18904,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"code",
@@ -18863,6 +18976,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -18894,7 +19008,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -18948,7 +19061,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_common model_divPart model_correspContextPart model_pLike",
+			"group": "model_correspContextPart model_common model_divPart model_pLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18958,6 +19071,7 @@
 				"decls",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -19102,7 +19216,6 @@
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -19159,7 +19272,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -19332,7 +19444,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_paraPart model_common model_inter model_attributable model_msItemPart model_quoteLike",
+			"group": "model_biblPart model_common model_paraPart model_inter model_attributable model_msItemPart model_quoteLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -19342,6 +19454,7 @@
 				"defective",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"notation",
@@ -19455,7 +19568,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -19520,7 +19632,6 @@
 			"group": "",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -19729,7 +19840,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_paraPart model_common model_inter model_attributable",
+			"group": "model_common model_paraPart model_inter model_attributable",
 			"validAttrs": [
 				"aloud",
 				"ana",
@@ -19740,6 +19851,7 @@
 				"direct",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"n",
 				"next",
 				"prev",
@@ -19769,7 +19881,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_divTop model_divBottom model_divWrapper",
+			"group": "model_divBottom model_divTop model_divWrapper",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -19778,6 +19890,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -19847,7 +19960,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode15|title|model_ptrLike|editor|respStmt|biblScope|idno|textLang|model_global|availability)*",
+			"content": "(textNode14|title|model_ptrLike|editor|respStmt|biblScope|idno|textLang|model_global|availability)*",
 			"group": "model_biblPart",
 			"validAttrs": [
 				"ana",
@@ -19887,7 +20000,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -19953,6 +20065,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -19984,7 +20097,6 @@
 			"group": "model_personPart model_persStateLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"code",
@@ -20048,7 +20160,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_common model_inter model_stageLike",
+			"group": "model_common model_paraPart model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20134,8 +20246,10 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"hand",
 				"n",
 				"next",
+				"place",
 				"prev",
 				"rend",
 				"rendition",
@@ -20164,7 +20278,6 @@
 			"group": "model_biblPart model_msItemPart model_respLike",
 			"validAttrs": [
 				"ana",
-				"calendar",
 				"cert",
 				"change",
 				"copyOf",
@@ -20218,7 +20331,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_paraPart model_common model_inter model_stageLike",
+			"group": "model_common model_paraPart model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20227,6 +20340,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -20445,7 +20559,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_paraPart model_common model_inter model_stageLike",
+			"group": "model_common model_paraPart model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20486,7 +20600,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_msItemPart model_biblPart",
+			"group": "model_biblPart model_msItemPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20524,7 +20638,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_titlepagePart model_pLike_front",
+			"group": "model_pLike_front model_titlepagePart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20573,6 +20687,7 @@
 				"corresp",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"hand",
 				"n",
 				"next",
@@ -20646,7 +20761,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode2|model_paraPart)*",
-			"group": "model_standOffPart model_common model_divPart model_divPart_spoken",
+			"group": "model_common model_divPart model_divPart_spoken model_standOffPart",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20691,7 +20806,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode4|model_phrase|model_inter|model_divPart|model_global)*",
-			"group": "model_paraPart model_common model_inter model_stageLike",
+			"group": "model_common model_paraPart model_inter model_stageLike",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -20727,7 +20842,7 @@
 			"fcType": "soft",
 			"isolating": false,
 			"content": "(textNode8)*",
-			"group": "model_paraPart model_phrase model_limitedPhrase model_pPart_data model_measureLike model_dimLike",
+			"group": "model_dimLike model_limitedPhrase model_paraPart model_phrase model_pPart_data model_measureLike",
 			"validAttrs": [
 				"ana",
 				"atLeast",
@@ -20904,6 +21019,7 @@
 				"end",
 				"exclude",
 				"facs",
+				"generatedBy",
 				"gradual",
 				"n",
 				"next",
@@ -20936,7 +21052,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode13|model_graphicLike|model_global|surface|model_linePart)*",
+			"content": "(textNode15|model_graphicLike|model_global|surface|model_linePart)*",
 			"group": "model_linePart model_standOffPart",
 			"validAttrs": [
 				"ana",
@@ -21177,9 +21293,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_global_i|model_linePart_i)*|text)*",
+			"content": "text*",
 			"selectable": false,
-			"marks": "model_linePart",
+			"marks": "model_measureLike",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -21192,9 +21308,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "text*",
+			"content": "((model_ptrLike_i|model_global_i)*|text)*",
 			"selectable": false,
-			"marks": "model_measureLike",
+			"marks": "model_ptrLike",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -21207,9 +21323,9 @@
 			"pmType": "node",
 			"fcType": "textNodes",
 			"synth": true,
-			"content": "((model_ptrLike_i|model_global_i)*|text)*",
+			"content": "((model_global_i|model_linePart_i)*|text)*",
 			"selectable": false,
-			"marks": "model_ptrLike",
+			"marks": "model_linePart",
 			"draggable": false,
 			"parseDOM": [
 				{
@@ -21341,8 +21457,8 @@
 			"name": "globalNode8",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_pPart_edit_i*",
-			"group": "model_pPart_edit",
+			"content": "model_linePart_i*",
+			"group": "model_linePart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21356,8 +21472,8 @@
 			"name": "globalNode9",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_pPart_transcriptional_i*",
-			"group": "model_pPart_transcriptional",
+			"content": "model_pPart_edit_i*",
+			"group": "model_pPart_edit",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21371,8 +21487,8 @@
 			"name": "globalNode10",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_linePart_i*",
-			"group": "model_linePart",
+			"content": "model_pPart_transcriptional_i*",
+			"group": "model_pPart_transcriptional",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21476,8 +21592,8 @@
 			"name": "globalNode17",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_limitedPhrase_i*",
-			"group": "model_limitedPhrase",
+			"content": "model_correspContextPart_i*",
+			"group": "model_correspContextPart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21491,8 +21607,8 @@
 			"name": "globalNode18",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_correspContextPart_i*",
-			"group": "model_correspContextPart",
+			"content": "model_limitedPhrase_i*",
+			"group": "model_limitedPhrase",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21551,8 +21667,8 @@
 			"name": "globalNode22",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_noteLike_i*",
-			"group": "model_noteLike",
+			"content": "model_annotationLike_i*",
+			"group": "model_annotationLike",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21566,8 +21682,8 @@
 			"name": "globalNode23",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_annotationLike_i*",
-			"group": "model_annotationLike",
+			"content": "model_correspActionPart_i*",
+			"group": "model_correspActionPart",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -21596,8 +21712,8 @@
 			"name": "globalNode25",
 			"pmType": "node",
 			"fcType": "globalNodes",
-			"content": "model_correspActionPart_i*",
-			"group": "model_correspActionPart",
+			"content": "model_noteLike_i*",
+			"group": "model_noteLike",
 			"atom": true,
 			"selectable": false,
 			"synth": true,
@@ -22286,10 +22402,10 @@
 		}
 	],
 	"attrs": {
-		"rend": {
-			"ident": "rend",
-			"description": "indicates how the element in question was rendered or presented in the source text.",
-			"dataType": "teidata.word",
+		"ana": {
+			"ident": "ana",
+			"description": "indicates one or more elements containing interpretations of the element on which the ana attribute appears.",
+			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
@@ -22297,22 +22413,22 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"style": {
-			"ident": "style",
-			"description": "contains an expression in some formal style definition language which defines the rendering or presentation used for this element in the source text",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": "1",
+		"change": {
+			"ident": "change",
+			"description": "points to one or more change elements documenting a state or revision campaign to which the element bearing this attribute and its children have been assigned by the encoder.",
+			"dataType": "teidata.pointer",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open",
-			"usage": "opt",
+			"usage": null,
 			"mode": null
 		},
-		"rendition": {
-			"ident": "rendition",
-			"description": "points to a description of the rendering or presentation used for this element in the source text.",
+		"facs": {
+			"ident": "facs",
+			"description": "points to one or more images, portions of an image, or surfaces which correspond to the current element.",
 			"dataType": "teidata.pointer",
-			"minOccurs": null,
+			"minOccurs": "1",
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open",
@@ -22407,10 +22523,10 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"ana": {
-			"ident": "ana",
-			"description": "indicates one or more elements containing interpretations of the element on which the ana attribute appears.",
-			"dataType": "teidata.pointer",
+		"rend": {
+			"ident": "rend",
+			"description": "indicates how the element in question was rendered or presented in the source text.",
+			"dataType": "teidata.word",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
@@ -22418,26 +22534,26 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"facs": {
-			"ident": "facs",
-			"description": "points to one or more images, portions of an image, or surfaces which correspond to the current element.",
-			"dataType": "teidata.pointer",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
+		"style": {
+			"ident": "style",
+			"description": "contains an expression in some formal style definition language which defines the rendering or presentation used for this element in the source text.",
+			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": "1",
 			"valList": null,
 			"valListType": "open",
 			"usage": "opt",
 			"mode": null
 		},
-		"change": {
-			"ident": "change",
-			"description": "points to one or more change elements documenting a state or revision campaign to which the element bearing this attribute and its children have been assigned by the encoder.",
+		"rendition": {
+			"ident": "rendition",
+			"description": "points to a description of the rendering or presentation used for this element in the source text.",
 			"dataType": "teidata.pointer",
-			"minOccurs": "1",
+			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open",
-			"usage": null,
+			"usage": "opt",
 			"mode": null
 		},
 		"cert": {
@@ -22552,7 +22668,7 @@
 		},
 		"subtype": {
 			"ident": "subtype",
-			"description": "provides a sub-categorization of the element, if needed",
+			"description": "provides a sub-categorization of the element, if needed.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -22605,6 +22721,38 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"generatedBy": {
+			"ident": "generatedBy",
+			"description": "categorizes how the content of an element was generated in a CMC environment.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": "1",
+			"maxOccurs": "1",
+			"valList": [
+				{
+					"ident": "human",
+					"desc": "the content was naturally typed or spoken by a human user"
+				},
+				{
+					"ident": "template",
+					"desc": "the content was generated after a human user activated a template for its insertion"
+				},
+				{
+					"ident": "system",
+					"desc": "the content was generated by the system, i.e. the CMC environment"
+				},
+				{
+					"ident": "bot",
+					"desc": "the content was generated by a bot, i.e. a non-human agent, typically one that is not part of the CMC environment itself"
+				},
+				{
+					"ident": "unspecified",
+					"desc": "the content was generated by an unknown or unspecified process"
+				}
+			],
+			"valListType": "semi",
+			"usage": "opt",
+			"mode": "add"
+		},
 		"targetLang": {
 			"ident": "targetLang",
 			"description": "specifies the language of the content to be found at the destination referenced by target, using a language tag generated according to BCP 47.",
@@ -22618,7 +22766,7 @@
 		},
 		"target": {
 			"ident": "target",
-			"description": "specifies the destination of the reference by supplying one or more URI References",
+			"description": "specifies the destination of the reference by supplying one or more URI References.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -22693,10 +22841,65 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"when": {
-			"ident": "when",
-			"description": "supplies the value of the date or time in a standard form, e.g. yyyy-mm-dd.",
-			"dataType": "teidata.temporal.w3c",
+		"when-custom": {
+			"ident": "when-custom",
+			"description": "supplies the value of a date or time in some custom standard form.",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"notBefore-custom": {
+			"ident": "notBefore-custom",
+			"description": "specifies the earliest possible date for the event in some custom standard form.",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"notAfter-custom": {
+			"ident": "notAfter-custom",
+			"description": "specifies the latest possible date for the event in some custom standard form.",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"from-custom": {
+			"ident": "from-custom",
+			"description": "indicates the starting point of the period in some custom standard form.",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"to-custom": {
+			"ident": "to-custom",
+			"description": "indicates the ending point of the period in some custom standard form.",
+			"dataType": "teidata.word",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"datingPoint": {
+			"ident": "datingPoint",
+			"description": "supplies a pointer to some location defining a named point in time with reference to which the datable item is understood to have occurred.",
+			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -22704,21 +22907,10 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"notBefore": {
-			"ident": "notBefore",
-			"description": "specifies the earliest possible date for the event in standard form, e.g. yyyy-mm-dd.",
-			"dataType": "teidata.temporal.w3c",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"notAfter": {
-			"ident": "notAfter",
-			"description": "specifies the latest possible date for the event in standard form, e.g. yyyy-mm-dd.",
-			"dataType": "teidata.temporal.w3c",
+		"datingMethod": {
+			"ident": "datingMethod",
+			"description": "supplies a pointer to a calendar element or other means of interpreting the values of the custom dating attributes.",
+			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -22781,65 +22973,10 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"when-custom": {
-			"ident": "when-custom",
-			"description": "supplies the value of a date or time in some custom standard form.",
-			"dataType": "teidata.word",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"notBefore-custom": {
-			"ident": "notBefore-custom",
-			"description": "specifies the earliest possible date for the event in some custom standard form.",
-			"dataType": "teidata.word",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"notAfter-custom": {
-			"ident": "notAfter-custom",
-			"description": "specifies the latest possible date for the event in some custom standard form.",
-			"dataType": "teidata.word",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"from-custom": {
-			"ident": "from-custom",
-			"description": "indicates the starting point of the period in some custom standard form.",
-			"dataType": "teidata.word",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"to-custom": {
-			"ident": "to-custom",
-			"description": "indicates the ending point of the period in some custom standard form.",
-			"dataType": "teidata.word",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"datingPoint": {
-			"ident": "datingPoint",
-			"description": "supplies a pointer to some location defining a named point in time with reference to which the datable item is understood to have occurred",
-			"dataType": "teidata.pointer",
+		"when": {
+			"ident": "when",
+			"description": "supplies the value of the date or time in a standard form, e.g. yyyy-mm-dd.",
+			"dataType": "teidata.temporal.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -22847,10 +22984,21 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"datingMethod": {
-			"ident": "datingMethod",
-			"description": "supplies a pointer to a calendar element or other means of interpreting the values of the custom dating attributes.",
-			"dataType": "teidata.pointer",
+		"notBefore": {
+			"ident": "notBefore",
+			"description": "specifies the earliest possible date for the event in standard form, e.g. yyyy-mm-dd.",
+			"dataType": "teidata.temporal.w3c",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"notAfter": {
+			"ident": "notAfter",
+			"description": "specifies the latest possible date for the event in standard form, e.g. yyyy-mm-dd.",
+			"dataType": "teidata.temporal.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -22860,18 +23008,7 @@
 		},
 		"period": {
 			"ident": "period",
-			"description": "supplies pointers to one or more definitions of named periods of time (typically categorys, dates or events) within which the datable item is understood to have occurred.",
-			"dataType": "teidata.pointer",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"calendar": {
-			"ident": "calendar",
-			"description": "The calendar attribute will be removed from this element as it will only be allowed on elements that represent dates with their content. This is because the calendar attribute (unlike datingMethod defined in att.datable.custom) defines the calendar system of the date in the original material defined by the parent element, not the calendar to which the date is normalized.",
+			"description": "supplies pointers to one or more definitions of named periods of time (typically categorys, dates, or events) within which the datable item is understood to have occurred.",
 			"dataType": "teidata.pointer",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -22974,10 +23111,10 @@
 			"usage": null,
 			"mode": null
 		},
-		"dur": {
-			"ident": "dur",
+		"dur-iso": {
+			"ident": "dur-iso",
 			"description": "indicates the length of this element in time.",
-			"dataType": "teidata.duration.w3c",
+			"dataType": "teidata.duration.iso",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -22985,10 +23122,10 @@
 			"usage": "opt",
 			"mode": null
 		},
-		"dur-iso": {
-			"ident": "dur-iso",
+		"dur": {
+			"ident": "dur",
 			"description": "indicates the length of this element in time.",
-			"dataType": "teidata.duration.iso",
+			"dataType": "teidata.duration.w3c",
 			"minOccurs": null,
 			"maxOccurs": null,
 			"valList": null,
@@ -23095,6 +23232,28 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"key": {
+			"ident": "key",
+			"description": "provides an externally-defined means of identifying the entity (or entities) being named, using a coded value of some kind.",
+			"dataType": "teidata.text",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"ref": {
+			"ident": "ref",
+			"description": "provides an explicit means of locating a full definition or identity for the entity being named by means of one or more URIs.",
+			"dataType": "teidata.pointer",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
 		"sortKey": {
 			"ident": "sortKey",
 			"description": "supplies the sort key for this element in an index, list or group which contains it.",
@@ -23108,7 +23267,7 @@
 		},
 		"contemporary": {
 			"ident": "contemporary",
-			"description": "specifies whether or not the binding is contemporary with the majority of its contents",
+			"description": "specifies whether or not the binding is contemporary with the majority of its contents.",
 			"dataType": "teidata.xTruthValue",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -23174,7 +23333,7 @@
 		},
 		"match": {
 			"ident": "match",
-			"description": "supplies an XPath selection pattern using the syntax defined in which identifies a set of nodes which are citable structural components. The expression may be absolute (beginning with /) or relative. match on a citeStructure without a citeStructure parent must be an absolute XPath. If it is relative, its context is set by the match of the parent citeStructure. ",
+			"description": "supplies an XPath selection pattern using the syntax defined in which identifies a set of nodes which are citable structural components. The expression may be absolute (beginning with /) or relative. match on a citeStructure without a citeStructure parent must be an absolute XPath. If it is relative, its context is set by the match of the parent citeStructure.",
 			"dataType": "teidata.xpath",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -23255,28 +23414,6 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": null,
-			"mode": null
-		},
-		"key": {
-			"ident": "key",
-			"description": "provides an externally-defined means of identifying the entity (or entities) being named, using a coded value of some kind.",
-			"dataType": "teidata.text",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"ref": {
-			"ident": "ref",
-			"description": "provides an explicit means of locating a full definition or identity for the entity being named by means of one or more URIs.",
-			"dataType": "teidata.pointer",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
 			"mode": null
 		},
 		"role": {
@@ -23527,6 +23664,38 @@
 			"usage": "opt",
 			"mode": "change"
 		},
+		"part": {
+			"ident": "part",
+			"description": "specifies whether or not its parent element is fragmented in some way, typically by some other overlapping structure: for example a speech which is divided between two or more verse stanzas, a paragraph which is split across a page division, a verse line which is divided between two speakers.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "Y",
+					"desc": "the element is fragmented in some (unspecified) respect"
+				},
+				{
+					"ident": "N",
+					"desc": "the element is not fragmented, or no claim is made as to its completeness"
+				},
+				{
+					"ident": "I",
+					"desc": "this is the initial part of a fragmented element"
+				},
+				{
+					"ident": "M",
+					"desc": "this is a medial part of a fragmented element"
+				},
+				{
+					"ident": "F",
+					"desc": "this is the final part of a fragmented element"
+				}
+			],
+			"valListType": "closed",
+			"usage": "opt",
+			"mode": null
+		},
 		"met": {
 			"ident": "met",
 			"description": "contains a user-specified encoding for the conventional metrical structure of the element.",
@@ -23558,38 +23727,6 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": "rec",
-			"mode": null
-		},
-		"part": {
-			"ident": "part",
-			"description": "specifies whether or not its parent element is fragmented in some way, typically by some other overlapping structure: for example a speech which is divided between two or more verse stanzas, a paragraph which is split across a page division, a verse line which is divided between two speakers.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "Y",
-					"desc": "the element is fragmented in some (unspecified) respect"
-				},
-				{
-					"ident": "N",
-					"desc": "the element is not fragmented, or no claim is made as to its completeness"
-				},
-				{
-					"ident": "I",
-					"desc": "this is the initial part of a fragmented element"
-				},
-				{
-					"ident": "M",
-					"desc": "this is a medial part of a fragmented element"
-				},
-				{
-					"ident": "F",
-					"desc": "this is the final part of a fragmented element"
-				}
-			],
-			"valListType": "closed",
-			"usage": "opt",
 			"mode": null
 		},
 		"org": {
@@ -23641,56 +23778,6 @@
 				}
 			],
 			"valListType": "closed",
-			"usage": "opt",
-			"mode": null
-		},
-		"hand": {
-			"ident": "hand",
-			"description": "points to a handNote element describing the hand considered responsible for the content of the element concerned.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"type-divGen": {
-			"ident": "type",
-			"description": "specifies what type of generated text division (e.g. index, table of contents, etc.) is to appear.",
-			"dataType": "teidata.enumerated",
-			"minOccurs": null,
-			"maxOccurs": null,
-			"valList": [
-				{
-					"ident": "index",
-					"desc": "an index is to be generated and inserted at this point."
-				},
-				{
-					"ident": "toc",
-					"desc": "a table of contents"
-				},
-				{
-					"ident": "figlist",
-					"desc": "a list of figures"
-				},
-				{
-					"ident": "tablist",
-					"desc": "a list of tables"
-				}
-			],
-			"valListType": "open",
-			"usage": "opt",
-			"mode": "change"
-		},
-		"where": {
-			"ident": "where",
-			"description": "indicates one or more locations by pointing to a place element or other canonical description.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
 			"usage": "opt",
 			"mode": null
 		},
@@ -23754,9 +23841,59 @@
 			"usage": "rec",
 			"mode": null
 		},
+		"hand": {
+			"ident": "hand",
+			"description": "points to a handNote element describing the hand considered responsible for the content of the element concerned.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"type-divGen": {
+			"ident": "type",
+			"description": "specifies what type of generated text division (e.g. index, table of contents, etc.) is to appear.",
+			"dataType": "teidata.enumerated",
+			"minOccurs": null,
+			"maxOccurs": null,
+			"valList": [
+				{
+					"ident": "index",
+					"desc": "an index is to be generated and inserted at this point."
+				},
+				{
+					"ident": "toc",
+					"desc": "a table of contents"
+				},
+				{
+					"ident": "figlist",
+					"desc": "a list of figures"
+				},
+				{
+					"ident": "tablist",
+					"desc": "a list of tables"
+				}
+			],
+			"valListType": "open",
+			"usage": "opt",
+			"mode": "change"
+		},
+		"where": {
+			"ident": "where",
+			"description": "indicates one or more locations by pointing to a place element or other canonical description.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
 		"mimeType": {
 			"ident": "mimeType",
-			"description": "specifies the applicable multimedia internet mail extension (MIME) media type",
+			"description": "specifies the applicable multimedia internet mail extension (MIME) media type.",
 			"dataType": "teidata.word",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -23767,7 +23904,7 @@
 		},
 		"width": {
 			"ident": "width",
-			"description": "Where the media are displayed, indicates the display width",
+			"description": "Where the media are displayed, indicates the display width.",
 			"dataType": "teidata.outputMeasurement",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -23778,7 +23915,7 @@
 		},
 		"height": {
 			"ident": "height",
-			"description": "Where the media are displayed, indicates the display height",
+			"description": "Where the media are displayed, indicates the display height.",
 			"dataType": "teidata.outputMeasurement",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -23789,7 +23926,7 @@
 		},
 		"scale": {
 			"ident": "scale",
-			"description": "Where the media are displayed, indicates a scale factor to be applied when generating the desired display size",
+			"description": "Where the media are displayed, indicates a scale factor to be applied when generating the desired display size.",
 			"dataType": "teidata.numeric",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -23811,7 +23948,7 @@
 		},
 		"hands": {
 			"ident": "hands",
-			"description": "specifies the number of distinct hands identified within the manuscript",
+			"description": "specifies the number of distinct hands identified within the manuscript.",
 			"dataType": "teidata.count",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -23928,7 +24065,7 @@
 		},
 		"tags": {
 			"ident": "tags",
-			"description": "supplies one or more valid language tags for the languages specified",
+			"description": "supplies one or more valid language tags for the languages specified.",
 			"dataType": "teidata.language",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -23982,7 +24119,7 @@
 		},
 		"ordered": {
 			"ident": "ordered",
-			"description": "indicates whether the ordering of its child change elements is to be considered significant or not",
+			"description": "indicates whether the ordering of its child change elements is to be considered significant or not.",
 			"dataType": "teidata.truthValue",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -24012,6 +24149,17 @@
 			"usage": "opt",
 			"mode": null
 		},
+		"class": {
+			"ident": "class",
+			"description": "identifies the text types or classifications applicable to this item by pointing to other elements or resources defining the classification concerned.",
+			"dataType": "teidata.pointer",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
+			"mode": null
+		},
 		"defective": {
 			"ident": "defective",
 			"description": "indicates whether the passage being quoted is defective, i.e. incomplete through loss or damage.",
@@ -24021,17 +24169,6 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": "opt",
-			"mode": null
-		},
-		"class": {
-			"ident": "class",
-			"description": "identifies the text types or classifications applicable to this item by pointing to other elements or resources defining the classification concerned. ",
-			"dataType": "teidata.pointer",
-			"minOccurs": "1",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": null,
 			"mode": null
 		},
 		"name": {
@@ -24047,7 +24184,7 @@
 		},
 		"parts": {
 			"ident": "parts",
-			"description": "points to constituent nyms",
+			"description": "points to constituent nyms.",
 			"dataType": "teidata.pointer",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -24284,7 +24421,7 @@
 		},
 		"material": {
 			"ident": "material",
-			"description": "a short project-defined name for the material composing the majority of the support",
+			"description": "a short project-defined name for the material composing the majority of the support.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -24371,7 +24508,7 @@
 		},
 		"attachment": {
 			"ident": "attachment",
-			"description": "describes the method by which this surface is or was connected to the main surface",
+			"description": "describes the method by which this surface is or was connected to the main surface.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -24395,7 +24532,7 @@
 		},
 		"flipping": {
 			"ident": "flipping",
-			"description": "indicates whether the surface is attached and folded in such a way as to provide two writing surfaces",
+			"description": "indicates whether the surface is attached and folded in such a way as to provide two writing surfaces.",
 			"dataType": "teidata.truthValue",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -24448,17 +24585,6 @@
 			"usage": "opt",
 			"mode": "change"
 		},
-		"seq": {
-			"ident": "seq",
-			"description": "assigns a sequence number related to the order in which the encoded features carrying this attribute are believed to have occurred.",
-			"dataType": "teidata.count",
-			"minOccurs": null,
-			"maxOccurs": "1",
-			"valList": null,
-			"valListType": "open",
-			"usage": null,
-			"mode": null
-		},
 		"spanTo": {
 			"ident": "spanTo",
 			"description": "indicates the end of a span initiated by the element bearing this attribute.",
@@ -24468,6 +24594,17 @@
 			"valList": null,
 			"valListType": "open",
 			"usage": "opt",
+			"mode": null
+		},
+		"seq": {
+			"ident": "seq",
+			"description": "assigns a sequence number related to the order in which the encoded features carrying this attribute are believed to have occurred.",
+			"dataType": "teidata.count",
+			"minOccurs": null,
+			"maxOccurs": "1",
+			"valList": null,
+			"valListType": "open",
+			"usage": null,
 			"mode": null
 		},
 		"target-alt": {
@@ -24485,28 +24622,6 @@
 			"description": "If mode is excl, each weight states the probability that the corresponding alternative occurs. If mode is incl each weight states the probability that the corresponding alternative occurs given that at least one of the other alternatives occurs.",
 			"dataType": "teidata.probability",
 			"minOccurs": "2",
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"ed": {
-			"ident": "ed",
-			"description": "supplies a sigil or other arbitrary identifier for the source edition in which the associated feature (for example, a page, column, or line break) occurs at this point in the text.",
-			"dataType": "teidata.word",
-			"minOccurs": null,
-			"maxOccurs": "unbounded",
-			"valList": null,
-			"valListType": "open",
-			"usage": "opt",
-			"mode": null
-		},
-		"edRef": {
-			"ident": "edRef",
-			"description": "provides a pointer to the source edition in which the associated feature (for example, a page, column, or line break) occurs at this point in the text.",
-			"dataType": "teidata.pointer",
-			"minOccurs": null,
 			"maxOccurs": "unbounded",
 			"valList": null,
 			"valListType": "open",
@@ -24535,6 +24650,28 @@
 			],
 			"valListType": "open",
 			"usage": "rec",
+			"mode": null
+		},
+		"ed": {
+			"ident": "ed",
+			"description": "supplies a sigil or other arbitrary identifier for the source edition in which the associated feature (for example, a page, column, or line beginning) occurs at this point in the text.",
+			"dataType": "teidata.word",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
+		},
+		"edRef": {
+			"ident": "edRef",
+			"description": "provides a pointer to the source edition in which the associated feature (for example, a page, column, or line beginning) occurs at this point in the text.",
+			"dataType": "teidata.pointer",
+			"minOccurs": null,
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
 			"mode": null
 		},
 		"property": {
@@ -24629,7 +24766,7 @@
 		},
 		"reason": {
 			"ident": "reason",
-			"description": "gives the reason for omission",
+			"description": "gives the reason for omission.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -24707,7 +24844,7 @@
 		},
 		"medium": {
 			"ident": "medium",
-			"description": "describes the tint or type of ink, e.g. brown, or other writing medium, e.g. pencil ",
+			"description": "describes the tint or type of ink, e.g. brown, or other writing medium, e.g. pencil.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": "1",
 			"maxOccurs": "unbounded",
@@ -24775,7 +24912,7 @@
 		},
 		"cRef": {
 			"ident": "cRef",
-			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the scheme defined in a refsDecl element in the TEI header",
+			"description": "specifies the destination of the pointer by supplying a canonical reference expressed using the scheme defined in a refsDecl element in the TEI header.",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": "1",
@@ -25033,7 +25170,7 @@
 		},
 		"stdDeviation": {
 			"ident": "stdDeviation",
-			"description": "supplies a standard deviation associated with the value in question",
+			"description": "supplies a standard deviation associated with the value in question.",
 			"dataType": "teidata.numeric",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -25064,7 +25201,7 @@
 		},
 		"resp-space": {
 			"ident": "resp",
-			"description": "(responsible party) indicates the individual responsible for identifying and measuring the space",
+			"description": "(responsible party) indicates the individual responsible for identifying and measuring the space.",
 			"dataType": "teidata.pointer",
 			"minOccurs": null,
 			"maxOccurs": "unbounded",
@@ -25130,6 +25267,17 @@
 			"valListType": "open",
 			"usage": "opt",
 			"mode": "change"
+		},
+		"calendar": {
+			"ident": "calendar",
+			"description": "indicates one or more systems or calendars to which the date represented by the content of this element belongs.",
+			"dataType": "teidata.pointer",
+			"minOccurs": "1",
+			"maxOccurs": "unbounded",
+			"valList": null,
+			"valListType": "open",
+			"usage": "opt",
+			"mode": null
 		},
 		"value": {
 			"ident": "value",
@@ -25302,7 +25450,7 @@
 		},
 		"type-distinct": {
 			"ident": "type",
-			"description": "specifies the sublanguage or register to which the word or phrase is being assigned",
+			"description": "specifies the sublanguage or register to which the word or phrase is being assigned.",
 			"dataType": "teidata.enumerated",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -25313,7 +25461,7 @@
 		},
 		"time": {
 			"ident": "time",
-			"description": "specifies how the phrase is distinct diachronically",
+			"description": "specifies how the phrase is distinct diachronically.",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -25324,7 +25472,7 @@
 		},
 		"space": {
 			"ident": "space",
-			"description": "specifies how the phrase is distinct diatopically",
+			"description": "specifies how the phrase is distinct diatopically.",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -25335,7 +25483,7 @@
 		},
 		"social": {
 			"ident": "social",
-			"description": "specifies how the phrase is distinct diastratically",
+			"description": "specifies how the phrase is distinct diastratically.",
 			"dataType": "teidata.text",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -25484,7 +25632,7 @@
 		},
 		"lang": {
 			"ident": "lang",
-			"description": "a name identifying the formal language in which the code is expressed",
+			"description": "a name identifying the formal language in which the code is expressed.",
 			"dataType": "teidata.word",
 			"minOccurs": null,
 			"maxOccurs": null,
@@ -25745,7 +25893,7 @@
 				},
 				{
 					"ident": "MGRS",
-					"desc": "the values supplied are geospatial entity object codes, based on"
+					"desc": "values supplied follow the Military Grid Reference System, which designates grid zones in a string of letters and numbers that distinctly indicate each square meter on the planet."
 				},
 				{
 					"ident": "OSGB36",
@@ -25769,7 +25917,7 @@
 			"valList": [
 				{
 					"ident": "ISBN",
-					"desc": "International Standard Book Number: a 13- or (if assigned prior to 2007) 10-digit identifying number assigned by the publishing industry to a published book or similar item, registered with the International ISBN Agency. "
+					"desc": "International Standard Book Number: a 13- or (if assigned prior to 2007) 10-digit identifying number assigned by the publishing industry to a published book or similar item, registered with the International ISBN Agency."
 				},
 				{
 					"ident": "ISSN",
@@ -25880,7 +26028,7 @@
 		},
 		"columns": {
 			"ident": "columns",
-			"description": "specifies the number of columns per page",
+			"description": "specifies the number of columns per page.",
 			"dataType": "teidata.count",
 			"minOccurs": "1",
 			"maxOccurs": "2",
@@ -25891,7 +26039,7 @@
 		},
 		"streams": {
 			"ident": "streams",
-			"description": "indicates the number of streams per page, each of which contains an independent textual stream",
+			"description": "indicates the number of streams per page, each of which contains an independent textual stream.",
 			"dataType": "teidata.count",
 			"minOccurs": "1",
 			"maxOccurs": "2",
@@ -25902,7 +26050,7 @@
 		},
 		"ruledLines": {
 			"ident": "ruledLines",
-			"description": "specifies the number of ruled lines per column",
+			"description": "specifies the number of ruled lines per column.",
 			"dataType": "teidata.count",
 			"minOccurs": "1",
 			"maxOccurs": "2",
@@ -25913,7 +26061,7 @@
 		},
 		"writtenLines": {
 			"ident": "writtenLines",
-			"description": "specifies the number of written lines per column",
+			"description": "specifies the number of written lines per column.",
 			"dataType": "teidata.count",
 			"minOccurs": "1",
 			"maxOccurs": "2",
@@ -26315,7 +26463,7 @@
 		"rotate": {
 			"ident": "rotate",
 			"description": "indicates the amount by which this zone has been rotated clockwise, with respect to the normal orientation of the parent surface element as implied by the dimensions given in the msDesc element or by the coordinates of the surface itself. The orientation is expressed in arc degrees.",
-			"dataType": "teidata.count",
+			"dataType": "teidata.numeric",
 			"minOccurs": "1",
 			"maxOccurs": "1",
 			"valList": null,
