@@ -58,7 +58,7 @@ function createProjectInfo(userID, serverURL, project) {
         projectInfo.permissions.push('FCC_OrgAdmin')
     }
 
-    const projectUser = project_users.find(pu => pu.user_id === userID)
+    const projectUser = project_users.find(pu => pu.user.id === userID)
 
     if (projectUser) {
         projectInfo.permissions.push(projectUser.policy_definition.name)
