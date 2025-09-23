@@ -127,7 +127,7 @@
 			"fcType": "hard",
 			"isolating": true,
 			"content": "(model_global* (model_addrPart model_global*)+)",
-			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_addressLike model_publicationStmtPart_detail",
+			"group": "model_correspActionPart model_limitedPhrase model_paraPart model_phrase model_pPart_data model_addressLike model_divBottom model_divBottomPart model_divTop model_divTopPart model_publicationStmtPart_detail",
 			"validAttrs": [
 				"ana",
 				"cert",
@@ -18399,7 +18399,7 @@
 			"pmType": "node",
 			"fcType": "soft",
 			"isolating": false,
-			"content": "(textNode12|model_divLike|model_divPart|titlePage|argument|byline|docAuthor|docDate|docEdition|docImprint|docTitle|epigraph|imprimatur|titlePart|epilogue|performance|prologue|set|model_phrase|model_inter|model_global|model_rdgPart)*",
+			"content": "(textNode12|model_divLike|model_divPart|titlePage|argument|byline|docAuthor|docDate|docEdition|docImprint|docTitle|epigraph|imprimatur|speaker|titlePart|epilogue|performance|prologue|set|model_phrase|model_inter|model_global|model_rdgPart)*",
 			"group": "",
 			"validAttrs": [
 				"ana",

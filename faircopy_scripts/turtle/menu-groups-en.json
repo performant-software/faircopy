@@ -16,7 +16,7 @@
     "structure": [
         {
             "label": "Sections",
-            "members": ["back","body","div","floatingText","front"]
+            "members": ["back","body","div","floatingText","front", "surface"]
         },        
         {
             "label": "Paragraphs",
@@ -28,7 +28,7 @@
         },
         {
             "label": "Lines and lists",
-            "members":["item","l","lg","list"]
+            "members":["item","l","lg","list","line","zone"]
         },
         {
             "label": "Headers",

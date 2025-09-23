@@ -52,7 +52,8 @@
 					"body",
 					"div",
 					"floatingText",
-					"front"
+					"front",
+					"surface"
 				]
 			},
 			{
@@ -84,7 +85,9 @@
 					"item",
 					"l",
 					"lg",
-					"list"
+					"list",
+					"line",
+					"zone"
 				]
 			},
 			{
@@ -14092,7 +14095,7 @@
 			}
 		},
 		"surface": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -35680,7 +35683,7 @@
 			}
 		},
 		"line": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -41242,7 +41245,7 @@
 			}
 		},
 		"zone": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false

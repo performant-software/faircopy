@@ -9,8 +9,8 @@ const {createModules} = require('./create-modules')
 const {createAttributes} = require('./create-attributes')
 const {getAllElements} = require('./parse-util')
 
-// this is https://github.com/TEIC/TEI
-const teiSpecsDir = '../TEI/P5/Source/Specs'
+// this is https://github.com/performant-software/TEI-Faircopy
+const teiSpecsDir = '../TEI-Faircopy/P5/Source/Specs'
 
 async function run() {
     const exp = true
