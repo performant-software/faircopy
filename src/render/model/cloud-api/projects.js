@@ -100,7 +100,7 @@ export async function performNER(userID, serverURL, authToken, fileContents, onS
                 const { status } = statusResp.data
 
                 if (!goodStatus.includes(status)) {
-                    return standardErrorHandler(userID, serverURL, onFail)
+                    return onFail(status)
                 }
 
                 if (status === 'COMPLETED') {
@@ -113,8 +113,8 @@ export async function performNER(userID, serverURL, authToken, fileContents, onS
                         onSuccess(updatedContents)
                         return
 
-                    } catch {
-                        standardErrorHandler(userID, serverURL, onFail)
+                    } catch (error) {
+                        onFail(error)
                     }
 
                 }
@@ -123,11 +123,11 @@ export async function performNER(userID, serverURL, authToken, fileContents, onS
                 if (attempts < MAX_NER_POLLS) {
                     await new Promise(resolve => setTimeout(resolve, NER_POLL_INTERVAL)) // Wait before next attempt
                 }
-            } catch {
-                standardErrorHandler(userID, serverURL, onFail)
+            } catch (error) {
+                onFail(error)
             }
         }
-    } catch {
-        standardErrorHandler(userID, serverURL, onFail)
+    } catch (error) {
+        onFail(error)
     }
 }

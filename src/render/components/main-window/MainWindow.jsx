@@ -1,67 +1,67 @@
-import React, { Component } from "react";
-import { debounce } from "debounce";
+import React, { Component } from 'react'
+import { debounce } from 'debounce'
 
-import ProjectSidebar from "./ProjectSidebar";
-import AlertDialog from "./dialogs/AlertDialog";
+import ProjectSidebar from './ProjectSidebar'
+import AlertDialog from './dialogs/AlertDialog'
 
-import TEIEditor from "./tei-editor/TEIEditor";
-import ResourceBrowser from "./resource-browser/ResourceBrowser";
-import EditResourceDialog from "./dialogs/EditResourceDialog";
-import IIIFImportDialog from "./dialogs/IIIFImportDialog";
-import AddImageDialog from "./dialogs/AddImageDialog";
-import LoginDialog from "./dialogs/LoginDialog";
-import PopupMenu from "../common/PopupMenu";
-import TEIDocument from "../../model/TEIDocument";
-import FacsEditor from "./facs-editor/FacsEditor";
-import SnackAlert from "../common/SnackAlert";
-import EditSurfaceInfoDialog from "./dialogs/EditSurfaceInfoDialog";
-import MoveResourceDialog from "./dialogs/MoveResourceDialog";
-import MainWindowStatusBar from "./MainWindowStatusBar";
-import ReleaseNotesDialog from "./dialogs/ReleaseNotesDialog";
-import EditorDraggingElement from "./tei-editor/EditorDraggingElement";
-import ImportTextsDialog from "./dialogs/ImportTextsDialog";
-import ImportConsoleDialog from "./dialogs/ImportConsoleDialog";
+import TEIEditor from './tei-editor/TEIEditor'
+import ResourceBrowser from './resource-browser/ResourceBrowser'
+import EditResourceDialog from './dialogs/EditResourceDialog'
+import IIIFImportDialog from './dialogs/IIIFImportDialog'
+import AddImageDialog from './dialogs/AddImageDialog'
+import LoginDialog from './dialogs/LoginDialog'
+import PopupMenu from '../common/PopupMenu'
+import TEIDocument from '../../model/TEIDocument'
+import FacsEditor from './facs-editor/FacsEditor'
+import SnackAlert from '../common/SnackAlert'
+import EditSurfaceInfoDialog from './dialogs/EditSurfaceInfoDialog'
+import MoveResourceDialog from './dialogs/MoveResourceDialog'
+import MainWindowStatusBar from './MainWindowStatusBar'
+import ReleaseNotesDialog from './dialogs/ReleaseNotesDialog'
+import EditorDraggingElement from './tei-editor/EditorDraggingElement'
+import ImportTextsDialog from './dialogs/ImportTextsDialog'
+import ImportConsoleDialog from './dialogs/ImportConsoleDialog'
 import {
   highlightSearchResults,
   scrollToSearchResult,
   searchResource,
-} from "../../model/search";
-import SearchDialog from "./dialogs/SearchDialog";
-import CheckInDialog from "./dialogs/CheckInDialog";
-import CheckOutDialog from "./dialogs/CheckOutDialog";
-import { bigRingSpinner } from "../common/ring-spinner";
-import { SplitPaneView } from "../common/SplitPaneView";
-import AbandonedResourcesDialog from "./dialogs/AbandonedResourcesDialog";
+} from '../../model/search'
+import SearchDialog from './dialogs/SearchDialog'
+import CheckInDialog from './dialogs/CheckInDialog'
+import CheckOutDialog from './dialogs/CheckOutDialog'
+import { bigRingSpinner } from '../common/ring-spinner'
+import { SplitPaneView } from '../common/SplitPaneView'
+import AbandonedResourcesDialog from './dialogs/AbandonedResourcesDialog'
 
-const fairCopy = window.fairCopy;
+const fairCopy = window.fairCopy
 
-const initialLeftPaneWidth = 250;
-const initialRightPaneWidth = 1120;
-const resizeRefreshRate = 100;
-const resetSearchRate = 100;
-const initialRowsPerPage = 50;
+const initialLeftPaneWidth = 250
+const initialRightPaneWidth = 1120
+const resizeRefreshRate = 100
+const resetSearchRate = 100
+const initialRowsPerPage = 50
 
 const closePopUpState = {
   popupMenuOptions: null,
   popupMenuAnchorEl: null,
   popupMenuPlacement: null,
-};
+}
 
 export default class MainWindow extends Component {
   constructor() {
-    super();
+    super()
 
     this.filterInitialState = {
-      orderBy: "name",
-      order: "ascending",
+      orderBy: 'name',
+      order: 'ascending',
       nameFilter: null,
       rowsPerPage: initialRowsPerPage,
-    };
+    }
     this.state = {
       selectedResource: null,
       openResources: {},
       resourceViews: {
-        currentView: "home",
+        currentView: 'home',
         remote: {
           indexParentID: null,
           parentEntry: null,
@@ -85,7 +85,7 @@ export default class MainWindow extends Component {
       requestedResources: [],
       localResources: [],
       resourceBrowserOpen: true,
-      alertDialogMode: "closed",
+      alertDialogMode: 'closed',
       alertOptions: null,
       exitOnClose: false,
       editDialogMode: false,
@@ -113,11 +113,11 @@ export default class MainWindow extends Component {
       checkOutError: null,
       searchQuery: null,
       searchResults: {},
-      searchFilterOptions: { active: false, elementName: "", attrQs: [] },
+      searchFilterOptions: { active: false, elementName: '', attrQs: [] },
       searchSelectionIndex: 0,
       searchFilterMode: false,
       searchEnabled: false,
-      searchScope: "file",
+      searchScope: 'file',
       showSearchBar: false,
       leftPaneWidth: initialLeftPaneWidth,
       rightPaneWidth: initialRightPaneWidth,
@@ -126,65 +126,65 @@ export default class MainWindow extends Component {
       abandonedDialogMode: false,
       abandonedLocalResources: [],
       awaitingCheckIn: 0,
-      runningAgent: false
-    };
+      runningAgent: false,
+    }
   }
 
   onResourceOpened = (event, resourceData) => {
-    const { fairCopyProject } = this.props;
-    const { openResources, requestedResources } = this.state;
-    const { resourceEntry, parentEntry, resource } = resourceData;
+    const { fairCopyProject } = this.props
+    const { openResources, requestedResources } = this.state
+    const { resourceEntry, parentEntry, resource } = resourceData
 
     // if this is a resource we asked for, then open it.
     // (resources can also be asked for by FacsDocument, maybe others in future)
     if (requestedResources.includes(resourceEntry.id)) {
       const nextRequestedResources = requestedResources.filter(
         (r) => r === resourceEntry.id
-      );
+      )
       const doc = fairCopyProject.onResourceOpened(
         resourceEntry,
         parentEntry,
         resource
-      );
+      )
       if (doc) {
-        const nextOpenResources = { ...openResources };
-        nextOpenResources[resourceEntry.id] = doc;
+        const nextOpenResources = { ...openResources }
+        nextOpenResources[resourceEntry.id] = doc
         this.setState({
           ...this.state,
           openResources: nextOpenResources,
           requestedResources: nextRequestedResources,
-        });
+        })
       } else {
         this.setState({
           ...this.state,
           requestedResources: nextRequestedResources,
-        });
+        })
       }
     }
-  };
+  }
 
-  onRequestExitApp = () => this.requestExitApp();
+  onRequestExitApp = () => this.requestExitApp()
   onSearchSystemStatus = (event, status) => {
     if (status !== this.state.searchEnabled) {
-      this.setState({ ...this.state, searchEnabled: status });
+      this.setState({ ...this.state, searchEnabled: status })
     }
-  };
+  }
 
   setResourceCheckmark = (resourceEntry, checked, stateUpdate = true) => {
-    const { resourceCheckmarks } = this.state;
-    const nextCheckmarks = { ...resourceCheckmarks };
-    nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null;
+    const { resourceCheckmarks } = this.state
+    const nextCheckmarks = { ...resourceCheckmarks }
+    nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null
     if (stateUpdate)
-      this.setState({ ...this.state, resourceCheckmarks: nextCheckmarks });
-    return nextCheckmarks;
-  };
+      this.setState({ ...this.state, resourceCheckmarks: nextCheckmarks })
+    return nextCheckmarks
+  }
 
   setAllCheckmarks = (checked, stateUpdate = true) => {
-    const { resourceCheckmarks, resourceIndex } = this.state;
-    const nextCheckmarks = { ...resourceCheckmarks };
+    const { resourceCheckmarks, resourceIndex } = this.state
+    const nextCheckmarks = { ...resourceCheckmarks }
     for (const resourceEntry of resourceIndex) {
-      if (resourceEntry.type !== "header") {
-        nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null;
+      if (resourceEntry.type !== 'header') {
+        nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null
       }
     }
     if (stateUpdate)
@@ -192,30 +192,30 @@ export default class MainWindow extends Component {
         ...this.state,
         resourceCheckmarks: nextCheckmarks,
         allResourcesCheckmarked: checked,
-      });
+      })
     else
       return {
         resourceCheckmarks: nextCheckmarks,
         allResourcesCheckmarked: checked,
-      };
-  };
+      }
+  }
 
   onResourceViewUpdate = (event, resourceData) => {
-    const { resourceViews } = this.state;
-    const { currentView } = resourceViews;
-    const resourceView = resourceViews[currentView];
+    const { resourceViews } = this.state
+    const { currentView } = resourceViews
+    const resourceView = resourceViews[currentView]
     const {
       resourceViews: nextResourceViews,
       resourceIndex: nextResourceIndex,
-      published
-    } = resourceData;
-    const { currentView: nextCurrentView } = nextResourceViews;
-    const nextResourceView = nextResourceViews[nextCurrentView];
+      published,
+    } = resourceData
+    const { currentView: nextCurrentView } = nextResourceViews
+    const nextResourceView = nextResourceViews[nextCurrentView]
 
     // set publishingResources false if we got here from publish response
-    let publishingResourcesState = {};
+    let publishingResourcesState = {}
     if (published) {
-      publishingResourcesState = { publishingResources: false };
+      publishingResourcesState = { publishingResources: false }
     }
 
     // if the indexParentID or the currentView changed, clear checkmarks
@@ -223,23 +223,23 @@ export default class MainWindow extends Component {
       currentView !== nextCurrentView ||
       resourceView.indexParentID !== nextResourceView.indexParentID
     ) {
-      const checkmarkState = this.setAllCheckmarks(false, false);
+      const checkmarkState = this.setAllCheckmarks(false, false)
       this.setState({
         ...this.state,
         ...checkmarkState,
         ...publishingResourcesState,
         resourceViews: nextResourceViews,
         resourceIndex: nextResourceIndex,
-      });
+      })
     } else {
       this.setState({
         ...this.state,
         ...publishingResourcesState,
         resourceViews: nextResourceViews,
         resourceIndex: nextResourceIndex,
-      });
+      })
     }
-  };
+  }
 
   onCheckOutResults = (event, checkOutStatus, checkOutError) => {
     this.setState({
@@ -247,8 +247,8 @@ export default class MainWindow extends Component {
       checkOutMode: true,
       checkOutStatus,
       checkOutError,
-    });
-  };
+    })
+  }
 
   onCheckInStarted = (event, totalBatches) => {
     this.setState((prevState) => ({
@@ -265,40 +265,40 @@ export default class MainWindow extends Component {
   }
 
   onResourceEntryUpdated = (e, resourceEntry) => {
-    const { fairCopyProject } = this.props;
-    fairCopyProject.notifyListeners("resourceEntryUpdated", resourceEntry);
+    const { fairCopyProject } = this.props
+    fairCopyProject.notifyListeners('resourceEntryUpdated', resourceEntry)
     this.setState((prevState) => {
       // if updated resource entry was part of migration in progress, mark it migrated
-      const migratingResources = new Set(prevState.migratingResources);
-      migratingResources.delete(resourceEntry.id);
+      const migratingResources = new Set(prevState.migratingResources)
+      migratingResources.delete(resourceEntry.id)
       return {
         ...prevState,
         migratingResources,
-      };
+      }
     })
-    this.refreshWindow();
-  };
+    this.refreshWindow()
+  }
 
   onMigrateResource = (e, resourceID) => {
     // add resource id to set of migration in progress resources
     this.setState((prevState) => ({
       ...prevState,
       migratingResources: new Set(prevState.migratingResources).add(resourceID),
-    }));
-  };
+    }))
+  }
 
   onPublishResource = (e) => {
     this.setState((prevState) => ({
       ...prevState,
       publishingResources: true,
-    }));
+    }))
   }
 
   onCompletePublishResource = (e) => {
     this.setState((prevState) => ({
       ...prevState,
       publishingResources: false,
-    }));
+    }))
   }
 
   onMarkAbandoned = (e, resources) => {
@@ -310,7 +310,7 @@ export default class MainWindow extends Component {
   }
 
   onReceiveAbandonedResourcesData = (e, resources) => {
-    const { fairCopyProject } = this.props;
+    const { fairCopyProject } = this.props
     const { abandonedLocalResources } = this.state
 
     // should be here from "create new" option in abandoned resources dialog, which kicked off
@@ -320,15 +320,17 @@ export default class MainWindow extends Component {
     }
 
     // merge local resources with content
-    const resourceMap = new Map(resources.map(r => [r.resourceID, r.content]))
+    const resourceMap = new Map(resources.map((r) => [r.resourceID, r.content]))
     const localWithContent = abandonedLocalResources.map((resource) => ({
       ...resource,
-      content: resourceMap.get(resource.id)
+      content: resourceMap.get(resource.id),
     }))
 
     // kick off "create new" operation and deletion of originals
     fairCopyProject.duplicateDocuments(localWithContent)
-    const abandonedDocs = abandonedLocalResources.filter((r) => r.type === "teidoc")
+    const abandonedDocs = abandonedLocalResources.filter(
+      (r) => r.type === 'teidoc'
+    )
     fairCopyProject.forceDeleteResources(abandonedDocs)
 
     this.setState((prevState) => ({
@@ -339,166 +341,165 @@ export default class MainWindow extends Component {
   }
 
   onResourceContentUpdated = (e, resourceUpdate) => {
-    const { fairCopyProject } = this.props;
-    fairCopyProject.notifyListeners("resourceContentUpdated", resourceUpdate);
-    this.refreshWindow();
-  };
+    const { fairCopyProject } = this.props
+    fairCopyProject.notifyListeners('resourceContentUpdated', resourceUpdate)
+    this.refreshWindow()
+  }
 
   onUpdateProjectInfo = (e, projectInfo) => {
-    const { fairCopyProject } = this.props;
-    fairCopyProject.updateProjectInfo(projectInfo);
-  };
+    const { fairCopyProject } = this.props
+    fairCopyProject.updateProjectInfo(projectInfo)
+  }
 
   componentDidMount() {
-    fairCopy.ipcRegisterCallback("resourceOpened", this.onResourceOpened);
+    fairCopy.ipcRegisterCallback('resourceOpened', this.onResourceOpened)
     fairCopy.ipcRegisterCallback(
-      "resourceViewUpdate",
+      'resourceViewUpdate',
       this.onResourceViewUpdate
-    );
+    )
     fairCopy.ipcRegisterCallback(
-      "resourceMigrationStarted",
+      'resourceMigrationStarted',
       this.onMigrateResource
-    );
-    fairCopy.ipcRegisterCallback("requestExitApp", this.onRequestExitApp);
+    )
+    fairCopy.ipcRegisterCallback('requestExitApp', this.onRequestExitApp)
     fairCopy.ipcRegisterCallback(
-      "searchSystemStatus",
+      'searchSystemStatus',
       this.onSearchSystemStatus
-    );
-    fairCopy.ipcRegisterCallback("checkOutResults", this.onCheckOutResults);
+    )
+    fairCopy.ipcRegisterCallback('checkOutResults', this.onCheckOutResults)
     fairCopy.ipcRegisterCallback(
-      "resourceEntryUpdated",
+      'resourceEntryUpdated',
       this.onResourceEntryUpdated
-    );
+    )
     fairCopy.ipcRegisterCallback(
-      "resourceContentUpdated",
+      'resourceContentUpdated',
       this.onResourceContentUpdated
-    );
-    fairCopy.ipcRegisterCallback("updateProjectInfo", this.onUpdateProjectInfo);
-    fairCopy.ipcRegisterCallback("localResources", this.onLocalResources);
+    )
+    fairCopy.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo)
+    fairCopy.ipcRegisterCallback('localResources', this.onLocalResources)
     fairCopy.ipcRegisterCallback(
-      "publishingResourceStarted",
+      'publishingResourceStarted',
       this.onPublishResource
-    );
-    fairCopy.ipcRegisterCallback("markAbandoned", this.onMarkAbandoned);
+    )
+    fairCopy.ipcRegisterCallback('markAbandoned', this.onMarkAbandoned)
     fairCopy.ipcRegisterCallback(
-      "abandonedResourcesData",
+      'abandonedResourcesData',
       this.onReceiveAbandonedResourcesData
-    );
-    fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted);
-    fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults);
+    )
+    fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted)
+    fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults)
     fairCopy.ipcRegisterCallback('performNERResult', this.onPerformNERResults)
-    fairCopy.ipcRegisterCallback('nerFailed', this.onNERFailed)
-  }
+    fairCopy.ipcRegisterCallback('performNERFailed', this.onNERFailed)
   }
 
   componentWillUnmount() {
-    fairCopy.ipcRemoveListener("resourceOpened", this.onResourceOpened);
-    fairCopy.ipcRemoveListener("resourceViewUpdate", this.onResourceViewUpdate);
-    fairCopy.ipcRemoveListener("requestExitApp", this.onRequestExitApp);
-    fairCopy.ipcRemoveListener("searchSystemStatus", this.onSearchSystemStatus);
-    fairCopy.ipcRemoveListener("checkOutResults", this.onCheckOutResults);
+    fairCopy.ipcRemoveListener('resourceOpened', this.onResourceOpened)
+    fairCopy.ipcRemoveListener('resourceViewUpdate', this.onResourceViewUpdate)
+    fairCopy.ipcRemoveListener('requestExitApp', this.onRequestExitApp)
+    fairCopy.ipcRemoveListener('searchSystemStatus', this.onSearchSystemStatus)
+    fairCopy.ipcRemoveListener('checkOutResults', this.onCheckOutResults)
     fairCopy.ipcRemoveListener(
-      "resourceEntryUpdated",
+      'resourceEntryUpdated',
       this.onResourceEntryUpdated
-    );
+    )
     fairCopy.ipcRemoveListener(
-      "resourceContentUpdated",
+      'resourceContentUpdated',
       this.onResourceContentUpdated
-    );
-    fairCopy.ipcRemoveListener("updateProjectInfo", this.onUpdateProjectInfo);
-    fairCopy.ipcRemoveListener("localResources", this.onLocalResources);
+    )
+    fairCopy.ipcRemoveListener('updateProjectInfo', this.onUpdateProjectInfo)
+    fairCopy.ipcRemoveListener('localResources', this.onLocalResources)
     fairCopy.ipcRemoveListener(
-      "resourceMigrationStarted",
+      'resourceMigrationStarted',
       this.onMigrateResource
-    );
+    )
     fairCopy.ipcRemoveListener(
-      "publishingResourceStarted",
+      'publishingResourceStarted',
       this.onPublishResource
-    );
-    fairCopy.ipcRemoveListener("markAbandoned", this.onMarkAbandoned);
+    )
+    fairCopy.ipcRemoveListener('markAbandoned', this.onMarkAbandoned)
     fairCopy.ipcRemoveListener(
-      "abandonedResourcesData",
+      'abandonedResourcesData',
       this.onReceiveAbandonedResourcesData
-    );
-    fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted);
-    fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults);
+    )
+    fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted)
+    fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults)
     fairCopy.ipcRemoveListener('performNERResult', this.onPerformNERResults)
-    fairCopy.ipcRemoveListener('nerFailed', this.onNERFailed)
+    fairCopy.ipcRemoveListener('performNERFailed', this.onNERFailed)
   }
 
   refreshWindow() {
-    const { selectedResource, openResources } = this.state;
+    const { selectedResource, openResources } = this.state
 
     if (selectedResource) {
-      const resource = openResources[selectedResource];
+      const resource = openResources[selectedResource]
       if (resource instanceof TEIDocument && resource.editorView) {
-        this.setState({ ...this.state });
+        this.setState({ ...this.state })
       }
     }
   }
 
   requestExitApp = () => {
-    const { openResources } = this.state;
-    const resourceIDs = Object.keys(openResources);
+    const { openResources } = this.state
+    const resourceIDs = Object.keys(openResources)
     if (resourceIDs.length > 0) {
-      this.closeResources(resourceIDs, true);
+      this.closeResources(resourceIDs, true)
     } else {
-      fairCopy.ipcSend("exitApp");
+      fairCopy.ipcSend('exitApp')
     }
-  };
+  }
 
   isResourceOpen(resourceEntries) {
-    const { openResources } = this.state;
+    const { openResources } = this.state
     for (const resourceEntry of resourceEntries) {
       if (openResources[resourceEntry.id]) {
-        return true;
+        return true
       }
     }
-    return false;
+    return false
   }
 
   selectTEIDoc(teiDocID) {
-    const { resourceViews, resourceIndex } = this.state;
-    const { currentView } = resourceViews;
-    const currentParentEntry = resourceViews[currentView].parentEntry;
+    const { resourceViews, resourceIndex } = this.state
+    const { currentView } = resourceViews
+    const currentParentEntry = resourceViews[currentView].parentEntry
 
-    let teiDocEntry;
+    let teiDocEntry
     if (currentParentEntry && teiDocID === currentParentEntry.id) {
-      teiDocEntry = currentParentEntry;
+      teiDocEntry = currentParentEntry
     } else {
       teiDocEntry = resourceIndex.find(
         (resourceEntry) =>
-          resourceEntry.id === teiDocID && resourceEntry.type === "teidoc"
-      );
+          resourceEntry.id === teiDocID && resourceEntry.type === 'teidoc'
+      )
     }
-    if (!teiDocEntry) return false;
+    if (!teiDocEntry) return false
 
-    const indexParentID = teiDocEntry.id;
-    const parentEntry = teiDocEntry;
-    const currentPage = 1;
+    const indexParentID = teiDocEntry.id
+    const parentEntry = teiDocEntry
+    const currentPage = 1
     const resourceViewRequest = {
       currentView,
       indexParentID,
       parentEntry,
       currentPage,
       ...this.filterInitialState,
-    };
-    fairCopy.ipcSend("requestResourceView", resourceViewRequest);
+    }
+    fairCopy.ipcSend('requestResourceView', resourceViewRequest)
 
-    const nextResourceViews = { ...resourceViews };
-    const currentResourceView = resourceViews[currentView];
+    const nextResourceViews = { ...resourceViews }
+    const currentResourceView = resourceViews[currentView]
     nextResourceViews[currentView] = {
       ...currentResourceView,
       indexParentID,
       parentEntry,
       currentPage,
       loading: true,
-    };
+    }
 
-    const nextResourceIndex = currentView === "home" ? resourceIndex : [];
+    const nextResourceIndex = currentView === 'home' ? resourceIndex : []
 
-    const checkmarkState = this.setAllCheckmarks(false, false);
-    const nextState = { ...this.state, ...checkmarkState };
+    const checkmarkState = this.setAllCheckmarks(false, false)
+    const nextState = { ...this.state, ...checkmarkState }
 
     this.setState({
       ...nextState,
@@ -507,31 +508,31 @@ export default class MainWindow extends Component {
       resourceViews: nextResourceViews,
       resourceIndex: nextResourceIndex,
       ...closePopUpState,
-    });
-    return true;
+    })
+    return true
   }
 
   selectResources(resourceIDs) {
-    const { fairCopyProject } = this.props;
+    const { fairCopyProject } = this.props
     const {
       openResources,
       selectedResource,
       requestedResources,
       resourceIndex,
-    } = this.state;
+    } = this.state
 
-    let nextSelection = resourceIDs[0];
+    let nextSelection = resourceIDs[0]
 
     if (this.selectTEIDoc(nextSelection)) {
-      return;
+      return
     }
-    let change = selectedResource !== nextSelection;
-    const nextRequestedResources = [...requestedResources];
+    let change = selectedResource !== nextSelection
+    const nextRequestedResources = [...requestedResources]
 
     for (const resourceID of resourceIDs) {
       if (!openResources[resourceID]) {
-        nextRequestedResources.push(resourceID);
-        fairCopyProject.openResource(resourceID);
+        nextRequestedResources.push(resourceID)
+        fairCopyProject.openResource(resourceID)
       }
     }
 
@@ -546,11 +547,11 @@ export default class MainWindow extends Component {
         popupMenuOptions: null,
         popupMenuAnchorEl: null,
         popupMenuPlacement: null,
-      });
-      const nextResource = openResources[nextSelection];
+      })
+      const nextResource = openResources[nextSelection]
       if (nextResource instanceof TEIDocument) {
-        const { searchQuery, searchResults } = this.state;
-        this.refreshWhenReady(searchQuery, searchResults, false);
+        const { searchQuery, searchResults } = this.state
+        this.refreshWhenReady(searchQuery, searchResults, false)
       }
     } else {
       this.setState({
@@ -560,58 +561,58 @@ export default class MainWindow extends Component {
         popupMenuOptions: null,
         popupMenuAnchorEl: null,
         popupMenuPlacement: null,
-      });
+      })
     }
   }
 
   closeResources = (resourceIDs, exitOnClose = false, promptSave = true) => {
-    const { fairCopyProject } = this.props;
-    const { openResources, selectedResource, resourceBrowserOpen } = this.state;
+    const { fairCopyProject } = this.props
+    const { openResources, selectedResource, resourceBrowserOpen } = this.state
 
     if (promptSave) {
       for (const resourceID of resourceIDs) {
-        const resource = openResources[resourceID];
+        const resource = openResources[resourceID]
         if (resource && resource.changedSinceLastSave) {
           const alertOptions = {
             resource,
             resourceIDs,
-          };
+          }
           this.setState({
             ...this.state,
             exitOnClose,
-            alertDialogMode: "confirmSave",
+            alertDialogMode: 'confirmSave',
             alertOptions,
-          });
-          return;
+          })
+          return
         }
       }
     }
 
-    let nextResourceArr = [];
+    let nextResourceArr = []
     for (const openResourceID of Object.keys(openResources)) {
       if (!resourceIDs.find((id) => id === openResourceID)) {
         // this id is not on the close list
-        nextResourceArr.push(openResources[openResourceID]);
+        nextResourceArr.push(openResources[openResourceID])
       } else {
         // closing this resource
-        fairCopyProject.onResourceClosed(openResources[openResourceID]);
+        fairCopyProject.onResourceClosed(openResources[openResourceID])
       }
     }
 
     let nextSelection,
       nextBrowserOpen,
-      nextResources = {};
+      nextResources = {}
     if (nextResourceArr.length > 0) {
       for (const resource of nextResourceArr) {
-        nextResources[resource.resourceID] = resource;
+        nextResources[resource.resourceID] = resource
       }
       nextSelection = resourceIDs.find((id) => id === selectedResource)
         ? nextResourceArr[0].resourceID
-        : selectedResource;
-      nextBrowserOpen = resourceBrowserOpen;
+        : selectedResource
+      nextBrowserOpen = resourceBrowserOpen
     } else {
-      nextSelection = null;
-      nextBrowserOpen = true;
+      nextSelection = null
+      nextBrowserOpen = true
     }
 
     this.setState({
@@ -619,42 +620,42 @@ export default class MainWindow extends Component {
       selectedResource: nextSelection,
       openResources: nextResources,
       resourceBrowserOpen: nextBrowserOpen,
-      alertDialogMode: "closed",
+      alertDialogMode: 'closed',
       alertOptions: null,
       popupMenuOptions: null,
       popupMenuAnchorEl: null,
       popupMenuPlacement: null,
-    });
+    })
 
     if (exitOnClose) {
-      fairCopy.ipcSend("exitApp");
+      fairCopy.ipcSend('exitApp')
     }
-  };
+  }
 
   // a bit of a hack - need to refresh after it renders
   refreshWhenReady(searchQuery, searchResults, openToSearchResult) {
     setTimeout(() => {
-      const { selectedResource, openResources } = this.state;
-      const resource = openResources[selectedResource];
+      const { selectedResource, openResources } = this.state
+      const resource = openResources[selectedResource]
       if (resource && resource.getActiveView()) {
-        this.updateSearchResults(resource, searchQuery, searchResults);
-        resource.refreshView();
+        this.updateSearchResults(resource, searchQuery, searchResults)
+        resource.refreshView()
         if (openToSearchResult) {
-          scrollToSearchResult(resource, 0);
+          scrollToSearchResult(resource, 0)
         }
       } else {
-        this.refreshWhenReady(searchQuery, searchResults, openToSearchResult);
+        this.refreshWhenReady(searchQuery, searchResults, openToSearchResult)
       }
-    }, 60);
+    }, 60)
   }
 
   saveResources(resourceIDs) {
-    const { openResources, selectedResource } = this.state;
+    const { openResources, selectedResource } = this.state
     for (const resourceID of resourceIDs) {
-      const resource = openResources[resourceID];
+      const resource = openResources[resourceID]
       if (resource && resource.changedSinceLastSave) {
-        resource.save();
-        if (resource.resourceID === selectedResource) resource.refreshView();
+        resource.save()
+        if (resource.resourceID === selectedResource) resource.refreshView()
       }
     }
   }
@@ -665,18 +666,18 @@ export default class MainWindow extends Component {
       checkInMode: true,
       checkInResources,
       ...closePopUpState,
-    });
+    })
   }
 
   checkOutResources(resourceEntries) {
-    const { fairCopyProject } = this.props;
-    const { userID, serverURL, projectID } = fairCopyProject;
-    fairCopy.ipcSend("checkOut", userID, serverURL, projectID, resourceEntries);
+    const { fairCopyProject } = this.props
+    const { userID, serverURL, projectID } = fairCopyProject
+    fairCopy.ipcSend('checkOut', userID, serverURL, projectID, resourceEntries)
   }
 
   onLocalResources = (event, localResources) => {
-    this.setState({ ...this.state, localResources });
-  };
+    this.setState({ ...this.state, localResources })
+  }
 
   onOpenPopupMenu = (
     popupMenuOptions,
@@ -688,125 +689,125 @@ export default class MainWindow extends Component {
       popupMenuOptions,
       popupMenuAnchorEl,
       popupMenuPlacement,
-    });
-  };
+    })
+  }
 
   onClosePopupMenu = () => {
-    this.setState({ ...this.state, ...closePopUpState });
-  };
+    this.setState({ ...this.state, ...closePopUpState })
+  }
 
   onLogin = () => {
-    this.setState({ ...this.state, loginMode: true });
-  };
+    this.setState({ ...this.state, loginMode: true })
+  }
 
   onLoggedIn = () => {
-    const { resourceViews } = this.state;
-    const nextResourceViews = { ...resourceViews };
-    nextResourceViews["remote"].loading = true;
+    const { resourceViews } = this.state
+    const nextResourceViews = { ...resourceViews }
+    nextResourceViews['remote'].loading = true
     this.setState({
       ...this.state,
       resourceViews: nextResourceViews,
       loginMode: false,
-    });
-    fairCopy.ipcSend("reopenProject");
-  };
+    })
+    fairCopy.ipcSend('reopenProject')
+  }
 
   onEditResource = () => {
-    this.setState({ ...this.state, editDialogMode: true });
-  };
+    this.setState({ ...this.state, editDialogMode: true })
+  }
 
   onImportResource = (importType) => {
-    if (importType === "xml") {
-      this.setState({ ...this.state, textImportDialogMode: true });
+    if (importType === 'xml') {
+      this.setState({ ...this.state, textImportDialogMode: true })
     } else {
-      this.setState({ ...this.state, iiifDialogMode: true });
+      this.setState({ ...this.state, iiifDialogMode: true })
     }
-  };
+  }
 
   onPerformNERResults = (e, obj) => {
-    const {xml, docID} = obj
-    const {openResources} = this.state
+    const { xml, docID } = obj
+    const { openResources } = this.state
 
     const resource = openResources[docID]
-
 
     resource.replaceDocument(xml)
     resource.refreshView()
 
-    this.setState({...this.state, runningAgent: false})
+    this.setState({ ...this.state, runningAgent: false })
   }
 
   onNERFailed = (e, obj) => {
-    this.setState({...this.state, runningAgent: false})
+    const { error } = obj
+    this.onAlertMessage(`Named Entity Recognition failed! error: ${error}`)
+    this.setState({ ...this.state, runningAgent: false })
   }
 
-
   onAddImages = () => {
-    this.setState({ ...this.state, addImagesMode: true });
-  };
+    this.setState({ ...this.state, addImagesMode: true })
+  }
 
   onAlertMessage = (message) => {
-    this.setState({ ...this.state, alertMessage: message, ...closePopUpState });
-  };
+    this.setState({ ...this.state, alertMessage: message, ...closePopUpState })
+  }
 
   onEditSurfaceInfo = (surfaceInfo) => {
     this.setState({
       ...this.state,
       surfaceInfo: surfaceInfo,
       editSurfaceInfoMode: true,
-    });
-  };
+    })
+  }
 
   onDragElement = (elementID, clientOffset, startingPoint, dragTarget) => {
-    const dragInfo = { elementID, clientOffset, dragTarget, startingPoint };
-    this.setState({ ...this.state, draggingElementActive: true, dragInfo });
-  };
+    const dragInfo = { elementID, clientOffset, dragTarget, startingPoint }
+    this.setState({ ...this.state, draggingElementActive: true, dragInfo })
+  }
 
   onResourceViewChange = (nextView) => {
-    const { resourceViews } = this.state;
-    const { currentView } = resourceViews;
-    const resourceView = resourceViews[currentView];
-    const { indexParentID, parentEntry } = resourceView;
+    const { resourceViews } = this.state
+    const { currentView } = resourceViews
+    const resourceView = resourceViews[currentView]
+    const { indexParentID, parentEntry } = resourceView
     const resourceViewRequest = {
       currentView,
       indexParentID,
       parentEntry,
       ...nextView,
-    };
-    fairCopy.ipcSend("requestResourceView", resourceViewRequest);
-    const checkMarkState = this.setAllCheckmarks(false, false);
-    const nextResourceViews = { ...resourceViews };
-    nextResourceViews[currentView].loading = true;
+    }
+    fairCopy.ipcSend('requestResourceView', resourceViewRequest)
+    const checkMarkState = this.setAllCheckmarks(false, false)
+    const nextResourceViews = { ...resourceViews }
+    nextResourceViews[currentView].loading = true
     this.setState({
       ...this.state,
       ...checkMarkState,
       resourceViews: nextResourceViews,
-    });
-  };
+    })
+  }
 
   onResourceAction = (actionID, resourceIDs, resourceEntries) => {
     // all actions that use nextState clear the checkmarks
-    const checkmarkState = this.setAllCheckmarks(false, false);
-    const nextState = { ...this.state, ...checkmarkState };
+    const checkmarkState = this.setAllCheckmarks(false, false)
+    const nextState = { ...this.state, ...checkmarkState }
 
     switch (actionID) {
-      case "open":
-        this.selectResources(resourceIDs);
-        break;
-      case "open-search-result":
-        this.selectResources(resourceIDs, true);
-        break;
-      case "check-in":
+      case 'open':
+        this.selectResources(resourceIDs)
+        break
+      case 'open-search-result':
+        this.selectResources(resourceIDs, true)
+        break
+      case 'check-in':
         {
           // don't check in if there are unsaved files being committed
-          const { openResources } = this.state;
+          const { openResources } = this.state
           for (const resourceID of resourceIDs) {
-            const openResource = openResources[resourceID];
+            const openResource = openResources[resourceID]
             if (openResource && openResource.changedSinceLastSave) {
               this.onAlertMessage(
-                "You must save all files that are being checked in."
-              );
-              return;
+                'You must save all files that are being checked in.'
+              )
+              return
             }
           }
           this.setState({
@@ -814,198 +815,198 @@ export default class MainWindow extends Component {
             checkInMode: true,
             checkInResources: resourceIDs,
             ...closePopUpState,
-          });
+          })
         }
-        break;
-      case "check-out":
-        this.checkOutResources(resourceEntries);
-        this.setState({ ...nextState, ...closePopUpState });
-        break;
-      case "close":
-        this.closeResources(resourceIDs);
-        break;
-      case "remote":
+        break
+      case 'check-out':
+        this.checkOutResources(resourceEntries)
+        this.setState({ ...nextState, ...closePopUpState })
+        break
+      case 'close':
+        this.closeResources(resourceIDs)
+        break
+      case 'remote':
         {
-          const { resourceViews } = this.state;
+          const { resourceViews } = this.state
           if (
-            resourceViews.currentView === "home" &&
+            resourceViews.currentView === 'home' &&
             !resourceViews.home.loading
           ) {
-            const nextResourceViews = { ...resourceViews };
-            nextResourceViews.currentView = "remote";
-            nextResourceViews.remote.loading = true;
+            const nextResourceViews = { ...resourceViews }
+            nextResourceViews.currentView = 'remote'
+            nextResourceViews.remote.loading = true
             const { indexParentID, parentEntry, currentPage } =
-              resourceViews.remote;
+              resourceViews.remote
             const resourceViewRequest = {
-              currentView: "remote",
+              currentView: 'remote',
               indexParentID,
               parentEntry,
               currentPage,
               ...this.filterInitialState,
-            };
-            fairCopy.ipcSend("requestResourceView", resourceViewRequest);
+            }
+            fairCopy.ipcSend('requestResourceView', resourceViewRequest)
             this.setState({
               ...nextState,
               selectedResource: null,
               resourceBrowserOpen: true,
               resourceViews: nextResourceViews,
               resourceIndex: [],
-            });
+            })
           }
         }
-        break;
-      case "home":
+        break
+      case 'home':
         {
-          const { resourceViews } = this.state;
+          const { resourceViews } = this.state
           if (
-            resourceViews.currentView === "remote" &&
+            resourceViews.currentView === 'remote' &&
             !resourceViews.remote.loading
           ) {
             const { indexParentID, parentEntry, currentPage } =
-              resourceViews.home;
+              resourceViews.home
             const resourceViewRequest = {
-              currentView: "home",
+              currentView: 'home',
               indexParentID,
               parentEntry,
               currentPage,
               ...this.filterInitialState,
-            };
-            fairCopy.ipcSend("requestResourceView", resourceViewRequest);
-            const nextResourceViews = { ...resourceViews };
-            nextResourceViews.currentView = "home";
-            nextResourceViews.home.loading = true;
+            }
+            fairCopy.ipcSend('requestResourceView', resourceViewRequest)
+            const nextResourceViews = { ...resourceViews }
+            nextResourceViews.currentView = 'home'
+            nextResourceViews.home.loading = true
             this.setState({
               ...nextState,
               selectedResource: null,
               resourceBrowserOpen: true,
               resourceViews: nextResourceViews,
-            });
+            })
           }
         }
-        break;
-      case "root":
+        break
+      case 'root':
         {
-          const { resourceViews, resourceIndex } = this.state;
-          const { currentView } = resourceViews;
-          const currentResourceView = resourceViews[currentView];
-          const { currentPage } = currentResourceView;
+          const { resourceViews, resourceIndex } = this.state
+          const { currentView } = resourceViews
+          const currentResourceView = resourceViews[currentView]
+          const { currentPage } = currentResourceView
           const resourceViewRequest = {
             currentView,
             indexParentID: null,
             parentEntry: null,
             currentPage,
-          };
-          fairCopy.ipcSend("requestResourceView", resourceViewRequest);
-          const nextResourceViews = { ...resourceViews };
-          const nextResourceIndex = currentView === "home" ? resourceIndex : [];
+          }
+          fairCopy.ipcSend('requestResourceView', resourceViewRequest)
+          const nextResourceViews = { ...resourceViews }
+          const nextResourceIndex = currentView === 'home' ? resourceIndex : []
           nextResourceViews[currentView] = {
             ...currentResourceView,
             indexParentID: null,
             parentEntry: null,
             loading: true,
-          };
+          }
           this.setState({
             ...nextState,
             selectedResource: null,
             resourceBrowserOpen: true,
             resourceViews: nextResourceViews,
             resourceIndex: nextResourceIndex,
-          });
+          })
         }
-        break;
-      case "move":
+        break
+      case 'move':
         if (this.isResourceOpen(resourceEntries)) {
           this.onAlertMessage(
-            "You must close open editor windows before moving a resource."
-          );
-        } else if (resourceEntries.find((r) => r.type === "teidoc")) {
-          this.onAlertMessage("Cannot move TEIDocument type resources.");
+            'You must close open editor windows before moving a resource.'
+          )
+        } else if (resourceEntries.find((r) => r.type === 'teidoc')) {
+          this.onAlertMessage('Cannot move TEIDocument type resources.')
         } else {
-          const { fairCopyProject } = this.props;
+          const { fairCopyProject } = this.props
           const onMove = (movingItems, parentEntry) => {
-            fairCopyProject.moveResources(movingItems, parentEntry);
-          };
+            fairCopyProject.moveResources(movingItems, parentEntry)
+          }
           const moveResourceProps = {
-            resourceType: "teidoc",
+            resourceType: 'teidoc',
             allowRoot: true,
             movingItems: resourceEntries,
             onMove,
-          };
+          }
           this.setState({
             ...nextState,
             moveResourceMode: true,
             moveResourceProps,
             ...closePopUpState,
-          });
+          })
         }
-        break;
-      case "save":
-        this.saveResources(resourceIDs);
-        break;
-      case "delete":
+        break
+      case 'save':
+        this.saveResources(resourceIDs)
+        break
+      case 'delete':
         {
-          const { fairCopyProject } = this.props;
-          const { openResources } = this.state;
-          const alertOptions = { resourceIDs, openResources };
+          const { fairCopyProject } = this.props
+          const { openResources } = this.state
+          const alertOptions = { resourceIDs, openResources }
           if (fairCopyProject.areEditable(resourceEntries)) {
             this.setState({
               ...nextState,
-              alertDialogMode: "confirmDelete",
+              alertDialogMode: 'confirmDelete',
               alertOptions,
               ...closePopUpState,
-            });
+            })
           } else {
             this.onAlertMessage(
-              "To delete a resource, you must first check it out."
-            );
+              'To delete a resource, you must first check it out.'
+            )
           }
         }
-        break;
-      case "recover":
+        break
+      case 'recover':
         {
-          const { fairCopyProject } = this.props;
-          fairCopyProject.recoverResources(resourceIDs);
-          this.setState({ ...nextState, ...closePopUpState });
+          const { fairCopyProject } = this.props
+          fairCopyProject.recoverResources(resourceIDs)
+          this.setState({ ...nextState, ...closePopUpState })
         }
-        break;
-      case "export":
-        fairCopy.ipcSend("requestExport", resourceEntries);
-        this.setState({ ...nextState, ...closePopUpState });
-        break;
-      case "abandon":
+        break
+      case 'export':
+        fairCopy.ipcSend('requestExport', resourceEntries)
+        this.setState({ ...nextState, ...closePopUpState })
+        break
+      case 'abandon':
         const alertOptions = {
-          onAbandon: () => fairCopy.ipcSend("abandon", resourceEntries),
+          onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
           resource: resourceEntries[0],
         }
         this.setState({
           ...nextState,
-          alertDialogMode: "confirmAbandonCheckout",
+          alertDialogMode: 'confirmAbandonCheckout',
           alertOptions,
           ...closePopUpState,
-        });
-        break;
+        })
+        break
       default:
-        console.error(`Unrecognized resource action id: ${actionID}`);
-        break;
+        console.error(`Unrecognized resource action id: ${actionID}`)
+        break
     }
-  };
+  }
 
   onCheckInAll = () => {
-    const { localResources } = this.state;
+    const { localResources } = this.state
     // check in all TEI docs by id
     const teiDocs = Object.entries(localResources).filter(
-      ([id, resource]) => resource.type === "teidoc" && !resource.parentResource
+      ([id, resource]) => resource.type === 'teidoc' && !resource.parentResource
     )
-    const resourceIDs = teiDocs.map(([id, resource]) => id);
+    const resourceIDs = teiDocs.map(([id, resource]) => id)
     // don't check in if there are unsaved files being committed
-    const { openResources } = this.state;
+    const { openResources } = this.state
     for (const resourceID of resourceIDs) {
-      const openResource = openResources[resourceID];
+      const openResource = openResources[resourceID]
       if (openResource && openResource.changedSinceLastSave) {
         this.onAlertMessage(
-          "You must save all files that are being checked in."
-        );
-        return;
+          'You must save all files that are being checked in.'
+        )
+        return
       }
     }
     this.setState((prevState) => ({
@@ -1014,7 +1015,7 @@ export default class MainWindow extends Component {
       checkInResources: resourceIDs,
       checkInAll: true,
       ...closePopUpState,
-    }));
+    }))
   }
 
   onSearchResults = (
@@ -1023,11 +1024,11 @@ export default class MainWindow extends Component {
     popupMenuOptions,
     searchBarEl
   ) => {
-    const { selectedResource, openResources } = this.state;
+    const { selectedResource, openResources } = this.state
 
     if (selectedResource) {
-      const resource = openResources[selectedResource];
-      this.updateSearchResults(resource, searchQuery, searchResults);
+      const resource = openResources[selectedResource]
+      this.updateSearchResults(resource, searchQuery, searchResults)
     }
     if (popupMenuOptions.length === 0) {
       this.setState({
@@ -1036,9 +1037,9 @@ export default class MainWindow extends Component {
         searchResults,
         searchSelectionIndex: 0,
         ...closePopUpState,
-      });
+      })
     } else {
-      const popupMenuPlacement = { vertical: "top", horizontal: "left" };
+      const popupMenuPlacement = { vertical: 'top', horizontal: 'left' }
       this.setState({
         ...this.state,
         searchQuery,
@@ -1047,148 +1048,153 @@ export default class MainWindow extends Component {
         popupMenuOptions,
         popupMenuAnchorEl: searchBarEl,
         popupMenuPlacement,
-      });
+      })
     }
-  };
+  }
 
   onSearchFilter = () => {
-    this.setState({ ...this.state, searchFilterMode: true });
-  };
+    this.setState({ ...this.state, searchFilterMode: true })
+  }
 
   onResetSearch = () => {
     const resetSearch = debounce(() => {
       this.setState({
         ...this.state,
-        searchQuery: "",
+        searchQuery: '',
         searchResults: {},
         searchSelectionIndex: 0,
-      });
-    }, resetSearchRate);
-    resetSearch();
-  };
+      })
+    }, resetSearchRate)
+    resetSearch()
+  }
 
   onRunAgent = () => {
-    this.setState({...this.state, runningAgent: true})
+    this.setState({ ...this.state, runningAgent: true })
   }
 
   updateSearchFilter = (elementName, attrQs, active, open) => {
     const { searchQuery, searchScope, selectedResource, openResources } =
-      this.state;
-    const searchFilterOptions = { elementName, attrQs, active };
-    const query = searchQuery ? searchQuery.query : "";
-    const searchQ = { query, elementName, attrQs };
+      this.state
+    const searchFilterOptions = { elementName, attrQs, active }
+    const query = searchQuery ? searchQuery.query : ''
+    const searchQ = { query, elementName, attrQs }
 
     // run the search based on the new filter settings
-    if (searchScope === "project") {
+    if (searchScope === 'project') {
       this.setState({
         ...this.state,
         searchQuery: searchQ,
         searchFilterOptions,
         searchFilterMode: open,
-      });
-      fairCopy.ipcSend("searchProject", searchQ);
+      })
+      fairCopy.ipcSend('searchProject', searchQ)
     } else {
       const currentResource = selectedResource
         ? openResources[selectedResource]
-        : null;
+        : null
       if (currentResource) {
-        const searchResults = searchResource(currentResource, searchQ);
+        const searchResults = searchResource(currentResource, searchQ)
         this.setState({
           ...this.state,
           searchQuery: searchQ,
           searchFilterOptions,
           searchFilterMode: open,
-        });
-        this.updateSearchResults(currentResource, searchQuery, searchResults);
+        })
+        this.updateSearchResults(currentResource, searchQuery, searchResults)
       }
     }
-  };
+  }
 
   updateSearchResults(resource, searchQuery, searchResults) {
-    const { resourceID } = resource;
+    const { resourceID } = resource
     const resourceSearchResults = searchResults[resourceID]
       ? searchResults[resourceID]
-      : -1;
-    highlightSearchResults(resource, searchQuery, resourceSearchResults);
+      : -1
+    highlightSearchResults(resource, searchQuery, resourceSearchResults)
   }
 
   closeSearchBar() {
-    const { selectedResource, openResources } = this.state;
+    const { selectedResource, openResources } = this.state
     if (selectedResource) {
-      const resource = openResources[selectedResource];
-      highlightSearchResults(resource, null, -1);
-      resource.getActiveView().focus();
+      const resource = openResources[selectedResource]
+      highlightSearchResults(resource, null, -1)
+      resource.getActiveView().focus()
     }
     this.setState({
       ...this.state,
       showSearchBar: false,
-      searchQuery: "",
+      searchQuery: '',
       searchResults: {},
       searchSelectionIndex: 0,
       ...closePopUpState,
-    });
+    })
   }
 
   toggleSearchScope() {
-    const { searchScope } = this.state;
-    const nextScope = searchScope === "file" ? "project" : "file";
-    this.setState({ ...this.state, searchScope: nextScope });
+    const { searchScope } = this.state
+    const nextScope = searchScope === 'file' ? 'project' : 'file'
+    this.setState({ ...this.state, searchScope: nextScope })
   }
 
   renderEditors() {
-    const { openResources, selectedResource, leftPaneWidth, resourceViews, runningAgent } =
-      this.state;
-    const { fairCopyProject, onProjectSettings } = this.props;
-    const { currentView } = resourceViews;
+    const {
+      openResources,
+      selectedResource,
+      leftPaneWidth,
+      resourceViews,
+      runningAgent,
+    } = this.state
+    const { fairCopyProject, onProjectSettings } = this.props
+    const { currentView } = resourceViews
 
-    const editors = [];
-    let visible = false;
+    const editors = []
+    let visible = false
     for (const resource of Object.values(openResources)) {
       const hidden = selectedResource !== resource.resourceID || runningAgent
-      if (!hidden) visible = true;
-      const key = `editor-${resource.resourceID}`;
-      const { resourceEntry, parentEntry } = resource;
+      if (!hidden) visible = true
+      const key = `editor-${resource.resourceID}`
+      const { resourceEntry, parentEntry } = resource
 
       const onSave = () => {
-        this.onResourceAction("save", [resource.resourceID]);
-      };
+        this.onResourceAction('save', [resource.resourceID])
+      }
       const onConfirmDeleteImages = (alertOptions) => {
         this.setState({
           ...this.state,
-          alertDialogMode: "confirmDeleteImages",
+          alertDialogMode: 'confirmDeleteImages',
           alertOptions,
-        });
-      };
+        })
+      }
       const onMoveSurfaces = (facsDocument, surfaces, onMoved) => {
         const onMove = (movingItems, parentEntry) => {
-          facsDocument.moveSurfaces(movingItems, parentEntry, onMoved);
-        };
+          facsDocument.moveSurfaces(movingItems, parentEntry, onMoved)
+        }
         const moveResourceProps = {
-          resourceType: "facs",
+          resourceType: 'facs',
           allowRoot: false,
           movingItems: surfaces,
           onMove,
           onMoved,
-        };
+        }
         this.setState({
           ...this.state,
           moveResourceMode: true,
           moveResourceProps,
           ...closePopUpState,
-        });
-      };
+        })
+      }
       const onToggleSearchBar = (showSearchBar) => {
         if (!showSearchBar) {
-          this.closeSearchBar();
+          this.closeSearchBar()
         } else {
-          this.setState({ ...this.state, showSearchBar: true });
+          this.setState({ ...this.state, showSearchBar: true })
         }
-      };
+      }
 
       // bump state to update sidebar
       const onErrorCountChange = () => {
-        this.setState({ ...this.state });
-      };
+        this.setState({ ...this.state })
+      }
 
       if (resource instanceof TEIDocument) {
         editors.push(
@@ -1210,7 +1216,7 @@ export default class MainWindow extends Component {
             leftPaneWidth={leftPaneWidth}
             currentView={currentView}
           ></TEIEditor>
-        );
+        )
       } else {
         editors.push(
           <FacsEditor
@@ -1229,20 +1235,20 @@ export default class MainWindow extends Component {
             onEditSurfaceInfo={this.onEditSurfaceInfo}
             currentView={currentView}
           ></FacsEditor>
-        );
+        )
       }
     }
 
     // no visible editors have been added to the list, render a spinner
     if (selectedResource && !visible) {
-      editors.push(<div key="spinner">{bigRingSpinner()}</div>);
+      editors.push(<div key='spinner'>{bigRingSpinner()}</div>)
     }
 
-    return editors;
+    return editors
   }
 
   renderContentPane() {
-    const { fairCopyProject } = this.props;
+    const { fairCopyProject } = this.props
     const {
       awaitingCheckIn,
       resourceBrowserOpen,
@@ -1253,23 +1259,24 @@ export default class MainWindow extends Component {
       resourceCheckmarks,
       migratingResources,
       publishingResources,
-      runningAgent
-    } = this.state;
-    const { currentView } = resourceViews;
-    const resourceView = resourceViews[currentView];
-    const { parentEntry } = resourceView;
+      runningAgent,
+    } = this.state
+    const { currentView } = resourceViews
+    const resourceView = resourceViews[currentView]
+    const { parentEntry } = resourceView
 
     return (
-      <div className="content-pane">
-        {resourceBrowserOpen && (
-          awaitingCheckIn > 0 || migratingResources.size > 0
-          ? <div id="ResourceBrowser">{bigRingSpinner()}</div>
-          : <ResourceBrowser
+      <div className='content-pane'>
+        {resourceBrowserOpen &&
+          (awaitingCheckIn > 0 || migratingResources.size > 0 ? (
+            <div id='ResourceBrowser'>{bigRingSpinner()}</div>
+          ) : (
+            <ResourceBrowser
               onResourceAction={this.onResourceAction}
               onOpenPopupMenu={this.onOpenPopupMenu}
               onEditResource={this.onEditResource}
               onEditTEIDoc={() => {
-                this.setState({ ...this.state, editTEIDocDialogMode: true });
+                this.setState({ ...this.state, editTEIDocDialogMode: true })
               }}
               onImportResource={this.onImportResource}
               onCheckInAll={this.onCheckInAll}
@@ -1287,23 +1294,23 @@ export default class MainWindow extends Component {
               panelWidth={rightPaneWidth}
               publishingResources={publishingResources}
             ></ResourceBrowser>
-        )}
+          ))}
         {this.renderEditors()}
       </div>
-    );
+    )
   }
 
   renderAlertDialog() {
-    const { fairCopyProject } = this.props;
-    const { alertDialogMode, alertOptions, exitOnClose } = this.state;
+    const { fairCopyProject } = this.props
+    const { alertDialogMode, alertOptions, exitOnClose } = this.state
 
     const onCloseAlert = () => {
       this.setState({
         ...this.state,
-        alertDialogMode: "closed",
+        alertDialogMode: 'closed',
         alertOptions: null,
-      });
-    };
+      })
+    }
 
     return (
       <AlertDialog
@@ -1314,7 +1321,7 @@ export default class MainWindow extends Component {
         exitOnClose={exitOnClose}
         fairCopyProject={fairCopyProject}
       ></AlertDialog>
-    );
+    )
   }
 
   renderDialogs() {
@@ -1342,17 +1349,17 @@ export default class MainWindow extends Component {
       selectedResource,
       localResources,
       resourceViews,
-    } = this.state;
+    } = this.state
 
-    const { fairCopyProject, appConfig } = this.props;
-    const { idMap, serverURL } = fairCopyProject;
-    const resourceView = resourceViews[resourceViews.currentView];
-    const { indexParentID, parentEntry: teiDocEntry } = resourceView;
+    const { fairCopyProject, appConfig } = this.props
+    const { idMap, serverURL } = fairCopyProject
+    const resourceView = resourceViews[resourceViews.currentView]
+    const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
     const selectedDoc = selectedResource
       ? openResources[selectedResource]
-      : null;
-    const resourceEntry = selectedDoc ? selectedDoc.resourceEntry : null;
+      : null
+    const resourceEntry = selectedDoc ? selectedDoc.resourceEntry : null
 
     const {
       alertMessage,
@@ -1360,9 +1367,9 @@ export default class MainWindow extends Component {
       iiifDialogMode,
       textImportDialogMode,
       surfaceInfo,
-    } = this.state;
+    } = this.state
     const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } =
-      this.state;
+      this.state
 
     const onSaveResource = (name, localID, type) => {
       if (resourceEntry) {
@@ -1371,48 +1378,50 @@ export default class MainWindow extends Component {
           name,
           localID,
           type,
-        });
+        })
       } else {
-        fairCopyProject.newResource(name, localID, type, indexParentID);
+        fairCopyProject.newResource(name, localID, type, indexParentID)
       }
-      this.setState({ ...this.state, editDialogMode: false });
-    };
+      this.setState({ ...this.state, editDialogMode: false })
+    }
 
     const onSaveTEIDoc = (name, localID, type) => {
-      fairCopyProject.updateResource({ ...teiDocEntry, name, localID, type });
-      this.setState({ ...this.state, editTEIDocDialogMode: false });
-    };
+      fairCopyProject.updateResource({ ...teiDocEntry, name, localID, type })
+      this.setState({ ...this.state, editTEIDocDialogMode: false })
+    }
 
     const onSaveSurfaceInfo = (surfaceInfo) => {
-      const facsDocument = openResources[surfaceInfo.resourceID];
-      facsDocument.updateSurfaceInfo(surfaceInfo);
+      const facsDocument = openResources[surfaceInfo.resourceID]
+      facsDocument.updateSurfaceInfo(surfaceInfo)
       this.setState({
         ...this.state,
         surfaceInfo: null,
         editSurfaceInfoMode: false,
-      });
-    };
+      })
+    }
 
     const onCreateFromAbandoned = () => {
       // create duplicates of local copies of abandoned resources, then delete
       const resourceIDs = abandonedLocalResources.map((r) => r.id)
       // need to read contents of each in order to create duplicates
-      fairCopy.ipcSend("read-resources", resourceIDs, true)
-    };
+      fairCopy.ipcSend('read-resources', resourceIDs, true)
+    }
 
     const onDeleteAbandoned = () => {
       // immediately force-delete local copies of abandoned resources
-      const abandonedDocs = abandonedLocalResources.filter((r) => r.type === "teidoc")
+      const abandonedDocs = abandonedLocalResources.filter(
+        (r) => r.type === 'teidoc'
+      )
       fairCopyProject.forceDeleteResources(abandonedDocs)
       this.setState((prevState) => ({
         ...prevState,
         abandonedDialogMode: false,
         abandonedLocalResources: [],
-      }));
-    };
+      }))
+    }
 
     return (
-      <div className="dialog-container">
+      <div className='dialog-container'>
         {this.renderAlertDialog()}
         <ImportConsoleDialog
           fairCopyProject={fairCopyProject}
@@ -1425,7 +1434,7 @@ export default class MainWindow extends Component {
             parentEntry={teiDocEntry}
             onSave={onSaveResource}
             onClose={() => {
-              this.setState({ ...this.state, editDialogMode: false });
+              this.setState({ ...this.state, editDialogMode: false })
             }}
           ></EditResourceDialog>
         )}
@@ -1436,7 +1445,7 @@ export default class MainWindow extends Component {
             parentEntry={null}
             onSave={onSaveTEIDoc}
             onClose={() => {
-              this.setState({ ...this.state, editTEIDocDialogMode: false });
+              this.setState({ ...this.state, editTEIDocDialogMode: false })
             }}
           ></EditResourceDialog>
         )}
@@ -1445,7 +1454,7 @@ export default class MainWindow extends Component {
             fairCopyProject={fairCopyProject}
             teiDocEntry={teiDocEntry}
             onClose={() => {
-              this.setState({ ...this.state, iiifDialogMode: false });
+              this.setState({ ...this.state, iiifDialogMode: false })
             }}
           ></IIIFImportDialog>
         )}
@@ -1454,7 +1463,7 @@ export default class MainWindow extends Component {
             fairCopyProject={fairCopyProject}
             parentResourceID={indexParentID}
             onClose={() => {
-              this.setState({ ...this.state, textImportDialogMode: false });
+              this.setState({ ...this.state, textImportDialogMode: false })
             }}
           ></ImportTextsDialog>
         )}
@@ -1463,7 +1472,7 @@ export default class MainWindow extends Component {
             idMap={idMap}
             facsDocument={selectedDoc}
             onClose={() => {
-              this.setState({ ...this.state, addImagesMode: false });
+              this.setState({ ...this.state, addImagesMode: false })
             }}
           ></AddImageDialog>
         )}
@@ -1481,7 +1490,7 @@ export default class MainWindow extends Component {
                 ...this.state,
                 dragInfo: null,
                 draggingElementActive: false,
-              });
+              })
             }}
           ></EditorDraggingElement>
         )}
@@ -1494,7 +1503,7 @@ export default class MainWindow extends Component {
                 ...this.state,
                 moveResourceMode: false,
                 moveResourceProps: null,
-              });
+              })
             }}
           ></MoveResourceDialog>
         )}
@@ -1510,7 +1519,7 @@ export default class MainWindow extends Component {
           <ReleaseNotesDialog
             appConfig={appConfig}
             onClose={() => {
-              this.setState({ ...this.state, releaseNotesMode: false });
+              this.setState({ ...this.state, releaseNotesMode: false })
             }}
           ></ReleaseNotesDialog>
         )}
@@ -1523,7 +1532,7 @@ export default class MainWindow extends Component {
                 ...this.state,
                 editSurfaceInfoMode: false,
                 surfaceInfo: null,
-              });
+              })
             }}
           ></EditSurfaceInfoDialog>
         )}
@@ -1532,7 +1541,7 @@ export default class MainWindow extends Component {
             searchFilterOptions={searchFilterOptions}
             updateSearchFilter={this.updateSearchFilter}
             onClose={() => {
-              this.setState({ ...this.state, searchFilterMode: false });
+              this.setState({ ...this.state, searchFilterMode: false })
             }}
           ></SearchDialog>
         )}
@@ -1543,7 +1552,11 @@ export default class MainWindow extends Component {
             checkInAll={checkInAll}
             localResources={localResources}
             onClose={() => {
-              this.setState({ ...this.state, checkInMode: false, checkInAll: false });
+              this.setState({
+                ...this.state,
+                checkInMode: false,
+                checkInAll: false,
+              })
             }}
           ></CheckInDialog>
         )}
@@ -1557,14 +1570,14 @@ export default class MainWindow extends Component {
                 checkOutMode: false,
                 checkOutStatus: null,
                 checkOutError: null,
-              });
+              })
             }}
           ></CheckOutDialog>
         )}
         {loginMode && (
           <LoginDialog
             onClose={() => {
-              this.setState({ ...this.state, loginMode: false });
+              this.setState({ ...this.state, loginMode: false })
             }}
             serverURL={serverURL}
             onLoggedIn={this.onLoggedIn}
@@ -1581,24 +1594,24 @@ export default class MainWindow extends Component {
           open={alertMessage !== null}
           message={alertMessage}
           handleClose={() => {
-            this.setState({ ...this.state, alertMessage: null });
+            this.setState({ ...this.state, alertMessage: null })
           }}
         ></SnackAlert>
       </div>
-    );
+    )
   }
 
   renderProjectSidebar() {
-    const { openResources, selectedResource, leftPaneWidth } = this.state;
-    const { fairCopyProject, onProjectSettings } = this.props;
+    const { openResources, selectedResource, leftPaneWidth } = this.state
+    const { fairCopyProject, onProjectSettings } = this.props
 
     const onSelectResource = (resourceID) => {
-      this.onResourceAction("open", [resourceID]);
-    };
+      this.onResourceAction('open', [resourceID])
+    }
 
     const onCloseResource = (resourceID) => {
-      this.onResourceAction("close", [resourceID]);
-    };
+      this.onResourceAction('close', [resourceID])
+    }
 
     return (
       <ProjectSidebar
@@ -1610,48 +1623,48 @@ export default class MainWindow extends Component {
         onCloseResource={onCloseResource}
         onEditProjectInfo={onProjectSettings}
       ></ProjectSidebar>
-    );
+    )
   }
 
   onKeyDown = (event) => {
-    const ctrlDown = event.ctrlKey;
-    const commandDown = event.metaKey;
-    const { key } = event;
+    const ctrlDown = event.ctrlKey
+    const commandDown = event.metaKey
+    const { key } = event
 
     if (ctrlDown || commandDown) {
       switch (key) {
-        case "/":
+        case '/':
           {
-            const { selectedResource, openResources } = this.state;
+            const { selectedResource, openResources } = this.state
             const currentResource = selectedResource
               ? openResources[selectedResource]
-              : null;
+              : null
             if (currentResource instanceof TEIDocument) {
-              const { expandedGutter } = currentResource;
-              currentResource.setExpandedGutter(!expandedGutter);
-              currentResource.refreshView();
+              const { expandedGutter } = currentResource
+              currentResource.setExpandedGutter(!expandedGutter)
+              currentResource.refreshView()
             }
           }
-          break;
+          break
         // TODO
         // case ' ':
         //     const activeMenu = 'structure'
         //     this.onOpenElementMenu({ menuGroup: activeMenu, action: 'replace' })
         //     break
-        case "s":
-          const { selectedResource } = this.state;
+        case 's':
+          const { selectedResource } = this.state
           if (selectedResource) {
-            this.onResourceAction("save", [selectedResource]);
+            this.onResourceAction('save', [selectedResource])
           }
-          break;
+          break
         default:
-          break;
+          break
       }
     }
-  };
+  }
 
   render() {
-    const { appConfig, hidden } = this.props;
+    const { appConfig, hidden } = this.props
     const {
       searchEnabled,
       showSearchBar,
@@ -1660,22 +1673,22 @@ export default class MainWindow extends Component {
       selectedResource,
       openResources,
       searchSelectionIndex,
-    } = this.state;
+    } = this.state
 
     const onDragSplitPane = debounce((leftPaneWidth, rightPaneWidth) => {
-      this.setState({ ...this.state, leftPaneWidth, rightPaneWidth });
-    }, resizeRefreshRate);
+      this.setState({ ...this.state, leftPaneWidth, rightPaneWidth })
+    }, resizeRefreshRate)
 
     // TODO fix for search ( selectedResource && isIndexable(openResources[selectedResource].resourceType) )
     const currentResource = selectedResource
       ? openResources[selectedResource]
-      : null;
+      : null
 
     // hide the interface (to suspend state)
-    const style = hidden ? { display: "none" } : {};
+    const style = hidden ? { display: 'none' } : {}
 
     return (
-      <div id="MainWindow" style={style}>
+      <div id='MainWindow' style={style}>
         <div onKeyDown={this.onKeyDown}>
           <SplitPaneView
             leftPane={this.renderProjectSidebar()}
@@ -1694,25 +1707,25 @@ export default class MainWindow extends Component {
             searchScope={searchScope}
             showSearchBar={showSearchBar}
             onUpdateSearchSelection={(searchSelectionIndex) => {
-              this.setState({ ...this.state, searchSelectionIndex });
+              this.setState({ ...this.state, searchSelectionIndex })
             }}
             onResourceAction={this.onResourceAction}
             onToggleSearch={() => {
-              this.toggleSearchScope();
+              this.toggleSearchScope()
             }}
             onCloseSearch={() => {
-              this.closeSearchBar();
+              this.closeSearchBar()
             }}
             onQuitAndInstall={() => {
-              this.requestExitApp();
+              this.requestExitApp()
             }}
             onDisplayNotes={() => {
-              this.setState({ ...this.state, releaseNotesMode: true });
+              this.setState({ ...this.state, releaseNotesMode: true })
             }}
           ></MainWindowStatusBar>
         </div>
         {this.renderDialogs()}
       </div>
-    );
+    )
   }
 }
