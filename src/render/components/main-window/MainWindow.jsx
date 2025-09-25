@@ -387,6 +387,8 @@ export default class MainWindow extends Component {
     fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted);
     fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults);
     fairCopy.ipcRegisterCallback('performNERResult', this.onPerformNERResults)
+    fairCopy.ipcRegisterCallback('nerFailed', this.onNERFailed)
+  }
   }
 
   componentWillUnmount() {
@@ -421,6 +423,7 @@ export default class MainWindow extends Component {
     fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted);
     fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults);
     fairCopy.ipcRemoveListener('performNERResult', this.onPerformNERResults)
+    fairCopy.ipcRemoveListener('nerFailed', this.onNERFailed)
   }
 
   refreshWindow() {
@@ -728,9 +731,15 @@ export default class MainWindow extends Component {
 
 
     resource.replaceDocument(xml)
+    resource.refreshView()
 
     this.setState({...this.state, runningAgent: false})
   }
+
+  onNERFailed = (e, obj) => {
+    this.setState({...this.state, runningAgent: false})
+  }
+
 
   onAddImages = () => {
     this.setState({ ...this.state, addImagesMode: true });

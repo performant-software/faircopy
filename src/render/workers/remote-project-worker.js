@@ -83,7 +83,7 @@ function onPerformNER(userID, serverURL, authToken, fileContents, docID, postMes
         postMessage({ messageType: 'ner-updated', xml: data, docID })
     },
         (error) => {
-            console.log(error)
+            postMessage({ messageType: 'ner-failed', error })
         })
 }
 

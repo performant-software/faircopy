@@ -17,6 +17,18 @@
 				]
 			},
 			{
+				"label": "Named Entities",
+				"members": [
+					"persName",
+					"orgName",
+					"placeName",
+					"settlement",
+					"country",
+					"region",
+					"date"
+				]
+			},
+			{
 				"label": "Transcription",
 				"members": [
 					"abbr",
@@ -35,7 +47,6 @@
 			{
 				"label": "Data",
 				"members": [
-					"date",
 					"email",
 					"measure",
 					"num",
@@ -52,8 +63,7 @@
 					"body",
 					"div",
 					"floatingText",
-					"front",
-					"surface"
+					"front"
 				]
 			},
 			{
@@ -85,9 +95,7 @@
 					"item",
 					"l",
 					"lg",
-					"list",
-					"line",
-					"zone"
+					"list"
 				]
 			},
 			{
@@ -14095,7 +14103,7 @@
 			}
 		},
 		"surface": {
-			"active": true,
+			"active": false,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -20593,7 +20601,7 @@
 			}
 		},
 		"country": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -22603,7 +22611,7 @@
 			}
 		},
 		"orgName": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -22844,7 +22852,7 @@
 			}
 		},
 		"persName": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -23155,7 +23163,7 @@
 			}
 		},
 		"placeName": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -23600,7 +23608,7 @@
 			}
 		},
 		"region": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -24438,7 +24446,7 @@
 			}
 		},
 		"settlement": {
-			"active": false,
+			"active": true,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -35683,7 +35691,7 @@
 			}
 		},
 		"line": {
-			"active": true,
+			"active": false,
 			"attrState": {
 				"ana": {
 					"active": false
@@ -41245,7 +41253,7 @@
 			}
 		},
 		"zone": {
-			"active": true,
+			"active": false,
 			"attrState": {
 				"ana": {
 					"active": false

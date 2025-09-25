@@ -116,6 +116,13 @@ class RemoteProject {
                         fairCopyApplication.sendToMainWindow('performNERResult', { xml, docID })
                     }
                     break
+                case 'ner-failed':
+                    {
+                        const { error } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('performNERFailed', { error })
+                    }
+                    break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }
