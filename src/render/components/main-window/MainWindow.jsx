@@ -126,6 +126,7 @@ export default class MainWindow extends Component {
       abandonedDialogMode: false,
       abandonedLocalResources: [],
       awaitingCheckIn: 0,
+      runningAgent: false
     };
   }
 
@@ -385,6 +386,7 @@ export default class MainWindow extends Component {
     );
     fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted);
     fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults);
+    fairCopy.ipcRegisterCallback('performNERResult', this.onPerformNERResults)
   }
 
   componentWillUnmount() {
@@ -418,6 +420,7 @@ export default class MainWindow extends Component {
     );
     fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted);
     fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults);
+    fairCopy.ipcRemoveListener('performNERResult', this.onPerformNERResults)
   }
 
   refreshWindow() {
@@ -716,6 +719,18 @@ export default class MainWindow extends Component {
       this.setState({ ...this.state, iiifDialogMode: true });
     }
   };
+
+  onPerformNERResults = (e, obj) => {
+    const {xml, docID} = obj
+    const {openResources} = this.state
+
+    const resource = openResources[docID]
+
+
+    resource.replaceDocument(xml)
+
+    this.setState({...this.state, runningAgent: false})
+  }
 
   onAddImages = () => {
     this.setState({ ...this.state, addImagesMode: true });
@@ -1043,6 +1058,10 @@ export default class MainWindow extends Component {
     resetSearch();
   };
 
+  onRunAgent = () => {
+    this.setState({...this.state, runningAgent: true})
+  }
+
   updateSearchFilter = (elementName, attrQs, active, open) => {
     const { searchQuery, searchScope, selectedResource, openResources } =
       this.state;
@@ -1108,7 +1127,7 @@ export default class MainWindow extends Component {
   }
 
   renderEditors() {
-    const { openResources, selectedResource, leftPaneWidth, resourceViews } =
+    const { openResources, selectedResource, leftPaneWidth, resourceViews, runningAgent } =
       this.state;
     const { fairCopyProject, onProjectSettings } = this.props;
     const { currentView } = resourceViews;
@@ -1116,7 +1135,7 @@ export default class MainWindow extends Component {
     const editors = [];
     let visible = false;
     for (const resource of Object.values(openResources)) {
-      const hidden = selectedResource !== resource.resourceID;
+      const hidden = selectedResource !== resource.resourceID || runningAgent
       if (!hidden) visible = true;
       const key = `editor-${resource.resourceID}`;
       const { resourceEntry, parentEntry } = resource;
@@ -1178,6 +1197,7 @@ export default class MainWindow extends Component {
             onToggleSearchBar={onToggleSearchBar}
             onResetSearch={this.onResetSearch}
             onSave={onSave}
+            onRunAgent={this.onRunAgent}
             leftPaneWidth={leftPaneWidth}
             currentView={currentView}
           ></TEIEditor>
@@ -1224,6 +1244,7 @@ export default class MainWindow extends Component {
       resourceCheckmarks,
       migratingResources,
       publishingResources,
+      runningAgent
     } = this.state;
     const { currentView } = resourceViews;
     const resourceView = resourceViews[currentView];

@@ -64,6 +64,6 @@ export function getUserOrganizations(userID, serverURL) {
 }
 
 // Axios config object that uses authToken 
-export function authConfig(authToken) {
-    return { headers: { 'Authorization': `Bearer ${authToken}` } }
+export function authConfig(authToken, timeout = 60000) {
+    return { timeout: timeout, headers: { 'Authorization': `Bearer ${authToken}` } }
 }
