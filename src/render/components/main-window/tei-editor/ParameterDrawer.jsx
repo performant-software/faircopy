@@ -407,6 +407,7 @@ export default class ParameterDrawer extends Component {
     const { elements } = teiSchema;
     const configElements = fairCopyConfig.elements;
     const name = element.type.name;
+    const isMark = name.startsWith("mark")
     const elementID = name.startsWith("mark")
       ? name.slice("mark".length)
       : name.endsWith("X")
@@ -424,7 +425,8 @@ export default class ParameterDrawer extends Component {
     };
 
     const onAddToSchema = () => {
-      const elementMenu = teiSchema.getElementMenu(elementSpec.pmType)[0];
+      const elementType = isMark ? "mark" : elementSpec.pmType
+      const elementMenu = teiSchema.getElementMenu(elementType)[0];
       addElementToSchema(elementID, elementMenu, fairCopyConfig);
       saveConfig(fairCopyConfig);
       teiDocument.refreshView();
