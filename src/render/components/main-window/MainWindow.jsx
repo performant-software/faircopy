@@ -731,7 +731,10 @@ export default class MainWindow extends Component {
     const resource = openResources[docID]
 
     resource.replaceDocument(xml)
-    resource.refreshView()
+    setTimeout(() => {
+      resource.gutterMarkCacheDirty = true
+      resource.refreshView()
+    }, 60)
 
     this.setState({ ...this.state, runningAgent: false })
   }
