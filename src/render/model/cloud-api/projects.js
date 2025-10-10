@@ -4,6 +4,9 @@ import { authConfig } from './auth'
 import { standardErrorHandler } from './error-handler'
 import { getUserOrganizations } from './auth'
 
+const MAX_NER_POLLS = 1000        // Maximum number of status requests for a single NER request
+const NER_POLL_INTERVAL = 5000    // How often to poll NER status endpoint in ms
+
 export function getProjects(userID, serverURL, authToken, onSuccess, onFail) {
     const getProjectsURL = `${serverURL}/api/projects?per_page=1000`
 
@@ -77,4 +80,54 @@ export function publishCss(userID, projectID, serverURL, authToken, onSuccess, o
         },
         standardErrorHandler(userID, serverURL, onFail)
     )
+}
+
+export async function performNER(userID, serverURL, authToken, fileContents, onSuccess, onFail) {
+    const performNERURL = `${serverURL}/api/agents/ner`
+
+    try {
+        const performResp = await axios.post(performNERURL, { tei: fileContents }, authConfig(authToken))
+        const { run_id } = performResp.data
+        const statusURL = `${serverURL}/api/agents/ner/status/${run_id}`
+        let attempts = 0
+
+        // We will poll until completed or failed
+        const goodStatus = ['RUNNING', 'COMPLETED']
+        while (attempts < MAX_NER_POLLS) {
+            try {
+                const statusResp = await axios.get(statusURL, authConfig(authToken))
+
+                const { status } = statusResp.data
+
+                if (!goodStatus.includes(status)) {
+                    return onFail(status)
+                }
+
+                if (status === 'COMPLETED') {
+                    const retrieveURL = `${serverURL}/api/agents/ner/retrieve/${run_id}`
+
+                    try {
+                        const retrieveResp = await axios.get(retrieveURL, authConfig(authToken))
+
+                        const updatedContents = retrieveResp.data
+                        onSuccess(updatedContents)
+                        return
+
+                    } catch (error) {
+                        onFail(error)
+                    }
+
+                }
+
+                attempts++
+                if (attempts < MAX_NER_POLLS) {
+                    await new Promise(resolve => setTimeout(resolve, NER_POLL_INTERVAL)) // Wait before next attempt
+                }
+            } catch (error) {
+                onFail(error)
+            }
+        }
+    } catch (error) {
+        onFail(error)
+    }
 }
