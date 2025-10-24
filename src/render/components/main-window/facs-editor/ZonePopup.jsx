@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import IDField from "../tei-editor/attribute-fields/IDField";
 import TEIDataPointerField from "../tei-editor/attribute-fields/TEIDataPointerField";
+import ReadOnlyField from "../tei-editor/attribute-fields/ReadOnlyField"
 
 export default class ZonePopup extends Component {
   renderEditor() {
@@ -24,6 +25,7 @@ export default class ZonePopup extends Component {
       onErase,
       imageView,
       editing,
+      editable
     } = this.props;
     const { id, note, ana } = zone;
 
@@ -40,6 +42,7 @@ export default class ZonePopup extends Component {
       <Card variant="outlined" className="zoneEditor">
         <div className="zone-id">
           <IDField
+            readOnly={!editable}
             idPrefix={facsID}
             hasID={facsDocument.hasID}
             value={id}
@@ -48,6 +51,7 @@ export default class ZonePopup extends Component {
         </div>
         <CardContent>
           <TextField
+            disabled={!editable}
             name="note"
             onChange={onChangeText}
             multiline
@@ -56,52 +60,75 @@ export default class ZonePopup extends Component {
             variant="outlined"
             value={note}
           ></TextField>
-          <TEIDataPointerField
-            elementName={"Taxonomy"}
-            attrName={"ana"}
-            minOccurs={null}
-            maxOccurs={"unbounded"}
-            imageView={imageView}
-            value={ana}
-            onChangeCallback={onChangeTax}
-            resourceEntry={facsDocument.resourceEntry}
-            parentEntry={facsDocument.parentEntry}
-            fairCopyProject={facsDocument.imageViewContext}
-          />
+          { editable ? 
+            <TEIDataPointerField
+              disabled={!editable}
+              elementName={"Taxonomy"}
+              attrName={"ana"}
+              minOccurs={null}
+              maxOccurs={"unbounded"}
+              imageView={imageView}
+              value={ana}
+              onChangeCallback={onChangeTax}
+              resourceEntry={facsDocument.resourceEntry}
+              parentEntry={facsDocument.parentEntry}
+              fairCopyProject={facsDocument.imageViewContext}
+            />          
+          :
+            <div>
+              <ReadOnlyField attrName={"ana"} value={ana}></ReadOnlyField>
+            </div>
+          }
         </CardContent>
-        <CardActions>
-          <Button size="small" onClick={onErase}>
-            <i className={`fas fa-eraser fa-2x`}></i>
-          </Button>
-          <div className="zoneActions">
-            <Button
-              className="zone-action"
-              size="small"
-              variant="contained"
-              color="secondary"
-              onClick={onEdit}
-            >
-              Edit
-            </Button>
-            <Button
-              className="zone-action"
-              size="small"
-              variant="contained"
-              color="primary"
-              onClick={onSave}
-            >
-              Save
-            </Button>
-            <Button
-              className="zone-action"
-              size="small"
-              variant="outlined"
-              onClick={onCancel}
-            >
-              Cancel
-            </Button>
-          </div>
-        </CardActions>
+        {
+          editable ?
+            <CardActions>
+              <Button size="small" onClick={onErase}>
+                <i className={`fas fa-eraser fa-2x`}></i>
+              </Button>
+              <div className="zoneActions">
+                <Button
+                  className="zone-action"
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  onClick={onEdit}
+                >
+                  Edit
+                </Button>
+                <Button
+                  className="zone-action"
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  onClick={onSave}
+                >
+                  Save
+                </Button>
+                <Button
+                  className="zone-action"
+                  size="small"
+                  variant="outlined"
+                  onClick={onCancel}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardActions>
+          :
+            <CardActions>
+              <div className="zoneActions">
+                <Button
+                  className="zone-action"
+                  size="small"
+                  variant="outlined"
+                  onClick={onCancel}
+                >
+                  Close
+                </Button>
+              </div>
+            </CardActions>
+        }
       </Card>
     );
   }
