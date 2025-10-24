@@ -184,8 +184,18 @@ export default class FacsDocument {
 
         const nextZones = []
         for( const zone of zones ) {
-            const { id, ulx, uly, lrx, lry, note } = zone
-            nextZones.push({ id, ulx, uly, lrx, lry, note })
+            const { id : nextZoneID, ana, note } = zone
+            const nextZone = { id: nextZoneID, ana, note }
+            if( zone.points ) {
+                nextZone.points = zone.points
+            } else {
+                const { ulx, uly, lrx, lry } = zone
+                nextZone.ulx = ulx
+                nextZone.uly = uly
+                nextZone.lrx = lrx
+                nextZone.lry = lry
+            }
+            nextZones.push(nextZone)
         }
 
         const dupeSurface = {
