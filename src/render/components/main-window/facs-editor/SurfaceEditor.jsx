@@ -421,6 +421,7 @@ export default class SurfaceEditor extends Component {
             imageView={imageView}
             onEdit={() => this.onEditZoneShape(selectedZone)}
             editing={editing}
+            editable={editable}
           ></ZonePopup>
           <EditingCard
             anchorEl={selectedDOMElement}
