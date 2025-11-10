@@ -286,7 +286,7 @@ export default class ResourceBrowser extends Component {
                   </IconButton>
                 </span>
               </Tooltip>
-              <Tooltip title="Link to Published Document">
+              { remoteProject && <Tooltip title="Link to Published Document">
                 <span className="iconbutton-wrapper">
                   <IconButton
                     aria-label="Link to Published Document"
@@ -297,7 +297,7 @@ export default class ResourceBrowser extends Component {
                     <i className='fa fa-link fa-md' />
                   </IconButton>
                 </span>
-              </Tooltip>
+              </Tooltip> }
             </div>
           </div>
         }
