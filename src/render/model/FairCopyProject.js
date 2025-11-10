@@ -316,6 +316,12 @@ export default class FairCopyProject {
         this.orphanedResources = []
     }
 
+    copyPublishedLinkToClipboard = (teiDocument) => {
+        // example: http://localhost:3789/public/2/tei_documents/fa25_adriaenssens_j/iiif"
+        const publishedURL = `${this.serverURL}/public/${this.projectID}/tei_documents/${teiDocument.resourceEntry.localID}/iiif`
+        fairCopy.copyToClipBoard(publishedURL)
+    }
+
     duplicateDocuments = (localResources) => {
         // duplicate resources and their children with new XML IDs and uuids
         const teiDocs = localResources.filter((r) => r.type === 'teidoc')

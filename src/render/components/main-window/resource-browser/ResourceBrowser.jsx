@@ -200,6 +200,7 @@ export default class ResourceBrowser extends Component {
     const onImportIIIF = () => { onImportResource('iiif') }
     const onPreviewResource = () => { fairCopyProject.previewResource(teiDoc) }
     const onPublishResource = () => { fairCopy.ipcSend('publish', teiDoc) }
+    const onCopyPublishedLink= () => { fairCopyProject.copyPublishedLinkToClipboard(teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
     const atRemoteDoc = remoteProject && currentView === 'remote' && teiDoc
     const editable = teiDoc && isEntryEditable(teiDoc, userID)
@@ -282,6 +283,18 @@ export default class ResourceBrowser extends Component {
                     className='toolbar-button'
                   >
                     <i className='fa fa-eye fa-md' />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Link to Published Document">
+                <span className="iconbutton-wrapper">
+                  <IconButton
+                    aria-label="Link to Published Document"
+                    disabled={!teiDoc.status?.is_published}
+                    onClick={onCopyPublishedLink}
+                    className='toolbar-button'
+                  >
+                    <i className='fa fa-link fa-md' />
                   </IconButton>
                 </span>
               </Tooltip>
