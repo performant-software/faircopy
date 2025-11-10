@@ -318,7 +318,7 @@ export default class FairCopyProject {
 
     copyPublishedLinkToClipboard = (teiDocument) => {
         // example: http://localhost:3789/public/2/tei_documents/fa25_adriaenssens_j/iiif"
-        const publishedURL = `${this.serverURL}/public/${this.projectID}/tei_documents/${teiDocument.resourceEntry.localID}/iiif`
+        const publishedURL = `${this.serverURL}/public/${this.projectID}/tei_documents/${teiDocument.localID}/iiif`
         fairCopy.copyToClipBoard(publishedURL)
     }
 
