@@ -286,10 +286,10 @@ export default class ResourceBrowser extends Component {
                   </IconButton>
                 </span>
               </Tooltip>
-              { remoteProject && <Tooltip title="Link to Published Document">
+              { remoteProject && <Tooltip title="Copy IIIF Manifest Link to Clipboard">
                 <span className="iconbutton-wrapper">
                   <IconButton
-                    aria-label="Link to Published Document"
+                    aria-label="Copy IIIF Manifest Link to Clipboard"
                     disabled={!teiDoc.status?.is_published}
                     onClick={onCopyPublishedLink}
                     className='toolbar-button'
