@@ -20,9 +20,10 @@ const schemes = [
   }
 ]
 
-// Allow HTTP protocol connections in dev mode only
+// Allow unsecure protocol connections in dev mode only
 if(!app.isPackaged) {
   schemes.push({ scheme: 'http', privileges: { bypassCSP: true } })
+  schemes.push({ scheme: 'ws', privileges: { bypassCSP: true } })
 }
 
 protocol.registerSchemesAsPrivileged(schemes)
