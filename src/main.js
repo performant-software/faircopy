@@ -9,7 +9,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 const schemes = [
-  { scheme: 'ws', privileges: { bypassCSP: true } }, 
+  { scheme: 'wss', privileges: { bypassCSP: true } }, 
   { scheme: 'https', privileges: { bypassCSP: true } }, 
   { scheme: 'ec', privileges: { 
       bypassCSP: true,

@@ -166,6 +166,8 @@ const onNotification = (data, workerData, postMessage) => {
         updateIDMap(userID, serverURL, authToken, projectID, postMessage)
         postMessage({ messageType: 'resources-updated', resources })
     }
+    console.log(`received cable message: ${notification}`)
+    
     // other possible notifications:
     // resources_checked_out
     // config_created
