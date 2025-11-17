@@ -9,7 +9,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 const schemes = [
-  { scheme: 'ws', privileges: { bypassCSP: true } }, 
+  { scheme: 'wss', privileges: { bypassCSP: true } }, 
   { scheme: 'https', privileges: { bypassCSP: true } }, 
   { scheme: 'ec', privileges: { 
       bypassCSP: true,
@@ -20,9 +20,10 @@ const schemes = [
   }
 ]
 
-// Allow HTTP protocol connections in dev mode only
+// Allow unsecure protocol connections in dev mode only
 if(!app.isPackaged) {
   schemes.push({ scheme: 'http', privileges: { bypassCSP: true } })
+  schemes.push({ scheme: 'ws', privileges: { bypassCSP: true } })
 }
 
 protocol.registerSchemesAsPrivileged(schemes)
