@@ -2,6 +2,7 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+
 ## Version 1.3.0 (beta3)
 
 This is a beta release of FairCopy 1.3.0.
