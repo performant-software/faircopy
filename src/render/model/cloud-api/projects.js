@@ -1,18 +1,22 @@
-import axios from 'axios';
+import axios from 'axios'
 
 import { authConfig } from './auth'
-import { standardErrorHandler } from './error-handler';
+import { standardErrorHandler } from './error-handler'
+import { getUserOrganizations } from './auth'
 
-export function getProjects( userID, serverURL, authToken, onSuccess, onFail) {
+const MAX_NER_POLLS = 1000        // Maximum number of status requests for a single NER request
+const NER_POLL_INTERVAL = 5000    // How often to poll NER status endpoint in ms
+
+export function getProjects(userID, serverURL, authToken, onSuccess, onFail) {
     const getProjectsURL = `${serverURL}/api/projects?per_page=1000`
 
-    axios.get(getProjectsURL,authConfig(authToken)).then(
+    axios.get(getProjectsURL, authConfig(authToken)).then(
         (okResponse) => {
             const { projects } = okResponse.data
             const projectInfos = []
-            for( const project of projects ) {
-                const projectInfo = createProjectInfo(userID, project)  
-                projectInfos.push(projectInfo)              
+            for (const project of projects) {
+                const projectInfo = createProjectInfo(userID, serverURL, project)
+                projectInfos.push(projectInfo)
             }
             onSuccess(projectInfos)
         },
@@ -20,47 +24,47 @@ export function getProjects( userID, serverURL, authToken, onSuccess, onFail) {
     )
 }
 
-export function getProject( userID, projectID, serverURL, authToken, onSuccess, onFail) {
+export function getProject(userID, projectID, serverURL, authToken, onSuccess, onFail) {
     const getProjectURL = `${serverURL}/api/projects/${projectID}`
 
-    axios.get(getProjectURL,authConfig(authToken)).then(
+    axios.get(getProjectURL, authConfig(authToken)).then(
         (okResponse) => {
             const { project } = okResponse.data
-            const projectInfo = createProjectInfo(userID, project)
+            const projectInfo = createProjectInfo(userID, serverURL, project)
             onSuccess(projectInfo)
-        }, 
+        },
         standardErrorHandler(userID, serverURL, onFail)
     )
 }
 
-function createProjectInfo(userID, project) {
-    const { id, name, description, team, custom_css, draft_custom_css } = project
+function createProjectInfo(userID, serverURL, project) {
+    const { id, name, description, project_users, custom_css, organization_id, draft_custom_css } = project
 
-    // pull out just english strings for now
-    const enName = name.en.translation
-    const enDescription = description.en.translation
+    const orgs = getUserOrganizations(userID, serverURL)
+
     const projectInfo = {
         projectID: id,
-        name: enName,
-        description: enDescription,
+        name: name,
+        description: description,
         permissions: [],
         hasPublishedCss: !!custom_css,
         hasDraftCss: !!draft_custom_css,
     }
 
     // translate into an array of permissions for current user
-    const { team_members } = team 
-    const teamMember = team_members.find( t => t.user.id === userID )
-    if( teamMember ) {
-        const { user, team_member_policies } = teamMember
-        const { user_policies } = user
-        const policies = [ ...team_member_policies, ...user_policies ]
-        const permissionMap = {}
-        for( const policy of policies ) {
-            const { name: permission } = policy.policy_definition
-            permissionMap[permission] = true
-        }
-        projectInfo.permissions = Object.keys(permissionMap)
+    // System Admin?
+    const sysAdmin = !!orgs.find(o => o.organization_id === 1 && o.is_admin)
+    // Org Admin?
+    const orgAdmin = !!orgs.find(o => o.organization_id === organization_id && o.is_admin)
+
+    if (sysAdmin || orgAdmin) {
+        projectInfo.permissions.push('FCC_OrgAdmin')
+    }
+
+    const projectUser = project_users.find(pu => pu.user.id === userID)
+
+    if (projectUser) {
+        projectInfo.permissions.push(projectUser.policy_definition.name)
     }
     return projectInfo
 }
@@ -71,9 +75,59 @@ export function publishCss(userID, projectID, serverURL, authToken, onSuccess, o
     axios.post(publishCssURL, {}, authConfig(authToken)).then(
         (okResponse) => {
             const { project } = okResponse.data
-            const projectInfo = createProjectInfo(userID, project)
+            const projectInfo = createProjectInfo(userID, serverURL, project)
             onSuccess(projectInfo)
-        }, 
+        },
         standardErrorHandler(userID, serverURL, onFail)
     )
+}
+
+export async function performNER(userID, serverURL, authToken, fileContents, onSuccess, onFail) {
+    const performNERURL = `${serverURL}/api/agents/ner`
+
+    try {
+        const performResp = await axios.post(performNERURL, { tei: fileContents }, authConfig(authToken))
+        const { run_id } = performResp.data
+        const statusURL = `${serverURL}/api/agents/ner/status/${run_id}`
+        let attempts = 0
+
+        // We will poll until completed or failed
+        const goodStatus = ['RUNNING', 'COMPLETED']
+        while (attempts < MAX_NER_POLLS) {
+            try {
+                const statusResp = await axios.get(statusURL, authConfig(authToken))
+
+                const { status } = statusResp.data
+
+                if (!goodStatus.includes(status)) {
+                    return onFail(status)
+                }
+
+                if (status === 'COMPLETED') {
+                    const retrieveURL = `${serverURL}/api/agents/ner/retrieve/${run_id}`
+
+                    try {
+                        const retrieveResp = await axios.get(retrieveURL, authConfig(authToken))
+
+                        const updatedContents = retrieveResp.data
+                        onSuccess(updatedContents)
+                        return
+
+                    } catch (error) {
+                        onFail(error)
+                    }
+
+                }
+
+                attempts++
+                if (attempts < MAX_NER_POLLS) {
+                    await new Promise(resolve => setTimeout(resolve, NER_POLL_INTERVAL)) // Wait before next attempt
+                }
+            } catch (error) {
+                onFail(error)
+            }
+        }
+    } catch (error) {
+        onFail(error)
+    }
 }

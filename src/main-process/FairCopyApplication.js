@@ -9,7 +9,7 @@ const log = require('electron-log')
 const { FairCopySession } = require('./FairCopySession')
 
 const debugBaseDir = `${process.cwd()}/src`
-const distBaseDir = process.resourcesPath 
+const distBaseDir = process.resourcesPath
 
 class FairCopyApplication {
 
@@ -24,7 +24,7 @@ class FairCopyApplication {
 
     this.baseDir = !app.isPackaged ? debugBaseDir : distBaseDir
     this.config = this.getConfig()
-    
+
     this.mainMenu = new MainMenu(this)
     this.initFileProtocol()
     this.initIPC()
@@ -44,124 +44,124 @@ class FairCopyApplication {
       const url = request.url
       console.log(`handling request: ${url}`)
       // handle editioncrafter asset requests
-      if( url.startsWith('ec://ec')) {
+      if (url.startsWith('ec://ec')) {
         const content = this.fairCopySession.requestEditionCrafterData(url)
         return new Response(content, {
           headers: { 'content-type': 'text/html' }
-        })  
-      // handle local image resource requests
-      // } else if( url.startsWith('file://images') ) {
+        })
+        // handle local image resource requests
+        // } else if( url.startsWith('file://images') ) {
         // TODO ... need localPath
         // this.fairCopySession.openImageResource(request.url)
         // return net.fetch(pathToFileURL(localPath).toString())  
-      // } else {
+        // } else {
         // TODO ignore any other reqs
       }
     })
   }
 
   initIPC() {
-    
-    ipcMain.on('closeProject', (event) => { 
+
+    ipcMain.on('closeProject', (event) => {
       this.closeProject()
       this.exitApp()
     })
 
-    ipcMain.on('openWebpage', (event, url ) => {
+    ipcMain.on('openWebpage', (event, url) => {
       shell.openExternal(url)
-    })  
-    
-    ipcMain.on('exitApp', (event) => { 
-      if( this.projectWindow ) {
-        this.projectWindow.close() 
+    })
+
+    ipcMain.on('exitApp', (event) => {
+      if (this.projectWindow) {
+        this.projectWindow.close()
       } else {
-        this.exitApp() 
+        this.exitApp()
       }
     })
 
     ipcMain.on('reopenProject', (event) => {
-      this.fairCopySession.reopenProject() 
+      this.fairCopySession.reopenProject()
     })
-    
-    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry,resourceData,resourceMap) })
+
+    ipcMain.on('addResource', (event, resourceEntry, resourceData, resourceMap) => { this.fairCopySession.addResource(resourceEntry, resourceData, resourceMap) })
 
     ipcMain.on('replaceTEIDocument', (event, resources) => { this.fairCopySession.replaceTEIDocument(resources) })
-    ipcMain.on('replaceResource', (event, resource, parentEntry) => { this.fairCopySession.replaceResource(resource,parentEntry) })
+    ipcMain.on('replaceResource', (event, resource, parentEntry) => { this.fairCopySession.replaceResource(resource, parentEntry) })
 
-    ipcMain.on('removeResources', (event, resourceIDs, forceDelete = false) => { 
-      this.fairCopySession.removeResources(resourceIDs, forceDelete) 
+    ipcMain.on('removeResources', (event, resourceIDs, forceDelete = false) => {
+      this.fairCopySession.removeResources(resourceIDs, forceDelete)
 
       // close any open image windows
-      for( const resourceID of resourceIDs ) {
+      for (const resourceID of resourceIDs) {
         const imageView = this.imageViews[resourceID]
-        if( imageView ) {
+        if (imageView) {
           imageView.close()
         }
-        delete this.imageViews[resourceID]  
+        delete this.imageViews[resourceID]
       }
     })
 
-    ipcMain.on('recoverResources', (event, resourceID) => { 
-      this.fairCopySession.recoverResources(resourceID) 
+    ipcMain.on('recoverResources', (event, resourceID) => {
+      this.fairCopySession.recoverResources(resourceID)
     })
 
-    ipcMain.on('requestResourceView', (event, resourceViewRequest) => { 
-      this.fairCopySession.updateResourceView(resourceViewRequest) 
+    ipcMain.on('requestResourceView', (event, resourceViewRequest) => {
+      this.fairCopySession.updateResourceView(resourceViewRequest)
     })
-    
-    ipcMain.on('searchProject', (event, searchQuery) => { 
-      this.fairCopySession.searchProject(searchQuery)  
+
+    ipcMain.on('searchProject', (event, searchQuery) => {
+      this.fairCopySession.searchProject(searchQuery)
     })
-    ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => { 
-      const ok = this.fairCopySession.saveResource(resourceID, resourceData, !!this.previewView) 
-      if( ok ) {
-        const update = { resourceID, messageID: msgID, resourceContent: resourceData }        
-        this.sendToAllWindows('resourceContentUpdated', update )
+    ipcMain.on('requestSave', (event, msgID, resourceID, resourceData) => {
+      const ok = this.fairCopySession.saveResource(resourceID, resourceData, !!this.previewView)
+      if (ok) {
+        const update = { resourceID, messageID: msgID, resourceContent: resourceData }
+        this.sendToAllWindows('resourceContentUpdated', update)
       }
     })
-    ipcMain.on('abandonResourceMap', (event, resourceID) => { 
+    ipcMain.on('abandonResourceMap', (event, resourceID) => {
       this.fairCopySession.abandonResourceMap(resourceID)
     })
-    ipcMain.on('updateResource', (event, resourceEntry) => { 
-      this.fairCopySession.updateResource(resourceEntry) 
+    ipcMain.on('updateResource', (event, resourceEntry) => {
+      this.fairCopySession.updateResource(resourceEntry)
     })
-    ipcMain.on('startMigratingResource', (event, resourceID) => { 
+    ipcMain.on('startMigratingResource', (event, resourceID) => {
       this.sendToMainWindow('resourceMigrationStarted', resourceID)
     })
     ipcMain.on('requestImageData', (event) => {
       const paths = this.mainMenu.openAddImage()
-      if( paths ) {
+      if (paths) {
         this.processImageData(paths).then((imageData) => {
-          this.sendToAllWindows('imagesOpened', imageData )  
-        })       
+          this.sendToAllWindows('imagesOpened', imageData)
+        })
       } else {
         this.sendToAllWindows('imagesOpened', [])
       }
     })
-    
+
     // Main window events //////
 
-    ipcMain.on('openResource', (event,resourceID) => { 
+    ipcMain.on('openResource', (event, resourceID) => {
       this.fairCopySession.openResource(resourceID)
     })
 
-    ipcMain.on('setResourceMap', (event, resourceMap, localID, parentID) => { 
+    ipcMain.on('setResourceMap', (event, resourceMap, localID, parentID) => {
       this.fairCopySession.setResourceMap(resourceMap, localID, parentID)
     })
 
-    ipcMain.on('importContinue', (event) => { 
+    ipcMain.on('importContinue', (event) => {
       this.fairCopySession.importContinue()
     })
-    ipcMain.on('importEnd', (event) => { 
+    ipcMain.on('importEnd', (event) => {
       this.fairCopySession.importEnd()
     })
 
-    ipcMain.on('checkIn', (event, userID, serverURL, projectID, resourceIDBatches, message ) => {
+    ipcMain.on('checkIn', (event, userID, serverURL, projectID, resourceIDBatches, message) => {
       this.sendToMainWindow('checkInStarted', resourceIDBatches.length)
       this.fairCopySession.checkIn(userID, serverURL, projectID, resourceIDBatches, message)
     })
 
-    ipcMain.on('checkOut', (event, userID, serverURL, projectID, resourceIDs ) => { 
+    ipcMain.on('checkOut', (event, userID, serverURL, projectID, resourceIDs) => {
       this.fairCopySession.checkOut(userID, serverURL, projectID, resourceIDs)
     })
 
@@ -174,74 +174,78 @@ class FairCopyApplication {
       this.fairCopySession.publishCss()
     })
 
-    ipcMain.on('requestSaveConfig', (event,fairCopyConfig,lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig,lastAction) })    
-    ipcMain.on('checkInConfig', (event,fairCopyConfig,firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig,firstAction) })        
-    ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })        
-    ipcMain.on('requestExportConfig', (event,exportPath,fairCopyConfig) => { this.fairCopySession.exportFairCopyConfig(exportPath,fairCopyConfig) })
-    ipcMain.on('updateProjectInfo', (event,projectInfo) => { this.fairCopySession.updateProjectInfo(projectInfo) })
-    
-    ipcMain.on('requestPaste', (event) => { 
-      if( this.mainWindow ) {
-          this.mainWindow.webContents.paste()
+    ipcMain.on('performNER', (event, fileContents, docID) => {
+      this.fairCopySession.performNER(fileContents, docID)
+    })
+
+    ipcMain.on('requestSaveConfig', (event, fairCopyConfig, lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig, lastAction) })
+    ipcMain.on('checkInConfig', (event, fairCopyConfig, firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig, firstAction) })
+    ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })
+    ipcMain.on('requestExportConfig', (event, exportPath, fairCopyConfig) => { this.fairCopySession.exportFairCopyConfig(exportPath, fairCopyConfig) })
+    ipcMain.on('updateProjectInfo', (event, projectInfo) => { this.fairCopySession.updateProjectInfo(projectInfo) })
+
+    ipcMain.on('requestPaste', (event) => {
+      if (this.mainWindow) {
+        this.mainWindow.webContents.paste()
       }
     })
 
-    ipcMain.on('requestImport', (event,options) => {
+    ipcMain.on('requestImport', (event, options) => {
       const paths = this.mainMenu.openImport(options.parentResourceID)
-      if( paths ) {
-        this.fairCopySession.importStart(paths,options)
+      if (paths) {
+        this.fairCopySession.importStart(paths, options)
       }
     })
 
-    ipcMain.on('requestIIIFImport', (event, importList) => { 
-        this.fairCopySession.importIIIFStart(importList)
+    ipcMain.on('requestIIIFImport', (event, importList) => {
+      this.fairCopySession.importIIIFStart(importList)
     })
 
-    ipcMain.on('requestExport', (event, resourceEntries) => { 
+    ipcMain.on('requestExport', (event, resourceEntries) => {
       const paths = this.mainMenu.openExport()
       const path = paths ? paths[0] : null
-      if( path ) {
-        this.fairCopySession.requestExport(resourceEntries,path)
+      if (path) {
+        this.fairCopySession.requestExport(resourceEntries, path)
       }
     })
 
-    ipcMain.on('requestImageView', (event, imageViewInfo) => { 
-      this.createImageWindow(imageViewInfo).then( () => { 
+    ipcMain.on('requestImageView', (event, imageViewInfo) => {
+      this.createImageWindow(imageViewInfo).then(() => {
         log.info(`Opened image view.`)
       })
     })
 
-    ipcMain.on('requestPreviewView', (event, previewData) => { 
+    ipcMain.on('requestPreviewView', (event, previewData) => {
       // if the preview window already exists, move it to the front
-      if( this.previewView ) {
+      if (this.previewView) {
         this.previewView.focus()
       }
       this.fairCopySession.requestPreviewView(previewData)
     })
 
-    ipcMain.on('selectedZones', (event, selectedZones) => { 
-      this.sendToAllWindows('selectedZones', selectedZones )  
+    ipcMain.on('selectedZones', (event, selectedZones) => {
+      this.sendToAllWindows('selectedZones', selectedZones)
     })
 
     // Project Window events ///////
 
-    ipcMain.on('requestNewPath', (event) => { 
+    ipcMain.on('requestNewPath', (event) => {
       const targetPath = this.mainMenu.selectPath()
       this.projectWindow.webContents.send('pathSelected', targetPath)
     })
 
-    ipcMain.on('requestNewProject', (event, projectInfo) => { 
-      createProjectArchive({ ...projectInfo, defaultProjectCSS: this.config.defaultProjectCSS, generatedWith: this.config.version}, this.baseDir, () => {
+    ipcMain.on('requestNewProject', (event, projectInfo) => {
+      createProjectArchive({ ...projectInfo, defaultProjectCSS: this.config.defaultProjectCSS, generatedWith: this.config.version }, this.baseDir, () => {
         this.openProject(projectInfo.filePath)
       })
     })
 
-    ipcMain.on('requestFileOpen', (event) => { 
-      this.mainMenu.openFileMenu() 
+    ipcMain.on('requestFileOpen', (event) => {
+      this.mainMenu.openFileMenu()
     })
 
-    ipcMain.on('requestProject', (event,targetFile) => {
-      if( fs.existsSync(targetFile) ) {
+    ipcMain.on('requestProject', (event, targetFile) => {
+      if (fs.existsSync(targetFile)) {
         this.openProject(targetFile)
       }
     })
@@ -253,40 +257,40 @@ class FairCopyApplication {
     ipcMain.on('read-resources', (event, resourceIDs, abandoned) => {
       this.fairCopySession.readResources(resourceIDs, abandoned)
     })
-  
+
   }
 
   async createMainWindow() {
-    if( this.mainWindow ) {
-      if( !this.mainWindow.isDestroyed() ) {
+    if (this.mainWindow) {
+      if (!this.mainWindow.isDestroyed()) {
         this.mainWindow.destroy()
       }
       this.mainWindow = null
     }
 
-    const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
-    this.mainWindow = await this.createWindow('main_window', ...windowSize, true, '#fff', true, true )
+    const windowSize = this.config.devMode ? [1440, 1200] : [1440, 900]
+    this.mainWindow = await this.createWindow('main_window', ...windowSize, true, '#fff', true, true)
     this.mainWindow.webContents.send('appConfig', this.config)
 
     // let render window handle on close (without browser restrictions)
     this.mainWindow.on('close', (event) => {
-      if( !this.exiting ) {
+      if (!this.exiting) {
         this.sendToMainWindow('requestExitApp')
         event.preventDefault()
-      }     
+      }
     })
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project_window', 740, 570, true, '#E6DEF9', false ) 
+    this.projectWindow = await this.createWindow('project_window', 740, 570, true, '#E6DEF9', false)
     this.projectWindow.webContents.send('appConfig', this.config)
-  }  
+  }
 
   async createPreviewWindow(previewData) {
-    if( !this.previewView ) {
-      const windowSize = this.config.devMode ? [1440,1200] : [1440,900]
-      this.previewView = await this.createWindow('preview_window', ...windowSize, true, '#fff', false, true )
-      this.previewView.on('close', e => delete this.previewView )
+    if (!this.previewView) {
+      const windowSize = this.config.devMode ? [1440, 1200] : [1440, 900]
+      this.previewView = await this.createWindow('preview_window', ...windowSize, true, '#fff', false, true)
+      this.previewView.on('close', e => delete this.previewView)
       this.previewView.webContents.send('previewViewOpened', previewData)
     } else {
       this.previewView.webContents.send('updatePreview', previewData)
@@ -294,42 +298,42 @@ class FairCopyApplication {
   }
 
   async createImageWindow(imageViewInfo) {
-    const imageView = await this.createWindow('image_window', 1024, 768, true, '#fff', false )
-    const {resourceID, xmlID} = imageViewInfo
-  
+    const imageView = await this.createWindow('image_window', 1024, 768, true, '#fff', false)
+    const { resourceID, xmlID } = imageViewInfo
+
     this.imageViews[resourceID] = imageView
 
     imageView.on('close', (event) => {
       delete this.imageViews[resourceID]
     })
 
-    this.fairCopySession.openResource( resourceID, xmlID )
+    this.fairCopySession.openResource(resourceID, xmlID)
   }
 
   exitApp() {
-    if( !this.exiting ) {
+    if (!this.exiting) {
       this.exiting = true
 
-      for( const imageView of Object.values(this.imageViews) ) {
-        if( !imageView.isDestroyed() ) {
+      for (const imageView of Object.values(this.imageViews)) {
+        if (!imageView.isDestroyed()) {
           imageView.close()
         }
       }
       this.imageViews = {}
 
-      if( this.previewView ) {
+      if (this.previewView) {
         this.previewView.close()
         this.previewView = null
       }
 
-      if( this.returnToProjectWindow ) {
+      if (this.returnToProjectWindow) {
         this.createProjectWindow().then(() => {
           this.returnToProjectWindow = false
           this.exiting = false
         })
-      } 
+      }
 
-      if( this.mainWindow ) {
+      if (this.mainWindow) {
         this.mainWindow.close()
         this.fairCopySession.closeProject()
       }
@@ -338,9 +342,9 @@ class FairCopyApplication {
 
   openProject(targetFile) {
     this.createMainWindow().then(() => {
-      if( this.projectWindow ) {
+      if (this.projectWindow) {
         this.projectWindow.close()
-        this.projectWindow = null  
+        this.projectWindow = null
       }
       this.fairCopySession = new FairCopySession(this, targetFile)
       this.mainMenu.updateMenu()
@@ -349,13 +353,13 @@ class FairCopyApplication {
   }
 
   closeProject() {
-    if( this.mainWindow && !this.mainWindow.isDestroyed() ) {
+    if (this.mainWindow && !this.mainWindow.isDestroyed()) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
       this.fairCopySession.closeProject()
       this.mainMenu.updateMenu()
     }
-    if( this.projectWindow && !this.projectWindow.isDestroyed()) {
+    if (this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()
     }
   }
@@ -373,14 +377,14 @@ class FairCopyApplication {
     if (this.previewView) {
       this.previewView.webContents.send(message, params)
     }
-    for( const imageView of Object.values(this.imageViews) ) {
+    for (const imageView of Object.values(this.imageViews)) {
       imageView.webContents.send(message, params)
     }
   }
 
   async processImageData(paths) {
     const imageData = []
-    for( const path of paths ) {
+    for (const path of paths) {
       const image = await Jimp.read(path)
       const mimeType = image.getMIME()
       const width = image.bitmap.width
@@ -395,7 +399,7 @@ class FairCopyApplication {
     return imageData
   }
 
-  async createWindow(windowName, width, height, resizable, backgroundColor, menuBar, devTools ) {
+  async createWindow(windowName, width, height, resizable, backgroundColor, menuBar, devTools) {
 
     const webpackPreloadPath = getWebpackPreload(windowName)
 
@@ -406,9 +410,9 @@ class FairCopyApplication {
       minWidth: 1024,
       minHeight: 768,
       webPreferences: {
-          sandbox: false, // so we can use system clipboard
-          preload: webpackPreloadPath,
-          spellcheck: false
+        sandbox: false, // so we can use system clipboard
+        preload: webpackPreloadPath,
+        spellcheck: false
       },
 
       autoHideMenuBar: !menuBar,
@@ -417,13 +421,13 @@ class FairCopyApplication {
     })
 
     const webpackEntryURL = getWebpackEntry(windowName)
-    await browserWindow.loadURL(webpackEntryURL) 
+    await browserWindow.loadURL(webpackEntryURL)
     log.info(`Opened window.`)
 
     // Open the DevTools.
-    if( !app.isPackaged && devTools ) 
-      browserWindow.webContents.openDevTools({ mode: 'bottom'})
-    
+    if (!app.isPackaged && devTools)
+      browserWindow.webContents.openDevTools({ mode: 'bottom' })
+
     return browserWindow
   }
 }

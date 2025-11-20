@@ -1,58 +1,177 @@
-{ 
+{
     "mark": [
         {
             "label": "General",
-            "members": ["foreign", "hi", "name", "q", "quote", "ref", "s", "seg", "term", "title" ]
+            "members": [
+                "foreign",
+                "hi",
+                "name",
+                "q",
+                "quote",
+                "ref",
+                "s",
+                "seg",
+                "term",
+                "title"
+            ]
+        },
+        {
+            "label": "Named Entities",
+            "members": [
+                "persName",
+                "orgName",
+                "placeName",
+                "settlement",
+                "country",
+                "region",
+                "date"
+            ]
         },
         {
             "label": "Transcription",
-            "members": ["abbr", "add", "corr", "del", "expan", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
+            "members": [
+                "abbr",
+                "add",
+                "corr",
+                "del",
+                "expan",
+                "orig",
+                "reg",
+                "rhyme",
+                "sic",
+                "supplied",
+                "unclear"
+            ]
         },
         {
             "label": "Data",
-            "members": ["date","email","measure","num","rs","time"]
+            "members": [
+                "email",
+                "measure",
+                "num",
+                "rs",
+                "time"
+            ]
         }
     ],
     "structure": [
         {
             "label": "Sections",
-            "members": ["back","body","div","floatingText","front"]
-        },        
+            "members": [
+                "back",
+                "body",
+                "div",
+                "floatingText",
+                "front"
+            ]
+        },
         {
             "label": "Paragraphs",
-            "members":["ab","cit","p"]
+            "members": [
+                "ab",
+                "cit",
+                "p"
+            ]
         },
         {
             "label": "Transcription",
-            "members": ["add", "corr", "del", "hi", "orig", "reg", "rhyme", "sic", "supplied", "unclear" ]
+            "members": [
+                "add",
+                "corr",
+                "del",
+                "hi",
+                "orig",
+                "reg",
+                "rhyme",
+                "sic",
+                "supplied",
+                "unclear"
+            ]
         },
         {
             "label": "Lines and lists",
-            "members":["item","l","lg","list"]
+            "members": [
+                "item",
+                "l",
+                "lg",
+                "list"
+            ]
         },
         {
             "label": "Headers",
-            "members": ["argument","desc","epigraph","head","label","trailer"]
+            "members": [
+                "argument",
+                "desc",
+                "epigraph",
+                "head",
+                "label",
+                "trailer"
+            ]
         },
         {
             "label": "Title Page",
-            "members": ["docAuthor","docDate","docEdition","docImprint","docTitle","title","titlePage","titlePart"]
+            "members": [
+                "docAuthor",
+                "docDate",
+                "docEdition",
+                "docImprint",
+                "docTitle",
+                "title",
+                "titlePage",
+                "titlePart"
+            ]
         },
         {
             "label": "Bibliography",
-            "members": ["author","bibl","biblScope","editor","listBibl","publisher","pubPlace","relatedItem","resp","respStmt"]
+            "members": [
+                "author",
+                "bibl",
+                "biblScope",
+                "editor",
+                "listBibl",
+                "publisher",
+                "pubPlace",
+                "relatedItem",
+                "resp",
+                "respStmt"
+            ]
         },
         {
             "label": "Prosopography",
-            "members": ["listPerson","listPlace","person","place"]
+            "members": [
+                "listPerson",
+                "listPlace",
+                "person",
+                "place"
+            ]
         },
         {
             "label": "Drama",
-            "members": ["actor","castGroup","castItem","castList","role","roleDesc","set","sp","speaker","stage"]
+            "members": [
+                "actor",
+                "castGroup",
+                "castItem",
+                "castList",
+                "role",
+                "roleDesc",
+                "set",
+                "sp",
+                "speaker",
+                "stage"
+            ]
         },
         {
             "label": "Correspondence",
-            "members": ["byline","closer","dateline","imprimatur","opener","postscript","salute","signed"]
+            "members": [
+                "byline",
+                "closer",
+                "dateline",
+                "imprimatur",
+                "opener",
+                "postscript",
+                "salute",
+                "signed"
+            ]
         },
         {
             "label": "File (Header)",
@@ -74,7 +193,7 @@
         },
         {
             "label": "Encoding (Header)",
-            "members": [      
+            "members": [
                 "encodingDesc",
                 "editorialDecl",
                 "classDecl",
@@ -94,7 +213,7 @@
         },
         {
             "label": "Profile (Header)",
-            "members": [      
+            "members": [
                 "profileDesc",
                 "particDesc",
                 "settingDesc",
@@ -108,7 +227,7 @@
         },
         {
             "label": "Revisions (Header)",
-            "members": [      
+            "members": [
                 "revisionDesc",
                 "listChange",
                 "change"
@@ -118,15 +237,29 @@
     "inline": [
         {
             "label": "Anchors",
-            "members": ["anchor", "milestone", "catRef"]
+            "members": [
+                "anchor",
+                "milestone",
+                "catRef"
+            ]
         },
         {
             "label": "Notes",
-            "members": ["choice","fw","note","subst"]
+            "members": [
+                "choice",
+                "fw",
+                "note",
+                "subst"
+            ]
         },
         {
             "label": "Breaks",
-            "members": ["cb","gap","lb","pb"]
+            "members": [
+                "cb",
+                "gap",
+                "lb",
+                "pb"
+            ]
         }
     ]
 }

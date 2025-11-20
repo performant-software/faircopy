@@ -84,6 +84,12 @@ export default class EditorToolbar extends Component {
         teiDocument.previewDocument()
     }
 
+    onNER = () => {
+        const { teiDocument } = this.props
+        this.props.onRunAgent()
+        teiDocument.performNER()
+    }
+
     onFind = () => {
         const { onToggleSearchBar } = this.props
         onToggleSearchBar(true)
@@ -134,7 +140,8 @@ export default class EditorToolbar extends Component {
         const { menus } = fairCopyProject.fairCopyConfig
         const { elements } = fairCopyProject.teiSchema
         const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
-
+        const canNER = ['text', 'sourceDoc'].includes(teiDocument.resourceType) && !changedSinceLastSave && 
+            (!fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn()))
         const onAction = (member) => {
             const selection = (editorView) ? editorView.state.selection : null 
             if( selection && !selection.node ) {
@@ -163,6 +170,7 @@ export default class EditorToolbar extends Component {
                 <div className="rightgroup">
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
+                    { this.renderButton("Perform NER on Document", "fas fa-people-group", this.onNER, canNER ) }
                 </div>
                 { elementMenuOptions && <ElementMenu
                         menus={menus}

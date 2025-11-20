@@ -8,7 +8,8 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-protocol.registerSchemesAsPrivileged([
+const schemes = [
+  { scheme: 'wss', privileges: { bypassCSP: true } }, 
   { scheme: 'https', privileges: { bypassCSP: true } }, 
   { scheme: 'ec', privileges: { 
       bypassCSP: true,
@@ -17,7 +18,15 @@ protocol.registerSchemesAsPrivileged([
       supportFetchAPI: true, 
     } 
   }
-])
+]
+
+// Allow unsecure protocol connections in dev mode only
+if(!app.isPackaged) {
+  schemes.push({ scheme: 'http', privileges: { bypassCSP: true } })
+  schemes.push({ scheme: 'ws', privileges: { bypassCSP: true } })
+}
+
+protocol.registerSchemesAsPrivileged(schemes)
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

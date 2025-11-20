@@ -5,6 +5,8 @@ FairCopy is a simple and powerful tool for reading, transcribing, and encoding t
 
 FairCopy is an Electron application which uses React and Material UI for its user interface. It also makes extensive use of ProseMirror and OpenSeaDragon. It utilizes a fork of the Annotorious OpenSeaDragon plugin for image annotation.
 
+*Note:* FairCopy runs on MacOS and Windows, Linux is not supported at this time.
+
 This README discusses how to set up a development environment on Mac or Windows OS. It also discusses how to build the installers for the product.
 
 Developer Environment
@@ -24,8 +26,9 @@ Copy `forge.config.example.js` to `forge.config.js`, and make the following chan
 
 After this is done, run `npm run start`. This will start the create react app server on port 4000. To run the Electron main process on VS Code, a debug configuration has been created for the project. Run the debugger and this will allow you to work in the Electron environment. Create React App will hot reload into Electron's browser as you work, but you will need to stop and start the debugger for most changes.
 
-Electron apps have multiple running threads: a main thread and a number of render threads. In FairCopy, there are hidden render threads that run things like serialization to the ZIP file and search indexing. The main thread is the "back end" which handles interprocess communication. This can be debugged using breakpoints in VS Code. All other threads must be debugged using the developer tools in the browser window. To debug worker threads, you must make their browser windows visible first.
+Electron apps have multiple running threads: a main thread and a number of render threads. In FairCopy, there are hidden render threads that run things like serialization to the ZIP file and search indexing. The main thread is the "back end" which handles interprocess communication. This can be debugged using breakpoints in VS Code. All other threads must be debugged using the developer tools in the browser window. 
 
+*Note:* In development mode, the worker threads appear as blank windows with development consoles. You can set breakpoints in their code here and inspect console logs. Do not close these windows as they are necessary for the app to function. These windows are not visible in the packaged version of the application. 
 
 Building FairCopy Installers
 ----------
