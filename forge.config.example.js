@@ -80,7 +80,7 @@ module.exports = {
               {
                 html: './src/index.html',
                 js: './src/main-window-renderer.js',
-                nodeIntegration: true,
+                nodeIntegration: false,
                 name: 'main_window',
                 preload: {
                   js: './src/faircopy-preload.js',
@@ -89,7 +89,7 @@ module.exports = {
               {
                 html: './src/index.html',
                 js: './src/project-window-renderer.js',
-                nodeIntegration: true,
+                nodeIntegration: false,
                 name: 'project_window',
                 preload: {
                   js: './src/faircopy-preload.js',
@@ -98,7 +98,7 @@ module.exports = {
               {
                 html: './src/index.html',
                 js: './src/preview-window-renderer.js',
-                nodeIntegration: true,
+                nodeIntegration: false,
                 name: 'preview_window',
                 preload: {
                   js: './src/faircopy-preload.js',
@@ -107,7 +107,7 @@ module.exports = {
               {
                 html: './src/index.html',
                 js: './src/image-window-renderer.js',
-                nodeIntegration: true,
+                nodeIntegration: false,
                 name: 'image_window',
                 preload: {
                   js: './src/faircopy-preload.js',
@@ -119,7 +119,7 @@ module.exports = {
                 nodeIntegration: true,
                 name: 'worker_window',
                 preload: {
-                  js: './src/faircopy-preload.js',
+                  js: './src/faircopy-worker-preload.js',
                 },
               },
             ],
