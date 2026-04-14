@@ -39,6 +39,7 @@
     "css-loader": "^6.0.0",
     "dotenv": "^16.3.1",
     "electron": "33.0.2",
+    "jest": "^30.3.0",
     "node-loader": "^2.0.0",
     "prosemirror-dev-tools": "4.1.0",
     "style-loader": "^3.0.0"
@@ -78,7 +79,6 @@
     "react-dom": "^17.0.2",
     "react-hotkeys": "^2.0.0",
     "react-markdown": "^6.0.0",
-    "react-scripts": "5.0.0",
     "react-scroll": "1.8.3",
     "semver": "^7.6.0",
     "uuid": "^8.1.0",
