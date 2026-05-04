@@ -38,6 +38,14 @@ contextBridge.exposeInMainWorld(
 
         getPlatform: () => {
             return process.platform
+        },
+
+        startAuthServer: (serverUrl) => {
+            return ipcRenderer.invoke('start-auth-server', serverUrl)
+        },
+
+        stopAuthServer: () => {
+            return ipcRenderer.invoke('stop-auth-server')
         }
     }
 )

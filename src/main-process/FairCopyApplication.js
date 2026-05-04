@@ -7,6 +7,7 @@ const Jimp = require("jimp")
 const log = require('electron-log')
 
 const { FairCopySession } = require('./FairCopySession')
+const { AuthServer } = require('./AuthServer')
 
 const debugBaseDir = `${process.cwd()}/src`
 const distBaseDir = process.resourcesPath
@@ -26,6 +27,7 @@ class FairCopyApplication {
     this.config = this.getConfig()
 
     this.mainMenu = new MainMenu(this)
+    this.authServer = new AuthServer()
     this.initFileProtocol()
     this.initIPC()
   }
@@ -258,6 +260,22 @@ class FairCopyApplication {
       this.fairCopySession.readResources(resourceIDs, abandoned)
     })
 
+    ipcMain.handle('start-auth-server', async (event, serverUrl) => {
+      try {
+        await this.authServer.start(serverUrl)
+        const tokenData = await this.authServer.waitForToken()
+        this.sendToAllWindows('authTokenReceived', tokenData)
+        return { success: true, port: this.authServer.port }
+      } catch (error) {
+        log.error('Failed to start auth server:', error)
+        return { success: false, error: error.message }
+      }
+    })
+
+    ipcMain.handle('stop-auth-server', async (event) => {
+      this.authServer.stop()
+      return { success: true }
+    })
   }
 
   async createMainWindow() {

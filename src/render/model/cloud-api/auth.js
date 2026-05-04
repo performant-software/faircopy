@@ -1,27 +1,24 @@
 import axios from 'axios'
 
-export function login(serverURL, email, password, onSuccess, onFail) {
-    const authURL = `${serverURL}/api/auth/login`
-    const loginData = { email, password }
-
-    axios.post(authURL, loginData).then(
-        (okResponse) => {
-            const { id, token, organizations } = okResponse.data
-            setAuthToken(id, serverURL, token, organizations)
-            onSuccess(id, token)
-        },
-        (errorResponse) => {
-            // problem with the license 
-            if (errorResponse && errorResponse.response) {
-                if (errorResponse.response.status === 401) {
-                    const { error } = errorResponse.response.data
-                    onFail(error)
-                }
-            } else {
-                onFail("Unable to connect to server.")
-            }
+export function login(serverURL, onSuccess, onFail) {
+    window.fairCopy.startAuthServer(serverURL).then((result) => {
+        if (!result.success) {
+            onFail(result.error || 'Failed to start auth server')
+            return
         }
-    )
+        
+        window.fairCopy.ipcRegisterCallbackOnce('authTokenReceived', (event, tokenData) => {
+            console.log('Received auth token data:', tokenData)
+            if (tokenData && tokenData.token) {
+                setAuthToken(tokenData.userID, serverURL, tokenData.token, tokenData.organizations)
+                onSuccess(tokenData.userID, tokenData.token)
+            } else {
+                onFail('Authentication failed')
+            }
+        })
+    }).catch((error) => {
+        onFail(error.message || 'Failed to start auth server')
+    })
 }
 
 export function logout(userID, serverURL) {
