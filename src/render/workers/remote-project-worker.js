@@ -1,5 +1,5 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
-import { getProject, performNER, publishCss } from "../model/cloud-api/projects"
+import { getProject, performAgent, publishCss } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
@@ -78,12 +78,12 @@ function onPublishCss(userID, serverURL, projectID, authToken, postMessage) {
         })
 }
 
-function onPerformNER(userID, serverURL, authToken, fileContents, docID, postMessage) {
-    performNER(userID, serverURL, authToken, fileContents, (data) => {
-        postMessage({ messageType: 'ner-updated', xml: data, docID })
+function onPerformAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage) {
+    performAgent(userID, serverURL, projectID, authToken, fileContents, (data) => {
+        postMessage({ messageType: 'agent-updated', xml: data, docID })
     },
         (error) => {
-            postMessage({ messageType: 'ner-failed', error })
+            postMessage({ messageType: 'agent-failed', error })
         })
 }
 
@@ -245,7 +245,7 @@ export function remoteProject(msg, workerMethods, workerData) {
             break
         case 'perform-ner':
             const { fileContents, docID } = msg
-            onPerformNER(userID, serverURL, authToken, fileContents, docID, postMessage)
+            onPerformAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage)
             break
         case 'refresh-project-info':
             updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)

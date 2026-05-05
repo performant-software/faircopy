@@ -109,18 +109,18 @@ class RemoteProject {
                         }
                     }
                     break
-                case 'ner-updated':
+                case 'agent-updated':
                     {
                         const { xml, docID } = msg
                         const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToMainWindow('performNERResult', { xml, docID })
+                        fairCopyApplication.sendToMainWindow('performAgentResult', { xml, docID })
                     }
                     break
-                case 'ner-failed':
+                case 'agent-failed':
                     {
                         const { error } = msg
                         const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToMainWindow('performNERFailed', { error })
+                        fairCopyApplication.sendToMainWindow('performAgentFailed', { error })
                     }
                     break
                 default:
@@ -175,7 +175,7 @@ class RemoteProject {
         this.remoteProjectWorker.postMessage({ messageType: 'publish-css' })
     }
 
-    performNER(fileContents, docID) {
+    performAgent(fileContents, docID) {
         this.remoteProjectWorker.postMessage({ messageType: 'perform-ner', fileContents, docID })
     }
 }

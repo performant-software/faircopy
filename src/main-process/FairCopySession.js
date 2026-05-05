@@ -544,8 +544,8 @@ class FairCopySession {
         this.remoteProject.publishCss()
     }
 
-    performNER(fileContents, docID) {
-        this.remoteProject.performNER(fileContents, docID)
+    performAgent(fileContents, docID) {
+        this.remoteProject.performAgent(fileContents, docID)
     }
 
     saveFairCopyConfig(fairCopyConfig, lastAction) {
