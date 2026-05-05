@@ -80,7 +80,7 @@ export default class LoginPanel extends Component {
                 )}
                 { this.state.ssoUrl && this.state.waiting && (
                     <Typography variant="body2">If your browser did not open automatically, please click the link below to open the login page:
-                        <Button onClick={() => window.fairCopy.openExternalLink(this.state.ssoUrl)} variant='contained'>Open Link</Button>
+                        <Button onClick={() => fairCopy.ipcSend('openWebpage', this.state.ssoUrl)} variant='contained'>Open Link</Button>
                     </Typography>
                 )}
                 { this.state.errorMessage && (
