@@ -39,9 +39,6 @@ function setAuthToken(userID, serverURL, token, organizations) {
         createdAt: Date.now()
     }
 
-    console.log('Setting auth token for', userID, serverURL)
-    console.log('token: ', token)
-
     localStorage.setItem('authTokens', JSON.stringify(authTokens))
 }
 
