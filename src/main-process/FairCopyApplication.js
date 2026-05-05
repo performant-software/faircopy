@@ -17,6 +17,7 @@ class FairCopyApplication {
   constructor() {
     this.mainWindow = null
     this.previewView = null
+    this.projectWindow = null
     this.fairCopySession = null
     this.imageViews = {}
     this.exiting = false
@@ -260,6 +261,10 @@ class FairCopyApplication {
       this.fairCopySession.readResources(resourceIDs, abandoned)
     })
 
+    ipcMain.handle('get-sso-url', async (event) => {
+      return this.authServer.url
+    })
+
     ipcMain.handle('start-auth-server', async (event, serverUrl) => {
       try {
         await this.authServer.start(serverUrl)
@@ -300,7 +305,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project_window', 740, 570, true, '#E6DEF9', false)
+    this.projectWindow = await this.createWindow('project_window', 740, 570, true, '#E6DEF9', false, true)
     this.projectWindow.webContents.send('appConfig', this.config)
   }
 
@@ -390,8 +395,17 @@ class FairCopyApplication {
     this.mainWindow.webContents.send(message, params)
   }
 
+  sendToProjectWindow = (message, params) => {
+      this.projectWindow.webContents.send(message, params)
+  }
+  
   sendToAllWindows(message, params) {
-    this.sendToMainWindow(message, params)
+    if (this.mainWindow) {
+      this.sendToMainWindow(message, params)
+    }
+    if (this.projectWindow) {
+      this.sendToProjectWindow(message, params)
+    }
     if (this.previewView) {
       this.previewView.webContents.send(message, params)
     }

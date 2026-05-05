@@ -1,21 +1,22 @@
 import axios from 'axios'
 
+const AUTH_SERVER_PORT = 3847
+
 export function login(serverURL, onSuccess, onFail) {
+    window.fairCopy.ipcRegisterCallbackOnce('authTokenReceived', (event, tokenData) => {
+        if (tokenData && tokenData.token) {
+            setAuthToken(tokenData.id, tokenData.server, tokenData.token, tokenData.organizations)
+            onSuccess(tokenData.id, tokenData.server, tokenData.token)
+        } else {
+            onFail('Authentication failed')
+        }
+    })
+    
     window.fairCopy.startAuthServer(serverURL).then((result) => {
         if (!result.success) {
             onFail(result.error || 'Failed to start auth server')
             return
         }
-        
-        window.fairCopy.ipcRegisterCallbackOnce('authTokenReceived', (event, tokenData) => {
-            console.log('Received auth token data:', tokenData)
-            if (tokenData && tokenData.token) {
-                setAuthToken(tokenData.userID, serverURL, tokenData.token, tokenData.organizations)
-                onSuccess(tokenData.userID, tokenData.token)
-            } else {
-                onFail('Authentication failed')
-            }
-        })
     }).catch((error) => {
         onFail(error.message || 'Failed to start auth server')
     })
@@ -37,6 +38,9 @@ function setAuthToken(userID, serverURL, token, organizations) {
         organizations,
         createdAt: Date.now()
     }
+
+    console.log('Setting auth token for', userID, serverURL)
+    console.log('token: ', token)
 
     localStorage.setItem('authTokens', JSON.stringify(authTokens))
 }
@@ -62,5 +66,10 @@ export function getUserOrganizations(userID, serverURL) {
 
 // Axios config object that uses authToken 
 export function authConfig(authToken, timeout = 60000) {
-    return { timeout: timeout, headers: { 'Authorization': `Bearer ${authToken}` } }
+    return {
+        timeout: timeout,
+        headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'client': 'faircopy-desktop'
+        } }
 }

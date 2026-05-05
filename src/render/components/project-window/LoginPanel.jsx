@@ -13,8 +13,9 @@ export default class LoginPanel extends Component {
         super()
         this.initialState = { 
             // ...localHostDefaults,
-            serverURL: 'https://beta-app.faircopy.cloud',
+            serverURL: 'http://localhost:5173',
             waiting: false,
+            ssoUrl: null,
         }
         this.state = this.initialState
     }
@@ -25,16 +26,19 @@ export default class LoginPanel extends Component {
         const onLogin = () => {
             const { serverURL } = this.state
 
-            const onSuccess = (id, authToken) => {
-                onLoggedIn( id, serverURL, authToken )
+            const onSuccess = (id, backendUrl, authToken) => {
+                onLoggedIn( id, backendUrl, authToken )
             }
 
             const onFail = (error) => {
                 this.setState({...this.state, errorMessage: error})
             }
 
-            this.setState({...this.state, waiting: true})
             login(serverURL, onSuccess, onFail)
+
+            window.fairCopy.getSsoUrl().then((result) => {
+                this.setState({ ...this.state, waiting: true, ssoUrl: result })
+            })
         }
 
         const onChangeServerURL = (e) => {
@@ -53,8 +57,7 @@ export default class LoginPanel extends Component {
             this.props.onClose()
         }
 
-        const { serverURL } = this.state
-        const saveAllowed = ( serverURL.length > 0 )
+        const saveAllowed = ( this.state.serverURL.length > 0 )
         const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
 
         return (
@@ -70,10 +73,18 @@ export default class LoginPanel extends Component {
                                 className="login-field"
                                 label="FairCopy Server" 
                                 onChange={onChangeServerURL}
-                                value={serverURL}
+                                value={this.state.serverURL}
                             />
                         </li>
                     </ul>
+                )}
+                { this.state.ssoUrl && this.state.waiting && (
+                    <Typography variant="body2">If your browser did not open automatically, please click the link below to open the login page:
+                        <Button onClick={() => window.fairCopy.openExternalLink(this.state.ssoUrl)} variant='contained'>Open Link</Button>
+                    </Typography>
+                )}
+                { this.state.errorMessage && (
+                    <Typography variant="body2" color="error">{this.state.errorMessage}</Typography>
                 )}
                 <div className='form-actions'>
                     <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onLogin} color='primary' variant='contained'>Log in</Button>

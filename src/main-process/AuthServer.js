@@ -3,17 +3,21 @@ const { shell } = require('electron')
 
 class AuthServer {
     constructor(port = 3847) {
+        this.url = null
         this.port = port
         this.server = null
         this.pendingResolve = null
     }
 
     decodeToken(tokenStr) {
-        return JSON.parse(atob(tokenStr.split('.')[1]))
+        return JSON.parse(atob(tokenStr))
     }
 
     start(serverUrl) {
         return new Promise((resolve, reject) => {
+            const callbackURL = `http://localhost:${this.port}/callback`
+            this.url = `${serverUrl}/faircopy_login?redirect=${encodeURIComponent(callbackURL)}`
+
             this.server = http.createServer((req, res) => {
                 const url = new URL(req.url, `http://localhost:${this.port}`)
                 const tokenStr = url.searchParams.get('token')
@@ -26,7 +30,7 @@ class AuthServer {
                     res.end('<html><body><h1>Authentication successful!</h1><p>You may close this window and return to FairCopy.</p></body></html>')
                     
                     if (this.pendingResolve) {
-                        this.pendingResolve({ token })
+                        this.pendingResolve(token)
                     }
                     
                     setTimeout(() => this.stop(), 500)
@@ -36,9 +40,7 @@ class AuthServer {
                 }
             })
 
-            const callbackURL = `http://localhost:${this.port}/callback`
-            const authURL = `${serverUrl}/faircopy_login?redirect=${encodeURIComponent(callbackURL)}`
-            shell.openExternal(authURL)
+            shell.openExternal(this.url)
 
             this.server.listen(this.port, () => {
                 console.log(`Auth server listening on port ${callbackURL}`)
