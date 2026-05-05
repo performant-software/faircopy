@@ -174,8 +174,8 @@ class FairCopyApplication {
       this.fairCopySession.publishCss()
     })
 
-    ipcMain.on('performAgent', (event, fileContents, docID) => {
-      this.fairCopySession.performAgent(fileContents, docID)
+    ipcMain.on('runAgent', (event, fileContents, docID) => {
+      this.fairCopySession.runAgent(fileContents, docID)
     })
 
     ipcMain.on('requestSaveConfig', (event, fairCopyConfig, lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig, lastAction) })

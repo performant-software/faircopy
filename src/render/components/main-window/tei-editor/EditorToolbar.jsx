@@ -87,7 +87,7 @@ export default class EditorToolbar extends Component {
     onAgent = () => {
         const { teiDocument } = this.props
         this.props.onRunAgent()
-        teiDocument.performAgent()
+        teiDocument.runAgent()
     }
 
     onFind = () => {

@@ -82,11 +82,11 @@ export function publishCss(userID, projectID, serverURL, authToken, onSuccess, o
     )
 }
 
-export async function performAgent(userID, serverURL, projectID, authToken, fileContents, onSuccess, onFail) {
-    const performAgentURL = `${serverURL}/api/agents/run`
+export async function runAgent(userID, serverURL, projectID, authToken, fileContents, onSuccess, onFail) {
+    const runAgentURL = `${serverURL}/api/agents/run`
 
     try {
-        const performResp = await axios.post(performAgentURL, { tei: fileContents, projectID, serverURL, authToken }, authConfig(authToken))
+        const performResp = await axios.post(runAgentURL, { tei: fileContents, projectID, serverURL, authToken }, authConfig(authToken))
         const { run_id } = performResp.data
         const statusURL = `${serverURL}/api/agents/status/${run_id}`
         let attempts = 0

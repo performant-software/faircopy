@@ -1,5 +1,5 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
-import { getProject, performAgent, publishCss } from "../model/cloud-api/projects"
+import { getProject, runAgent, publishCss } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
@@ -78,8 +78,8 @@ function onPublishCss(userID, serverURL, projectID, authToken, postMessage) {
         })
 }
 
-function onPerformAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage) {
-    performAgent(userID, serverURL, projectID, authToken, fileContents, (data) => {
+function onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage) {
+    runAgent(userID, serverURL, projectID, authToken, fileContents, (data) => {
         postMessage({ messageType: 'agent-updated', xml: data, docID })
     },
         (error) => {
@@ -245,7 +245,7 @@ export function remoteProject(msg, workerMethods, workerData) {
             break
         case 'perform-ner':
             const { fileContents, docID } = msg
-            onPerformAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage)
+            onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage)
             break
         case 'refresh-project-info':
             updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
