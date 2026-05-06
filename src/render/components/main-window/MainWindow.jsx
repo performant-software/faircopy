@@ -388,8 +388,8 @@ export default class MainWindow extends Component {
     )
     fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted)
     fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults)
-    fairCopy.ipcRegisterCallback('performNERResult', this.onPerformNERResults)
-    fairCopy.ipcRegisterCallback('performNERFailed', this.onNERFailed)
+    fairCopy.ipcRegisterCallback('runAgentResult', this.onRunAgentResults)
+    fairCopy.ipcRegisterCallback('runAgentFailed', this.onAgentFailed)
   }
 
   componentWillUnmount() {
@@ -423,8 +423,8 @@ export default class MainWindow extends Component {
     )
     fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted)
     fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults)
-    fairCopy.ipcRemoveListener('performNERResult', this.onPerformNERResults)
-    fairCopy.ipcRemoveListener('performNERFailed', this.onNERFailed)
+    fairCopy.ipcRemoveListener('runAgentResult', this.onRunAgentResults)
+    fairCopy.ipcRemoveListener('runAgentFailed', this.onAgentFailed)
   }
 
   refreshWindow() {
@@ -724,7 +724,7 @@ export default class MainWindow extends Component {
     }
   }
 
-  onPerformNERResults = (e, obj) => {
+  onRunAgentResults = (e, obj) => {
     const { xml, docID } = obj
     const { openResources } = this.state
 
@@ -739,7 +739,7 @@ export default class MainWindow extends Component {
     this.setState({ ...this.state, runningAgent: false })
   }
 
-  onNERFailed = (e, obj) => {
+  onAgentFailed = (e, obj) => {
     const { error } = obj
     this.onAlertMessage(`Named Entity Recognition failed! error: ${error}`)
     this.setState({ ...this.state, runningAgent: false })

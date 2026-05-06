@@ -390,12 +390,12 @@ export default class TEIDocument {
     this.changedSinceLastSave = false
   }
 
-  performNER() {
+  runAgent() {
     const editorState = this.editorView.state
     const teiSchema = this.getTEISchema()
 
     const fileContents = serializeText(editorState.doc, this, teiSchema)
 
-    fairCopy.ipcSend('performNER', fileContents, this.resourceEntry.id)
+    fairCopy.ipcSend('runAgent', fileContents, this.resourceEntry.id)
   }
 }
