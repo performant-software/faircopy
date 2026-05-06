@@ -4,7 +4,7 @@ import { login } from '../../model/cloud-api/auth'
 
 // used for testing on local server
 // const localHostDefaults = {
-//     serverURL: 'http://localhost:3789',
+//     ssoUrl: 'http://localhost:3789',
 // }
 
 export default class LoginPanel extends Component {
@@ -13,9 +13,9 @@ export default class LoginPanel extends Component {
         super()
         this.initialState = { 
             // ...localHostDefaults,
-            serverURL: 'http://localhost:5173',
+            ssoUrl: 'http://localhost:5173',
             waiting: false,
-            ssoUrl: null,
+            errorMessage: null
         }
         this.state = this.initialState
     }
@@ -24,26 +24,25 @@ export default class LoginPanel extends Component {
         const { onClose, onLoggedIn } = this.props
         
         const onLogin = () => {
-            const { serverURL } = this.state
-
             const onSuccess = (id, backendUrl, authToken) => {
-                onLoggedIn( id, backendUrl, authToken )
+                const baseSsoUrl = new URL(this.state.ssoUrl).origin
+                onLoggedIn( id, backendUrl, baseSsoUrl, authToken )
             }
 
             const onFail = (error) => {
                 this.setState({...this.state, errorMessage: error})
             }
 
-            login(serverURL, onSuccess, onFail)
+            login(this.state.ssoUrl, onSuccess, onFail)
 
             window.fairCopy.getSsoUrl().then((result) => {
                 this.setState({ ...this.state, waiting: true, ssoUrl: result })
             })
         }
 
-        const onChangeServerURL = (e) => {
+        const onChangeSSOUrl = (e) => {
             const value = e.currentTarget.value
-            this.setState({...this.state, serverURL: value })
+            this.setState({...this.state, ssoUrl: value })
         }
         
         const onKeyPress = (e) => {
@@ -57,7 +56,7 @@ export default class LoginPanel extends Component {
             this.props.onClose()
         }
 
-        const saveAllowed = ( this.state.serverURL.length > 0 )
+        const saveAllowed = ( this.state.ssoUrl.length > 0 )
         const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
 
         return (
@@ -72,8 +71,8 @@ export default class LoginPanel extends Component {
                             <TextField
                                 className="login-field"
                                 label="FairCopy Server" 
-                                onChange={onChangeServerURL}
-                                value={this.state.serverURL}
+                                onChange={onChangeSSOUrl}
+                                value={this.state.ssoUrl}
                             />
                         </li>
                     </ul>

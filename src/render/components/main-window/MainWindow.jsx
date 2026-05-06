@@ -1355,9 +1355,12 @@ export default class MainWindow extends Component {
     } = this.state
 
     const { fairCopyProject, appConfig } = this.props
-    const { idMap, serverURL } = fairCopyProject
+    const { idMap, ssoURL, serverURL } = fairCopyProject
     const resourceView = resourceViews[resourceViews.currentView]
     const { indexParentID, parentEntry: teiDocEntry } = resourceView
+
+    console.log('rendering dialogs with state:')
+    console.log(fairCopyProject)
 
     const selectedDoc = selectedResource
       ? openResources[selectedResource]
@@ -1582,7 +1585,7 @@ export default class MainWindow extends Component {
             onClose={() => {
               this.setState({ ...this.state, loginMode: false })
             }}
-            serverURL={serverURL}
+            ssoUrl={ssoURL}
             onLoggedIn={this.onLoggedIn}
           ></LoginDialog>
         )}
