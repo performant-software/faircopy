@@ -16,9 +16,6 @@ export default class LoginDialog extends Component {
 
     render() {      
         const { onClose, onLoggedIn, ssoUrl } = this.props
-
-        console.log(ssoUrl)
-        console.log(this.props)
         
         const onLogin = () => {
             const onSuccess = (id, backendUrl, authToken) => {

@@ -1359,9 +1359,6 @@ export default class MainWindow extends Component {
     const resourceView = resourceViews[resourceViews.currentView]
     const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
-    console.log('rendering dialogs with state:')
-    console.log(fairCopyProject)
-
     const selectedDoc = selectedResource
       ? openResources[selectedResource]
       : null
