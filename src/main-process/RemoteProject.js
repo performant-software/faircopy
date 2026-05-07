@@ -123,6 +123,34 @@ class RemoteProject {
                         fairCopyApplication.sendToMainWindow('runAgentFailed', { error })
                     }
                     break
+                case 'reconciliation-manifest-result':
+                    {
+                        const { data, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationManifestResult', { data, requestID })
+                    }
+                    break
+                case 'reconciliation-manifest-failed':
+                    {
+                        const { error, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationManifestFailed', { error, requestID })
+                    }
+                    break
+                case 'reconciliation-result':
+                    {
+                        const { results, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationResult', { results, requestID })
+                    }
+                    break
+                case 'reconciliation-failed':
+                    {
+                        const { error, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationFailed', { error, requestID })
+                    }
+                    break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }
@@ -177,6 +205,14 @@ class RemoteProject {
 
     runAgent(fileContents, docID) {
         this.remoteProjectWorker.postMessage({ messageType: 'perform-ner', fileContents, docID })
+    }
+
+    getReconciliationManifest(endpoint, requestID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'get-reconciliation-manifest', endpoint, requestID })
+    }
+
+    queryReconciliation(endpoint, query, dataType, requestID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'query-reconciliation', endpoint, query, dataType, requestID })
     }
 }
 

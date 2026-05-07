@@ -548,6 +548,18 @@ class FairCopySession {
         this.remoteProject.runAgent(fileContents, docID)
     }
 
+    requestReconciliationManifest(manifestData) {
+        const { endpoint, requestID } = manifestData
+        if (this.remoteProject) {
+            this.remoteProject.getReconciliationManifest(endpoint, requestID)
+        }
+    }
+
+    requestReconciliationQuery(reonciliationData) {
+        const { endpoint, query, dataType, requestID } = reonciliationData
+        this.remoteProject.queryReconciliation(endpoint, query, dataType, requestID)
+    }
+
     saveFairCopyConfig(fairCopyConfig, lastAction) {
         this.projectStore.saveFairCopyConfig(fairCopyConfig, lastAction)
     }

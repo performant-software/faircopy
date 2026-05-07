@@ -178,6 +178,14 @@ class FairCopyApplication {
       this.fairCopySession.runAgent(fileContents, docID)
     })
 
+    ipcMain.on('requestReconciliationManifest', (event, manifestData) => {
+      this.fairCopySession.requestReconciliationManifest(manifestData)
+    })
+
+    ipcMain.on('requestReconciliationQuery', (event, queryData) => {
+      this.fairCopySession.requestReconciliationQuery(queryData)
+    })
+
     ipcMain.on('requestSaveConfig', (event, fairCopyConfig, lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig, lastAction) })
     ipcMain.on('checkInConfig', (event, fairCopyConfig, firstAction) => { this.fairCopySession.checkInConfig(fairCopyConfig, firstAction) })
     ipcMain.on('checkOutConfig', (event) => { this.fairCopySession.checkOutConfig() })
