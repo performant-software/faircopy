@@ -28,7 +28,7 @@ import IDField from "./attribute-fields/IDField";
 import ReadOnlyField from "./attribute-fields/ReadOnlyField";
 
 import { changeAttributes } from "../../../model/commands";
-import { getHighlightColor } from "../../../model/highlighter";
+import { getHighlightColor, getHighlightRanges } from "../../../model/highlighter";
 import { checkID } from "../../../model/attribute-validators";
 import { saveConfig, addElementToSchema } from "../../../model/faircopy-config";
 import {
@@ -170,7 +170,7 @@ export default class ParameterDrawer extends Component {
     );
   }
 
-  renderAttributeField(elementName, attrName, value, attrSpec, onChange) {
+  renderAttributeField(element, elementName, attrName, value, attrSpec, onChange) {
     const { readOnly, canEditConfig } = this.props;
     const { dataType, minOccurs, maxOccurs, valListType } = attrSpec;
 
@@ -218,8 +218,33 @@ export default class ParameterDrawer extends Component {
     }
     if (dataType === "teidata.pointer") {
       const { teiDocument } = this.props;
+      const { fairCopyConfig } = teiDocument.fairCopyProject;
+      const attrStateNode = fairCopyConfig?.elements?.[elementName]?.attrState?.[attrName];
+      const reconciliationConfig = attrStateNode?.reconciliation;
+
+      // attempt to get element plaintext content to pre-fill autocomplete
+      let elementText = "";
+      if (element instanceof Node) {
+        elementText = element.textContent;
+      } else {
+        const { state } = teiDocument.getActiveView();
+        const { empty, $anchor, from, to } = state.selection;
+        if (!empty) {
+          // use selection state
+          elementText = state.doc.textBetween(from, to, " ");
+        } else {
+          // use active highlight range
+          const ranges = getHighlightRanges(state.doc, $anchor);
+          const activeRange = ranges.find(r => r.mark === element);
+          if (activeRange && activeRange.from !== undefined && activeRange.to !== undefined) {
+            elementText = state.doc.textBetween(activeRange.from, activeRange.to, " ");
+          }
+        }
+      }
+
       return (
         <TEIDataPointerField
+          elementText={elementText}
           elementName={elementName}
           attrName={attrName}
           minOccurs={minOccurs}
@@ -229,6 +254,7 @@ export default class ParameterDrawer extends Component {
           fairCopyProject={teiDocument.fairCopyProject}
           value={value}
           onChangeCallback={onChange}
+          reconciliationConfig={reconciliationConfig}
         ></TEIDataPointerField>
       );
     }
@@ -327,6 +353,7 @@ export default class ParameterDrawer extends Component {
         attrFields.push(
           <div className="attrField" key={fieldKey}>
             {this.renderAttributeField(
+              element,
               elementID,
               key,
               value,
