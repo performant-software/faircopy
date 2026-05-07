@@ -14,6 +14,10 @@ export default class LoginDialog extends Component {
         this.state = this.initialState
     }
 
+    componentWillUnmount() {
+        window.fairCopy.stopAuthServer()
+    }
+
     render() {      
         const { onClose, onLoggedIn, ssoUrl } = this.props
         

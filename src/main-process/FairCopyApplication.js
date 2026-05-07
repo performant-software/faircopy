@@ -400,18 +400,22 @@ class FairCopyApplication {
   }
   
   sendToAllWindows(message, params) {
-    if (this.mainWindow) {
+    if (this.windowCanReceive(this.mainWindow)) {
       this.sendToMainWindow(message, params)
     }
-    if (this.projectWindow) {
+    if (this.windowCanReceive(this.projectWindow)) {
       this.sendToProjectWindow(message, params)
     }
-    if (this.previewView) {
+    if (this.windowCanReceive(this.previewView)) {
       this.previewView.webContents.send(message, params)
     }
     for (const imageView of Object.values(this.imageViews)) {
       imageView.webContents.send(message, params)
     }
+  }
+
+  windowCanReceive(windowObj) {
+    return !!windowObj && !windowObj.isDestroyed()
   }
 
   async processImageData(paths) {

@@ -20,6 +20,10 @@ export default class LoginPanel extends Component {
         this.state = this.initialState
     }
 
+    componentWillUnmount() {
+        window.fairCopy.stopAuthServer()
+    }
+
     render() {
         const { onClose, onLoggedIn } = this.props
         
