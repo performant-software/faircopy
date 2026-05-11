@@ -80,15 +80,12 @@ export default class TEIDataPointerField extends Component {
       return;
     }
 
-    // strip leading # for saved uuids
-    const cleanQuery = query && query.startsWith('#') ? query.slice(1) : query;
-
     this.setState({ loading: true });
 
     // make the request to the reconciliation API endpoint with the query and data type
     fairCopy.ipcSend('requestReconciliationQuery', {
       endpoint: reconciliationConfig.endpoint,
-      query: cleanQuery,
+      query,
       dataType: reconciliationConfig.dataType,
       requestID: this.requestID
     });
@@ -139,7 +136,7 @@ export default class TEIDataPointerField extends Component {
       if (value && reconciliationConfig?.viewUrl) {
           // strip underscore for NBU backwards compatibility
           let cleanId = value.startsWith('_') ? value.slice(1) : value;
-          // strip leading #
+          // strip leading # for NBU backwards compatibility
           cleanId = cleanId.startsWith('#') ? cleanId.slice(1) : cleanId;
           // replace {{id}} with the actual ID
           const targetUrl = reconciliationConfig.viewUrl.replace('{{id}}', cleanId);
@@ -190,10 +187,6 @@ export default class TEIDataPointerField extends Component {
 
     const onChange = (e, selectedValue) => {
       let value = selectedValue?.id ? selectedValue.id : (selectedValue || "");
-      if (isReconciliation && selectedValue?.id && !value.startsWith('#')) {
-        // add leading #
-        value = `#${value}`;
-      }
       if (value && value !== "") {
         const validResult = this.validateValues([value]);
         this.setState(validResult);
@@ -273,14 +266,7 @@ export default class TEIDataPointerField extends Component {
     }
 
     const onChange = (e, newOptions) => {
-      const newValues = newOptions.map(opt => {
-        let val = opt.value || opt.id || opt;
-        // add leading #
-        if (isReconciliation && (opt.value || opt.id) && !val.startsWith('#')) {
-           val = `#${val}`;
-        }
-        return val;
-      });
+      const newValues = newOptions.map(opt => opt.value || opt.id || opt );
       const validResult = this.validateValues(newValues);
       this.setState(validResult);
       const str = newValues.join(" ");
