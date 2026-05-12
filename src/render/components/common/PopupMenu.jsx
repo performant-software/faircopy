@@ -26,7 +26,8 @@ export default class PopupMenu extends Component {
         'export': 'fa-download',
         'move': 'fa-folder-open',
         'abandon': 'fa-lock-open',
-        'recover': 'fa-trash-arrow-up'
+        'recover': 'fa-trash-arrow-up',
+        'revert': 'fa-undo'
     }
 
     render() {

@@ -6,7 +6,7 @@ import { debounce } from "debounce";
 
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { canAbandon, canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
+import { canAbandonOtherUsersResources, canAbandonOwnResource, canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
 import { ellipsis } from '../../../model/ellipsis'
 
 const idealNameLength = 35
@@ -88,13 +88,24 @@ export default class ResourceBrowser extends Component {
     // if the resource is checked out by someone else, can abandon checkout
     const isAbandonable = resource?.lastAction?.action_type === 'check_out' &&
       resource.lastAction.user?.id !== userID
-    const showAbandon = canAbandon(permissions) && isAbandonable && atRemoteProjectRoot && currentView === 'remote'
+    const showAbandon = canAbandonOtherUsersResources(permissions) && isAbandonable && atRemoteProjectRoot && currentView === 'remote'
     if (showAbandon) {
       menuOptions.push({
         id: 'abandon',
         label: 'Unlock',
         classes: 'danger',
         action: this.createResourceAction('abandon', resource),
+      })
+    }
+
+    // can also abandon checkout if the resource is checked out by the current user
+    const showRevert = canAbandonOwnResource(permissions, resource, userID) && atRemoteProjectRoot
+    if (showRevert) {
+      menuOptions.push({
+        id: 'revert',
+        label: 'Revert',
+        classes: 'danger',
+        action: this.createResourceAction('revert', resource),
       })
     }
 

@@ -78,7 +78,13 @@ class ProjectStore {
                             this.fairCopyApplication.createPreviewWindow(previewData).then(() => {})
                         }
                     }
-                    break  
+                    break
+                case 'abandon-resources':
+                    {
+                        const { resourceIDs } = msg
+                        this.abandonResources(resourceIDs)
+                    }
+                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -418,6 +424,16 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'read-resources', resourceIDs, abandoned })
     }
 
+    abandonResources(resourceIDs) {
+        const { userID } = this.manifestData
+        for( const resourceID of resourceIDs ) {
+            const resourceEntry = this.manifestData.resources[resourceID]
+            if( resourceEntry ) {
+                this.removeLocalResource(resourceID, userID, resourceEntry, 'abandon-check-out')
+            }
+        }
+    }
+
     checkOutResults(resources,error) {        
         const checkOutStatus = []
         for( const resource of Object.values(resources) ) {
@@ -444,12 +460,7 @@ class ProjectStore {
         for( const resourceID of Object.keys(resourceStatus) ) {
             const resourceEntry = this.manifestData.resources[resourceID]
             if( !error ) {
-                // remove remote resources from project file and manifest, update all windows 
-                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
-                resourceEntry.local = false
-                resourceEntry.lastAction = { action_type: 'check_in', user: { id: userID } }
-                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
-                delete this.manifestData.resources[resourceID]     
+                this.removeLocalResource(resourceID, userID, resourceEntry, 'check-in')
             }
             resourceEntries.push(resourceEntry)
         }
@@ -460,6 +471,15 @@ class ProjectStore {
             this.fairCopyApplication.fairCopySession.requestResourceView()
         }
         this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
+    }
+
+    // remove remote resources from project file and manifest, update all windows 
+    removeLocalResource(resourceID, userID, resourceEntry, lastActionType) {
+        this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
+        resourceEntry.local = false
+        resourceEntry.lastAction = { action_type: lastActionType, user: { id: userID } }
+        this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
+        delete this.manifestData.resources[resourceID]
     }
 
     // send a list of the local resources to main window
