@@ -585,7 +585,7 @@ class FairCopySession {
 
     abandonCheckout(resource) {
         this.remoteProject.abandonCheckout(resource)
-        this.projectStore.abandonResources([resource.id])
+        this.projectStore.abandonResource(resource.id)
     }
 }
 

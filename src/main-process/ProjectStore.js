@@ -79,12 +79,6 @@ class ProjectStore {
                         }
                     }
                     break
-                case 'abandon-resources':
-                    {
-                        const { resourceIDs } = msg
-                        this.abandonResources(resourceIDs)
-                    }
-                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -424,13 +418,11 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'read-resources', resourceIDs, abandoned })
     }
 
-    abandonResources(resourceIDs) {
+    abandonResource(resourceID) {
         const { userID } = this.manifestData
-        for( const resourceID of resourceIDs ) {
-            const resourceEntry = this.manifestData.resources[resourceID]
-            if( resourceEntry ) {
-                this.removeLocalResource(resourceID, userID, resourceEntry, 'abandon-check-out')
-            }
+        const resourceEntry = this.manifestData.resources[resourceID]
+        if( resourceEntry ) {
+            this.removeLocalResource(resourceID, userID, resourceEntry, 'abandon_check_out')
         }
     }
 

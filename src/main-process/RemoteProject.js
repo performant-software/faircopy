@@ -94,6 +94,9 @@ class RemoteProject {
                             if (remoteResource) {
                                 // mismatched action type, or action type is the same but user ID is different,
                                 // means this is probably an abandoned resource
+                                console.log('checking if resource is abandoned', { resource, remoteResource })
+                                console.log('last actions', { local: resource.lastAction, remote: remoteResource.lastAction })
+                                console.log('user', { local: resource.lastAction?.user, remote: remoteResource.lastAction?.user })
                                 return (
                                     resource.lastAction?.action_type !== remoteResource.lastAction?.action_type ||
                                     resource.lastAction?.user?.id !== remoteResource.lastAction?.user?.id
