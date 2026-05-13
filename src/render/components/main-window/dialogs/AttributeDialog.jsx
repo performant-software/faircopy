@@ -56,10 +56,9 @@ class ReconciliationConfigDialog extends Component {
         if (payload.requestID === this.requestID) {
             const data = payload.data;
             if (data.defaultTypes) {
-                const typeIds = data.defaultTypes.map(t => t.id);
                 const viewUrl = data.view?.url || '';
                 this.updateConfig({ viewUrl });
-                this.setState({ manifestTypes: typeIds, loading: false });
+                this.setState({ manifestTypes: data.defaultTypes, loading: false });
             } else {
                 this.setState({ manifestTypes: [], loading: false });
             }
@@ -124,13 +123,48 @@ class ReconciliationConfigDialog extends Component {
                         freeSolo
                         disabled={!config.active}
                         options={manifestTypes}
-                        value={config.dataType || ''}
+                        value={
+                            manifestTypes.find(t => t.id === config.dataType) ||
+                            (
+                                config.dataType
+                                    ? {
+                                        id: config.dataType,
+                                        name: config.dataTypeName || config.dataType
+                                    }
+                                    : null
+                            )
+                        }
+                        getOptionLabel={(option) => {
+                            if (typeof option === 'string') {
+                                return option;
+                            }
+                            return option.name || option.id || '';
+                        }}
                         onChange={(event, newValue) => {
-                            this.updateConfig({ dataType: newValue || '' });
+                            if (!newValue) {
+                                // input cleared
+                                this.updateConfig({ dataType: '', dataTypeName: '' });
+                            } else if (typeof newValue === 'string') {
+                                // string not picked from defaultTypes
+                                this.updateConfig({ dataType: newValue, dataTypeName: newValue });
+                            } else {
+                                // object picked from defaultTypes
+                                this.updateConfig({ dataType: newValue.id, dataTypeName: newValue.name });
+                            }
                         }}
                         onInputChange={(event, newInputValue) => {
                             this.updateConfig({ dataType: newInputValue });
                         }}
+                        renderOption={(option) => (
+                            <div>
+                                <Typography variant="body1">
+                                    {option.name}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary" style={{ display: 'block' }}>
+                                    {option.id}
+                                </Typography>
+                            </div>
+                        )}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
