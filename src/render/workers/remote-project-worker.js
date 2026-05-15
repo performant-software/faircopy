@@ -6,6 +6,7 @@ import { connectCable } from "../model/cloud-api/activity-cable"
 import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
 import { getTeiDocument, publishTeiDocument } from "../model/cloud-api/tei-documents"
 import { abandonCheckout } from "../model/cloud-api/resource-management"
+import { getReconciliationManifest, queryReconciliationAPI } from "../model/cloud-api/reconciliation"
 
 function updateIDMap(userID, serverURL, authToken, projectID, postMessage) {
     getIDMap(userID, serverURL, authToken, projectID, (idMapData) => {
@@ -84,6 +85,22 @@ function onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID
     },
         (error) => {
             postMessage({ messageType: 'agent-failed', error })
+        })
+}
+function onGetReconciliationManifest(endpoint, requestID, postMessage) {
+    getReconciliationManifest(endpoint, (data) => {
+        postMessage({ messageType: 'reconciliation-manifest-result', data, requestID })
+    }, (error) => {
+        postMessage({ messageType: 'reconciliation-manifest-failed', error, requestID })
+    })
+}
+
+function onQueryReconciliation(endpoint, query, dataType, requestID, postMessage) {
+    queryReconciliationAPI(endpoint, query, dataType, (results) => {
+        postMessage({ messageType: 'reconciliation-result', results, requestID })
+    },
+        (error) => {
+            postMessage({ messageType: 'reconciliation-failed', error, requestID })
         })
 }
 
@@ -246,6 +263,14 @@ export function remoteProject(msg, workerMethods, workerData) {
         case 'perform-ner':
             const { fileContents, docID } = msg
             onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage)
+            break
+        case 'query-reconciliation':
+            const { endpoint, query, dataType, requestID } = msg
+            onQueryReconciliation(endpoint, query, dataType, requestID, postMessage)
+            break
+        case 'get-reconciliation-manifest':
+            const { endpoint: manifestEndpoint, requestID: manifestReqID } = msg
+            onGetReconciliationManifest(manifestEndpoint, manifestReqID, postMessage)
             break
         case 'refresh-project-info':
             updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)
