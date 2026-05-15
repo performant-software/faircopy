@@ -199,6 +199,7 @@ export default class TEIDataPointerField extends Component {
 
     return (
       <Autocomplete
+        key={isReconciliation ? "reconciliation-single" : "xml-single"}
         freeSolo
         value={value || ""}
         options={options}
@@ -289,6 +290,7 @@ export default class TEIDataPointerField extends Component {
 
     return (
       <Autocomplete
+        key={isReconciliation ? "reconciliation-multi" : "local-multi"}
         freeSolo
         multiple
         disableClearable
