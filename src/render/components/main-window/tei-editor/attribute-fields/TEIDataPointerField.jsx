@@ -61,7 +61,7 @@ export default class TEIDataPointerField extends Component {
 
   handleReconciliationResult = (event, data) => {
     if (data.requestID === this.requestID) {
-      this.setState({ reconciliationOptions: data.results, loading: false });
+      this.setState({ reconciliationOptions: data.results || [], loading: false });
     }
   }
 
@@ -180,9 +180,9 @@ export default class TEIDataPointerField extends Component {
     const { idMap } = fairCopyProject;
     let options = [];
     if (isReconciliation) {
-      options = this.state.reconciliationOptions;
+      options = this.state.reconciliationOptions || [];
     } else if (idMap) {
-      options = idMap.getRelativeURIList(resourceEntry?.localID, parentEntry?.localID);
+      options = idMap.getRelativeURIList(resourceEntry?.localID, parentEntry?.localID) || [];
     }
 
     const onChange = (e, selectedValue) => {
@@ -199,6 +199,7 @@ export default class TEIDataPointerField extends Component {
 
     return (
       <Autocomplete
+        key={isReconciliation ? "reconciliation-single" : "xml-single"}
         freeSolo
         value={value || ""}
         options={options}
@@ -253,7 +254,7 @@ export default class TEIDataPointerField extends Component {
     const selectedOptions = this.valuesToOptions(values);
     let options = [];
     if (isReconciliation) {
-      options = this.state.reconciliationOptions.map(opt => ({
+      options = (this.state.reconciliationOptions || []).map(opt => ({
         value: opt.id,
         label: opt.name,
         description: opt.description,
@@ -261,7 +262,7 @@ export default class TEIDataPointerField extends Component {
       }));
     } else if (idMap) {
       options = this.valuesToOptions(
-        idMap.getRelativeURIList(resourceEntry?.localID, parentEntry?.localID)
+        idMap.getRelativeURIList(resourceEntry?.localID, parentEntry?.localID) || []
       );
     }
 
@@ -289,6 +290,7 @@ export default class TEIDataPointerField extends Component {
 
     return (
       <Autocomplete
+        key={isReconciliation ? "reconciliation-multi" : "local-multi"}
         freeSolo
         multiple
         disableClearable
@@ -302,9 +304,9 @@ export default class TEIDataPointerField extends Component {
         renderOption={(option) => (
           <div>
             <Typography variant="body1">{option.label || option.value || option}</Typography>
-            {option.id && (
+            {option.value && option.label !== option.value && (
               <Typography variant="caption" color="textSecondary" style={{ display: 'block' }}>
-                {option.id}
+                {option.value}
               </Typography>
             )}
             {option.description && (
