@@ -302,9 +302,9 @@ export default class TEIDataPointerField extends Component {
         renderOption={(option) => (
           <div>
             <Typography variant="body1">{option.label || option.value || option}</Typography>
-            {option.id && (
+            {option.value && option.label !== option.value && (
               <Typography variant="caption" color="textSecondary" style={{ display: 'block' }}>
-                {option.id}
+                {option.value}
               </Typography>
             )}
             {option.description && (
