@@ -422,7 +422,14 @@ class ProjectStore {
         const { userID } = this.manifestData
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            this.removeLocalResource(resourceID, userID, 'abandon_check_out')
+            const children = Object.values(this.manifestData.resources)
+                .filter( r => r.parentResource === resourceID )
+            for (const entry of [resourceEntry, ...children]) {
+                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: entry.id })
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', entry)
+                delete this.manifestData.resources[entry.id]
+            }
+            this.saveManifest()
         }
     }
 
@@ -452,7 +459,12 @@ class ProjectStore {
         for( const resourceID of Object.keys(resourceStatus) ) {
             const resourceEntry = this.manifestData.resources[resourceID]
             if( !error ) {
-                this.removeLocalResource(resourceID, userID, 'check-in')
+                // remove remote resources from project file and manifest, update all windows 
+                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
+                resourceEntry.local = false
+                resourceEntry.lastAction = { action_type: 'check_in', user: { id: userID } }
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
+                delete this.manifestData.resources[resourceID]
             }
             resourceEntries.push(resourceEntry)
         }
@@ -463,21 +475,6 @@ class ProjectStore {
             this.fairCopyApplication.fairCopySession.requestResourceView()
         }
         this.fairCopyApplication.sendToMainWindow('checkInResults', {resourceEntries, resourceStatus, error} ) 
-    }
-
-    // remove remote resources from project file and manifest, update all windows 
-    removeLocalResource(resourceID, userID, lastActionType) {
-        const resourceEntry = this.manifestData.resources[resourceID]
-        this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
-        resourceEntry.local = false
-        resourceEntry.lastAction = { action_type: lastActionType, user: { id: userID } }
-        const childIds = Object.keys(this.manifestData.resources)
-            .filter(i => this.manifestData.resources[i].parentResource === resourceID)
-        for (const childId of childIds) {
-            this.removeLocalResource(childId, userID, lastActionType)
-        }
-        this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
-        delete this.manifestData.resources[resourceID]
     }
 
     // send a list of the local resources to main window
