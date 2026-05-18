@@ -422,7 +422,7 @@ class ProjectStore {
         const { userID } = this.manifestData
         const resourceEntry = this.manifestData.resources[resourceID]
         if( resourceEntry ) {
-            this.removeLocalResource(resourceID, userID, resourceEntry, 'abandon_check_out')
+            this.removeLocalResource(resourceID, userID, 'abandon_check_out')
         }
     }
 
@@ -452,7 +452,7 @@ class ProjectStore {
         for( const resourceID of Object.keys(resourceStatus) ) {
             const resourceEntry = this.manifestData.resources[resourceID]
             if( !error ) {
-                this.removeLocalResource(resourceID, userID, resourceEntry, 'check-in')
+                this.removeLocalResource(resourceID, userID, 'check-in')
             }
             resourceEntries.push(resourceEntry)
         }
@@ -466,10 +466,16 @@ class ProjectStore {
     }
 
     // remove remote resources from project file and manifest, update all windows 
-    removeLocalResource(resourceID, userID, resourceEntry, lastActionType) {
+    removeLocalResource(resourceID, userID, lastActionType) {
+        const resourceEntry = this.manifestData.resources[resourceID]
         this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
         resourceEntry.local = false
         resourceEntry.lastAction = { action_type: lastActionType, user: { id: userID } }
+        const childIds = Object.keys(this.manifestData.resources)
+            .filter(i => this.manifestData.resources[i].parentResource === resourceID)
+        for (const childId of childIds) {
+            this.removeLocalResource(childId, userID, lastActionType)
+        }
         this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
         delete this.manifestData.resources[resourceID]
     }

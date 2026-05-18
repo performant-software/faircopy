@@ -98,8 +98,12 @@ export default class ResourceBrowser extends Component {
       })
     }
 
-    // can also abandon checkout if the resource is checked out by the current user
-    const showRevert = canAbandonOwnResource(permissions, resource, userID) && atRemoteProjectRoot
+    // can revert (which is actually abandon checkout behind the scenes)
+    // if the resource is checked out by the current user and
+    // the resource is a top-level TEI document
+    const showRevert = canAbandonOwnResource(permissions, resource, userID)
+      && atRemoteProjectRoot
+      && !resource.parentResource
     if (showRevert) {
       menuOptions.push({
         id: 'revert',
