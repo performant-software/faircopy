@@ -260,7 +260,7 @@ export function remoteProject(msg, workerMethods, workerData) {
         case 'publish-css':
             onPublishCss(userID, serverURL, projectID, authToken, postMessage)
             break
-        case 'perform-ner':
+        case 'run-agent':
             const { fileContents, docID } = msg
             onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage)
             break
