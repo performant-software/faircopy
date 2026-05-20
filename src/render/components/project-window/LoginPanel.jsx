@@ -13,7 +13,7 @@ export default class LoginPanel extends Component {
         super()
         this.initialState = { 
             // ...localHostDefaults,
-            ssoUrl: 'https://beta-app.faircopy.cloud/',
+            ssoUrl: 'https://faircopy.performant.studio',
             waiting: false,
             errorMessage: null
         }
