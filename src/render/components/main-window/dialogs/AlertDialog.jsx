@@ -191,10 +191,16 @@ export default class AlertDialog extends Component {
         const { resource } = alertOptions
         const resourceName = resource.name
         const title = `Confirm ${verb}`
-        const message = `${verb}ing "${resourceName}" will abandon all local work
-            by the user who checked it out and return the resource
-            to the server. This action cannot be undone.
-            Are you sure you want to proceed?`
+
+        let message
+        if ( verb === 'Revert' ) {
+            message = `Do you wish to revert the changes you have made since you checked out ${resourceName}?`
+        } else {
+            message = `Abandoning "${resourceName}" will abandon all local work
+                by the user who checked it out and return the resource
+                to the server. This action cannot be undone.`
+        }
+    
         const actions = [
             {
                 label: verb,
