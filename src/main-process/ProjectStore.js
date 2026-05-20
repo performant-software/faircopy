@@ -78,7 +78,7 @@ class ProjectStore {
                             this.fairCopyApplication.createPreviewWindow(previewData).then(() => {})
                         }
                     }
-                    break  
+                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -418,6 +418,21 @@ class ProjectStore {
         this.projectArchiveWorker.postMessage({ messageType: 'read-resources', resourceIDs, abandoned })
     }
 
+    abandonResource(resourceID) {
+        const { userID } = this.manifestData
+        const resourceEntry = this.manifestData.resources[resourceID]
+        if( resourceEntry ) {
+            const children = Object.values(this.manifestData.resources)
+                .filter( r => r.parentResource === resourceID )
+            for (const entry of [resourceEntry, ...children]) {
+                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: entry.id })
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', entry)
+                delete this.manifestData.resources[entry.id]
+            }
+            this.saveManifest()
+        }
+    }
+
     checkOutResults(resources,error) {        
         const checkOutStatus = []
         for( const resource of Object.values(resources) ) {
@@ -445,11 +460,11 @@ class ProjectStore {
             const resourceEntry = this.manifestData.resources[resourceID]
             if( !error ) {
                 // remove remote resources from project file and manifest, update all windows 
-                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
+                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
                 resourceEntry.local = false
                 resourceEntry.lastAction = { action_type: 'check_in', user: { id: userID } }
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
-                delete this.manifestData.resources[resourceID]     
+                delete this.manifestData.resources[resourceID]
             }
             resourceEntries.push(resourceEntry)
         }

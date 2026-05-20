@@ -25,7 +25,15 @@ export function canDelete(permissions) {
     return false
 }
 
-export function canAbandon(permissions) {
+export function canAbandonOtherUsersResources(permissions) {
     if (isAdmin(permissions)) return true
+    return false
+}
+
+export function canAbandonOwnResource(permissions, resource, userID) {
+    // allow the user to abandon if they have checkout permissions and they are the one who checked out the resource
+    if (canCheckOut(permissions) && resource?.lastAction?.action_type === 'check_out' && resource.lastAction.user?.id === userID) {
+        return true
+    }
     return false
 }

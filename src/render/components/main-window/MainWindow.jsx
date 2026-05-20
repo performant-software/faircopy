@@ -976,17 +976,33 @@ export default class MainWindow extends Component {
         fairCopy.ipcSend('requestExport', resourceEntries)
         this.setState({ ...nextState, ...closePopUpState })
         break
-      case 'abandon':
-        const alertOptions = {
-          onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
-          resource: resourceEntries[0],
+      case 'revert':
+        {
+          const alertOptions = {
+            onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
+            resource: resourceEntries[0],
+          }
+          this.setState({
+            ...nextState,
+            alertDialogMode: 'confirmRevert',
+            alertOptions,
+            ...closePopUpState,
+          })
         }
-        this.setState({
-          ...nextState,
-          alertDialogMode: 'confirmAbandonCheckout',
-          alertOptions,
-          ...closePopUpState,
-        })
+        break
+      case 'abandon':
+        {
+          const alertOptions = {
+            onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
+            resource: resourceEntries[0],
+          }
+          this.setState({
+            ...nextState,
+            alertDialogMode: 'confirmAbandonCheckout',
+            alertOptions,
+            ...closePopUpState,
+          })
+        }
         break
       default:
         console.error(`Unrecognized resource action id: ${actionID}`)
