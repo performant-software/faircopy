@@ -204,7 +204,7 @@ class RemoteProject {
     }
 
     runAgent(fileContents, docID) {
-        this.remoteProjectWorker.postMessage({ messageType: 'perform-ner', fileContents, docID })
+        this.remoteProjectWorker.postMessage({ messageType: 'run-agent', fileContents, docID })
     }
 
     getReconciliationManifest(endpoint, requestID) {

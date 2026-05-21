@@ -140,7 +140,7 @@ export default class EditorToolbar extends Component {
         const { menus } = fairCopyProject.fairCopyConfig
         const { elements } = fairCopyProject.teiSchema
         const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
-        const canAgent = ['text', 'sourceDoc'].includes(teiDocument.resourceType) && !changedSinceLastSave && 
+        const canRunAgent = ['text', 'sourceDoc'].includes(teiDocument.resourceType) && !changedSinceLastSave && 
             (!fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn()))
         const onAction = (member) => {
             const selection = (editorView) ? editorView.state.selection : null 
@@ -168,9 +168,9 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Find", "fas fa-magnifying-glass", this.onFind ) }
                 </div>
                 <div className="rightgroup">
+                    { this.renderButton("Run Automated Workflow", "fas fa-robot", this.onAgent, canRunAgent ) }
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
-                    { this.renderButton("Perform Agent on Document", "fas fa-people-group", this.onAgent, canAgent ) }
                 </div>
                 { elementMenuOptions && <ElementMenu
                         menus={menus}
