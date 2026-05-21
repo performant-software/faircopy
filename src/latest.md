@@ -3,19 +3,22 @@
 The release notes list the improvements and bug fixes included in each new version of the software.
 
 
-## Version 1.3.0 (beta3)
+## Version 1.3.0 (beta4)
 
 This is a beta release of FairCopy 1.3.0.
 
 ### Improvements
 
+* Support for Performant Studio SSO (#670)
+* Reconciliation API (#665)
+* Support for Automated Workflows (#674)
+* Added Revert changes button (#672)
 * Compatibility with FairCopy Server 
 * Allow paragraph like elements within line elements (#651)
 * Copy published link to clipboard (#659)
 * Check in All Documents Button
 * Improvements to TEI Document UX
 * Improvements to Version Control UX
-* Experimentation with Stanford NER Integration
 
 
 ### Bug Fixes
