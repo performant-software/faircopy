@@ -7,6 +7,7 @@ const Jimp = require("jimp")
 const log = require('electron-log')
 
 const { FairCopySession } = require('./FairCopySession')
+const { AuthServer } = require('./AuthServer')
 
 const debugBaseDir = `${process.cwd()}/src`
 const distBaseDir = process.resourcesPath
@@ -16,6 +17,7 @@ class FairCopyApplication {
   constructor() {
     this.mainWindow = null
     this.previewView = null
+    this.projectWindow = null
     this.fairCopySession = null
     this.imageViews = {}
     this.exiting = false
@@ -26,6 +28,7 @@ class FairCopyApplication {
     this.config = this.getConfig()
 
     this.mainMenu = new MainMenu(this)
+    this.authServer = new AuthServer()
     this.initFileProtocol()
     this.initIPC()
   }
@@ -174,8 +177,16 @@ class FairCopyApplication {
       this.fairCopySession.publishCss()
     })
 
-    ipcMain.on('performNER', (event, fileContents, docID) => {
-      this.fairCopySession.performNER(fileContents, docID)
+    ipcMain.on('runAgent', (event, fileContents, docID) => {
+      this.fairCopySession.runAgent(fileContents, docID)
+    })
+
+    ipcMain.on('requestReconciliationManifest', (event, manifestData) => {
+      this.fairCopySession.requestReconciliationManifest(manifestData)
+    })
+
+    ipcMain.on('requestReconciliationQuery', (event, queryData) => {
+      this.fairCopySession.requestReconciliationQuery(queryData)
     })
 
     ipcMain.on('requestSaveConfig', (event, fairCopyConfig, lastAction) => { this.fairCopySession.saveFairCopyConfig(fairCopyConfig, lastAction) })
@@ -258,6 +269,26 @@ class FairCopyApplication {
       this.fairCopySession.readResources(resourceIDs, abandoned)
     })
 
+    ipcMain.handle('get-sso-url', async (event) => {
+      return this.authServer.url
+    })
+
+    ipcMain.handle('start-auth-server', async (event, serverUrl) => {
+      try {
+        await this.authServer.start(serverUrl)
+        const tokenData = await this.authServer.waitForToken()
+        this.sendToAllWindows('authTokenReceived', tokenData)
+        return { success: true, port: this.authServer.port }
+      } catch (error) {
+        log.error('Failed to start auth server:', error)
+        return { success: false, error: error.message }
+      }
+    })
+
+    ipcMain.handle('stop-auth-server', async (event) => {
+      this.authServer.stop()
+      return { success: true }
+    })
   }
 
   async createMainWindow() {
@@ -282,7 +313,7 @@ class FairCopyApplication {
   }
 
   async createProjectWindow() {
-    this.projectWindow = await this.createWindow('project_window', 740, 570, true, '#E6DEF9', false)
+    this.projectWindow = await this.createWindow('project_window', 740, 570, true, '#E6DEF9', false, true)
     this.projectWindow.webContents.send('appConfig', this.config)
   }
 
@@ -372,14 +403,27 @@ class FairCopyApplication {
     this.mainWindow.webContents.send(message, params)
   }
 
+  sendToProjectWindow = (message, params) => {
+      this.projectWindow.webContents.send(message, params)
+  }
+  
   sendToAllWindows(message, params) {
-    this.sendToMainWindow(message, params)
-    if (this.previewView) {
+    if (this.windowCanReceive(this.mainWindow)) {
+      this.sendToMainWindow(message, params)
+    }
+    if (this.windowCanReceive(this.projectWindow)) {
+      this.sendToProjectWindow(message, params)
+    }
+    if (this.windowCanReceive(this.previewView)) {
       this.previewView.webContents.send(message, params)
     }
     for (const imageView of Object.values(this.imageViews)) {
       imageView.webContents.send(message, params)
     }
+  }
+
+  windowCanReceive(windowObj) {
+    return !!windowObj && !windowObj.isDestroyed()
   }
 
   async processImageData(paths) {

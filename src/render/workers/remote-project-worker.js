@@ -1,11 +1,12 @@
 import { getResource, getResources } from "../model/cloud-api/resources"
-import { getProject, performNER, publishCss } from "../model/cloud-api/projects"
+import { getProject, runAgent, publishCss } from "../model/cloud-api/projects"
 import { getAuthToken } from '../model/cloud-api/auth'
 import { getIDMap } from "../model/cloud-api/id-map"
 import { connectCable } from "../model/cloud-api/activity-cable"
 import { getConfig, initConfig, checkInConfig, checkOutConfig } from "../model/cloud-api/config"
 import { getTeiDocument, publishTeiDocument } from "../model/cloud-api/tei-documents"
 import { abandonCheckout } from "../model/cloud-api/resource-management"
+import { getReconciliationManifest, queryReconciliationAPI } from "../model/cloud-api/reconciliation"
 
 function updateIDMap(userID, serverURL, authToken, projectID, postMessage) {
     getIDMap(userID, serverURL, authToken, projectID, (idMapData) => {
@@ -78,12 +79,28 @@ function onPublishCss(userID, serverURL, projectID, authToken, postMessage) {
         })
 }
 
-function onPerformNER(userID, serverURL, authToken, fileContents, docID, postMessage) {
-    performNER(userID, serverURL, authToken, fileContents, (data) => {
-        postMessage({ messageType: 'ner-updated', xml: data, docID })
+function onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage) {
+    runAgent(userID, serverURL, projectID, authToken, fileContents, (data) => {
+        postMessage({ messageType: 'agent-updated', xml: data, docID })
     },
         (error) => {
-            postMessage({ messageType: 'ner-failed', error })
+            postMessage({ messageType: 'agent-failed', error })
+        })
+}
+function onGetReconciliationManifest(endpoint, requestID, postMessage) {
+    getReconciliationManifest(endpoint, (data) => {
+        postMessage({ messageType: 'reconciliation-manifest-result', data, requestID })
+    }, (error) => {
+        postMessage({ messageType: 'reconciliation-manifest-failed', error, requestID })
+    })
+}
+
+function onQueryReconciliation(endpoint, query, dataType, requestID, postMessage) {
+    queryReconciliationAPI(endpoint, query, dataType, (results) => {
+        postMessage({ messageType: 'reconciliation-result', results, requestID })
+    },
+        (error) => {
+            postMessage({ messageType: 'reconciliation-failed', error, requestID })
         })
 }
 
@@ -243,9 +260,17 @@ export function remoteProject(msg, workerMethods, workerData) {
         case 'publish-css':
             onPublishCss(userID, serverURL, projectID, authToken, postMessage)
             break
-        case 'perform-ner':
+        case 'run-agent':
             const { fileContents, docID } = msg
-            onPerformNER(userID, serverURL, authToken, fileContents, docID, postMessage)
+            onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID, postMessage)
+            break
+        case 'query-reconciliation':
+            const { endpoint, query, dataType, requestID } = msg
+            onQueryReconciliation(endpoint, query, dataType, requestID, postMessage)
+            break
+        case 'get-reconciliation-manifest':
+            const { endpoint: manifestEndpoint, requestID: manifestReqID } = msg
+            onGetReconciliationManifest(manifestEndpoint, manifestReqID, postMessage)
             break
         case 'refresh-project-info':
             updateProjectInfo(userID, serverURL, authToken, projectID, postMessage)

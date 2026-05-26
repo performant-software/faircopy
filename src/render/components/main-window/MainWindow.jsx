@@ -388,8 +388,8 @@ export default class MainWindow extends Component {
     )
     fairCopy.ipcRegisterCallback('checkInStarted', this.onCheckInStarted)
     fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults)
-    fairCopy.ipcRegisterCallback('performNERResult', this.onPerformNERResults)
-    fairCopy.ipcRegisterCallback('performNERFailed', this.onNERFailed)
+    fairCopy.ipcRegisterCallback('runAgentResult', this.onRunAgentResults)
+    fairCopy.ipcRegisterCallback('runAgentFailed', this.onAgentFailed)
   }
 
   componentWillUnmount() {
@@ -423,8 +423,8 @@ export default class MainWindow extends Component {
     )
     fairCopy.ipcRemoveListener('checkInStarted', this.onCheckInStarted)
     fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults)
-    fairCopy.ipcRemoveListener('performNERResult', this.onPerformNERResults)
-    fairCopy.ipcRemoveListener('performNERFailed', this.onNERFailed)
+    fairCopy.ipcRemoveListener('runAgentResult', this.onRunAgentResults)
+    fairCopy.ipcRemoveListener('runAgentFailed', this.onAgentFailed)
   }
 
   refreshWindow() {
@@ -724,7 +724,7 @@ export default class MainWindow extends Component {
     }
   }
 
-  onPerformNERResults = (e, obj) => {
+  onRunAgentResults = (e, obj) => {
     const { xml, docID } = obj
     const { openResources } = this.state
 
@@ -739,7 +739,7 @@ export default class MainWindow extends Component {
     this.setState({ ...this.state, runningAgent: false })
   }
 
-  onNERFailed = (e, obj) => {
+  onAgentFailed = (e, obj) => {
     const { error } = obj
     this.onAlertMessage(`Named Entity Recognition failed! error: ${error}`)
     this.setState({ ...this.state, runningAgent: false })
@@ -976,17 +976,33 @@ export default class MainWindow extends Component {
         fairCopy.ipcSend('requestExport', resourceEntries)
         this.setState({ ...nextState, ...closePopUpState })
         break
-      case 'abandon':
-        const alertOptions = {
-          onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
-          resource: resourceEntries[0],
+      case 'revert':
+        {
+          const alertOptions = {
+            onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
+            resource: resourceEntries[0],
+          }
+          this.setState({
+            ...nextState,
+            alertDialogMode: 'confirmRevert',
+            alertOptions,
+            ...closePopUpState,
+          })
         }
-        this.setState({
-          ...nextState,
-          alertDialogMode: 'confirmAbandonCheckout',
-          alertOptions,
-          ...closePopUpState,
-        })
+        break
+      case 'abandon':
+        {
+          const alertOptions = {
+            onAbandon: () => fairCopy.ipcSend('abandon', resourceEntries),
+            resource: resourceEntries[0],
+          }
+          this.setState({
+            ...nextState,
+            alertDialogMode: 'confirmAbandonCheckout',
+            alertOptions,
+            ...closePopUpState,
+          })
+        }
         break
       default:
         console.error(`Unrecognized resource action id: ${actionID}`)
@@ -1355,7 +1371,7 @@ export default class MainWindow extends Component {
     } = this.state
 
     const { fairCopyProject, appConfig } = this.props
-    const { idMap, serverURL } = fairCopyProject
+    const { idMap, ssoURL, serverURL } = fairCopyProject
     const resourceView = resourceViews[resourceViews.currentView]
     const { indexParentID, parentEntry: teiDocEntry } = resourceView
 
@@ -1582,7 +1598,7 @@ export default class MainWindow extends Component {
             onClose={() => {
               this.setState({ ...this.state, loginMode: false })
             }}
-            serverURL={serverURL}
+            ssoUrl={ssoURL}
             onLoggedIn={this.onLoggedIn}
           ></LoginDialog>
         )}

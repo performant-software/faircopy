@@ -175,7 +175,7 @@ export default class AlertDialog extends Component {
         return this.renderDialog( title, message, actions )
     }
 
-    renderConfirmAbandon() {
+    renderConfirmAbandon(verb) {
         const { alertOptions, onCloseAlert } = this.props
 
         const onAbandonCheckout = () => {
@@ -190,13 +190,20 @@ export default class AlertDialog extends Component {
 
         const { resource } = alertOptions
         const resourceName = resource.name
-        const title = "Confirm Unlock"
-        const message = `Unlocking "${resourceName}" will force a check-in,
-            abandoning all local work by the user who checked it out. This
-            action cannot be undone. Are you sure you want to proceed?`
+        const title = `Confirm ${verb}`
+
+        let message
+        if ( verb === 'Revert' ) {
+            message = `Do you wish to revert the changes you have made since you checked out ${resourceName}?`
+        } else {
+            message = `Abandoning "${resourceName}" will abandon all local work
+                by the user who checked it out and return the resource
+                to the server. This action cannot be undone.`
+        }
+    
         const actions = [
             {
-                label: "Unlock",
+                label: verb,
                 defaultAction: true,
                 handler: onAbandonCheckout
             },
@@ -221,7 +228,9 @@ export default class AlertDialog extends Component {
             case 'confirmDeleteImages':
                 return this.renderConfirmDeleteImages()
             case 'confirmAbandonCheckout':
-                return this.renderConfirmAbandon()
+                return this.renderConfirmAbandon('Unlock')
+            case 'confirmRevert':
+                return this.renderConfirmAbandon('Revert')
             case 'closed':
             default:
                 return null

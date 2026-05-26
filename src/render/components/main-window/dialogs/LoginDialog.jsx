@@ -7,44 +7,37 @@ export default class LoginDialog extends Component {
 
     constructor(props) {
         super(props)
-
         this.initialState = {
-            email: '',
-            password: '',
+            waiting: false,
             errorMessage: null
         }
         this.state = this.initialState
     }
 
+    componentWillUnmount() {
+        window.fairCopy.stopAuthServer()
+    }
+
     render() {      
-        const { onClose, onLoggedIn, serverURL } = this.props
+        const { onClose, onLoggedIn, ssoUrl } = this.props
         
         const onLogin = () => {
-            const { email, password } = this.state
-            const onSuccess = (id, authToken) => {
-                onLoggedIn( id, serverURL, authToken )
+            const onSuccess = (id, backendUrl, authToken) => {
+                onLoggedIn()
             }
             const onFail = (error) => {
-                this.setState({...this.state, errorMessage: error, password: ''})
+                this.setState({...this.state, errorMessage: error, waiting: false})
             }
-            login(serverURL, email, password, onSuccess, onFail )
-        }
-        const onChangePassword = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, password: value })
-        }
-        const onChangeEmail = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, email: value })
+            login(ssoUrl, onSuccess, onFail)
+            window.fairCopy.getSsoUrl().then((result) => {
+                this.setState({ ...this.state, waiting: true, ssoUrl: result })
+            })
         }
         const onKeyPress = (e) => {
             if( e.key === 'Enter' ) {
                 onLogin()
             }
         }
-
-        const { email, password } = this.state
-        const saveAllowed = ( password.length > 0 && email.length > 0 )
 
         return (
             <Dialog
@@ -53,38 +46,21 @@ export default class LoginDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="login-title"
             >
-                <DialogTitle id="login-title">Login to Remote Server</DialogTitle>
+                <DialogTitle id="login-title">Log in with FairCopy Server</DialogTitle>
                 <DialogContent onKeyPress={onKeyPress}>
                     <ul>
                         <li>
                             <TextField 
                                 className="login-field"
                                 label="FairCopy Server" 
-                                value={serverURL}
+                                value={ssoUrl}
                                 disabled
-                            />
-                        </li>
-                        <li>
-                            <TextField 
-                                className="login-field"
-                                label="Email" 
-                                value={email}
-                                onChange={onChangeEmail}
-                            />
-                        </li>
-                        <li>
-                        <TextField 
-                                className="login-field"
-                                label="Password" 
-                                type="password"
-                                onChange={onChangePassword}
-                                value={password}
                             />
                         </li>
                     </ul>
                 </DialogContent>
                 <DialogActions>
-                    <Button disabled={!saveAllowed} onClick={onLogin} color='primary' variant='contained'>Login</Button>
+                    <Button onClick={onLogin} color='primary' variant='contained'>Log in</Button>
                     <Button className='action-button' onClick={onClose} variant='contained'>Cancel</Button>
                 </DialogActions>
             </Dialog>

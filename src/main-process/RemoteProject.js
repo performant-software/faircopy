@@ -109,18 +109,46 @@ class RemoteProject {
                         }
                     }
                     break
-                case 'ner-updated':
+                case 'agent-updated':
                     {
                         const { xml, docID } = msg
                         const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToMainWindow('performNERResult', { xml, docID })
+                        fairCopyApplication.sendToMainWindow('runAgentResult', { xml, docID })
                     }
                     break
-                case 'ner-failed':
+                case 'agent-failed':
                     {
                         const { error } = msg
                         const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToMainWindow('performNERFailed', { error })
+                        fairCopyApplication.sendToMainWindow('runAgentFailed', { error })
+                    }
+                    break
+                case 'reconciliation-manifest-result':
+                    {
+                        const { data, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationManifestResult', { data, requestID })
+                    }
+                    break
+                case 'reconciliation-manifest-failed':
+                    {
+                        const { error, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationManifestFailed', { error, requestID })
+                    }
+                    break
+                case 'reconciliation-result':
+                    {
+                        const { results, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationResult', { results, requestID })
+                    }
+                    break
+                case 'reconciliation-failed':
+                    {
+                        const { error, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationFailed', { error, requestID })
                     }
                     break
                 default:
@@ -175,8 +203,16 @@ class RemoteProject {
         this.remoteProjectWorker.postMessage({ messageType: 'publish-css' })
     }
 
-    performNER(fileContents, docID) {
-        this.remoteProjectWorker.postMessage({ messageType: 'perform-ner', fileContents, docID })
+    runAgent(fileContents, docID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'run-agent', fileContents, docID })
+    }
+
+    getReconciliationManifest(endpoint, requestID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'get-reconciliation-manifest', endpoint, requestID })
+    }
+
+    queryReconciliation(endpoint, query, dataType, requestID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'query-reconciliation', endpoint, query, dataType, requestID })
     }
 }
 

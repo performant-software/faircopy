@@ -544,8 +544,20 @@ class FairCopySession {
         this.remoteProject.publishCss()
     }
 
-    performNER(fileContents, docID) {
-        this.remoteProject.performNER(fileContents, docID)
+    runAgent(fileContents, docID) {
+        this.remoteProject.runAgent(fileContents, docID)
+    }
+
+    requestReconciliationManifest(manifestData) {
+        const { endpoint, requestID } = manifestData
+        if (this.remoteProject) {
+            this.remoteProject.getReconciliationManifest(endpoint, requestID)
+        }
+    }
+
+    requestReconciliationQuery(reonciliationData) {
+        const { endpoint, query, dataType, requestID } = reonciliationData
+        this.remoteProject.queryReconciliation(endpoint, query, dataType, requestID)
     }
 
     saveFairCopyConfig(fairCopyConfig, lastAction) {
@@ -585,6 +597,7 @@ class FairCopySession {
 
     abandonCheckout(resource) {
         this.remoteProject.abandonCheckout(resource)
+        this.projectStore.abandonResource(resource.id)
     }
 }
 

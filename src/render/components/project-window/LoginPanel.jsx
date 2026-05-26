@@ -4,9 +4,7 @@ import { login } from '../../model/cloud-api/auth'
 
 // used for testing on local server
 // const localHostDefaults = {
-//     serverURL: 'http://localhost:3789',
-//     email: 'admin@performantsoftware.com',
-//     password: 'password',
+//     ssoUrl: 'http://localhost:3789',
 // }
 
 export default class LoginPanel extends Component {
@@ -15,83 +13,85 @@ export default class LoginPanel extends Component {
         super()
         this.initialState = { 
             // ...localHostDefaults,
-            serverURL: 'https://beta-api.faircopy.cloud',
-            email: '',
-            password: '',
-            errorMessage: null 
+            ssoUrl: 'https://faircopy.performant.studio',
+            waiting: false,
+            errorMessage: null
         }
         this.state = this.initialState
+    }
+
+    componentWillUnmount() {
+        window.fairCopy.stopAuthServer()
     }
 
     render() {
         const { onClose, onLoggedIn } = this.props
         
         const onLogin = () => {
-            const { serverURL, email, password } = this.state
-            const onSuccess = (id, authToken) => {
-                onLoggedIn( id, serverURL, authToken )
+            const onSuccess = (id, backendUrl, authToken) => {
+                const baseSsoUrl = new URL(this.state.ssoUrl).origin
+                onLoggedIn( id, backendUrl, baseSsoUrl, authToken )
             }
+
             const onFail = (error) => {
-                this.setState({...this.state, errorMessage: error, password: ''})
+                this.setState({...this.state, errorMessage: error})
             }
-            login(serverURL, email, password, onSuccess, onFail )
+
+            login(this.state.ssoUrl, onSuccess, onFail)
+
+            window.fairCopy.getSsoUrl().then((result) => {
+                this.setState({ ...this.state, waiting: true, ssoUrl: result })
+            })
         }
 
-        const onChangeServerURL = (e) => {
+        const onChangeSSOUrl = (e) => {
             const value = e.currentTarget.value
-            this.setState({...this.state, serverURL: value })
+            this.setState({...this.state, ssoUrl: value })
         }
-        const onChangeEmail = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, email: value })
-        }
-        const onChangePassword = (e) => {
-            const value = e.currentTarget.value
-            this.setState({...this.state, password: value })
-        }
+        
         const onKeyPress = (e) => {
             if( e.key === 'Enter' ) {
                 onLogin()
             }
         }
 
-        const { serverURL, email, password } = this.state
-        const saveAllowed = ( serverURL.length > 0 && email.length > 0 && password.length > 0 )
+        const onCancel = () => {
+            window.fairCopy.stopAuthServer()
+            this.props.onClose()
+        }
+
+        const saveAllowed = ( this.state.ssoUrl.length > 0 )
         const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
 
         return (
             <div id="LoginPanel" onKeyPress={onKeyPress} >
-                <Typography variant="h6" component="h2">Login to Remote Server</Typography>
-                <ul>
-                    <li>
-                        <TextField 
-                            className="login-field"
-                            label="FairCopy Server" 
-                            onChange={onChangeServerURL}
-                            value={serverURL}
-                        />
-                    </li>
-                    <li>
-                        <TextField 
-                            className="login-field"
-                            label="Email" 
-                            onChange={onChangeEmail}
-                            value={email}
-                        />
-                    </li>
-                    <li>
-                    <TextField 
-                            className="login-field"
-                            label="Password" 
-                            type="password"
-                            onChange={onChangePassword}
-                            value={password}
-                        />
-                    </li>
-                </ul>
+                <Typography variant="h6" component="h2">Log in with FairCopy Server</Typography>
+                { this.state.waiting && (
+                    <Typography variant="body1">Waiting for authentication...</Typography>
+                )}
+                { !this.state.waiting && (
+                    <ul>
+                        <li>
+                            <TextField
+                                className="login-field"
+                                label="FairCopy Server" 
+                                onChange={onChangeSSOUrl}
+                                value={this.state.ssoUrl}
+                            />
+                        </li>
+                    </ul>
+                )}
+                { this.state.ssoUrl && this.state.waiting && (
+                    <Typography variant="body2">If your browser did not open automatically, please click the link below to open the login page:
+                        <Button onClick={() => fairCopy.ipcSend('openWebpage', this.state.ssoUrl)} variant='contained'>Open Link</Button>
+                    </Typography>
+                )}
+                { this.state.errorMessage && (
+                    <Typography variant="body2" color="error">{this.state.errorMessage}</Typography>
+                )}
                 <div className='form-actions'>
-                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onLogin} color='primary' variant='contained'>Login</Button>
-                    <Button className='action-button' onClick={onClose} variant='contained'>Cancel</Button>
+                    <Button disabled={!saveAllowed} className={saveButtonClass} onClick={onLogin} color='primary' variant='contained'>Log in</Button>
+                    <Button onClick={onCancel} variant='contained'>Cancel</Button>
                 </div>
             </div>
         )
