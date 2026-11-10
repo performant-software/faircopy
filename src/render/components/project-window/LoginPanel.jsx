@@ -60,7 +60,7 @@ export default class LoginPanel extends Component {
             this.props.onClose()
         }
 
-        const saveAllowed = ( this.state.ssoUrl.length > 0 )
+        const saveAllowed = ( this.state.ssoUrl.length > 0 && !this.state.waiting )
         const saveButtonClass = saveAllowed ? "login-button-active" : "action-button"
 
         return (
