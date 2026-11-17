@@ -182,6 +182,10 @@ const onNotification = (data, workerData, postMessage) => {
         const { resources } = data
         updateIDMap(userID, serverURL, authToken, projectID, postMessage)
         postMessage({ messageType: 'resources-updated', resources })
+    } else if (notification === "document_processed") {
+        // refresh the view so its processing status clears
+        const { resource_guid: resourceGUID } = data
+        postMessage({ messageType: 'resources-updated', resources: [resourceGUID] })
     }
     console.log(`received cable message: ${notification}`)
     

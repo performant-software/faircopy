@@ -126,6 +126,7 @@ export default class MainWindow extends Component {
       abandonedDialogMode: false,
       abandonedLocalResources: [],
       awaitingCheckIn: 0,
+      checkInPendingIDs: new Set(),
       runningAgent: false,
     }
   }
@@ -250,18 +251,45 @@ export default class MainWindow extends Component {
     })
   }
 
-  onCheckInStarted = (event, totalBatches) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      awaitingCheckIn: totalBatches,
-    }))
+  onCheckInStarted = (event, resourceIDBatches) => {
+    this.setState((prevState) => {
+      // mark the resources as pending so they are grayed out in the resource browser
+      const checkInPendingIDs = new Set(prevState.checkInPendingIDs)
+      for (const batch of resourceIDBatches) {
+        for (const resourceID of batch) {
+          checkInPendingIDs.add(resourceID)
+        }
+      }
+      return {
+        ...prevState,
+        awaitingCheckIn: prevState.awaitingCheckIn + resourceIDBatches.length,
+        checkInPendingIDs,
+      }
+    })
   }
 
-  onCheckInResults = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      awaitingCheckIn: prevState.awaitingCheckIn - 1,
-    }))
+  onCheckInResults = (event, checkInResult) => {
+    const { resourceStatus, error } = checkInResult
+    if (error) {
+      this.onAlertMessage(`Check in failed: ${error}`)
+    }
+    this.setState((prevState) => {
+      const awaitingCheckIn = prevState.awaitingCheckIn - 1
+      let checkInPendingIDs = new Set()
+      // if no more batches remain to check in, just clear status
+      // for all resources so nothing is stuck pending forever
+      if (awaitingCheckIn > 0) {
+        checkInPendingIDs = new Set(prevState.checkInPendingIDs)
+        for (const resourceID of Object.keys(resourceStatus)) {
+          checkInPendingIDs.delete(resourceID)
+        }
+      }
+      return {
+        ...prevState,
+        awaitingCheckIn,
+        checkInPendingIDs,
+      }
+    })
   }
 
   onResourceEntryUpdated = (e, resourceEntry) => {
@@ -519,7 +547,12 @@ export default class MainWindow extends Component {
       selectedResource,
       requestedResources,
       resourceIndex,
+      checkInPendingIDs,
     } = this.state
+
+    // resources that are mid check-in can't be opened
+    resourceIDs = resourceIDs.filter((id) => !checkInPendingIDs.has(id))
+    if (resourceIDs.length === 0) return
 
     let nextSelection = resourceIDs[0]
 
@@ -1269,7 +1302,7 @@ export default class MainWindow extends Component {
   renderContentPane() {
     const { fairCopyProject } = this.props
     const {
-      awaitingCheckIn,
+      checkInPendingIDs,
       resourceBrowserOpen,
       resourceViews,
       rightPaneWidth,
@@ -1287,7 +1320,7 @@ export default class MainWindow extends Component {
     return (
       <div className='content-pane'>
         {resourceBrowserOpen &&
-          (awaitingCheckIn > 0 || migratingResources.size > 0 ? (
+          (migratingResources.size > 0 ? (
             <div id='ResourceBrowser'>{bigRingSpinner()}</div>
           ) : (
             <ResourceBrowser
@@ -1309,6 +1342,7 @@ export default class MainWindow extends Component {
               currentView={currentView}
               resourceView={resourceView}
               resourceIndex={resourceIndex}
+              checkInPendingIDs={checkInPendingIDs}
               fairCopyProject={fairCopyProject}
               panelWidth={rightPaneWidth}
               publishingResources={publishingResources}
@@ -1353,6 +1387,7 @@ export default class MainWindow extends Component {
       moveResourceProps,
       checkInAll,
       checkInResources,
+      checkInPendingIDs,
       checkOutMode,
       checkOutStatus,
       checkOutError,
@@ -1569,6 +1604,7 @@ export default class MainWindow extends Component {
             fairCopyProject={fairCopyProject}
             checkInResources={checkInResources}
             checkInAll={checkInAll}
+            checkInPendingIDs={checkInPendingIDs}
             localResources={localResources}
             onClose={() => {
               this.setState({

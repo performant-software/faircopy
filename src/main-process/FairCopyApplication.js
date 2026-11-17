@@ -160,7 +160,8 @@ class FairCopyApplication {
     })
 
     ipcMain.on('checkIn', (event, userID, serverURL, projectID, resourceIDBatches, message) => {
-      this.sendToMainWindow('checkInStarted', resourceIDBatches.length)
+      // send the batched resource IDs so the renderer can mark them as pending
+      this.sendToMainWindow('checkInStarted', resourceIDBatches)
       this.fairCopySession.checkIn(userID, serverURL, projectID, resourceIDBatches, message)
     })
 
