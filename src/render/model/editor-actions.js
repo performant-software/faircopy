@@ -212,11 +212,6 @@ function addBelow( elementID, attrs, teiDocument, pos, tr ) {
     }
 }
 
-export function onClippy() {
-    // const html = fairCopy.readClipBoardHTML()
-    // console.log( `clippy: ${html}`) 
-}
-
 export function eraseSelection(teiDocument) {
     const editorView = teiDocument.getActiveView()
     let { selection, tr } = editorView.state

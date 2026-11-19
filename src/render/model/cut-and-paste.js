@@ -16,7 +16,7 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
         const parser = new DOMParser();
         let metaTag = matches && matches[1] ? matches[1]: ""
         // also, replace all the non breaking spaces w/spaces, since &nbsp; isn't in schema
-        let xml = html.replace(metaRegex,"").replaceAll('&nbsp;',' ')
+        let xml = html.replace(metaRegex,"").replaceAll('&nbsp;',' ').replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
         // detect if this is an internal cut and paste
         if( xml.includes('data-pm-slice') ) {
             // xml might be an array of elements, need to wrap them to form a valid document
@@ -38,8 +38,8 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
             teiSchema.teiDocuments.push(teiDocument)
 
             // also set a flag to show the type of copy operation
-            const platform = fairCopy.getPlatform()
-            const topLevelNode = platform === 'win32' ? xmlDom.firstChild.firstChild.childNodes[1].childNodes[2] : xmlDom.firstChild.firstChild 
+            // const platform = fairCopy.getPlatform()
+            const topLevelNode = xmlDom.firstChild.firstChild
             if( topLevelNode.getAttribute('data-fc-node') === 'true' ) {
                 topLevelNode.removeAttribute('data-fc-node')
                 teiSchema.nodeCopyFlag = true
@@ -139,7 +139,7 @@ function copyNode(teiDocument,cut=false) {
             const end = start + node.nodeSize
             const slice = doc.slice(start,end)
             const clips = serializeForClipboard(editorView,slice)
-            fairCopy.copyToClipBoardHTML(clips.dom.innerHTML)
+            writeHTMLToClipboard(clips.dom.innerHTML)
             if( cut ) {
                 const {tr} = editorView.state
                 tr.delete(start,end)
@@ -149,6 +149,14 @@ function copyNode(teiDocument,cut=false) {
             }
         }    
     }
+}
+
+function writeHTMLToClipboard(html) {
+  const clipboardItemData = {
+    "text/html": new Blob([html], { type: "text/html" })
+  };
+  const clipboardItem = new ClipboardItem(clipboardItemData);
+  navigator.clipboard.write([clipboardItem]);
 }
 
 function transformInlineCopy(slice) {
