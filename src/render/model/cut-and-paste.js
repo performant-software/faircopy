@@ -38,7 +38,6 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
             teiSchema.teiDocuments.push(teiDocument)
 
             // also set a flag to show the type of copy operation
-            // const platform = fairCopy.getPlatform()
             const topLevelNode = xmlDom.firstChild.firstChild
             if( topLevelNode.getAttribute('data-fc-node') === 'true' ) {
                 topLevelNode.removeAttribute('data-fc-node')
