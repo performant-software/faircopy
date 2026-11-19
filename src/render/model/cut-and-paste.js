@@ -16,7 +16,19 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
         const parser = new DOMParser();
         let metaTag = matches && matches[1] ? matches[1]: ""
         // also, replace all the non breaking spaces w/spaces, since &nbsp; isn't in schema
-        let xml = html.replace(metaRegex,"").replaceAll('&nbsp;',' ').replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
+        const platform = fairCopy.getPlatform()
+        let xml;
+        // the wrapper for the copied HTML is different based on OS
+        if( platform === 'win32') {
+            const startMarker = "<!--StartFragment-->"
+            const endMarker = "<!--EndFragment-->"
+            const startOffset = html.indexOf(startMarker) + startMarker.length
+            const endOffset = html.indexOf(endMarker)
+            xml = html.slice(startOffset,endOffset).replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
+        } else{
+            xml = html.replace(metaRegex,"").replaceAll('&nbsp;',' ').replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
+        }
+
         // detect if this is an internal cut and paste
         if( xml.includes('data-pm-slice') ) {
             // xml might be an array of elements, need to wrap them to form a valid document
