@@ -24,7 +24,7 @@ export function transformPastedHTMLHandler( teiSchema, teiDocument ) {
             const endMarker = "<!--EndFragment-->"
             const startOffset = html.indexOf(startMarker) + startMarker.length
             const endOffset = html.indexOf(endMarker)
-            xml = html.slice(startOffset,endOffset).replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
+            xml = html.slice(startOffset,endOffset).replaceAll('&nbsp;',' ').replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
         } else{
             xml = html.replace(metaRegex,"").replaceAll('&nbsp;',' ').replaceAll('<html><head></head><body>','').replaceAll('</body></html>','')
         }
