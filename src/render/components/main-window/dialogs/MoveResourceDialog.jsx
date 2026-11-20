@@ -43,21 +43,7 @@ export default class MoveResourceDialog extends Component {
             scope: "row"
         }
 
-        if( !resource ) {    
-            const selected = targetID === 'ROOT' ? 'selected' : ''
-            return (
-                <TableRow hover onClick={onSelect} className={selected} dataresourceid='ROOT' key={`resource-ROOT`}>
-                    <TableCell {...cellProps} >
-                        <i className={`fa fa-home-alt fa-lg`}></i>
-                    </TableCell>
-                    <TableCell {...cellProps} >
-                        Project Home
-                    </TableCell>
-                    <TableCell {...cellProps} >
-                    </TableCell>
-                </TableRow>
-            )
-        } else {
+        if( resource ) {
             const selected = resource.id === targetID ? 'selected' : ''
             const resourceIcon = getResourceIcon(resource.type)
             const resourceLabel = getResourceIconLabel(resource.type)

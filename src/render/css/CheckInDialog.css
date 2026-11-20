@@ -11,3 +11,7 @@
 #CheckInDialog .error-message {
     color: red;
 }
+
+#CheckInDialog caption {
+    caption-side: top;
+}

@@ -4,83 +4,159 @@ const { app } = require('electron')
 
 class RemoteProject {
 
-    constructor( fairCopySession, userID, serverURL, projectID ) {
-        const { fairCopyApplication } = fairCopySession
-        const {baseDir} = fairCopyApplication
+    constructor(fairCopySession, userID, serverURL, projectID) {
+        const { fairCopyApplication, resourceViews } = fairCopySession
+        const { currentView } = resourceViews
+        const resourceView = resourceViews[currentView]
+        const { baseDir } = fairCopyApplication
         this.fairCopySession = fairCopySession
-        this.initRemoteProjectWorker( baseDir, !app.isPackaged, userID, serverURL, projectID ).then(() => {
+        this.initRemoteProjectWorker(baseDir, !app.isPackaged, userID, serverURL, projectID).then(() => {
             this.open()
+            if (currentView === 'home' && !resourceView?.indexParentID) {
+                // at local project root, on remote project worker launch, check for abandoned resources
+                this.markAbandonedResources(fairCopySession.getCurrentResourceIndex(), resourceViews['home'])
+            }
         })
     }
 
-    initRemoteProjectWorker( baseDir, debug, userID, serverURL, projectID ) {
-        this.remoteProjectWorker = new WorkerWindow( baseDir, debug, 'remote-project', (msg) => {
+    initRemoteProjectWorker(baseDir, debug, userID, serverURL, projectID) {
+        this.remoteProjectWorker = new WorkerWindow(baseDir, debug, 'remote-project', (msg) => {
             const { messageType } = msg
 
-            switch( messageType ) {
+            switch (messageType) {
                 case 'resource-data':
                     {
                         const { resourceEntry, parentEntry, content, xmlID } = msg
-                        this.fairCopySession.resourceOpened( resourceEntry, parentEntry, content, xmlID )   
+                        this.fairCopySession.resourceOpened(resourceEntry, parentEntry, content, xmlID)
                     }
                     break
                 case 'got-parent':
-                    { 
+                    {
                         const { resourceEntry, parentEntry, content, xmlID } = msg
-                        this.fairCopySession.parentFound( resourceEntry, parentEntry, content, xmlID )   
+                        this.fairCopySession.parentFound(resourceEntry, parentEntry, content, xmlID)
                     }
                     break
                 case 'project-info-update':
                     {
                         const { projectInfo } = msg
                         const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToAllWindows('updateProjectInfo', projectInfo )
+                        fairCopyApplication.sendToAllWindows('updateProjectInfo', projectInfo)
                     }
                     break
                 case 'resource-view-update':
                     {
-                        const { resourceView, remoteResources } = msg
-                        this.fairCopySession.sendResourceViewUpdate(resourceView,remoteResources)
+                        const { resourceView, remoteResources, published } = msg
+                        this.fairCopySession.sendResourceViewUpdate(resourceView, remoteResources, published)
                     }
-                    break    
-                case 'id-map-update': 
-                {
-                    const { idMapAuthority } = this.fairCopySession
-                    const { idMapData } = msg
-                    idMapAuthority.setBaseMap(idMapData)
-                }
-                break
+                    break
+                case 'id-map-update':
+                    {
+                        const { idMapAuthority } = this.fairCopySession
+                        const { idMapData } = msg
+                        idMapAuthority.setBaseMap(idMapData)
+                    }
+                    break
                 case 'config-update':
-                {
-                    const { config, configLastAction } = msg
-                    const { fairCopyApplication, projectStore } = this.fairCopySession
-                    const { baseConfig } = projectStore
-                    const { config: appConfig } = fairCopyApplication
-                    const { generatedWith } = projectStore.manifestData
-                    // make sure that the incoming config is migrated to the latest schema                    
-                    migrateConfig(generatedWith, baseConfig, config, appConfig )
-                    fairCopyApplication.sendToAllWindows('updateFairCopyConfig', {config, configLastAction} )
-                }
-                break
+                    {
+                        const { config, configLastAction } = msg
+                        const { fairCopyApplication, projectStore } = this.fairCopySession
+                        const { baseConfig } = projectStore
+                        const { config: appConfig } = fairCopyApplication
+                        const { generatedWith } = projectStore.manifestData
+                        // make sure that the incoming config is migrated to the latest schema                    
+                        migrateConfig(generatedWith, baseConfig, config, appConfig)
+                        fairCopyApplication.sendToAllWindows('updateFairCopyConfig', { config, configLastAction })
+                        this.remoteProjectWorker.postMessage({ messageType: 'refresh-project-info' })
+                    }
+                    break
                 case 'config-check-out-result':
-                    const { status } = msg
-                    const { fairCopyApplication } = this.fairCopySession
-                    fairCopyApplication.sendToAllWindows('fairCopyConfigCheckedOut', {status} )
-                break
+                    {
+                        const { status } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToAllWindows('fairCopyConfigCheckedOut', { status })
+                    }
+                    break
                 case 'resources-updated':
-                {
-                    const { resources } = msg
-                    // TODO determine which resources need to be updated 
-                    // TODO what does this have to do with delete again?
-                    this.fairCopySession.requestResourceView()
-                }
-                break
+                    {
+                        const { resources, published } = msg
+                        // TODO determine which resources need to be updated 
+                        // TODO what does this have to do with delete again?
+                        this.fairCopySession.requestResourceView(published)
+                    }
+                    break
+                case 'process-abandoned':
+                    {
+                        const { fairCopyApplication, projectStore } = this.fairCopySession
+                        const { localResources, remoteResources } = msg
+                        const abandoned = localResources?.filter((resource) => {
+                            if (resource.type !== 'teidoc') return false
+                            const remoteResource = remoteResources?.find((r) => r.id === resource.id)
+                            if (remoteResource) {
+                                // mismatched action type, or action type is the same but user ID is different,
+                                // means this is probably an abandoned resource
+                                return (
+                                    resource.lastAction?.action_type !== remoteResource.lastAction?.action_type ||
+                                    resource.lastAction?.user?.id !== remoteResource.lastAction?.user?.id
+                                )
+                            }
+                            return false
+                        })
+                        const abandonedIDs = abandoned.map((r) => r.id)
+                        const { resources } = projectStore.manifestData
+                        const abandonedChildren = Object.values(resources)?.filter((r) => abandonedIDs.includes(r.parentResource))
+                        if (abandoned.length > 0) {
+                            fairCopyApplication.sendToMainWindow('markAbandoned', [...abandoned, ...abandonedChildren])
+                        }
+                    }
+                    break
+                case 'agent-updated':
+                    {
+                        const { xml, docID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('runAgentResult', { xml, docID })
+                    }
+                    break
+                case 'agent-failed':
+                    {
+                        const { error } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('runAgentFailed', { error })
+                    }
+                    break
+                case 'reconciliation-manifest-result':
+                    {
+                        const { data, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationManifestResult', { data, requestID })
+                    }
+                    break
+                case 'reconciliation-manifest-failed':
+                    {
+                        const { error, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationManifestFailed', { error, requestID })
+                    }
+                    break
+                case 'reconciliation-result':
+                    {
+                        const { results, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationResult', { results, requestID })
+                    }
+                    break
+                case 'reconciliation-failed':
+                    {
+                        const { error, requestID } = msg
+                        const { fairCopyApplication } = this.fairCopySession
+                        fairCopyApplication.sendToMainWindow('reconciliationFailed', { error, requestID })
+                    }
+                    break
                 default:
                     throw new Error(`Unrecognized message type ${messageType} received from remote project: ${JSON.stringify(msg)}`)
             }
         })
-        
-        return this.remoteProjectWorker.start({userID, serverURL, projectID})
+
+        return this.remoteProjectWorker.start({ userID, serverURL, projectID })
     }
 
     open() {
@@ -99,8 +175,8 @@ class RemoteProject {
         this.remoteProjectWorker.postMessage({ messageType: 'get-resource', resourceID, xmlID })
     }
 
-    requestResourceView(resourceView) {
-        this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView })
+    requestResourceView(resourceView, published) {
+        this.remoteProjectWorker.postMessage({ messageType: 'request-view', resourceView, published })
     }
 
     checkInConfig(config, firstAction) {
@@ -109,6 +185,34 @@ class RemoteProject {
 
     checkOutConfig() {
         this.remoteProjectWorker.postMessage({ messageType: 'checkout-config' })
+    }
+
+    publish(teiDoc) {
+        this.remoteProjectWorker.postMessage({ messageType: 'publish', teiDoc })
+    }
+
+    abandonCheckout(resource) {
+        this.remoteProjectWorker.postMessage({ messageType: 'abandon', resource })
+    }
+
+    markAbandonedResources(resources, resourceView) {
+        this.remoteProjectWorker.postMessage({ messageType: 'check-abandoned', resources, resourceView })
+    }
+
+    publishCss() {
+        this.remoteProjectWorker.postMessage({ messageType: 'publish-css' })
+    }
+
+    runAgent(fileContents, docID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'run-agent', fileContents, docID })
+    }
+
+    getReconciliationManifest(endpoint, requestID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'get-reconciliation-manifest', endpoint, requestID })
+    }
+
+    queryReconciliation(endpoint, query, dataType, requestID) {
+        this.remoteProjectWorker.postMessage({ messageType: 'query-reconciliation', endpoint, query, dataType, requestID })
     }
 }
 

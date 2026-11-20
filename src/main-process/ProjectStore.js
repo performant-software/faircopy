@@ -41,6 +41,15 @@ class ProjectStore {
                         this.fairCopyApplication.fairCopySession.resourceOpened( resourceEntry, parentEntry, resource, xmlID )
                     }
                     break
+                case 'resources-data':
+                    {
+                        const { resources, abandoned } = msg
+                        if (abandoned) {
+                            this.fairCopyApplication.sendToMainWindow('abandonedResourcesData', resources)
+                        }
+                        // can do other things with resource data here; each will be an object { resourceID, content }
+                    }
+                    break
                 case 'index-resource':
                     {
                         const { resourceID, resource } = msg
@@ -69,7 +78,7 @@ class ProjectStore {
                             this.fairCopyApplication.createPreviewWindow(previewData).then(() => {})
                         }
                     }
-                    break  
+                    break
                 case 'cache-file-name':
                     {
                         const { cacheFile } = msg
@@ -271,7 +280,7 @@ class ProjectStore {
         }
     }
     
-    removeResources(resourceIDs,idMap) {
+    removeResources(resourceIDs, idMap, forceDelete) {
         for( const resourceID of resourceIDs ) {
             const resourceEntry = this.manifestData.resources[resourceID]
         
@@ -289,13 +298,15 @@ class ProjectStore {
                 // remove associated search index
                 if( this.searchIndex ) this.searchIndex.removeIndex(resourceID)
             }
-    
-            if( resourceEntry.local ) {
-                delete this.manifestData.resources[resourceID] 
+
+            // remove file from local, if local-only or forced deletion (i.e. abandoned resource)
+            if( resourceEntry.local || forceDelete ) {
+                delete this.manifestData.resources[resourceID]
                 if( resourceEntry.type !== 'teidoc' ) {
                     this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
                 }
             } else {
+                // otherwise just set deleted flag
                 resourceEntry.deleted = true
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
             }
@@ -341,7 +352,8 @@ class ProjectStore {
         const configData = JSON.stringify(fairCopyConfig)
         if( configData && configData.length > 0 ) {
             this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: configSettingsEntryName, data: configData })
-            this.saveManifest()    
+            this.fairCopyApplication.sendToAllWindows('configSaved', configData)
+            this.saveManifest()
         } else {
             log.error(`Cannot save empty FairCopy Config.`)
         }
@@ -375,8 +387,8 @@ class ProjectStore {
         this.saveManifest()
     }
 
-    checkIn(userID, serverURL, projectID, committedResources, message) {
-        this.projectArchiveWorker.postMessage({ messageType: 'check-in', userID, serverURL, projectID, committedResources, message })
+    checkIn(userID, serverURL, projectID, committedResourceBatches, message) {
+        this.projectArchiveWorker.postMessage({ messageType: 'check-in', userID, serverURL, projectID, committedResourceBatches, message })
     }
 
     checkOut(userID, serverURL, projectID, resourceEntries ) {
@@ -402,6 +414,25 @@ class ProjectStore {
         }
     }
 
+    readResources(resourceIDs, abandoned) {
+        this.projectArchiveWorker.postMessage({ messageType: 'read-resources', resourceIDs, abandoned })
+    }
+
+    abandonResource(resourceID) {
+        const { userID } = this.manifestData
+        const resourceEntry = this.manifestData.resources[resourceID]
+        if( resourceEntry ) {
+            const children = Object.values(this.manifestData.resources)
+                .filter( r => r.parentResource === resourceID )
+            for (const entry of [resourceEntry, ...children]) {
+                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: entry.id })
+                this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', entry)
+                delete this.manifestData.resources[entry.id]
+            }
+            this.saveManifest()
+        }
+    }
+
     checkOutResults(resources,error) {        
         const checkOutStatus = []
         for( const resource of Object.values(resources) ) {
@@ -412,7 +443,7 @@ class ProjectStore {
                 if( parentEntry ) this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', parentEntry )   
                 this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID: resourceEntry.id, messageID: 'check-out-messsage', resourceContent: content })     
             } 
-            checkOutStatus.push({ state, resourceEntry })
+            checkOutStatus.push({ state, resourceEntry, parentEntry })
         }
         const idMap = this.fairCopyApplication.fairCopySession.idMapAuthority.checkOut(resources)
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
@@ -429,11 +460,11 @@ class ProjectStore {
             const resourceEntry = this.manifestData.resources[resourceID]
             if( !error ) {
                 // remove remote resources from project file and manifest, update all windows 
-                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })   
+                this.projectArchiveWorker.postMessage({ messageType: 'remove-file', fileID: resourceID })
                 resourceEntry.local = false
                 resourceEntry.lastAction = { action_type: 'check_in', user: { id: userID } }
                 this.fairCopyApplication.sendToAllWindows('resourceEntryUpdated', resourceEntry )
-                delete this.manifestData.resources[resourceID]     
+                delete this.manifestData.resources[resourceID]
             }
             resourceEntries.push(resourceEntry)
         }

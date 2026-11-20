@@ -41,12 +41,20 @@ export default class PreviewWindow extends Component {
         this.setState({...this.state, resourceEntry, layers, layerID, surfaceID })
     }
 
+    onConfigSaved(e, updatedConfig) {
+        const config = JSON.parse(updatedConfig)
+        const { projectCSS } = config
+        updateStyleSheet(projectCSS)
+    }
+
     componentDidMount() {
         fairCopy.ipcRegisterCallback('updatePreview', this.onUpdate )
+        fairCopy.ipcRegisterCallback('configSaved', this.onConfigSaved)
     }
     
     componentWillUnmount() {
         fairCopy.ipcRemoveListener('updatePreview', this.onUpdate )
+        fairCopy.ipcRemoveListener('configSaved', this.onConfigSaved)
     }
 
     renderSpinner() {

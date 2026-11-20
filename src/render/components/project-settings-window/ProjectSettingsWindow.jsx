@@ -4,8 +4,8 @@ import { Button, Typography, Tabs, Tab } from '@material-ui/core'
 import GeneralSettings from './GeneralSettings'
 import SchemaEditor from './SchemaEditor'
 import EditorSettings from './EditorSettings'
-import PreviewCSSEditor from './PreviewCSSEditor'
-import { canConfigAdmin } from '../../model/permissions'
+import PublishingSettings from './PublishingSettings'
+import { canConfigAdmin, isAdmin } from '../../model/permissions'
 import { getConfigStatus } from '../../model/faircopy-config'
 import { inlineRingSpinner } from '../common/ring-spinner'
 import { logout } from '../../model/cloud-api/auth'
@@ -26,7 +26,27 @@ export default class ProjectSettingsWindow extends Component {
             fairCopyConfig,
             projectInfo,
             selectedPage: 'general'
-        }	
+        }
+    }
+
+    componentDidMount() {
+        fairCopy.ipcRegisterCallback("updateProjectInfo", this.onUpdateProjectInfo.bind(this));
+    }
+    componentWillUnmount() {
+        fairCopy.ipcRemoveListener("updateProjectInfo", this.onUpdateProjectInfo.bind(this));
+    }
+
+    onUpdateProjectInfo(e, projectInfo) {
+        this.setState((prevState) => ({
+            ...prevState,
+            projectInfo,
+        }))
+    }
+
+    onSaveConfig(closeConfig) {
+        const { onSave } = this.props
+        const { fairCopyConfig, projectInfo } = this.state
+        onSave(fairCopyConfig, projectInfo, closeConfig)
     }
 
     renderSidebar() {
@@ -50,13 +70,18 @@ export default class ProjectSettingsWindow extends Component {
 
     renderContentArea() {
         const { checkingOut } = this.props
-        const { teiSchema, remote, configLastAction, userID, isLoggedIn } = this.props.fairCopyProject
+        const { teiSchema, remote, configLastAction, userID, isLoggedIn, permissions } = this.props.fairCopyProject
         const { fairCopyConfig, projectInfo, selectedPage } = this.state
         const lockStatus = getConfigStatus( configLastAction, userID )
         const canEdit = !remote || (!checkingOut && lockStatus === 'checked_out')
 
         const onUpdate = (nextConfig) => {
             this.setState({...this.state,fairCopyConfig: nextConfig})
+        }
+
+        const onSaveCss = (nextConfig) => {
+            // set the updated config on the state, then persist it without closing the config
+            this.setState({...this.state, fairCopyConfig: nextConfig}, () => this.onSaveConfig(false))
         }
 
         const onUpdateProject = (nextProjectInfo) => {
@@ -75,6 +100,10 @@ export default class ProjectSettingsWindow extends Component {
             logout(userID, serverURL)
             this.setState({...this.state})
             fairCopy.ipcSend('requestResourceView')
+        }
+
+        const onPublishCss = () => {
+            fairCopy.ipcSend('publishCss')
         }
 
         return (
@@ -100,26 +129,28 @@ export default class ProjectSettingsWindow extends Component {
                     readOnly={!canEdit}
                     onUpdateConfig={onUpdate}
                 ></EditorSettings> }
-                { selectedPage === 'previewCSS' && <PreviewCSSEditor
+                { selectedPage === 'previewCSS' && <PublishingSettings
+                    canPublish={isAdmin(permissions)}
+                    checkedOut={lockStatus === 'checked_out'}
+                    hasDraftCss={projectInfo?.hasDraftCss}
+                    hasPublishedCss={projectInfo?.hasPublishedCss}
                     fairCopyConfig={fairCopyConfig}
                     readOnly={!canEdit}
-                    onUpdateConfig={onUpdate}
-                ></PreviewCSSEditor>}
+                    publishReadOnly={remote && checkingOut}
+                    onUpdateConfig={onSaveCss}
+                    onPublishCss={onPublishCss}
+                ></PublishingSettings>}
             </div>
         )
     }
     
     renderActions() {
-        const { fairCopyProject, onClose, onSave, onCheckOut, onCheckIn, checkingOut, checkOutError } = this.props
+        const { fairCopyProject, onClose, onCheckOut, onCheckIn, checkingOut, checkOutError } = this.props
         const { permissions, configLastAction, userID, remote } = fairCopyProject
+        const { selectedPage } = this.state
         const canConfig = canConfigAdmin(permissions)
         const lockStatus = getConfigStatus( configLastAction, userID )
         const loggedIn = fairCopyProject.isLoggedIn()
-
-        const onSaveConfig = () => {
-            const { fairCopyConfig, projectInfo } = this.state
-            onSave(fairCopyConfig, projectInfo, false)
-        }
         
         const onLock = () => {
             if( lockStatus === 'checked_in' ) {
@@ -135,15 +166,21 @@ export default class ProjectSettingsWindow extends Component {
         const lockDisabled = lockStatus === 'checked_out_by_another' 
         const spinner = checkingOut ? inlineRingSpinner('dark') : null
 
+        // only show save/cancel on checked out or local-only config;
+        // hide it in the CSS window because the inner dialog's save function saves the whole config
+        const showSaveCancel = (!remote || (canConfig && lockStatus === 'checked_out')) && selectedPage !== 'previewCSS'
+
         return (
             <div>
                 { remote && loggedIn && canConfig && <div className="window-actions-left">
-                    <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} ><i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}</Button>
+                    <Button disabled={lockDisabled} className="action-button" variant="contained" onClick={onLock} >
+                        <i className={`${lockIcon} fa-sm lock-icon`}></i> {lockLabel} {spinner}
+                    </Button>
                     { checkOutError && <Typography className="error-message" >Error: {checkOutError}</Typography>}
                 </div> }
-                { !remote || (canConfig && lockStatus === 'checked_out') ? 
+                { showSaveCancel ? 
                     <div className="window-actions-right">
-                        <Button className="action-button" variant="contained" onClick={onSaveConfig} >Save</Button>
+                        <Button className="action-button" variant="contained" onClick={() => this.onSaveConfig(true)} >Save</Button>
                         <Button className="action-button" variant="contained" onClick={onClose}>Cancel</Button>                        
                     </div>            
                 :
@@ -174,9 +211,27 @@ export default class ProjectSettingsWindow extends Component {
 }
 
 function getLockIcon(lockStatus) {
-    return lockStatus === 'checked_in' ? 'fas fa-inbox-out' : lockStatus === 'checked_out' ? 'fas fa-inbox-in' : 'far fa-inbox-in'
+    switch (lockStatus) {
+        case 'checked_in':
+            return 'fa fa-cloud-arrow-down'
+        case 'checked_out':
+            return 'fa fa-cloud-arrow-up'
+        case 'checked_out_by_another':
+            return 'fa fa-lock'
+        default:
+            return ''
+    }
 }
 
 function getLockLabel(lockStatus) {
-    return lockStatus === 'checked_in' ? 'Check Out' : lockStatus === 'checked_out' ? 'Check In' : 'Checked Out'
+    switch (lockStatus) {
+        case 'checked_in':
+            return 'Check Out'
+        case 'checked_out':
+            return 'Check In'
+        case 'checked_out_by_another':
+            return 'Checked Out'
+        default:
+            return ''
+    }
 }

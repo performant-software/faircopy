@@ -29,10 +29,11 @@ class MainMenu {
         })
     }
 
-    openImport = () => {
+    openImport = (inDocument) => {
       return dialog.showOpenDialogSync( {
-        title: "Select text or xml files to import.",
-        properties: [ 'openFile', 'multiSelections' ]
+        title: `Select ${inDocument ? "text or " : ""}xml files to import.`,
+        properties: [ 'openFile', 'multiSelections' ],
+        filters: inDocument ? [] : [{ name: 'TEI XML files', extensions: ['xml'] }],
       })
     }
 

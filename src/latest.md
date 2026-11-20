@@ -2,6 +2,33 @@
 
 The release notes list the improvements and bug fixes included in each new version of the software.
 
+
+## Version 1.3.0
+
+This is a feature release that includes support for FairCopy Server and improvements to the UX around version control and managing TEI Documents.
+
+### Improvements
+
+* Support for Performant Studio SSO (#670)
+* Reconciliation API (#665)
+* Support for Automated Workflows (#674)
+* Added Revert changes button (#672)
+* Compatibility with FairCopy Server 
+* Allow paragraph like elements within line elements (#651)
+* Copy published link to clipboard (#659)
+* Check in All Documents Button
+* Improvements to TEI Document UX
+* Improvements to Version Control UX
+* Mac version now targets the Apple Chipset
+
+
+### Bug Fixes
+
+* Make zone fields read only when checked in (#655)
+* Fix issues related to protocol permissions (#657)
+* Copy zones correctly when copying surfaces
+* Add marks to the mark menu group when adding elements (#653)
+
 ## Version 1.2.1
 
 This is a maintenance release for February 2025.
