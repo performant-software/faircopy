@@ -106,17 +106,8 @@ export async function runAgent(userID, serverURL, projectID, authToken, fileCont
                 if (status === 'COMPLETED') {
                     const retrieveURL = `${serverURL}/api/agents/retrieve/${run_id}`
 
-                    try {
-                        const retrieveResp = await axios.get(retrieveURL, authConfig(authToken))
-
-                        const updatedContents = retrieveResp.data
-                        onSuccess(updatedContents)
-                        return
-
-                    } catch (error) {
-                        onFail(error)
-                    }
-
+                    const retrieveResp = await axios.get(retrieveURL, authConfig(authToken))
+                    return onSuccess(retrieveResp.data)
                 }
 
                 attempts++
@@ -124,10 +115,11 @@ export async function runAgent(userID, serverURL, projectID, authToken, fileCont
                     await new Promise(resolve => setTimeout(resolve, AGENT_POLL_INTERVAL)) // Wait before next attempt
                 }
             } catch (error) {
-                onFail(error)
+                return onFail(error)
             }
         }
+        return onFail('Automated workflow timed out.')
     } catch (error) {
-        onFail(error)
+        return onFail(error)
     }
 }

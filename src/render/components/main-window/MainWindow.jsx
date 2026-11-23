@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { debounce } from 'debounce'
+import { v4 as uuidv4 } from 'uuid'
 
 import ProjectSidebar from './ProjectSidebar'
 import AlertDialog from './dialogs/AlertDialog'
@@ -12,6 +13,8 @@ import AddImageDialog from './dialogs/AddImageDialog'
 import LoginDialog from './dialogs/LoginDialog'
 import PopupMenu from '../common/PopupMenu'
 import TEIDocument from '../../model/TEIDocument'
+import { mapResource } from '../../model/id-map'
+import { serializeText } from '../../model/xml'
 import FacsEditor from './facs-editor/FacsEditor'
 import SnackAlert from '../common/SnackAlert'
 import EditSurfaceInfoDialog from './dialogs/EditSurfaceInfoDialog'
@@ -57,6 +60,7 @@ export default class MainWindow extends Component {
       nameFilter: null,
       rowsPerPage: initialRowsPerPage,
     }
+    this.agentRuns = {}
     this.state = {
       selectedResource: null,
       openResources: {},
@@ -127,34 +131,43 @@ export default class MainWindow extends Component {
       abandonedLocalResources: [],
       awaitingCheckIn: 0,
       checkInPendingIDs: new Set(),
-      runningAgent: false,
+      agentPendingIDs: new Set(),
+      agentNotifications: [],
     }
   }
 
   onResourceOpened = (event, resourceData) => {
     const { fairCopyProject } = this.props
-    const { openResources, requestedResources } = this.state
+    const { requestedResources, agentPendingIDs } = this.state
     const { resourceEntry, parentEntry, resource } = resourceData
 
     // if this is a resource we asked for, then open it.
     // (resources can also be asked for by FacsDocument, maybe others in future)
     if (requestedResources.includes(resourceEntry.id)) {
       const nextRequestedResources = requestedResources.filter(
-        (r) => r === resourceEntry.id
+        (r) => r !== resourceEntry.id
       )
-      const doc = fairCopyProject.onResourceOpened(
-        resourceEntry,
-        parentEntry,
-        resource
-      )
+      if (agentPendingIDs.has(resourceEntry.id)) {
+        this.setState((prevState) => ({
+          requestedResources: prevState.requestedResources.filter((id) => id !== resourceEntry.id),
+        }))
+        try {
+          if (!resource) throw new Error('Resource contents could not be read.')
+          const doc = new TEIDocument(resourceEntry, parentEntry, fairCopyProject)
+          doc.load(resource)
+          this.agentRuns[resourceEntry.id].doc = doc
+          this.startAgent(doc)
+        } catch (error) {
+          this.onAgentFailed(event, { docID: resourceEntry.id, error: error.message })
+        }
+        return
+      }
+      const doc = fairCopyProject.onResourceOpened(resourceEntry, parentEntry, resource)
       if (doc) {
-        const nextOpenResources = { ...openResources }
-        nextOpenResources[resourceEntry.id] = doc
-        this.setState({
-          ...this.state,
-          openResources: nextOpenResources,
-          requestedResources: nextRequestedResources,
-        })
+        this.setState((prevState) => ({
+          openResources: { ...prevState.openResources, [resourceEntry.id]: doc },
+          requestedResources: prevState.requestedResources.filter((id) => id !== resourceEntry.id),
+        }))
       } else {
         this.setState({
           ...this.state,
@@ -181,10 +194,11 @@ export default class MainWindow extends Component {
   }
 
   setAllCheckmarks = (checked, stateUpdate = true) => {
-    const { resourceCheckmarks, resourceIndex } = this.state
+    const { resourceCheckmarks, resourceIndex, agentPendingIDs, checkInPendingIDs } = this.state
     const nextCheckmarks = { ...resourceCheckmarks }
     for (const resourceEntry of resourceIndex) {
-      if (resourceEntry.type !== 'header') {
+      if (resourceEntry.type !== 'header' && (!checked || (!agentPendingIDs.has(resourceEntry.id) &&
+          !checkInPendingIDs.has(resourceEntry.id) && !resourceEntry.status?.is_processing))) {
         nextCheckmarks[resourceEntry.id] = checked ? resourceEntry : null
       }
     }
@@ -418,6 +432,7 @@ export default class MainWindow extends Component {
     fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults)
     fairCopy.ipcRegisterCallback('runAgentResult', this.onRunAgentResults)
     fairCopy.ipcRegisterCallback('runAgentFailed', this.onAgentFailed)
+    fairCopy.ipcRegisterCallback('agentSaveResult', this.onAgentSaveResult)
   }
 
   componentWillUnmount() {
@@ -453,6 +468,7 @@ export default class MainWindow extends Component {
     fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults)
     fairCopy.ipcRemoveListener('runAgentResult', this.onRunAgentResults)
     fairCopy.ipcRemoveListener('runAgentFailed', this.onAgentFailed)
+    fairCopy.ipcRemoveListener('agentSaveResult', this.onAgentSaveResult)
   }
 
   refreshWindow() {
@@ -467,7 +483,12 @@ export default class MainWindow extends Component {
   }
 
   requestExitApp = () => {
-    const { openResources } = this.state
+    const { openResources, agentPendingIDs } = this.state
+    if (agentPendingIDs.size > 0) {
+      fairCopy.ipcSend('cancelCloseProject')
+      this.onAlertMessage('Wait for the automated workflow to finish before closing the project.')
+      return
+    }
     const resourceIDs = Object.keys(openResources)
     if (resourceIDs.length > 0) {
       this.closeResources(resourceIDs, true)
@@ -546,12 +567,12 @@ export default class MainWindow extends Component {
       openResources,
       selectedResource,
       requestedResources,
-      resourceIndex,
       checkInPendingIDs,
+      agentPendingIDs,
     } = this.state
 
-    // resources that are mid check-in can't be opened
-    resourceIDs = resourceIDs.filter((id) => !checkInPendingIDs.has(id))
+    // Resources being checked in or processed by an agent can't be opened.
+    resourceIDs = resourceIDs.filter((id) => !checkInPendingIDs.has(id) && !agentPendingIDs.has(id))
     if (resourceIDs.length === 0) return
 
     let nextSelection = resourceIDs[0]
@@ -600,7 +621,12 @@ export default class MainWindow extends Component {
 
   closeResources = (resourceIDs, exitOnClose = false, promptSave = true) => {
     const { fairCopyProject } = this.props
-    const { openResources, selectedResource, resourceBrowserOpen } = this.state
+    const { openResources, selectedResource, resourceBrowserOpen, agentPendingIDs } = this.state
+
+    if (resourceIDs.some((id) => agentPendingIDs.has(id))) {
+      this.onAlertMessage('Wait for the automated workflow to finish before closing the resource.')
+      return
+    }
 
     if (promptSave) {
       for (const resourceID of resourceIDs) {
@@ -759,23 +785,85 @@ export default class MainWindow extends Component {
 
   onRunAgentResults = (e, obj) => {
     const { xml, docID } = obj
-    const { openResources } = this.state
+    const run = this.agentRuns[docID]
+    try {
+      if (!run?.doc || typeof xml !== 'string' || !xml.trim()) {
+        throw new Error('The workflow did not return resource markup.')
+      }
+      const parsed = new DOMParser().parseFromString(xml, 'text/xml')
+      if (parsed.querySelector('parsererror') || !parsed.getElementsByTagName(run.doc.resourceType)[0]) {
+        throw new Error('The workflow returned invalid resource markup.')
+      }
+      const { resourceEntry, parentEntry, fairCopyProject } = run.doc
+      const result = new TEIDocument(resourceEntry, parentEntry, fairCopyProject)
+      result.load(xml)
+      const content = serializeText(result.initialState.doc, result, result.getTEISchema())
+      const resourceMap = mapResource(resourceEntry, result.initialState.doc)
+      run.requestID = uuidv4()
+      run.content = content
+      fairCopy.ipcSend('saveAgentResource', run.requestID, docID, content, resourceMap)
+    } catch (error) {
+      this.onAgentFailed(e, { docID, error: error.message })
+    }
+  }
 
-    const resource = openResources[docID]
+  onAgentSaveResult = (e, obj) => {
+    const { resourceID, requestID, error } = obj
+    const run = this.agentRuns[resourceID]
+    if (!run || run.requestID !== requestID) {
+      console.error(`Unexpected automated workflow save result: ${requestID}`)
+      return
+    }
+    const resource = this.state.openResources[resourceID]
+    if (error) {
+      let updateError = ''
+      if (resource) {
+        try {
+          resource.replaceDocument(run.content)
+          resource.gutterMarkCacheDirty = true
+        } catch (editorError) {
+          updateError = ` The open editor could not be refreshed: ${editorError.message}.`
+        }
+      }
+      this.onAgentFailed(e, { docID: resourceID, error: `Could not save result: ${error}. The result remains in project memory and may be written by a later save.${updateError}` })
+      return
+    }
 
-    resource.replaceDocument(xml)
-    setTimeout(() => {
-      resource.gutterMarkCacheDirty = true
-      resource.refreshView()
-    }, 60)
-
-    this.setState({ ...this.state, runningAgent: false })
+    if (resource) {
+      try {
+        resource.replaceDocument(run.content)
+        resource.gutterMarkCacheDirty = true
+        resource.changedSinceLastSave = false
+      } catch (updateError) {
+        this.props.fairCopyProject.onResourceClosed(resource)
+        this.setState((prevState) => {
+          const openResources = { ...prevState.openResources }
+          delete openResources[resourceID]
+          return { openResources }
+        })
+        this.finishAgent(resourceID, `Workflow saved "${run.name}", but its open editor could not be refreshed: ${updateError.message}. Reopen the resource.`, 'error')
+        return
+      }
+    }
+    this.finishAgent(resourceID, `Automated workflow completed and saved "${run.name}".`, 'success')
   }
 
   onAgentFailed = (e, obj) => {
-    const { error } = obj
-    this.onAlertMessage(`Named Entity Recognition failed! error: ${error}`)
-    this.setState({ ...this.state, runningAgent: false })
+    const { error, docID } = obj
+    const name = this.agentRuns[docID]?.name || docID
+    this.finishAgent(docID, `Automated workflow failed for "${name}": ${error}`, 'error')
+  }
+
+  finishAgent = (docID, message, severity) => {
+    delete this.agentRuns[docID]
+    this.setState((prevState) => {
+      const agentPendingIDs = new Set(prevState.agentPendingIDs)
+      agentPendingIDs.delete(docID)
+      return {
+        agentPendingIDs,
+        agentNotifications: [...prevState.agentNotifications, { id: uuidv4(), message, severity }],
+      }
+    })
   }
 
   onAddImages = () => {
@@ -783,7 +871,7 @@ export default class MainWindow extends Component {
   }
 
   onAlertMessage = (message) => {
-    this.setState({ ...this.state, alertMessage: message, ...closePopUpState })
+    this.setState({ alertMessage: message, ...closePopUpState })
   }
 
   onEditSurfaceInfo = (surfaceInfo) => {
@@ -822,6 +910,11 @@ export default class MainWindow extends Component {
   }
 
   onResourceAction = (actionID, resourceIDs, resourceEntries) => {
+    if (['check-in', 'delete', 'move', 'revert', 'abandon'].includes(actionID) &&
+        this.hasAgentInResources(resourceIDs)) {
+      this.onAlertMessage('Wait for the automated workflow to finish before changing these resources.')
+      return
+    }
     // all actions that use nextState clear the checkmarks
     const checkmarkState = this.setAllCheckmarks(false, false)
     const nextState = { ...this.state, ...checkmarkState }
@@ -836,15 +929,9 @@ export default class MainWindow extends Component {
       case 'check-in':
         {
           // don't check in if there are unsaved files being committed
-          const { openResources } = this.state
-          for (const resourceID of resourceIDs) {
-            const openResource = openResources[resourceID]
-            if (openResource && openResource.changedSinceLastSave) {
-              this.onAlertMessage(
-                'You must save all files that are being checked in.'
-              )
-              return
-            }
+          if (this.hasUnsavedResources(resourceIDs)) {
+            this.onAlertMessage('You must save all files that are being checked in.')
+            return
           }
           this.setState({
             ...nextState,
@@ -1051,15 +1138,13 @@ export default class MainWindow extends Component {
     )
     const resourceIDs = teiDocs.map(([id, resource]) => id)
     // don't check in if there are unsaved files being committed
-    const { openResources } = this.state
-    for (const resourceID of resourceIDs) {
-      const openResource = openResources[resourceID]
-      if (openResource && openResource.changedSinceLastSave) {
-        this.onAlertMessage(
-          'You must save all files that are being checked in.'
-        )
-        return
-      }
+    if (this.hasAgentInResources(resourceIDs)) {
+      this.onAlertMessage('Wait for the automated workflow to finish before checking in these documents.')
+      return
+    }
+    if (this.hasUnsavedResources(resourceIDs)) {
+      this.onAlertMessage('You must save all files that are being checked in.')
+      return
     }
     this.setState((prevState) => ({
       ...prevState,
@@ -1120,8 +1205,45 @@ export default class MainWindow extends Component {
     resetSearch()
   }
 
-  onRunAgent = () => {
-    this.setState({ ...this.state, runningAgent: true })
+  hasAgentInResources = (resourceIDs) => {
+    const { agentPendingIDs, localResources } = this.state
+    return [...agentPendingIDs].some((id) =>
+      resourceIDs.includes(id) || resourceIDs.includes(localResources[id]?.parentResource)
+    )
+  }
+
+  hasUnsavedResources = (resourceIDs) => {
+    return Object.values(this.state.openResources).some((resource) =>
+      resource.changedSinceLastSave &&
+      (resourceIDs.includes(resource.resourceID) || resourceIDs.includes(resource.resourceEntry.parentResource))
+    )
+  }
+
+  onRunAgent = (resource) => {
+    const { fairCopyProject } = this.props
+    const { openResources, requestedResources, agentPendingIDs, checkInPendingIDs } = this.state
+    const doc = openResources[resource.id]
+    if (agentPendingIDs.has(resource.id) || checkInPendingIDs.has(resource.id) ||
+        requestedResources.includes(resource.id) || doc?.changedSinceLastSave) return
+
+    this.agentRuns[resource.id] = { doc, name: resource.name || resource.localID || resource.id }
+    this.setState((prevState) => ({
+      agentPendingIDs: new Set(prevState.agentPendingIDs).add(resource.id),
+      requestedResources: doc ? prevState.requestedResources : [...prevState.requestedResources, resource.id],
+      resourceCheckmarks: { ...prevState.resourceCheckmarks, [resource.id]: null },
+      allResourcesCheckmarked: false,
+    }), () => {
+      if (doc) this.startAgent(doc)
+      else fairCopyProject.openResource(resource.id)
+    })
+  }
+
+  startAgent = (doc) => {
+    try {
+      doc.runAgent()
+    } catch (error) {
+      this.onAgentFailed(null, { docID: doc.resourceID, error: error.message })
+    }
   }
 
   updateSearchFilter = (elementName, attrQs, active, open) => {
@@ -1194,7 +1316,6 @@ export default class MainWindow extends Component {
       selectedResource,
       leftPaneWidth,
       resourceViews,
-      runningAgent,
     } = this.state
     const { fairCopyProject, onProjectSettings } = this.props
     const { currentView } = resourceViews
@@ -1202,7 +1323,7 @@ export default class MainWindow extends Component {
     const editors = []
     let visible = false
     for (const resource of Object.values(openResources)) {
-      const hidden = selectedResource !== resource.resourceID || runningAgent
+      const hidden = selectedResource !== resource.resourceID
       if (!hidden) visible = true
       const key = `editor-${resource.resourceID}`
       const { resourceEntry, parentEntry } = resource
@@ -1264,7 +1385,6 @@ export default class MainWindow extends Component {
             onToggleSearchBar={onToggleSearchBar}
             onResetSearch={this.onResetSearch}
             onSave={onSave}
-            onRunAgent={this.onRunAgent}
             leftPaneWidth={leftPaneWidth}
             currentView={currentView}
           ></TEIEditor>
@@ -1311,7 +1431,10 @@ export default class MainWindow extends Component {
       resourceCheckmarks,
       migratingResources,
       publishingResources,
-      runningAgent,
+      agentPendingIDs,
+      openResources,
+      requestedResources,
+      localResources,
     } = this.state
     const { currentView } = resourceViews
     const resourceView = resourceViews[currentView]
@@ -1343,6 +1466,11 @@ export default class MainWindow extends Component {
               resourceView={resourceView}
               resourceIndex={resourceIndex}
               checkInPendingIDs={checkInPendingIDs}
+              agentPendingIDs={agentPendingIDs}
+              openResources={openResources}
+              requestedResources={requestedResources}
+              localResources={localResources}
+              onRunAgent={this.onRunAgent}
               fairCopyProject={fairCopyProject}
               panelWidth={rightPaneWidth}
               publishingResources={publishingResources}
@@ -1403,6 +1531,7 @@ export default class MainWindow extends Component {
       selectedResource,
       localResources,
       resourceViews,
+      agentNotifications,
     } = this.state
 
     const { fairCopyProject, appConfig } = this.props
@@ -1424,6 +1553,7 @@ export default class MainWindow extends Component {
     } = this.state
     const { popupMenuOptions, popupMenuAnchorEl, popupMenuPlacement } =
       this.state
+    const agentNotification = alertMessage === null ? agentNotifications[0] : null
 
     const onSaveResource = (name, localID, type) => {
       if (resourceEntry) {
@@ -1646,10 +1776,19 @@ export default class MainWindow extends Component {
           ></AbandonedResourcesDialog>
         )}
         <SnackAlert
-          open={alertMessage !== null}
-          message={alertMessage}
+          key={agentNotification?.id || 'alert'}
+          open={alertMessage !== null || !!agentNotification}
+          message={agentNotification ? agentNotification.message : alertMessage}
+          severity={agentNotification?.severity}
+          autoHideDuration={agentNotification?.severity === 'success' ? 6000 : null}
           handleClose={() => {
-            this.setState({ ...this.state, alertMessage: null })
+            if (agentNotification) {
+              this.setState((prevState) => ({
+                agentNotifications: prevState.agentNotifications.filter((item) => item.id !== agentNotification.id),
+              }))
+            } else {
+              this.setState({ alertMessage: null })
+            }
           }}
         ></SnackAlert>
       </div>

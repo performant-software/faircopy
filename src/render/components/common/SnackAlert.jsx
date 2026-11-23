@@ -4,16 +4,17 @@ import { Alert } from '@material-ui/lab';
 
 export default class SnackAlert extends Component {
     render() {
-        const { open, handleClose, message } = this.props
+        const { open, handleClose, message, severity = 'warning', autoHideDuration = null } = this.props
 
         return (
             <Snackbar 
                 open={open} 
                 role="alert" 
                 onClose={handleClose}
+                autoHideDuration={autoHideDuration}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
-                <Alert onClose={handleClose} severity="warning">
+                <Alert onClose={handleClose} severity={severity}>
                     { message }
                 </Alert>
             </Snackbar>

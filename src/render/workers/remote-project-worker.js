@@ -84,7 +84,7 @@ function onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID
         postMessage({ messageType: 'agent-updated', xml: data, docID })
     },
         (error) => {
-            postMessage({ messageType: 'agent-failed', error })
+            postMessage({ messageType: 'agent-failed', error: String(error), docID })
         })
 }
 function onGetReconciliationManifest(endpoint, requestID, postMessage) {

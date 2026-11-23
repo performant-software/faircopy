@@ -367,14 +367,14 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc, checkInPendingIDs } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc, checkInPendingIDs, agentPendingIDs, openResources, requestedResources, localResources, onRunAgent } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
     const atRemoteRoot = remoteProject && currentView !== 'home' && !teiDoc
 
-    // resource is awaiting check in or being processed on the server
+    // resource is awaiting check in or being processed
     const isProcessing = (resource) => {
-      return !!checkInPendingIDs?.has(resource.id) || !!resource.status?.is_processing
+      return !!checkInPendingIDs?.has(resource.id) || !!agentPendingIDs?.has(resource.id) || !!resource.status?.is_processing
     }
 
     const onOpen = (resourceID) => {
@@ -435,6 +435,10 @@ export default class ResourceBrowser extends Component {
       const maxNameLength = Math.floor(idealNameLength * widthFactor)
       const displayName = ellipsis( name, maxNameLength )
       const displayLocalID = ellipsis( localID, maxNameLength )
+      const showAgent = teiDoc && ['text', 'sourceDoc'].includes(type)
+      const canRunAgent = remoteProject && fairCopyProject.isLoggedIn() && !!localResources[id] && editable && !deleted &&
+        !processing && !resourceView.loading && !requestedResources.includes(id) &&
+        !openResources[id]?.changedSinceLastSave
       
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
@@ -489,6 +493,22 @@ export default class ResourceBrowser extends Component {
             </>
           }
           <TableCell {...cellProps} >
+            {showAgent && (
+              <Tooltip title="Run Automated Workflow">
+                <span>
+                  <IconButton
+                    aria-label="Run Automated Workflow"
+                    disabled={!canRunAgent}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onRunAgent(resource)
+                    }}
+                  >
+                    <i className="fas fa-robot fa-sm"></i>
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )}
             <IconButton
               aria-label="Actions"
               disabled={resourceView.loading || processing}

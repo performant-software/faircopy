@@ -19,6 +19,7 @@ class ProjectStore {
     constructor(fairCopyApplication) {
         this.fairCopyApplication = fairCopyApplication
         this.importInProgress = false
+        this.pendingAgentSaves = new Map()
         this.editionCrafterServer = new EditionCrafterServer()
     }
 
@@ -48,6 +49,22 @@ class ProjectStore {
                             this.fairCopyApplication.sendToMainWindow('abandonedResourcesData', resources)
                         }
                         // can do other things with resource data here; each will be an object { resourceID, content }
+                    }
+                    break
+                case 'agent-save-result':
+                    {
+                        const { requestID, error } = msg
+                        const pending = this.pendingAgentSaves.get(requestID)
+                        if (!pending) {
+                            log.error(`Unexpected agent save result: ${requestID}`)
+                            break
+                        }
+                        this.pendingAgentSaves.delete(requestID)
+                        const { resourceID, resourceContent } = pending
+                        if (!error) {
+                            this.fairCopyApplication.sendToAllWindows('resourceContentUpdated', { resourceID, messageID: requestID, resourceContent })
+                        }
+                        this.fairCopyApplication.sendToMainWindow('agentSaveResult', { resourceID, requestID, error })
                     }
                     break
                 case 'index-resource':
@@ -244,12 +261,13 @@ class ProjectStore {
         if( this.searchIndex ) this.searchIndex.close()
     }
 
-    saveResource(resourceEntry, resourceData, idMap) {
+    saveResource(resourceEntry, resourceData, idMap, requestID = null) {
         const { id, type } = resourceEntry
         this.projectArchiveWorker.postMessage({ messageType: 'write-file', fileID: idMapEntryName, data: idMap })
         this.projectArchiveWorker.postMessage({ messageType: 'write-resource', resourceID: id, data: resourceData })
         if( this.searchIndex ) this.searchIndex.indexResource(id, type, resourceData )
-        this.save()
+        if (requestID) this.pendingAgentSaves.set(requestID, { resourceID: id, resourceContent: resourceData })
+        this.save(requestID)
     }
     
     requestEditionCrafterData( url ) {
@@ -359,13 +377,13 @@ class ProjectStore {
         }
     }
 
-    save() {
+    save(requestID = null) {
         // if there was a migration that hasn't been saved yet, save it now
         if( this.migratedConfig ) {
-            this.saveFairCopyConfig( this.migratedConfig ) 
-        } else {
-            this.projectArchiveWorker.postMessage({ messageType: 'save' })
+            this.saveFairCopyConfig( this.migratedConfig )
+            if (!requestID) return
         }
+        this.projectArchiveWorker.postMessage({ messageType: 'save', requestID })
     }
 
     exportFairCopyConfig( exportPath, fairCopyConfigJSONCompact ) {

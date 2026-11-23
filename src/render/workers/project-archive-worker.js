@@ -208,8 +208,15 @@ function saveArchive(startTime, zipPath, zip, callback) {
 
     // write to a temp file first so that zip won't get 
     // corrupted if we terminate unexpectedly
-    zip
-        .generateNodeStream({
+    let finished = false
+    const complete = (error) => {
+        if (finished) return
+        finished = true
+        callback(error)
+    }
+
+    try {
+        const source = zip.generateNodeStream({
             type:'nodebuffer',
             compression: "DEFLATE",
             compressionOptions: {
@@ -217,14 +224,34 @@ function saveArchive(startTime, zipPath, zip, callback) {
             },
             streamFiles:true
         })
-        .pipe(fs.createWriteStream(zipFile))
-        .on('finish', () => {
-            fs.copyFileSync( zipFile, projectFilePath )
-            fs.unlinkSync( zipFile )
+        const destination = fs.createWriteStream(zipFile)
+        const fail = (error) => {
+            source.destroy()
+            destination.destroy()
+            complete(error)
+        }
+        source.on('error', fail)
+        destination.on('error', fail)
+        destination.on('finish', () => {
+            try {
+                fs.copyFileSync(zipFile, projectFilePath)
+            } catch (error) {
+                complete(error)
+                return
+            }
+            try {
+                fs.unlinkSync(zipFile)
+            } catch (error) {
+                console.error(`Unable to remove temporary archive ${zipFile}:`, error)
+            }
             const finishTime = Date.now()
-            console.info(`${zipFile} written in ${finishTime-startTime}ms`);
-            callback()
-        });
+            console.info(`${zipFile} written in ${finishTime-startTime}ms`)
+            complete(null)
+        })
+        source.pipe(destination)
+    } catch (error) {
+        complete(error)
+    }
 }
 
 function exportResource(resourceData, path) {       
@@ -288,11 +315,16 @@ function postError(errorMessage,postMessage) {
     postMessage({ messageType: 'error', errorMessage })
 }
 
-const save = () => {
+const save = (postMessage, requestID) => {
     // process write operations in order and one at a time.
     const processNextJob = (job) => {
-        const {startTime, zipPath, zip } = job
-        saveArchive(startTime, zipPath, zip, () => {  
+        const {startTime, zipPath, zip, requestID } = job
+        saveArchive(startTime, zipPath, zip, (error) => {
+            if (requestID) {
+                postMessage({ messageType: 'agent-save-result', requestID, error: error ? error.message : null })
+            } else if (error) {
+                console.error('Unable to save project archive:', error)
+            }
             projectArchiveState.jobQueue.shift()
             const job = projectArchiveState.jobQueue[0]
             if( job ) processNextJob(job)
@@ -301,7 +333,7 @@ const save = () => {
 
     const { zipPath, zip } = projectArchiveState
     const startTime = Date.now()
-    const job = { startTime, zipPath, zip }
+    const job = { startTime, zipPath, zip, requestID }
     console.log(`job starting ${startTime}`)
 
     if( projectArchiveState.jobQueue.length === 0 ) {
@@ -351,6 +383,9 @@ export function projectArchive( msg, workerMethods, workerData ) {
                 const { resourceID, xmlID } = msg
                 readUTF8(resourceID, zip).then(resource => {
                     postMessage({ messageType: 'resource-data', resourceID, xmlID, resource })
+                }).catch(error => {
+                    console.error(`Unable to read resource ${resourceID}:`, error)
+                    postMessage({ messageType: 'resource-data', resourceID, xmlID, resource: null })
                 })
             }
             break
@@ -447,7 +482,7 @@ export function projectArchive( msg, workerMethods, workerData ) {
             }    
             break              
         case 'save':
-            save()
+            save(postMessage, msg.requestID)
             break
         case 'close':
             projectArchiveState.open = false
