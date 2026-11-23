@@ -62,10 +62,11 @@
 @import "KeyBindingsTable.css";
 @import "KeyBindingDialog.css";
 @import "PreviewWindow.css";
-@import "PreviewCSSEditor.css";
+@import "PublishingSettings.css";
 @import "EditorSettings.css";
 @import "ColorCodingTable.css";
 @import "ColorCodingDialog.css";
 @import "SplitPaneView.css";
 @import "MainWindow.css";
 @import "ValidationReport.css";
+@import "AbandonedResourcesInDialog.css";

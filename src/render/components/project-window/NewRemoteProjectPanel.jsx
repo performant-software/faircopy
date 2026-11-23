@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import LoginPanel from './LoginPanel'
 import SelectRemoteProjectPanel from './SelectRemoteProjectPanel'
 import ChooseLocalFilePanel from './ChooseLocalFilePanel'
-
 import { getProjects } from '../../model/cloud-api/projects'
 
 const fairCopy = window.fairCopy
@@ -16,6 +15,7 @@ export default class NewRemoteProjectPanel extends Component {
             step: 0,
             userID: null,
             serverURL: null,
+            ssoURL: null,
             projects: null,
             project: null
         }
@@ -27,7 +27,7 @@ export default class NewRemoteProjectPanel extends Component {
     }
 
     onSave = (filePath) => {
-        const { project, userID, serverURL } = this.state
+        const { project, userID, serverURL, ssoURL } = this.state
         const { projectID, name, description, permissions } = project
         const projectInfo = { 
             projectID,
@@ -35,6 +35,7 @@ export default class NewRemoteProjectPanel extends Component {
             description,
             userID,
             serverURL,
+            ssoURL,
             filePath,
             permissions,
             remote: true
@@ -46,8 +47,8 @@ export default class NewRemoteProjectPanel extends Component {
         const { onClose } = this.props
         const { step, projects, project } = this.state
 
-        const onLoggedIn = (userID, serverURL, authToken) => {
-            this.setState({...this.state, serverURL, userID, step: 1})
+        const onLoggedIn = (userID, serverURL, ssoURL, authToken) => {
+            this.setState({...this.state, serverURL, ssoURL, userID, step: 1})
             getProjects( userID, serverURL, authToken, (projects)=> {
                 this.setState({...this.state, projects})
             }, (errorMessage) => {

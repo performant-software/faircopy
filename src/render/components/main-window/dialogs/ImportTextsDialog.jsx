@@ -98,12 +98,12 @@ export default class ImportTextsDialog extends Component {
         )
     }
 
-    render() {      
-        const { onClose } = this.props
+    render() {
+        const { onClose, parentResourceID } = this.props
     
         const onClickSelect = () => {
             const { lineBreakParsing, learnStructure, resourceType, replaceResource } = this.state
-            fairCopy.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType,replaceResource})
+            fairCopy.ipcSend('requestImport', {lineBreakParsing,learnStructure,resourceType,replaceResource,parentResourceID})
             this.setState(this.initialState)
             onClose()
         }
@@ -121,12 +121,22 @@ export default class ImportTextsDialog extends Component {
                 aria-labelledby="import-texts-title"
                 aria-describedby="import-texts-description"
             >
-                <DialogTitle>Import Texts</DialogTitle>
+                <DialogTitle>{parentResourceID ? "Import Texts" : "Import TEI Documents"}</DialogTitle>
                 <DialogContent>
-                    <Typography>You can select plain text files (UTF-8 encoded) or XML files to import.</Typography>
-                    <Typography>XML files must contain one or more text or facsimile elements. XML elements that are not supported by FairCopy will be ignored, but their contents will be included.</Typography>
+                    <Typography>
+                        {parentResourceID
+                            ? "You can select plain text files (UTF-8 encoded) or XML files to import."
+                            : "Select TEI XML files to import."
+                        }
+                    </Typography>
+                    {parentResourceID
+                        ? <Typography>XML files must contain one or more text or facsimile elements.</Typography>
+                        : <Typography>XML files must contain a TEI header element, as well as one or more text or facsimile elements.</Typography>}
+                    <Typography>
+                        XML elements that are not supported by FairCopy will be ignored, but their contents will be included.
+                    </Typography>
                     <Typography component='h2' variant='h6'>Import Options</Typography>
-                    { this.renderLineBreakOptions() }
+                    { parentResourceID && this.renderLineBreakOptions() }
                     { this.renderLearnStructure() }
                     { this.renderReplaceResource() }
                 </DialogContent>

@@ -85,10 +85,12 @@ export default class FairCopyProject {
         this.description = fairCopyManifest.description
         this.remote = fairCopyManifest.remote
         this.serverURL = fairCopyManifest.serverURL
+        this.ssoURL = fairCopyManifest.ssoURL
         this.userID = fairCopyManifest.userID
         this.projectID = fairCopyManifest.projectID
         this.permissions = fairCopyManifest.permissions
         this.configLastAction = fairCopyManifest.configLastAction
+        this.orphanedResources = this.getOrphanedResources(fairCopyManifest.resources)
     }
     
     updateResource( resourceEntry ) {
@@ -135,6 +137,7 @@ export default class FairCopyProject {
         } else {
             throw new Error("Attempted to create unknown document type.")
         }
+        return resourceEntry
     }
 
     removeResources( resourceIDs ) {
@@ -236,6 +239,8 @@ export default class FairCopyProject {
         return { 
             name: this.projectName, 
             description: this.description, 
+            hasDraftCss: this.hasDraftCss,
+            hasPublishedCss: this.hasPublishedCss,
             projectFilePath: this.projectFilePath,
             userID: this.userID,
             serverURL: this.serverURL,
@@ -248,6 +253,8 @@ export default class FairCopyProject {
         this.projectName = projectInfo.name
         this.description = projectInfo.description
         this.permissions = projectInfo.permissions
+        this.hasDraftCss = projectInfo.hasDraftCss
+        this.hasPublishedCss = projectInfo.hasPublishedCss
 
         // if this project is in the recent projects list, update its info in localStorage
         let projects = localStorage.getItem('recentProjects');
@@ -281,6 +288,82 @@ export default class FairCopyProject {
     isLoggedIn = () => {
         if( !this.remote ) return false
         return isLoggedIn( this.userID, this.serverURL )
+    }
+
+    getOrphanedResources = (resources) => {
+        // v1.2.1 migration: check for orphaned resources
+        return Object.values(resources).filter((r) => r.type !== 'teidoc' && !r.parentResource)    
+    }
+
+    startMigratingResource = (resourceID) => {
+        fairCopy.ipcSend('startMigratingResource', resourceID)
+    }
+
+    migrateOrphanedResources = () => {
+        // v1.2.1 migration: move orphaned resources into new TEI document
+        this.orphanedResources.forEach((resourceEntry) => {
+            // queue each for migration, enabling loading spinner
+            this.startMigratingResource(resourceEntry.id)
+        })
+        const docName = this.projectName
+        const existingIDs = Object.keys(this.idMap.idMap)
+        const localID = getUniqueResourceID('teidoc', existingIDs, docName)
+        const teidoc = this.newResource(docName, localID, 'teidoc', null)
+        this.orphanedResources.forEach((resourceEntry) => {
+            // move each into tei doc, ultimately disabling loading spinner
+            resourceEntry.parentResource = teidoc.id
+            this.updateResource(resourceEntry)
+        })
+        this.orphanedResources = []
+    }
+
+    copyPublishedLinkToClipboard = (teiDocument) => {
+        // example: http://localhost:3789/public/2/tei_documents/fa25_adriaenssens_j/iiif"
+        const publishedURL = `${this.serverURL}/public/${this.projectID}/tei_documents/${teiDocument.localID}/iiif`
+        navigator.clipboard.writeText(publishedURL)
+    }
+
+    duplicateDocuments = (localResources) => {
+        // duplicate resources and their children with new XML IDs and uuids
+        const teiDocs = localResources.filter((r) => r.type === 'teidoc')
+        teiDocs.forEach((parent) => {
+            // duplicate parent tei doc, with new guid and local id
+            const { id, localID, name } = parent
+            const existingIDs = Object.keys(this.idMap.idMap)
+            let newLocalID = getUniqueResourceID('teidoc', existingIDs, name)
+            const parentEntry = {
+                id: uuidv4(),
+                localID: newLocalID,
+                name, 
+                type: 'teidoc',
+                parentResource: null,
+                ...cloudInitialConfig
+            }
+            this.addResource(parentEntry, "", getBlankResourceMap(parentEntry.id, parentEntry.type))
+
+            // duplicate all of its children, assign to new parent
+            const children = localResources.filter((r) => r.parentResource === id)
+            const childLocalIDs = Object.keys(this.idMap.idMap[localID].ids)
+            children.forEach((child) => {
+                const { type: childType } = child
+                const newChildLocalID = getUniqueResourceID(childType, childLocalIDs, child.localID)
+                const childEntry = {
+                    id: uuidv4(),
+                    localID: newChildLocalID,
+                    name: child.name,
+                    type: childType,
+                    parentResource: parentEntry.id,
+                    ...cloudInitialConfig
+                }
+                this.addResource(childEntry, child.content, getBlankResourceMap(childEntry.id, childEntry.type))
+            })
+        })
+    }
+
+    forceDeleteResources = (localResources) => {
+        // fully delete local resources, even in a remote project 
+        const resourceIDs = localResources.map((r) => r.id)
+        fairCopy.ipcSend('removeResources', resourceIDs, true)
     }
 }
 

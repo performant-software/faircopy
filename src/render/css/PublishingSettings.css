@@ -1,0 +1,37 @@
+#PublishingSettings { 
+    margin: 40px 64px;
+    width: 900px;
+    min-width: 600px;
+    max-width: 900px;
+}
+
+#PublishingSettings #publishing-title {
+    margin-bottom: 24px;
+}
+
+#PublishingSettings .css-item,
+#PublishingSettings .css-item .css-item-title,
+#PublishingSettings .css-item .actions,
+#PublishingSettings .css-item .css-status {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+#PublishingSettings .css-item {
+    justify-content: space-between;
+    padding: 24px;
+}
+
+#PublishingSettings .css-item .css-item-title,
+#PublishingSettings .css-item .actions {
+    gap: 16px;
+}
+
+#PublishingSettings .css-item .css-status {
+    gap: 8px;
+}
+
+#PublishingSettings .button-wrapper {
+    cursor: pointer;
+}

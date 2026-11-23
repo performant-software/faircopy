@@ -1,24 +1,8 @@
-const { contextBridge, clipboard, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld(
     'fairCopy',
     {
-        readClipBoardHTML: () => {
-            return clipboard.readHTML()
-        },
-
-        readClipBoardText: () => {
-            return clipboard.readText()
-        },
-
-        copyToClipBoard: (content) => {
-            clipboard.writeText(content)
-        },
-
-        copyToClipBoardHTML: (content) => {
-            clipboard.writeHTML(content)
-        },
-
         ipcRegisterCallback: ( eventID, callback ) => {
             ipcRenderer.on(eventID,callback)
         },
@@ -36,8 +20,20 @@ contextBridge.exposeInMainWorld(
             ipcRenderer.send(eventID,...params)
         },
 
+        getSsoUrl: () => {
+            return ipcRenderer.invoke('get-sso-url')
+        },
+
         getPlatform: () => {
             return process.platform
+        },
+
+        startAuthServer: (serverUrl) => {
+            return ipcRenderer.invoke('start-auth-server', serverUrl)
+        },
+
+        stopAuthServer: () => {
+            return ipcRenderer.invoke('stop-auth-server')
         }
     }
 )

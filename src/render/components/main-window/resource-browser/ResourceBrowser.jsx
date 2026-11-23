@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Card, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, Paper, TablePagination, Tooltip, Checkbox, Typography, CardContent } from '@material-ui/core';
+import { Button, Card, Chip, InputAdornment, IconButton, TableContainer, TableSortLabel, Table, Input, TableHead, TableRow, TableCell, TableBody, TablePagination, Tooltip, Checkbox, Typography, CardContent, withStyles } from '@material-ui/core';
+import { Autorenew, Edit, MoreVert, Publish } from '@material-ui/icons';
 import TitleBar from '../TitleBar'
 import { debounce } from "debounce";
 
 import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../model/resource-icon';
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
-import { canCheckOut, canCreate, canDelete } from '../../../model/permissions'
+import { canAbandonOtherUsersResources, canAbandonOwnResource, canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
 import { ellipsis } from '../../../model/ellipsis'
 
 const idealNameLength = 35
 const idealPanelWidth = 1172
+const maxDocTitleLength = 64
+
+const fairCopy = window.fairCopy
 
 export default class ResourceBrowser extends Component {
 
@@ -26,77 +30,124 @@ export default class ResourceBrowser extends Component {
     }, 100)
 }
 
-  onOpenActionMenu = (anchorEl) => {
-    const { onOpenPopupMenu, fairCopyProject, currentView } = this.props
-    const { remote: remoteProject, permissions } = fairCopyProject
+  onOpenActionMenu = (anchorEl, resource) => {
+    const { currentView, fairCopyProject, onOpenPopupMenu, resourceCheckmarks, teiDoc } = this.props
+    const { permissions, remote: remoteProject, userID } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
-    const checkout = remoteProject ? canCheckOut(permissions) : true
     const del = remoteProject ? canDelete(permissions) : true
 
-    const remoteProjectOptions = !remoteProject || !loggedIn ? [] : [
-      {
-        id: 'check-in',
-        label: 'Check In',
-        action: this.createResourceAction('check-in')
-      },
-      {
-        id: 'check-out',
-        label: 'Check Out',
-        action: this.createResourceAction('check-out'),
-        disabled: !checkout
-      }
-    ]
-    
-    const menuOptions = [
-      {
-        id: 'open',
-        label: 'Open',
-        action: this.createResourceAction('open')
-      },
-      ...remoteProjectOptions,
-      {
-        id: 'export',
-        label: 'Export',
-        action: this.createResourceAction('export')
-      },
-      {
-        id: 'delete',
-        label: 'Delete',
-        action: this.createResourceAction('delete'),
-        disabled: !del
-      }
-    ]
+    // list of non-null selected items so we can do .some() or .every() on them
+    const resources = resource ? [resource] : Object.values(resourceCheckmarks).filter(Boolean);
+    const checkedOutByUser = resources.some(
+      (r) =>
+        r.lastAction?.action_type === 'check_out' &&
+        r.lastAction.user?.id === userID,
+    )
+    const someCheckedIn = resources.some((r) => r.lastAction?.action_type !== 'check_out')
+    const someDeleted = resources.some((r) => r.deleted)
+    const allDeleted = resources.every((r) => r.deleted)
+    const menuOptions = []
 
-    // move only works with local resources 
-    if( currentView === 'home' ) {
+    // TODO: collapse Remote and Local into a single view. for now, check them separately
+    const atRemoteProjectRoot = remoteProject && loggedIn && !teiDoc;
+    if (atRemoteProjectRoot) {
+      // checkin/checkout only in remote project, at the project root, when we are logged in
+      if (currentView === 'home' || checkedOutByUser) {
+        // can check in if we are in Local, or we're in Remote but user has something checked out
+        menuOptions.push({
+          id: 'check-in',
+          label: 'Check In',
+          action: this.createResourceAction('check-in', resource)
+        })
+      }
+      if (currentView === 'remote' && canCheckOut(permissions) && someCheckedIn) {
+        // can only check out from Remote
+        menuOptions.push({
+          id: 'check-out',
+          label: 'Check Out',
+          action: this.createResourceAction('check-out', resource),
+        })
+      }
+    }
+
+    menuOptions.push({
+      id: 'export',
+      label: 'Export',
+      action: this.createResourceAction('export', resource)
+    })
+
+    // move only works with local resources, and not at the project root
+    if (currentView === 'home' && teiDoc) {
       menuOptions.push({
         id: 'move',
         label: 'Move',
-        action: this.createResourceAction('move')   
-      })     
+        action: this.createResourceAction('move', resource)
+      })
+    }
+
+    // if the resource is checked out by someone else, can abandon checkout
+    const isAbandonable = resource?.lastAction?.action_type === 'check_out' &&
+      resource.lastAction.user?.id !== userID
+    const showAbandon = canAbandonOtherUsersResources(permissions) && isAbandonable && atRemoteProjectRoot && currentView === 'remote'
+    if (showAbandon) {
+      menuOptions.push({
+        id: 'abandon',
+        label: 'Unlock',
+        classes: 'danger',
+        action: this.createResourceAction('abandon', resource),
+      })
+    }
+
+    // can revert (which is actually abandon checkout behind the scenes)
+    // if the resource is checked out by the current user and
+    // the resource is a top-level TEI document
+    const showRevert = canAbandonOwnResource(permissions, resource, userID)
+      && atRemoteProjectRoot
+      && !resource.parentResource
+    if (showRevert) {
+      menuOptions.push({
+        id: 'revert',
+        label: 'Revert',
+        classes: 'danger',
+        action: this.createResourceAction('revert', resource),
+      })
+    }
+
+    if (del && !allDeleted && !showAbandon) {
+      menuOptions.push({
+        id: 'delete',
+        label: 'Delete',
+        classes: 'danger',
+        action: this.createResourceAction('delete', resource),
+      })
     }
 
     // you can recover deleted items when logged out
-    if( remoteProject ) {
+    if (remoteProject && someDeleted) {
       menuOptions.push({
         id: 'recover',
         label: 'Recover',
-        action: this.createResourceAction('recover')
+        action: this.createResourceAction('recover', resource)
       })
     }
     
     onOpenPopupMenu(menuOptions, anchorEl)
   }
 
-  createResourceAction(actionID) {    
+  createResourceAction(actionID, resource) {    
     return () => {
       const { onResourceAction, resourceCheckmarks } = this.props
       const resourceIDs = [], resourceEntries = []
-      for( const resourceID of Object.keys(resourceCheckmarks) ) {
-        const resourceEntry = resourceCheckmarks[resourceID]
-        if( resourceEntry ) {
-          resourceIDs.push(resourceEntry.id)
-          resourceEntries.push(resourceEntry)
+      if (resource) {
+        resourceIDs.push(resource.id)
+        resourceEntries.push(resource)
+      } else {
+        for( const resourceID of Object.keys(resourceCheckmarks) ) {
+          const resourceEntry = resourceCheckmarks[resourceID]
+          if( resourceEntry ) {
+            resourceIDs.push(resourceEntry.id)
+            resourceEntries.push(resourceEntry)
+          }
         }
       }
       onResourceAction(actionID, resourceIDs, resourceEntries)
@@ -148,69 +199,148 @@ export default class ResourceBrowser extends Component {
   }
 
   renderToolbar() {
-    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject } = this.props
-    const { remote: remoteProject, permissions } = fairCopyProject
+    const { onEditResource, teiDoc, onImportResource, onEditTEIDoc, currentView, resourceCheckmarks, fairCopyProject, publishingResources, resourceView } = this.props
+    const { remote: remoteProject, permissions, userID } = fairCopyProject
     const createAllowed = remoteProject ? canCreate(permissions) : true
     const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
+    const { loading } = resourceView;
 
     const buttonProps = {
       className: 'toolbar-button',
-      variant: "outlined",
+      variant: 'contained',
       size: 'small'
     }
 
     const onImportXML = () => { onImportResource('xml') }
     const onImportIIIF = () => { onImportResource('iiif') }
     const onPreviewResource = () => { fairCopyProject.previewResource(teiDoc) }
+    const onPublishResource = () => { fairCopy.ipcSend('publish', teiDoc) }
+    const onCopyPublishedLink= () => { fairCopyProject.copyPublishedLinkToClipboard(teiDoc) }
     const actionsEnabled = Object.values(resourceCheckmarks).find( c => !!c )
+    const atRemoteDoc = remoteProject && currentView === 'remote' && teiDoc
+    const editable = teiDoc && isEntryEditable(teiDoc, userID)
+    const checkedOut = teiDoc && (editable || isCheckedOutRemote(teiDoc, userID))
+    const canPublish = teiDoc?.status?.is_draft && !checkedOut && !teiDoc.status.is_processing
+    let publishTooltip = "Publish"
+    if (!canPublish) {
+      if (!teiDoc?.status?.is_draft) {
+        publishTooltip = "Document must have a draft checked in to publish"
+      } else if (checkedOut) {
+        publishTooltip = "Document must be checked in to publish"
+      } else {
+        publishTooltip = "Document must finish processing before it can be published"
+      }
+    }
+    const docActionType = teiDoc?.lastAction?.action_type;
+    const datePublished = docActionType === 'publish' ? new Date(teiDoc.lastAction.created_at).toDateString() : null;
+    const dateCheckedIn = ['update', 'create'].includes(docActionType) ? new Date(teiDoc.lastAction.created_at).toDateString() : null;    
 
     return (
-      <div className="toolbar">
-        { currentView === 'home' && 
-          <div className='inline-button-group'>
-            <Button disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>New Resource</Button>    
-            <Button disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>Import Texts</Button>    
-            <Button disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>              
-          </div>  
-        }
-        <Button 
-          disabled={!actionsEnabled}
-          ref={(el)=> { this.actionButtonEl = el }}
-          onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
-          {...buttonProps}
-        >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button> 
-        { teiDoc && currentView === 'home' && 
-          <Tooltip title="Edit Document Properties">
-              <span>
-                  <Button
-                      onClick={onEditTEIDoc}
-                      className='toolbar-button'
-                      disableRipple={true}
-                      disableFocusRipple={true}
-                      style={{float: 'right'}}
-                  >
-                      <i className="far fa-edit fa-2x"></i>
-                  </Button>                   
-              </span>
-          </Tooltip> 
-        }
+      <div className="toolbar-container">
         { teiDoc &&
-          <Tooltip title="Preview Published Document">
-              <span>
-                  <Button
-                      disabled={!canPreview}
-                      onClick={onPreviewResource}
-                      className='toolbar-button'
-                      disableRipple={true}
-                      disableFocusRipple={true}
-                      style={{float: 'right'}}
+          <div className="doc-header">
+            <div className="doc-header-left">
+              <Tooltip title={teiDoc.name}>
+                <Typography component="h2" variant="h6">{ellipsis(teiDoc.name, maxDocTitleLength)}</Typography>
+              </Tooltip>
+              {currentView === 'home' && 
+                <Tooltip title="Edit Document Properties">
+                  <IconButton
+                    onClick={onEditTEIDoc}
+                    className='toolbar-button'
                   >
-                      <i className="far fa-eye fa-2x"></i>
-                  </Button>                   
-              </span>
-          </Tooltip>   
+                    <i className='fa fa-pen-to-square fa-md' />
+                  </IconButton>
+                </Tooltip>
+              }
+              {atRemoteDoc &&
+                <>
+                  {teiDoc.status?.is_published && (
+                    <Tooltip title={datePublished ? `Last published: ${datePublished}` : "Published"} arrow>
+                      <StatusChip label="Published" icon={<i className="fa fa-file-circle-check"></i>} size="small" color="primary" />
+                    </Tooltip>
+                  )}
+                  {teiDoc.status?.is_draft && (
+                    <Tooltip title={dateCheckedIn ? `Draft checked in: ${dateCheckedIn}` : "Draft"} arrow>
+                      <StatusChip label="Draft" icon={<Edit />} size="small" color="secondary" />
+                    </Tooltip>
+                  )}
+                  {teiDoc.status?.is_processing && (
+                    <Tooltip title="Document is currently being processed" arrow>
+                      <StatusChip label="Processing" icon={<Autorenew />} size="small" color="default" />
+                    </Tooltip>
+                  )}
+                </>
+              }
+            </div>
+            <div className="doc-header-right">
+              {atRemoteDoc && isAdmin(permissions) &&
+                <Tooltip title={publishTooltip} arrow>
+                  <span>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disabled={!canPublish || loading || publishingResources}
+                      onClick={onPublishResource}
+                      startIcon={<Publish />}
+                    >
+                      Publish
+                    </Button>
+                  </span>
+                </Tooltip>
+              }
+              <Tooltip title="Preview Published Document">
+                <span className="iconbutton-wrapper">
+                  <IconButton
+                    aria-label="Preview Published Document"
+                    disabled={!canPreview}
+                    onClick={onPreviewResource}
+                    className='toolbar-button'
+                  >
+                    <i className='fa fa-eye fa-md' />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              { remoteProject && <Tooltip title="Copy IIIF Manifest Link to Clipboard">
+                <span className="iconbutton-wrapper">
+                  <IconButton
+                    aria-label="Copy IIIF Manifest Link to Clipboard"
+                    disabled={!teiDoc.status?.is_published}
+                    onClick={onCopyPublishedLink}
+                    className='toolbar-button'
+                  >
+                    <i className='fa fa-link fa-md' />
+                  </IconButton>
+                </span>
+              </Tooltip> }
+            </div>
+          </div>
         }
-        { !teiDoc && this.renderFilterInput() }
+        <div className='toolbar'>
+          <Typography component="h2" variant="h6">
+            {teiDoc ? "Resources" : "Documents"}
+          </Typography>
+          <div className='tools'>
+            { currentView === 'home' && 
+              <div className='inline-button-group'>
+                <Button color="primary" disabled={!createAllowed} onClick={onEditResource} {...buttonProps}>Add New</Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onImportXML} {...buttonProps}>
+                  {teiDoc ? "Import Text" : "Import TEI"}
+                </Button>
+                <Button color="primary" disabled={!createAllowed} onClick={onImportIIIF} {...buttonProps}>Import IIIF</Button>
+              </div>
+            }
+            <Button 
+              disabled={!actionsEnabled}
+              ref={(el)=> { this.actionButtonEl = el }}
+              onClick={()=>{this.onOpenActionMenu(this.actionButtonEl)}}         
+              {...buttonProps}
+              color='primary'
+              variant='outlined'
+            >Actions<i className='down-caret fas fa-caret-down fa-lg'></i></Button>
+            { !teiDoc && this.renderFilterInput() }
+          </div>
+        </div>
       </div>
     )
   }
@@ -236,9 +366,10 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
+    const atRemoteRoot = remoteProject && currentView !== 'home' && !teiDoc
 
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
@@ -303,29 +434,60 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
           </TableCell>
-          { remoteProject && 
-          <TableCell {...cellProps} >
+          { remoteProject && !teiDoc && 
+          <TableCell {...cellProps} align="center">
             { icon && 
               <Tooltip title={label}>
-                <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+                { typeof icon === "string" ?
+                  <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
+                  : React.createElement(icon, { "aria-label": label, "aria-hidden": false, className: iconClass })
+                }
               </Tooltip>
             }
           </TableCell>
           }
-          <TableCell {...cellProps} >
-            <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
-          </TableCell>
+          { teiDoc &&
+            <TableCell {...cellProps} >
+              <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
+            </TableCell>
+          }
           <TableCell {...cellProps} >
             <Typography title={name} className={textClass}>{displayName}</Typography>
           </TableCell>
           <TableCell {...cellProps} >
             <Typography title={localID} className={textClass}>{displayLocalID}</Typography>
           </TableCell>
-          { remoteProject && 
+          { remoteProject && !teiDoc &&
           <TableCell {...cellProps} >
             <Typography className={textClass}>{lastModified}</Typography>
-          </TableCell>        
+          </TableCell>
           }
+          { atRemoteRoot &&
+            <>
+              <TableCell {...cellProps} align="center" >
+                {resource.status?.is_draft && (
+                    <Edit aria-label="Draft" />
+                )}
+              </TableCell>
+              <TableCell {...cellProps} align="center" >
+                {resource.status?.is_published && (
+                    <i aria-label="Published" className="fa fa-file-circle-check"></i>
+                )}
+              </TableCell>
+            </>
+          }
+          <TableCell {...cellProps} >
+            <IconButton
+              aria-label="Actions"
+              disabled={resourceView.loading}
+              onClick={(event) => {
+                event.stopPropagation()
+                this.onOpenActionMenu(event.target, resource)
+              }}
+            >
+              <MoreVert />
+            </IconButton>
+          </TableCell>
         </TableRow>
       )
     }
@@ -336,7 +498,7 @@ export default class ResourceBrowser extends Component {
     }
 
     const tableCaption = currentView === 'home' ? 'This table lists the resources on your computer.' : 'This table lists the resources on the server.'
-  
+
     return (
           <TableContainer className="table-container">
               <Table stickyHeader size="small" >
@@ -344,11 +506,14 @@ export default class ResourceBrowser extends Component {
                   <TableHead>
                       <TableRow>
                           <TableCell ><Checkbox onClick={toggleAll} color="default" checked={allResourcesCheckmarked} /></TableCell>
-                          { remoteProject && <TableCell><i className="fa fa-pen fa-lg"></i></TableCell> }
-                          <TableCell>Type</TableCell>
+                          { remoteProject && !teiDoc && <TableCell align="center">Checked Out</TableCell> }
+                          { teiDoc && <TableCell>Type</TableCell> }
                           { this.renderSortableHeaderCell('name','Name',orderBy,order) }
                           { this.renderSortableHeaderCell('localID','ID',orderBy,order) }
-                          { remoteProject && <TableCell>Last Modified</TableCell> }
+                          { remoteProject && !teiDoc && <TableCell>Last Modified</TableCell> }
+                          { atRemoteRoot && <TableCell>Draft</TableCell> }
+                          { atRemoteRoot && <TableCell>Published</TableCell> }
+                          <TableCell aria-label="Actions" />
                       </TableRow>
                   </TableHead>
                   <TableBody>
@@ -401,9 +566,9 @@ export default class ResourceBrowser extends Component {
   }
 
   render() {
-      const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView } = this.props
+      const { width, teiDoc, fairCopyProject, onResourceAction, resourceView, currentView, resourceIndex, onCheckInAll } = this.props
       const { loading } = resourceView
-      const { isLoggedIn, remote: remoteProject } = fairCopyProject
+      const { isLoggedIn, remote: remoteProject, permissions } = fairCopyProject
 
       // reset the filter when switching views
       const onResourceActionFilter = (actionID, resourceIDs, resourceEntries) => {
@@ -413,9 +578,20 @@ export default class ResourceBrowser extends Component {
         onResourceAction(actionID, resourceIDs, resourceEntries)
       }
 
+      const canCheckInAll = resourceIndex.length > 0 && remoteProject && canCheckOut(permissions)
+
       return (
         <div id="ResourceBrowser" style={{width: width ? width : '100%'}}>
-          <TitleBar parentResource={teiDoc} onResourceAction={onResourceActionFilter} isLoggedIn={isLoggedIn} remoteProject={remoteProject} currentView={currentView} loading={loading}></TitleBar>
+          <TitleBar
+            canCheckInAll={canCheckInAll}
+            currentView={currentView}
+            isLoggedIn={isLoggedIn}
+            loading={loading}
+            onCheckInAll={onCheckInAll}
+            onResourceAction={onResourceActionFilter}
+            parentResource={teiDoc}
+            remoteProject={remoteProject}
+          ></TitleBar>
           { this.renderToolbar() }
           <main>
               { this.renderResourceTable() }
@@ -426,3 +602,29 @@ export default class ResourceBrowser extends Component {
   }
 
 }
+
+export const StatusChip = withStyles((theme) => ({
+  root: {
+    paddingLeft: 4,
+    paddingRight: 4,
+    '&.yellow': {
+      backgroundColor: theme.palette.yellow.main,
+    },
+    '&.yellow .MuiChip-iconSmall': {
+      color: theme.palette.text.primary,
+      marginLeft: 6,
+      marginTop: 4,
+      marginRight: -8,
+    }
+  },
+  colorPrimary: {
+    backgroundColor: theme.palette.success.dark,
+  },
+  colorSecondary: {
+    backgroundColor: theme.palette.info.dark,
+  },
+  iconColorPrimary: {
+    marginLeft: 6,
+    marginTop: 4,
+  }
+}))(React.forwardRef((props, ref) => <Chip {...props} ref={ref} />))

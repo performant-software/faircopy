@@ -84,6 +84,12 @@ export default class EditorToolbar extends Component {
         teiDocument.previewDocument()
     }
 
+    onAgent = () => {
+        const { teiDocument } = this.props
+        this.props.onRunAgent()
+        teiDocument.runAgent()
+    }
+
     onFind = () => {
         const { onToggleSearchBar } = this.props
         onToggleSearchBar(true)
@@ -134,7 +140,8 @@ export default class EditorToolbar extends Component {
         const { menus } = fairCopyProject.fairCopyConfig
         const { elements } = fairCopyProject.teiSchema
         const canPreview = !fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn())
-
+        const canRunAgent = ['text', 'sourceDoc'].includes(teiDocument.resourceType) && !changedSinceLastSave && 
+            (!fairCopyProject.remote || (fairCopyProject.remote && fairCopyProject.isLoggedIn()))
         const onAction = (member) => {
             const selection = (editorView) ? editorView.state.selection : null 
             if( selection && !selection.node ) {
@@ -161,6 +168,7 @@ export default class EditorToolbar extends Component {
                     { this.renderButton("Find", "fas fa-magnifying-glass", this.onFind ) }
                 </div>
                 <div className="rightgroup">
+                    { this.renderButton("Run Automated Workflow", "fas fa-robot", this.onAgent, canRunAgent ) }
                     { this.renderButton("Edit Properties", "fas fa-edit", onEditResource ) }
                     { this.renderButton("Save", "fas fa-save", onSave, changedSinceLastSave ) }
                 </div>
