@@ -439,6 +439,16 @@ export default class ResourceBrowser extends Component {
       const canRunAgent = remoteProject && fairCopyProject.isLoggedIn() && !!localResources[id] && editable && !deleted &&
         !processing && !resourceView.loading && !requestedResources.includes(id) &&
         !openResources[id]?.changedSinceLastSave
+      let agentTooltip = 'Run Agent'
+      if (!remoteProject || !fairCopyProject.isLoggedIn()) {
+        agentTooltip = 'Sign in to a remote project to run the agent'
+      } else if (!localResources[id] || !editable || deleted) {
+        agentTooltip = 'Check out this resource to run the agent'
+      } else if (openResources[id]?.changedSinceLastSave) {
+        agentTooltip = 'Save this resource before running the agent'
+      } else if (!canRunAgent) {
+        agentTooltip = 'Wait for this resource to finish processing'
+      }
       
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
@@ -493,22 +503,6 @@ export default class ResourceBrowser extends Component {
             </>
           }
           <TableCell {...cellProps} >
-            {showAgent && (
-              <Tooltip title="Run Automated Workflow">
-                <span>
-                  <IconButton
-                    aria-label="Run Automated Workflow"
-                    disabled={!canRunAgent}
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      onRunAgent(resource)
-                    }}
-                  >
-                    <i className="fas fa-robot fa-sm"></i>
-                  </IconButton>
-                </span>
-              </Tooltip>
-            )}
             <IconButton
               aria-label="Actions"
               disabled={resourceView.loading || processing}
@@ -520,6 +514,26 @@ export default class ResourceBrowser extends Component {
               <MoreVert />
             </IconButton>
           </TableCell>
+          {teiDoc &&
+            <TableCell {...cellProps} className="agent-action-cell" onClick={(event) => event.stopPropagation()} onKeyUp={(event) => event.stopPropagation()}>
+              {showAgent &&
+                <Tooltip title={agentTooltip}>
+                  <span>
+                    <Button
+                      aria-label="Run Automated Workflow"
+                      variant="outlined"
+                      size="small"
+                      disabled={!canRunAgent}
+                      onClick={() => onRunAgent(resource)}
+                      startIcon={<i className="fas fa-robot" />}
+                    >
+                      Run workflow
+                    </Button>
+                  </span>
+                </Tooltip>
+              }
+            </TableCell>
+          }
         </TableRow>
       )
     }
@@ -546,6 +560,7 @@ export default class ResourceBrowser extends Component {
                           { atRemoteRoot && <TableCell>Draft</TableCell> }
                           { atRemoteRoot && <TableCell>Published</TableCell> }
                           <TableCell aria-label="Actions" />
+                          {teiDoc && <TableCell aria-label="Automated workflow" />}
                       </TableRow>
                   </TableHead>
                   <TableBody>

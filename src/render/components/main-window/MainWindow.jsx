@@ -419,6 +419,7 @@ export default class MainWindow extends Component {
     )
     fairCopy.ipcRegisterCallback('updateProjectInfo', this.onUpdateProjectInfo)
     fairCopy.ipcRegisterCallback('localResources', this.onLocalResources)
+    fairCopy.ipcSend('requestLocalResources')
     fairCopy.ipcRegisterCallback(
       'publishingResourceStarted',
       this.onPublishResource

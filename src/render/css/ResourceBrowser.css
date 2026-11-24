@@ -42,6 +42,10 @@
     color: rgba(0, 0, 0, 0.38);
 }
 
+#ResourceBrowser .agent-action-cell {
+    white-space: nowrap;
+}
+
 #ResourceBrowser .inline-button-group {
     display: inline-flex;
     align-items: center;
