@@ -273,7 +273,7 @@ function getLocalLabels(labelEls) {
         if (!langKey) {
             langKey = 'none'
         }
-        const label = labelEl.innerHTML
+        const label = labelEl.textContent
         if (!localLabels[langKey]) {
             localLabels[langKey] = []
         }
