@@ -5,7 +5,7 @@ export const teiHeaderTemplate = (title) => `<?xml version="1.0" encoding="UTF-8
     <teiHeader>
         <fileDesc>
             <titleStmt>
-                <title>${title}</title>
+                <title>${escapeXML(title)}</title>
             </titleStmt>
             <publicationStmt>
                 <p></p>
@@ -56,18 +56,18 @@ export const facsTemplate = (facsData) => {
 
         if (type === 'iiif') {
             surfaceEls.push(
-                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${canvasURI}" >${labelEls}<graphic mimeType="application/json" url="${imageAPIURL}"/>${zoneEls}</surface>`
+                `<surface xml:id="${escapeXML(id)}" ulx="0" uly="0" lrx="${width}" lry="${height}" sameAs="${escapeXML(canvasURI)}" >${labelEls}<graphic mimeType="application/json" url="${escapeXML(imageAPIURL)}"/>${zoneEls}</surface>`
             )
         } else {
             const ext = getExtensionForMIMEType(mimeType)
             const filename = `${id}.${ext}`
             surfaceEls.push(
-                `<surface xml:id="${id}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic sameAs="${resourceEntryID}" mimeType="${mimeType}" url="${filename}"/>${zoneEls}</surface>`
+                `<surface xml:id="${escapeXML(id)}" ulx="0" uly="0" lrx="${width}" lry="${height}">${labelEls}<graphic sameAs="${escapeXML(resourceEntryID)}" mimeType="${escapeXML(mimeType)}" url="${escapeXML(filename)}"/>${zoneEls}</surface>`
             )
         }
     }
 
-    const sameAs = (manifestID) ? `sameAs="${manifestID}"` : ''
+    const sameAs = (manifestID) ? `sameAs="${escapeXML(manifestID)}"` : ''
 
     return `<?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
@@ -86,9 +86,9 @@ function renderLocalLabels(localLabels) {
         const labels = localLabels[langKey]
         for (const label of labels) {
             if (langKey === 'none') {
-                labelEls.push(`<label>${label}</label>`)
+                labelEls.push(`<label>${escapeXML(label)}</label>`)
             } else {
-                labelEls.push(`<label xml:lang="${langKey}">${label}</label>`)
+                labelEls.push(`<label xml:lang="${escapeXML(langKey)}">${escapeXML(label)}</label>`)
             }
         }
     }
@@ -103,8 +103,17 @@ function renderZones(zones) {
         const noteEl = note && note.length > 0 ? `<note>${note}</note>` : ""
         const anaEl = ana || ''
         const coordAttrs = zone.points ? `points="${zone.points}"` : `ulx="${ulx}" uly="${uly}" lrx="${lrx}" lry="${lry}"`
-        const zoneEl = `<zone xml:id="${id}" ${coordAttrs} ana="${anaEl}">${noteEl}</zone>`
+        const zoneEl = `<zone xml:id="${escapeXML(id)}" ${coordAttrs} ana="${escapeXML(anaEl)}">${noteEl}</zone>`
         zoneEls.push(zoneEl)
     }
     return zoneEls.join('\n')
+}
+
+function escapeXML(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&apos;')
 }
