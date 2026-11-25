@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core'
 import { TextField, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { getActionIcon } from '../../../model/resource-icon'
-import { inlineRingSpinner } from '../../common/ring-spinner'
 
 import { isEntryEditable } from '../../../model/FairCopyProject'
 
@@ -23,18 +22,13 @@ export default class CheckInDialog extends Component {
         super()
         this.initialState = {
             message: "",
-            committedResources: [],
-            status: 'ready',
-            resourceStatus: {},
             errorMessage: null,
             resourcesToCommit: [],
-            batchesComplete: 0,
         }
         this.state = this.initialState
     }
 
     componentDidMount() {
-        fairCopy.ipcRegisterCallback('checkInResults', this.onCheckInResults )
         // perform resouce batching on mount
         this.setState((prevState) => ({
             ...prevState,
@@ -42,12 +36,8 @@ export default class CheckInDialog extends Component {
         }))
     }
 
-    componentWillUnmount() {
-        fairCopy.ipcRemoveListener('checkInResults', this.onCheckInResults )
-    }
-
     getResourcesToCommit() {
-        const { checkInResources, localResources } = this.props
+        const { checkInResources, localResources, checkInPendingIDs } = this.props
 
         // group resources into batches of max size batchSizeLimit, without separating TEI docs
         // from child resources.
@@ -57,8 +47,8 @@ export default class CheckInDialog extends Component {
 
         for( const resourceID of checkInResources ) {
             const resource = localResources[resourceID]
-            // ignore resources that aren't checked out
-            if (!resource) continue
+            // ignore resources that aren't checked out or are already being checked in
+            if (!resource || checkInPendingIDs?.has(resourceID)) continue
             
             const { id, type, deleted } = resource
 
@@ -68,7 +58,7 @@ export default class CheckInDialog extends Component {
             if( type === 'teidoc' ) {
                 // commit any checked out children, delete if parent is deleted
                 for( const checkedOutResource of Object.values(localResources) ) {
-                    if( id === checkedOutResource.parentResource ) {                            
+                    if( id === checkedOutResource.parentResource && !checkInPendingIDs?.has(checkedOutResource.id) ) {                            
                         if( deleted ) checkedOutResource.deleted = true
                         resourceGroup.push(checkedOutResource) 
                     }
@@ -95,41 +85,17 @@ export default class CheckInDialog extends Component {
         return resourcesToCommit
     }
 
-    onCheckInResults = (event, checkInResult) => {
-        const { resourceEntries, resourceStatus, error } = checkInResult
-        this.setState((prevState) => {
-            // when we get new results message back, concat previous committed resources list with new one
-            const committedResources = prevState.committedResources.concat(resourceEntries)
-            // update number of batches complete to get status
-            const totalBatches = prevState.resourcesToCommit.length
-            const batchesComplete = prevState.batchesComplete + 1
-            return {
-                committedResources,
-                batchesComplete,
-                status: batchesComplete === totalBatches ? 'done' : 'loading',
-                resourceStatus: { ...prevState.resourceStatus, ...resourceStatus },
-                errorMessage: error || prevState.error || null
-            }
-        })
-    }
-
     renderResourceTable() {
         const { fairCopyProject } = this.props
-        const { committedResources, resourceStatus, resourcesToCommit, status } = this.state
+        const { resourcesToCommit } = this.state
         const allResourcesToCommit = resourcesToCommit.flat()
-        const committedDocuments = committedResources.filter((resource) => resource.type === 'teidoc')
         const allDocuments = allResourcesToCommit.filter((resource) => resource.type === 'teidoc')
-        const responseReceived = ['loading', 'done'].includes(status)
-        const resources = responseReceived ? committedDocuments : allDocuments
 
         const resourceRows = []
-        for( const resource of resources ) {
-            const { id: resourceID, local, deleted, localID, name } = resource
-            const resourceStatusCode = Object.keys(resourceStatus).length ? resourceStatus[resourceID] : null
-            const resourceStatusMessage = getResourceStatusMessage(resourceStatusCode)
+        for( const resource of allDocuments ) {
+            const { local, deleted, localID, name } = resource
             const editable = isEntryEditable(resource, fairCopyProject.userID)
-            let { icon, label } = getActionIcon(responseReceived, local, editable )
-            if( resourceStatusCode && resourceStatusCode !== 'ok' ) icon = 'fa fa-x'
+            let { icon, label } = getActionIcon(false, local, editable )
             if( deleted ) icon = 'fa fa-trash'
             if( local ) icon = 'fa fa-cloud-arrow-up'
 
@@ -147,17 +113,11 @@ export default class CheckInDialog extends Component {
                     <TableCell {...cellProps} >
                         <Typography>{localID}</Typography>
                     </TableCell>
-                    <TableCell {...cellProps} >
-                        <Typography>{resourceStatusMessage}</Typography>
-                    </TableCell>
                 </TableRow>
             )            
         }
 
-        const totalDocuments = allDocuments.length
-        const caption = responseReceived
-            ? `${committedDocuments.length}/${totalDocuments} documents have been processed.`
-            : `${totalDocuments} documents are ready to be checked in.`
+        const caption = `${allDocuments.length} documents are ready to be checked in.`
 
         return (
             <div>
@@ -169,7 +129,6 @@ export default class CheckInDialog extends Component {
                                 <TableCell>Action</TableCell>
                                 <TableCell>Name</TableCell>
                                 <TableCell>ID</TableCell>
-                                <TableCell>Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -182,14 +141,16 @@ export default class CheckInDialog extends Component {
     }
 
     onCheckIn = () => {
-        const { fairCopyProject } = this.props
+        const { fairCopyProject, onClose } = this.props
         const { userID, serverURL, projectID } = fairCopyProject
         const { message, resourcesToCommit } = this.state
 
         if( message.length > 0 ) {
-            this.setState({ ...this.state, status: 'loading' })
             const resourceIDBatches = resourcesToCommit.map((batch) => batch.map(r => r.id))
+            // the check in proceeds in the background and the resources
+            // are displayed as pending in the local project until each batch completes
             fairCopy.ipcSend('checkIn', userID, serverURL, projectID, resourceIDBatches, message)
+            onClose()
         } else {
             this.setState({ ...this.state, errorMessage: "Please provide a commit message." })
         }
@@ -224,13 +185,10 @@ export default class CheckInDialog extends Component {
     }
 
     renderCheckInAll() {
-        const { committedResources, status, resourcesToCommit } = this.state
+        const { resourcesToCommit } = this.state
         const allResourcesToCommit = resourcesToCommit.flat()
-        const committedDocumentCount = committedResources.filter((resource) => resource.type === 'teidoc').length
         const totalDocuments = allResourcesToCommit.filter((resource) => resource.type === 'teidoc').length
-        const caption = ['loading', 'done'].includes(status)
-            ? `${committedDocumentCount}/${totalDocuments} documents have been processed.`
-            : `${totalDocuments} documents are ready to be checked in.`
+        const caption = `${totalDocuments} documents are ready to be checked in.`
         return (
             <Typography>{caption}</Typography>
         )
@@ -238,13 +196,10 @@ export default class CheckInDialog extends Component {
 
     render() {
         const { onClose, checkInAll } = this.props
-        const { status } = this.state
+        const { resourcesToCommit } = this.state
 
-        const checkInButtonProps = status === 'ready' ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } :
+        const checkInButtonProps = resourcesToCommit.length > 0 ? {  variant: "contained", color: "primary", onClick: this.onCheckIn } :
             {  variant: "outlined", color: "default", disabled: true }
-        const closeButtonProps = status === 'done' ? {  variant: "contained", color: "primary", onClick: onClose } :
-            status === 'loading' ?  {  variant: "outlined", color: "default", disabled: true } :
-                                    {  variant: "outlined", color: "default", onClick: onClose }
 
         return (
             <Dialog
@@ -253,7 +208,7 @@ export default class CheckInDialog extends Component {
                 onClose={onClose}
                 aria-labelledby="checkin-dialog-title"
             >
-                <DialogTitle id="checkin-dialog-title">Check In Documents { status === 'loading' && inlineRingSpinner('dark') }</DialogTitle>
+                <DialogTitle id="checkin-dialog-title">Check In Documents</DialogTitle>
                 <DialogContent className="checkin-panel">
                    { this.renderCommitField() }
                    { !checkInAll && this.renderResourceTable() }
@@ -262,28 +217,9 @@ export default class CheckInDialog extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button {...checkInButtonProps} >Check In</Button>
-                    <Button {...closeButtonProps} >{ status === 'ready' ? 'Cancel' : 'Done' }</Button>
+                    <Button variant="outlined" color="default" onClick={onClose} >Cancel</Button>
                 </DialogActions>
             </Dialog>
         )
-    }
-}
-
-function getResourceStatusMessage(resourceStatusCode) {
-    switch(resourceStatusCode) {
-        case 'ok':
-            return 'OK'
-        case 'not_authorized':
-            return 'Not Authorized'
-        case 'teidoc_deletion_with_children':
-            return 'Cannot delete w/children checked out.'
-        case 'not_checked_out':
-            return 'Not checked out.'
-        case 'not_found':
-            return 'Not found.'
-        case null:
-            return ''
-        default:
-            return 'unknown status code'
     }
 }

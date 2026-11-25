@@ -118,9 +118,9 @@ class RemoteProject {
                     break
                 case 'agent-failed':
                     {
-                        const { error } = msg
+                        const { error, docID } = msg
                         const { fairCopyApplication } = this.fairCopySession
-                        fairCopyApplication.sendToMainWindow('runAgentFailed', { error })
+                        fairCopyApplication.sendToMainWindow('runAgentFailed', { error, docID })
                     }
                     break
                 case 'reconciliation-manifest-result':

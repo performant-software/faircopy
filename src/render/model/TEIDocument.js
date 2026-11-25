@@ -391,7 +391,7 @@ export default class TEIDocument {
   }
 
   runAgent() {
-    const editorState = this.editorView.state
+    const editorState = this.editorView ? this.editorView.state : this.initialState
     const teiSchema = this.getTEISchema()
 
     const fileContents = serializeText(editorState.doc, this, teiSchema)

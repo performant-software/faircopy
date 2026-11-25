@@ -426,7 +426,6 @@ export default class TEIEditor extends Component {
                 onEditResource={onEditResource}
                 onOpenElementMenu={this.onOpenElementMenu}
                 onCloseElementMenu={this.onCloseElementMenu}
-                onRunAgent={this.props.onRunAgent}
                 onToggleSearchBar={onToggleSearchBar}
                 elementMenuOptions={elementMenuOptions}
               ></EditorToolbar>

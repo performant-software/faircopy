@@ -82,6 +82,10 @@ class FairCopyApplication {
       }
     })
 
+    ipcMain.on('cancelCloseProject', () => {
+      this.returnToProjectWindow = false
+    })
+
     ipcMain.on('reopenProject', (event) => {
       this.fairCopySession.reopenProject()
     })
@@ -112,6 +116,10 @@ class FairCopyApplication {
       this.fairCopySession.updateResourceView(resourceViewRequest)
     })
 
+    ipcMain.on('requestLocalResources', () => {
+      this.fairCopySession.projectStore.sendLocalResources()
+    })
+
     ipcMain.on('searchProject', (event, searchQuery) => {
       this.fairCopySession.searchProject(searchQuery)
     })
@@ -120,6 +128,23 @@ class FairCopyApplication {
       if (ok) {
         const update = { resourceID, messageID: msgID, resourceContent: resourceData }
         this.sendToAllWindows('resourceContentUpdated', update)
+      }
+    })
+    ipcMain.on('saveAgentResource', (event, requestID, resourceID, resourceData, resourceMap) => {
+      try {
+        const { resources } = this.fairCopySession.projectStore.manifestData
+        const entry = resources[resourceID]
+        if (!entry || entry.deleted || resourceMap.resourceID !== resourceID) {
+          throw new Error('The local resource is no longer available.')
+        }
+        const localIDs = this.fairCopySession.idMapAuthority.getLocalIDs(resourceID)
+        if (!localIDs) throw new Error('The resource is missing from the ID map.')
+        this.fairCopySession.setResourceMap(resourceMap, localIDs.localID, localIDs.parentID)
+        if (!this.fairCopySession.saveResource(resourceID, resourceData, !!this.previewView, requestID)) {
+          throw new Error('The local resource could not be saved.')
+        }
+      } catch (error) {
+        this.sendToMainWindow('agentSaveResult', { resourceID, requestID, error: error.message })
       }
     })
     ipcMain.on('abandonResourceMap', (event, resourceID) => {
@@ -160,7 +185,8 @@ class FairCopyApplication {
     })
 
     ipcMain.on('checkIn', (event, userID, serverURL, projectID, resourceIDBatches, message) => {
-      this.sendToMainWindow('checkInStarted', resourceIDBatches.length)
+      // send the batched resource IDs so the renderer can mark them as pending
+      this.sendToMainWindow('checkInStarted', resourceIDBatches)
       this.fairCopySession.checkIn(userID, serverURL, projectID, resourceIDBatches, message)
     })
 
@@ -367,6 +393,7 @@ class FairCopyApplication {
       if (this.mainWindow) {
         this.mainWindow.close()
         this.fairCopySession.closeProject()
+        this.mainMenu.updateMenu()
       }
     }
   }
@@ -387,8 +414,6 @@ class FairCopyApplication {
     if (this.mainWindow && !this.mainWindow.isDestroyed()) {
       this.returnToProjectWindow = true
       this.mainWindow.close()
-      this.fairCopySession.closeProject()
-      this.mainMenu.updateMenu()
     }
     if (this.projectWindow && !this.projectWindow.isDestroyed()) {
       this.projectWindow.close()

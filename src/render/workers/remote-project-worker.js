@@ -84,7 +84,7 @@ function onRunAgent(userID, serverURL, projectID, authToken, fileContents, docID
         postMessage({ messageType: 'agent-updated', xml: data, docID })
     },
         (error) => {
-            postMessage({ messageType: 'agent-failed', error })
+            postMessage({ messageType: 'agent-failed', error: String(error), docID })
         })
 }
 function onGetReconciliationManifest(endpoint, requestID, postMessage) {
@@ -182,6 +182,10 @@ const onNotification = (data, workerData, postMessage) => {
         const { resources } = data
         updateIDMap(userID, serverURL, authToken, projectID, postMessage)
         postMessage({ messageType: 'resources-updated', resources })
+    } else if (notification === "document_processed") {
+        // refresh the view so its processing status clears
+        const { resource_guid: resourceGUID } = data
+        postMessage({ messageType: 'resources-updated', resources: [resourceGUID] })
     }
     console.log(`received cable message: ${notification}`)
     

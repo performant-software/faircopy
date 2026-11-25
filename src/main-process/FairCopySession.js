@@ -362,13 +362,13 @@ class FairCopySession {
         this.projectStore.searchIndex.searchProject(searchQuery)
     }
 
-    saveResource(resourceID, resourceData, updatePreview) {
+    saveResource(resourceID, resourceData, updatePreview, requestID = null) {
         const { resources } = this.projectStore.manifestData
         const resourceEntry = resources[resourceID]
         if (resourceEntry) {
             const { localID, parentID } = this.idMapAuthority.getLocalIDs(resourceID)
             const idMap = this.idMapAuthority.commitResource(localID, parentID)
-            this.projectStore.saveResource(resourceEntry, resourceData, idMap)
+            this.projectStore.saveResource(resourceEntry, resourceData, idMap, requestID)
             if (updatePreview) {
                 this.requestPreviewView({ resourceEntry })
             }

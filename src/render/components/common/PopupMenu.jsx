@@ -27,7 +27,8 @@ export default class PopupMenu extends Component {
         'move': 'fa-folder-open',
         'abandon': 'fa-lock-open',
         'recover': 'fa-trash-arrow-up',
-        'revert': 'fa-undo'
+        'revert': 'fa-undo',
+        'run-agent': 'fa-robot'
     }
 
     render() {
@@ -51,12 +52,13 @@ export default class PopupMenu extends Component {
                     key={key}
                     className={`menu-item ${menuOption.classes || ''}`}
                     disabled={menuOption.disabled}
+                    title={menuOption.title}
                     value={menuOption.id}
                 >
                     <ListItemIcon>
                         <i className={`fa ${icon}`}></i>
                     </ListItemIcon>
-                    <ListItemText primary={menuOption.label} />
+                    <ListItemText primary={menuOption.label} secondary={menuOption.disabled ? menuOption.title : undefined} />
                 </StyledMenuItem>
             )
         }

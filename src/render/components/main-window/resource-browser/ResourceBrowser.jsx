@@ -8,6 +8,7 @@ import { getResourceIcon, getActionIcon, getResourceIconLabel } from '../../../m
 import { isEntryEditable, isCheckedOutRemote } from '../../../model/FairCopyProject'
 import { canAbandonOtherUsersResources, canAbandonOwnResource, canCheckOut, canCreate, canDelete, isAdmin } from '../../../model/permissions'
 import { ellipsis } from '../../../model/ellipsis'
+import { inlineRingSpinner } from '../../common/ring-spinner'
 
 const idealNameLength = 35
 const idealPanelWidth = 1172
@@ -31,7 +32,7 @@ export default class ResourceBrowser extends Component {
 }
 
   onOpenActionMenu = (anchorEl, resource) => {
-    const { currentView, fairCopyProject, onOpenPopupMenu, resourceCheckmarks, teiDoc } = this.props
+    const { currentView, fairCopyProject, onOpenPopupMenu, resourceCheckmarks, teiDoc, resourceView, checkInPendingIDs, agentPendingIDs, requestedResources, localResources, openResources, onRunAgent } = this.props
     const { permissions, remote: remoteProject, userID } = fairCopyProject
     const loggedIn = fairCopyProject.isLoggedIn()
     const del = remoteProject ? canDelete(permissions) : true
@@ -68,6 +69,32 @@ export default class ResourceBrowser extends Component {
           action: this.createResourceAction('check-out', resource),
         })
       }
+    }
+
+    if (resource && teiDoc && ['text', 'sourceDoc'].includes(resource.type)) {
+      const { id, deleted } = resource
+      const processing = checkInPendingIDs?.has(id) || agentPendingIDs?.has(id) || resource.status?.is_processing
+      const editable = isEntryEditable(resource, userID)
+      const canRunAgent = remoteProject && loggedIn && !!localResources[id] && editable && !deleted &&
+        !processing && !resourceView.loading && !requestedResources.includes(id) &&
+        !openResources[id]?.changedSinceLastSave
+      let title = 'Run Agent'
+      if (!remoteProject || !loggedIn) {
+        title = 'Sign in to a remote project to run the agent'
+      } else if (!localResources[id] || !editable || deleted) {
+        title = 'Check out this resource to run the agent'
+      } else if (openResources[id]?.changedSinceLastSave) {
+        title = 'Save this resource before running the agent'
+      } else if (!canRunAgent) {
+        title = 'Wait for this resource to finish processing'
+      }
+      menuOptions.push({
+        id: 'run-agent',
+        label: 'Run Agent',
+        title,
+        disabled: !canRunAgent,
+        action: () => onRunAgent(resource),
+      })
     }
 
     menuOptions.push({
@@ -366,14 +393,19 @@ export default class ResourceBrowser extends Component {
   }
 
   renderResourceTable() {
-    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc } = this.props
+    const { onResourceAction, fairCopyProject, resourceView, panelWidth, resourceIndex, currentView, resourceCheckmarks, allResourcesCheckmarked, teiDoc, checkInPendingIDs, agentPendingIDs } = this.props
     const { remote: remoteProject, userID } = fairCopyProject
     const { currentPage, rowsPerPage, totalRows, orderBy, order } = resourceView
     const atRemoteRoot = remoteProject && currentView !== 'home' && !teiDoc
 
+    // resource is awaiting check in or being processed
+    const isProcessing = (resource) => {
+      return !!checkInPendingIDs?.has(resource.id) || !!agentPendingIDs?.has(resource.id) || !!resource.status?.is_processing
+    }
+
     const onOpen = (resourceID) => {
       const resource = resourceIndex.find(resourceEntry => resourceEntry.id === resourceID )
-      if( resource.deleted ) return
+      if( resource.deleted || isProcessing(resource) ) return
       if( resource.type === 'teidoc' ) {
         this.setState(this.initialState)
       } 
@@ -418,25 +450,27 @@ export default class ResourceBrowser extends Component {
       const { id, name, localID, type, local, deleted } = resource 
       const check = !!resourceCheckmarks[id] 
       const resourceIcon = getResourceIcon(type)
+      const processing = isProcessing(resource)
       const editable = isEntryEditable( resource, userID )
       const checkedOutRemote = !editable ? isCheckedOutRemote( resource, userID ) : false
       const { label, icon } = getActionIcon( false, local, editable|deleted, checkedOutRemote )
       const lastModified = !editable ? new Date(resource.lastAction.created_at).toDateString() : ''
-      const textClass = deleted ? 'deleted-resource' : ''
+      const textClass = deleted ? 'deleted-resource' : processing ? 'processing-resource' : ''
       const iconClass = deleted ? 'deleted-icon' : ''
       const widthFactor = panelWidth >= idealPanelWidth ? 1 : (panelWidth/idealPanelWidth)*0.6
       const maxNameLength = Math.floor(idealNameLength * widthFactor)
       const displayName = ellipsis( name, maxNameLength )
       const displayLocalID = ellipsis( localID, maxNameLength )
-      
       resourceRows.push(
         <TableRow hover onClick={onClick} onKeyUp={onKeyUp} dataresourceid={id} key={`resource-${id}`}>
           <TableCell {...cellProps} >
-            <Checkbox onClick={onClickCheck} disabled={type === 'header'} dataresourceid={id} color="default" checked={check} />
+            <Checkbox onClick={onClickCheck} disabled={type === 'header' || processing} dataresourceid={id} color="default" checked={check} />
           </TableCell>
           { remoteProject && !teiDoc && 
           <TableCell {...cellProps} align="center">
-            { icon && 
+            { processing ?
+              <Tooltip title="Processing">{inlineRingSpinner('dark')}</Tooltip>
+            : icon && 
               <Tooltip title={label}>
                 { typeof icon === "string" ?
                   <i aria-label={label} className={`${icon} ${iconClass} fa-lg`}></i>
@@ -448,7 +482,10 @@ export default class ResourceBrowser extends Component {
           }
           { teiDoc &&
             <TableCell {...cellProps} >
-              <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
+              { processing ?
+                <Tooltip title="Processing">{inlineRingSpinner('dark')}</Tooltip>
+              : <i aria-label={getResourceIconLabel(type)} className={`${resourceIcon} ${iconClass} fa-lg`}></i>
+              }
             </TableCell>
           }
           <TableCell {...cellProps} >
@@ -479,11 +516,12 @@ export default class ResourceBrowser extends Component {
           <TableCell {...cellProps} >
             <IconButton
               aria-label="Actions"
-              disabled={resourceView.loading}
+              disabled={resourceView.loading || processing}
               onClick={(event) => {
                 event.stopPropagation()
-                this.onOpenActionMenu(event.target, resource)
+                this.onOpenActionMenu(event.currentTarget, resource)
               }}
+              onKeyUp={(event) => event.stopPropagation()}
             >
               <MoreVert />
             </IconButton>

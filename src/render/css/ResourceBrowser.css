@@ -38,6 +38,14 @@
     color: red;
 }
 
+#ResourceBrowser .processing-resource {
+    color: rgba(0, 0, 0, 0.38);
+}
+
+#ResourceBrowser .inline-ring-spinner {
+    position: relative;
+}
+
 #ResourceBrowser .inline-button-group {
     display: inline-flex;
     align-items: center;
