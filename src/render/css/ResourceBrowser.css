@@ -42,8 +42,8 @@
     color: rgba(0, 0, 0, 0.38);
 }
 
-#ResourceBrowser .agent-action-cell {
-    white-space: nowrap;
+#ResourceBrowser .inline-ring-spinner {
+    position: relative;
 }
 
 #ResourceBrowser .inline-button-group {

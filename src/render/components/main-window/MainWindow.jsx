@@ -1229,6 +1229,7 @@ export default class MainWindow extends Component {
 
     this.agentRuns[resource.id] = { doc, name: resource.name || resource.localID || resource.id }
     this.setState((prevState) => ({
+      ...closePopUpState,
       agentPendingIDs: new Set(prevState.agentPendingIDs).add(resource.id),
       requestedResources: doc ? prevState.requestedResources : [...prevState.requestedResources, resource.id],
       resourceCheckmarks: { ...prevState.resourceCheckmarks, [resource.id]: null },
